@@ -1,0 +1,13 @@
+#ifndef PATROL_CHASSIS_CLOUD_SERVICE_H
+#define PATROL_CHASSIS_CLOUD_SERVICE_H
+
+#include <stdint.h>
+
+#include "main.h"
+
+void CloudService_Init(void);
+void CloudService_Task(void);
+void CloudService_OnUartRxEvent(UART_HandleTypeDef* huart, uint16_t size);
+void CloudService_OnUartError(UART_HandleTypeDef* huart);
+
+#endif

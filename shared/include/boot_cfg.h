@@ -1,0 +1,36 @@
+#ifndef PATROL_CHASSIS_BOOT_CFG_H
+#define PATROL_CHASSIS_BOOT_CFG_H
+
+#include <stdint.h>
+
+/* STM32F105RCT6: 256 KiB internal Flash, 64 KiB SRAM. */
+#define FLASH_BASE_ADDR 0x08000000U
+#define FLASH_TOTAL_SIZE (256U * 1024U)
+#define OTA_FLASH_PAGE_SIZE (2U * 1024U)
+
+/* The BootLoader remains a small, non-RTOS image. */
+#define BOOT_START_ADDR 0x08000000U
+#define BOOT_SIZE (32U * 1024U)
+#define BOOT_END_ADDR (BOOT_START_ADDR + BOOT_SIZE - 1U)
+
+#define APP_START_ADDR 0x08008000U
+#define APP_END_ADDR 0x0803E7FFU
+#define APP_MAX_SIZE (APP_END_ADDR - APP_START_ADDR + 1U)
+
+/* Boot V2 reserves two state pages and a separate production config page. */
+#define BOOT_STATE_A_ADDR 0x0803E800U
+#define BOOT_STATE_B_ADDR 0x0803F000U
+#define VCU_CONFIG_ADDR 0x0803F800U
+#define BOOT_STATE_PAGE_SIZE OTA_FLASH_PAGE_SIZE
+#define VCU_CONFIG_PAGE_SIZE OTA_FLASH_PAGE_SIZE
+
+/* Legacy OTA-info users are configuration-only; boot state is never shared. */
+#define OTA_INFO_ADDR VCU_CONFIG_ADDR
+#define OTA_INFO_PAGE_SIZE VCU_CONFIG_PAGE_SIZE
+#define OTA_INFO_END_ADDR (OTA_INFO_ADDR + OTA_INFO_PAGE_SIZE - 1U)
+
+#define APP_VALID_MAGIC 0xA55A55AAU
+#define OTA_REQ_MAGIC 0x5A5AA5A5U
+#define OTA_REQ_FAIL_MAX 3U
+
+#endif
