@@ -27,6 +27,7 @@
 #include "remote_service.h"
 #include "time_base.h"
 #include "vcu_config.h"
+#include "vehicle_power_port.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -106,6 +107,7 @@ int main(void)
   AppLog_FieldStartup(Vcu_AppFwVersion());
   TimeBase_Init();
   VcuConfig_Load();
+  VehiclePowerPort_Init();
   CloudService_Init();
   RemoteService_Init();
   APP_LOGI("BOOT", "version=%s app=0x%08lX", Vcu_AppFwVersion(),

@@ -147,6 +147,8 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
     if (strcmp(action->valuestring, "get_info") == 0) request->action = CLOUD_PROTOCOL_ACTION_GET_INFO;
     else if (strcmp(action->valuestring, "get_log") == 0) request->action = CLOUD_PROTOCOL_ACTION_GET_LOG;
     else if (strcmp(action->valuestring, "reboot") == 0) request->action = CLOUD_PROTOCOL_ACTION_REBOOT;
+    else if (strcmp(action->valuestring, "power_on") == 0) request->action = CLOUD_PROTOCOL_ACTION_POWER_ON;
+    else if (strcmp(action->valuestring, "power_off") == 0) request->action = CLOUD_PROTOCOL_ACTION_POWER_OFF;
     else if (strcmp(action->valuestring, "set_mqtt") == 0)
     {
         mqtt_vid = cJSON_GetObjectItemCaseSensitive(params, "vid");

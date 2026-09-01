@@ -17,10 +17,19 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertIn("Patrol_Vehicle_Chassis_App", cmake)
         self.assertIn('"patrol_vehicle_chassis"', config)
         self.assertIn("PATROL_CHASSIS_ACTUATION_ENABLED", cmake)
+        self.assertIn("PATROL_CHASSIS_POWER_OUTPUT_ENABLED", cmake)
         self.assertNotIn('#define VCU_CONFIG_DEFAULT_MQTT_USER ""', device_config)
         self.assertNotIn('#define VCU_CONFIG_DEFAULT_MQTT_PASS ""', device_config)
         self.assertIn("hardware_available=0", rtos)
         self.assertNotIn("HAL_CAN_AddTxMessage", rtos)
+
+    def test_confirmed_vehicle_power_output_is_isolated_to_pvin_out1(self):
+        port = (ROOT / "app/Core/User/Src/vehicle_power_port.c").read_text(encoding="utf-8")
+        self.assertIn("PVIN_OUT1_GPIO_Port", port)
+        self.assertIn("PVIN_OUT1_Pin", port)
+        self.assertNotIn("PVIN_OUT2", port)
+        self.assertNotIn("PVIN_OUT3", port)
+        self.assertIn("VehiclePowerOutput_Init(write_power_output)", port)
 
     def test_public_topics_and_limits_are_documented(self):
         mqtt = (ROOT / "docs/protocols/A-BOX车辆底盘业务协议-V3.0.md").read_text(encoding="utf-8")

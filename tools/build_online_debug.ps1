@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [ValidatePattern('^patrol-chassis-[0-9]+\.[0-9]+\.[0-9]+(?:[A-Za-z0-9._+-]*)?$')]
-    [string] $AppVersion = 'patrol-chassis-0.1.1',
+    [string] $AppVersion = 'patrol-chassis-0.1.2',
     [switch] $EnableAutoSeed
 )
 

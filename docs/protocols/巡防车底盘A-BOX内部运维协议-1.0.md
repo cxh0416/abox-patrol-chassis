@@ -8,7 +8,7 @@
 
 ## 1. 协议定位
 
-本文定义 OTA 平台与巡防车底盘 A-BOX 固件之间的设备信息、日志、受控重启、MQTT 配置和 Boot V2 OTA 接口。它们使用 `/internal/*` Topic，不属于公共业务接口；底盘控制和状态见 [A-BOX 车辆底盘业务协议 V3](A-BOX车辆底盘业务协议-V3.0.md)。厂商 CANopen 对象字典和执行约束不在本文定义。
+本文定义 OTA 平台与巡防车底盘 A-BOX 固件之间的设备信息、日志、远程电源输出、受控重启、MQTT 配置和 Boot V2 OTA 接口。它们使用 `/internal/*` Topic，不属于公共业务接口；底盘控制和状态见 [A-BOX 车辆底盘业务协议 V3](A-BOX车辆底盘业务协议-V3.0.md)。厂商 CANopen 对象字典和执行约束不在本文定义。
 
 公共业务与内部运维使用两套明确身份：
 
@@ -80,7 +80,11 @@ A-BOX 只订阅自身 VID 的精确配置和 OTA Topic。平台重试必须沿�
 | `get_info` | 查询 App、Boot、OTA、MQTT 和 CAN 基本信息 |
 | `get_log` | 获取内存日志快照 |
 | `reboot` | 响应成功发布后受控重启 |
+| `power_on` | 将车辆电源控制输出置为高电平 |
+| `power_off` | 将车辆电源控制输出置为低电平 |
 | `set_mqtt` | 保存新的 VID 和 MQTT 参数后重启 |
+
+`power_on` / `power_off` 成功响应的 `result.powerOutputOn` 表示 MCU 输出锁存的命令状态。该状态不是继电器触点或整车供电反馈，不得用来声称车辆已真实开机或关机。
 
 OTA 请求使用 `command=ota_upgrade`，`params` 必须包含不可变 HTTPS `url`、目标 `version`、正整数 `size` 和八位十六进制 `crc32`。`code=200` 只表示候选镜像已校验并进入待安装状态，不代表安装、试运行或确认成功；平台仍须通过 `get_info` 和新 App 版本确认 `otaState=CONFIRMED`。
 

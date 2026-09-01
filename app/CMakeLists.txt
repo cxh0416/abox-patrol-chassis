@@ -32,7 +32,8 @@ set(PATROL_CHASSIS_APP_VERSION "" CACHE STRING "Override patrol chassis App sema
 set(PATROL_CHASSIS_MQTT_USERNAME "" CACHE STRING "Production MQTT username")
 set(PATROL_CHASSIS_MQTT_PASSWORD "" CACHE STRING "Production MQTT password")
 option(PATROL_CHASSIS_OTA_AUTO_SEED "Seed first stable OTA slot" ON)
-option(PATROL_CHASSIS_ACTUATION_ENABLED "Allow CANopen and power hardware output after bench approval" OFF)
+option(PATROL_CHASSIS_ACTUATION_ENABLED "Allow CANopen motion output after bench approval" OFF)
+option(PATROL_CHASSIS_POWER_OUTPUT_ENABLED "Allow the confirmed PA0 vehicle relay-supply output" ON)
 option(PATROL_CHASSIS_APP_FAULT_INJECTION_TEST "Build intentional Boot confirmation fault" OFF)
 set(PATROL_CHASSIS_APP_TEST_FAULT_KIND "0" CACHE STRING "1=HardFault, 2=IWDG")
 
@@ -80,6 +81,8 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/User/Src/patrol_canopen.c
     Core/User/Src/remote_service.c
     Core/User/Src/time_base.c
+    Core/User/Src/vehicle_power_output.c
+    Core/User/Src/vehicle_power_port.c
     Core/User/Src/vcu_rtos.c
     ${CMAKE_SOURCE_DIR}/../shared/boot_state_compat.c
     ${CMAKE_SOURCE_DIR}/../shared/fault_mailbox_compat.c
@@ -97,6 +100,7 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
     $<$<CONFIG:Debug>:VCU_EC800_AT_TRACE=1>
     VCU_OTA_AUTO_SEED=$<BOOL:${PATROL_CHASSIS_OTA_AUTO_SEED}>
     PATROL_CHASSIS_ACTUATION_ENABLED=$<BOOL:${PATROL_CHASSIS_ACTUATION_ENABLED}>
+    PATROL_CHASSIS_POWER_OUTPUT_ENABLED=$<BOOL:${PATROL_CHASSIS_POWER_OUTPUT_ENABLED}>
 )
 if(PATROL_CHASSIS_APP_FAULT_INJECTION_TEST)
     target_sources(${CMAKE_PROJECT_NAME} PRIVATE Core/User/Src/app_test.c)

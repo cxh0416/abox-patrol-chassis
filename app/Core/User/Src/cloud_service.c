@@ -22,6 +22,7 @@
 #include "usart.h"
 #include "vcu_config.h"
 #include "vcu_rtos.h"
+#include "vehicle_power_output.h"
 
 #define CLOUD_RX_DMA_SIZE (EC800_AT_RAW_CHUNK_MAX + 64U)
 #define CLOUD_RX_RING_SIZE 4096U
@@ -58,6 +59,7 @@ typedef struct {
     uint8_t safety_ready;
     uint8_t fault_latched;
     uint8_t reversal_pending;
+    uint8_t power_output_on;
     uint8_t stop_reason;
     int16_t target_rpm;
     int32_t target_steering_mdeg;
@@ -377,6 +379,9 @@ static void build_info_result(char* output, uint16_t size)
                  (unsigned long)VcuRtos_CanRxOverflowCount());
     json_string(&writer, (have_state && state.rollback_report_pending) ? "ROLLBACK" :
                 boot_state_name(have_state ? state.state : BOOT_STATE_NORMAL));
+    json_appendf(&writer, ",\"powerOutputAvailable\":%s,\"powerOutputOn\":%s",
+                 VehiclePowerOutput_IsAvailable() ? "true" : "false",
+                 VehiclePowerOutput_IsOn() ? "true" : "false");
     json_appendf(&writer, ",\"stableSlot\":%u,\"candidateSlot\":%u,\"trialFailCount\":%u,"
                  "\"resetReason\":%u,\"otaProvisioned\":%s,\"otaReady\":%s,\"otaBusy\":%s,\"otaPhase\":",
                  have_state ? state.stable_slot : 0U, have_state ? state.candidate_slot : 0U,
@@ -410,6 +415,7 @@ static void remember_status_snapshot(uint32_t now)
     g_status_snapshot.safety_ready = ChassisControl_SafetyReady(control, now);
     g_status_snapshot.fault_latched = control->fault_latched;
     g_status_snapshot.reversal_pending = control->reversal_pending;
+    g_status_snapshot.power_output_on = VehiclePowerOutput_IsOn();
     g_status_snapshot.stop_reason = (uint8_t)control->stop_reason;
     g_status_snapshot.target_rpm = control->target_rpm;
     g_status_snapshot.target_steering_mdeg = control->target_steering_mdeg;
@@ -428,6 +434,7 @@ static const char* status_change_reason(uint32_t now)
          control->stop_reason != CHASSIS_STOP_NONE))
         return "safety_stop";
     if (safety_ready != g_status_snapshot.safety_ready ||
+        VehiclePowerOutput_IsOn() != g_status_snapshot.power_output_on ||
         control->reversal_pending != g_status_snapshot.reversal_pending ||
         control->stop_reason != (ChassisStopReason)g_status_snapshot.stop_reason ||
         control->target_rpm != g_status_snapshot.target_rpm ||
@@ -467,7 +474,7 @@ static uint8_t build_status_report(char* output, uint16_t size, const char* repo
         ",\"targetDriveRpm\":%d,\"targetSteeringDeg\":%.3f,\"leftActualRpm\":%d,"
         "\"rightActualRpm\":%d,\"steeringActualDeg\":%.3f,\"absoluteActualDeg\":%.3f,"
         "\"steeringOnline\":%s,\"driveOnline\":%s,\"feedbackFresh\":%s,"
-        "\"calibrated\":%s,\"powerReady\":%s,\"otaBusy\":%s,\"safetyReady\":%s,"
+        "\"calibrated\":%s,\"powerReady\":%s,\"powerOutputOn\":%s,\"otaBusy\":%s,\"safetyReady\":%s,"
         "\"stopReason\":%u,\"faultLatched\":%s}}",
         (int)control->target_rpm, (double)control->target_steering_mdeg / 1000.0,
         (int)feedback->left_actual_rpm, (int)feedback->right_actual_rpm,
@@ -476,6 +483,7 @@ static uint8_t build_status_report(char* output, uint16_t size, const char* repo
         feedback->steering_online ? "true" : "false",
         feedback->drive_online ? "true" : "false", feedback_fresh ? "true" : "false",
         feedback->calibrated ? "true" : "false", feedback->power_ready ? "true" : "false",
+        VehiclePowerOutput_IsOn() ? "true" : "false",
         feedback->ota_busy ? "true" : "false",
         ChassisControl_SafetyReady(control, now) ? "true" : "false",
         (unsigned int)control->stop_reason, control->fault_latched ? "true" : "false");
@@ -606,6 +614,21 @@ static void handle_config_request(const CloudProtocolRequest_t* request)
             schedule_simple_error(g_topic_config_resp, request_id, 409U, "DEVICE_BUSY");
         else
             (void)schedule_response(g_topic_config_resp, request_id, 200U, "REBOOTING", "{}", 1U);
+    }
+    else if (action == CLOUD_PROTOCOL_ACTION_POWER_ON || action == CLOUD_PROTOCOL_ACTION_POWER_OFF)
+    {
+        uint8_t target_on = action == CLOUD_PROTOCOL_ACTION_POWER_ON ? 1U : 0U;
+        if (!VehiclePowerOutput_IsAvailable())
+            schedule_simple_error(g_topic_config_resp, request_id, 503U, "POWER_OUTPUT_UNAVAILABLE");
+        else if (!VehiclePowerOutput_Set(target_on))
+            schedule_simple_error(g_topic_config_resp, request_id, 500U, "POWER_OUTPUT_WRITE_FAILED");
+        else
+        {
+            (void)snprintf(result, sizeof(result), "{\"powerOutputOn\":%s}",
+                           target_on ? "true" : "false");
+            (void)schedule_response(g_topic_config_resp, request_id, 200U,
+                                    target_on ? "POWER_ON" : "POWER_OFF", result, 0U);
+        }
     }
     else if (action == CLOUD_PROTOCOL_ACTION_SET_MQTT)
     {

@@ -6,8 +6,16 @@
 #include "chassis_control.h"
 #include "chassis_power.h"
 #include "patrol_canopen.h"
+#include "vehicle_power_output.h"
 
 #define CHECK(x) do { if (!(x)) { fprintf(stderr, "check failed line %d: %s\n", __LINE__, #x); return 1; } } while (0)
+
+static uint8_t g_power_level;
+static uint8_t test_power_write(uint8_t on)
+{
+    g_power_level = on ? 1U : 0U;
+    return 1U;
+}
 
 int main(void)
 {
@@ -83,6 +91,12 @@ int main(void)
     ChassisPower_Tick(&power, 30, 1, 1);
     ChassisPower_Tick(&power, 40, 0, 1);
     CHECK(power.state == CHASSIS_POWER_OFF && !power.relay_request);
+
+    g_power_level = 1U;
+    VehiclePowerOutput_Init(test_power_write);
+    CHECK(VehiclePowerOutput_IsAvailable() && !VehiclePowerOutput_IsOn() && g_power_level == 0U);
+    CHECK(VehiclePowerOutput_Set(1U) && VehiclePowerOutput_IsOn() && g_power_level == 1U);
+    CHECK(VehiclePowerOutput_Set(0U) && !VehiclePowerOutput_IsOn() && g_power_level == 0U);
 
     CHECK(ChassisCloud_Parse(json, (uint16_t)strlen(json), &command) == CHASSIS_CLOUD_OK);
     CHECK(command.drive_rpm == 50 && command.steering_mdeg == 1000 && strcmp(command.session_id, "s1") == 0);

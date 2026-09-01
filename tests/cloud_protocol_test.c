@@ -42,6 +42,12 @@ int main(void)
         "\"command\":\"internal_config\",\"params\":{\"action\":\"set_mqtt\","
         "\"vid\":\"bad/vid\",\"host\":\"36.153.162.171\",\"port\":0,"
         "\"username\":\"patrol\",\"password\":\"test-pass\"}}}";
+    static const char power_on[] =
+        "{\"version\":\"2.0\",\"data\":{\"requestId\":\"req-power-on\","
+        "\"command\":\"internal_config\",\"params\":{\"action\":\"power_on\"}}}";
+    static const char power_off[] =
+        "{\"version\":\"2.0\",\"data\":{\"requestId\":\"req-power-off\","
+        "\"command\":\"internal_config\",\"params\":{\"action\":\"power_off\"}}}";
     char oversized[1100];
     static const char oversized_prefix[] = "{\"requestId\":\"req-big\",\"padding\":\"";
 
@@ -52,6 +58,10 @@ int main(void)
     if (!expect_status("ota", ota, 1U, CLOUD_PROTOCOL_OK, CLOUD_PROTOCOL_ACTION_OTA, "req-3")) return 1;
     if (!expect_status("set_mqtt", set_mqtt, 0U, CLOUD_PROTOCOL_OK, CLOUD_PROTOCOL_ACTION_SET_MQTT, "req-4")) return 1;
     if (!expect_status("bad_set_mqtt", bad_set_mqtt, 0U, CLOUD_PROTOCOL_INVALID, CLOUD_PROTOCOL_ACTION_NONE, "req-5")) return 1;
+    if (!expect_status("power_on", power_on, 0U, CLOUD_PROTOCOL_OK,
+                       CLOUD_PROTOCOL_ACTION_POWER_ON, "req-power-on")) return 1;
+    if (!expect_status("power_off", power_off, 0U, CLOUD_PROTOCOL_OK,
+                       CLOUD_PROTOCOL_ACTION_POWER_OFF, "req-power-off")) return 1;
     {
         CloudProtocolRequest_t request;
         if (CloudProtocol_Parse(ota, (uint16_t)strlen(ota), 1U, &request) != CLOUD_PROTOCOL_OK ||
