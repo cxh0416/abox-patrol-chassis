@@ -12,21 +12,34 @@ class PatrolScaffoldTests(unittest.TestCase):
     def test_identity_and_safe_defaults(self):
         cmake = (ROOT / "app/CMakeLists.txt").read_text(encoding="utf-8")
         config = (ROOT / "platform_config/abox_product_config.h").read_text(encoding="utf-8")
+        device_config = (ROOT / "app/Core/User/Inc/vcu_config.h").read_text(encoding="utf-8")
         rtos = (ROOT / "app/Core/User/Src/vcu_rtos.c").read_text(encoding="utf-8")
         self.assertIn("Patrol_Vehicle_Chassis_App", cmake)
         self.assertIn('"patrol_vehicle_chassis"', config)
         self.assertIn("PATROL_CHASSIS_ACTUATION_ENABLED", cmake)
+        self.assertNotIn('#define VCU_CONFIG_DEFAULT_MQTT_USER ""', device_config)
+        self.assertNotIn('#define VCU_CONFIG_DEFAULT_MQTT_PASS ""', device_config)
         self.assertIn("hardware_available=0", rtos)
         self.assertNotIn("HAL_CAN_AddTxMessage", rtos)
 
     def test_public_topics_and_limits_are_documented(self):
-        mqtt = (ROOT / "docs/protocols/MQTT_V3远控协议.md").read_text(encoding="utf-8")
+        mqtt = (ROOT / "docs/protocols/A-BOX车辆底盘业务协议-V3.0.md").read_text(encoding="utf-8")
         canopen = (ROOT / "docs/protocols/CANopen执行约束.md").read_text(encoding="utf-8")
-        self.assertIn("/zxwl/abox/{vid}", mqtt)
-        self.assertIn("patrol_vehicle_chassis", mqtt)
+        self.assertIn("/zxwl/abox/{deviceId}", mqtt)
+        self.assertIn("vehicle_chassis", mqtt)
         self.assertIn("±300 rpm", canopen)
         self.assertIn("±5°", canopen)
         self.assertIn("连续三次", canopen)
+
+    def test_public_and_internal_mqtt_contracts_are_separated(self):
+        cloud = (ROOT / "app/Core/User/Src/cloud_service.c").read_text(encoding="utf-8")
+        remote = (ROOT / "app/Core/User/Src/remote_service.c").read_text(encoding="utf-8")
+        self.assertIn('"/zxwl/abox/%s/ctrl"', cloud)
+        self.assertIn('"/zxwl/abox/%s/status/report"', cloud)
+        self.assertIn('\\"deviceType\\":\\"vehicle_chassis', cloud)
+        self.assertIn('\\"product\\":\\"patrol_vehicle_chassis', cloud)
+        self.assertNotIn("commandAccepted", remote)
+        self.assertIn('\\\"code\\\":%u', remote)
 
     def test_archive_hashes(self):
         archive = ROOT / "docs/archive/2026-08-31-input"
@@ -52,4 +65,3 @@ class PatrolScaffoldTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

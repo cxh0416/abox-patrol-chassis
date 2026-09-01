@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [ValidateSet('Debug', 'Release')] [string] $Configuration = 'Release',
-    [ValidatePattern('^patrol-chassis-[0-9]+\.[0-9]+\.[0-9]+$')] [string] $AppVersion = 'patrol-chassis-0.1.0',
+    [ValidatePattern('^patrol-chassis-[0-9]+\.[0-9]+\.[0-9]+$')] [string] $AppVersion = 'patrol-chassis-0.1.1',
     [switch] $ReleasePair
 )
 
@@ -12,7 +12,7 @@ $bootTarget = Join-Path $platform 'targets/stm32f105_abox_boot'
 $bootArtifact = Join-Path $bootTarget 'dist/ABox_Boot.bin'
 $bootVerifier = Join-Path $bootTarget 'tools/verify_boot_artifact.py'
 $stableVersion = 'patrol-chassis-0.1.0'
-$candidateVersion = 'patrol-chassis-0.1.0'
+$candidateVersion = 'patrol-chassis-0.1.1'
 $versions = if ($ReleasePair) { @($stableVersion) } else { @($AppVersion) }
 $credentialBuildRoot = Join-Path ([IO.Path]::GetTempPath()) ('patrol-chassis-release-' + [Guid]::NewGuid().ToString('N'))
 $mqttUsername = $env:OTA_MQTT_PATROL_CHASSIS_DEVICE_USERNAME

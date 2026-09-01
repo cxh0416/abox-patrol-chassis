@@ -1,0 +1,91 @@
+# 巡防车底盘 A-BOX 内部运维协议
+
+协议修订：1.0
+
+契约状态：已完成固件与 OTA 平台源码切换及自动回归；尚未发布到生产平台，也未完成设备联调
+
+产品标识：`patrol_vehicle_chassis`
+
+## 1. 协议定位
+
+本文定义 OTA 平台与巡防车底盘 A-BOX 固件之间的设备信息、日志、受控重启、MQTT 配置和 Boot V2 OTA 接口。它们使用 `/internal/*` Topic，不属于公共业务接口；底盘控制和状态见 [A-BOX 车辆底盘业务协议 V3](A-BOX车辆底盘业务协议-V3.0.md)。厂商 CANopen 对象字典和执行约束不在本文定义。
+
+公共业务与内部运维使用两套明确身份：
+
+- 公共 V3 请求、响应、状态和心跳使用 `data.deviceType=vehicle_chassis`，不得携带 `data.product`。
+- 内部 V2 响应和日志使用 `data.product=patrol_vehicle_chassis`，不得用 `deviceType` 代替。
+
+## 2. Topic 与交付等级
+
+`{deviceId}` 与设备当前 VID 为同一值。
+
+| 方向 | 用途 | Topic | QoS | Retain |
+|---|---|---|---:|---:|
+| 平台 -> A-BOX | 内部配置和查询 | `/zxwl/abox/{deviceId}/internal/config` | 1 | 否 |
+| A-BOX -> 平台 | 内部配置响应 | `/zxwl/abox/{deviceId}/internal/config/resp` | 1 | 否 |
+| 平台 -> A-BOX | Boot V2 OTA | `/zxwl/abox/{deviceId}/internal/ota` | 1 | 否 |
+| A-BOX -> 平台 | Boot V2 OTA 响应 | `/zxwl/abox/{deviceId}/internal/ota/resp` | 1 | 否 |
+| A-BOX -> 平台 | 设备日志 | `/zxwl/abox/{deviceId}/internal/log` | 0；查询日志分片为 1 | 否 |
+
+A-BOX 只订阅自身 VID 的精确配置和 OTA Topic。平台重试必须沿用原 `requestId`；内部响应优先于日志发送。
+
+## 3. 请求与响应
+
+内部请求使用 V2 外层。为兼容现有平台，请求中的 `data.product` 可省略；若携带，必须为 `patrol_vehicle_chassis`。
+
+```json
+{
+  "version": "2.0",
+  "timestamp": 1788134400000,
+  "data": {
+    "requestId": "uuid",
+    "command": "internal_config",
+    "params": {"action": "get_info"}
+  }
+}
+```
+
+所有内部配置响应和 OTA 响应必须携带固定产品标识：
+
+```json
+{
+  "version": "2.0",
+  "timestamp": 1788134400123,
+  "data": {
+    "product": "patrol_vehicle_chassis",
+    "requestId": "uuid",
+    "code": 200,
+    "msg": "OK",
+    "result": {}
+  }
+}
+```
+
+平台必须同时按精确 Topic、`data.product` 和 `requestId` 关联响应。缺少 `product`、产品不匹配或版本不是 `2.0` 的共享 A-BOX 内部消息必须丢弃，不能创建设备、刷新在线状态、完成操作或改变 OTA 任务。
+
+产品与公共能力的固定映射如下，不得混用字段：
+
+| 作用域 | 字段 | 固定值 |
+|---|---|---|
+| 公共业务 V3 | `data.deviceType` | `vehicle_chassis` |
+| 内部运维 V2 | `data.product` | `patrol_vehicle_chassis` |
+| 固件/OTA 制品 | product | `patrol_vehicle_chassis` |
+
+## 4. 内部操作
+
+`internal_config` 当前支持：
+
+| `params.action` | 说明 |
+|---|---|
+| `get_info` | 查询 App、Boot、OTA、MQTT 和 CAN 基本信息 |
+| `get_log` | 获取内存日志快照 |
+| `reboot` | 响应成功发布后受控重启 |
+| `set_mqtt` | 保存新的 VID 和 MQTT 参数后重启 |
+
+OTA 请求使用 `command=ota_upgrade`，`params` 必须包含不可变 HTTPS `url`、目标 `version`、正整数 `size` 和八位十六进制 `crc32`。`code=200` 只表示候选镜像已校验并进入待安装状态，不代表安装、试运行或确认成功；平台仍须通过 `get_info` 和新 App 版本确认 `otaState=CONFIRMED`。
+
+## 5. 日志
+
+查询日志分片和主动告警都发布到 `/internal/log`，每条消息必须携带 `data.product=patrol_vehicle_chassis`。查询分片还携带 `requestId`、`sequence`、`total` 和 `lines`；主动告警携带 `level` 和 `lines`。
+
+日志是诊断流量，不是设备在线或产品归属证据。平台只能在适配器完成 `version` 与 `product` 校验后保存日志，且不得由日志创建或刷新设备记录。公共业务平台不得订阅或解释该 Topic。

@@ -28,7 +28,8 @@ cmake --build .\app\build\Debug
 
 - `docs/archive/2026-08-31-input/`：原始输入，原样归档并记录哈希
 - `docs/protocols/CANopen执行约束.md`：厂商 CANopen 的产品化执行约束
-- `docs/protocols/MQTT_V3远控协议.md`：公共平台 V3 协议
+- `docs/protocols/A-BOX车辆底盘业务协议-V3.0.md`：公共平台 V3 底盘业务 Profile，固定 `deviceType=vehicle_chassis`
+- `docs/protocols/巡防车底盘A-BOX内部运维协议-1.0.md`：设备信息、日志、配置和 OTA 的内部 V2 协议，响应固定携带 `product`
 - `docs/hardware/硬件与安全边界.md`：端口、分区和未确认硬件边界
 - `docs/requirements/首阶段需求与验收.md`：分阶段范围与验收门禁
 - `docs/references/RTBOX参考边界.md`：仅记录可借鉴状态机，不复制引脚和协议

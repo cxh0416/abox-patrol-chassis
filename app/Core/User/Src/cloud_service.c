@@ -2,6 +2,7 @@
 
 #include <stdarg.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "app_log.h"
@@ -28,7 +29,8 @@
 #define CLOUD_PAYLOAD_LIMIT 900U
 #define CLOUD_TOPIC_SIZE 128U
 #define CLOUD_REQUEST_ID_SIZE CLOUD_PROTOCOL_REQUEST_ID_SIZE
-#define CLOUD_HEARTBEAT_MS 10000U
+#define CLOUD_HEARTBEAT_MS 5000U
+#define CLOUD_STATUS_REPORT_MS 1000U
 #define CLOUD_REBOOT_DELAY_MS 300U
 #define CLOUD_LOG_SNAPSHOT_SIZE 3584U
 #define CLOUD_ALERT_PAYLOAD_SIZE 512U
@@ -38,6 +40,7 @@
 typedef enum {
     CLOUD_TX_NONE = 0,
     CLOUD_TX_HEARTBEAT,
+    CLOUD_TX_STATUS_REPORT,
     CLOUD_TX_RESPONSE,
     CLOUD_TX_LOG_CHUNK,
     CLOUD_TX_ALERT,
@@ -50,12 +53,23 @@ typedef struct {
     uint8_t valid;
 } JsonWriter_t;
 
+typedef struct {
+    uint8_t valid;
+    uint8_t safety_ready;
+    uint8_t fault_latched;
+    uint8_t reversal_pending;
+    uint8_t stop_reason;
+    int16_t target_rpm;
+    int32_t target_steering_mdeg;
+} ChassisStatusSnapshot_t;
+
 static Ec800AtCore_t g_at_core;
 static uint8_t g_uart_dma[CLOUD_RX_DMA_SIZE];
 static uint8_t g_rx_ring[CLOUD_RX_RING_SIZE];
 static ABoxEc800Rx g_ec800_rx;
 
 static char g_topic_heartbeat[CLOUD_TOPIC_SIZE];
+static char g_topic_status_report[CLOUD_TOPIC_SIZE];
 static char g_topic_config_cmd[CLOUD_TOPIC_SIZE];
 static char g_topic_config_resp[CLOUD_TOPIC_SIZE];
 static char g_topic_ota_cmd[CLOUD_TOPIC_SIZE];
@@ -72,6 +86,9 @@ static uint8_t g_ota_response_waiting;
 static uint8_t g_ota_begin_pending;
 static char g_ota_request_id[CLOUD_REQUEST_ID_SIZE];
 static uint32_t g_heartbeat_due;
+static uint32_t g_status_report_due;
+static uint32_t g_status_report_sequence;
+static ChassisStatusSnapshot_t g_status_snapshot;
 static uint32_t g_iccid_due;
 static uint32_t g_ota_begin_due;
 
@@ -273,10 +290,11 @@ static void ec800_rx_sink(void *context, const uint8_t *data, uint16_t length)
     EC800_AT_FeedRx((Ec800AtCore_t *)context, data, length);
 }
 
-static uint8_t start_publish(CloudTxKind_t kind, const char* topic, const char* payload, uint8_t qos)
+static uint8_t start_publish(CloudTxKind_t kind, const char* topic, const char* payload,
+                             uint8_t qos, uint8_t retain)
 {
     if ((g_tx_kind != CLOUD_TX_NONE) || !MQTT_Core_IsReady() || MQTT_Core_IsPublishActive()) return 0U;
-    if (!MQTT_Core_Publish(topic, payload, qos)) return 0U;
+    if (!MQTT_Core_PublishEx(topic, payload, qos, retain)) return 0U;
     g_tx_kind = kind;
     g_tx_start_sequence = MQTT_Core_GetPubOkSeq();
     return 1U;
@@ -297,7 +315,7 @@ static uint8_t schedule_response(const char* topic, const char* request_id, uint
     json_init(&writer, g_response_payload, sizeof(g_response_payload));
     json_append(&writer, "{\"version\":\"2.0\",\"timestamp\":");
     json_append_timestamp(&writer);
-    json_append(&writer, ",\"data\":{\"requestId\":");
+    json_append(&writer, ",\"data\":{\"product\":\"patrol_vehicle_chassis\",\"requestId\":");
     json_string(&writer, request_id);
     json_appendf(&writer, ",\"code\":%u,\"msg\":", (unsigned int)code);
     json_string(&writer, message);
@@ -376,51 +394,91 @@ static void build_info_result(char* output, uint16_t size)
 static uint8_t build_heartbeat(char* output, uint16_t size)
 {
     JsonWriter_t writer;
-    BootStateRecord_t state;
-    uint8_t have_state = BootState_Load(&state);
-    const char* iccid = MQTT_Core_GetIccid();
     json_init(&writer, output, size);
     json_append(&writer, "{\"version\":\"3.0\",\"timestamp\":");
     json_append_timestamp(&writer);
-    json_append(&writer, ",\"data\":{\"product\":\"patrol_vehicle_chassis\",\"deviceType\":\"patrol_vehicle_chassis\",\"vid\":");
-    json_string(&writer, VcuConfig_Get()->vid);
+    json_append(&writer, ",\"data\":{\"deviceType\":\"vehicle_chassis\"");
     json_append(&writer, ",\"firmware\":"); json_string(&writer, Vcu_AppFwVersion());
-    json_append(&writer, ",\"bootVersion\":"); json_string(&writer, ABOX_BOOT_FW_VERSION);
-    json_appendf(&writer, ",\"uptimeMs\":%lu,\"mqttState\":", (unsigned long)HAL_GetTick());
-    json_string(&writer, mqtt_state_name(MQTT_Core_GetState()));
-    json_appendf(&writer, ",\"mqttStateCode\":%u,\"iccid\":", (unsigned int)MQTT_Core_GetState());
-    json_string(&writer, iccid ? iccid : "");
-    json_append(&writer, ",\"otaState\":");
-    json_string(&writer, boot_state_name(have_state ? state.state : BOOT_STATE_NORMAL));
+    json_append(&writer, "}}");
+    return (uint8_t)(writer.valid && writer.length < CLOUD_PAYLOAD_LIMIT);
+}
+
+static void remember_status_snapshot(uint32_t now)
+{
+    const ChassisControl* control = RemoteService_State();
+    g_status_snapshot.valid = 1U;
+    g_status_snapshot.safety_ready = ChassisControl_SafetyReady(control, now);
+    g_status_snapshot.fault_latched = control->fault_latched;
+    g_status_snapshot.reversal_pending = control->reversal_pending;
+    g_status_snapshot.stop_reason = (uint8_t)control->stop_reason;
+    g_status_snapshot.target_rpm = control->target_rpm;
+    g_status_snapshot.target_steering_mdeg = control->target_steering_mdeg;
+}
+
+static const char* status_change_reason(uint32_t now)
+{
+    const ChassisControl* control = RemoteService_State();
+    uint8_t safety_ready;
+    if (!g_status_snapshot.valid) return 0;
+    safety_ready = ChassisControl_SafetyReady(control, now);
+    if (control->fault_latched != g_status_snapshot.fault_latched)
+        return control->fault_latched ? "fault_raised" : "fault_cleared";
+    if ((g_status_snapshot.safety_ready && !safety_ready) ||
+        (g_status_snapshot.target_rpm != 0 && control->target_rpm == 0 &&
+         control->stop_reason != CHASSIS_STOP_NONE))
+        return "safety_stop";
+    if (safety_ready != g_status_snapshot.safety_ready ||
+        control->reversal_pending != g_status_snapshot.reversal_pending ||
+        control->stop_reason != (ChassisStopReason)g_status_snapshot.stop_reason ||
+        control->target_rpm != g_status_snapshot.target_rpm ||
+        control->target_steering_mdeg != g_status_snapshot.target_steering_mdeg)
+        return "state_changed";
+    return 0;
+}
+
+static uint8_t build_status_report(char* output, uint16_t size, const char* report_reason)
+{
+    JsonWriter_t writer;
+    const ChassisControl* control = RemoteService_State();
+    const ChassisFeedback* feedback = &control->feedback;
+    uint32_t now = HAL_GetTick();
+    uint8_t feedback_fresh = (uint8_t)((now - feedback->feedback_ms) <= CHASSIS_FEEDBACK_TIMEOUT_MS);
+    const char* motion_state = "stopped";
+    char timestamp[21];
+    char report_id[96];
+    if (control->fault_latched) motion_state = "fault";
+    else if (control->reversal_pending) motion_state = "reversing_wait";
+    else if (feedback_fresh &&
+             (abs(feedback->left_actual_rpm) > 20 || abs(feedback->right_actual_rpm) > 20))
+        motion_state = "driving";
+    if (!TimeBase_FormatUtcMs(timestamp, sizeof(timestamp))) strcpy(timestamp, "0");
+    (void)snprintf(report_id, sizeof(report_id), "%s-%s-%lu", VcuConfig_Get()->vid,
+                   timestamp, (unsigned long)g_status_report_sequence++);
+    json_init(&writer, output, size);
+    json_append(&writer, "{\"version\":\"3.0\",\"timestamp\":");
+    json_append(&writer, timestamp);
+    json_append(&writer, ",\"data\":{\"deviceType\":\"vehicle_chassis\",\"reportId\":");
+    json_string(&writer, report_id);
+    json_append(&writer, ",\"reportReason\":");
+    json_string(&writer, report_reason ? report_reason : "periodic");
+    json_append(&writer, ",\"motionState\":");
+    json_string(&writer, motion_state);
     json_appendf(&writer,
-                 ",\"stableSlot\":%u,\"candidateSlot\":%u,\"trialFailCount\":%u,\"resetReason\":%u,"
-                 "\"otaProvisioned\":%s,\"otaReady\":%s,\"otaPhase\":",
-                 have_state ? state.stable_slot : 0U, have_state ? state.candidate_slot : 0U,
-                 have_state ? state.trial_fail_count : 0U, (unsigned int)g_reset_reason,
-                 OtaService_IsProvisioned() ? "true" : "false", OtaService_IsReady() ? "true" : "false");
-    json_string(&writer, OtaService_Phase());
-    json_append(&writer, ",\"otaTargetVersion\":");
-    json_string(&writer, have_state ? state.image_version : "");
-    {
-        const ChassisControl* control = RemoteService_State();
-        json_appendf(&writer, ",\"lastOtaError\":%lu,\"can\":{\"initialized\":%s,\"busOff\":%s,\"rxOverflow\":%lu},"
-                     "\"chassis\":{\"targetDriveRpm\":%d,\"targetSteeringMdeg\":%ld,\"leftActualRpm\":%d,"
-                     "\"rightActualRpm\":%d,\"steeringActualMdeg\":%ld,\"absoluteActualMdeg\":%ld,"
-                     "\"steeringOnline\":%s,\"driveOnline\":%s,\"calibrated\":%s,\"powerReady\":%s,"
-                     "\"safetyReady\":%s,\"stopReason\":%u},\"rxDropped\":%lu}}",
-                 (unsigned long)OtaService_LastError(), VcuRtos_CanStarted() ? "true" : "false",
-                 VcuRtos_CanBusOff() ? "true" : "false", (unsigned long)VcuRtos_CanRxOverflowCount(),
-                 (int)control->target_rpm, (long)control->target_steering_mdeg,
-                 (int)control->feedback.left_actual_rpm, (int)control->feedback.right_actual_rpm,
-                 (long)control->feedback.steering_actual_mdeg, (long)control->feedback.encoder_actual_mdeg,
-                 control->feedback.steering_online ? "true" : "false",
-                 control->feedback.drive_online ? "true" : "false",
-                 control->feedback.calibrated ? "true" : "false",
-                 control->feedback.power_ready ? "true" : "false",
-                 ChassisControl_SafetyReady(control, HAL_GetTick()) ? "true" : "false",
-                 (unsigned int)control->stop_reason,
-                 (unsigned long)ABoxEc800Rx_OverflowCount(&g_ec800_rx));
-    }
+        ",\"targetDriveRpm\":%d,\"targetSteeringDeg\":%.3f,\"leftActualRpm\":%d,"
+        "\"rightActualRpm\":%d,\"steeringActualDeg\":%.3f,\"absoluteActualDeg\":%.3f,"
+        "\"steeringOnline\":%s,\"driveOnline\":%s,\"feedbackFresh\":%s,"
+        "\"calibrated\":%s,\"powerReady\":%s,\"otaBusy\":%s,\"safetyReady\":%s,"
+        "\"stopReason\":%u,\"faultLatched\":%s}}",
+        (int)control->target_rpm, (double)control->target_steering_mdeg / 1000.0,
+        (int)feedback->left_actual_rpm, (int)feedback->right_actual_rpm,
+        (double)feedback->steering_actual_mdeg / 1000.0,
+        (double)feedback->encoder_actual_mdeg / 1000.0,
+        feedback->steering_online ? "true" : "false",
+        feedback->drive_online ? "true" : "false", feedback_fresh ? "true" : "false",
+        feedback->calibrated ? "true" : "false", feedback->power_ready ? "true" : "false",
+        feedback->ota_busy ? "true" : "false",
+        ChassisControl_SafetyReady(control, now) ? "true" : "false",
+        (unsigned int)control->stop_reason, control->fault_latched ? "true" : "false");
     return (uint8_t)(writer.valid && writer.length < CLOUD_PAYLOAD_LIMIT);
 }
 
@@ -477,7 +535,7 @@ static uint8_t build_log_chunk(char* output, uint16_t size)
     json_init(&writer, output, size);
     json_append(&writer, "{\"version\":\"2.0\",\"timestamp\":");
     json_append_timestamp(&writer);
-    json_append(&writer, ",\"data\":{\"requestId\":");
+    json_append(&writer, ",\"data\":{\"product\":\"patrol_vehicle_chassis\",\"requestId\":");
     json_string(&writer, g_log_request_id);
     json_appendf(&writer, ",\"sequence\":%u,\"total\":%u,\"lines\":[",
                  (unsigned int)(g_log_chunk_index + 1U), (unsigned int)g_log_chunk_total);
@@ -497,7 +555,7 @@ static uint8_t build_alert(char* output, uint16_t size, const char* line, AppLog
     json_init(&writer, output, size);
     json_append(&writer, "{\"version\":\"2.0\",\"timestamp\":");
     json_append_timestamp(&writer);
-    json_appendf(&writer, ",\"data\":{\"level\":\"%s\",\"lines\":[",
+    json_appendf(&writer, ",\"data\":{\"product\":\"patrol_vehicle_chassis\",\"level\":\"%s\",\"lines\":[",
                  level == APP_LOG_LEVEL_ERROR ? "ERROR" : "WARN");
     json_string(&writer, line);
     json_append(&writer, "]}}");
@@ -679,6 +737,9 @@ static void tx_completed(void)
     else if (completed == CLOUD_TX_HEARTBEAT)
     {
     }
+    else if (completed == CLOUD_TX_STATUS_REPORT)
+    {
+    }
     else if (completed == CLOUD_TX_LOG_CHUNK)
     {
         g_log_chunk_index++;
@@ -706,7 +767,34 @@ static void service_tx(void)
 
     if (g_response_pending)
     {
-        (void)start_publish(CLOUD_TX_RESPONSE, g_response_topic, g_response_payload, 1U);
+        (void)start_publish(CLOUD_TX_RESPONSE, g_response_topic, g_response_payload, 1U, 0U);
+        return;
+    }
+    {
+        const char* event_reason = status_change_reason(now);
+        if (event_reason != 0)
+        {
+            if (build_status_report(g_tx_payload, sizeof(g_tx_payload), event_reason) &&
+                start_publish(CLOUD_TX_STATUS_REPORT, g_topic_status_report, g_tx_payload, 1U, 1U))
+                remember_status_snapshot(now);
+            return;
+        }
+    }
+    if ((int32_t)(now - g_heartbeat_due) >= 0)
+    {
+        if (build_heartbeat(g_tx_payload, sizeof(g_tx_payload)) &&
+            start_publish(CLOUD_TX_HEARTBEAT, g_topic_heartbeat, g_tx_payload, 0U, 0U))
+            g_heartbeat_due = now + CLOUD_HEARTBEAT_MS;
+        return;
+    }
+    if ((int32_t)(now - g_status_report_due) >= 0)
+    {
+        if (build_status_report(g_tx_payload, sizeof(g_tx_payload), "periodic") &&
+            start_publish(CLOUD_TX_STATUS_REPORT, g_topic_status_report, g_tx_payload, 0U, 1U))
+        {
+            g_status_report_due = now + CLOUD_STATUS_REPORT_MS;
+            remember_status_snapshot(now);
+        }
         return;
     }
     if (g_log_active)
@@ -717,12 +805,12 @@ static void service_tx(void)
             schedule_simple_error(g_topic_config_resp, g_log_request_id, 500U, "LOG_ENCODING_FAILED");
             return;
         }
-        (void)start_publish(CLOUD_TX_LOG_CHUNK, g_topic_log, g_tx_payload, 1U);
+        (void)start_publish(CLOUD_TX_LOG_CHUNK, g_topic_log, g_tx_payload, 1U, 0U);
         return;
     }
     if (g_alert_pending)
     {
-        (void)start_publish(CLOUD_TX_ALERT, g_topic_log, g_alert_payload, 0U);
+        (void)start_publish(CLOUD_TX_ALERT, g_topic_log, g_alert_payload, 0U, 0U);
         return;
     }
     {
@@ -731,16 +819,9 @@ static void service_tx(void)
         if (AppLog_ReadMqttAlert(line, sizeof(line), &level) > 0U && build_alert(g_alert_payload, sizeof(g_alert_payload), line, level))
         {
             g_alert_pending = 1U;
-            (void)start_publish(CLOUD_TX_ALERT, g_topic_log, g_alert_payload, 0U);
+            (void)start_publish(CLOUD_TX_ALERT, g_topic_log, g_alert_payload, 0U, 0U);
             return;
         }
-    }
-    if ((int32_t)(now - g_heartbeat_due) >= 0)
-    {
-        if (build_heartbeat(g_tx_payload, sizeof(g_tx_payload)) &&
-            start_publish(CLOUD_TX_HEARTBEAT, g_topic_heartbeat, g_tx_payload, 0U))
-            g_heartbeat_due = now + CLOUD_HEARTBEAT_MS;
-        return;
     }
     if (!MQTT_Core_IsIccidValid() && !MQTT_Core_IsIccidPending() && (int32_t)(now - g_iccid_due) >= 0)
     {
@@ -781,13 +862,14 @@ void CloudService_Init(void)
         copy_string(mqtt.password, sizeof(mqtt.password), cfg->mqtt_password);
         (void)snprintf(mqtt.client_id, sizeof(mqtt.client_id), "patrol_vehicle_chassis_%s", cfg->vid);
         (void)snprintf(g_topic_heartbeat, sizeof(g_topic_heartbeat), "/zxwl/abox/%s/heartbeat", cfg->vid);
+        (void)snprintf(g_topic_status_report, sizeof(g_topic_status_report), "/zxwl/abox/%s/status/report", cfg->vid);
         (void)snprintf(g_topic_config_cmd, sizeof(g_topic_config_cmd), "/zxwl/abox/%s/internal/config", cfg->vid);
         (void)snprintf(g_topic_config_resp, sizeof(g_topic_config_resp), "/zxwl/abox/%s/internal/config/resp", cfg->vid);
         (void)snprintf(g_topic_ota_cmd, sizeof(g_topic_ota_cmd), "/zxwl/abox/%s/internal/ota", cfg->vid);
         (void)snprintf(g_topic_ota_resp, sizeof(g_topic_ota_resp), "/zxwl/abox/%s/internal/ota/resp", cfg->vid);
         (void)snprintf(g_topic_log, sizeof(g_topic_log), "/zxwl/abox/%s/internal/log", cfg->vid);
-        (void)snprintf(g_topic_control_cmd, sizeof(g_topic_control_cmd), "/zxwl/abox/%s/chassis/control", cfg->vid);
-        (void)snprintf(g_topic_control_resp, sizeof(g_topic_control_resp), "/zxwl/abox/%s/chassis/control/resp", cfg->vid);
+        (void)snprintf(g_topic_control_cmd, sizeof(g_topic_control_cmd), "/zxwl/abox/%s/ctrl", cfg->vid);
+        (void)snprintf(g_topic_control_resp, sizeof(g_topic_control_resp), "/zxwl/abox/%s/ctrl/resp", cfg->vid);
         copy_string(mqtt.sub_topics[0], sizeof(mqtt.sub_topics[0]), g_topic_config_cmd);
         copy_string(mqtt.sub_topics[1], sizeof(mqtt.sub_topics[1]), g_topic_ota_cmd);
         copy_string(mqtt.sub_topics[2], sizeof(mqtt.sub_topics[2]), g_topic_control_cmd);
@@ -801,6 +883,9 @@ void CloudService_Init(void)
     EC_Power_StartOnSequence();
     uart_start_rx();
     g_heartbeat_due = HAL_GetTick();
+    g_status_report_due = HAL_GetTick();
+    g_status_report_sequence = 1U;
+    memset(&g_status_snapshot, 0, sizeof(g_status_snapshot));
     g_iccid_due = HAL_GetTick() + 1000U;
     g_initialized = 1U;
     if (g_config_ready) APP_LOGI("CLOUD", "configured vid=%s broker=%s:%u", cfg->vid, cfg->mqtt_host, cfg->mqtt_port);
@@ -848,6 +933,7 @@ void CloudService_Task(void)
     if (ready && !g_mqtt_was_ready)
     {
         g_heartbeat_due = HAL_GetTick();
+        g_status_report_due = HAL_GetTick();
         g_ota_begin_due = HAL_GetTick() + 1000U;
         g_ota_begin_pending = 1U;
         APP_LOGI("CLOUD", "mqtt ready");

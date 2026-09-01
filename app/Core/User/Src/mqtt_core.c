@@ -349,6 +349,11 @@ uint32_t MQTT_Core_GetPubOkSeq(void) { return g_mqtt_pub_ok_seq; }
 
 uint8_t MQTT_Core_Publish(const char* topic, const char* payload, uint8_t qos)
 {
+    return MQTT_Core_PublishEx(topic, payload, qos, 0U);
+}
+
+uint8_t MQTT_Core_PublishEx(const char* topic, const char* payload, uint8_t qos, uint8_t retain)
+{
     const char* use_topic;
     uint16_t payload_len;
 
@@ -356,7 +361,7 @@ uint8_t MQTT_Core_Publish(const char* topic, const char* payload, uint8_t qos)
     if (g_mqtt_rt.pub_busy) return 0;
     if ((g_mqtt_at_core != 0) && EC800_AT_IsBusy(g_mqtt_at_core)) return 0;
     if (payload == 0) return 0;
-    if (qos > 2U) return 0;
+    if (qos > 2U || retain > 1U) return 0;
 
     use_topic = topic;
     if ((use_topic == 0) || (use_topic[0] == '\0')) { use_topic = g_mqtt_pub_topic; }
@@ -377,8 +382,9 @@ uint8_t MQTT_Core_Publish(const char* topic, const char* payload, uint8_t qos)
     g_mqtt_pub_prompt_pending = 0U;
     g_mqtt_pub_pending_msg_id = mqtt_allocate_publish_msg_id(qos);
 
-    if (!mqtt_send_cmd("AT+QMTPUBEX=%d,%u,%d,0,\"%s\",%d\r\n", g_mqtt_cfg.client_idx,
-                       (unsigned)g_mqtt_pub_pending_msg_id, qos, g_mqtt_pub_pending_topic, payload_len))
+    if (!mqtt_send_cmd("AT+QMTPUBEX=%d,%u,%d,%u,\"%s\",%d\r\n", g_mqtt_cfg.client_idx,
+                       (unsigned)g_mqtt_pub_pending_msg_id, qos, (unsigned)retain,
+                       g_mqtt_pub_pending_topic, payload_len))
     {
         g_mqtt_rt.pub_busy = 0U;
         g_mqtt_rt.pub_wait_prompt = 0U;

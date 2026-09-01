@@ -18,6 +18,7 @@ static void force_stop(ChassisControl* control, ChassisStopReason reason, uint8_
     control->zero_confirmations = 0U;
     control->enable_request = 0U;
     control->stop_reason = reason;
+    if (reason == CHASSIS_STOP_DIRECTION_TIMEOUT) control->fault_latched = 1U;
     if (release) {
         control->session_active = 0U;
         control->session_id[0] = '\0';
@@ -39,7 +40,7 @@ void ChassisControl_SetFeedback(ChassisControl* control, const ChassisFeedback* 
 uint8_t ChassisControl_SafetyReady(const ChassisControl* control, uint32_t now_ms)
 {
     const ChassisFeedback* f = &control->feedback;
-    if (!control->remote_enabled || !f->calibrated || !f->steering_online || !f->drive_online ||
+    if (control->fault_latched || !control->remote_enabled || !f->calibrated || !f->steering_online || !f->drive_online ||
         f->can_bus_off || f->drive_fault || f->ota_busy || !f->power_ready) return 0U;
     if ((now_ms - f->feedback_ms) > CHASSIS_FEEDBACK_TIMEOUT_MS) return 0U;
     if (labs(f->steering_actual_mdeg - f->encoder_actual_mdeg) > 2000L) return 0U;
@@ -49,6 +50,7 @@ uint8_t ChassisControl_SafetyReady(const ChassisControl* control, uint32_t now_m
 static ChassisStopReason safety_reason(const ChassisControl* control, uint32_t now_ms)
 {
     const ChassisFeedback* f = &control->feedback;
+    if (control->fault_latched) return CHASSIS_STOP_DIRECTION_TIMEOUT;
     if (!control->remote_enabled) return CHASSIS_STOP_REMOTE_DISABLED;
     if (!f->calibrated) return CHASSIS_STOP_UNCALIBRATED;
     if (!f->steering_online || !f->drive_online) return CHASSIS_STOP_NODE_OFFLINE;
@@ -93,9 +95,12 @@ uint8_t ChassisControl_Apply(ChassisControl* control, const char* action, const 
     if (requested_direction != 0 && control->active_direction != 0 && requested_direction != control->active_direction) {
         control->requested_rpm = drive_rpm;
         control->target_rpm = 0;
-        control->reversal_pending = 1U;
-        control->zero_confirmations = 0U;
-        control->reversal_started_ms = now_ms;
+        if (!control->reversal_pending) {
+            control->reversal_pending = 1U;
+            control->zero_confirmations = 0U;
+            control->reversal_started_ms = now_ms;
+            control->last_zero_feedback_ms = control->feedback.feedback_ms;
+        }
     } else {
         control->requested_rpm = drive_rpm;
         control->target_rpm = drive_rpm;
@@ -116,15 +121,17 @@ void ChassisControl_Tick(ChassisControl* control, uint32_t now_ms)
     }
     if (!control->reversal_pending) return;
     control->target_rpm = 0;
-    if (stopped(&control->feedback)) {
-        if (++control->zero_confirmations >= 3U) {
-            control->target_rpm = control->requested_rpm;
-            control->active_direction = direction_of(control->requested_rpm);
-            control->reversal_pending = 0U;
-            control->zero_confirmations = 0U;
-        }
-    } else control->zero_confirmations = 0U;
+    if (control->feedback.feedback_ms != control->last_zero_feedback_ms) {
+        control->last_zero_feedback_ms = control->feedback.feedback_ms;
+        if (stopped(&control->feedback)) {
+            if (++control->zero_confirmations >= 3U) {
+                control->target_rpm = control->requested_rpm;
+                control->active_direction = direction_of(control->requested_rpm);
+                control->reversal_pending = 0U;
+                control->zero_confirmations = 0U;
+            }
+        } else control->zero_confirmations = 0U;
+    }
     if (control->reversal_pending && (now_ms - control->reversal_started_ms) >= 2000U)
         force_stop(control, CHASSIS_STOP_DIRECTION_TIMEOUT, 1U);
 }
-

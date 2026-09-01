@@ -44,6 +44,7 @@ typedef struct {
     uint32_t last_seq;
     uint32_t lease_deadline_ms;
     uint32_t reversal_started_ms;
+    uint32_t last_zero_feedback_ms;
     int16_t requested_rpm;
     int16_t target_rpm;
     int32_t target_steering_mdeg;
@@ -53,6 +54,7 @@ typedef struct {
     uint8_t reversal_pending;
     uint8_t zero_confirmations;
     uint8_t enable_request;
+    uint8_t fault_latched;
     ChassisStopReason stop_reason;
     ChassisFeedback feedback;
 } ChassisControl;
@@ -66,4 +68,3 @@ void ChassisControl_Tick(ChassisControl* control, uint32_t now_ms);
 uint8_t ChassisControl_SafetyReady(const ChassisControl* control, uint32_t now_ms);
 
 #endif
-

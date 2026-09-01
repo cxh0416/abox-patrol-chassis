@@ -25,6 +25,9 @@ int main(void)
     static const char unknown[] =
         "{\"version\":\"2.0\",\"data\":{\"requestId\":\"req-2\","
         "\"command\":\"internal_config\",\"params\":{\"action\":\"drive\"}}}";
+    static const char wrong_product[] =
+        "{\"version\":\"2.0\",\"data\":{\"product\":\"top_flying_wing\",\"requestId\":\"req-wrong\","
+        "\"command\":\"internal_config\",\"params\":{\"action\":\"get_info\"}}}";
     static const char ota[] =
         "{\"version\":\"2.0\",\"data\":{\"requestId\":\"req-3\","
         "\"command\":\"ota_upgrade\",\"params\":{\"url\":\"https://ota.zxwl.ntiov.com:20443/fw-revisions/patrol_vehicle_chassis/patrol-chassis-1.1.1/patrol_vehicle_chassis_app.bin\","
@@ -44,6 +47,8 @@ int main(void)
 
     if (!expect_status("get_info", get_info, 0U, CLOUD_PROTOCOL_OK, CLOUD_PROTOCOL_ACTION_GET_INFO, "req-1")) return 1;
     if (!expect_status("unknown", unknown, 0U, CLOUD_PROTOCOL_UNKNOWN_ACTION, CLOUD_PROTOCOL_ACTION_NONE, "req-2")) return 1;
+    if (!expect_status("wrong_product", wrong_product, 0U, CLOUD_PROTOCOL_INVALID,
+                       CLOUD_PROTOCOL_ACTION_NONE, "req-wrong")) return 1;
     if (!expect_status("ota", ota, 1U, CLOUD_PROTOCOL_OK, CLOUD_PROTOCOL_ACTION_OTA, "req-3")) return 1;
     if (!expect_status("set_mqtt", set_mqtt, 0U, CLOUD_PROTOCOL_OK, CLOUD_PROTOCOL_ACTION_SET_MQTT, "req-4")) return 1;
     if (!expect_status("bad_set_mqtt", bad_set_mqtt, 0U, CLOUD_PROTOCOL_INVALID, CLOUD_PROTOCOL_ACTION_NONE, "req-5")) return 1;

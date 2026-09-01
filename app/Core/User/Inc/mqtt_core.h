@@ -104,6 +104,7 @@ MQTT_CoreState_t MQTT_Core_GetState(void);
 uint8_t MQTT_Core_IsPublishActive(void);
 uint32_t MQTT_Core_GetPubOkSeq(void);
 uint8_t MQTT_Core_Publish(const char* topic, const char* payload, uint8_t qos);
+uint8_t MQTT_Core_PublishEx(const char* topic, const char* payload, uint8_t qos, uint8_t retain);
 void MQTT_Core_CancelPendingPublish(void);
 uint8_t MQTT_Core_IsIccidValid(void);
 const char* MQTT_Core_GetIccid(void);

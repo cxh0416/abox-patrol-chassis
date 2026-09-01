@@ -14,25 +14,35 @@ static uint8_t copy_identifier(char* output, uint16_t capacity, const cJSON* ite
     return 1U;
 }
 
-uint8_t ChassisCloud_Parse(const char* payload, uint16_t length, ChassisCloudCommand* command)
+ChassisCloudStatus ChassisCloud_Parse(const char* payload, uint16_t length,
+                                      ChassisCloudCommand* command)
 {
     cJSON *root, *version, *data, *request_id, *device_type, *name, *params;
     cJSON *action, *session_id, *seq, *lease, *rpm, *angle;
-    uint8_t valid = 0U;
-    if (payload == 0 || command == 0 || length == 0U || length > 1023U) return 0U;
+    ChassisCloudStatus status = CHASSIS_CLOUD_INVALID;
+    if (payload == 0 || command == 0 || length == 0U || length > 1023U) return status;
     memset(command, 0, sizeof(*command));
     root = cJSON_ParseWithLength(payload, length);
-    if (root == 0) return 0U;
+    if (root == 0) return status;
     version = cJSON_GetObjectItemCaseSensitive(root, "version");
     data = cJSON_GetObjectItemCaseSensitive(root, "data");
     request_id = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "requestId") : 0;
     device_type = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "deviceType") : 0;
     name = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "command") : 0;
     params = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "params") : 0;
+    (void)copy_identifier(command->request_id, sizeof(command->request_id), request_id);
     if (!cJSON_IsString(version) || strcmp(version->valuestring, "3.0") != 0 ||
-        !cJSON_IsString(device_type) || strcmp(device_type->valuestring, "patrol_vehicle_chassis") != 0 ||
-        !cJSON_IsString(name) || strcmp(name->valuestring, "chassis_control") != 0 || !cJSON_IsObject(params) ||
-        !copy_identifier(command->request_id, sizeof(command->request_id), request_id)) goto done;
+        command->request_id[0] == '\0') goto done;
+    if (!cJSON_IsString(device_type) ||
+        strcmp(device_type->valuestring, CHASSIS_PUBLIC_DEVICE_TYPE) != 0) {
+        status = CHASSIS_CLOUD_DEVICE_TYPE_MISMATCH;
+        goto done;
+    }
+    if (!cJSON_IsString(name) || strcmp(name->valuestring, "chassis_control") != 0) {
+        status = CHASSIS_CLOUD_UNSUPPORTED;
+        goto done;
+    }
+    if (!cJSON_IsObject(params)) goto done;
     action = cJSON_GetObjectItemCaseSensitive(params, "action");
     session_id = cJSON_GetObjectItemCaseSensitive(params, "sessionId");
     seq = cJSON_GetObjectItemCaseSensitive(params, "seq");
@@ -46,14 +56,16 @@ uint8_t ChassisCloud_Parse(const char* payload, uint16_t length, ChassisCloudCom
         (!cJSON_IsNumber(rpm)) || rpm->valuedouble < -300 || rpm->valuedouble > 300 ||
         (!cJSON_IsNumber(angle)) || angle->valuedouble < -5 || angle->valuedouble > 5) goto done;
     if (strcmp(command->action, "acquire") != 0 && strcmp(command->action, "renew") != 0 &&
-        strcmp(command->action, "stop") != 0) goto done;
+        strcmp(command->action, "stop") != 0) {
+        status = CHASSIS_CLOUD_UNSUPPORTED;
+        goto done;
+    }
     command->seq = (uint32_t)seq->valuedouble;
     command->lease_ms = (uint32_t)lease->valuedouble;
     command->drive_rpm = (int16_t)rpm->valuedouble;
     command->steering_mdeg = (int32_t)(angle->valuedouble * 1000.0);
-    valid = 1U;
+    status = CHASSIS_CLOUD_OK;
 done:
     cJSON_Delete(root);
-    return valid;
+    return status;
 }
-

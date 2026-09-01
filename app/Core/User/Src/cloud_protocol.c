@@ -77,6 +77,7 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
     cJSON* root;
     cJSON* version;
     cJSON* data;
+    cJSON* product;
     cJSON* request_id;
     cJSON* command;
     cJSON* params;
@@ -102,12 +103,15 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
     if (root == 0) return CLOUD_PROTOCOL_INVALID;
     version = cJSON_GetObjectItemCaseSensitive(root, "version");
     data = cJSON_GetObjectItemCaseSensitive(root, "data");
+    product = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "product") : 0;
     request_id = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "requestId") : 0;
     command = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "command") : 0;
     params = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "params") : 0;
     if (!cJSON_IsString(version) || strcmp(version->valuestring, "2.0") != 0 || !cJSON_IsObject(data) ||
         !cJSON_IsString(request_id) || !request_id_valid(request_id->valuestring) || !cJSON_IsString(command) ||
         !cJSON_IsObject(params)) goto done;
+    if (product != 0 && (!cJSON_IsString(product) ||
+        strcmp(product->valuestring, "patrol_vehicle_chassis") != 0)) goto done;
     strncpy(request->request_id, request_id->valuestring, sizeof(request->request_id) - 1U);
     request->request_id[sizeof(request->request_id) - 1U] = '\0';
 
