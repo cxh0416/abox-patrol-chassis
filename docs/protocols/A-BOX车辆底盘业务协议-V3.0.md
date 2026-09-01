@@ -2,31 +2,17 @@
 
 协议版本：3.0
 
-文档修订：1.0
-
-契约状态：固件与 OTA 平台源码切换及自动回归已完成；OTA 平台 `0.4.73` 已发布到生产环境，巡防底盘自动 `get_info` 能力回填已闭环；台架/实车联调尚未完成
+文档修订：1.1
 
 设备类型：`vehicle_chassis`
-
-对应产品实现：`patrol_vehicle_chassis`
 
 ## 1. 协议范围
 
 本文只定义平台与车辆底盘 A-BOX 之间稳定、可观察的公共业务接口。它适用于具备纵向驱动、转向和独立运动安全仲裁能力的车辆底盘，不以客户、车型或项目名称区分协议。
 
-通用报文外层、UTC 毫秒时间戳、QoS、请求幂等、公共响应码和心跳规则遵循平台仓库的《A-BOX 设备公共 MQTT 协议 V3》。设备信息、运行日志、配置和 Boot V2 OTA 见 [巡防车底盘 A-BOX 内部运维协议](巡防车底盘A-BOX内部运维协议-1.0.md)。厂商 CANopen 对象字典、节点号、编码器帧、硬件引脚和内部状态机不属于公共业务协议。
+通用报文外层、UTC 毫秒时间戳、QoS、请求幂等、公共响应码和心跳规则遵循《A-BOX 设备公共 MQTT 协议 V3》。设备运维接口、内部总线、硬件映射和控制实现不属于本文范围。
 
-公共 V3 报文统一使用 `data.deviceType=vehicle_chassis`，不得携带 `data.product`。产品标识 `patrol_vehicle_chassis` 只用于内部运维、制品和部署归属。
-
-三类 A-BOX 产品使用同一分层规则：
-
-| 产品实现 | 公共 V3 `deviceType` | 内部 V2 `product` |
-|---|---|---|
-| 送餐车双锁 | `locker_compartment` | `meal_delivery_vehicle` |
-| 顶飞翼 | `wing_actuator` | `top_flying_wing` |
-| 车辆底盘 | `vehicle_chassis` | `patrol_vehicle_chassis` |
-
-`patrol-chassis-0.1.0` 使用旧的私有 Topic、旧响应字段和混合心跳，不视为本文协议的合规实现。源码默认版本 `patrol-chassis-0.1.1` 已切换本文契约；正式能力仍以发布产物、平台部署版本和台架/实车验收记录为准。
+公共 V3 报文统一使用 `data.deviceType=vehicle_chassis`，不得携带内部产品标识。
 
 ## 2. 公共 Topic
 
@@ -51,14 +37,12 @@
   "timestamp": 1788134400000,
   "data": {
     "deviceType": "vehicle_chassis",
-    "firmware": "patrol-chassis-0.1.1"
+    "firmware": "1.0.0"
   }
 }
 ```
 
 心跳不得加入 `product`、VID、ICCID、Boot 版本、OTA 状态、CAN 状态或底盘反馈。心跳只证明 A-BOX 与 Broker 的通信存活，不证明下游节点、执行器、电源、机械动作或 OTA 正常。
-
-示例中的 `patrol-chassis-0.1.1` 与当前源码默认版本一致；正式发布仍以制品中提取到的版本标记为准。
 
 ## 4. 底盘控制
 
@@ -164,7 +148,7 @@
 |---|---|---|
 | `reportId` | String | 设备内唯一报告标识，平台据此去重 |
 | `reportReason` | String | `periodic`、`state_changed`、`fault_raised`、`fault_cleared` 或 `safety_stop` |
-| `motionState` | String | `stopped`、`driving`、`reversing_wait` 或 `fault`；只能根据实测反馈和状态机给出 |
+| `motionState` | String | `stopped`、`driving`、`reversing_wait` 或 `fault` |
 | `targetDriveRpm` | Integer | 当前仲裁后的驱动目标，rpm |
 | `targetSteeringDeg` | Number | 当前仲裁后的转向目标，° |
 | `leftActualRpm` / `rightActualRpm` | Integer | 左右驱动实测转速，rpm |
@@ -179,30 +163,14 @@
 
 ## 6. 运动安全语义
 
-- 未标定、反馈过期、双转角偏差超过 2°、任一必需节点离线、CAN Bus-Off、驱动故障、OTA 忙或电源未就绪时，`safetyReady=false`，不得接受非零运动目标。
-- 改变前进/后退方向前，设备必须先明确发送零速；只有连续三次分别收到左右实测转速绝对值均不超过 20 rpm 的新反馈，才允许应用反向目标。
-- 方向切换等待超过 2 秒时，设备必须撤销使能并锁存故障；后续租约续期不得自动解除该故障。
-- 未确认继电器、接触器反馈和本地按键引脚前，硬件输出保持禁用。
-- `code=200`、MQTT PUBACK、CAN 发送成功和目标值变化都不是实车动作完成证据。
+- `safetyReady=false` 时，设备不得接受非零运动目标。
+- 改变前进/后退方向时，设备必须先安全停止，再应用反向目标。
+- 控制租约超时、连接中断或安全条件失效时，设备必须进入安全停止状态。
+- `code=200` 只表示请求已被接受；实际运动结果以状态报告中的实测字段为准。
 
-## 7. 平台最小验收
+## 7. 接入约束
 
-- 只按 `vehicle_chassis` 选择本业务 Profile，不以 `product` 解析公共 V3 消息。
-- 只实现本文声明的 4 个公共 Topic；设备信息、日志、配置和 OTA 只走 `/internal/*`。
-- 控制发布与控制响应、状态订阅使用正确 QoS；请求重试沿用 `requestId`。
-- 控制响应按 `code` 判断是否被接受，不读取 `commandAccepted` 或 `result`。
-- 区分 A-BOX 心跳在线、CAN 节点在线、`safetyReady` 和实车 `motionState`。
-- 不根据目标值或请求成功推断车辆已经运动、停止或到达角度。
-
-## 8. 从 0.1.0 旧稿迁移
-
-| 0.1.0 旧稿 | 本协议 | 处理要求 |
-|---|---|---|
-| `deviceType=patrol_vehicle_chassis` | `deviceType=vehicle_chassis` | 固件、平台发布端和订阅适配器同时切换，不做双值长期兼容 |
-| `/chassis/control` | `/ctrl` | 统一到公共控制 Topic |
-| `/chassis/control/resp` | `/ctrl/resp` | 统一到公共响应 Topic |
-| `/chassis/status` | `/status/report` | 改为带 `reportId` 的主动状态报告 |
-| `commandAccepted` | 数值 `code` + 字符串 `msg` | 平台只按 `code` 判断接受结果 |
-| 心跳混入 Boot、OTA、CAN 和底盘状态 | 心跳仅含 `deviceType`、`firmware` | 运维字段迁到 `get_info`，业务状态迁到 `/status/report` |
-
-迁移必须以同一发布窗口同时更新固件和 OTA 平台配置。旧固件继续按旧契约识别，但不得标记为 `vehicle_chassis` V3；平台不得在同一个设备记录上混合解析新旧 Topic。
+- 接入方只按 `deviceType=vehicle_chassis` 选择本业务协议。
+- 控制发布、控制响应和状态订阅必须使用本文规定的 QoS；请求重试沿用原 `requestId`。
+- 控制响应按数值 `code` 判断是否接受，状态变化以主动状态报告为准。
+- 心跳在线、`safetyReady` 和 `motionState` 表示不同层级的状态，不得互相替代。
