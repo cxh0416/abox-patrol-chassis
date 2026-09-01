@@ -76,6 +76,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/User/Src/mqtt_core.c
     Core/User/Src/mqtt_core_parser.c
     Core/User/Src/mqtt_core_port.c
+    Core/User/Src/mqtt_qmtrecv.c
     Core/User/Src/ota_info.c
     Core/User/Src/ota_service.c
     Core/User/Src/patrol_canopen.c

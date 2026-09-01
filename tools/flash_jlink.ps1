@@ -4,7 +4,8 @@ param(
     [ValidateSet('Boot', 'Full')] [string] $Mode = 'Boot',
     [string] $JLinkExe,
     [string] $StateA,
-    [string] $StateB
+    [string] $StateB,
+    [string] $Config
 )
 
 $ErrorActionPreference = 'Stop'
@@ -58,6 +59,13 @@ if ($StateB) {
 foreach ($state in $statePaths) {
     if ((Get-Item -LiteralPath $state.path).Length -ne 0x800) { throw "BootState image must be exactly 0x800 bytes: $($state.path)" }
 }
+$configPath = $null
+if ($Config) {
+    $configPath = (Resolve-Path -LiteralPath $Config).Path
+    if ((Get-Item -LiteralPath $configPath).Length -ne 0x800) {
+        throw "Config page image must be exactly 0x800 bytes: $configPath"
+    }
+}
 $address = '0x08000000'
 $tempRoot = Join-Path ([IO.Path]::GetTempPath()) ('patrol-chassis-jlink-' + [guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Force -Path $tempRoot | Out-Null
@@ -72,6 +80,7 @@ $commandFile = Join-Path $tempRoot 'flash.jlink'
     "loadbin `"$path`", $address",
     "verifybin `"$path`", $address",
     $(foreach ($state in $statePaths) { "loadbin `"$($state.path)`", $($state.address)"; "verifybin `"$($state.path)`", $($state.address)" }),
+    $(if ($configPath) { "loadbin `"$configPath`", 0x0803F800"; "verifybin `"$configPath`", 0x0803F800" }),
     'r',
     'g',
     'qc'

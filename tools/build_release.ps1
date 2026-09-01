@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [ValidateSet('Debug', 'Release')] [string] $Configuration = 'Release',
-    [ValidatePattern('^patrol-chassis-[0-9]+\.[0-9]+\.[0-9]+$')] [string] $AppVersion = 'patrol-chassis-0.1.2',
+    [ValidatePattern('^patrol-chassis-[0-9]+\.[0-9]+\.[0-9]+$')] [string] $AppVersion = 'patrol-chassis-0.1.3',
     [switch] $ReleasePair
 )
 

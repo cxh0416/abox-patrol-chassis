@@ -24,6 +24,19 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $cloudTest
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
+$qmtRecvTest = Join-Path $hostBuild 'mqtt_qmtrecv_test.exe'
+& $gcc -std=c11 -Wall -Wextra `
+    "-I$PSScriptRoot\..\app\Core\User\Inc" `
+    "-I$PSScriptRoot\..\platform\components\cjson" `
+    "$PSScriptRoot\..\app\Core\User\Src\mqtt_qmtrecv.c" `
+    "$PSScriptRoot\..\app\Core\User\Src\cloud_protocol.c" `
+    "$PSScriptRoot\..\platform\components\cjson\cJSON.c" `
+    "$PSScriptRoot\..\tests\mqtt_qmtrecv_test.c" `
+    -o $qmtRecvTest
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& $qmtRecvTest
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
 $chassisTest = Join-Path $hostBuild 'chassis_safety_test.exe'
 & $gcc -std=c11 -Wall -Wextra `
     "-I$PSScriptRoot\..\app\Core\User\Inc" `

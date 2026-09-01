@@ -5,6 +5,7 @@
 #include "vcu_diag_config.h"
 #include "main.h"
 #include "mqtt_core_int.h"
+#include "mqtt_qmtrecv.h"
 #include "time_base.h"
 
 extern volatile uint8_t g_mqtt_pub_prompt_pending;
@@ -87,13 +88,6 @@ uint8_t MQTT_Core_IsRxCollecting(void)
     return 0U;
 }
 
-static const char* skip_json_ws(const char* s)
-{
-    if (s == 0) return 0;
-    while ((*s == ' ') || (*s == '\t') || (*s == '\n') || (*s == '\r')) s++;
-    return s;
-}
-
 static uint8_t mqtt_find_json_end(const char* s, uint16_t len, uint16_t* end_len)
 {
     uint16_t i;
@@ -146,28 +140,6 @@ static uint8_t mqtt_find_json_end(const char* s, uint16_t len, uint16_t* end_len
     return 0U;
 }
 
-static void mqtt_store_rx_message(const char* topic, uint16_t topic_len, const char* payload, uint16_t payload_len)
-{
-    if ((topic == 0) || (topic_len == 0U) || (payload == 0) || (payload_len == 0U)) return;
-    if (topic_len >= MQTT_CORE_TOPIC_BUF_SZ) topic_len = MQTT_CORE_TOPIC_BUF_SZ - 1U;
-    if (payload_len >= MQTT_CORE_PAYLOAD_BUF_SZ) payload_len = MQTT_CORE_PAYLOAD_BUF_SZ - 1U;
-
-    if (g_mqtt_rx_msg_pending) { APP_LOGW("MQTT", "rx pending overwrite"); }
-
-    __disable_irq();
-
-    memcpy(g_mqtt_rx_pending_topic, topic, topic_len);
-    g_mqtt_rx_pending_topic[topic_len] = '\0';
-
-    memcpy(g_mqtt_rx_pending_payload, payload, payload_len);
-    g_mqtt_rx_pending_payload[payload_len] = '\0';
-
-    g_mqtt_rx_msg_pending = 1U;
-    g_mqtt_last_mqtt_rx_tick = HAL_GetTick();
-
-    __enable_irq();
-}
-
 static uint8_t mqtt_append_rx_payload(const char* data, uint16_t len)
 {
     uint16_t copy_len;
@@ -207,28 +179,6 @@ static void mqtt_try_finish_rx_collect(void)
     mqtt_rx_parser_reset();
 }
 
-static void mqtt_start_rx_collect(const char* topic, uint16_t topic_len, const char* payload, uint16_t payload_len)
-{
-    if ((topic == 0) || (topic_len == 0U)) return;
-    if (topic_len >= MQTT_CORE_TOPIC_BUF_SZ) topic_len = MQTT_CORE_TOPIC_BUF_SZ - 1U;
-
-    if (g_mqtt_rx_msg_pending) { APP_LOGW("MQTT", "rx pending overwrite"); }
-
-    __disable_irq();
-    memcpy(g_mqtt_rx_pending_topic, topic, topic_len);
-    g_mqtt_rx_pending_topic[topic_len] = '\0';
-    g_mqtt_rx_pending_payload[0] = '\0';
-    g_mqtt_rx_msg_pending = 0U;
-    __enable_irq();
-
-    g_mqtt_rx_collecting = 1U;
-    g_mqtt_rx_collect_len = 0U;
-    g_mqtt_rx_collect_tick = HAL_GetTick();
-
-    if (!mqtt_append_rx_payload(payload, payload_len)) mqtt_rx_parser_reset();
-    mqtt_try_finish_rx_collect();
-}
-
 static void mqtt_handle_qmtrecv_continuation(const char* line)
 {
     if (!MQTT_Core_IsRxCollecting()) return;
@@ -239,61 +189,36 @@ static void mqtt_handle_qmtrecv_continuation(const char* line)
 
 static void mqtt_parse_qmtrecv_line(const char* line)
 {
-    const char* topic_start;
-    const char* topic_end;
-    const char* payload_start;
-    const char* payload_end;
-    const char* comma;
-    const char* json_start;
-    uint16_t topic_len;
-    uint16_t payload_len;
-    uint16_t json_end_len;
+    MqttQmtRecvFrame_t frame;
 
     if (line == 0) return;
-    if (strstr(line, "+QMTRECV:") == 0) return;
-
     mqtt_rx_parser_reset();
-
-    topic_start = strchr(line, '"');
-    if (topic_start == 0) return;
-    topic_start++;
-
-    topic_end = strchr(topic_start, '"');
-    if (topic_end == 0) return;
-
-    topic_len = (uint16_t)(topic_end - topic_start);
-    if (topic_len == 0U) return;
-    if (topic_len >= MQTT_CORE_TOPIC_BUF_SZ) topic_len = MQTT_CORE_TOPIC_BUF_SZ - 1U;
-
-    comma = strchr(topic_end, ',');
-    if (comma == 0) return;
-
-    payload_start = comma + 1;
-    if (*payload_start == '"') payload_start++;
-    json_start = skip_json_ws(payload_start);
-
-    if ((json_start != 0) && ((*json_start == '{') || (*json_start == '[')))
+    if (!MqttQmtRecv_DecodeLine(line,
+                                g_mqtt_rx_pending_topic, sizeof(g_mqtt_rx_pending_topic),
+                                g_mqtt_rx_pending_payload, sizeof(g_mqtt_rx_pending_payload),
+                                &frame))
     {
-        payload_len = (uint16_t)strlen(json_start);
-        if (mqtt_find_json_end(json_start, payload_len, &json_end_len))
-        {
-            mqtt_store_rx_message(topic_start, topic_len, json_start, json_end_len);
-            return;
-        }
-
-        mqtt_start_rx_collect(topic_start, topic_len, json_start, payload_len);
+        APP_LOGW("MQTT", "QMTRECV frame rejected len=%u", (unsigned)strlen(line));
         return;
     }
-
-    payload_end = strrchr(payload_start, '"');
-    if ((payload_end != 0) && (payload_end > payload_start))
+    if (frame.complete)
     {
-        payload_len = (uint16_t)(payload_end - payload_start);
-        mqtt_store_rx_message(topic_start, topic_len, payload_start, payload_len);
+        if (g_mqtt_rx_msg_pending) APP_LOGW("MQTT", "rx pending overwrite");
+        __disable_irq();
+        g_mqtt_rx_msg_pending = 1U;
+        g_mqtt_last_mqtt_rx_tick = HAL_GetTick();
+        __enable_irq();
         return;
     }
-
-    mqtt_start_rx_collect(topic_start, topic_len, payload_start, (uint16_t)strlen(payload_start));
+    if (frame.outer_escaped)
+    {
+        APP_LOGW("MQTT", "escaped QMTRECV split frame rejected len=%u", (unsigned)frame.payload_length);
+        mqtt_rx_parser_reset();
+        return;
+    }
+    g_mqtt_rx_collecting = 1U;
+    g_mqtt_rx_collect_len = (uint16_t)frame.payload_length;
+    g_mqtt_rx_collect_tick = HAL_GetTick();
 }
 
 void mqtt_handle_line(const char* line)
