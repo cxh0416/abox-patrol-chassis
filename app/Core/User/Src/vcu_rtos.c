@@ -12,8 +12,17 @@
 #include "cloud_service.h"
 #include "fault_mailbox.h"
 #include "iwdg.h"
+#include "ota_service.h"
+#include "patrol_canopen.h"
+#include "patrol_diagnostics.h"
 #include "remote_service.h"
 #include "task.h"
+#include "usart.h"
+#include "vcu_config.h"
+
+#ifndef PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED
+#define PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED 0
+#endif
 
 #define VCU_HEALTH_SAFETY  (1U << 0)
 #define VCU_HEALTH_CAN_RX  (1U << 1)
@@ -62,7 +71,9 @@ static TaskHandle_t g_diag_task;
 static TaskHandle_t g_watchdog_task;
 static volatile uint32_t g_can_rx_overflow_count;
 static volatile uint8_t g_can_started;
+static volatile uint8_t g_can_bus_off_mask;
 static uint8_t g_boot_confirmed;
+static PatrolDiagnostics g_diagnostics;
 
 static void Vcu_SafetyControlTask(void *argument);
 static void Vcu_CanRxTask(void *argument);
@@ -94,6 +105,7 @@ static void vcu_start_can(void)
 
 void VcuRtos_Init(void)
 {
+    PatrolDiagnostics_Init(&g_diagnostics);
     g_can_rx_queue = xQueueCreateStatic(VCU_CAN_RX_QUEUE_LENGTH,
                                          sizeof(VcuCanFrame_t),
                                          (uint8_t *)g_can_rx_queue_storage,
@@ -173,7 +185,15 @@ uint32_t VcuRtos_CanRxOverflowCount(void)
 uint8_t VcuRtos_CanStarted(void) { return g_can_started; }
 uint8_t VcuRtos_CanBusOff(void)
 {
-    return (g_health_events != NULL && (xEventGroupGetBits(g_health_events) & VCU_EVENT_CAN_ERROR) != 0U) ? 1U : 0U;
+    return (g_can_bus_off_mask & 0x01U) ? 1U : 0U;
+}
+
+void VcuRtos_GetDiagnostics(PatrolDiagnosticsSnapshot* snapshot)
+{
+    if (snapshot == NULL) return;
+    taskENTER_CRITICAL();
+    PatrolDiagnostics_Snapshot(&g_diagnostics, HAL_GetTick(), snapshot);
+    taskEXIT_CRITICAL();
 }
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
@@ -188,7 +208,9 @@ void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan)
     BaseType_t higher_priority_task_woken = pdFALSE;
     if (g_health_events != NULL && hcan != NULL && (HAL_CAN_GetError(hcan) & HAL_CAN_ERROR_BOF) != 0U)
     {
-        xEventGroupSetBitsFromISR(g_health_events, VCU_EVENT_CAN_ERROR, &higher_priority_task_woken);
+        g_can_bus_off_mask |= hcan->Instance == CAN1 ? 0x01U : 0x02U;
+        if (hcan->Instance == CAN1)
+            xEventGroupSetBitsFromISR(g_health_events, VCU_EVENT_CAN_ERROR, &higher_priority_task_woken);
     }
     portYIELD_FROM_ISR(higher_priority_task_woken);
 }
@@ -208,6 +230,7 @@ static void Vcu_SafetyControlTask(void *argument)
 static void Vcu_CanRxTask(void *argument)
 {
     VcuCanFrame_t frame;
+    PatrolCanFrame decoded;
     (void)argument;
     vcu_start_can();
     for (;;)
@@ -215,8 +238,15 @@ static void Vcu_CanRxTask(void *argument)
         (void)ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(100U));
         while (VcuRtos_CanRxPop(&frame, 0U) == pdPASS)
         {
-            /* Node heartbeat, DS402 and feedback decoding is wired in after bench IDs are verified. */
-            (void)frame;
+            if (frame.bus != 0U || frame.header.IDE != CAN_ID_STD || frame.header.RTR != CAN_RTR_DATA)
+                continue;
+            memset(&decoded, 0, sizeof(decoded));
+            decoded.id = (uint16_t)frame.header.StdId;
+            decoded.dlc = (uint8_t)frame.header.DLC;
+            memcpy(decoded.data, frame.data, sizeof(decoded.data));
+            taskENTER_CRITICAL();
+            PatrolDiagnostics_OnCanFrame(&g_diagnostics, &decoded, frame.timestamp_ms);
+            taskEXIT_CRITICAL();
         }
         xEventGroupSetBits(g_health_events, VCU_HEALTH_CAN_RX);
     }
@@ -225,12 +255,80 @@ static void Vcu_CanRxTask(void *argument)
 static void Vcu_CanopenTask(void *argument)
 {
     TickType_t last_wake = xTaskGetTickCount();
+#if PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED
+    uint32_t feedback_due = 0U;
+#endif
     (void)argument;
     for (;;)
     {
-        /* PATROL_CHASSIS_ACTUATION_ENABLED defaults to 0: never send NMT/SDO/PDO here. */
-#if PATROL_CHASSIS_ACTUATION_ENABLED
-        /* Enabling this build option still requires a bench-approved port implementation. */
+#if PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED
+        PatrolCanFrame request;
+        uint8_t have_request = 0U;
+        uint32_t now = HAL_GetTick();
+        if (HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) > 0U)
+        {
+            taskENTER_CRITICAL();
+            have_request = PatrolDiagnostics_TakeSdoRead(&g_diagnostics, now, &request);
+            taskEXIT_CRITICAL();
+        }
+        if (have_request)
+        {
+            CAN_TxHeaderTypeDef header;
+            uint32_t mailbox;
+            memset(&header, 0, sizeof(header));
+            header.StdId = request.id;
+            header.IDE = CAN_ID_STD;
+            header.RTR = CAN_RTR_DATA;
+            header.DLC = request.dlc;
+            header.TransmitGlobalTime = DISABLE;
+            /* Read-only builds emit only SDO upload requests to the two approved nodes. */
+            if ((request.id == 0x601U || request.id == 0x602U) && request.data[0] == 0x40U &&
+                HAL_CAN_AddTxMessage(&hcan1, &header, request.data, &mailbox) != HAL_OK)
+            {
+                taskENTER_CRITICAL();
+                PatrolDiagnostics_OnSdoTxError(&g_diagnostics, now);
+                taskEXIT_CRITICAL();
+            }
+        }
+        if ((int32_t)(now - feedback_due) >= 0)
+        {
+            PatrolDiagnosticsSnapshot snapshot;
+            ChassisFeedback feedback;
+            const VcuRemoteConfig_t* cfg = VcuConfig_Get();
+            int64_t angle;
+            memset(&feedback, 0, sizeof(feedback));
+            taskENTER_CRITICAL();
+            PatrolDiagnostics_Snapshot(&g_diagnostics, now, &snapshot);
+            taskEXIT_CRITICAL();
+            feedback.calibrated = cfg != NULL ? cfg->calibrated : 0U;
+            feedback.steering_online = snapshot.steering_online;
+            feedback.drive_online = snapshot.drive_online;
+            feedback.can_bus_off = VcuRtos_CanBusOff();
+            feedback.drive_fault = snapshot.drive_fault;
+            feedback.ota_busy = OtaService_IsBusy();
+            feedback.power_ready = 0U;
+            feedback.left_actual_rpm = snapshot.left_actual_rpm > 32767 ? 32767 :
+                (snapshot.left_actual_rpm < -32768 ? -32768 : (int16_t)snapshot.left_actual_rpm);
+            feedback.right_actual_rpm = snapshot.right_actual_rpm > 32767 ? 32767 :
+                (snapshot.right_actual_rpm < -32768 ? -32768 : (int16_t)snapshot.right_actual_rpm);
+            if (feedback.calibrated)
+            {
+                angle = (int64_t)(snapshot.steering_position_count - cfg->steering_center_count) *
+                        9LL * cfg->steering_direction / 5LL;
+                feedback.steering_actual_mdeg = angle > INT32_MAX ? INT32_MAX :
+                    (angle < INT32_MIN ? INT32_MIN : (int32_t)angle);
+                angle = ((int64_t)snapshot.encoder_count - cfg->absolute_center_count) * 1000000LL *
+                        cfg->absolute_direction / cfg->absolute_counts_per_degree_milli;
+                feedback.encoder_actual_mdeg = angle > INT32_MAX ? INT32_MAX :
+                    (angle < INT32_MIN ? INT32_MIN : (int32_t)angle);
+            }
+            feedback.feedback_ms = snapshot.coherent_feedback_ms != 0U ?
+                snapshot.coherent_feedback_ms : now - (CHASSIS_FEEDBACK_TIMEOUT_MS + 1U);
+            taskENTER_CRITICAL();
+            RemoteService_UpdateFeedback(&feedback);
+            taskEXIT_CRITICAL();
+            feedback_due = now + 20U;
+        }
 #endif
         xEventGroupSetBits(g_health_events, VCU_HEALTH_CANOPEN);
         vTaskDelayUntil(&last_wake, pdMS_TO_TICKS(10U));
@@ -239,14 +337,58 @@ static void Vcu_CanopenTask(void *argument)
 
 static void Vcu_EncoderTask(void *argument)
 {
-    uint8_t request[ABS_ENCODER_REQUEST_SIZE];
     (void)argument;
-    AbsoluteEncoder_BuildReadRequest(request);
     for (;;)
     {
-        /* UART5 request/response bytes are implemented, but physical polling remains gated until pin ownership is approved. */
-        (void)request;
-        vTaskDelay(pdMS_TO_TICKS(50U));
+#if PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED
+        uint8_t request[ABS_ENCODER_REQUEST_SIZE];
+        uint8_t response[16] = {0};
+        uint16_t registers[3];
+        uint16_t response_length = 0U;
+        uint16_t register_count;
+        uint8_t read_config;
+        HAL_StatusTypeDef status;
+        PatrolDiagnosticsSnapshot snapshot;
+        uint32_t now = HAL_GetTick();
+        taskENTER_CRITICAL();
+        PatrolDiagnostics_Snapshot(&g_diagnostics, now, &snapshot);
+        taskEXIT_CRITICAL();
+        read_config = (uint8_t)(!snapshot.encoder_config_valid);
+        register_count = read_config ? 3U : 2U;
+        AbsoluteEncoder_BuildReadHoldingRequest(read_config ? 0U : 3U, register_count, request);
+        (void)HAL_UART_AbortReceive(&huart5);
+        __HAL_UART_FLUSH_DRREGISTER(&huart5);
+        status = HAL_UART_Transmit(&huart5, request, sizeof(request), 30U);
+        if (status == HAL_OK)
+            status = HAL_UARTEx_ReceiveToIdle(&huart5, response, sizeof(response), &response_length, 40U);
+        taskENTER_CRITICAL();
+        if (status == HAL_OK && AbsoluteEncoder_ParseHoldingResponse(response, response_length,
+                                                                     registers, register_count))
+        {
+            if (read_config)
+                PatrolDiagnostics_OnEncoderConfig(&g_diagnostics, registers, now);
+            else
+                PatrolDiagnostics_OnEncoderCount(&g_diagnostics,
+                    (uint32_t)registers[0] | (uint32_t)registers[1] << 16, now);
+        }
+        else if (response_length >= 2U && response[0] == ABS_ENCODER_ADDRESS &&
+                 response[1] == (uint8_t)(0x03U | 0x80U))
+            PatrolDiagnostics_OnEncoderError(&g_diagnostics, PATROL_ENCODER_ERROR_EXCEPTION);
+        else if (status == HAL_TIMEOUT || response_length == 0U)
+            PatrolDiagnostics_OnEncoderError(&g_diagnostics, PATROL_ENCODER_ERROR_TIMEOUT);
+        else if (response_length >= 5U && AbsoluteEncoder_Crc16(response,
+                 (uint16_t)(response_length - 2U)) != ((uint16_t)response[response_length - 2U] |
+                 (uint16_t)response[response_length - 1U] << 8))
+            PatrolDiagnostics_OnEncoderError(&g_diagnostics, PATROL_ENCODER_ERROR_CRC);
+        else if (status != HAL_OK)
+            PatrolDiagnostics_OnEncoderError(&g_diagnostics, PATROL_ENCODER_ERROR_TRANSPORT);
+        else
+            PatrolDiagnostics_OnEncoderError(&g_diagnostics, PATROL_ENCODER_ERROR_FORMAT);
+        taskEXIT_CRITICAL();
+        vTaskDelay(pdMS_TO_TICKS(read_config ? 500U : 100U));
+#else
+        vTaskDelay(pdMS_TO_TICKS(1000U));
+#endif
     }
 }
 

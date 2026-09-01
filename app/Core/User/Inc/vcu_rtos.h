@@ -6,6 +6,7 @@
 #include "can.h"
 #include "FreeRTOS.h"
 #include "queue.h"
+#include "patrol_diagnostics.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -27,6 +28,7 @@ BaseType_t VcuRtos_CanRxPop(VcuCanFrame_t *frame, TickType_t wait_ticks);
 uint32_t VcuRtos_CanRxOverflowCount(void);
 uint8_t VcuRtos_CanStarted(void);
 uint8_t VcuRtos_CanBusOff(void);
+void VcuRtos_GetDiagnostics(PatrolDiagnosticsSnapshot* snapshot);
 
 #ifdef __cplusplus
 }

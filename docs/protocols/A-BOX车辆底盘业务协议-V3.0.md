@@ -133,6 +133,9 @@
     "absoluteActualDeg": 0.0,
     "steeringOnline": true,
     "driveOnline": true,
+    "encoderOnline": true,
+    "canBusOff": false,
+    "driveFault": false,
     "feedbackFresh": true,
     "calibrated": true,
     "powerReady": true,
@@ -154,6 +157,9 @@
 | `leftActualRpm` / `rightActualRpm` | Integer | 左右驱动实测转速，rpm |
 | `steeringActualDeg` | Number | 转向驱动器反馈角度，° |
 | `absoluteActualDeg` | Number | 独立绝对编码器角度，° |
+| `encoderOnline` | Boolean | 独立绝对编码器反馈当前是否有效 |
+| `canBusOff` | Boolean | 底盘 CAN1 是否检测到 Bus-Off |
+| `driveFault` | Boolean | 转向或双驱控制器是否报告驱动故障 |
 | `feedbackFresh` | Boolean | 本报告使用的运动反馈是否在有效时限内 |
 | `safetyReady` | Boolean | 当前是否满足接受运动目标的全部门禁 |
 | `stopReason` | Integer | 产品定义的最近安全停止原因码 |

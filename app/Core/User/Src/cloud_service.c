@@ -15,6 +15,7 @@
 #include "ec800_at.h"
 #include "abox_ec800_rx.h"
 #include "ec_power.h"
+#include "fixed_point.h"
 #include "mqtt_core.h"
 #include "ota_service.h"
 #include "remote_service.h"
@@ -26,8 +27,8 @@
 
 #define CLOUD_RX_DMA_SIZE (EC800_AT_RAW_CHUNK_MAX + 64U)
 #define CLOUD_RX_RING_SIZE 4096U
-#define CLOUD_PAYLOAD_SIZE 1024U
-#define CLOUD_PAYLOAD_LIMIT 900U
+#define CLOUD_PAYLOAD_SIZE 1100U
+#define CLOUD_PAYLOAD_LIMIT 1080U
 #define CLOUD_TOPIC_SIZE 128U
 #define CLOUD_REQUEST_ID_SIZE CLOUD_PROTOCOL_REQUEST_ID_SIZE
 #define CLOUD_HEARTBEAT_MS 5000U
@@ -358,6 +359,8 @@ static void build_info_result(char* output, uint16_t size)
     uint8_t descriptor_valid = (uint8_t)(ABoxBootV2_DescriptorRead(&descriptor) &&
                                          ABoxBootV2_DescriptorValid(&descriptor));
     const char* iccid = MQTT_Core_GetIccid();
+    PatrolDiagnosticsSnapshot diagnostics;
+    VcuRtos_GetDiagnostics(&diagnostics);
     json_init(&writer, output, size);
     json_append(&writer, "{\"fwVersion\":"); json_string(&writer, Vcu_AppFwVersion());
     json_append(&writer, ",\"bootVersion\":"); json_string(&writer, descriptor_valid ? descriptor.build_version : "");
@@ -391,8 +394,21 @@ static void build_info_result(char* output, uint16_t size)
     json_string(&writer, OtaService_Phase());
     json_append(&writer, ",\"otaTargetVersion\":");
     json_string(&writer, OtaService_IsBusy() ? OtaService_TargetVersion() : (have_state ? state.image_version : ""));
-    json_appendf(&writer, ",\"lastOtaError\":%lu}",
-                 (unsigned long)(OtaService_LastError() ? OtaService_LastError() : (have_state ? state.last_error : 0U)));
+    json_appendf(&writer, ",\"lastOtaError\":%lu,\"diagnostics\":{\"canRx\":%lu,"
+                 "\"steerHb\":%s,\"driveHb\":%s,\"steerRaw\":%ld,\"leftRpm\":%ld,"
+                 "\"rightRpm\":%ld,\"encoderRaw\":%lu,\"encoderOnline\":%s,"
+                 "\"sdoTimeouts\":%lu,\"encoderTimeouts\":%lu}}}",
+                 (unsigned long)(OtaService_LastError() ? OtaService_LastError() :
+                                 (have_state ? state.last_error : 0U)),
+                 (unsigned long)diagnostics.can_rx_count,
+                 diagnostics.steering_online ? "true" : "false",
+                 diagnostics.drive_online ? "true" : "false",
+                 (long)diagnostics.steering_position_count,
+                 (long)diagnostics.left_actual_rpm, (long)diagnostics.right_actual_rpm,
+                 (unsigned long)diagnostics.encoder_count,
+                 diagnostics.encoder_online ? "true" : "false",
+                 (unsigned long)diagnostics.sdo_timeout_count,
+                 (unsigned long)diagnostics.encoder_timeout_count);
     if (!writer.valid) copy_string(output, size, "{}");
 }
 
@@ -453,6 +469,10 @@ static uint8_t build_status_report(char* output, uint16_t size, const char* repo
     const char* motion_state = "stopped";
     char timestamp[21];
     char report_id[96];
+    char target_steering[24];
+    char actual_steering[24];
+    char actual_encoder[24];
+    PatrolDiagnosticsSnapshot diagnostics;
     if (control->fault_latched) motion_state = "fault";
     else if (control->reversal_pending) motion_state = "reversing_wait";
     else if (feedback_fresh &&
@@ -461,6 +481,13 @@ static uint8_t build_status_report(char* output, uint16_t size, const char* repo
     if (!TimeBase_FormatUtcMs(timestamp, sizeof(timestamp))) strcpy(timestamp, "0");
     (void)snprintf(report_id, sizeof(report_id), "%s-%s-%lu", VcuConfig_Get()->vid,
                    timestamp, (unsigned long)g_status_report_sequence++);
+    if (!FixedPoint_FormatMilli(target_steering, sizeof(target_steering),
+                                control->target_steering_mdeg) ||
+        !FixedPoint_FormatMilli(actual_steering, sizeof(actual_steering),
+                                feedback->steering_actual_mdeg) ||
+        !FixedPoint_FormatMilli(actual_encoder, sizeof(actual_encoder),
+                                feedback->encoder_actual_mdeg)) return 0U;
+    VcuRtos_GetDiagnostics(&diagnostics);
     json_init(&writer, output, size);
     json_append(&writer, "{\"version\":\"3.0\",\"timestamp\":");
     json_append(&writer, timestamp);
@@ -471,17 +498,20 @@ static uint8_t build_status_report(char* output, uint16_t size, const char* repo
     json_append(&writer, ",\"motionState\":");
     json_string(&writer, motion_state);
     json_appendf(&writer,
-        ",\"targetDriveRpm\":%d,\"targetSteeringDeg\":%.3f,\"leftActualRpm\":%d,"
-        "\"rightActualRpm\":%d,\"steeringActualDeg\":%.3f,\"absoluteActualDeg\":%.3f,"
-        "\"steeringOnline\":%s,\"driveOnline\":%s,\"feedbackFresh\":%s,"
+        ",\"targetDriveRpm\":%d,\"targetSteeringDeg\":%s,\"leftActualRpm\":%d,"
+        "\"rightActualRpm\":%d,\"steeringActualDeg\":%s,\"absoluteActualDeg\":%s,"
+        "\"steeringOnline\":%s,\"driveOnline\":%s,\"encoderOnline\":%s,"
+        "\"canBusOff\":%s,\"driveFault\":%s,\"feedbackFresh\":%s,"
         "\"calibrated\":%s,\"powerReady\":%s,\"powerOutputOn\":%s,\"otaBusy\":%s,\"safetyReady\":%s,"
         "\"stopReason\":%u,\"faultLatched\":%s}}",
-        (int)control->target_rpm, (double)control->target_steering_mdeg / 1000.0,
+        (int)control->target_rpm, target_steering,
         (int)feedback->left_actual_rpm, (int)feedback->right_actual_rpm,
-        (double)feedback->steering_actual_mdeg / 1000.0,
-        (double)feedback->encoder_actual_mdeg / 1000.0,
+        actual_steering, actual_encoder,
         feedback->steering_online ? "true" : "false",
-        feedback->drive_online ? "true" : "false", feedback_fresh ? "true" : "false",
+        feedback->drive_online ? "true" : "false",
+        diagnostics.encoder_online ? "true" : "false",
+        feedback->can_bus_off ? "true" : "false",
+        feedback->drive_fault ? "true" : "false", feedback_fresh ? "true" : "false",
         feedback->calibrated ? "true" : "false", feedback->power_ready ? "true" : "false",
         VehiclePowerOutput_IsOn() ? "true" : "false",
         feedback->ota_busy ? "true" : "false",
@@ -579,7 +609,7 @@ static uint8_t boot_state_allows_reboot(void)
 
 static void handle_config_request(const CloudProtocolRequest_t* request)
 {
-    char result[820];
+    char result[900];
     CloudProtocolAction_t action;
     const char* request_id;
     if (request == 0) return;

@@ -5,7 +5,9 @@
 #include "chassis_cloud_protocol.h"
 #include "chassis_control.h"
 #include "chassis_power.h"
+#include "fixed_point.h"
 #include "patrol_canopen.h"
+#include "patrol_diagnostics.h"
 #include "vehicle_power_output.h"
 
 #define CHECK(x) do { if (!(x)) { fprintf(stderr, "check failed line %d: %s\n", __LINE__, #x); return 1; } } while (0)
@@ -27,6 +29,11 @@ int main(void)
     uint8_t response[9] = {1, 3, 4, 0x12, 0x34, 0x56, 0x78, 0, 0};
     uint16_t crc;
     uint32_t count;
+    uint16_t config_values[3];
+    uint8_t config_response[11] = {1, 3, 6, 0x00, 0x01, 0x00, 0x03, 0x4B, 0x00, 0, 0};
+    PatrolDiagnostics diagnostics;
+    PatrolDiagnosticsSnapshot diagnostic_snapshot;
+    char fixed[24];
     ChassisCloudCommand command;
     const char json[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"r1\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"acquire\",\"sessionId\":\"s1\",\"seq\":1,\"leaseMs\":1000,\"driveRpm\":50,\"steeringDeg\":1}}}";
     const char wrong_type[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"r2\",\"deviceType\":\"wing_actuator\",\"command\":\"chassis_control\",\"params\":{}}}";
@@ -42,6 +49,53 @@ int main(void)
     response[7] = (uint8_t)crc; response[8] = (uint8_t)(crc >> 8);
     CHECK(AbsoluteEncoder_ParseResponse(response, sizeof(response), &count));
     CHECK(count == 0x56781234U);
+    crc = AbsoluteEncoder_Crc16(config_response, 9);
+    config_response[9] = (uint8_t)crc; config_response[10] = (uint8_t)(crc >> 8);
+    CHECK(AbsoluteEncoder_ParseHoldingResponse(config_response, sizeof(config_response), config_values, 3U));
+    CHECK(config_values[0] == 1U && config_values[1] == 3U && config_values[2] == 0x4B00U);
+
+    CHECK(FixedPoint_FormatMilli(fixed, sizeof(fixed), 0) && strcmp(fixed, "0.000") == 0);
+    CHECK(FixedPoint_FormatMilli(fixed, sizeof(fixed), -1) && strcmp(fixed, "-0.001") == 0);
+    CHECK(FixedPoint_FormatMilli(fixed, sizeof(fixed), 12345) && strcmp(fixed, "12.345") == 0);
+
+    PatrolDiagnostics_Init(&diagnostics);
+    memset(&frame, 0, sizeof(frame));
+    frame.id = 0x701U; frame.dlc = 1U; frame.data[0] = 5U;
+    PatrolDiagnostics_OnCanFrame(&diagnostics, &frame, 100U);
+    frame.id = 0x702U;
+    PatrolDiagnostics_OnCanFrame(&diagnostics, &frame, 100U);
+    for (uint8_t sample = 0U; sample < 5U; sample++)
+    {
+        PatrolCanFrame response_frame;
+        int32_t value = sample == 1U ? 1000 : (sample == 3U ? -12 : (sample == 4U ? 15 : 0));
+        CHECK(PatrolDiagnostics_TakeSdoRead(&diagnostics, 110U + sample, &frame));
+        CHECK((frame.id == 0x601U || frame.id == 0x602U) && frame.data[0] == 0x40U);
+        memset(&response_frame, 0, sizeof(response_frame));
+        response_frame.id = (uint16_t)(frame.id - 0x80U);
+        response_frame.dlc = 8U;
+        response_frame.data[0] = 0x43U;
+        response_frame.data[1] = frame.data[1];
+        response_frame.data[2] = frame.data[2];
+        response_frame.data[3] = frame.data[3];
+        response_frame.data[4] = (uint8_t)value;
+        response_frame.data[5] = (uint8_t)((uint32_t)value >> 8);
+        response_frame.data[6] = (uint8_t)((uint32_t)value >> 16);
+        response_frame.data[7] = (uint8_t)((uint32_t)value >> 24);
+        PatrolDiagnostics_OnCanFrame(&diagnostics, &response_frame, 120U + sample);
+    }
+    PatrolDiagnostics_OnEncoderConfig(&diagnostics, config_values, 125U);
+    PatrolDiagnostics_OnEncoderCount(&diagnostics, 123456U, 125U);
+    PatrolDiagnostics_Snapshot(&diagnostics, 130U, &diagnostic_snapshot);
+    CHECK(diagnostic_snapshot.steering_online && diagnostic_snapshot.drive_online);
+    CHECK(diagnostic_snapshot.steering_feedback_fresh && diagnostic_snapshot.drive_feedback_fresh);
+    CHECK(diagnostic_snapshot.encoder_online && diagnostic_snapshot.encoder_config_valid);
+    CHECK(diagnostic_snapshot.steering_position_count == 1000);
+    CHECK(diagnostic_snapshot.left_actual_rpm == -12 && diagnostic_snapshot.right_actual_rpm == 15);
+    CHECK(diagnostic_snapshot.encoder_count == 123456U);
+    CHECK(PatrolDiagnostics_TakeSdoRead(&diagnostics, 200U, &frame));
+    CHECK(!PatrolDiagnostics_TakeSdoRead(&diagnostics, 250U, &frame));
+    CHECK(PatrolDiagnostics_TakeSdoRead(&diagnostics, 260U, &frame));
+    CHECK(frame.data[0] == 0x40U);
 
     ChassisControl_Init(&control, 1);
     feedback.calibrated = 1; feedback.steering_online = 1; feedback.drive_online = 1;

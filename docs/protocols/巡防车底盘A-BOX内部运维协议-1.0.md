@@ -2,7 +2,7 @@
 
 协议修订：1.0
 
-契约状态：固件与 OTA 平台源码切换及自动回归已完成；OTA 平台 `0.4.73` 已发布到生产环境，巡防底盘自动 `get_info` 能力回填已闭环；CANopen、编码器和执行器台架联调尚未完成
+契约状态：固件与 OTA 平台源码切换及自动回归已完成；OTA 平台已发布到生产环境，巡防底盘自动 `get_info` 能力回填已闭环；CANopen 和编码器进入只读联调，执行器台架联调尚未完成
 
 产品标识：`patrol_vehicle_chassis`
 
@@ -85,6 +85,8 @@ A-BOX 只订阅自身 VID 的精确配置和 OTA Topic。平台重试必须沿�
 | `set_mqtt` | 保存新的 VID 和 MQTT 参数后重启 |
 
 `power_on` / `power_off` 成功响应的 `result.powerOutputOn` 表示 MCU 输出锁存的命令状态。该状态不是继电器触点或整车供电反馈，不得用来声称车辆已真实开机或关机。
+
+`get_info` 的 `result.diagnostics` 是只读联调快照：`canRx` 为 CAN1 已接收标准数据帧计数，`steerHb/driveHb` 为 Node 1/2 心跳在线判断，`steerRaw`、`leftRpm/rightRpm` 和 `encoderRaw` 为最近原始反馈，`encoderOnline` 为编码器反馈时效判断，`sdoTimeouts/encoderTimeouts` 为累计超时计数。上述字段只用于诊断，不代表标定、运动或验收成功。
 
 OTA 请求使用 `command=ota_upgrade`，`params` 必须包含不可变 HTTPS `url`、目标 `version`、正整数 `size` 和八位十六进制 `crc32`。`code=200` 只表示候选镜像已校验并进入待安装状态，不代表安装、试运行或确认成功；平台仍须通过 `get_info` 和新 App 版本确认 `otaState=CONFIRMED`。
 

@@ -9,7 +9,7 @@
 | CAN1 | 500 kbps、11 位标准帧 | Node 1 转向、Node 2 双驱 |
 | CAN2 | 500 kbps、11 位标准帧 | 仅初始化和预留，不发送上层协议 |
 
-Node 1 使用 SDO `0x601/0x581`、心跳 `0x701`；Node 2 使用 SDO `0x602/0x582`、心跳 `0x702`。第一阶段默认 `PATROL_CHASSIS_ACTUATION_ENABLED=0`，不得发送 NMT、SDO、PDO 或运动指令。
+Node 1 使用 SDO `0x601/0x581`、心跳 `0x701`；Node 2 使用 SDO `0x602/0x582`、心跳 `0x702`。第二阶段可由独立只读门禁发送 SDO 上传请求 `0x40`；`PATROL_CHASSIS_ACTUATION_ENABLED=0` 时仍不得发送 NMT、SDO 下载、PDO目标或运动指令。
 
 ## 双驱 Node 2
 
@@ -29,4 +29,3 @@ Node 1 使用 SDO `0x601/0x581`、心跳 `0x701`；Node 2 使用 SDO `0x602/0x58
 ## 运动门禁
 
 首版限制为 `±300 rpm`、`±5°`。未标定、反馈过期、两路角度偏差大于 `2°`、节点离线、CAN Bus-Off、驱动故障或 OTA 忙时禁止运动。方向反转必须先发送零速，连续三次左右实测不超过 `20 rpm` 后才可反向；2 秒未停车则撤销使能并锁存故障。
-

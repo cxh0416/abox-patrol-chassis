@@ -33,6 +33,7 @@ set(PATROL_CHASSIS_MQTT_USERNAME "" CACHE STRING "Production MQTT username")
 set(PATROL_CHASSIS_MQTT_PASSWORD "" CACHE STRING "Production MQTT password")
 option(PATROL_CHASSIS_OTA_AUTO_SEED "Seed first stable OTA slot" ON)
 option(PATROL_CHASSIS_ACTUATION_ENABLED "Allow CANopen motion output after bench approval" OFF)
+option(PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED "Allow read-only CANopen and encoder polling" ON)
 option(PATROL_CHASSIS_POWER_OUTPUT_ENABLED "Allow the confirmed PA0 vehicle relay-supply output" ON)
 option(PATROL_CHASSIS_APP_FAULT_INJECTION_TEST "Build intentional Boot confirmation fault" OFF)
 set(PATROL_CHASSIS_APP_TEST_FAULT_KIND "0" CACHE STRING "1=HardFault, 2=IWDG")
@@ -73,6 +74,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/User/Src/chassis_cloud_protocol.c
     Core/User/Src/chassis_control.c
     Core/User/Src/chassis_power.c
+    Core/User/Src/fixed_point.c
     Core/User/Src/mqtt_core.c
     Core/User/Src/mqtt_core_parser.c
     Core/User/Src/mqtt_core_port.c
@@ -80,6 +82,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/User/Src/ota_info.c
     Core/User/Src/ota_service.c
     Core/User/Src/patrol_canopen.c
+    Core/User/Src/patrol_diagnostics.c
     Core/User/Src/remote_service.c
     Core/User/Src/time_base.c
     Core/User/Src/vehicle_power_output.c
@@ -103,6 +106,16 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
     PATROL_CHASSIS_ACTUATION_ENABLED=$<BOOL:${PATROL_CHASSIS_ACTUATION_ENABLED}>
     PATROL_CHASSIS_POWER_OUTPUT_ENABLED=$<BOOL:${PATROL_CHASSIS_POWER_OUTPUT_ENABLED}>
 )
+if(PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        $<$<CONFIG:Debug>:PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED=0>
+        $<$<NOT:$<CONFIG:Debug>>:PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED=1>
+    )
+else()
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED=0
+    )
+endif()
 if(PATROL_CHASSIS_APP_FAULT_INJECTION_TEST)
     target_sources(${CMAKE_PROJECT_NAME} PRIVATE Core/User/Src/app_test.c)
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE

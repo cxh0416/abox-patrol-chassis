@@ -17,11 +17,14 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertIn("Patrol_Vehicle_Chassis_App", cmake)
         self.assertIn('"patrol_vehicle_chassis"', config)
         self.assertIn("PATROL_CHASSIS_ACTUATION_ENABLED", cmake)
+        self.assertIn("PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED", cmake)
         self.assertIn("PATROL_CHASSIS_POWER_OUTPUT_ENABLED", cmake)
         self.assertNotIn('#define VCU_CONFIG_DEFAULT_MQTT_USER ""', device_config)
         self.assertNotIn('#define VCU_CONFIG_DEFAULT_MQTT_PASS ""', device_config)
         self.assertIn("hardware_available=0", rtos)
-        self.assertNotIn("HAL_CAN_AddTxMessage", rtos)
+        self.assertIn("HAL_CAN_AddTxMessage", rtos)
+        self.assertIn("request.data[0] == 0x40U", rtos)
+        self.assertNotIn("PatrolCanopen_SdoWrite", rtos)
 
     def test_confirmed_vehicle_power_output_is_isolated_to_pvin_out1(self):
         port = (ROOT / "app/Core/User/Src/vehicle_power_port.c").read_text(encoding="utf-8")
@@ -48,6 +51,8 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertIn('\\"deviceType\\":\\"vehicle_chassis', cloud)
         self.assertIn('\\"product\\":\\"patrol_vehicle_chassis', cloud)
         self.assertNotIn("commandAccepted", remote)
+        self.assertNotRegex(cloud, r"%[-+0-9.#]*[fFeEgGaA]")
+        self.assertNotRegex(remote, r"%[-+0-9.#]*[fFeEgGaA]")
         self.assertIn('\\\"code\\\":%u', remote)
 
     def test_archive_hashes(self):

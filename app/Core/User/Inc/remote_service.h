@@ -8,6 +8,7 @@
 void RemoteService_Init(void);
 void RemoteService_Task(void);
 void RemoteService_SafetyTick(uint32_t now_ms);
+void RemoteService_UpdateFeedback(const ChassisFeedback* feedback);
 uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* response, uint16_t size);
 const ChassisControl* RemoteService_State(void);
 

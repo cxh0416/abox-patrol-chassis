@@ -45,7 +45,9 @@ $chassisTest = Join-Path $hostBuild 'chassis_safety_test.exe'
     "$PSScriptRoot\..\app\Core\User\Src\chassis_cloud_protocol.c" `
     "$PSScriptRoot\..\app\Core\User\Src\chassis_control.c" `
     "$PSScriptRoot\..\app\Core\User\Src\chassis_power.c" `
+    "$PSScriptRoot\..\app\Core\User\Src\fixed_point.c" `
     "$PSScriptRoot\..\app\Core\User\Src\patrol_canopen.c" `
+    "$PSScriptRoot\..\app\Core\User\Src\patrol_diagnostics.c" `
     "$PSScriptRoot\..\app\Core\User\Src\vehicle_power_output.c" `
     "$PSScriptRoot\..\platform\components\cjson\cJSON.c" `
     "$PSScriptRoot\..\tests\chassis_safety_test.c" `

@@ -5,6 +5,7 @@
 
 #include "app_log.h"
 #include "chassis_cloud_protocol.h"
+#include "fixed_point.h"
 #include "main.h"
 #include "time_base.h"
 #include "vcu_config.h"
@@ -40,6 +41,11 @@ void RemoteService_SafetyTick(uint32_t now_ms)
     if (g_remote_initialized) ChassisControl_Tick(&g_control, now_ms);
 }
 
+void RemoteService_UpdateFeedback(const ChassisFeedback* feedback)
+{
+    if (g_remote_initialized && feedback != 0) ChassisControl_SetFeedback(&g_control, feedback);
+}
+
 uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* response, uint16_t size)
 {
     ChassisCloudCommand command;
@@ -48,6 +54,7 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
     uint16_t code;
     const char* message;
     char timestamp[21];
+    char steering_value[24];
     int written;
     if (!g_remote_initialized || response == 0 || size == 0U) return 0U;
     parse_status = ChassisCloud_Parse(payload, length, &command);
@@ -98,13 +105,14 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
         }
     }
     if (!TimeBase_FormatUtcMs(timestamp, sizeof(timestamp))) strcpy(timestamp, "0");
+    if (!FixedPoint_FormatMilli(steering_value, sizeof(steering_value),
+                                g_control.target_steering_mdeg)) return 0U;
     written = snprintf(response, size,
         "{\"version\":\"3.0\",\"timestamp\":%s,\"data\":{\"deviceType\":\"%s\","
         "\"requestId\":\"%s\",\"code\":%u,\"msg\":\"%s\",\"targetDriveRpm\":%d,"
-        "\"targetSteeringDeg\":%.3f,\"stopReason\":%u}}",
+        "\"targetSteeringDeg\":%s,\"stopReason\":%u}}",
         timestamp, CHASSIS_PUBLIC_DEVICE_TYPE, command.request_id, (unsigned int)code, message,
-        (int)g_control.target_rpm,
-        (double)g_control.target_steering_mdeg / 1000.0, (unsigned int)g_control.stop_reason);
+        (int)g_control.target_rpm, steering_value, (unsigned int)g_control.stop_reason);
     if (written <= 0 || written >= size) return 0U;
     strncpy(g_last_request_id, command.request_id, sizeof(g_last_request_id) - 1U);
     g_last_request_id[sizeof(g_last_request_id) - 1U] = '\0';

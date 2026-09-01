@@ -1,0 +1,107 @@
+#ifndef PATROL_CHASSIS_DIAGNOSTICS_H
+#define PATROL_CHASSIS_DIAGNOSTICS_H
+
+#include <stdint.h>
+
+#include "patrol_canopen.h"
+
+#define PATROL_DIAG_SDO_ENTRY_COUNT 12U
+#define PATROL_DIAG_ENCODER_CONFIG_REGS 3U
+#define PATROL_DIAG_HEARTBEAT_TIMEOUT_MS 3000U
+#define PATROL_DIAG_FEEDBACK_TIMEOUT_MS 250U
+
+typedef enum {
+    PATROL_ENCODER_ERROR_TIMEOUT = 1,
+    PATROL_ENCODER_ERROR_CRC,
+    PATROL_ENCODER_ERROR_EXCEPTION,
+    PATROL_ENCODER_ERROR_FORMAT,
+    PATROL_ENCODER_ERROR_TRANSPORT
+} PatrolEncoderError;
+
+typedef struct {
+    uint32_t can_rx_count;
+    uint32_t can_ignored_count;
+    uint32_t steering_heartbeat_ms;
+    uint32_t drive_heartbeat_ms;
+    uint32_t steering_status_ms;
+    uint32_t drive_status_ms;
+    uint32_t steering_position_ms;
+    uint32_t left_rpm_ms;
+    uint32_t right_rpm_ms;
+    uint32_t encoder_ms;
+    uint32_t encoder_config_ms;
+    uint32_t sdo_timeout_count;
+    uint32_t sdo_abort_count;
+    uint32_t sdo_tx_error_count;
+    uint32_t last_sdo_abort_code;
+    uint32_t encoder_timeout_count;
+    uint32_t encoder_crc_error_count;
+    uint32_t encoder_exception_count;
+    uint32_t encoder_format_error_count;
+    uint32_t encoder_transport_error_count;
+    uint32_t encoder_count;
+    int32_t steering_position_count;
+    int32_t left_actual_rpm;
+    int32_t right_actual_rpm;
+    int32_t drive_objects[7];
+    uint16_t steering_status_word;
+    uint16_t drive_status_word;
+    uint16_t encoder_config[PATROL_DIAG_ENCODER_CONFIG_REGS];
+    uint8_t steering_heartbeat_state;
+    uint8_t drive_heartbeat_state;
+    uint8_t steering_heartbeat_seen;
+    uint8_t drive_heartbeat_seen;
+    uint8_t steering_position_seen;
+    uint8_t left_rpm_seen;
+    uint8_t right_rpm_seen;
+    uint8_t encoder_seen;
+    uint8_t encoder_config_valid;
+    uint8_t pending_valid;
+    uint8_t pending_entry;
+    uint8_t pending_retry;
+    uint32_t pending_sent_ms;
+    uint32_t sdo_due_ms[PATROL_DIAG_SDO_ENTRY_COUNT];
+    uint8_t next_sdo_entry;
+} PatrolDiagnostics;
+
+typedef struct {
+    uint8_t steering_online;
+    uint8_t drive_online;
+    uint8_t steering_feedback_fresh;
+    uint8_t drive_feedback_fresh;
+    uint8_t encoder_online;
+    uint8_t encoder_config_valid;
+    uint8_t drive_fault;
+    uint8_t steering_heartbeat_state;
+    uint8_t drive_heartbeat_state;
+    uint16_t steering_status_word;
+    uint16_t drive_status_word;
+    int32_t steering_position_count;
+    int32_t left_actual_rpm;
+    int32_t right_actual_rpm;
+    uint32_t encoder_count;
+    uint32_t coherent_feedback_ms;
+    uint32_t can_rx_count;
+    uint32_t sdo_timeout_count;
+    uint32_t sdo_abort_count;
+    uint32_t last_sdo_abort_code;
+    uint32_t encoder_timeout_count;
+    uint32_t encoder_crc_error_count;
+    uint32_t encoder_exception_count;
+} PatrolDiagnosticsSnapshot;
+
+void PatrolDiagnostics_Init(PatrolDiagnostics* diagnostics);
+void PatrolDiagnostics_OnCanFrame(PatrolDiagnostics* diagnostics, const PatrolCanFrame* frame,
+                                  uint32_t now_ms);
+uint8_t PatrolDiagnostics_TakeSdoRead(PatrolDiagnostics* diagnostics, uint32_t now_ms,
+                                     PatrolCanFrame* frame);
+void PatrolDiagnostics_OnSdoTxError(PatrolDiagnostics* diagnostics, uint32_t now_ms);
+void PatrolDiagnostics_OnEncoderConfig(PatrolDiagnostics* diagnostics, const uint16_t registers[3],
+                                       uint32_t now_ms);
+void PatrolDiagnostics_OnEncoderCount(PatrolDiagnostics* diagnostics, uint32_t count,
+                                      uint32_t now_ms);
+void PatrolDiagnostics_OnEncoderError(PatrolDiagnostics* diagnostics, PatrolEncoderError error);
+void PatrolDiagnostics_Snapshot(const PatrolDiagnostics* diagnostics, uint32_t now_ms,
+                                PatrolDiagnosticsSnapshot* snapshot);
+
+#endif
