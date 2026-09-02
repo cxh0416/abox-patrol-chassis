@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import importlib.util
+import re
 import unittest
 from pathlib import Path
 
@@ -68,6 +69,14 @@ class PatrolScaffoldTests(unittest.TestCase):
         }
         for name, digest in expected.items():
             self.assertEqual(hashlib.sha256((archive / name).read_bytes()).hexdigest(), digest)
+
+    def test_boot_trial_confirmation_has_flash_write_stack_margin(self):
+        rtos = (ROOT / "app/Core/User/Src/vcu_rtos.c").read_text(encoding="utf-8")
+        match = re.search(r"#define\s+VCU_WATCHDOG_STACK_WORDS\s+(\d+)U", rtos)
+        self.assertIsNotNone(match)
+        # ARM release .su reports: Watchdog 32 + Confirm 128 + StateSave 592
+        # + nested StateLoad 240 = 992 bytes before HAL flash helpers.
+        self.assertGreaterEqual(int(match.group(1)), 384)
 
     def test_config_page_is_v3_and_unarmed_by_default(self):
         path = ROOT / "tools/make_device_config.py"

@@ -37,7 +37,12 @@
 #define VCU_POWER_STACK_WORDS 192U
 #define VCU_REMOTE_STACK_WORDS 1024U
 #define VCU_DIAG_STACK_WORDS 256U
-#define VCU_WATCHDOG_STACK_WORDS 256U
+/*
+ * BootState_Confirm() persists a Boot V2 record from this task.  The ARM
+ * release stack reports show a 992-byte static call-chain peak before the
+ * HAL flash helper margin, so 256 words is not sufficient for trial confirm.
+ */
+#define VCU_WATCHDOG_STACK_WORDS 384U
 
 static StaticQueue_t g_can_rx_queue_control;
 static VcuCanFrame_t g_can_rx_queue_storage[VCU_CAN_RX_QUEUE_LENGTH];
