@@ -31,6 +31,9 @@ typedef struct {
     uint32_t encoder_ms;
     uint32_t encoder_config_ms;
     uint32_t sdo_timeout_count;
+    uint32_t sdo_success_count;
+    uint16_t sdo_success_mask;
+    uint16_t sdo_abort_mask;
     uint32_t sdo_abort_count;
     uint32_t sdo_tx_error_count;
     uint32_t last_sdo_abort_code;
@@ -82,6 +85,12 @@ typedef struct {
     uint32_t encoder_count;
     uint32_t coherent_feedback_ms;
     uint32_t can_rx_count;
+    uint32_t can_ignored_count;
+    uint32_t sdo_success_count;
+    uint16_t sdo_success_mask;
+    uint16_t sdo_abort_mask;
+    uint32_t sdo_tx_error_count;
+    int32_t drive_objects[7];
     uint32_t sdo_timeout_count;
     uint32_t sdo_abort_count;
     uint32_t last_sdo_abort_code;
@@ -103,5 +112,7 @@ void PatrolDiagnostics_OnEncoderCount(PatrolDiagnostics* diagnostics, uint32_t c
 void PatrolDiagnostics_OnEncoderError(PatrolDiagnostics* diagnostics, PatrolEncoderError error);
 void PatrolDiagnostics_Snapshot(const PatrolDiagnostics* diagnostics, uint32_t now_ms,
                                 PatrolDiagnosticsSnapshot* snapshot);
+uint8_t PatrolDiagnostics_FormatCanJson(const PatrolDiagnosticsSnapshot* snapshot,
+    uint8_t bus_off, uint32_t rx_overflow, char* output, uint16_t size);
 
 #endif

@@ -640,6 +640,16 @@ static void handle_config_request(const CloudProtocolRequest_t* request)
         else
             schedule_simple_error(g_topic_config_resp, request_id, 409U, "DEVICE_BUSY");
     }
+    else if (action == CLOUD_PROTOCOL_ACTION_GET_CAN_DIAG)
+    {
+        PatrolDiagnosticsSnapshot snapshot;
+        VcuRtos_GetDiagnostics(&snapshot);
+        if (!PatrolDiagnostics_FormatCanJson(&snapshot, VcuRtos_CanBusOff(),
+                VcuRtos_CanRxOverflowCount(), result, sizeof(result)))
+            schedule_simple_error(g_topic_config_resp, request_id, 500U, "DIAGNOSTIC_TOO_LARGE");
+        else if (!schedule_response(g_topic_config_resp, request_id, 200U, "OK", result, 0U))
+            schedule_simple_error(g_topic_config_resp, request_id, 409U, "DEVICE_BUSY");
+    }
     else if (action == CLOUD_PROTOCOL_ACTION_GET_LOG)
     {
         if (g_log_active)

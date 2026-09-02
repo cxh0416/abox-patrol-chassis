@@ -25,6 +25,9 @@ int main(void)
     static const char unknown[] =
         "{\"version\":\"2.0\",\"data\":{\"requestId\":\"req-2\","
         "\"command\":\"internal_config\",\"params\":{\"action\":\"drive\"}}}";
+    static const char can_diag[] =
+        "{\"version\":\"2.0\",\"data\":{\"requestId\":\"req-can\","
+        "\"command\":\"internal_config\",\"params\":{\"action\":\"get_can_diag\"}}}";
     static const char wrong_product[] =
         "{\"version\":\"2.0\",\"data\":{\"product\":\"top_flying_wing\",\"requestId\":\"req-wrong\","
         "\"command\":\"internal_config\",\"params\":{\"action\":\"get_info\"}}}";
@@ -52,6 +55,7 @@ int main(void)
     static const char oversized_prefix[] = "{\"requestId\":\"req-big\",\"padding\":\"";
 
     if (!expect_status("get_info", get_info, 0U, CLOUD_PROTOCOL_OK, CLOUD_PROTOCOL_ACTION_GET_INFO, "req-1")) return 1;
+    if (!expect_status("get_can_diag", can_diag, 0U, CLOUD_PROTOCOL_OK, CLOUD_PROTOCOL_ACTION_GET_CAN_DIAG, "req-can")) return 1;
     if (!expect_status("unknown", unknown, 0U, CLOUD_PROTOCOL_UNKNOWN_ACTION, CLOUD_PROTOCOL_ACTION_NONE, "req-2")) return 1;
     if (!expect_status("wrong_product", wrong_product, 0U, CLOUD_PROTOCOL_INVALID,
                        CLOUD_PROTOCOL_ACTION_NONE, "req-wrong")) return 1;

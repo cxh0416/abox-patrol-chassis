@@ -9,6 +9,7 @@
 #include "patrol_canopen.h"
 #include "patrol_diagnostics.h"
 #include "vehicle_power_output.h"
+#include "cJSON.h"
 
 #define CHECK(x) do { if (!(x)) { fprintf(stderr, "check failed line %d: %s\n", __LINE__, #x); return 1; } } while (0)
 
@@ -19,8 +20,87 @@ static uint8_t test_power_write(uint8_t on)
     return 1U;
 }
 
+static int test_field_sdo_replies(void)
+{
+    /* VSY field log 2026-08-27: 6041 / 2000..2005 omit CAN padding.
+     * The response width is carried by the SDO command, not DLC == 8. */
+    static const uint8_t reply_data[12][8] = {
+        {0x4B,0x41,0x60,0,0x50,0x20}, {0x43,0x64,0x60,0,0x29,0x15,0,0},
+        {0x4B,0x41,0x60,0,0x50,0x20}, {0x43,0x69,0x60,0,0,0,0,0},
+        {0x43,0x69,0x68,0,0,0,0,0}, {0x4B,0x00,0x20,0,0,0},
+        {0x4B,0x01,0x20,0,0,0}, {0x4B,0x02,0x20,0,5,0},
+        {0x4B,0x03,0x20,0,4,0}, {0x4B,0x04,0x20,0,0x22,0},
+        {0x4B,0x05,0x20,0,0xD8,0xFF}, {0x80,0x06,0x20,0,0,0,2,6}
+    };
+    static const uint8_t lengths[12] = {6,8,6,8,8,6,6,6,6,6,6,8};
+    PatrolDiagnostics d;
+    PatrolDiagnosticsSnapshot s;
+    PatrolCanFrame request, response = {0};
+    int32_t value;
+    uint8_t size;
+    char json[900], envelope[1100], tiny[8];
+    cJSON* parsed;
+    PatrolDiagnostics_Init(&d);
+    response.id = 0x701; response.dlc = 1; response.data[0] = 0x7F;
+    PatrolDiagnostics_OnCanFrame(&d, &response, 1);
+    response.id = 0x702;
+    PatrolDiagnostics_OnCanFrame(&d, &response, 1);
+    for (uint8_t i = 0; i < 12; i++) {
+        CHECK(PatrolDiagnostics_TakeSdoRead(&d, 10 + 5 * i, &request));
+        response.id = request.id - 0x80;
+        response.dlc = lengths[i];
+        memcpy(response.data, reply_data[i], 8);
+        /* One missing value byte must not complete the request, including Abort. */
+        response.dlc--;
+        PatrolDiagnostics_OnCanFrame(&d, &response, 11 + 5 * i);
+        CHECK(d.pending_valid);
+        response.dlc++;
+        PatrolDiagnostics_OnCanFrame(&d, &response, 12 + 5 * i);
+        CHECK(!d.pending_valid);
+    }
+    PatrolDiagnostics_Snapshot(&d, 75, &s);
+    CHECK(s.steering_online && s.drive_online);
+    CHECK(s.steering_feedback_fresh && s.drive_feedback_fresh);
+    CHECK(!s.encoder_online && s.coherent_feedback_ms == 0);
+    CHECK(s.steering_position_count == 5417 && s.left_actual_rpm == 0 && s.right_actual_rpm == 0);
+    CHECK(s.steering_status_word == 0x2050 && s.drive_status_word == 0x2050);
+    CHECK(s.sdo_success_count == 11 && s.sdo_success_mask == 0x7FF);
+    CHECK(s.sdo_timeout_count == 0 && s.sdo_abort_count == 1 && s.sdo_abort_mask == 0x800);
+    CHECK(s.last_sdo_abort_code == 0x06020000 && s.can_ignored_count == 12);
+    CHECK(s.drive_objects[2] == 5 && s.drive_objects[4] == 34);
+    PatrolDiagnostics_Snapshot(&d, 400, &s);
+    CHECK(!s.steering_feedback_fresh && !s.drive_feedback_fresh);
+    /* Accept 1/2/3/4 declared bytes, with or without trailing padding. */
+    response.id = 0x581; response.data[1] = 0x41; response.data[2] = 0x60; response.data[3] = 0;
+    for (uint8_t width = 1; width <= 4; width++) {
+        response.data[0] = (uint8_t)(0x43 + (4 - width) * 4);
+        response.dlc = 4 + width;
+        CHECK(PatrolCanopen_ParseSdoValue(&response, 1, 0x6041, 0, &value, &size));
+        CHECK(size == width);
+        response.dlc--;
+        CHECK(!PatrolCanopen_ParseSdoValue(&response, 1, 0x6041, 0, &value, &size));
+        response.dlc = 8;
+        CHECK(PatrolCanopen_ParseSdoValue(&response, 1, 0x6041, 0, &value, &size));
+    }
+    response.dlc = 9;
+    CHECK(!PatrolCanopen_ParseSdoValue(&response, 1, 0x6041, 0, &value, &size));
+    /* Worst-width counters and signed feedback must fit the existing response budget. */
+    memset(&s, 0xFF, sizeof(s));
+    s.steering_position_count = s.left_actual_rpm = s.right_actual_rpm = INT32_MIN;
+    for (uint8_t i = 0; i < 7; i++) s.drive_objects[i] = INT32_MIN;
+    CHECK(PatrolDiagnostics_FormatCanJson(&s, 0, UINT32_MAX, json, sizeof(json)));
+    CHECK(!PatrolDiagnostics_FormatCanJson(&s, 0, 0, tiny, sizeof(tiny)));
+    snprintf(envelope, sizeof(envelope), "{\"version\":\"2.0\",\"timestamp\":18446744073709551615,"
+        "\"data\":{\"product\":\"patrol_vehicle_chassis\",\"requestId\":\"%063d\",\"code\":200,"
+        "\"msg\":\"OK\",\"result\":%s}}", 0, json);
+    CHECK(strlen(envelope) < 1080);
+    parsed = cJSON_Parse(envelope); CHECK(parsed != NULL); cJSON_Delete(parsed);
+    return 0;
+}
+
 int main(void)
 {
+    CHECK(test_field_sdo_replies() == 0);
     ChassisControl control;
     ChassisFeedback feedback = {0};
     PatrolCanFrame frame;

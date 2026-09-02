@@ -1,6 +1,7 @@
 #include "patrol_diagnostics.h"
 
 #include <string.h>
+#include <stdio.h>
 
 #define PATROL_DIAG_SDO_TIMEOUT_MS 60U
 #define PATROL_DIAG_SDO_RETRY_COUNT 1U
@@ -116,7 +117,7 @@ void PatrolDiagnostics_OnCanFrame(PatrolDiagnostics* diagnostics, const PatrolCa
         return;
     }
     entry = &g_sdo_entries[diagnostics->pending_entry];
-    if (frame->id != (uint16_t)(0x580U + entry->node) || frame->dlc != 8U ||
+    if (frame->id != (uint16_t)(0x580U + entry->node) || frame->dlc < 4U || frame->dlc > 8U ||
         frame->data[1] != (uint8_t)entry->index || frame->data[2] != (uint8_t)(entry->index >> 8) ||
         frame->data[3] != entry->subindex)
     {
@@ -125,10 +126,16 @@ void PatrolDiagnostics_OnCanFrame(PatrolDiagnostics* diagnostics, const PatrolCa
     }
     if (frame->data[0] == 0x80U)
     {
+        if (frame->dlc != 8U)
+        {
+            diagnostics->can_ignored_count++;
+            return;
+        }
         diagnostics->last_sdo_abort_code = (uint32_t)frame->data[4] |
             (uint32_t)frame->data[5] << 8 | (uint32_t)frame->data[6] << 16 |
             (uint32_t)frame->data[7] << 24;
         diagnostics->sdo_abort_count++;
+        diagnostics->sdo_abort_mask |= (uint16_t)(1U << diagnostics->pending_entry);
         finish_pending(diagnostics, now_ms);
         return;
     }
@@ -136,6 +143,8 @@ void PatrolDiagnostics_OnCanFrame(PatrolDiagnostics* diagnostics, const PatrolCa
                                     &value, &size))
     {
         (void)size;
+        diagnostics->sdo_success_count++;
+        diagnostics->sdo_success_mask |= (uint16_t)(1U << diagnostics->pending_entry);
         store_sdo_value(diagnostics, entry, value, now_ms);
         finish_pending(diagnostics, now_ms);
     }
@@ -257,10 +266,45 @@ void PatrolDiagnostics_Snapshot(const PatrolDiagnostics* diagnostics, uint32_t n
         snapshot->coherent_feedback_ms = oldest;
     }
     snapshot->can_rx_count = diagnostics->can_rx_count;
+    snapshot->can_ignored_count = diagnostics->can_ignored_count;
+    snapshot->sdo_success_count = diagnostics->sdo_success_count;
+    snapshot->sdo_success_mask = diagnostics->sdo_success_mask;
+    snapshot->sdo_abort_mask = diagnostics->sdo_abort_mask;
+    snapshot->sdo_tx_error_count = diagnostics->sdo_tx_error_count;
+    memcpy(snapshot->drive_objects, diagnostics->drive_objects, sizeof(snapshot->drive_objects));
     snapshot->sdo_timeout_count = diagnostics->sdo_timeout_count;
     snapshot->sdo_abort_count = diagnostics->sdo_abort_count;
     snapshot->last_sdo_abort_code = diagnostics->last_sdo_abort_code;
     snapshot->encoder_timeout_count = diagnostics->encoder_timeout_count;
     snapshot->encoder_crc_error_count = diagnostics->encoder_crc_error_count;
     snapshot->encoder_exception_count = diagnostics->encoder_exception_count;
+}
+
+uint8_t PatrolDiagnostics_FormatCanJson(const PatrolDiagnosticsSnapshot* s,
+    uint8_t bus_off, uint32_t rx_overflow, char* output, uint16_t size)
+{
+    int length;
+    if (s == 0 || output == 0 || size == 0U) return 0U;
+    length = snprintf(output, size,
+        "{\"canRx\":%lu,\"canIgnored\":%lu,\"canRxOverflow\":%lu,\"canBusOff\":%s,"
+        "\"steerHb\":%s,\"driveHb\":%s,\"steerNmt\":%u,\"driveNmt\":%u,"
+        "\"steerFresh\":%s,\"driveFresh\":%s,\"steerRaw\":%ld,\"leftRpm\":%ld,\"rightRpm\":%ld,"
+        "\"steerSw\":%u,\"driveSw\":%u,\"sdoOk\":%lu,\"sdoReadMask\":%u,\"sdoAbortMask\":%u,"
+        "\"sdoTimeouts\":%lu,\"sdoAborts\":%lu,\"lastAbort\":%lu,\"sdoTxErrors\":%lu,"
+        "\"driveObjects\":[%ld,%ld,%ld,%ld,%ld,%ld,%ld]}",
+        (unsigned long)s->can_rx_count, (unsigned long)s->can_ignored_count,
+        (unsigned long)rx_overflow, bus_off ? "true" : "false",
+        s->steering_online ? "true" : "false", s->drive_online ? "true" : "false",
+        (unsigned int)s->steering_heartbeat_state, (unsigned int)s->drive_heartbeat_state,
+        s->steering_feedback_fresh ? "true" : "false", s->drive_feedback_fresh ? "true" : "false",
+        (long)s->steering_position_count, (long)s->left_actual_rpm, (long)s->right_actual_rpm,
+        (unsigned int)s->steering_status_word, (unsigned int)s->drive_status_word,
+        (unsigned long)s->sdo_success_count, (unsigned int)s->sdo_success_mask,
+        (unsigned int)s->sdo_abort_mask, (unsigned long)s->sdo_timeout_count,
+        (unsigned long)s->sdo_abort_count, (unsigned long)s->last_sdo_abort_code,
+        (unsigned long)s->sdo_tx_error_count,
+        (long)s->drive_objects[0], (long)s->drive_objects[1], (long)s->drive_objects[2],
+        (long)s->drive_objects[3], (long)s->drive_objects[4], (long)s->drive_objects[5],
+        (long)s->drive_objects[6]);
+    return (uint8_t)(length >= 0 && length < size);
 }

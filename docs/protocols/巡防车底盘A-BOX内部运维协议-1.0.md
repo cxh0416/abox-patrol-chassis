@@ -78,6 +78,7 @@ A-BOX 只订阅自身 VID 的精确配置和 OTA Topic。平台重试必须沿�
 | `params.action` | 说明 |
 |---|---|
 | `get_info` | 查询 App、Boot、OTA、MQTT 和 CAN 基本信息 |
+| `get_can_diag` | 查询 CAN 节点、反馈时效及 SDO 读取诊断，不改变总线或运动状态 |
 | `get_log` | 获取内存日志快照 |
 | `reboot` | 响应成功发布后受控重启 |
 | `power_on` | 将车辆电源控制输出置为高电平 |
@@ -97,3 +98,18 @@ OTA 请求使用 `command=ota_upgrade`，`params` 必须包含不可变 HTTPS `u
 查询日志分片和主动告警都发布到 `/internal/log`，每条消息必须携带 `data.product=patrol_vehicle_chassis`。查询分片还携带 `requestId`、`sequence`、`total` 和 `lines`；主动告警携带 `level` 和 `lines`。
 
 日志是诊断流量，不是设备在线或产品归属证据。平台只能在适配器完成 `version` 与 `product` 校验后保存日志，且不得由日志创建或刷新设备记录。公共业务平台不得订阅或解释该 Topic。
+
+
+## CAN 独立只读诊断
+
+`get_can_diag` 的请求与 `get_info` 使用相同信封和 Topic，只将 `params.action` 改为 `get_can_diag`。成功响应 `code=200`，`result` 含：
+
+- `canRx`、`canIgnored`、`canRxOverflow`、`canBusOff`：接收计数、未匹配事务帧计数、接收溢出和 Bus-Off。
+- `steerHb/driveHb`、`steerNmt/driveNmt`：节点心跳在线状态及最近 NMT 状态字节。
+- `steerFresh/driveFresh`：转向原始位置、左右实测转速是否各自处于反馈有效期；不依赖独立编码器，不等同于整车 `feedbackFresh` 或 `safetyReady`。
+- `steerRaw`、`leftRpm/rightRpm`、`steerSw/driveSw`：最近转向原始位置、左右转速和两个状态字。数据过期时保留上次值，必须结合时效字段使用。
+- `sdoOk`、`sdoTimeouts`、`sdoAborts`、`lastAbort`、`sdoTxErrors`：成功应答、等待超时、明确 Abort、最近 Abort 码和发送错误的累计计数。
+- `driveObjects`：Node 2 的 `2000～2006` 最近读取值，按索引升序排列；未成功读取的初始零值不代表真实反馈。
+- `sdoReadMask/sdoAbortMask`：从本次启动以来各对象曾成功/曾返回 Abort 的位图，按以下顺序从 bit 0 到 bit 11：Node1 `6041,6064`，Node2 `6041,6069,6869,2000,2001,2002,2003,2004,2005,2006`。位图不代替实时反馈有效期。
+
+此查询不发送 NMT、SDO 下载、PDO 目标、驱动使能或电源命令。

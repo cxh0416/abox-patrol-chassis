@@ -145,6 +145,7 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
     action = cJSON_GetObjectItemCaseSensitive(params, "action");
     if (!cJSON_IsString(action)) goto done;
     if (strcmp(action->valuestring, "get_info") == 0) request->action = CLOUD_PROTOCOL_ACTION_GET_INFO;
+    else if (strcmp(action->valuestring, "get_can_diag") == 0) request->action = CLOUD_PROTOCOL_ACTION_GET_CAN_DIAG;
     else if (strcmp(action->valuestring, "get_log") == 0) request->action = CLOUD_PROTOCOL_ACTION_GET_LOG;
     else if (strcmp(action->valuestring, "reboot") == 0) request->action = CLOUD_PROTOCOL_ACTION_REBOOT;
     else if (strcmp(action->valuestring, "power_on") == 0) request->action = CLOUD_PROTOCOL_ACTION_POWER_ON;
