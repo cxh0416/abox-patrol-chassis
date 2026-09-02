@@ -38,6 +38,17 @@ static uint8_t fresh(uint8_t seen, uint32_t sample_ms, uint32_t now_ms, uint32_t
     return (uint8_t)(seen && (now_ms - sample_ms) <= timeout_ms);
 }
 
+static uint8_t sdo_node_ready(const PatrolDiagnostics* d, uint8_t node, uint32_t now_ms)
+{
+    uint8_t seen = node == 1U ? d->steering_heartbeat_seen : d->drive_heartbeat_seen;
+    uint8_t state = node == 1U ? d->steering_heartbeat_state : d->drive_heartbeat_state;
+    uint32_t stamp = node == 1U ? d->steering_heartbeat_ms : d->drive_heartbeat_ms;
+    /* Wait for an existing peer to announce Pre-Operational/Operational.
+     * An unpowered bus cannot ACK a request; do not queue retransmissions. */
+    return (uint8_t)(fresh(seen, stamp, now_ms, PATROL_DIAG_HEARTBEAT_TIMEOUT_MS) &&
+                     (state == 0x7FU || state == 0x05U));
+}
+
 static void finish_pending(PatrolDiagnostics* diagnostics, uint32_t now_ms)
 {
     uint8_t entry = diagnostics->pending_entry;
@@ -162,6 +173,11 @@ uint8_t PatrolDiagnostics_TakeSdoRead(PatrolDiagnostics* diagnostics, uint32_t n
     if (diagnostics->pending_valid)
     {
         const PatrolSdoEntry* entry = &g_sdo_entries[diagnostics->pending_entry];
+        if (!sdo_node_ready(diagnostics, entry->node, now_ms))
+        {
+            finish_pending(diagnostics, now_ms);
+            return 0U;
+        }
         if ((now_ms - diagnostics->pending_sent_ms) < PATROL_DIAG_SDO_TIMEOUT_MS) return 0U;
         diagnostics->sdo_timeout_count++;
         if (diagnostics->pending_retry >= PATROL_DIAG_SDO_RETRY_COUNT)
@@ -178,6 +194,7 @@ uint8_t PatrolDiagnostics_TakeSdoRead(PatrolDiagnostics* diagnostics, uint32_t n
     {
         uint8_t index = (uint8_t)((diagnostics->next_sdo_entry + offset) % PATROL_DIAG_SDO_ENTRY_COUNT);
         const PatrolSdoEntry* entry = &g_sdo_entries[index];
+        if (!sdo_node_ready(diagnostics, entry->node, now_ms)) continue;
         if (!due(now_ms, diagnostics->sdo_due_ms[index])) continue;
         diagnostics->pending_valid = 1U;
         diagnostics->pending_entry = index;
@@ -281,19 +298,19 @@ void PatrolDiagnostics_Snapshot(const PatrolDiagnostics* diagnostics, uint32_t n
 }
 
 uint8_t PatrolDiagnostics_FormatCanJson(const PatrolDiagnosticsSnapshot* s,
-    uint8_t bus_off, uint32_t rx_overflow, char* output, uint16_t size)
+    uint8_t bus_off, uint8_t bus_off_active, uint32_t rx_overflow, char* output, uint16_t size)
 {
     int length;
     if (s == 0 || output == 0 || size == 0U) return 0U;
     length = snprintf(output, size,
-        "{\"canRx\":%lu,\"canIgnored\":%lu,\"canRxOverflow\":%lu,\"canBusOff\":%s,"
+        "{\"canRx\":%lu,\"canIgnored\":%lu,\"canRxOverflow\":%lu,\"canBusOff\":%s,\"canBusOffActive\":%s,"
         "\"steerHb\":%s,\"driveHb\":%s,\"steerNmt\":%u,\"driveNmt\":%u,"
         "\"steerFresh\":%s,\"driveFresh\":%s,\"steerRaw\":%ld,\"leftRpm\":%ld,\"rightRpm\":%ld,"
         "\"steerSw\":%u,\"driveSw\":%u,\"sdoOk\":%lu,\"sdoReadMask\":%u,\"sdoAbortMask\":%u,"
         "\"sdoTimeouts\":%lu,\"sdoAborts\":%lu,\"lastAbort\":%lu,\"sdoTxErrors\":%lu,"
         "\"driveObjects\":[%ld,%ld,%ld,%ld,%ld,%ld,%ld]}",
         (unsigned long)s->can_rx_count, (unsigned long)s->can_ignored_count,
-        (unsigned long)rx_overflow, bus_off ? "true" : "false",
+        (unsigned long)rx_overflow, bus_off ? "true" : "false", bus_off_active ? "true" : "false",
         s->steering_online ? "true" : "false", s->drive_online ? "true" : "false",
         (unsigned int)s->steering_heartbeat_state, (unsigned int)s->drive_heartbeat_state,
         s->steering_feedback_fresh ? "true" : "false", s->drive_feedback_fresh ? "true" : "false",

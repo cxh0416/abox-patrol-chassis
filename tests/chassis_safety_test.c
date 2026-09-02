@@ -20,6 +20,34 @@ static uint8_t test_power_write(uint8_t on)
     return 1U;
 }
 
+static int test_sdo_waits_for_node(void)
+{
+    PatrolDiagnostics d;
+    PatrolCanFrame f = {0}, request;
+    PatrolDiagnostics_Init(&d);
+    for (uint32_t now = 0; now < 10000; now += 10)
+        CHECK(!PatrolDiagnostics_TakeSdoRead(&d, now, &request));
+    CHECK(d.sdo_timeout_count == 0 && !d.pending_valid);
+    f.id = 0x702; f.dlc = 1; f.data[0] = 0;
+    PatrolDiagnostics_OnCanFrame(&d, &f, 10000);
+    CHECK(!PatrolDiagnostics_TakeSdoRead(&d, 10001, &request));
+    f.data[0] = 4; /* NMT Stopped does not provide an SDO service. */
+    PatrolDiagnostics_OnCanFrame(&d, &f, 10002);
+    CHECK(!PatrolDiagnostics_TakeSdoRead(&d, 10003, &request));
+    f.data[0] = 0x7F;
+    PatrolDiagnostics_OnCanFrame(&d, &f, 10004);
+    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 10005, &request));
+    CHECK(request.id == 0x602 && request.data[1] == 0x41 && request.data[2] == 0x60);
+    CHECK(!PatrolDiagnostics_TakeSdoRead(&d, 14000, &request));
+    CHECK(!d.pending_valid && d.sdo_timeout_count == 0);
+    CHECK(!PatrolDiagnostics_TakeSdoRead(&d, 14010, &request));
+    f.id = 0x701; f.data[0] = 5;
+    PatrolDiagnostics_OnCanFrame(&d, &f, 14011);
+    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 14012, &request));
+    CHECK(request.id == 0x601);
+    return 0;
+}
+
 static int test_field_sdo_replies(void)
 {
     /* VSY field log 2026-08-27: 6041 / 2000..2005 omit CAN padding.
@@ -88,8 +116,8 @@ static int test_field_sdo_replies(void)
     memset(&s, 0xFF, sizeof(s));
     s.steering_position_count = s.left_actual_rpm = s.right_actual_rpm = INT32_MIN;
     for (uint8_t i = 0; i < 7; i++) s.drive_objects[i] = INT32_MIN;
-    CHECK(PatrolDiagnostics_FormatCanJson(&s, 0, UINT32_MAX, json, sizeof(json)));
-    CHECK(!PatrolDiagnostics_FormatCanJson(&s, 0, 0, tiny, sizeof(tiny)));
+    CHECK(PatrolDiagnostics_FormatCanJson(&s, 0, 0, UINT32_MAX, json, sizeof(json)));
+    CHECK(!PatrolDiagnostics_FormatCanJson(&s, 0, 0, 0, tiny, sizeof(tiny)));
     snprintf(envelope, sizeof(envelope), "{\"version\":\"2.0\",\"timestamp\":18446744073709551615,"
         "\"data\":{\"product\":\"patrol_vehicle_chassis\",\"requestId\":\"%063d\",\"code\":200,"
         "\"msg\":\"OK\",\"result\":%s}}", 0, json);
@@ -100,6 +128,7 @@ static int test_field_sdo_replies(void)
 
 int main(void)
 {
+    CHECK(test_sdo_waits_for_node() == 0);
     CHECK(test_field_sdo_replies() == 0);
     ChassisControl control;
     ChassisFeedback feedback = {0};

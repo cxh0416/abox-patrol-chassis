@@ -19,6 +19,7 @@
 #include "task.h"
 #include "usart.h"
 #include "vcu_config.h"
+#include "vehicle_power_output.h"
 
 #ifndef PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED
 #define PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED 0
@@ -193,6 +194,11 @@ uint8_t VcuRtos_CanBusOff(void)
     return (g_can_bus_off_mask & 0x01U) ? 1U : 0U;
 }
 
+uint8_t VcuRtos_CanBusOffActive(void)
+{
+    return (hcan1.Instance->ESR & CAN_ESR_BOFF) != 0U ? 1U : 0U;
+}
+
 void VcuRtos_GetDiagnostics(PatrolDiagnosticsSnapshot* snapshot)
 {
     if (snapshot == NULL) return;
@@ -270,7 +276,8 @@ static void Vcu_CanopenTask(void *argument)
         PatrolCanFrame request;
         uint8_t have_request = 0U;
         uint32_t now = HAL_GetTick();
-        if (HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) > 0U)
+        if (VehiclePowerOutput_IsOn() && !VcuRtos_CanBusOffActive() &&
+            HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) > 0U)
         {
             taskENTER_CRITICAL();
             have_request = PatrolDiagnostics_TakeSdoRead(&g_diagnostics, now, &request);

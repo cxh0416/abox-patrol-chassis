@@ -28,6 +28,7 @@ BaseType_t VcuRtos_CanRxPop(VcuCanFrame_t *frame, TickType_t wait_ticks);
 uint32_t VcuRtos_CanRxOverflowCount(void);
 uint8_t VcuRtos_CanStarted(void);
 uint8_t VcuRtos_CanBusOff(void);
+uint8_t VcuRtos_CanBusOffActive(void);
 void VcuRtos_GetDiagnostics(PatrolDiagnosticsSnapshot* snapshot);
 
 #ifdef __cplusplus

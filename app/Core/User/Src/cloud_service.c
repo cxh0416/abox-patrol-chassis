@@ -645,7 +645,7 @@ static void handle_config_request(const CloudProtocolRequest_t* request)
         PatrolDiagnosticsSnapshot snapshot;
         VcuRtos_GetDiagnostics(&snapshot);
         if (!PatrolDiagnostics_FormatCanJson(&snapshot, VcuRtos_CanBusOff(),
-                VcuRtos_CanRxOverflowCount(), result, sizeof(result)))
+                VcuRtos_CanBusOffActive(), VcuRtos_CanRxOverflowCount(), result, sizeof(result)))
             schedule_simple_error(g_topic_config_resp, request_id, 500U, "DIAGNOSTIC_TOO_LARGE");
         else if (!schedule_response(g_topic_config_resp, request_id, 200U, "OK", result, 0U))
             schedule_simple_error(g_topic_config_resp, request_id, 409U, "DEVICE_BUSY");

@@ -113,6 +113,6 @@ void PatrolDiagnostics_OnEncoderError(PatrolDiagnostics* diagnostics, PatrolEnco
 void PatrolDiagnostics_Snapshot(const PatrolDiagnostics* diagnostics, uint32_t now_ms,
                                 PatrolDiagnosticsSnapshot* snapshot);
 uint8_t PatrolDiagnostics_FormatCanJson(const PatrolDiagnosticsSnapshot* snapshot,
-    uint8_t bus_off, uint32_t rx_overflow, char* output, uint16_t size);
+    uint8_t bus_off, uint8_t bus_off_active, uint32_t rx_overflow, char* output, uint16_t size);
 
 #endif

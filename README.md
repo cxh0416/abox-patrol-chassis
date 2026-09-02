@@ -1,6 +1,6 @@
 # 巡防车底盘控制器
 
-`patrol_vehicle_chassis` 是巡防车底盘 A-Box 固件，当前版本 `0.2.3`。本仓库只复用已提交的 STM32F105、FreeRTOS、EC800、MQTT 和 Boot V2 基础设施，不包含清扫车业务。
+`patrol_vehicle_chassis` 是巡防车底盘 A-Box 固件，当前版本 `0.2.4`。本仓库只复用已提交的 STM32F105、FreeRTOS、EC800、MQTT 和 Boot V2 基础设施，不包含清扫车业务。
 
 当前阶段是“被动观测联调”：Release 固件只发送 CANopen SDO 读请求和绝对编码器 Modbus 读请求，解析节点心跳、实测转速、转向位置和编码器计数。运动执行仍由独立编译门禁保持关闭；构建成功、MQTT ACK 或 CAN 报文不代表车辆已经运动。
 

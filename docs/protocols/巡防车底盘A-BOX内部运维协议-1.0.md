@@ -104,7 +104,7 @@ OTA 请求使用 `command=ota_upgrade`，`params` 必须包含不可变 HTTPS `u
 
 `get_can_diag` 的请求与 `get_info` 使用相同信封和 Topic，只将 `params.action` 改为 `get_can_diag`。成功响应 `code=200`，`result` 含：
 
-- `canRx`、`canIgnored`、`canRxOverflow`、`canBusOff`：接收计数、未匹配事务帧计数、接收溢出和 Bus-Off。
+- `canRx`、`canIgnored`、`canRxOverflow`、`canBusOff`：接收计数、未匹配事务帧计数、接收溢出和本次启动以来锁存的 Bus-Off。`canBusOffActive` 单独表示 CAN 控制器当前是否处于 Bus-Off；自动恢复不清除安全锁存。
 - `steerHb/driveHb`、`steerNmt/driveNmt`：节点心跳在线状态及最近 NMT 状态字节。
 - `steerFresh/driveFresh`：转向原始位置、左右实测转速是否各自处于反馈有效期；不依赖独立编码器，不等同于整车 `feedbackFresh` 或 `safetyReady`。
 - `steerRaw`、`leftRpm/rightRpm`、`steerSw/driveSw`：最近转向原始位置、左右转速和两个状态字。数据过期时保留上次值，必须结合时效字段使用。
