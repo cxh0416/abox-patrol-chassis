@@ -88,6 +88,8 @@ A-BOX 只订阅自身 VID 的精确配置和 OTA Topic。平台重试必须沿�
 
 `get_info` 的 `result.diagnostics` 是只读联调快照：`canRx` 为 CAN1 已接收标准数据帧计数，`steerHb/driveHb` 为 Node 1/2 心跳在线判断，`steerRaw`、`leftRpm/rightRpm` 和 `encoderRaw` 为最近原始反馈，`encoderOnline` 为编码器反馈时效判断，`sdoTimeouts/encoderTimeouts` 为累计超时计数。上述字段只用于诊断，不代表标定、运动或验收成功。
 
+周期状态的 `data.transportDiagnostics` 用于接收链路诊断：`mqttRxLines`、`mqttRxDecoded`、`mqttRxDispatched` 分别表示 EC800 上报的 `+QMTRECV` 行数、完成解码数和交给业务回调的消息数；`mqttRxRejected`、`mqttRxOverwrites`、`mqttRxTimeouts` 表示拒绝帧、待处理覆盖和多行超时；`ecDmaOverflows`、`ecDmaRestarts`、`ecDmaMaxBacklog`、`ecLineOverflows` 表示 USART1 DMA 软件环溢出、重启、历史最大积压字节数和 AT 行缓冲溢出。计数从本次上电开始累计，只用于区分 Broker 到模组、DMA、AT 行解析和业务派发阶段，不证明某条命令已经完成。为保持 `get_info` 单包边界，完整传输计数不重复放入控制响应。
+
 OTA 请求使用 `command=ota_upgrade`，`params` 必须包含不可变 HTTPS `url`、目标 `version`、正整数 `size` 和八位十六进制 `crc32`。`code=200` 只表示候选镜像已校验并进入待安装状态，不代表安装、试运行或确认成功；平台仍须通过 `get_info` 和新 App 版本确认 `otaState=CONFIRMED`。
 
 ## 5. 日志

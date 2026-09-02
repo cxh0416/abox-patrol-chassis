@@ -54,6 +54,11 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertNotRegex(cloud, r"%[-+0-9.#]*[fFeEgGaA]")
         self.assertNotRegex(remote, r"%[-+0-9.#]*[fFeEgGaA]")
         self.assertIn('\\\"code\\\":%u', remote)
+        mqtt_core = (ROOT / "app/Core/User/Src/mqtt_core.c").read_text(encoding="utf-8")
+        self.assertIn('AT+QMTSUB=%d,1,\\\"%s\\\",1', mqtt_core)
+        self.assertIn('\\\"transportDiagnostics\\\"', cloud)
+        self.assertIn('\\\"ecDmaOverflows\\\"', cloud)
+        self.assertNotIn('\\\"encoderTimeouts\\\":%lu}}}', cloud)
 
     def test_archive_hashes(self):
         archive = ROOT / "docs/archive/2026-08-31-input"

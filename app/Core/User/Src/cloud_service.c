@@ -397,7 +397,7 @@ static void build_info_result(char* output, uint16_t size)
     json_appendf(&writer, ",\"lastOtaError\":%lu,\"diagnostics\":{\"canRx\":%lu,"
                  "\"steerHb\":%s,\"driveHb\":%s,\"steerRaw\":%ld,\"leftRpm\":%ld,"
                  "\"rightRpm\":%ld,\"encoderRaw\":%lu,\"encoderOnline\":%s,"
-                 "\"sdoTimeouts\":%lu,\"encoderTimeouts\":%lu}}}",
+                 "\"sdoTimeouts\":%lu,\"encoderTimeouts\":%lu}}",
                  (unsigned long)(OtaService_LastError() ? OtaService_LastError() :
                                  (have_state ? state.last_error : 0U)),
                  (unsigned long)diagnostics.can_rx_count,
@@ -473,6 +473,7 @@ static uint8_t build_status_report(char* output, uint16_t size, const char* repo
     char actual_steering[24];
     char actual_encoder[24];
     PatrolDiagnosticsSnapshot diagnostics;
+    MQTT_CoreRxDiagnostics_t mqtt_rx;
     if (control->fault_latched) motion_state = "fault";
     else if (control->reversal_pending) motion_state = "reversing_wait";
     else if (feedback_fresh &&
@@ -488,6 +489,7 @@ static uint8_t build_status_report(char* output, uint16_t size, const char* repo
         !FixedPoint_FormatMilli(actual_encoder, sizeof(actual_encoder),
                                 feedback->encoder_actual_mdeg)) return 0U;
     VcuRtos_GetDiagnostics(&diagnostics);
+    MQTT_Core_GetRxDiagnostics(&mqtt_rx);
     json_init(&writer, output, size);
     json_append(&writer, "{\"version\":\"3.0\",\"timestamp\":");
     json_append(&writer, timestamp);
@@ -503,7 +505,11 @@ static uint8_t build_status_report(char* output, uint16_t size, const char* repo
         "\"steeringOnline\":%s,\"driveOnline\":%s,\"encoderOnline\":%s,"
         "\"canBusOff\":%s,\"driveFault\":%s,\"feedbackFresh\":%s,"
         "\"calibrated\":%s,\"powerReady\":%s,\"powerOutputOn\":%s,\"otaBusy\":%s,\"safetyReady\":%s,"
-        "\"stopReason\":%u,\"faultLatched\":%s}}",
+        "\"stopReason\":%u,\"faultLatched\":%s,"
+        "\"transportDiagnostics\":{\"mqttRxLines\":%lu,\"mqttRxDecoded\":%lu,"
+        "\"mqttRxRejected\":%lu,\"mqttRxDispatched\":%lu,\"mqttRxOverwrites\":%lu,"
+        "\"mqttRxTimeouts\":%lu,\"mqttRxLastMs\":%lu,\"ecDmaOverflows\":%lu,"
+        "\"ecDmaRestarts\":%lu,\"ecDmaMaxBacklog\":%lu,\"ecLineOverflows\":%lu}}}",
         (int)control->target_rpm, target_steering,
         (int)feedback->left_actual_rpm, (int)feedback->right_actual_rpm,
         actual_steering, actual_encoder,
@@ -516,7 +522,18 @@ static uint8_t build_status_report(char* output, uint16_t size, const char* repo
         VehiclePowerOutput_IsOn() ? "true" : "false",
         feedback->ota_busy ? "true" : "false",
         ChassisControl_SafetyReady(control, now) ? "true" : "false",
-        (unsigned int)control->stop_reason, control->fault_latched ? "true" : "false");
+        (unsigned int)control->stop_reason, control->fault_latched ? "true" : "false",
+        (unsigned long)mqtt_rx.qmtrecv_line_count,
+        (unsigned long)mqtt_rx.decoded_message_count,
+        (unsigned long)mqtt_rx.rejected_frame_count,
+        (unsigned long)mqtt_rx.dispatched_message_count,
+        (unsigned long)mqtt_rx.pending_overwrite_count,
+        (unsigned long)mqtt_rx.multiline_timeout_count,
+        (unsigned long)mqtt_rx.last_qmtrecv_tick,
+        (unsigned long)ABoxEc800Rx_OverflowCount(&g_ec800_rx),
+        (unsigned long)ABoxEc800Rx_RestartCount(&g_ec800_rx),
+        (unsigned long)ABoxEc800Rx_MaxBacklog(&g_ec800_rx),
+        (unsigned long)EC800_AT_LineOverflowCount(&g_at_core));
     return (uint8_t)(writer.valid && writer.length < CLOUD_PAYLOAD_LIMIT);
 }
 

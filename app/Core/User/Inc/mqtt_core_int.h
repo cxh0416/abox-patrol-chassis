@@ -56,6 +56,7 @@ extern uint32_t g_mqtt_last_pub_ok_tick;
 extern uint32_t g_mqtt_last_mqtt_rx_tick;
 extern uint32_t g_mqtt_pub_ok_seq;
 extern uint8_t g_mqtt_pub_timeout_count;
+extern MQTT_CoreRxDiagnostics_t g_mqtt_rx_diagnostics;
 extern volatile uint8_t g_mqtt_last_evt_pending;
 extern char g_mqtt_last_evt_line[128];
 

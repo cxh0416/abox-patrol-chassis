@@ -40,6 +40,7 @@ uint32_t g_mqtt_last_pub_ok_tick = 0;
 uint32_t g_mqtt_last_mqtt_rx_tick = 0;
 uint32_t g_mqtt_pub_ok_seq = 0;
 uint8_t g_mqtt_pub_timeout_count = 0U;
+MQTT_CoreRxDiagnostics_t g_mqtt_rx_diagnostics;
 static uint8_t g_mqtt_paused = 0U;
 
 #if VCU_EC800_AT_DIAG_UART5
@@ -136,6 +137,7 @@ void MQTT_Core_Init(const MQTT_CoreConfig_t* cfg, MQTT_CoreMsgCallback_t cb)
 {
     memset(&g_mqtt_cfg, 0, sizeof(g_mqtt_cfg));
     memset(&g_mqtt_rt, 0, sizeof(g_mqtt_rt));
+    memset(&g_mqtt_rx_diagnostics, 0, sizeof(g_mqtt_rx_diagnostics));
     memset(g_mqtt_line_buf, 0, sizeof(g_mqtt_line_buf));
 
     g_mqtt_line_len = 0;
@@ -342,6 +344,14 @@ uint8_t MQTT_Core_CanRunBackgroundAt(void)
 }
 
 MQTT_CoreState_t MQTT_Core_GetState(void) { return g_mqtt_rt.state; }
+
+void MQTT_Core_GetRxDiagnostics(MQTT_CoreRxDiagnostics_t* diagnostics)
+{
+    if (diagnostics == 0) return;
+    __disable_irq();
+    *diagnostics = g_mqtt_rx_diagnostics;
+    __enable_irq();
+}
 
 uint8_t MQTT_Core_IsPublishActive(void) { return mqtt_pub_flow_active(); }
 
@@ -760,7 +770,7 @@ void MQTT_Core_Task(void)
             }
             mqtt_clear_flags();
             mqtt_set_state(MQTT_CORE_ST_WAIT_SUB);
-            mqtt_send_cmd("AT+QMTSUB=%d,1,\"%s\",0\r\n", g_mqtt_cfg.client_idx, g_mqtt_sub_topics[g_mqtt_rt.sub_index]);
+            mqtt_send_cmd("AT+QMTSUB=%d,1,\"%s\",1\r\n", g_mqtt_cfg.client_idx, g_mqtt_sub_topics[g_mqtt_rt.sub_index]);
             break;
 
         case MQTT_CORE_ST_WAIT_SUB:
@@ -859,6 +869,8 @@ void MQTT_Core_Task(void)
                 __enable_irq();
 
                 mqtt_dispatch_message(g_mqtt_rx_pending_topic, g_mqtt_rx_pending_payload);
+                if (g_mqtt_rx_diagnostics.dispatched_message_count != 0xFFFFFFFFUL)
+                    g_mqtt_rx_diagnostics.dispatched_message_count++;
                 g_mqtt_rx_pending_topic[0] = '\0';
                 g_mqtt_rx_pending_payload[0] = '\0';
                 break;

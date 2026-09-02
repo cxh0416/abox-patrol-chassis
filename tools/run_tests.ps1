@@ -37,6 +37,22 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $qmtRecvTest
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
+$mqttPipelineTest = Join-Path $hostBuild 'mqtt_receive_pipeline_test.exe'
+& $gcc -std=c11 -Wall -Wextra `
+    "-I$PSScriptRoot\..\app\Core\User\Inc" `
+    "-I$PSScriptRoot\..\platform\include" `
+    "-I$PSScriptRoot\..\platform\components\cjson" `
+    "$PSScriptRoot\..\platform\components\ec800\abox_ec800_at.c" `
+    "$PSScriptRoot\..\platform\components\ec800\abox_ec800_rx.c" `
+    "$PSScriptRoot\..\app\Core\User\Src\mqtt_qmtrecv.c" `
+    "$PSScriptRoot\..\app\Core\User\Src\cloud_protocol.c" `
+    "$PSScriptRoot\..\platform\components\cjson\cJSON.c" `
+    "$PSScriptRoot\..\tests\mqtt_receive_pipeline_test.c" `
+    -o $mqttPipelineTest
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& $mqttPipelineTest
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
 $chassisTest = Join-Path $hostBuild 'chassis_safety_test.exe'
 & $gcc -std=c11 -Wall -Wextra `
     "-I$PSScriptRoot\..\app\Core\User\Inc" `

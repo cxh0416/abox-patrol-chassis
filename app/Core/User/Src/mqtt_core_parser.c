@@ -84,6 +84,10 @@ uint8_t MQTT_Core_IsRxCollecting(void)
 {
     if (!g_mqtt_rx_collecting) return 0U;
     if ((HAL_GetTick() - g_mqtt_rx_collect_tick) <= MQTT_CORE_RX_MULTILINE_TIMEOUT_MS) return 1U;
+    if (g_mqtt_rx_diagnostics.multiline_timeout_count != 0xFFFFFFFFUL)
+        g_mqtt_rx_diagnostics.multiline_timeout_count++;
+    if (g_mqtt_rx_diagnostics.rejected_frame_count != 0xFFFFFFFFUL)
+        g_mqtt_rx_diagnostics.rejected_frame_count++;
     mqtt_rx_parser_reset();
     return 0U;
 }
@@ -169,11 +173,19 @@ static void mqtt_try_finish_rx_collect(void)
     g_mqtt_rx_pending_payload[end_len] = '\0';
     g_mqtt_rx_collect_len = end_len;
 
-    if (g_mqtt_rx_msg_pending) { APP_LOGW("MQTT", "rx pending overwrite"); }
+    if (g_mqtt_rx_msg_pending)
+    {
+        if (g_mqtt_rx_diagnostics.pending_overwrite_count != 0xFFFFFFFFUL)
+            g_mqtt_rx_diagnostics.pending_overwrite_count++;
+        APP_LOGW("MQTT", "rx pending overwrite");
+    }
 
     __disable_irq();
     g_mqtt_rx_msg_pending = 1U;
     g_mqtt_last_mqtt_rx_tick = HAL_GetTick();
+    g_mqtt_rx_diagnostics.last_qmtrecv_tick = g_mqtt_last_mqtt_rx_tick;
+    if (g_mqtt_rx_diagnostics.decoded_message_count != 0xFFFFFFFFUL)
+        g_mqtt_rx_diagnostics.decoded_message_count++;
     __enable_irq();
 
     mqtt_rx_parser_reset();
@@ -183,7 +195,12 @@ static void mqtt_handle_qmtrecv_continuation(const char* line)
 {
     if (!MQTT_Core_IsRxCollecting()) return;
     if (line == 0) return;
-    if (!mqtt_append_rx_payload(line, (uint16_t)strlen(line))) mqtt_rx_parser_reset();
+    if (!mqtt_append_rx_payload(line, (uint16_t)strlen(line)))
+    {
+        if (g_mqtt_rx_diagnostics.rejected_frame_count != 0xFFFFFFFFUL)
+            g_mqtt_rx_diagnostics.rejected_frame_count++;
+        mqtt_rx_parser_reset();
+    }
     mqtt_try_finish_rx_collect();
 }
 
@@ -192,26 +209,40 @@ static void mqtt_parse_qmtrecv_line(const char* line)
     MqttQmtRecvFrame_t frame;
 
     if (line == 0) return;
+    if (g_mqtt_rx_diagnostics.qmtrecv_line_count != 0xFFFFFFFFUL)
+        g_mqtt_rx_diagnostics.qmtrecv_line_count++;
     mqtt_rx_parser_reset();
     if (!MqttQmtRecv_DecodeLine(line,
                                 g_mqtt_rx_pending_topic, sizeof(g_mqtt_rx_pending_topic),
                                 g_mqtt_rx_pending_payload, sizeof(g_mqtt_rx_pending_payload),
                                 &frame))
     {
+        if (g_mqtt_rx_diagnostics.rejected_frame_count != 0xFFFFFFFFUL)
+            g_mqtt_rx_diagnostics.rejected_frame_count++;
         APP_LOGW("MQTT", "QMTRECV frame rejected len=%u", (unsigned)strlen(line));
         return;
     }
     if (frame.complete)
     {
-        if (g_mqtt_rx_msg_pending) APP_LOGW("MQTT", "rx pending overwrite");
+        if (g_mqtt_rx_msg_pending)
+        {
+            if (g_mqtt_rx_diagnostics.pending_overwrite_count != 0xFFFFFFFFUL)
+                g_mqtt_rx_diagnostics.pending_overwrite_count++;
+            APP_LOGW("MQTT", "rx pending overwrite");
+        }
         __disable_irq();
         g_mqtt_rx_msg_pending = 1U;
         g_mqtt_last_mqtt_rx_tick = HAL_GetTick();
+        g_mqtt_rx_diagnostics.last_qmtrecv_tick = g_mqtt_last_mqtt_rx_tick;
+        if (g_mqtt_rx_diagnostics.decoded_message_count != 0xFFFFFFFFUL)
+            g_mqtt_rx_diagnostics.decoded_message_count++;
         __enable_irq();
         return;
     }
     if (frame.outer_escaped)
     {
+        if (g_mqtt_rx_diagnostics.rejected_frame_count != 0xFFFFFFFFUL)
+            g_mqtt_rx_diagnostics.rejected_frame_count++;
         APP_LOGW("MQTT", "escaped QMTRECV split frame rejected len=%u", (unsigned)frame.payload_length);
         mqtt_rx_parser_reset();
         return;

@@ -86,6 +86,17 @@ typedef struct
     uint8_t pub_wait_result;
 } MQTT_CoreRuntime_t;
 
+typedef struct
+{
+    uint32_t qmtrecv_line_count;
+    uint32_t decoded_message_count;
+    uint32_t rejected_frame_count;
+    uint32_t dispatched_message_count;
+    uint32_t pending_overwrite_count;
+    uint32_t multiline_timeout_count;
+    uint32_t last_qmtrecv_tick;
+} MQTT_CoreRxDiagnostics_t;
+
 void MQTT_Core_Init(const MQTT_CoreConfig_t* cfg, MQTT_CoreMsgCallback_t cb);
 void MQTT_Core_SetAtCore(Ec800AtCore_t* at_core);
 void MQTT_Core_Reset(void);
@@ -110,5 +121,6 @@ uint8_t MQTT_Core_IsIccidValid(void);
 const char* MQTT_Core_GetIccid(void);
 uint8_t MQTT_Core_IsIccidPending(void);
 uint8_t MQTT_Core_IsRxCollecting(void);
+void MQTT_Core_GetRxDiagnostics(MQTT_CoreRxDiagnostics_t* diagnostics);
 
 #endif
