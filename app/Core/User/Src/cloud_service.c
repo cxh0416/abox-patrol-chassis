@@ -678,9 +678,10 @@ static uint8_t calibration_feedback_ready(const CloudProtocolRequest_t* request,
                      encoder_offset <= request->steering_tolerance_mdeg);
 }
 
-static void handle_config_request(const CloudProtocolRequest_t* request)
+static __attribute__((noinline)) void handle_config_request(const CloudProtocolRequest_t* request)
 {
-    char result[900];
+    /* Remote task is the sole caller. Keep Flash-save scratch off its nested MQTT stack. */
+    static char result[900];
     CloudProtocolAction_t action;
     const char* request_id;
     if (request == 0) return;
@@ -844,9 +845,18 @@ static void handle_ota_request(const CloudProtocolRequest_t* request)
     g_ota_response_waiting = 1U;
 }
 
+static __attribute__((noinline)) void handle_public_control(const char* payload)
+{
+    char response[CLOUD_PAYLOAD_SIZE];
+    if (RemoteService_HandleControl(payload, (uint16_t)strlen(payload), response, sizeof(response)))
+        (void)schedule_raw_response(g_topic_control_resp, response);
+    else APP_LOGW("REMOTE", "invalid or busy chassis control request");
+}
+
 static void cloud_on_message(const char* topic, const char* payload)
 {
-    CloudProtocolRequest_t request;
+    /* MQTT callbacks are serialized by the Remote task and never re-enter. */
+    static CloudProtocolRequest_t request;
     CloudProtocolStatus_t status;
     uint16_t payload_length;
     const char* response_topic;
@@ -855,10 +865,7 @@ static void cloud_on_message(const char* topic, const char* payload)
     if ((topic == 0) || (payload == 0)) return;
     if (strcmp(topic, g_topic_control_cmd) == 0)
     {
-        char response[CLOUD_PAYLOAD_SIZE];
-        if (RemoteService_HandleControl(payload, (uint16_t)strlen(payload), response, sizeof(response)))
-            (void)schedule_raw_response(g_topic_control_resp, response);
-        else APP_LOGW("REMOTE", "invalid or busy chassis control request");
+        handle_public_control(payload);
         return;
     }
     if ((strcmp(topic, g_topic_config_cmd) != 0) && (strcmp(topic, g_topic_ota_cmd) != 0)) return;

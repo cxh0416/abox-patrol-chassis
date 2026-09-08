@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([ValidatePattern('^patrol-chassis-[0-9]+\.[0-9]+\.[0-9]+$')][string]$AppVersion = 'patrol-chassis-0.2.6')
+param([ValidatePattern('^patrol-chassis-[0-9]+\.[0-9]+\.[0-9]+$')][string]$AppVersion = 'patrol-chassis-0.2.7')
 $ErrorActionPreference = 'Stop'
 $product = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $build = Join-Path $product 'app/build/BenchSteering'
@@ -13,6 +13,8 @@ $output = Join-Path $product "out/bench-$AppVersion"
 if ($LASTEXITCODE -ne 0) { throw 'Bench configure failed' }
 & cmake --build $build --parallel 4
 if ($LASTEXITCODE -ne 0) { throw 'Bench build failed' }
+& python (Join-Path $PSScriptRoot 'verify_bench_stack.py') $build
+if ($LASTEXITCODE -ne 0) { throw 'Bench stack validation failed' }
 New-Item -ItemType Directory -Force -Path $output | Out-Null
 $source = Join-Path $build 'Patrol_Vehicle_Chassis_App.bin'
 $artifact = Join-Path $output 'Patrol_Vehicle_Chassis_App.bin'
