@@ -6,15 +6,17 @@
 typedef enum { BENCH_IDLE, BENCH_PREPARING, BENCH_ACTIVE, BENCH_STOPPING, BENCH_FAULT } BenchPhase;
 typedef struct {
     BenchPhase phase;
-    uint8_t step, pending, read, width, cut_power;
+    uint8_t step, pending, read, width, cut_power, limits_aligned, upper_first;
     uint16_t index;
     uint32_t sent_ms, started_ms, stop_ms, fault;
     int32_t minimum, maximum, center, hold, desired, applied, expected;
+    int32_t calibration_center, cached_minimum, cached_maximum, previous_minimum;
     uint16_t limit_mdeg;
 } BenchSteering;
 
 void BenchSteering_Init(BenchSteering* b);
-uint8_t BenchSteering_Start(BenchSteering* b, int32_t actual, int32_t center, uint16_t limit, uint32_t now);
+uint8_t BenchSteering_Start(BenchSteering* b, int32_t actual, int32_t center,
+    int32_t calibration_center, uint16_t limit, uint32_t now);
 void BenchSteering_Stop(BenchSteering* b, uint32_t now, uint8_t cut_power);
 void BenchSteering_Tick(BenchSteering* b, uint32_t now, uint8_t requested, uint8_t safe, int32_t angle);
 uint8_t BenchSteering_Take(BenchSteering* b, uint32_t now, PatrolCanFrame* frame);

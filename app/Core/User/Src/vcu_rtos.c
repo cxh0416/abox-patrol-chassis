@@ -89,6 +89,10 @@ static BenchSteering g_bench;
 static uint8_t g_bench_turn;
 static uint8_t g_bench_transport_stopped;
 static uint16_t g_feedback_gate_mask, g_bench_fault_gate_mask;
+static SteeringCoordinate g_coordinate;
+static uint8_t g_coordinate_reset_requested;
+static int32_t g_coordinate_calibration_center;
+static uint32_t g_coordinate_absolute_center;
 #ifndef PATROL_CHASSIS_BENCH_STEERING_ENABLED
 #define PATROL_CHASSIS_BENCH_STEERING_ENABLED 0
 #endif
@@ -251,6 +255,7 @@ uint8_t VcuRtos_BenchArm(uint16_t limit_mdeg)
     taskENTER_CRITICAL();
     PatrolDiagnostics_Snapshot(&g_diagnostics, HAL_GetTick(), &s);
     if (PATROL_CHASSIS_BENCH_STEERING_ENABLED && g_bench.phase == BENCH_IDLE &&
+        g_coordinate.valid &&
         VcuConfig_Get()->calibrated && VcuConfig_CalibrationCompatible() &&
         s.steering_feedback_fresh && s.drive_feedback_fresh && s.encoder_online &&
         s.steering_status_fresh && s.drive_status_fresh &&
@@ -273,11 +278,13 @@ void VcuRtos_FormatBench(char* out, uint16_t size)
 {
     taskENTER_CRITICAL();
     snprintf(out, size, "{\"available\":%s,\"permitted\":%s,\"phase\":%u,\"step\":%u,"
-        "\"fault\":%lu,\"feedbackGateMask\":%u,\"limitMdeg\":%u,\"sessionId\":\"%s\",\"contactorFeedbackAvailable\":false}",
+        "\"fault\":%lu,\"feedbackGateMask\":%u,\"coordinateValid\":%s,\"runtimeCenterCount\":%ld,"
+        "\"limitMdeg\":%u,\"sessionId\":\"%s\",\"contactorFeedbackAvailable\":false}",
         PATROL_CHASSIS_BENCH_STEERING_ENABLED ? "true" : "false",
         RemoteService_BenchPermitted() ? "true" : "false", (unsigned)g_bench.phase,
         (unsigned)g_bench.step, (unsigned long)g_bench.fault,
         g_bench.phase == BENCH_FAULT ? g_bench_fault_gate_mask : g_feedback_gate_mask,
+        g_coordinate.valid ? "true" : "false", (long)g_coordinate.runtime_center,
         RemoteService_BenchLimit(), RemoteService_BenchSession());
     taskEXIT_CRITICAL();
 }
@@ -315,6 +322,8 @@ static void Vcu_CanRxTask(void *argument)
             memcpy(decoded.data, frame.data, sizeof(decoded.data));
             taskENTER_CRITICAL();
             /* Exactly one SDO owner; executor responses never satisfy a diagnostic request. */
+            if (decoded.id == 0x701 && decoded.dlc == 1 && decoded.data[0] == 0 && g_coordinate.valid)
+                g_coordinate_reset_requested = 1;
             if (!BenchSteering_OnFrame(&g_bench, &decoded, frame.timestamp_ms))
                 PatrolDiagnostics_OnCanFrame(&g_diagnostics, &decoded, frame.timestamp_ms);
             else g_diagnostics.can_rx_count++;
@@ -343,7 +352,16 @@ static void Vcu_CanopenTask(void *argument)
         {
             const ChassisControl* c = RemoteService_State();
             const VcuRemoteConfig_t* cfg = VcuConfig_Get();
-            uint8_t safe = VehiclePowerOutput_IsOn() && !VcuRtos_CanBusOffActive() &&
+            if (!VehiclePowerOutput_IsOn()) {
+                SteeringCoordinate_Reset(&g_coordinate);
+                g_bench.limits_aligned = 0;
+            }
+            if (g_coordinate_reset_requested) {
+                BenchSteering_Stop(&g_bench, now, 1);
+                SteeringCoordinate_Reset(&g_coordinate);
+                g_coordinate_reset_requested = 0;
+            }
+            uint8_t safe = g_coordinate.valid && VehiclePowerOutput_IsOn() && !VcuRtos_CanBusOffActive() &&
                 c->feedback.power_ready && c->feedback.calibrated &&
                 c->feedback.steering_online && c->feedback.drive_online &&
                 !c->feedback.drive_fault && !c->feedback.can_bus_off && !OtaService_IsBusy() &&
@@ -351,7 +369,8 @@ static void Vcu_CanopenTask(void *argument)
                 llabs((int64_t)c->feedback.steering_actual_mdeg - c->feedback.encoder_actual_mdeg) <= 2000;
             uint8_t requested = RemoteService_BenchPermitted() && c->session_active && c->enable_request;
             if (PATROL_CHASSIS_BENCH_STEERING_ENABLED && requested && safe && g_bench.phase == BENCH_IDLE)
-                BenchSteering_Start(&g_bench, g_diagnostics.steering_position_count, cfg->steering_center_count,
+                BenchSteering_Start(&g_bench, g_diagnostics.steering_position_count, g_coordinate.runtime_center,
+                    cfg->steering_center_count,
                     RemoteService_BenchLimit(), now);
             BenchSteering_Tick(&g_bench, now, requested, safe, c->target_steering_mdeg);
             g_diagnostics.motion_priority = g_bench.phase != BENCH_IDLE && g_bench.phase != BENCH_FAULT;
@@ -449,6 +468,33 @@ static void Vcu_CanopenTask(void *argument)
                 ((snapshot.drive_status_word & 0x6FU) == 0x27U ? 64U : 0U) |
                 ((labs(snapshot.left_actual_rpm) > 20 || labs(snapshot.right_actual_rpm) > 20) ? 128U : 0U) |
                 (!VehiclePowerOutput_IsOn() ? 256U : 0U);
+            if (PATROL_CHASSIS_BENCH_STEERING_ENABLED) {
+                uint8_t was_valid = g_coordinate.valid;
+                if (!VehiclePowerOutput_IsOn()) SteeringCoordinate_Reset(&g_coordinate);
+                else if (g_coordinate.valid && (g_feedback_gate_mask != 0 ||
+                    !snapshot.steering_online || !snapshot.drive_online ||
+                    cfg->steering_center_count != g_coordinate_calibration_center ||
+                    cfg->absolute_center_count != g_coordinate_absolute_center)) {
+                    /* A lost position epoch requires power-off, never a live re-zero. */
+                    taskENTER_CRITICAL();
+                    BenchSteering_Stop(&g_bench, now, 1);
+                    SteeringCoordinate_Reset(&g_coordinate);
+                    taskEXIT_CRITICAL();
+                } else {
+                    SteeringCoordinate_Observe(&g_coordinate,
+                        g_feedback_gate_mask == 0 && feedback.calibrated &&
+                        snapshot.steering_online && snapshot.drive_online &&
+                        !snapshot.drive_fault && !feedback.can_bus_off && !feedback.ota_busy &&
+                        (snapshot.steering_status_word & 0x6FU) != 0x27U,
+                        snapshot.steering_position_count, snapshot.encoder_count, cfg->absolute_center_count,
+                        snapshot.coherent_feedback_ms, now);
+                }
+                if (!was_valid && g_coordinate.valid) {
+                    g_coordinate_calibration_center = cfg->steering_center_count;
+                    g_coordinate_absolute_center = cfg->absolute_center_count;
+                }
+                if (!g_coordinate.valid) g_feedback_gate_mask |= 512U;
+            }
             feedback.power_ready = PATROL_CHASSIS_BENCH_STEERING_ENABLED && g_feedback_gate_mask == 0;
             feedback.left_actual_rpm = snapshot.left_actual_rpm > 32767 ? 32767 :
                 (snapshot.left_actual_rpm < -32768 ? -32768 : (int16_t)snapshot.left_actual_rpm);
@@ -457,7 +503,9 @@ static void Vcu_CanopenTask(void *argument)
             if (feedback.calibrated)
             {
                 feedback.steering_actual_mdeg = SteeringAngle_FromControllerCount(
-                    snapshot.steering_position_count, cfg->steering_center_count,
+                    snapshot.steering_position_count,
+                    PATROL_CHASSIS_BENCH_STEERING_ENABLED && g_coordinate.valid ?
+                        g_coordinate.runtime_center : cfg->steering_center_count,
                     cfg->steering_counts_per_degree_milli, cfg->steering_direction);
                 feedback.encoder_actual_mdeg = SteeringAngle_FromAbsoluteCount(
                     snapshot.encoder_count, cfg->absolute_center_count,

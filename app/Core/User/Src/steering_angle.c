@@ -1,6 +1,34 @@
 #include "steering_angle.h"
 
 #include <limits.h>
+#include <stdlib.h>
+#include <string.h>
+#include "vehicle_steering_profile.h"
+
+void SteeringCoordinate_Reset(SteeringCoordinate* c) { memset(c, 0, sizeof(*c)); }
+void SteeringCoordinate_Observe(SteeringCoordinate* c, uint8_t ready,
+    int32_t driver, uint32_t absolute, uint32_t absolute_center, uint32_t sample_ms, uint32_t now)
+{
+    int64_t offset, center;
+    if (c->valid) return; /* Never hide a disagreement by re-zeroing while running. */
+    if (!ready) { c->tracking = 0; return; }
+    if (!c->tracking || llabs((int64_t)driver - c->anchor_driver) > 27 ||
+        llabs((int64_t)absolute - c->anchor_absolute) > 1) {
+        c->tracking = 1; c->samples = 1; c->quiet_since = now;
+        c->anchor_driver = driver; c->anchor_absolute = absolute; c->last_sample_ms = sample_ms;
+        return;
+    }
+    if (sample_ms == c->last_sample_ms) return;
+    c->last_sample_ms = sample_ms;
+    if (c->samples < 255) c->samples++;
+    if (c->samples < 3 || now - c->quiet_since < 300U) return;
+    offset = ((int64_t)absolute - absolute_center) * VEHICLE_STEERING_COUNTS_MILLI *
+        VEHICLE_ABSOLUTE_DIRECTION * VEHICLE_STEERING_DIRECTION / VEHICLE_ABSOLUTE_COUNTS_MILLI;
+    center = (int64_t)driver - offset;
+    if (center < INT32_MIN || center > INT32_MAX) return;
+    c->runtime_center = (int32_t)center;
+    c->valid = 1;
+}
 
 uint8_t SteeringAngle_ToControllerCount(int32_t angle_mdeg, int32_t center,
     uint32_t counts_milli, int8_t direction, int32_t minimum, int32_t maximum, int32_t* target)
