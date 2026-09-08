@@ -1,11 +1,17 @@
 [CmdletBinding()]
 param(
     [ValidateSet('Debug', 'Release')] [string] $Configuration = 'Release',
-    [ValidatePattern('^patrol-chassis-[0-9]+\.[0-9]+\.[0-9]+$')] [string] $AppVersion = 'patrol-chassis-0.2.5',
+    [ValidatePattern('^patrol-chassis-[0-9]+\.[0-9]+\.[0-9]+$')] [string] $AppVersion = 'patrol-chassis-0.2.9',
+    [switch] $BenchSteering,
+    [string] $VerifiedCandidate,
     [switch] $ReleasePair
 )
 
 $ErrorActionPreference = 'Stop'
+if ($BenchSteering -and ($Configuration -ne 'Release' -or $ReleasePair -or
+    [string]::IsNullOrWhiteSpace($VerifiedCandidate) -or !(Test-Path -LiteralPath $VerifiedCandidate -PathType Leaf))) {
+    throw 'Steering publication requires Release and the exact verified candidate image.'
+}
 $product = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $platform = Join-Path $product 'platform'
 $bootTarget = Join-Path $platform 'targets/stm32f105_abox_boot'
@@ -105,12 +111,22 @@ try {
 
     foreach ($version in $versions) {
         $appDefinitions = @("-DPATROL_CHASSIS_APP_VERSION=$version")
+        $appDefinitions += '-DPATROL_CHASSIS_ACTUATION_ENABLED=OFF'
+        $appDefinitions += "-DPATROL_CHASSIS_BENCH_STEERING_ENABLED=$(if ($BenchSteering) { 'ON' } else { 'OFF' })"
         if (-not [string]::IsNullOrWhiteSpace($mqttUsername)) {
             $appDefinitions += "-DPATROL_CHASSIS_MQTT_USERNAME=$mqttUsername"
             $appDefinitions += "-DPATROL_CHASSIS_MQTT_PASSWORD=$mqttPassword"
         }
         $app = Invoke-TargetBuild 'app' 'Patrol_Vehicle_Chassis_App' "ABoxUnified$Configuration-$version" $appDefinitions $credentialBuildRoot
         $appUsage = Get-Usage $app.elf
+        if ($BenchSteering) {
+            & python (Join-Path $PSScriptRoot 'verify_bench_stack.py') (Split-Path -Parent $app.elf)
+            if ($LASTEXITCODE -ne 0) { throw 'Steering stack validation failed' }
+            if ((Get-FileHash -LiteralPath $app.bin -Algorithm SHA256).Hash -ne
+                (Get-FileHash -LiteralPath $VerifiedCandidate -Algorithm SHA256).Hash) {
+                throw 'Release differs from verified candidate; dist has not been replaced.'
+            }
+        }
         if ((Get-Item -LiteralPath $app.bin).Length -ge 223232) { throw 'App artifact exceeds its 218 KiB region.' }
         $release = Join-Path $product "dist"
         if (Test-Path -LiteralPath $release) {
@@ -131,6 +147,7 @@ try {
         if ($appText.IndexOf("PATROL_VEHICLE_CHASSIS_FW_VERSION=$version", [StringComparison]::Ordinal) -lt 0) { throw "Version marker missing from $version app image" }
         $manifest = [ordered]@{
             manifest_version = 3; product = 'patrol_vehicle_chassis'; version = $version; configuration = $Configuration
+            bench_steering_available = [bool]$BenchSteering; startup_motion_permit = $false; drive_actuation = $false
             boot_version = 'abox-boot-2.3.0'; ota_scheme = 'boot_v2_ufs'; ota_downloader = 'app'
             app_range = '0x08008000..0x0803E7FF'; boot_state_pages = @('0x0803E800', '0x0803F000'); config_page = '0x0803F800'
             product_commit = $productCommit; product_dirty = $false; platform_commit = $platformCommit; platform_dirty = $false

@@ -1,8 +1,8 @@
 # 巡防车底盘控制器
 
-`patrol_vehicle_chassis` 是巡防车底盘 A-Box 固件，当前版本 `0.2.5`。本仓库只复用已提交的 STM32F105、FreeRTOS、EC800、MQTT 和 Boot V2 基础设施，不包含清扫车业务。
+`patrol_vehicle_chassis` 是巡防车底盘 A-Box 固件，当前版本 `0.2.9`。本仓库只复用已提交的 STM32F105、FreeRTOS、EC800、MQTT 和 Boot V2 基础设施，不包含清扫车业务。
 
-当前阶段是“被动观测联调”：Release 固件只发送 CANopen SDO 读请求和绝对编码器 Modbus 读请求，解析节点心跳、实测转速、转向位置和编码器计数。运动执行仍由独立编译门禁保持关闭；构建成功、MQTT ACK 或 CAN 报文不代表车辆已经运动。
+当前阶段为架空转向实测：同车型共用比例和方向，每车保存中位；独立编码器提供轮胎角度基准，上电静止建立驱动器 RAM 坐标。测试必须通过内部 RAM 许可和公共控制租约，默认不使能，行走禁用。±1°/±3°/±5°、停止、反馈失效和转向后上下电记录见内部实现文档；整车接触器反馈和本地安全输入尚未验收。
 
 ## 关键边界
 
@@ -24,6 +24,8 @@ cmake --build .\app\build\Debug
 
 正式产物由 `.\tools\build_release.ps1` 生成 App、Full 和清单。发布脚本不会发起设备 OTA。
 
+台架候选由 `.\tools\build_bench_steering.ps1` 生成到 `out/`。完成实测后，使用 `build_release.ps1 -BenchSteering -VerifiedCandidate <已验证App.bin>` 整体生成正式产物；脚本要求正式构建与候选 SHA256 完全一致才替换 `dist/`。通用运动编译开关始终关闭。
+
 ## 文档
 
 - `docs/archive/2026-08-31-input/`：原始输入，原样归档并记录哈希
@@ -33,4 +35,5 @@ cmake --build .\app\build\Debug
 - `docs/hardware/硬件与安全边界.md`：端口、分区和未确认硬件边界
 - `docs/requirements/首阶段需求与验收.md`：分阶段范围与验收门禁
 - `docs/operations/2026-09-02-CAN只读联调.md`：现场 SDO 短帧问题、修复与验收证据
+- `docs/operations/车型参数与台架转向实现.md`：公共标定、上电坐标同步、首轮转向与保护测试
 - `docs/references/RTBOX参考边界.md`：仅记录可借鉴状态机，不复制引脚和协议

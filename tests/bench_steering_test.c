@@ -89,6 +89,17 @@ int main(void)
     BenchSteering_Tick(&b,111,1,1,0); assert(b.phase==BENCH_FAULT&&b.cut_power);
     assert(!BenchSteering_Take(&b,112,&f));
     BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0); now=0;
+    while (b.step != 4) advance(&b,&now);
+    assert(BenchSteering_Take(&b,now,&f)); r=reply(&b,3);
+    BenchSteering_OnFrame(&b,&r,now+1); assert(b.phase==BENCH_FAULT);
+    assert(!BenchSteering_Take(&b,now+2,&f)); /* wrong mode never reaches enable */
+    BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0); now=0;
+    while (b.step != 11) advance(&b,&now);
+    assert(BenchSteering_Take(&b,now,&f)); r=reply(&b,0x40);
+    BenchSteering_OnFrame(&b,&r,now+1); assert(b.step==11 && !b.pending);
+    assert(!BenchSteering_OnFrame(&b,&r,now+2)); /* duplicate cannot advance state */
+    BenchSteering_Tick(&b,5000,1,1,1000); assert(b.phase==BENCH_FAULT);
+    BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0); now=0;
     advance(&b,&now); BenchSteering_Take(&b,now,&f);
     r=reply(&b,0); r.data[0]=0x80; r.dlc=8; r.data[4]=1;
     BenchSteering_OnFrame(&b,&r,now+1); assert(b.phase==BENCH_FAULT&&b.cut_power);
