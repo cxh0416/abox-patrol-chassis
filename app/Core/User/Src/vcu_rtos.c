@@ -88,6 +88,7 @@ static PatrolDiagnostics g_diagnostics;
 static BenchSteering g_bench;
 static uint8_t g_bench_turn;
 static uint8_t g_bench_transport_stopped;
+static uint16_t g_feedback_gate_mask, g_bench_fault_gate_mask;
 #ifndef PATROL_CHASSIS_BENCH_STEERING_ENABLED
 #define PATROL_CHASSIS_BENCH_STEERING_ENABLED 0
 #endif
@@ -252,6 +253,7 @@ uint8_t VcuRtos_BenchArm(uint16_t limit_mdeg)
     if (PATROL_CHASSIS_BENCH_STEERING_ENABLED && g_bench.phase == BENCH_IDLE &&
         VcuConfig_Get()->calibrated && VcuConfig_CalibrationCompatible() &&
         s.steering_feedback_fresh && s.drive_feedback_fresh && s.encoder_online &&
+        s.steering_status_fresh && s.drive_status_fresh &&
         s.encoder_config_valid && !s.drive_fault && !OtaService_IsBusy() &&
         !VcuRtos_CanBusOff() && VehiclePowerOutput_IsOn() &&
         (s.steering_status_word & 0x6FU) != 0x27U && (s.drive_status_word & 0x6FU) != 0x27U &&
@@ -271,10 +273,12 @@ void VcuRtos_FormatBench(char* out, uint16_t size)
 {
     taskENTER_CRITICAL();
     snprintf(out, size, "{\"available\":%s,\"permitted\":%s,\"phase\":%u,\"step\":%u,"
-        "\"fault\":%lu,\"limitMdeg\":%u,\"sessionId\":\"%s\",\"contactorFeedbackAvailable\":false}",
+        "\"fault\":%lu,\"feedbackGateMask\":%u,\"limitMdeg\":%u,\"sessionId\":\"%s\",\"contactorFeedbackAvailable\":false}",
         PATROL_CHASSIS_BENCH_STEERING_ENABLED ? "true" : "false",
         RemoteService_BenchPermitted() ? "true" : "false", (unsigned)g_bench.phase,
-        (unsigned)g_bench.step, (unsigned long)g_bench.fault, RemoteService_BenchLimit(), RemoteService_BenchSession());
+        (unsigned)g_bench.step, (unsigned long)g_bench.fault,
+        g_bench.phase == BENCH_FAULT ? g_bench_fault_gate_mask : g_feedback_gate_mask,
+        RemoteService_BenchLimit(), RemoteService_BenchSession());
     taskEXIT_CRITICAL();
 }
 
@@ -284,7 +288,9 @@ static void Vcu_SafetyControlTask(void *argument)
     (void)argument;
     for (;;)
     {
+        taskENTER_CRITICAL();
         RemoteService_SafetyTick(HAL_GetTick());
+        taskEXIT_CRITICAL();
         xEventGroupSetBits(g_health_events, VCU_HEALTH_SAFETY);
         vTaskDelayUntil(&last_wake, pdMS_TO_TICKS(10U));
     }
@@ -330,9 +336,10 @@ static void Vcu_CanopenTask(void *argument)
 #if PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED
         PatrolCanFrame request;
         uint8_t have_request = 0U;
-        uint32_t now = HAL_GetTick();
+        uint32_t now;
         uint8_t bench_frame = 0U;
         taskENTER_CRITICAL();
+        now = HAL_GetTick();
         {
             const ChassisControl* c = RemoteService_State();
             const VcuRemoteConfig_t* cfg = VcuConfig_Get();
@@ -359,6 +366,8 @@ static void Vcu_CanopenTask(void *argument)
         }
         taskEXIT_CRITICAL();
         if (g_bench.cut_power) {
+            g_bench_fault_gate_mask = g_feedback_gate_mask;
+            RemoteService_BenchFault();
             (void)VehiclePowerOutput_Set(0);
             g_bench.cut_power = 0;
         }
@@ -421,6 +430,9 @@ static void Vcu_CanopenTask(void *argument)
             const VcuRemoteConfig_t* cfg = VcuConfig_Get();
             memset(&feedback, 0, sizeof(feedback));
             taskENTER_CRITICAL();
+            /* Read time and feedback under the same lock: RX can otherwise publish a
+             * timestamp newer than now and unsigned age arithmetic reports it stale. */
+            now = HAL_GetTick();
             PatrolDiagnostics_Snapshot(&g_diagnostics, now, &snapshot);
             taskEXIT_CRITICAL();
             feedback.calibrated = cfg != NULL && cfg->calibrated && VcuConfig_CalibrationCompatible();
@@ -430,14 +442,14 @@ static void Vcu_CanopenTask(void *argument)
             feedback.drive_fault = snapshot.drive_fault;
             feedback.ota_busy = OtaService_IsBusy();
             /* Bench readiness is not physical contactor feedback. No unconfirmed pin is read. */
-            feedback.power_ready = PATROL_CHASSIS_BENCH_STEERING_ENABLED && VehiclePowerOutput_IsOn() &&
-                snapshot.encoder_config_valid && snapshot.encoder_online &&
-                snapshot.steering_feedback_fresh && snapshot.drive_feedback_fresh &&
-                snapshot.steering_status_word != 0 && snapshot.drive_status_word != 0 &&
-                now - g_diagnostics.steering_status_ms <= CHASSIS_FEEDBACK_TIMEOUT_MS &&
-                now - g_diagnostics.drive_status_ms <= CHASSIS_FEEDBACK_TIMEOUT_MS &&
-                (snapshot.drive_status_word & 0x6FU) != 0x27U &&
-                labs(snapshot.left_actual_rpm) <= 20 && labs(snapshot.right_actual_rpm) <= 20;
+            g_feedback_gate_mask = (!snapshot.steering_feedback_fresh ? 1U : 0U) |
+                (!snapshot.drive_feedback_fresh ? 2U : 0U) | (!snapshot.encoder_online ? 4U : 0U) |
+                (!snapshot.steering_status_fresh ? 8U : 0U) | (!snapshot.drive_status_fresh ? 16U : 0U) |
+                (!snapshot.encoder_config_valid ? 32U : 0U) |
+                ((snapshot.drive_status_word & 0x6FU) == 0x27U ? 64U : 0U) |
+                ((labs(snapshot.left_actual_rpm) > 20 || labs(snapshot.right_actual_rpm) > 20) ? 128U : 0U) |
+                (!VehiclePowerOutput_IsOn() ? 256U : 0U);
+            feedback.power_ready = PATROL_CHASSIS_BENCH_STEERING_ENABLED && g_feedback_gate_mask == 0;
             feedback.left_actual_rpm = snapshot.left_actual_rpm > 32767 ? 32767 :
                 (snapshot.left_actual_rpm < -32768 ? -32768 : (int16_t)snapshot.left_actual_rpm);
             feedback.right_actual_rpm = snapshot.right_actual_rpm > 32767 ? 32767 :
@@ -478,8 +490,9 @@ static void Vcu_EncoderTask(void *argument)
         uint8_t read_config;
         HAL_StatusTypeDef status;
         PatrolDiagnosticsSnapshot snapshot;
-        uint32_t now = HAL_GetTick();
+        uint32_t now;
         taskENTER_CRITICAL();
+        now = HAL_GetTick();
         PatrolDiagnostics_Snapshot(&g_diagnostics, now, &snapshot);
         taskEXIT_CRITICAL();
         read_config = (uint8_t)(!snapshot.encoder_config_valid);

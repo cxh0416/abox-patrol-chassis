@@ -7,6 +7,7 @@
 
 uint8_t RemoteService_BenchArm(uint16_t limit_mdeg, uint32_t now);
 void RemoteService_BenchRevoke(void);
+void RemoteService_BenchFault(void);
 uint8_t RemoteService_BenchPermitted(void);
 uint16_t RemoteService_BenchLimit(void);
 const char* RemoteService_BenchSession(void);

@@ -15,6 +15,22 @@
 #define CHECK(x) do { if (!(x)) { fprintf(stderr, "check failed line %d: %s\n", __LINE__, #x); return 1; } } while (0)
 
 static uint8_t g_power_level;
+static int test_status_snapshot_age(void)
+{
+    PatrolDiagnostics d;
+    PatrolDiagnosticsSnapshot s;
+    PatrolDiagnostics_Init(&d);
+    d.steering_status_word = d.drive_status_word = 0x21;
+    d.steering_status_ms = 0xfffffff0U;
+    d.drive_status_ms = 0xffffffe0U;
+    PatrolDiagnostics_Snapshot(&d, 0x10, &s);
+    CHECK(s.steering_status_fresh && s.drive_status_fresh);
+    PatrolDiagnostics_Snapshot(&d, 0xe0, &s);
+    CHECK(s.steering_status_fresh && !s.drive_status_fresh);
+    PatrolDiagnostics_Snapshot(&d, 0xf0, &s);
+    CHECK(!s.steering_status_fresh && !s.drive_status_fresh);
+    return 0;
+}
 static uint8_t test_power_write(uint8_t on)
 {
     g_power_level = on ? 1U : 0U;
@@ -131,6 +147,7 @@ static int test_field_sdo_replies(void)
 int main(void)
 {
     CHECK(test_sdo_waits_for_node() == 0);
+    CHECK(test_status_snapshot_age() == 0);
     CHECK(test_field_sdo_replies() == 0);
     ChassisControl control;
     ChassisFeedback feedback = {0};

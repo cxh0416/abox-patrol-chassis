@@ -17,7 +17,7 @@ static void force_stop(ChassisControl* control, ChassisStopReason reason, uint8_
     control->reversal_pending = 0U;
     control->zero_confirmations = 0U;
     control->enable_request = 0U;
-    control->stop_reason = reason;
+    if (!control->fault_latched) control->stop_reason = reason;
     if (reason == CHASSIS_STOP_DIRECTION_TIMEOUT) control->fault_latched = 1U;
     if (release) {
         control->session_active = 0U;
@@ -50,7 +50,7 @@ uint8_t ChassisControl_SafetyReady(const ChassisControl* control, uint32_t now_m
 static ChassisStopReason safety_reason(const ChassisControl* control, uint32_t now_ms)
 {
     const ChassisFeedback* f = &control->feedback;
-    if (control->fault_latched) return CHASSIS_STOP_DIRECTION_TIMEOUT;
+    if (control->fault_latched) return control->stop_reason;
     if (!control->remote_enabled) return CHASSIS_STOP_REMOTE_DISABLED;
     if (!f->calibrated) return CHASSIS_STOP_UNCALIBRATED;
     if (!f->steering_online || !f->drive_online) return CHASSIS_STOP_NODE_OFFLINE;

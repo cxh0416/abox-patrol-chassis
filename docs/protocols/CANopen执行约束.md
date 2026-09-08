@@ -9,7 +9,7 @@
 | CAN1 | 500 kbps、11 位标准帧 | Node 1 转向、Node 2 双驱 |
 | CAN2 | 500 kbps、11 位标准帧 | 仅初始化和预留，不发送上层协议 |
 
-Node 1 使用 SDO `0x601/0x581`、心跳 `0x701`；Node 2 使用 SDO `0x602/0x582`、心跳 `0x702`。第二阶段可由独立只读门禁发送 SDO 上传请求 `0x40`；`PATROL_CHASSIS_ACTUATION_ENABLED=0` 时仍不得发送 NMT、SDO 下载、PDO目标或运动指令。
+Node 1 使用 SDO `0x601/0x581`、心跳 `0x701`；Node 2 使用 SDO `0x602/0x582`、心跳 `0x702`。只读模式仅允许 SDO 上传请求 `0x40`。台架转向许可仅授权 Node 1 的位置模式事务；Node 2 不得收到运行使能或非零速度命令。
 
 ## 双驱 Node 2
 

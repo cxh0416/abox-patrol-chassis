@@ -73,6 +73,8 @@ typedef struct {
     uint8_t drive_online;
     uint8_t steering_feedback_fresh;
     uint8_t drive_feedback_fresh;
+    uint8_t steering_status_fresh;
+    uint8_t drive_status_fresh;
     uint8_t encoder_online;
     uint8_t encoder_config_valid;
     uint8_t drive_fault;

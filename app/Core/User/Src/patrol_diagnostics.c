@@ -269,6 +269,10 @@ void PatrolDiagnostics_Snapshot(const PatrolDiagnostics* diagnostics, uint32_t n
     snapshot->drive_heartbeat_state = diagnostics->drive_heartbeat_state;
     snapshot->steering_status_word = diagnostics->steering_status_word;
     snapshot->drive_status_word = diagnostics->drive_status_word;
+    snapshot->steering_status_fresh = fresh(diagnostics->steering_status_word != 0,
+        diagnostics->steering_status_ms, now_ms, PATROL_DIAG_FEEDBACK_TIMEOUT_MS);
+    snapshot->drive_status_fresh = fresh(diagnostics->drive_status_word != 0,
+        diagnostics->drive_status_ms, now_ms, PATROL_DIAG_FEEDBACK_TIMEOUT_MS);
     snapshot->steering_position_count = diagnostics->steering_position_count;
     snapshot->left_actual_rpm = diagnostics->left_actual_rpm;
     snapshot->right_actual_rpm = diagnostics->right_actual_rpm;

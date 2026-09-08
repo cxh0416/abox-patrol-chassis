@@ -50,6 +50,13 @@ int main(void)
     assert(RemoteService_BenchArm(1000,tick));
     tick+=15001;f.feedback_ms=tick;RemoteService_UpdateFeedback(&f);RemoteService_SafetyTick(tick);
     assert(!RemoteService_BenchPermitted());
+    RemoteService_BenchFault();
+    RemoteService_SafetyTick(tick);
+    assert(RemoteService_State()->fault_latched);
+    assert(RemoteService_State()->stop_reason==CHASSIS_STOP_EXECUTION_FAULT);
+    assert(!RemoteService_BenchArm(1000,tick));
+    command(session,0,0,"stop",8);
+    assert(RemoteService_State()->stop_reason==CHASSIS_STOP_EXECUTION_FAULT);
     RemoteService_Init();assert(!RemoteService_State()->remote_enabled);
     puts("PASS profile persistence, failed save, compatibility, steering-only permit, stop and replay rejection");
 }

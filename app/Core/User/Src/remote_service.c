@@ -31,6 +31,14 @@ void RemoteService_BenchRevoke(void)
     taskEXIT_CRITICAL();
 }
 uint8_t RemoteService_BenchPermitted(void) { return g_bench_permit; }
+void RemoteService_BenchFault(void)
+{
+    taskENTER_CRITICAL();
+    RemoteService_BenchRevoke();
+    g_control.fault_latched = 1;
+    g_control.stop_reason = CHASSIS_STOP_EXECUTION_FAULT;
+    taskEXIT_CRITICAL();
+}
 uint16_t RemoteService_BenchLimit(void) { return g_bench_limit; }
 const char* RemoteService_BenchSession(void) { return g_bench_session; }
 uint8_t RemoteService_BenchArm(uint16_t limit_mdeg, uint32_t now)
@@ -72,7 +80,9 @@ void RemoteService_Init(void)
 void RemoteService_Task(void)
 {
     if (!g_remote_initialized) return;
+    taskENTER_CRITICAL();
     RemoteService_SafetyTick(HAL_GetTick());
+    taskEXIT_CRITICAL();
 }
 
 void RemoteService_SafetyTick(uint32_t now_ms)

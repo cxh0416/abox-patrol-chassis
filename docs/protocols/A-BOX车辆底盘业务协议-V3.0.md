@@ -163,6 +163,8 @@
 | `feedbackFresh` | Boolean | 本报告使用的运动反馈是否在有效时限内 |
 | `safetyReady` | Boolean | 当前是否满足接受运动目标的全部门禁 |
 | `stopReason` | Integer | 产品定义的最近安全停止原因码 |
+
+`stopReason=13` 表示执行流程故障锁存；停止命令和会话续租不能清除该锁存。
 | `faultLatched` | Boolean | 是否存在需要人工或明确命令处理的锁存故障 |
 
 周期状态建议每 1 秒使用 QoS 0 发布；状态变化、故障产生/解除和安全停止使用 QoS 1。平台订阅该 Topic 时请求 QoS 1，按 `reportId` 去重，并阻止较旧 `timestamp` 覆盖较新状态。
