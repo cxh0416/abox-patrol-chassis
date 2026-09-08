@@ -58,5 +58,14 @@ int main(void)
     command(session,0,0,"stop",8);
     assert(RemoteService_State()->stop_reason==CHASSIS_STOP_EXECUTION_FAULT);
     RemoteService_Init();assert(!RemoteService_State()->remote_enabled);
+    RemoteService_UpdateFeedback(&f);
+    assert(RemoteService_BenchDriveArm(1000,tick));
+    strcpy(session,RemoteService_BenchSession());
+    command(session,51,0,"acquire",20); assert(!RemoteService_State()->session_active);
+    command(session,30,0,"acquire",21); assert(RemoteService_State()->enable_request);
+    command(session,0,0,"stop",22); assert(!RemoteService_BenchDrivePermitted());
+    assert(RemoteService_BenchArm(1000,tick));
+    strcpy(session,RemoteService_BenchSession());
+    command(session,30,0,"acquire",23); assert(!RemoteService_State()->session_active);
     puts("PASS profile persistence, failed save, compatibility, steering-only permit, stop and replay rejection");
 }

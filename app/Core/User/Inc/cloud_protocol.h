@@ -49,6 +49,7 @@ typedef struct {
     char mqtt_username[CLOUD_PROTOCOL_MQTT_USER_SIZE];
     char mqtt_password[CLOUD_PROTOCOL_MQTT_PASSWORD_SIZE];
     uint16_t bench_limit_mdeg;
+    uint8_t bench_drive;
     int32_t steering_center_count;
     uint32_t absolute_center_count;
     uint32_t steering_counts_per_degree_milli;

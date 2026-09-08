@@ -751,7 +751,8 @@ static __attribute__((noinline)) void handle_config_request(const CloudProtocolR
     else if (action == CLOUD_PROTOCOL_ACTION_BENCH_ARM || action == CLOUD_PROTOCOL_ACTION_BENCH_STOP ||
              action == CLOUD_PROTOCOL_ACTION_BENCH_GET)
     {
-        if (action == CLOUD_PROTOCOL_ACTION_BENCH_ARM && !VcuRtos_BenchArm(request->bench_limit_mdeg))
+        if (action == CLOUD_PROTOCOL_ACTION_BENCH_ARM && !(request->bench_drive ? VcuRtos_BenchDriveArm(request->bench_limit_mdeg) :
+                VcuRtos_BenchArm(request->bench_limit_mdeg)))
             schedule_simple_error(g_topic_config_resp, request_id, 409U, "BENCH_NOT_READY");
         else {
             if (action == CLOUD_PROTOCOL_ACTION_BENCH_STOP) VcuRtos_BenchStop();

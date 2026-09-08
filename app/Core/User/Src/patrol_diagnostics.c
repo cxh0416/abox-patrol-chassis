@@ -193,7 +193,7 @@ uint8_t PatrolDiagnostics_TakeSdoRead(PatrolDiagnostics* diagnostics, uint32_t n
     for (offset = 0U; offset < PATROL_DIAG_SDO_ENTRY_COUNT; offset++)
     {
         uint8_t index = (uint8_t)((diagnostics->next_sdo_entry + offset) % PATROL_DIAG_SDO_ENTRY_COUNT);
-        if (diagnostics->motion_priority && index >= 6U) continue;
+        if (diagnostics->motion_priority && index >= 7U) continue;
         const PatrolSdoEntry* entry = &g_sdo_entries[index];
         if (!sdo_node_ready(diagnostics, entry->node, now_ms)) continue;
         if (!due(now_ms, diagnostics->sdo_due_ms[index])) continue;
@@ -264,7 +264,8 @@ void PatrolDiagnostics_Snapshot(const PatrolDiagnostics* diagnostics, uint32_t n
         now_ms, PATROL_DIAG_FEEDBACK_TIMEOUT_MS);
     snapshot->encoder_config_valid = diagnostics->encoder_config_valid;
     snapshot->drive_fault = (uint8_t)(((diagnostics->steering_status_word |
-        diagnostics->drive_status_word) & 0x0008U) != 0U || diagnostics->drive_objects[0] != 0);
+        diagnostics->drive_status_word) & 0x0008U) != 0U || diagnostics->drive_objects[0] != 0 ||
+        diagnostics->drive_objects[1] != 0);
     snapshot->steering_heartbeat_state = diagnostics->steering_heartbeat_state;
     snapshot->drive_heartbeat_state = diagnostics->drive_heartbeat_state;
     snapshot->steering_status_word = diagnostics->steering_status_word;

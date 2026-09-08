@@ -17,7 +17,7 @@ static uint8_t g_remote_initialized;
 static ChassisControl g_control;
 static char g_last_request_id[64];
 static char g_last_response[512];
-static uint8_t g_bench_permit, g_bench_started;
+static uint8_t g_bench_permit, g_bench_started, g_drive_permit;
 static uint16_t g_bench_limit;
 static uint32_t g_arm_deadline, g_arm_serial;
 static char g_bench_session[40];
@@ -25,7 +25,7 @@ static char g_bench_session[40];
 void RemoteService_BenchRevoke(void)
 {
     taskENTER_CRITICAL();
-    g_bench_permit = 0; g_control.remote_enabled = 0;
+    g_bench_permit = 0; g_drive_permit = 0; g_control.remote_enabled = 0;
     g_control.enable_request = 0; g_control.session_active = 0;
     g_control.target_rpm = 0; g_control.requested_rpm = 0;
     taskEXIT_CRITICAL();
@@ -61,11 +61,22 @@ uint8_t RemoteService_BenchArm(uint16_t limit_mdeg, uint32_t now)
     return ready;
 }
 
+uint8_t RemoteService_BenchDrivePermitted(void) { return g_drive_permit && g_bench_permit; }
+uint8_t RemoteService_BenchDriveArm(uint16_t limit, uint32_t now)
+{
+    uint8_t ready;
+    taskENTER_CRITICAL();
+    ready = RemoteService_BenchArm(limit, now);
+    if (ready) g_drive_permit = 1;
+    taskEXIT_CRITICAL();
+    return ready;
+}
+
 void RemoteService_Init(void)
 {
     const VcuRemoteConfig_t* cfg = VcuConfig_Get();
     ChassisFeedback feedback = {0};
-    g_bench_permit = 0; g_bench_started = 0;
+    g_bench_permit = 0; g_bench_started = 0; g_drive_permit = 0;
     ChassisControl_Init(&g_control, 0U); /* A persisted flag never arms the bench. */
     feedback.calibrated = cfg != 0 && cfg->calibrated && VcuConfig_CalibrationCompatible();
     feedback.feedback_ms = HAL_GetTick();
@@ -130,8 +141,8 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
         uint8_t session_conflict = 0U;
         if (strcmp(command.action, "stop") != 0 &&
             (!g_bench_permit || strcmp(command.session_id, g_bench_session) != 0 ||
-             command.drive_rpm != 0 || labs(command.steering_mdeg) > g_bench_limit)) {
-            code = 400U; message = "bench permit or steering-only limit rejected";
+             abs(command.drive_rpm) > (g_drive_permit ? 50 : 0) || labs(command.steering_mdeg) > g_bench_limit)) {
+            code = 400U; message = "bench permit or motion limit rejected";
             goto format_response;
         }
         if (strcmp(command.action, "renew") == 0)

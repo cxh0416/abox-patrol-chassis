@@ -1,8 +1,8 @@
 # 巡防车底盘控制器
 
-`patrol_vehicle_chassis` 是巡防车底盘 A-Box 固件，当前版本 `0.2.9`。本仓库只复用已提交的 STM32F105、FreeRTOS、EC800、MQTT 和 Boot V2 基础设施，不包含清扫车业务。
+`patrol_vehicle_chassis` 是巡防车底盘 A-Box 固件，当前版本 `0.2.12`。本仓库只复用已提交的 STM32F105、FreeRTOS、EC800、MQTT 和 Boot V2 基础设施，不包含清扫车业务。
 
-当前阶段为架空转向实测：同车型共用比例和方向，每车保存中位；独立编码器提供轮胎角度基准，上电静止建立驱动器 RAM 坐标。测试必须通过内部 RAM 许可和公共控制租约，默认不使能，行走禁用。±1°/±3°/±5°、停止、反馈失效和转向后上下电记录见内部实现文档；整车接触器反馈和本地安全输入尚未验收。
+当前阶段为架空低速测试：同车型共用比例和方向，每车保存中位；独立编码器提供轮胎角度基准，上电静止建立驱动器 RAM 坐标。测试必须通过内部 RAM 许可和公共控制租约，默认不使能；独立行走许可支持 ±50 rpm 目标，前后方向留待现场确认。转向、行走、停止与保护记录见内部实现文档；整车接触器反馈和本地安全输入尚未验收。
 
 ## 关键边界
 
@@ -27,6 +27,8 @@ cmake --build .\app\build\Debug
 台架候选由 `.\tools\build_bench_steering.ps1` 生成到 `out/`。完成实测后，使用 `build_release.ps1 -BenchSteering -VerifiedCandidate <已验证App.bin>` 整体生成正式产物；脚本要求正式构建与候选 SHA256 完全一致才替换 `dist/`。通用运动编译开关始终关闭。
 
 ## 文档
+
+- `docs/operations/架空行走与平台远控实现.md`：架空行走执行、换向实测与平台入口；行走正式包使用 `build_release.ps1 -BenchDrive -VerifiedCandidate <已验证App.bin>`。
 
 - `docs/archive/2026-08-31-input/`：原始输入，原样归档并记录哈希
 - `docs/protocols/CANopen执行约束.md`：厂商 CANopen 的产品化执行约束

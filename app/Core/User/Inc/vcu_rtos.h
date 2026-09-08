@@ -23,6 +23,7 @@ typedef struct
 } VcuCanFrame_t;
 
 uint8_t VcuRtos_BenchArm(uint16_t limit_mdeg);
+uint8_t VcuRtos_BenchDriveArm(uint16_t limit_mdeg);
 void VcuRtos_BenchStop(void);
 void VcuRtos_FormatBench(char* out, uint16_t size);
 void VcuRtos_Init(void);

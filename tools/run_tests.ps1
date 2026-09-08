@@ -101,4 +101,13 @@ $benchConfigTest = Join-Path $hostBuild 'bench_config_session_test.exe'
     "$PSScriptRoot\..\tests\bench_config_session_test.c" -o $benchConfigTest
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $benchConfigTest
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+$driveTest = Join-Path $hostBuild 'bench_drive_test.exe'
+& $gcc -std=c11 -Wall -Wextra -Werror `
+    "-I$PSScriptRoot\..\app\Core\User\Inc" `
+    "$PSScriptRoot\..\app\Core\User\Src\bench_drive.c" `
+    "$PSScriptRoot\..\app\Core\User\Src\patrol_canopen.c" `
+    "$PSScriptRoot\..\tests\bench_drive_test.c" -o $driveTest
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& $driveTest
 exit $LASTEXITCODE

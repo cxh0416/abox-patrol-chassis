@@ -19,6 +19,10 @@
 #include "remote_service.h"
 #include "steering_angle.h"
 #include "bench_steering.h"
+#include "bench_drive.h"
+#ifndef PATROL_CHASSIS_BENCH_DRIVE_ENABLED
+#define PATROL_CHASSIS_BENCH_DRIVE_ENABLED 0
+#endif
 #include <stdlib.h>
 #include "task.h"
 #include "usart.h"
@@ -86,6 +90,8 @@ static volatile uint8_t g_can_bus_off_mask;
 static uint8_t g_boot_confirmed;
 static PatrolDiagnostics g_diagnostics;
 static BenchSteering g_bench;
+static BenchDrive g_drive;
+static uint8_t g_drive_turn;
 static uint8_t g_bench_turn;
 static uint8_t g_bench_transport_stopped;
 static uint16_t g_feedback_gate_mask, g_bench_fault_gate_mask;
@@ -248,30 +254,35 @@ void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan)
     portYIELD_FROM_ISR(higher_priority_task_woken);
 }
 
-uint8_t VcuRtos_BenchArm(uint16_t limit_mdeg)
+static uint8_t bench_arm(uint16_t limit_mdeg, uint8_t drive)
 {
     PatrolDiagnosticsSnapshot s;
     uint8_t result = 0;
     taskENTER_CRITICAL();
     PatrolDiagnostics_Snapshot(&g_diagnostics, HAL_GetTick(), &s);
-    if (PATROL_CHASSIS_BENCH_STEERING_ENABLED && g_bench.phase == BENCH_IDLE &&
+    if (PATROL_CHASSIS_BENCH_STEERING_ENABLED && (!drive || PATROL_CHASSIS_BENCH_DRIVE_ENABLED) &&
+        g_bench.phase == BENCH_IDLE && g_drive.phase == BENCH_IDLE &&
         g_coordinate.valid &&
         VcuConfig_Get()->calibrated && VcuConfig_CalibrationCompatible() &&
         s.steering_feedback_fresh && s.drive_feedback_fresh && s.encoder_online &&
         s.steering_status_fresh && s.drive_status_fresh &&
         s.encoder_config_valid && !s.drive_fault && !OtaService_IsBusy() &&
         !VcuRtos_CanBusOff() && VehiclePowerOutput_IsOn() &&
-        (s.steering_status_word & 0x6FU) != 0x27U && (s.drive_status_word & 0x6FU) != 0x27U &&
+        (s.steering_status_word & 0x6FU) != 0x27U && (s.drive_status_word & 4U) == 0 &&
         labs(s.left_actual_rpm) <= 20 && labs(s.right_actual_rpm) <= 20)
-        result = RemoteService_BenchArm(limit_mdeg, HAL_GetTick());
+        result = drive ? RemoteService_BenchDriveArm(limit_mdeg, HAL_GetTick()) :
+            RemoteService_BenchArm(limit_mdeg, HAL_GetTick());
     taskEXIT_CRITICAL();
     return result;
 }
+uint8_t VcuRtos_BenchArm(uint16_t limit) { return bench_arm(limit, 0); }
+uint8_t VcuRtos_BenchDriveArm(uint16_t limit) { return bench_arm(limit, 1); }
 void VcuRtos_BenchStop(void)
 {
     taskENTER_CRITICAL();
     RemoteService_BenchRevoke();
     BenchSteering_Stop(&g_bench, HAL_GetTick(), 0);
+    BenchDrive_Stop(&g_drive, HAL_GetTick(), 0);
     taskEXIT_CRITICAL();
 }
 void VcuRtos_FormatBench(char* out, uint16_t size)
@@ -279,13 +290,15 @@ void VcuRtos_FormatBench(char* out, uint16_t size)
     taskENTER_CRITICAL();
     snprintf(out, size, "{\"available\":%s,\"permitted\":%s,\"phase\":%u,\"step\":%u,"
         "\"fault\":%lu,\"feedbackGateMask\":%u,\"coordinateValid\":%s,\"runtimeCenterCount\":%ld,"
-        "\"limitMdeg\":%u,\"sessionId\":\"%s\",\"contactorFeedbackAvailable\":false}",
+        "\"limitMdeg\":%u,\"sessionId\":\"%s\",\"driveAvailable\":%s,\"drivePermitted\":%s,\"drivePhase\":%u,\"driveFault\":%lu,\"driveLimitRpm\":50,\"contactorFeedbackAvailable\":false}",
         PATROL_CHASSIS_BENCH_STEERING_ENABLED ? "true" : "false",
         RemoteService_BenchPermitted() ? "true" : "false", (unsigned)g_bench.phase,
         (unsigned)g_bench.step, (unsigned long)g_bench.fault,
         g_bench.phase == BENCH_FAULT ? g_bench_fault_gate_mask : g_feedback_gate_mask,
         g_coordinate.valid ? "true" : "false", (long)g_coordinate.runtime_center,
-        RemoteService_BenchLimit(), RemoteService_BenchSession());
+        RemoteService_BenchLimit(), RemoteService_BenchSession(),
+        PATROL_CHASSIS_BENCH_DRIVE_ENABLED ? "true" : "false",
+        RemoteService_BenchDrivePermitted() ? "true" : "false", (unsigned)g_drive.phase, (unsigned long)g_drive.fault);
     taskEXIT_CRITICAL();
 }
 
@@ -322,11 +335,28 @@ static void Vcu_CanRxTask(void *argument)
             memcpy(decoded.data, frame.data, sizeof(decoded.data));
             taskENTER_CRITICAL();
             /* Exactly one SDO owner; executor responses never satisfy a diagnostic request. */
-            if (decoded.id == 0x701 && decoded.dlc == 1 && decoded.data[0] == 0 && g_coordinate.valid)
+            if ((decoded.id == 0x701 || decoded.id == 0x702) && decoded.dlc == 1 && decoded.data[0] == 0 && g_coordinate.valid)
                 g_coordinate_reset_requested = 1;
-            if (!BenchSteering_OnFrame(&g_bench, &decoded, frame.timestamp_ms))
+            uint8_t execution = BenchSteering_OnFrame(&g_bench, &decoded, frame.timestamp_ms) ? 1 :
+                BenchDrive_OnFrame(&g_drive, &decoded, frame.timestamp_ms) ? 2 : 0;
+            if (!execution)
                 PatrolDiagnostics_OnCanFrame(&g_diagnostics, &decoded, frame.timestamp_ms);
-            else g_diagnostics.can_rx_count++;
+            else {
+                int32_t status; uint8_t width;
+                g_diagnostics.can_rx_count++;
+                /* An executor-owned validated status upload is also fresh feedback;
+                 * it must not complete a diagnostics transaction or advance its cursor. */
+                if ((execution == 1 ? g_bench.phase : g_drive.phase) != BENCH_FAULT &&
+                    PatrolCanopen_ParseSdoValue(&decoded, execution, 0x6041, 0, &status, &width) && width == 2) {
+                    if (execution == 1) {
+                        g_diagnostics.steering_status_word = (uint16_t)status;
+                        g_diagnostics.steering_status_ms = frame.timestamp_ms;
+                    } else {
+                        g_diagnostics.drive_status_word = (uint16_t)status;
+                        g_diagnostics.drive_status_ms = frame.timestamp_ms;
+                    }
+                }
+            }
             taskEXIT_CRITICAL();
         }
         xEventGroupSetBits(g_health_events, VCU_HEALTH_CAN_RX);
@@ -372,8 +402,16 @@ static void Vcu_CanopenTask(void *argument)
                 BenchSteering_Start(&g_bench, g_diagnostics.steering_position_count, g_coordinate.runtime_center,
                     cfg->steering_center_count,
                     RemoteService_BenchLimit(), now);
-            BenchSteering_Tick(&g_bench, now, requested, safe, c->target_steering_mdeg);
-            g_diagnostics.motion_priority = g_bench.phase != BENCH_IDLE && g_bench.phase != BENCH_FAULT;
+            safe = safe && !c->fault_latched;
+            if (PATROL_CHASSIS_BENCH_DRIVE_ENABLED && requested && safe &&
+                RemoteService_BenchDrivePermitted() && g_bench.phase == BENCH_ACTIVE && g_drive.phase == BENCH_IDLE)
+                BenchDrive_Start(&g_drive, now);
+            BenchDrive_Tick(&g_drive, now, requested && RemoteService_BenchDrivePermitted(), safe,
+                c->target_rpm, g_diagnostics.left_actual_rpm, g_diagnostics.right_actual_rpm,
+                g_diagnostics.left_rpm_ms, g_diagnostics.right_rpm_ms);
+            BenchSteering_Tick(&g_bench, now, requested && g_drive.phase != BENCH_FAULT, safe, c->target_steering_mdeg);
+            g_diagnostics.motion_priority = (g_bench.phase != BENCH_IDLE && g_bench.phase != BENCH_FAULT) ||
+                (g_drive.phase != BENCH_IDLE && g_drive.phase != BENCH_FAULT);
             if (g_bench.phase == BENCH_STOPPING || g_bench.phase == BENCH_FAULT) {
                 RemoteService_BenchRevoke();
                 if (!g_bench_transport_stopped) {
@@ -384,30 +422,52 @@ static void Vcu_CanopenTask(void *argument)
             } else g_bench_transport_stopped = 0;
         }
         taskEXIT_CRITICAL();
-        if (g_bench.cut_power) {
+        if (g_bench.cut_power || g_drive.cut_power) {
+            BenchDrive_Stop(&g_drive, now, 1);
+            BenchSteering_Stop(&g_bench, now, 1);
             g_bench_fault_gate_mask = g_feedback_gate_mask;
             RemoteService_BenchFault();
             (void)VehiclePowerOutput_Set(0);
-            g_bench.cut_power = 0;
+            g_bench.cut_power = 0; g_drive.cut_power = 0;
         }
         if (VehiclePowerOutput_IsOn() && !VcuRtos_CanBusOffActive() &&
             HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) > 0U)
         {
             taskENTER_CRITICAL();
             /* Alternate execution and diagnostics, never overlap pending transactions. */
-            if (!g_diagnostics.pending_valid && !g_bench.pending &&
+            if (!g_diagnostics.pending_valid && !g_bench.pending && !g_drive.pending &&
                 (g_bench_turn || g_bench.phase == BENCH_STOPPING)) {
-                have_request = BenchSteering_Take(&g_bench, now, &request);
-                bench_frame = have_request;
+                if (g_drive_turn && g_bench.phase != BENCH_STOPPING) {
+                    have_request = BenchDrive_Take(&g_drive, now, &request);
+                    if (have_request) { bench_frame = 2; g_drive_turn = 0; }
+                }
+                if (!have_request) {
+                    have_request = BenchSteering_Take(&g_bench, now, &request);
+                    if (have_request) { bench_frame = 1; g_drive_turn = 1; }
+                }
+                if (!have_request) {
+                    have_request = BenchDrive_Take(&g_drive, now, &request);
+                    if (have_request) { bench_frame = 2; g_drive_turn = 0; }
+                }
                 if (have_request) g_bench_turn = 0;
             }
-            if (!have_request && !g_bench.pending && g_bench.phase != BENCH_STOPPING) {
+            if (!have_request && !g_bench.pending && !g_drive.pending && g_bench.phase != BENCH_STOPPING) {
                 have_request = PatrolDiagnostics_TakeSdoRead(&g_diagnostics, now, &request);
                 if (have_request) g_bench_turn = 1;
             }
-            if (!have_request && !g_diagnostics.pending_valid && !g_bench.pending) {
-                have_request = BenchSteering_Take(&g_bench, now, &request);
-                bench_frame = have_request;
+            if (!have_request && !g_diagnostics.pending_valid && !g_bench.pending && !g_drive.pending) {
+                if (g_drive_turn && g_bench.phase != BENCH_STOPPING) {
+                    have_request = BenchDrive_Take(&g_drive, now, &request);
+                    if (have_request) { bench_frame = 2; g_drive_turn = 0; }
+                }
+                if (!have_request) {
+                    have_request = BenchSteering_Take(&g_bench, now, &request);
+                    if (have_request) { bench_frame = 1; g_drive_turn = 1; }
+                }
+                if (!have_request) {
+                    have_request = BenchDrive_Take(&g_drive, now, &request);
+                    if (have_request) { bench_frame = 2; g_drive_turn = 0; }
+                }
             }
             taskEXIT_CRITICAL();
         }
@@ -423,20 +483,26 @@ static void Vcu_CanopenTask(void *argument)
             header.TransmitGlobalTime = DISABLE;
             taskENTER_CRITICAL();
             /* A higher priority safety tick may have revoked the selected command. */
-            if (bench_frame && g_bench.phase != BENCH_STOPPING && g_bench.phase != BENCH_IDLE &&
+            if (bench_frame && (bench_frame == 1 ?
+                (g_bench.phase != BENCH_STOPPING && g_bench.phase != BENCH_IDLE) :
+                (g_drive.phase != BENCH_STOPPING && g_drive.phase != BENCH_IDLE)) &&
                 (!RemoteService_BenchPermitted() || !RemoteService_State()->enable_request ||
                  (int32_t)(HAL_GetTick() - RemoteService_State()->lease_deadline_ms) >= 0)) {
                 BenchSteering_Stop(&g_bench, HAL_GetTick(), 0);
+                BenchDrive_Stop(&g_drive, HAL_GetTick(), 0);
                 have_request = 0;
             }
-            /* Executor can only address Node 1. Node 2 remains read-only. */
-            if (have_request && ((bench_frame && PATROL_CHASSIS_BENCH_STEERING_ENABLED &&
+            /* Each compiled executor is restricted to its own node. */
+            if (have_request && ((bench_frame == 1 && PATROL_CHASSIS_BENCH_STEERING_ENABLED &&
                     (request.id == 0x601U || (request.id == 0 && request.data[1] == 1))) ||
+                 (bench_frame == 2 && PATROL_CHASSIS_BENCH_DRIVE_ENABLED &&
+                    (request.id == 0x602U || (request.id == 0 && request.data[1] == 2))) ||
                  (!bench_frame && (request.id == 0x601U || request.id == 0x602U) && request.data[0] == 0x40U)) &&
                 HAL_CAN_AddTxMessage(&hcan1, &header, request.data, &mailbox) != HAL_OK)
             {
                 taskENTER_CRITICAL();
-                if (bench_frame) BenchSteering_TxFailed(&g_bench);
+                if (bench_frame == 2) BenchDrive_TxFailed(&g_drive);
+                else if (bench_frame == 1) BenchSteering_TxFailed(&g_bench);
                 else PatrolDiagnostics_OnSdoTxError(&g_diagnostics, now);
                 taskEXIT_CRITICAL();
             }
@@ -465,9 +531,13 @@ static void Vcu_CanopenTask(void *argument)
                 (!snapshot.drive_feedback_fresh ? 2U : 0U) | (!snapshot.encoder_online ? 4U : 0U) |
                 (!snapshot.steering_status_fresh ? 8U : 0U) | (!snapshot.drive_status_fresh ? 16U : 0U) |
                 (!snapshot.encoder_config_valid ? 32U : 0U) |
-                ((snapshot.drive_status_word & 0x6FU) == 0x27U ? 64U : 0U) |
+                ((snapshot.drive_status_word & 4U) != 0 ? 64U : 0U) |
                 ((labs(snapshot.left_actual_rpm) > 20 || labs(snapshot.right_actual_rpm) > 20) ? 128U : 0U) |
                 (!VehiclePowerOutput_IsOn() ? 256U : 0U);
+            /* Only an executing drive session may pass moving/Operation Enabled gates.
+             * Keep this allowance during bounded stopping after RAM permission is revoked. */
+            if (g_drive.phase != BENCH_IDLE && g_drive.phase != BENCH_FAULT)
+                g_feedback_gate_mask &= (uint16_t)~(64U | 128U);
             if (PATROL_CHASSIS_BENCH_STEERING_ENABLED) {
                 uint8_t was_valid = g_coordinate.valid;
                 if (!VehiclePowerOutput_IsOn()) SteeringCoordinate_Reset(&g_coordinate);

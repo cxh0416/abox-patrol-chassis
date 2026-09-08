@@ -1,13 +1,15 @@
 [CmdletBinding()]
 param(
     [ValidateSet('Debug', 'Release')] [string] $Configuration = 'Release',
-    [ValidatePattern('^patrol-chassis-[0-9]+\.[0-9]+\.[0-9]+$')] [string] $AppVersion = 'patrol-chassis-0.2.9',
+    [ValidatePattern('^patrol-chassis-[0-9]+\.[0-9]+\.[0-9]+$')] [string] $AppVersion = 'patrol-chassis-0.2.12',
     [switch] $BenchSteering,
+    [switch] $BenchDrive,
     [string] $VerifiedCandidate,
     [switch] $ReleasePair
 )
 
 $ErrorActionPreference = 'Stop'
+if ($BenchDrive) { $BenchSteering = $true }
 if ($BenchSteering -and ($Configuration -ne 'Release' -or $ReleasePair -or
     [string]::IsNullOrWhiteSpace($VerifiedCandidate) -or !(Test-Path -LiteralPath $VerifiedCandidate -PathType Leaf))) {
     throw 'Steering publication requires Release and the exact verified candidate image.'
@@ -113,6 +115,7 @@ try {
         $appDefinitions = @("-DPATROL_CHASSIS_APP_VERSION=$version")
         $appDefinitions += '-DPATROL_CHASSIS_ACTUATION_ENABLED=OFF'
         $appDefinitions += "-DPATROL_CHASSIS_BENCH_STEERING_ENABLED=$(if ($BenchSteering) { 'ON' } else { 'OFF' })"
+        $appDefinitions += "-DPATROL_CHASSIS_BENCH_DRIVE_ENABLED=$(if ($BenchDrive) { 'ON' } else { 'OFF' })"
         if (-not [string]::IsNullOrWhiteSpace($mqttUsername)) {
             $appDefinitions += "-DPATROL_CHASSIS_MQTT_USERNAME=$mqttUsername"
             $appDefinitions += "-DPATROL_CHASSIS_MQTT_PASSWORD=$mqttPassword"
@@ -147,7 +150,8 @@ try {
         if ($appText.IndexOf("PATROL_VEHICLE_CHASSIS_FW_VERSION=$version", [StringComparison]::Ordinal) -lt 0) { throw "Version marker missing from $version app image" }
         $manifest = [ordered]@{
             manifest_version = 3; product = 'patrol_vehicle_chassis'; version = $version; configuration = $Configuration
-            bench_steering_available = [bool]$BenchSteering; startup_motion_permit = $false; drive_actuation = $false
+            bench_steering_available = [bool]$BenchSteering; startup_motion_permit = $false; drive_actuation = [bool]$BenchDrive
+            drive_limit_rpm = $(if ($BenchDrive) {50} else {0})
             boot_version = 'abox-boot-2.3.0'; ota_scheme = 'boot_v2_ufs'; ota_downloader = 'app'
             app_range = '0x08008000..0x0803E7FF'; boot_state_pages = @('0x0803E800', '0x0803F000'); config_page = '0x0803F800'
             product_commit = $productCommit; product_dirty = $false; platform_commit = $platformCommit; platform_dirty = $false

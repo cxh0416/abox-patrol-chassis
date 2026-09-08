@@ -1,0 +1,311 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "vid": "PATROL-CHASSIS-000",
+  "firmware": "0.2.12",
+  "manifest": {
+    "product": "patrol_vehicle_chassis",
+    "version": "patrol-chassis-0.2.12",
+    "candidate": true,
+    "steering_only": false,
+    "startup_permit": false,
+    "drive_actuation": true,
+    "drive_limit_rpm": 50,
+    "commit": "9c3db8000baa5de60190ab26543662a5a2731fff",
+    "dirty": true,
+    "app_start": "0x08008000",
+    "app_end": "0x0803E7FF",
+    "config_page": "0x0803F800",
+    "size": 99080,
+    "sha256": "CD793E16959A585A102864E9530FC4BCAFF36E71559AC64F9F03AA09E0CCE5CA"
+  },
+  "reversal": {
+    "lastZeroAck": 1788849873.5326748,
+    "firstNegativeWrite": 1788849873.6721542,
+    "feedbackPairsBetween": [
+      {
+        "left": [
+          1788849873.5519652,
+          5
+        ],
+        "right": [
+          1788849873.5623279,
+          6
+        ]
+      },
+      {
+        "left": [
+          1788849873.60269,
+          3
+        ],
+        "right": [
+          1788849873.612356,
+          4
+        ]
+      },
+      {
+        "left": [
+          1788849873.6522636,
+          2
+        ],
+        "right": [
+          1788849873.6621075,
+          3
+        ]
+      }
+    ]
+  },
+  "reportSamples": [
+    {
+      "target": 0,
+      "left": 0,
+      "right": 0,
+      "fault": false
+    },
+    {
+      "target": 0,
+      "left": 0,
+      "right": 0,
+      "fault": false
+    },
+    {
+      "target": 0,
+      "left": 0,
+      "right": 0,
+      "fault": false
+    },
+    {
+      "target": 0,
+      "left": 0,
+      "right": 0,
+      "fault": false
+    },
+    {
+      "target": 0,
+      "left": 0,
+      "right": 0,
+      "fault": false
+    },
+    {
+      "target": 0,
+      "left": 0,
+      "right": 0,
+      "fault": false
+    },
+    {
+      "target": 50,
+      "left": 0,
+      "right": 0,
+      "fault": false
+    },
+    {
+      "target": 50,
+      "left": 40,
+      "right": 37,
+      "fault": false
+    },
+    {
+      "target": 50,
+      "left": 49,
+      "right": 52,
+      "fault": false
+    },
+    {
+      "target": 50,
+      "left": 51,
+      "right": 50,
+      "fault": false
+    },
+    {
+      "target": 50,
+      "left": 51,
+      "right": 50,
+      "fault": false
+    },
+    {
+      "target": 50,
+      "left": 52,
+      "right": 50,
+      "fault": false
+    },
+    {
+      "target": 50,
+      "left": 50,
+      "right": 50,
+      "fault": false
+    },
+    {
+      "target": 50,
+      "left": 53,
+      "right": 50,
+      "fault": false
+    },
+    {
+      "target": 0,
+      "left": 19,
+      "right": 19,
+      "fault": false
+    },
+    {
+      "target": -50,
+      "left": -27,
+      "right": -28,
+      "fault": false
+    },
+    {
+      "target": -50,
+      "left": -47,
+      "right": -47,
+      "fault": false
+    },
+    {
+      "target": -50,
+      "left": -52,
+      "right": -50,
+      "fault": false
+    },
+    {
+      "target": -50,
+      "left": -50,
+      "right": -49,
+      "fault": false
+    },
+    {
+      "target": -50,
+      "left": -49,
+      "right": -51,
+      "fault": false
+    },
+    {
+      "target": -50,
+      "left": -48,
+      "right": -50,
+      "fault": false
+    },
+    {
+      "target": -50,
+      "left": -51,
+      "right": -50,
+      "fault": false
+    },
+    {
+      "target": -50,
+      "left": -51,
+      "right": -49,
+      "fault": false
+    },
+    {
+      "target": -50,
+      "left": -50,
+      "right": -49,
+      "fault": false
+    },
+    {
+      "target": -50,
+      "left": -51,
+      "right": -52,
+      "fault": false
+    },
+    {
+      "target": -50,
+      "left": -53,
+      "right": -51,
+      "fault": false
+    },
+    {
+      "target": -50,
+      "left": -50,
+      "right": -50,
+      "fault": false
+    },
+    {
+      "target": -50,
+      "left": -50,
+      "right": -51,
+      "fault": false
+    },
+    {
+      "target": -50,
+      "left": -51,
+      "right": -49,
+      "fault": false
+    },
+    {
+      "target": -50,
+      "left": -49,
+      "right": -50,
+      "fault": false
+    },
+    {
+      "target": -50,
+      "left": -48,
+      "right": -50,
+      "fault": false
+    },
+    {
+      "target": -50,
+      "left": -52,
+      "right": -50,
+      "fault": false
+    },
+    {
+      "target": -50,
+      "left": -51,
+      "right": -51,
+      "fault": false
+    },
+    {
+      "target": -50,
+      "left": -51,
+      "right": -50,
+      "fault": false
+    },
+    {
+      "target": -50,
+      "left": -49,
+      "right": -50,
+      "fault": false
+    },
+    {
+      "target": 0,
+      "left": -51,
+      "right": -51,
+      "fault": false
+    },
+    {
+      "target": 0,
+      "left": -2,
+      "right": -4,
+      "fault": false
+    },
+    {
+      "target": 0,
+      "left": 0,
+      "right": 0,
+      "fault": false
+    },
+    {
+      "target": 0,
+      "left": 0,
+      "right": 0,
+      "fault": false
+    },
+    {
+      "target": 0,
+      "left": 0,
+      "right": 0,
+      "fault": false
+    },
+    {
+      "target": 0,
+      "left": 0,
+      "right": 0,
+      "fault": false
+    }
+  ],
+  "sources": {
+    "out\\drive-0212-reverse50-trace.json": "d079dd466421a9e2ce0d731749152f34311a044d17761b3cfe03cc8a18b3ed26",
+    "out\\wyse-drive-0211.jsonl": "ad9ae3bc998513a2864aa6c95da3dd8104c6f86d46b6b1c0597257004a1a4435"
+  },
+  "physicalDirectionConfirmed": false,
+  "fieldConfirmation": "User will verify at site using platform; bench entry explicitly authorized."
+}
