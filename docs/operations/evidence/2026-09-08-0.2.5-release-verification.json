@@ -1,0 +1,278 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.5",
+  "otaJob": "75b11c6b-d431-4579-923e-08dd77366deb",
+  "evidence": [
+    {
+      "path": "out/abox-info-025-confirmed.json",
+      "sha256": "5adc38b9a3c839ab93627b68f85467dc91a1d1f114af1b753bbbd13146b32fb8",
+      "result": {
+        "product": "patrol_vehicle_chassis",
+        "requestId": "codex-get-info-6f937845f2ac",
+        "code": 200,
+        "msg": "OK",
+        "result": {
+          "fwVersion": "patrol-chassis-0.2.5",
+          "bootVersion": "abox-boot-2.3.0",
+          "bootDescriptorValid": true,
+          "bootApiVersion": 1,
+          "bootFeatures": 15,
+          "otaScheme": "boot_v2_ufs",
+          "otaDownloader": "app",
+          "stableSeedSource": "local_flash",
+          "otaBootstrapNeedsRevision": false,
+          "vid": "PATROL-CHASSIS-000",
+          "uptimeMs": 63170,
+          "mqttState": "READY",
+          "mqttStateCode": 29,
+          "canInitialized": true,
+          "canBusOff": false,
+          "canRxOverflow": 0,
+          "otaState": "CONFIRMED",
+          "powerOutputAvailable": true,
+          "powerOutputOn": false,
+          "stableSlot": 1,
+          "candidateSlot": 1,
+          "trialFailCount": 0,
+          "resetReason": 0,
+          "otaProvisioned": true,
+          "otaReady": true,
+          "otaBusy": false,
+          "otaPhase": "IDLE",
+          "otaTargetVersion": "patrol-chassis-0.2.5",
+          "lastOtaError": 0,
+          "diagnostics": {
+            "canRx": 0,
+            "steerHb": false,
+            "driveHb": false,
+            "steerRaw": 0,
+            "leftRpm": 0,
+            "rightRpm": 0,
+            "encoderRaw": 3135,
+            "encoderOnline": true,
+            "sdoTimeouts": 0,
+            "encoderTimeouts": 0
+          }
+        }
+      }
+    },
+    {
+      "path": "out/abox-calibration-025.json",
+      "sha256": "3d8968269c73ac3cc5419ae2b439387af2054d34cccc0fda6b9a709a30e2d03b",
+      "result": {
+        "product": "patrol_vehicle_chassis",
+        "requestId": "codex-get-info-868d745d8f4f",
+        "code": 200,
+        "msg": "OK",
+        "result": {
+          "configVersion": 4,
+          "calibrated": false,
+          "remoteEnabled": false,
+          "steeringCenterCount": 0,
+          "absoluteCenterCount": 0,
+          "steeringCountsPerDegreeMilli": 0,
+          "absoluteCountsPerDegreeMilli": 0,
+          "steeringDirection": 1,
+          "absoluteDirection": 1,
+          "steeringToleranceMdeg": 2000
+        }
+      }
+    },
+    {
+      "path": "out/abox-power-025.json",
+      "sha256": "4e79b3563790986b342cf63f23f4b8b26beb2df2553be439ee3fe310454d66d1",
+      "result": {
+        "product": "patrol_vehicle_chassis",
+        "requestId": "codex-get-info-031a4e9343d2",
+        "code": 200,
+        "msg": "POWER_ON",
+        "result": {
+          "powerOutputOn": true
+        }
+      }
+    },
+    {
+      "path": "out/abox-can-025-after-debian.json",
+      "sha256": "2b7785473c331370509b11be381c9641277aaa55de3d87f3671f3c353e7327f2",
+      "result": {
+        "product": "patrol_vehicle_chassis",
+        "requestId": "codex-get-info-58d528a1107f",
+        "code": 200,
+        "msg": "OK",
+        "result": {
+          "canRx": 0,
+          "can1RawRx": 0,
+          "can2RawRx": 0,
+          "canIgnored": 0,
+          "canRxOverflow": 0,
+          "canBusOff": false,
+          "canBusOffActive": false,
+          "steerHb": false,
+          "driveHb": false,
+          "steerNmt": 0,
+          "driveNmt": 0,
+          "steerFresh": false,
+          "driveFresh": false,
+          "steerRaw": 0,
+          "leftRpm": 0,
+          "rightRpm": 0,
+          "steerSw": 0,
+          "driveSw": 0,
+          "sdoOk": 0,
+          "sdoReadMask": 0,
+          "sdoAbortMask": 0,
+          "sdoTimeouts": 0,
+          "sdoAborts": 0,
+          "lastAbort": 0,
+          "sdoTxErrors": 0,
+          "driveObjects": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "path": "out/debian-can-025-powered.json",
+      "sha256": "924adbbe82a51772bc407092aad47c60a2dd3e4e8ccb7c6f146065f1ea136671",
+      "result": {
+        "interface": "can0",
+        "bitrate": 500000,
+        "readOnly": true,
+        "heartbeats": [
+          {
+            "at": 1788837739.2191415,
+            "state": 127
+          },
+          {
+            "at": 1788837739.3200846,
+            "state": 127
+          },
+          {
+            "at": 1788837739.421143,
+            "state": 127
+          },
+          {
+            "at": 1788837739.5219667,
+            "state": 127
+          },
+          {
+            "at": 1788837739.622967,
+            "state": 127
+          },
+          {
+            "at": 1788837739.723738,
+            "state": 127
+          },
+          {
+            "at": 1788837739.8293319,
+            "state": 127
+          },
+          {
+            "at": 1788837739.9338691,
+            "state": 127
+          },
+          {
+            "at": 1788837740.0392842,
+            "state": 127
+          },
+          {
+            "at": 1788837740.1448627,
+            "state": 127
+          }
+        ],
+        "rows": [
+          {
+            "index": "6040",
+            "requestHex": "4040600000000000",
+            "status": "value",
+            "size": 2,
+            "unsigned": 0,
+            "signed": 0,
+            "responseHex": "4b4060000000"
+          },
+          {
+            "index": "6041",
+            "requestHex": "4041600000000000",
+            "status": "value",
+            "size": 2,
+            "unsigned": 5712,
+            "signed": 5712,
+            "responseHex": "4b4160005016"
+          },
+          {
+            "index": "6060",
+            "requestHex": "4060600000000000",
+            "status": "value",
+            "size": 1,
+            "unsigned": 3,
+            "signed": 3,
+            "responseHex": "4f60600003"
+          },
+          {
+            "index": "6061",
+            "requestHex": "4061600000000000",
+            "status": "value",
+            "size": 1,
+            "unsigned": 3,
+            "signed": 3,
+            "responseHex": "4f61600003"
+          },
+          {
+            "index": "6064",
+            "requestHex": "4064600000000000",
+            "status": "value",
+            "size": 4,
+            "unsigned": 4294883481,
+            "signed": -83815,
+            "responseHex": "4364600099b8feff"
+          },
+          {
+            "index": "6069",
+            "requestHex": "4069600000000000",
+            "status": "value",
+            "size": 4,
+            "unsigned": 0,
+            "signed": 0,
+            "responseHex": "4369600000000000"
+          },
+          {
+            "index": "2018",
+            "requestHex": "4018200000000000",
+            "status": "value",
+            "size": 2,
+            "unsigned": 0,
+            "signed": 0,
+            "responseHex": "4b1820000000"
+          },
+          {
+            "index": "2019",
+            "requestHex": "4019200000000000",
+            "status": "value",
+            "size": 4,
+            "unsigned": 4294911259,
+            "signed": -56037,
+            "responseHex": "431920001b25ffff"
+          },
+          {
+            "index": "201A",
+            "requestHex": "401a200000000000",
+            "status": "value",
+            "size": 4,
+            "unsigned": 4294855703,
+            "signed": -111593,
+            "responseHex": "431a2000174cfeff"
+          }
+        ],
+        "interfaceStatsBeforeDown": "3: can0: <NOARP,UP,LOWER_UP,ECHO> mtu 16 qdisc pfifo_fast state UP mode DEFAULT group default qlen 10\n    link/can  promiscuity 0 allmulti 0 minmtu 0 maxmtu 0 \n    can state ERROR-ACTIVE (berr-counter tx 0 rx 0) restart-ms 0 \n\t  bitrate 500000 sample-point 0.875\n\t  tq 125 prop-seg 6 phase-seg1 7 phase-seg2 2 sjw 1 brp 1\n\t  pcan_usb: tseg1 1..16 tseg2 1..8 sjw 1..4 brp 1..64 brp_inc 1\n\t  clock 8000000 \n\t  re-started bus-errors arbit-lost error-warn error-pass bus-off\n\t  0          0          0          0          0          0         numtxqueues 1 numrxqueues 1 gso_max_size 65536 gso_max_segs 65535 tso_max_size 65536 tso_max_segs 65535 gro_max_size 65536 gso_ipv4_max_size 65536 gro_ipv4_max_size 65536 parentbus usb parentdev 1-3:1.0 \n    RX:  bytes packets errors dropped  missed   mcast           \n       1127006  164955      0       5       0       0 \n    TX:  bytes packets errors dropped carrier collsns           \n           576      72      0       9       0       0 \n",
+        "interfaceRestoredDown": true,
+        "capturedAt": 1788837740.2230806
+      }
+    }
+  ]
+}
