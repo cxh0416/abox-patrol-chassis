@@ -10,6 +10,13 @@
 #define STOP_MS 200U
 #define STEP_ACTIVE 16U
 #define STEP_STOP 21U
+#define BENCH_STEERING_ENVELOPE_MDEG 40000
+
+static uint8_t valid_limit(uint16_t limit)
+{
+    return (limit == 1000 || limit == 3000 || limit == 5000 ||
+            limit == 20000 || limit == 30000 || limit == 40000) ? 1U : 0U;
+}
 
 static void fail(BenchSteering* b, uint32_t reason)
 {
@@ -21,7 +28,7 @@ uint8_t BenchSteering_Start(BenchSteering* b, int32_t actual, int32_t center,
 {
     uint8_t aligned = b->limits_aligned;
     int32_t minimum = b->cached_minimum, maximum = b->cached_maximum;
-    if (b->phase != BENCH_IDLE || (limit != 1000 && limit != 3000 && limit != 5000)) return 0;
+    if (b->phase != BENCH_IDLE || !valid_limit(limit)) return 0;
     BenchSteering_Init(b);
     b->limits_aligned = aligned; b->cached_minimum = minimum; b->cached_maximum = maximum;
     b->calibration_center = calibration_center;
@@ -111,21 +118,22 @@ uint8_t BenchSteering_OnFrame(BenchSteering* b, const PatrolCanFrame* f, uint32_
         if (!PatrolCanopen_ParseSdoValue(f, 1, b->index, 0, &value, &width) || width != b->width) return 1;
         if (b->step == 1) b->previous_minimum = value;
         else if (b->step == 2) {
-            int64_t shift = (int64_t)b->center - b->calibration_center;
-            int64_t low = (int64_t)b->previous_minimum + shift, high = (int64_t)value + shift;
             int32_t envelope_low, envelope_high;
             if (b->previous_minimum >= value ||
-                !SteeringAngle_ToControllerCount(-5000, b->center, VEHICLE_STEERING_COUNTS_MILLI,
+                !SteeringAngle_ToControllerCount(-BENCH_STEERING_ENVELOPE_MDEG, b->center,
+                    VEHICLE_STEERING_COUNTS_MILLI,
                     VEHICLE_STEERING_DIRECTION, INT32_MIN, INT32_MAX, &envelope_low) ||
-                !SteeringAngle_ToControllerCount(5000, b->center, VEHICLE_STEERING_COUNTS_MILLI,
+                !SteeringAngle_ToControllerCount(BENCH_STEERING_ENVELOPE_MDEG, b->center,
+                    VEHICLE_STEERING_COUNTS_MILLI,
                     VEHICLE_STEERING_DIRECTION, INT32_MIN, INT32_MAX, &envelope_high)) { fail(b, 8U); return 1; }
             if (b->limits_aligned) {
                 if (b->previous_minimum != b->cached_minimum || value != b->cached_maximum) { fail(b, 8U); return 1; }
                 b->minimum = b->cached_minimum; b->maximum = b->cached_maximum;
             } else {
-                if (low < INT32_MIN || high > INT32_MAX) { fail(b, 8U); return 1; }
-                b->minimum = low < envelope_low ? envelope_low : (int32_t)low;
-                b->maximum = high > envelope_high ? envelope_high : (int32_t)high;
+                /* The old controller limits are historical settings. This RAM-armed
+                   bench capability applies the product test envelope for this power epoch. */
+                b->minimum = envelope_low;
+                b->maximum = envelope_high;
             }
             if (b->minimum >= b->maximum || b->hold < b->minimum || b->hold > b->maximum ||
                 b->desired < b->minimum || b->desired > b->maximum) { fail(b, 8U); return 1; }

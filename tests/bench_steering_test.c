@@ -50,7 +50,8 @@ int main(void)
     assert(!SteeringAngle_ToControllerCount(INT32_MAX,INT32_MAX,UINT32_MAX,-1,-5,5,&target));
     assert(!SteeringAngle_ToControllerCount(5000,-60000,2710800,1,-111593,-56037,&target));
     BenchSteering_Init(&b); assert(!BenchSteering_Take(&b,0,&f));
-    assert(BenchSteering_Start(&b,-83815,-85123,-85123,1000,now));
+    assert(!BenchSteering_Start(&b,-83815,-85123,-85123,40001,now));
+    assert(BenchSteering_Start(&b,-83815,-85123,-85123,40000,now));
     for(int i=0;i<20;i++) advance(&b,&now);
     assert(b.phase==BENCH_ACTIVE);
     for(int i=0;i<3;i++) advance(&b,&now);
@@ -63,21 +64,21 @@ int main(void)
     r=reply(&b,0x21); BenchSteering_OnFrame(&b,&r,now+3);
     assert(BenchSteering_Take(&b,now+4,&f)&&f.id==0&&f.data[0]==0x80);
     assert(b.phase==BENCH_IDLE); /* stop emitted no target position */
-    assert(b.limits_aligned && b.minimum==-98677 && b.maximum==-71569);
+    assert(b.limits_aligned && b.minimum==-193555 && b.maximum==23309);
 
     BenchSteering_Init(&b);
-    assert(BenchSteering_Start(&b,-83815,-72187,-85123,1000,0)); now=0;
+    assert(BenchSteering_Start(&b,-83815,-72187,-85123,40000,0)); now=0;
     for(int i=0;i<20;i++) advance(&b,&now);
-    assert(b.phase==BENCH_ACTIVE && b.minimum==-85741 && b.maximum==-58633);
+    assert(b.phase==BENCH_ACTIVE && b.minimum==-180619 && b.maximum==36245);
     /* Rearming in the same power epoch must verify, not shift, the existing limits. */
     b.phase=BENCH_IDLE;
-    assert(BenchSteering_Start(&b,-83815,-72187,-85123,1000,now));
+    assert(BenchSteering_Start(&b,-83815,-72187,-85123,40000,now));
     advance(&b,&now); /* NMT */
-    assert(BenchSteering_Take(&b,now,&f)); r=reply(&b,-85741);
+    assert(BenchSteering_Take(&b,now,&f)); r=reply(&b,-180619);
     BenchSteering_OnFrame(&b,&r,now+1);
-    assert(BenchSteering_Take(&b,now+2,&f)); r=reply(&b,-58633);
+    assert(BenchSteering_Take(&b,now+2,&f)); r=reply(&b,36245);
     BenchSteering_OnFrame(&b,&r,now+3);
-    assert(b.step==3 && b.minimum==-85741 && b.maximum==-58633);
+    assert(b.step==3 && b.minimum==-180619 && b.maximum==36245);
 
     BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0);
     advance(&b,&(uint32_t){0}); /* NMT */

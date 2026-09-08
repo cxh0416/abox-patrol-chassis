@@ -70,6 +70,12 @@ int main(void)
     static const char power_off[] =
         "{\"version\":\"2.0\",\"data\":{\"requestId\":\"req-power-off\","
         "\"command\":\"internal_config\",\"params\":{\"action\":\"power_off\"}}}";
+    static const char arm_drive[] =
+        "{\"version\":\"2.0\",\"data\":{\"requestId\":\"req-arm-drive\","
+        "\"command\":\"internal_config\",\"params\":{\"action\":\"arm_bench_drive\",\"limitMdeg\":40000}}}";
+    static const char bad_arm_drive[] =
+        "{\"version\":\"2.0\",\"data\":{\"requestId\":\"req-arm-bad\","
+        "\"command\":\"internal_config\",\"params\":{\"action\":\"arm_bench_drive\",\"limitMdeg\":40001}}}";
     char oversized[1100];
     static const char oversized_prefix[] = "{\"requestId\":\"req-big\",\"padding\":\"";
 
@@ -93,6 +99,15 @@ int main(void)
                        CLOUD_PROTOCOL_ACTION_POWER_ON, "req-power-on")) return 1;
     if (!expect_status("power_off", power_off, 0U, CLOUD_PROTOCOL_OK,
                        CLOUD_PROTOCOL_ACTION_POWER_OFF, "req-power-off")) return 1;
+    if (!expect_status("arm_drive", arm_drive, 0U, CLOUD_PROTOCOL_OK,
+                       CLOUD_PROTOCOL_ACTION_BENCH_ARM, "req-arm-drive")) return 1;
+    if (!expect_status("bad_arm_drive", bad_arm_drive, 0U, CLOUD_PROTOCOL_INVALID,
+                       CLOUD_PROTOCOL_ACTION_NONE, "req-arm-bad")) return 1;
+    {
+        CloudProtocolRequest_t request;
+        if (CloudProtocol_Parse(arm_drive, (uint16_t)strlen(arm_drive), 0U, &request) != CLOUD_PROTOCOL_OK ||
+            request.bench_limit_mdeg != 40000U || !request.bench_drive) return 1;
+    }
     {
         CloudProtocolRequest_t request;
         if (CloudProtocol_Parse(ota, (uint16_t)strlen(ota), 1U, &request) != CLOUD_PROTOCOL_OK ||

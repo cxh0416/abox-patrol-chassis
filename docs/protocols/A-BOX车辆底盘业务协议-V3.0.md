@@ -77,8 +77,8 @@
 | `data.params.sessionId` | String | 是 | 当前控制会话标识 |
 | `data.params.seq` | Integer | 是 | 会话内严格递增，范围 `1..4294967295` |
 | `data.params.leaseMs` | Integer | 是 | `1..1000` ms；`stop` 仍携带该字段 |
-| `data.params.driveRpm` | Integer | 是 | `-300..300` rpm；正负方向由产品标定定义 |
-| `data.params.steeringDeg` | Number | 是 | `-5.0..5.0`°；正负方向由产品标定定义 |
+| `data.params.driveRpm` | Integer | 是 | `-200..200` rpm；正负方向由产品标定定义 |
+| `data.params.steeringDeg` | Number | 是 | `-40.0..40.0`°；正负方向由产品标定定义 |
 
 `acquire` 建立控制租约，`renew` 更新同一会话目标并续租，`stop` 明确请求零速和释放会话。平台停止发送、浏览器失联或租约超时后，设备必须安全停止，不得保持最后一次非零目标。
 

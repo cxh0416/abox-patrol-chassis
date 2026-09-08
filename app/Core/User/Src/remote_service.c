@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "app_log.h"
+#include "bench_drive.h"
 #include "chassis_cloud_protocol.h"
 #include "fixed_point.h"
 #include "main.h"
@@ -45,7 +46,9 @@ uint8_t RemoteService_BenchArm(uint16_t limit_mdeg, uint32_t now)
 {
     char stamp[21];
     uint8_t ready;
-    if (!g_remote_initialized || (limit_mdeg != 1000 && limit_mdeg != 3000 && limit_mdeg != 5000) ||
+    if (!g_remote_initialized ||
+        (limit_mdeg != 1000 && limit_mdeg != 3000 && limit_mdeg != 5000 &&
+         limit_mdeg != 20000 && limit_mdeg != 30000 && limit_mdeg != 40000) ||
         !TimeBase_FormatUtcMs(stamp, sizeof(stamp))) return 0;
     taskENTER_CRITICAL();
     if (g_bench_permit || g_control.session_active) { taskEXIT_CRITICAL(); return 0; }
@@ -141,7 +144,8 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
         uint8_t session_conflict = 0U;
         if (strcmp(command.action, "stop") != 0 &&
             (!g_bench_permit || strcmp(command.session_id, g_bench_session) != 0 ||
-             abs(command.drive_rpm) > (g_drive_permit ? 50 : 0) || labs(command.steering_mdeg) > g_bench_limit)) {
+             abs(command.drive_rpm) > (g_drive_permit ? BENCH_DRIVE_MAX_RPM : 0) ||
+             labs(command.steering_mdeg) > g_bench_limit)) {
             code = 400U; message = "bench permit or motion limit rejected";
             goto format_response;
         }

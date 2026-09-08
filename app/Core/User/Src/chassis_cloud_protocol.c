@@ -54,7 +54,7 @@ ChassisCloudStatus ChassisCloud_Parse(const char* payload, uint16_t length,
         (!cJSON_IsNumber(seq)) || seq->valuedouble < 1 || seq->valuedouble > 4294967295.0 ||
         (!cJSON_IsNumber(lease)) || lease->valuedouble < 1 || lease->valuedouble > 1000 ||
         (!cJSON_IsNumber(rpm)) || rpm->valuedouble < -300 || rpm->valuedouble > 300 ||
-        (!cJSON_IsNumber(angle)) || angle->valuedouble < -5 || angle->valuedouble > 5) goto done;
+        (!cJSON_IsNumber(angle)) || angle->valuedouble < -40 || angle->valuedouble > 40) goto done;
     if (strcmp(command->action, "acquire") != 0 && strcmp(command->action, "renew") != 0 &&
         strcmp(command->action, "stop") != 0) {
         status = CHASSIS_CLOUD_UNSUPPORTED;

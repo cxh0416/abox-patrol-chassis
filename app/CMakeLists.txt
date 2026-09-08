@@ -32,7 +32,7 @@ set(PATROL_CHASSIS_APP_VERSION "" CACHE STRING "Override patrol chassis App sema
 set(PATROL_CHASSIS_MQTT_USERNAME "" CACHE STRING "Production MQTT username")
 set(PATROL_CHASSIS_MQTT_PASSWORD "" CACHE STRING "Production MQTT password")
 option(PATROL_CHASSIS_OTA_AUTO_SEED "Seed first stable OTA slot" ON)
-option(PATROL_CHASSIS_BENCH_DRIVE_ENABLED "Compile separately RAM-armed 50 rpm bench drive" OFF)
+option(PATROL_CHASSIS_BENCH_DRIVE_ENABLED "Compile separately RAM-armed 200 rpm bench drive" OFF)
 option(PATROL_CHASSIS_BENCH_STEERING_ENABLED "Compile RAM-armed steering-only bench executor" OFF)
 option(PATROL_CHASSIS_ACTUATION_ENABLED "Allow CANopen motion output after bench approval" OFF)
 option(PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED "Allow read-only CANopen and encoder polling" ON)

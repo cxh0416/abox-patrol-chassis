@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([ValidatePattern('^patrol-chassis-[0-9]+\.[0-9]+\.[0-9]+$')][string]$AppVersion = 'patrol-chassis-0.2.13', [switch]$Drive)
+param([ValidatePattern('^patrol-chassis-[0-9]+\.[0-9]+\.[0-9]+$')][string]$AppVersion = 'patrol-chassis-0.2.14', [switch]$Drive)
 $ErrorActionPreference = 'Stop'
 $product = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $build = Join-Path $product 'app/build/BenchSteering'
@@ -25,7 +25,7 @@ if ($bytes.Length -gt 223232 -or [Text.Encoding]::ASCII.GetString($bytes).IndexO
 [ordered]@{
     product='patrol_vehicle_chassis'; version=$AppVersion; candidate=$true
     steering_only=(-not $Drive.IsPresent); startup_permit=$false; drive_actuation=$Drive.IsPresent
-    drive_limit_rpm=$(if ($Drive) {50} else {0})
+    drive_limit_rpm=$(if ($Drive) {200} else {0})
     commit=(& git -C $product rev-parse HEAD | Out-String).Trim()
     dirty=(-not [string]::IsNullOrWhiteSpace((& git -C $product status --porcelain | Out-String)))
     app_start='0x08008000'; app_end='0x0803E7FF'; config_page='0x0803F800'

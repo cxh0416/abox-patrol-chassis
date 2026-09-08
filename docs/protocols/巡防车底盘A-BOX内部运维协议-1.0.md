@@ -125,7 +125,7 @@ OTA 请求使用 `command=ota_upgrade`，`params` 必须包含不可变 HTTPS `u
 
 `set_calibration` 必须提供两路中位；每度计数、方向及容差可省略，省略时采用产品公共参数，提供时必须与公共参数一致。`get_calibration.result.profileCompatible` 表示已保存参数是否匹配产品配置；不匹配时禁止运动。
 
-- `arm_bench_steering`：参数 `limitMdeg` 只允许 1000、3000、5000。条件不满足返回 409 `BENCH_NOT_READY`。成功返回 RAM 测试许可和 `sessionId`，15 秒内须以该会话发起公共 `chassis_control.acquire`。
+- `arm_bench_steering`：参数 `limitMdeg` 允许 1000、3000、5000、20000、30000、40000。条件不满足返回 409 `BENCH_NOT_READY`。成功返回 RAM 测试许可和 `sessionId`，15 秒内须以该会话发起公共 `chassis_control.acquire`。
 - `arm_bench_drive`：参数 `limitMdeg` 同上，申请行走与转向测试许可。成功返回 `drivePermitted=true`；行走目标绝对值不得超过返回的 `driveLimitRpm`。条件不满足返回 409。
 - `get_bench_steering`：返回 available、permitted、phase、step、fault、limitMdeg、sessionId、contactorFeedbackAvailable。phase 为 0 空闲、1 准备、2 运行、3 停止中、4 故障；step 仅供维护诊断。
 - `stop_bench_steering`：立即撤销许可并请求撤使能；200 表示停止请求已接受，须继续核验状态。

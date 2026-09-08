@@ -2,7 +2,7 @@
 #define BENCH_DRIVE_H
 #include "bench_steering.h"
 /* Separate, RAM-armed low speed bench capability. */
-#define BENCH_DRIVE_MAX_RPM 50
+#define BENCH_DRIVE_MAX_RPM 200
 typedef struct {
     BenchPhase phase;
     uint8_t step, pending, read, width, cut_power, confirmations, reversing;

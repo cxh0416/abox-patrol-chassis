@@ -290,7 +290,7 @@ void VcuRtos_FormatBench(char* out, uint16_t size)
     taskENTER_CRITICAL();
     snprintf(out, size, "{\"available\":%s,\"permitted\":%s,\"phase\":%u,\"step\":%u,"
         "\"fault\":%lu,\"feedbackGateMask\":%u,\"coordinateValid\":%s,\"runtimeCenterCount\":%ld,"
-        "\"limitMdeg\":%u,\"sessionId\":\"%s\",\"driveAvailable\":%s,\"drivePermitted\":%s,\"drivePhase\":%u,\"driveFault\":%lu,\"driveLimitRpm\":50,\"contactorFeedbackAvailable\":false}",
+        "\"limitMdeg\":%u,\"sessionId\":\"%s\",\"driveAvailable\":%s,\"drivePermitted\":%s,\"drivePhase\":%u,\"driveFault\":%lu,\"driveLimitRpm\":200,\"contactorFeedbackAvailable\":false}",
         PATROL_CHASSIS_BENCH_STEERING_ENABLED ? "true" : "false",
         RemoteService_BenchPermitted() ? "true" : "false", (unsigned)g_bench.phase,
         (unsigned)g_bench.step, (unsigned long)g_bench.fault,

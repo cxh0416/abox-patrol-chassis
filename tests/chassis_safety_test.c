@@ -163,7 +163,8 @@ int main(void)
     PatrolDiagnosticsSnapshot diagnostic_snapshot;
     char fixed[24];
     ChassisCloudCommand command;
-    const char json[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"r1\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"acquire\",\"sessionId\":\"s1\",\"seq\":1,\"leaseMs\":1000,\"driveRpm\":50,\"steeringDeg\":1}}}";
+    const char json[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"r1\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"acquire\",\"sessionId\":\"s1\",\"seq\":1,\"leaseMs\":1000,\"driveRpm\":200,\"steeringDeg\":40}}}";
+    const char over_limit[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"r3\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"renew\",\"sessionId\":\"s1\",\"seq\":2,\"leaseMs\":1000,\"driveRpm\":200,\"steeringDeg\":40.001}}}";
     const char wrong_type[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"r2\",\"deviceType\":\"wing_actuator\",\"command\":\"chassis_control\",\"params\":{}}}";
 
     CHECK(SteeringAngle_FromControllerCount(-58015, -85123, 2710800U, 1) == 10000);
@@ -287,7 +288,8 @@ int main(void)
     CHECK(VehiclePowerOutput_Set(0U) && !VehiclePowerOutput_IsOn() && g_power_level == 0U);
 
     CHECK(ChassisCloud_Parse(json, (uint16_t)strlen(json), &command) == CHASSIS_CLOUD_OK);
-    CHECK(command.drive_rpm == 50 && command.steering_mdeg == 1000 && strcmp(command.session_id, "s1") == 0);
+    CHECK(command.drive_rpm == 200 && command.steering_mdeg == 40000 && strcmp(command.session_id, "s1") == 0);
+    CHECK(ChassisCloud_Parse(over_limit, (uint16_t)strlen(over_limit), &command) == CHASSIS_CLOUD_INVALID);
     CHECK(ChassisCloud_Parse(wrong_type, (uint16_t)strlen(wrong_type), &command) ==
           CHASSIS_CLOUD_DEVICE_TYPE_MISMATCH);
     return 0;

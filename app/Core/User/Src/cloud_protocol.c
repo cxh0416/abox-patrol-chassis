@@ -203,8 +203,9 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
              strcmp(action->valuestring, "arm_bench_drive") == 0)
     {
         cJSON* limit = cJSON_GetObjectItemCaseSensitive(params, "limitMdeg");
-        if (!json_integer_between(limit, 1000, 5000) ||
-            (limit->valueint != 1000 && limit->valueint != 3000 && limit->valueint != 5000)) goto done;
+        if (!json_integer_between(limit, 1000, 40000) ||
+            (limit->valueint != 1000 && limit->valueint != 3000 && limit->valueint != 5000 &&
+             limit->valueint != 20000 && limit->valueint != 30000 && limit->valueint != 40000)) goto done;
         request->bench_limit_mdeg = (uint16_t)limit->valueint;
         request->bench_drive = strcmp(action->valuestring, "arm_bench_drive") == 0;
         request->action = CLOUD_PROTOCOL_ACTION_BENCH_ARM;
