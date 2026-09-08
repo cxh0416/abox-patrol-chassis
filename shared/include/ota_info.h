@@ -6,7 +6,7 @@
 #include "boot_cfg.h"
 
 #define VCU_CONFIG_MAGIC 0x56435543U /* VCU C */
-#define VCU_CONFIG_VERSION 3U
+#define VCU_CONFIG_VERSION 4U
 
 typedef struct
 {
@@ -34,6 +34,7 @@ typedef struct
     int8_t absolute_direction;
     uint8_t calibrated;
     uint8_t reserved1;
+    uint32_t steering_counts_per_degree_milli;
 } VcuRemoteConfig_t;
 
 typedef struct

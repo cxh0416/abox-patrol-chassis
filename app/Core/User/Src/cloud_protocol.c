@@ -45,6 +45,17 @@ static uint8_t config_string_valid(const char* value, uint16_t capacity, uint8_t
     return 0U;
 }
 
+static uint8_t json_integer_between(const cJSON* item, double minimum, double maximum)
+{
+    double value;
+    int64_t integer;
+    if (!cJSON_IsNumber(item)) return 0U;
+    value = item->valuedouble;
+    if (value < minimum || value > maximum) return 0U;
+    integer = (int64_t)value;
+    return value == (double)integer ? 1U : 0U;
+}
+
 static void extract_request_id(const char* payload, uint16_t length, char* output)
 {
     static const char key[] = "\"requestId\"";
@@ -91,6 +102,13 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
     cJSON* mqtt_port;
     cJSON* mqtt_username;
     cJSON* mqtt_password;
+    cJSON* steering_center;
+    cJSON* absolute_center;
+    cJSON* steering_counts_per_degree;
+    cJSON* absolute_counts_per_degree;
+    cJSON* steering_direction;
+    cJSON* absolute_direction;
+    cJSON* steering_tolerance;
     CloudProtocolStatus_t status = CLOUD_PROTOCOL_INVALID;
 
     if (request == 0) return CLOUD_PROTOCOL_INVALID;
@@ -146,6 +164,37 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
     if (!cJSON_IsString(action)) goto done;
     if (strcmp(action->valuestring, "get_info") == 0) request->action = CLOUD_PROTOCOL_ACTION_GET_INFO;
     else if (strcmp(action->valuestring, "get_can_diag") == 0) request->action = CLOUD_PROTOCOL_ACTION_GET_CAN_DIAG;
+    else if (strcmp(action->valuestring, "get_calibration") == 0)
+        request->action = CLOUD_PROTOCOL_ACTION_GET_CALIBRATION;
+    else if (strcmp(action->valuestring, "clear_calibration") == 0)
+        request->action = CLOUD_PROTOCOL_ACTION_CLEAR_CALIBRATION;
+    else if (strcmp(action->valuestring, "set_calibration") == 0)
+    {
+        steering_center = cJSON_GetObjectItemCaseSensitive(params, "steeringCenterCount");
+        absolute_center = cJSON_GetObjectItemCaseSensitive(params, "absoluteCenterCount");
+        steering_counts_per_degree = cJSON_GetObjectItemCaseSensitive(params, "steeringCountsPerDegreeMilli");
+        absolute_counts_per_degree = cJSON_GetObjectItemCaseSensitive(params, "absoluteCountsPerDegreeMilli");
+        steering_direction = cJSON_GetObjectItemCaseSensitive(params, "steeringDirection");
+        absolute_direction = cJSON_GetObjectItemCaseSensitive(params, "absoluteDirection");
+        steering_tolerance = cJSON_GetObjectItemCaseSensitive(params, "steeringToleranceMdeg");
+        if (!json_integer_between(steering_center, -2147483648.0, 2147483647.0) ||
+            !json_integer_between(absolute_center, 0.0, 4294967295.0) ||
+            !json_integer_between(steering_counts_per_degree, 1.0, 4294967295.0) ||
+            !json_integer_between(absolute_counts_per_degree, 1.0, 4294967295.0) ||
+            !json_integer_between(steering_direction, -1.0, 1.0) ||
+            !json_integer_between(absolute_direction, -1.0, 1.0) ||
+            !json_integer_between(steering_tolerance, 1.0, 2000.0) ||
+            (steering_direction->valueint != -1 && steering_direction->valueint != 1) ||
+            (absolute_direction->valueint != -1 && absolute_direction->valueint != 1)) goto done;
+        request->steering_center_count = (int32_t)steering_center->valuedouble;
+        request->absolute_center_count = (uint32_t)absolute_center->valuedouble;
+        request->steering_counts_per_degree_milli = (uint32_t)steering_counts_per_degree->valuedouble;
+        request->absolute_counts_per_degree_milli = (uint32_t)absolute_counts_per_degree->valuedouble;
+        request->steering_direction = (int8_t)steering_direction->valueint;
+        request->absolute_direction = (int8_t)absolute_direction->valueint;
+        request->steering_tolerance_mdeg = (uint16_t)steering_tolerance->valueint;
+        request->action = CLOUD_PROTOCOL_ACTION_SET_CALIBRATION;
+    }
     else if (strcmp(action->valuestring, "get_log") == 0) request->action = CLOUD_PROTOCOL_ACTION_GET_LOG;
     else if (strcmp(action->valuestring, "reboot") == 0) request->action = CLOUD_PROTOCOL_ACTION_REBOOT;
     else if (strcmp(action->valuestring, "power_on") == 0) request->action = CLOUD_PROTOCOL_ACTION_POWER_ON;

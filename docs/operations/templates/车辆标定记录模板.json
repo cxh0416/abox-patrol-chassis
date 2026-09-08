@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "product": "patrol_vehicle_chassis",
+  "deviceId": "FILL_PER_VEHICLE",
+  "capturedAt": "FILL_ISO8601_TIME",
+  "hardware": {
+    "steeringControllerModel": "FILL",
+    "driveControllerModel": "FILL",
+    "steeringEncoderModel": "FILL",
+    "independentEncoderModel": "FILL"
+  },
+  "network": {
+    "canopenBitrate": 500000,
+    "steeringNode": 1,
+    "driveNode": 2
+  },
+  "measuredCalibration": {
+    "steeringCenter6064": null,
+    "steeringDirection": null,
+    "independentEncoderCenter": null,
+    "independentEncoderDirection": null,
+    "independentEncoderCountsPerDegreeMilli": null,
+    "negativeSoftwareLimit201A": null,
+    "positiveSoftwareLimit2019": null,
+    "steeringToleranceMilliDegree": null
+  },
+  "checks": {
+    "controllerParametersBackedUp": false,
+    "communicationLossParametersVerified": false,
+    "centerSamplesStable": false,
+    "controllerLimitsSavedAndReadBack": false,
+    "steeringDirectionVerified": false,
+    "independentEncoderDirectionVerified": false,
+    "plusMinus5DegreeVerified": false,
+    "plusMinus10DegreeVerified": false,
+    "fullAllowedRangeVerified": false,
+    "dualAngleDifferenceWithinTolerance": false,
+    "physicalCommunicationLossVerified": false,
+    "powerCyclePersistenceVerified": false,
+    "aboxCalibrationSaved": false
+  },
+  "evidence": {
+    "parameterBackup": "FILL_PATH_OR_HASH",
+    "centerSampling": "FILL_PATH_OR_HASH",
+    "limitWriteAndReadback": "FILL_PATH_OR_HASH",
+    "independentEncoderSampling": "FILL_PATH_OR_HASH",
+    "motionValidation": "FILL_PATH_OR_HASH",
+    "communicationLossValidation": "FILL_PATH_OR_HASH",
+    "powerCycleReadback": "FILL_PATH_OR_HASH"
+  },
+  "result": {
+    "wholeVehicleCalibrated": false,
+    "operator": "FILL",
+    "reviewer": "FILL",
+    "notes": ""
+  }
+}

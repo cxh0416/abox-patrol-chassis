@@ -16,6 +16,7 @@
 #include "patrol_canopen.h"
 #include "patrol_diagnostics.h"
 #include "remote_service.h"
+#include "steering_angle.h"
 #include "task.h"
 #include "usart.h"
 #include "vcu_config.h"
@@ -76,6 +77,7 @@ static TaskHandle_t g_remote_task;
 static TaskHandle_t g_diag_task;
 static TaskHandle_t g_watchdog_task;
 static volatile uint32_t g_can_rx_overflow_count;
+static volatile uint32_t g_can_raw_rx_count[2];
 static volatile uint8_t g_can_started;
 static volatile uint8_t g_can_bus_off_mask;
 static uint8_t g_boot_confirmed;
@@ -163,6 +165,7 @@ BaseType_t VcuRtos_CanRxFromISR(CAN_HandleTypeDef *hcan, BaseType_t *higher_prio
     memset(&frame, 0, sizeof(frame));
     if (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &header, frame.data) != HAL_OK) return pdFAIL;
     frame.bus = vcu_can_bus_index(hcan);
+    g_can_raw_rx_count[frame.bus]++;
     frame.header = header;
     frame.timestamp_ms = HAL_GetTick();
 
@@ -192,6 +195,11 @@ uint8_t VcuRtos_CanStarted(void) { return g_can_started; }
 uint8_t VcuRtos_CanBusOff(void)
 {
     return (g_can_bus_off_mask & 0x01U) ? 1U : 0U;
+}
+
+uint32_t VcuRtos_CanRawRxCount(uint8_t bus)
+{
+    return bus < 2U ? g_can_raw_rx_count[bus] : 0U;
 }
 
 uint8_t VcuRtos_CanBusOffActive(void)
@@ -307,7 +315,6 @@ static void Vcu_CanopenTask(void *argument)
             PatrolDiagnosticsSnapshot snapshot;
             ChassisFeedback feedback;
             const VcuRemoteConfig_t* cfg = VcuConfig_Get();
-            int64_t angle;
             memset(&feedback, 0, sizeof(feedback));
             taskENTER_CRITICAL();
             PatrolDiagnostics_Snapshot(&g_diagnostics, now, &snapshot);
@@ -325,14 +332,12 @@ static void Vcu_CanopenTask(void *argument)
                 (snapshot.right_actual_rpm < -32768 ? -32768 : (int16_t)snapshot.right_actual_rpm);
             if (feedback.calibrated)
             {
-                angle = (int64_t)(snapshot.steering_position_count - cfg->steering_center_count) *
-                        9LL * cfg->steering_direction / 5LL;
-                feedback.steering_actual_mdeg = angle > INT32_MAX ? INT32_MAX :
-                    (angle < INT32_MIN ? INT32_MIN : (int32_t)angle);
-                angle = ((int64_t)snapshot.encoder_count - cfg->absolute_center_count) * 1000000LL *
-                        cfg->absolute_direction / cfg->absolute_counts_per_degree_milli;
-                feedback.encoder_actual_mdeg = angle > INT32_MAX ? INT32_MAX :
-                    (angle < INT32_MIN ? INT32_MIN : (int32_t)angle);
+                feedback.steering_actual_mdeg = SteeringAngle_FromControllerCount(
+                    snapshot.steering_position_count, cfg->steering_center_count,
+                    cfg->steering_counts_per_degree_milli, cfg->steering_direction);
+                feedback.encoder_actual_mdeg = SteeringAngle_FromAbsoluteCount(
+                    snapshot.encoder_count, cfg->absolute_center_count,
+                    cfg->absolute_counts_per_degree_milli, cfg->absolute_direction);
             }
             feedback.feedback_ms = snapshot.coherent_feedback_ms != 0U ?
                 snapshot.coherent_feedback_ms : now - (CHASSIS_FEEDBACK_TIMEOUT_MS + 1U);

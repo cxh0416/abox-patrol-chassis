@@ -79,6 +79,9 @@ A-BOX 只订阅自身 VID 的精确配置和 OTA Topic。平台重试必须沿�
 |---|---|
 | `get_info` | 查询 App、Boot、OTA、MQTT 和 CAN 基本信息 |
 | `get_can_diag` | 查询 CAN 节点、反馈时效及 SDO 读取诊断，不改变总线或运动状态 |
+| `get_calibration` | 查询当前轮胎转角标定参数和标定状态 |
+| `set_calibration` | 在远程控制禁用、车辆静止、反馈完整且控制器未使能时保存逐车转角标定；保存后继续保持远程控制禁用 |
+| `clear_calibration` | 清除标定状态并关闭远程控制使能 |
 | `get_log` | 获取内存日志快照 |
 | `reboot` | 响应成功发布后受控重启 |
 | `power_on` | 将车辆电源控制输出置为高电平 |
@@ -88,6 +91,10 @@ A-BOX 只订阅自身 VID 的精确配置和 OTA Topic。平台重试必须沿�
 `power_on` / `power_off` 成功响应的 `result.powerOutputOn` 表示 MCU 输出锁存的命令状态。该状态不是继电器触点或整车供电反馈，不得用来声称车辆已真实开机或关机。
 
 `get_info` 的 `result.diagnostics` 是只读联调快照：`canRx` 为 CAN1 已接收标准数据帧计数，`steerHb/driveHb` 为 Node 1/2 心跳在线判断，`steerRaw`、`leftRpm/rightRpm` 和 `encoderRaw` 为最近原始反馈，`encoderOnline` 为编码器反馈时效判断，`sdoTimeouts/encoderTimeouts` 为累计超时计数。上述字段只用于诊断，不代表标定、运动或验收成功。
+
+`set_calibration` 的参数为 `steeringCenterCount`、`absoluteCenterCount`、`steeringCountsPerDegreeMilli`、`absoluteCountsPerDegreeMilli`、`steeringDirection`、`absoluteDirection` 和 `steeringToleranceMdeg`。每度计数均以轮胎实际转角为角度基准，并放大 1000 倍保存；方向只能为 `1` 或 `-1`，允许偏差范围为 `1..2000 mdeg`。设备仅在远程控制已禁用、车辆电源输出已开启、CAN 无 Bus-Off、两个节点和三路反馈均有效、左右实测转速不超过 20 rpm、控制器无故障且转向未处于 Operation Enabled 时接受写入；当前两路原始值换算后还必须位于所提交中位的允许偏差内。成功保存不启用远程运动。
+
+`get_calibration` 返回上述参数，并返回 `calibrated` 和 `remoteEnabled`。配置页 V4 新增 `steeringCountsPerDegreeMilli`；从 V3 加载时保留设备身份、MQTT、诊断和 OTA 参数，但主动清除 `calibrated` 与 `remoteEnabled`，要求按轮胎实际转角重新标定。
 
 周期状态的 `data.transportDiagnostics` 用于接收链路诊断：`mqttRxLines`、`mqttRxDecoded`、`mqttRxDispatched` 分别表示 EC800 上报的 `+QMTRECV` 行数、完成解码数和交给业务回调的消息数；`mqttRxRejected`、`mqttRxOverwrites`、`mqttRxTimeouts` 表示拒绝帧、待处理覆盖和多行超时；`ecDmaOverflows`、`ecDmaRestarts`、`ecDmaMaxBacklog`、`ecLineOverflows` 表示 USART1 DMA 软件环溢出、重启、历史最大积压字节数和 AT 行缓冲溢出。计数从本次上电开始累计，只用于区分 Broker 到模组、DMA、AT 行解析和业务派发阶段，不证明某条命令已经完成。为保持 `get_info` 单包边界，完整传输计数不重复放入控制响应。
 
@@ -104,7 +111,7 @@ OTA 请求使用 `command=ota_upgrade`，`params` 必须包含不可变 HTTPS `u
 
 `get_can_diag` 的请求与 `get_info` 使用相同信封和 Topic，只将 `params.action` 改为 `get_can_diag`。成功响应 `code=200`，`result` 含：
 
-- `canRx`、`canIgnored`、`canRxOverflow`、`canBusOff`：接收计数、未匹配事务帧计数、接收溢出和本次启动以来锁存的 Bus-Off。`canBusOffActive` 单独表示 CAN 控制器当前是否处于 Bus-Off；自动恢复不清除安全锁存。
+- `canRx`、`can1RawRx/can2RawRx`、`canIgnored`、`canRxOverflow`、`canBusOff`：业务 CAN 接收计数、两个 CAN 外设进入中断的原始帧计数、未匹配事务帧计数、接收溢出和本次启动以来锁存的 Bus-Off。若 `canRx=0` 而 `can2RawRx` 增长，说明现场总线进入了 CAN2；若两个原始计数均为 0，应检查收发器待机、电源和 CAN 接线。`canBusOffActive` 单独表示 CAN1 当前是否处于 Bus-Off；自动恢复不清除安全锁存。
 - `steerHb/driveHb`、`steerNmt/driveNmt`：节点心跳在线状态及最近 NMT 状态字节。
 - `steerFresh/driveFresh`：转向原始位置、左右实测转速是否各自处于反馈有效期；不依赖独立编码器，不等同于整车 `feedbackFresh` 或 `safetyReady`。
 - `steerRaw`、`leftRpm/rightRpm`、`steerSw/driveSw`：最近转向原始位置、左右转速和两个状态字。数据过期时保留上次值，必须结合时效字段使用。

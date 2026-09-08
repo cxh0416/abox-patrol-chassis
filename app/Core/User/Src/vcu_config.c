@@ -65,6 +65,8 @@ void VcuConfig_ResetDefault(VcuRemoteConfig_t* cfg)
     copy_string(cfg->ota_origin, sizeof(cfg->ota_origin), VCU_CONFIG_DEFAULT_OTA_ORIGIN);
     cfg->steering_direction = 1;
     cfg->absolute_direction = 1;
+    cfg->steering_counts_per_degree_milli = 0U;
+    cfg->absolute_counts_per_degree_milli = 0U;
     cfg->steering_tolerance_mdeg = 2000U;
     cfg->calibrated = 0U;
     cfg->checksum = config_checksum(cfg);
@@ -96,6 +98,12 @@ uint8_t VcuConfig_Save(const VcuRemoteConfig_t* cfg)
     next.length = sizeof(next);
     next.remote_enabled = next.remote_enabled ? 1U : 0U;
     next.calibrated = next.calibrated ? 1U : 0U;
+    if (next.calibrated && (next.steering_counts_per_degree_milli == 0U ||
+                            next.absolute_counts_per_degree_milli == 0U ||
+                            (next.steering_direction != 1 && next.steering_direction != -1) ||
+                            (next.absolute_direction != 1 && next.absolute_direction != -1) ||
+                            next.steering_tolerance_mdeg == 0U || next.steering_tolerance_mdeg > 2000U))
+        return 0U;
     if (next.diag_log_level > 3U) next.diag_log_level = VCU_CONFIG_DEFAULT_DIAG_LEVEL;
     if (next.mqtt_port == 0U) next.mqtt_port = VCU_CONFIG_DEFAULT_MQTT_PORT;
     if (next.diag_log_port == 0U) next.diag_log_port = VCU_CONFIG_DEFAULT_DIAG_PORT;
@@ -154,20 +162,33 @@ uint8_t VcuConfig_IsOtaOriginValid(const VcuRemoteConfig_t* cfg)
 }
 
 uint8_t VcuConfig_SetCalibration(int32_t steering_center_count, uint32_t absolute_center_count,
+                                 uint32_t steering_counts_per_degree_milli,
                                  uint32_t absolute_counts_per_degree_milli,
                                  int8_t steering_direction, int8_t absolute_direction,
                                  uint16_t tolerance_mdeg)
 {
     VcuRemoteConfig_t next = g_vcu_config;
-    if (absolute_counts_per_degree_milli == 0U || tolerance_mdeg == 0U || tolerance_mdeg > 2000U ||
+    if (steering_counts_per_degree_milli == 0U || absolute_counts_per_degree_milli == 0U ||
+        tolerance_mdeg == 0U || tolerance_mdeg > 2000U ||
         (steering_direction != 1 && steering_direction != -1) ||
         (absolute_direction != 1 && absolute_direction != -1)) return 0U;
     next.steering_center_count = steering_center_count;
     next.absolute_center_count = absolute_center_count;
+    next.steering_counts_per_degree_milli = steering_counts_per_degree_milli;
     next.absolute_counts_per_degree_milli = absolute_counts_per_degree_milli;
     next.steering_direction = steering_direction;
     next.absolute_direction = absolute_direction;
     next.steering_tolerance_mdeg = tolerance_mdeg;
+    /* A calibration write never arms remote motion. */
+    next.remote_enabled = 0U;
     next.calibrated = 1U;
+    return VcuConfig_Save(&next);
+}
+
+uint8_t VcuConfig_ClearCalibration(void)
+{
+    VcuRemoteConfig_t next = g_vcu_config;
+    next.remote_enabled = 0U;
+    next.calibrated = 0U;
     return VcuConfig_Save(&next);
 }

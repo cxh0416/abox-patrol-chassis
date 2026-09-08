@@ -298,18 +298,21 @@ void PatrolDiagnostics_Snapshot(const PatrolDiagnostics* diagnostics, uint32_t n
 }
 
 uint8_t PatrolDiagnostics_FormatCanJson(const PatrolDiagnosticsSnapshot* s,
-    uint8_t bus_off, uint8_t bus_off_active, uint32_t rx_overflow, char* output, uint16_t size)
+    uint8_t bus_off, uint8_t bus_off_active, uint32_t rx_overflow,
+    uint32_t can1_raw_rx, uint32_t can2_raw_rx, char* output, uint16_t size)
 {
     int length;
     if (s == 0 || output == 0 || size == 0U) return 0U;
     length = snprintf(output, size,
-        "{\"canRx\":%lu,\"canIgnored\":%lu,\"canRxOverflow\":%lu,\"canBusOff\":%s,\"canBusOffActive\":%s,"
+        "{\"canRx\":%lu,\"can1RawRx\":%lu,\"can2RawRx\":%lu,\"canIgnored\":%lu,\"canRxOverflow\":%lu,"
+        "\"canBusOff\":%s,\"canBusOffActive\":%s,"
         "\"steerHb\":%s,\"driveHb\":%s,\"steerNmt\":%u,\"driveNmt\":%u,"
         "\"steerFresh\":%s,\"driveFresh\":%s,\"steerRaw\":%ld,\"leftRpm\":%ld,\"rightRpm\":%ld,"
         "\"steerSw\":%u,\"driveSw\":%u,\"sdoOk\":%lu,\"sdoReadMask\":%u,\"sdoAbortMask\":%u,"
         "\"sdoTimeouts\":%lu,\"sdoAborts\":%lu,\"lastAbort\":%lu,\"sdoTxErrors\":%lu,"
         "\"driveObjects\":[%ld,%ld,%ld,%ld,%ld,%ld,%ld]}",
-        (unsigned long)s->can_rx_count, (unsigned long)s->can_ignored_count,
+        (unsigned long)s->can_rx_count, (unsigned long)can1_raw_rx, (unsigned long)can2_raw_rx,
+        (unsigned long)s->can_ignored_count,
         (unsigned long)rx_overflow, bus_off ? "true" : "false", bus_off_active ? "true" : "false",
         s->steering_online ? "true" : "false", s->drive_online ? "true" : "false",
         (unsigned int)s->steering_heartbeat_state, (unsigned int)s->drive_heartbeat_state,

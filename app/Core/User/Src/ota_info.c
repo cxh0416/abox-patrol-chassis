@@ -6,6 +6,37 @@
 #include "main.h"
 
 _Static_assert(sizeof(OTA_Info_t) <= OTA_INFO_PAGE_SIZE, "OTA info must fit in one flash page");
+_Static_assert(sizeof(VcuRemoteConfig_t) == 396U, "VCU v4 config layout changed");
+
+typedef struct
+{
+    uint32_t magic;
+    uint16_t version;
+    uint16_t length;
+    uint32_t checksum;
+    uint8_t remote_enabled;
+    uint8_t diag_log_enabled;
+    uint8_t diag_log_level;
+    uint8_t reserved0;
+    char vid[32];
+    char mqtt_host[64];
+    uint16_t mqtt_port;
+    uint16_t diag_log_port;
+    char mqtt_username[32];
+    char mqtt_password[64];
+    char diag_log_host[64];
+    char ota_origin[96];
+    int32_t steering_center_count;
+    uint32_t absolute_center_count;
+    uint32_t absolute_counts_per_degree_milli;
+    uint16_t steering_tolerance_mdeg;
+    int8_t steering_direction;
+    int8_t absolute_direction;
+    uint8_t calibrated;
+    uint8_t reserved1;
+} VcuRemoteConfigV3_t;
+
+_Static_assert(sizeof(VcuRemoteConfigV3_t) == 392U, "VCU v3 config layout changed");
 
 static void ota_info_read_raw(OTA_Info_t* info)
 {
@@ -28,12 +59,37 @@ static uint32_t config_checksum(const VcuRemoteConfig_t* cfg)
     return sum;
 }
 
+static uint32_t config_v3_checksum(const VcuRemoteConfigV3_t* cfg)
+{
+    const uint8_t* p = (const uint8_t*)cfg;
+    uint32_t sum = 0x13572468U;
+    uint16_t i;
+
+    if (cfg == 0) return 0U;
+    for (i = 0U; i < sizeof(*cfg); i++)
+    {
+        if ((i >= offsetof(VcuRemoteConfigV3_t, checksum)) &&
+            (i < (offsetof(VcuRemoteConfigV3_t, checksum) + sizeof(cfg->checksum)))) continue;
+        sum = (sum << 5) ^ (sum >> 27) ^ p[i];
+    }
+    return sum;
+}
+
 static uint8_t config_valid(const VcuRemoteConfig_t* cfg)
 {
     if (cfg == 0) return 0U;
     if ((cfg->magic != VCU_CONFIG_MAGIC) || (cfg->version != VCU_CONFIG_VERSION) ||
         (cfg->length != sizeof(*cfg)) || (cfg->remote_enabled > 1U) || (cfg->diag_log_level > 3U)) return 0U;
     return (cfg->checksum == config_checksum(cfg)) ? 1U : 0U;
+}
+
+static uint8_t config_v3_valid(const VcuRemoteConfigV3_t* cfg)
+{
+    if (cfg == 0) return 0U;
+    if ((cfg->magic != VCU_CONFIG_MAGIC) || (cfg->version != 3U) ||
+        (cfg->length != sizeof(*cfg)) || (cfg->remote_enabled > 1U) ||
+        (cfg->diag_log_level > 3U)) return 0U;
+    return (cfg->checksum == config_v3_checksum(cfg)) ? 1U : 0U;
 }
 
 static uint8_t ota_info_write_raw(const OTA_Info_t* info)
@@ -87,10 +143,25 @@ uint8_t OTA_Info_Clear(void)
 uint8_t OTA_Info_LoadRemoteConfig(VcuRemoteConfig_t* cfg)
 {
     OTA_Info_t info;
+    const VcuRemoteConfigV3_t* legacy;
     if (cfg == 0) return 0U;
     ota_info_read_raw(&info);
-    if (!config_valid(&info.remote_config)) return 0U;
-    *cfg = info.remote_config;
+    if (config_valid(&info.remote_config))
+    {
+        *cfg = info.remote_config;
+        return 1U;
+    }
+    legacy = (const VcuRemoteConfigV3_t*)&info.remote_config;
+    if (!config_v3_valid(legacy)) return 0U;
+    memset(cfg, 0, sizeof(*cfg));
+    memcpy(cfg, legacy, sizeof(*legacy));
+    cfg->version = VCU_CONFIG_VERSION;
+    cfg->length = sizeof(*cfg);
+    cfg->steering_counts_per_degree_milli = 0U;
+    /* V3 angles represented the steering shaft. Require a new wheel-angle calibration. */
+    cfg->remote_enabled = 0U;
+    cfg->calibrated = 0U;
+    cfg->checksum = config_checksum(cfg);
     return 1U;
 }
 

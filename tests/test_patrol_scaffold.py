@@ -78,7 +78,7 @@ class PatrolScaffoldTests(unittest.TestCase):
         # + nested StateLoad 240 = 992 bytes before HAL flash helpers.
         self.assertGreaterEqual(int(match.group(1)), 384)
 
-    def test_config_page_is_v3_and_unarmed_by_default(self):
+    def test_config_page_is_v4_and_unarmed_by_default(self):
         path = ROOT / "tools/make_device_config.py"
         spec = importlib.util.spec_from_file_location("patrol_config", path)
         module = importlib.util.module_from_spec(spec)
@@ -89,6 +89,29 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertEqual(len(page), 0x800)
         self.assertFalse(details["remoteEnabled"])
         self.assertFalse(details["calibrated"])
+        self.assertEqual(details["steeringCountsPerDegreeMilli"], 0)
+
+    def test_config_page_round_trips_wheel_angle_calibration(self):
+        path = ROOT / "tools/make_device_config.py"
+        spec = importlib.util.spec_from_file_location("patrol_config_calibrated", path)
+        module = importlib.util.module_from_spec(spec)
+        assert spec.loader
+        spec.loader.exec_module(module)
+        page = module.build_config_page(
+            vid="PATROL-001",
+            password="local-test-secret",
+            steering_center_count=-85123,
+            absolute_center_count=3182,
+            steering_counts_per_degree_milli=2710800,
+            absolute_counts_per_degree_milli=55250,
+            calibrated=True,
+        )
+        details = module.inspect_config_page(page)
+        self.assertEqual(details["steeringCenterCount"], -85123)
+        self.assertEqual(details["absoluteCenterCount"], 3182)
+        self.assertEqual(details["steeringCountsPerDegreeMilli"], 2710800)
+        self.assertEqual(details["absoluteCountsPerDegreeMilli"], 55250)
+        self.assertTrue(details["calibrated"])
 
 
 if __name__ == "__main__":

@@ -14,9 +14,9 @@ from pathlib import Path
 
 PAGE_SIZE = 0x800
 CONFIG_OFFSET = 148
-CONFIG_SIZE = 392
+CONFIG_SIZE = 396
 CONFIG_MAGIC = 0x56435543
-CONFIG_VERSION = 3
+CONFIG_VERSION = 4
 DEFAULT_HOST = "36.153.162.171"
 DEFAULT_PORT = 19683
 DEFAULT_USERNAME = "patrol_vehicle_chassis_device"
@@ -65,6 +65,7 @@ def build_config_page(
     ota_origin: str = DEFAULT_OTA_ORIGIN,
     steering_center_count: int = 0,
     absolute_center_count: int = 0,
+    steering_counts_per_degree_milli: int = 0,
     absolute_counts_per_degree_milli: int = 0,
     steering_direction: int = 1,
     absolute_direction: int = 1,
@@ -79,10 +80,18 @@ def build_config_page(
         raise ValueError("diag level must be 0..3")
     if steering_direction not in (-1, 1) or absolute_direction not in (-1, 1):
         raise ValueError("calibration directions must be -1 or 1")
+    if not -(1 << 31) <= steering_center_count < (1 << 31):
+        raise ValueError("steering center must fit int32")
+    if not 0 <= absolute_center_count <= 0xFFFFFFFF:
+        raise ValueError("absolute center must fit uint32")
+    if not 0 <= steering_counts_per_degree_milli <= 0xFFFFFFFF:
+        raise ValueError("steering counts per degree must fit uint32")
+    if not 0 <= absolute_counts_per_degree_milli <= 0xFFFFFFFF:
+        raise ValueError("absolute counts per degree must fit uint32")
     if not 1 <= steering_tolerance_mdeg <= 2000:
         raise ValueError("steering tolerance must be in 1..2000 mdeg")
-    if calibrated and absolute_counts_per_degree_milli <= 0:
-        raise ValueError("calibrated config requires absolute counts per degree")
+    if calibrated and (steering_counts_per_degree_milli <= 0 or absolute_counts_per_degree_milli <= 0):
+        raise ValueError("calibrated config requires steering and absolute counts per degree")
 
     vid_b = _ascii(vid, "VID", 32, topic_component=True)
     host_b = _ascii(host, "MQTT host", 64)
@@ -127,6 +136,7 @@ def build_config_page(
         int(calibrated),
         0,
     )
+    struct.pack_into("<I", config, 392, steering_counts_per_degree_milli)
     struct.pack_into("<I", config, 8, config_checksum(config))
 
     page = bytearray(b"\xFF" * PAGE_SIZE)
@@ -148,9 +158,10 @@ def inspect_config_page(page: bytes) -> dict[str, object]:
         return config[offset : offset + size].split(b"\0", 1)[0].decode("ascii")
 
     mqtt_port, diag_port = struct.unpack_from("<HH", config, 112)
-    steering_center, absolute_center, counts_per_degree, tolerance, steering_direction, absolute_direction, calibrated, _ = struct.unpack_from(
+    steering_center, absolute_center, absolute_counts_per_degree, tolerance, steering_direction, absolute_direction, calibrated, _ = struct.unpack_from(
         "<iIIHbbBB", config, 372
     )
+    steering_counts_per_degree = struct.unpack_from("<I", config, 392)[0]
     return {
         "vid": string_at(16, 32),
         "mqttHost": string_at(48, 64),
@@ -165,7 +176,8 @@ def inspect_config_page(page: bytes) -> dict[str, object]:
         "otaOrigin": string_at(276, 96),
         "steeringCenterCount": steering_center,
         "absoluteCenterCount": absolute_center,
-        "absoluteCountsPerDegreeMilli": counts_per_degree,
+        "steeringCountsPerDegreeMilli": steering_counts_per_degree,
+        "absoluteCountsPerDegreeMilli": absolute_counts_per_degree,
         "steeringToleranceMdeg": tolerance,
         "steeringDirection": steering_direction,
         "absoluteDirection": absolute_direction,
@@ -194,6 +206,7 @@ def main() -> int:
     parser.add_argument("--ota-origin", default=DEFAULT_OTA_ORIGIN)
     parser.add_argument("--steering-center-count", type=int, default=0)
     parser.add_argument("--absolute-center-count", type=int, default=0)
+    parser.add_argument("--steering-counts-per-degree-milli", type=int, default=0)
     parser.add_argument("--absolute-counts-per-degree-milli", type=int, default=0)
     parser.add_argument("--steering-direction", type=int, choices=(-1, 1), default=1)
     parser.add_argument("--absolute-direction", type=int, choices=(-1, 1), default=1)
@@ -213,6 +226,7 @@ def main() -> int:
             username=args.username, ota_origin=args.ota_origin,
             steering_center_count=args.steering_center_count,
             absolute_center_count=args.absolute_center_count,
+            steering_counts_per_degree_milli=args.steering_counts_per_degree_milli,
             absolute_counts_per_degree_milli=args.absolute_counts_per_degree_milli,
             steering_direction=args.steering_direction,
             absolute_direction=args.absolute_direction,

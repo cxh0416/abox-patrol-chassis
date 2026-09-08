@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "product": "patrol_vehicle_chassis",
+  "deviceId": "PATROL-CHASSIS-000",
+  "capturedAt": "2026-09-02T14:54:00+08:00",
+  "interfaces": {
+    "canopenBitrate": 500000,
+    "steeringNode": 1,
+    "driveNode": 2
+  },
+  "commonBaseline": {
+    "steeringEncoderLines": 1000,
+    "quadratureMultiplier": 4,
+    "reductionRatio": 50,
+    "steeringCountsPerDegree": 555.555556,
+    "steeringAngleRangeDegree": [-50, 50],
+    "steeringLimitOffsetCount": 27778,
+    "communicationTimeoutMs": 500
+  },
+  "controllerParameters": {
+    "steering": {
+      "communicationTimeoutRegister10BB": 5,
+      "communicationTimeoutActionRegister10BC": 3,
+      "mechanicalCenter6064": -77844,
+      "positiveSoftwareLimit2019": -50066,
+      "negativeSoftwareLimit201A": -105622,
+      "softwareLimitBuffer2018": 0,
+      "save1010Sub1Ack": true
+    },
+    "drive": {
+      "communicationLossStopModeRegister1059": 1,
+      "communicationTimeoutActionRegister10C4": 36,
+      "canopenTimeoutRegister1209": 5,
+      "zeroStopDecelerationRegister120C": 1600,
+      "zeroStopEndSpeedRegister120E": 0,
+      "save1010Sub1Ack": true
+    }
+  },
+  "centerEvidence": {
+    "serialSampleCount": 20,
+    "serialMinimum": -77844,
+    "serialMaximum": -77844,
+    "serialRegisterViewsAgree": true,
+    "can6064SampleCount": 20,
+    "can6064Minimum": -77844,
+    "can6064Maximum": -77844
+  },
+  "limitReadback": {
+    "serialReadback": {
+      "positiveLimit2019": -50066,
+      "negativeLimit201A": -105622
+    },
+    "canSampleCountPerLimit": 5,
+    "canPositiveLimit2019": [-50066, -50066, -50066, -50066, -50066],
+    "canNegativeLimit201A": [-105622, -105622, -105622, -105622, -105622]
+  },
+  "finalStaticHealth": {
+    "steeringOnline": true,
+    "driveOnline": true,
+    "steeringFeedbackFresh": true,
+    "driveFeedbackFresh": true,
+    "steeringRaw": -77844,
+    "leftRpm": 0,
+    "rightRpm": 0,
+    "canRxOverflow": 0,
+    "canBusOff": false,
+    "canBusOffActive": false,
+    "sdoTxErrors": 0
+  },
+  "completion": {
+    "controllerBackup": true,
+    "communicationLossParametersConfigured": true,
+    "steeringMechanicalCenterRecorded": true,
+    "steeringControllerSoftLimitsConfigured": true,
+    "controllerSaveAcknowledged": true,
+    "independentEncoderCalibrated": false,
+    "aboxCalibrationSaved": false,
+    "smallAngleMotionValidated": false,
+    "physicalCommunicationLossValidated": false,
+    "powerCyclePersistenceValidated": false,
+    "wholeVehicleCalibrated": false
+  },
+  "evidence": {
+    "workingEvidenceDirectory": "out/controller-setup-20260902",
+    "validationSummarySha256": "F3422CD139DDE9982E3745CF830999DCE8F3105B8D8E3823B0F8122D6B03B99D",
+    "centerSerialSha256": "FCA9F046B6F8C96428D1C523A8ED0D8540B6377D612D49104489E70F241615F7",
+    "limitConfigurationSha256": "2F6569DE49E961694B685D86A6639EA383D485BCCDF03B75B467ABAE64847093",
+    "limitCanReadbackSha256": "F629BFE07EF0093DA2C6DE72115AFE613BBDCE14D53C4106EA78130FDDC190D9",
+    "finalAboxDiagnosticsSha256": "8C0BBC388C09E50E0833E2B9808E78EB08FEA4BC0BC1611C9F3EECB3EE48331D"
+  }
+}

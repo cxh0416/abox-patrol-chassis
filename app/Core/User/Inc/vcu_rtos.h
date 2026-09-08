@@ -26,6 +26,7 @@ void VcuRtos_Init(void);
 BaseType_t VcuRtos_CanRxFromISR(CAN_HandleTypeDef *hcan, BaseType_t *higher_priority_task_woken);
 BaseType_t VcuRtos_CanRxPop(VcuCanFrame_t *frame, TickType_t wait_ticks);
 uint32_t VcuRtos_CanRxOverflowCount(void);
+uint32_t VcuRtos_CanRawRxCount(uint8_t bus);
 uint8_t VcuRtos_CanStarted(void);
 uint8_t VcuRtos_CanBusOff(void);
 uint8_t VcuRtos_CanBusOffActive(void);

@@ -84,6 +84,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/User/Src/patrol_canopen.c
     Core/User/Src/patrol_diagnostics.c
     Core/User/Src/remote_service.c
+    Core/User/Src/steering_angle.c
     Core/User/Src/time_base.c
     Core/User/Src/vehicle_power_output.c
     Core/User/Src/vehicle_power_port.c

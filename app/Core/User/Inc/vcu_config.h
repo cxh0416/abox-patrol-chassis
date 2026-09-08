@@ -30,8 +30,10 @@ uint8_t VcuConfig_SetDiagLog(uint8_t enabled, const char* host, uint16_t port, u
 uint8_t VcuConfig_IsCloudReady(const VcuRemoteConfig_t* cfg);
 uint8_t VcuConfig_IsOtaOriginValid(const VcuRemoteConfig_t* cfg);
 uint8_t VcuConfig_SetCalibration(int32_t steering_center_count, uint32_t absolute_center_count,
+                                 uint32_t steering_counts_per_degree_milli,
                                  uint32_t absolute_counts_per_degree_milli,
                                  int8_t steering_direction, int8_t absolute_direction,
                                  uint16_t tolerance_mdeg);
+uint8_t VcuConfig_ClearCalibration(void);
 
 #endif

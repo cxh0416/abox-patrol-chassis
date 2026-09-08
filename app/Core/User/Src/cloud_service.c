@@ -624,6 +624,59 @@ static uint8_t boot_state_allows_reboot(void)
     return (state.state == BOOT_STATE_NORMAL || state.state == BOOT_STATE_CONFIRMED) ? 1U : 0U;
 }
 
+static void build_calibration_result(char* output, uint16_t size)
+{
+    const VcuRemoteConfig_t* cfg = VcuConfig_Get();
+    if (output == 0 || size == 0U || cfg == 0) return;
+    (void)snprintf(output, size,
+        "{\"configVersion\":%u,\"calibrated\":%s,\"remoteEnabled\":%s,\"steeringCenterCount\":%ld,"
+        "\"absoluteCenterCount\":%lu,\"steeringCountsPerDegreeMilli\":%lu,"
+        "\"absoluteCountsPerDegreeMilli\":%lu,\"steeringDirection\":%d,"
+        "\"absoluteDirection\":%d,\"steeringToleranceMdeg\":%u}",
+        (unsigned int)cfg->version, cfg->calibrated ? "true" : "false",
+        cfg->remote_enabled ? "true" : "false",
+        (long)cfg->steering_center_count, (unsigned long)cfg->absolute_center_count,
+        (unsigned long)cfg->steering_counts_per_degree_milli,
+        (unsigned long)cfg->absolute_counts_per_degree_milli,
+        (int)cfg->steering_direction, (int)cfg->absolute_direction,
+        (unsigned int)cfg->steering_tolerance_mdeg);
+}
+
+static uint32_t signed_delta_mdeg(int64_t delta, uint32_t counts_per_degree_milli)
+{
+    uint64_t magnitude;
+    uint64_t result;
+    if (counts_per_degree_milli == 0U) return UINT32_MAX;
+    magnitude = (uint64_t)(delta < 0 ? -delta : delta);
+    result = magnitude * 1000000ULL / counts_per_degree_milli;
+    return result > UINT32_MAX ? UINT32_MAX : (uint32_t)result;
+}
+
+static uint8_t calibration_feedback_ready(const CloudProtocolRequest_t* request,
+                                          const PatrolDiagnosticsSnapshot* snapshot)
+{
+    uint32_t steering_offset;
+    uint32_t encoder_offset;
+    const ChassisControl* control = RemoteService_State();
+    if (request == 0 || snapshot == 0 || control == 0) return 0U;
+    if (!VehiclePowerOutput_IsOn() || VcuRtos_CanBusOff() || VcuRtos_CanBusOffActive() ||
+        !snapshot->steering_online || !snapshot->drive_online ||
+        !snapshot->steering_feedback_fresh || !snapshot->drive_feedback_fresh ||
+        !snapshot->encoder_online || !snapshot->encoder_config_valid || snapshot->drive_fault ||
+        labs(snapshot->left_actual_rpm) > 20L || labs(snapshot->right_actual_rpm) > 20L ||
+        control->remote_enabled || control->session_active || control->enable_request ||
+        (snapshot->steering_status_word & 0x006FU) == 0x0027U ||
+        (snapshot->drive_status_word & 0x006FU) == 0x0027U) return 0U;
+    steering_offset = signed_delta_mdeg(
+        (int64_t)snapshot->steering_position_count - (int64_t)request->steering_center_count,
+        request->steering_counts_per_degree_milli);
+    encoder_offset = signed_delta_mdeg(
+        (int64_t)snapshot->encoder_count - (int64_t)request->absolute_center_count,
+        request->absolute_counts_per_degree_milli);
+    return (uint8_t)(steering_offset <= request->steering_tolerance_mdeg &&
+                     encoder_offset <= request->steering_tolerance_mdeg);
+}
+
 static void handle_config_request(const CloudProtocolRequest_t* request)
 {
     char result[900];
@@ -645,10 +698,51 @@ static void handle_config_request(const CloudProtocolRequest_t* request)
         PatrolDiagnosticsSnapshot snapshot;
         VcuRtos_GetDiagnostics(&snapshot);
         if (!PatrolDiagnostics_FormatCanJson(&snapshot, VcuRtos_CanBusOff(),
-                VcuRtos_CanBusOffActive(), VcuRtos_CanRxOverflowCount(), result, sizeof(result)))
+                VcuRtos_CanBusOffActive(), VcuRtos_CanRxOverflowCount(),
+                VcuRtos_CanRawRxCount(0U), VcuRtos_CanRawRxCount(1U), result, sizeof(result)))
             schedule_simple_error(g_topic_config_resp, request_id, 500U, "DIAGNOSTIC_TOO_LARGE");
         else if (!schedule_response(g_topic_config_resp, request_id, 200U, "OK", result, 0U))
             schedule_simple_error(g_topic_config_resp, request_id, 409U, "DEVICE_BUSY");
+    }
+    else if (action == CLOUD_PROTOCOL_ACTION_GET_CALIBRATION)
+    {
+        build_calibration_result(result, sizeof(result));
+        if (!schedule_response(g_topic_config_resp, request_id, 200U, "OK", result, 0U))
+            schedule_simple_error(g_topic_config_resp, request_id, 409U, "DEVICE_BUSY");
+    }
+    else if (action == CLOUD_PROTOCOL_ACTION_CLEAR_CALIBRATION)
+    {
+        if (OtaService_IsBusy())
+            schedule_simple_error(g_topic_config_resp, request_id, 409U, "OTA_BUSY");
+        else if (!VcuConfig_ClearCalibration())
+            schedule_simple_error(g_topic_config_resp, request_id, 500U, "CONFIG_WRITE_FAILED");
+        else
+        {
+            build_calibration_result(result, sizeof(result));
+            (void)schedule_response(g_topic_config_resp, request_id, 200U,
+                                    "CALIBRATION_CLEARED", result, 0U);
+        }
+    }
+    else if (action == CLOUD_PROTOCOL_ACTION_SET_CALIBRATION)
+    {
+        PatrolDiagnosticsSnapshot snapshot;
+        VcuRtos_GetDiagnostics(&snapshot);
+        if (OtaService_IsBusy())
+            schedule_simple_error(g_topic_config_resp, request_id, 409U, "OTA_BUSY");
+        else if (!calibration_feedback_ready(request, &snapshot))
+            schedule_simple_error(g_topic_config_resp, request_id, 409U,
+                                  "CALIBRATION_FEEDBACK_NOT_READY");
+        else if (!VcuConfig_SetCalibration(request->steering_center_count,
+                    request->absolute_center_count, request->steering_counts_per_degree_milli,
+                    request->absolute_counts_per_degree_milli, request->steering_direction,
+                    request->absolute_direction, request->steering_tolerance_mdeg))
+            schedule_simple_error(g_topic_config_resp, request_id, 500U, "CONFIG_WRITE_FAILED");
+        else
+        {
+            build_calibration_result(result, sizeof(result));
+            (void)schedule_response(g_topic_config_resp, request_id, 200U,
+                                    "CALIBRATION_SAVED_REMOTE_DISABLED", result, 0U);
+        }
     }
     else if (action == CLOUD_PROTOCOL_ACTION_GET_LOG)
     {

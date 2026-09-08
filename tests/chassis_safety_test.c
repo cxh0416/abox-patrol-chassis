@@ -8,6 +8,7 @@
 #include "fixed_point.h"
 #include "patrol_canopen.h"
 #include "patrol_diagnostics.h"
+#include "steering_angle.h"
 #include "vehicle_power_output.h"
 #include "cJSON.h"
 
@@ -116,8 +117,9 @@ static int test_field_sdo_replies(void)
     memset(&s, 0xFF, sizeof(s));
     s.steering_position_count = s.left_actual_rpm = s.right_actual_rpm = INT32_MIN;
     for (uint8_t i = 0; i < 7; i++) s.drive_objects[i] = INT32_MIN;
-    CHECK(PatrolDiagnostics_FormatCanJson(&s, 0, 0, UINT32_MAX, json, sizeof(json)));
-    CHECK(!PatrolDiagnostics_FormatCanJson(&s, 0, 0, 0, tiny, sizeof(tiny)));
+    CHECK(PatrolDiagnostics_FormatCanJson(&s, 0, 0, UINT32_MAX, UINT32_MAX, UINT32_MAX,
+                                          json, sizeof(json)));
+    CHECK(!PatrolDiagnostics_FormatCanJson(&s, 0, 0, 0, 0, 0, tiny, sizeof(tiny)));
     snprintf(envelope, sizeof(envelope), "{\"version\":\"2.0\",\"timestamp\":18446744073709551615,"
         "\"data\":{\"product\":\"patrol_vehicle_chassis\",\"requestId\":\"%063d\",\"code\":200,"
         "\"msg\":\"OK\",\"result\":%s}}", 0, json);
@@ -146,6 +148,12 @@ int main(void)
     ChassisCloudCommand command;
     const char json[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"r1\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"acquire\",\"sessionId\":\"s1\",\"seq\":1,\"leaseMs\":1000,\"driveRpm\":50,\"steeringDeg\":1}}}";
     const char wrong_type[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"r2\",\"deviceType\":\"wing_actuator\",\"command\":\"chassis_control\",\"params\":{}}}";
+
+    CHECK(SteeringAngle_FromControllerCount(-58015, -85123, 2710800U, 1) == 10000);
+    CHECK(SteeringAngle_FromControllerCount(-112231, -85123, 2710800U, 1) == -10000);
+    CHECK(SteeringAngle_FromAbsoluteCount(3734U, 3182U, 55250U, 1) == 9990);
+    CHECK(SteeringAngle_FromAbsoluteCount(2629U, 3182U, 55250U, 1) == -10009);
+    CHECK(SteeringAngle_FromAbsoluteCount(2629U, 3182U, 55250U, -1) == 10009);
 
     frame = PatrolCanopen_SdoWrite16(2, 0x6040, 0, 0x000F);
     CHECK(frame.id == 0x602 && frame.data[0] == 0x2B && frame.data[1] == 0x40 && frame.data[2] == 0x60);

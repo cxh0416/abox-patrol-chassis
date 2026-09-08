@@ -28,6 +28,25 @@ int main(void)
     static const char can_diag[] =
         "{\"version\":\"2.0\",\"data\":{\"requestId\":\"req-can\","
         "\"command\":\"internal_config\",\"params\":{\"action\":\"get_can_diag\"}}}";
+    static const char get_calibration[] =
+        "{\"version\":\"2.0\",\"data\":{\"requestId\":\"req-cal-get\","
+        "\"command\":\"internal_config\",\"params\":{\"action\":\"get_calibration\"}}}";
+    static const char clear_calibration[] =
+        "{\"version\":\"2.0\",\"data\":{\"requestId\":\"req-cal-clear\","
+        "\"command\":\"internal_config\",\"params\":{\"action\":\"clear_calibration\"}}}";
+    static const char set_calibration[] =
+        "{\"version\":\"2.0\",\"data\":{\"requestId\":\"req-cal-set\","
+        "\"command\":\"internal_config\",\"params\":{\"action\":\"set_calibration\","
+        "\"steeringCenterCount\":-85123,\"absoluteCenterCount\":3182,"
+        "\"steeringCountsPerDegreeMilli\":2710800,"
+        "\"absoluteCountsPerDegreeMilli\":55250,\"steeringDirection\":1,"
+        "\"absoluteDirection\":1,\"steeringToleranceMdeg\":2000}}}";
+    static const char bad_calibration[] =
+        "{\"version\":\"2.0\",\"data\":{\"requestId\":\"req-cal-bad\","
+        "\"command\":\"internal_config\",\"params\":{\"action\":\"set_calibration\","
+        "\"steeringCenterCount\":-85123.5,\"absoluteCenterCount\":3182,"
+        "\"steeringCountsPerDegreeMilli\":0,\"absoluteCountsPerDegreeMilli\":55250,"
+        "\"steeringDirection\":0,\"absoluteDirection\":1,\"steeringToleranceMdeg\":2001}}}";
     static const char wrong_product[] =
         "{\"version\":\"2.0\",\"data\":{\"product\":\"top_flying_wing\",\"requestId\":\"req-wrong\","
         "\"command\":\"internal_config\",\"params\":{\"action\":\"get_info\"}}}";
@@ -56,6 +75,14 @@ int main(void)
 
     if (!expect_status("get_info", get_info, 0U, CLOUD_PROTOCOL_OK, CLOUD_PROTOCOL_ACTION_GET_INFO, "req-1")) return 1;
     if (!expect_status("get_can_diag", can_diag, 0U, CLOUD_PROTOCOL_OK, CLOUD_PROTOCOL_ACTION_GET_CAN_DIAG, "req-can")) return 1;
+    if (!expect_status("get_calibration", get_calibration, 0U, CLOUD_PROTOCOL_OK,
+                       CLOUD_PROTOCOL_ACTION_GET_CALIBRATION, "req-cal-get")) return 1;
+    if (!expect_status("clear_calibration", clear_calibration, 0U, CLOUD_PROTOCOL_OK,
+                       CLOUD_PROTOCOL_ACTION_CLEAR_CALIBRATION, "req-cal-clear")) return 1;
+    if (!expect_status("set_calibration", set_calibration, 0U, CLOUD_PROTOCOL_OK,
+                       CLOUD_PROTOCOL_ACTION_SET_CALIBRATION, "req-cal-set")) return 1;
+    if (!expect_status("bad_calibration", bad_calibration, 0U, CLOUD_PROTOCOL_INVALID,
+                       CLOUD_PROTOCOL_ACTION_NONE, "req-cal-bad")) return 1;
     if (!expect_status("unknown", unknown, 0U, CLOUD_PROTOCOL_UNKNOWN_ACTION, CLOUD_PROTOCOL_ACTION_NONE, "req-2")) return 1;
     if (!expect_status("wrong_product", wrong_product, 0U, CLOUD_PROTOCOL_INVALID,
                        CLOUD_PROTOCOL_ACTION_NONE, "req-wrong")) return 1;
@@ -70,6 +97,16 @@ int main(void)
         CloudProtocolRequest_t request;
         if (CloudProtocol_Parse(ota, (uint16_t)strlen(ota), 1U, &request) != CLOUD_PROTOCOL_OK ||
             request.ota_size != 12345U || request.ota_crc32 != 0x89ABCDEFU) return 1;
+    }
+    {
+        CloudProtocolRequest_t request;
+        if (CloudProtocol_Parse(set_calibration, (uint16_t)strlen(set_calibration), 0U, &request) !=
+                CLOUD_PROTOCOL_OK || request.steering_center_count != -85123 ||
+            request.absolute_center_count != 3182U ||
+            request.steering_counts_per_degree_milli != 2710800U ||
+            request.absolute_counts_per_degree_milli != 55250U ||
+            request.steering_direction != 1 || request.absolute_direction != 1 ||
+            request.steering_tolerance_mdeg != 2000U) return 1;
     }
     {
         CloudProtocolRequest_t request;
