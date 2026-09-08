@@ -120,3 +120,13 @@ OTA 请求使用 `command=ota_upgrade`，`params` 必须包含不可变 HTTPS `u
 - `sdoReadMask/sdoAbortMask`：从本次启动以来各对象曾成功/曾返回 Abort 的位图，按以下顺序从 bit 0 到 bit 11：Node1 `6041,6064`，Node2 `6041,6069,6869,2000,2001,2002,2003,2004,2005,2006`。位图不代替实时反馈有效期。
 
 此查询不发送 NMT、SDO 下载、PDO 目标、驱动使能或电源命令。
+
+## 车型标定与台架转向接口
+
+`set_calibration` 必须提供两路中位；每度计数、方向及容差可省略，省略时采用产品公共参数，提供时必须与公共参数一致。`get_calibration.result.profileCompatible` 表示已保存参数是否匹配产品配置；不匹配时禁止运动。
+
+- `arm_bench_steering`：参数 `limitMdeg` 只允许 1000、3000、5000。条件不满足返回 409 `BENCH_NOT_READY`。成功返回 RAM 测试许可和 `sessionId`，15 秒内须以该会话发起公共 `chassis_control.acquire`。
+- `get_bench_steering`：返回 available、permitted、phase、step、fault、limitMdeg、sessionId、contactorFeedbackAvailable。phase 为 0 空闲、1 准备、2 运行、3 停止中、4 故障；step 仅供维护诊断。
+- `stop_bench_steering`：立即撤销许可并请求撤使能；200 表示停止请求已接受，须继续核验状态。
+
+台架会话只接受 driveRpm=0，转角不得超出本次幅度。停止、租约到期、故障或重启撤销许可；重新许可会生成新的 sessionId。许可不写入持久配置。contactorFeedbackAvailable=false 时没有触点状态反馈，不得推断真实供电状态。

@@ -1,4 +1,5 @@
 #include "cloud_protocol.h"
+#include "vehicle_steering_profile.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -178,22 +179,33 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
         absolute_direction = cJSON_GetObjectItemCaseSensitive(params, "absoluteDirection");
         steering_tolerance = cJSON_GetObjectItemCaseSensitive(params, "steeringToleranceMdeg");
         if (!json_integer_between(steering_center, -2147483648.0, 2147483647.0) ||
-            !json_integer_between(absolute_center, 0.0, 4294967295.0) ||
-            !json_integer_between(steering_counts_per_degree, 1.0, 4294967295.0) ||
-            !json_integer_between(absolute_counts_per_degree, 1.0, 4294967295.0) ||
-            !json_integer_between(steering_direction, -1.0, 1.0) ||
-            !json_integer_between(absolute_direction, -1.0, 1.0) ||
-            !json_integer_between(steering_tolerance, 1.0, 2000.0) ||
-            (steering_direction->valueint != -1 && steering_direction->valueint != 1) ||
-            (absolute_direction->valueint != -1 && absolute_direction->valueint != 1)) goto done;
+            !json_integer_between(absolute_center, 0.0, 4294967295.0)) goto done;
+        /* Missing profile fields select the product profile. Supplied fields must match it. */
+        if ((steering_counts_per_degree && !json_integer_between(steering_counts_per_degree, VEHICLE_STEERING_COUNTS_MILLI, VEHICLE_STEERING_COUNTS_MILLI)) ||
+            (absolute_counts_per_degree && !json_integer_between(absolute_counts_per_degree, VEHICLE_ABSOLUTE_COUNTS_MILLI, VEHICLE_ABSOLUTE_COUNTS_MILLI)) ||
+            (steering_direction && !json_integer_between(steering_direction, 1, 1)) ||
+            (absolute_direction && !json_integer_between(absolute_direction, 1, 1)) ||
+            (steering_tolerance && !json_integer_between(steering_tolerance, VEHICLE_STEERING_TOLERANCE_MDEG, VEHICLE_STEERING_TOLERANCE_MDEG))) goto done;
         request->steering_center_count = (int32_t)steering_center->valuedouble;
         request->absolute_center_count = (uint32_t)absolute_center->valuedouble;
-        request->steering_counts_per_degree_milli = (uint32_t)steering_counts_per_degree->valuedouble;
-        request->absolute_counts_per_degree_milli = (uint32_t)absolute_counts_per_degree->valuedouble;
-        request->steering_direction = (int8_t)steering_direction->valueint;
-        request->absolute_direction = (int8_t)absolute_direction->valueint;
-        request->steering_tolerance_mdeg = (uint16_t)steering_tolerance->valueint;
+        request->steering_counts_per_degree_milli = VEHICLE_STEERING_COUNTS_MILLI;
+        request->absolute_counts_per_degree_milli = VEHICLE_ABSOLUTE_COUNTS_MILLI;
+        request->steering_direction = VEHICLE_STEERING_DIRECTION;
+        request->absolute_direction = VEHICLE_ABSOLUTE_DIRECTION;
+        request->steering_tolerance_mdeg = VEHICLE_STEERING_TOLERANCE_MDEG;
         request->action = CLOUD_PROTOCOL_ACTION_SET_CALIBRATION;
+    }
+    else if (strcmp(action->valuestring, "get_bench_steering") == 0)
+        request->action = CLOUD_PROTOCOL_ACTION_BENCH_GET;
+    else if (strcmp(action->valuestring, "stop_bench_steering") == 0)
+        request->action = CLOUD_PROTOCOL_ACTION_BENCH_STOP;
+    else if (strcmp(action->valuestring, "arm_bench_steering") == 0)
+    {
+        cJSON* limit = cJSON_GetObjectItemCaseSensitive(params, "limitMdeg");
+        if (!json_integer_between(limit, 1000, 5000) ||
+            (limit->valueint != 1000 && limit->valueint != 3000 && limit->valueint != 5000)) goto done;
+        request->bench_limit_mdeg = (uint16_t)limit->valueint;
+        request->action = CLOUD_PROTOCOL_ACTION_BENCH_ARM;
     }
     else if (strcmp(action->valuestring, "get_log") == 0) request->action = CLOUD_PROTOCOL_ACTION_GET_LOG;
     else if (strcmp(action->valuestring, "reboot") == 0) request->action = CLOUD_PROTOCOL_ACTION_REBOOT;

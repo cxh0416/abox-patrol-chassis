@@ -193,6 +193,7 @@ uint8_t PatrolDiagnostics_TakeSdoRead(PatrolDiagnostics* diagnostics, uint32_t n
     for (offset = 0U; offset < PATROL_DIAG_SDO_ENTRY_COUNT; offset++)
     {
         uint8_t index = (uint8_t)((diagnostics->next_sdo_entry + offset) % PATROL_DIAG_SDO_ENTRY_COUNT);
+        if (diagnostics->motion_priority && index >= 6U) continue;
         const PatrolSdoEntry* entry = &g_sdo_entries[index];
         if (!sdo_node_ready(diagnostics, entry->node, now_ms)) continue;
         if (!due(now_ms, diagnostics->sdo_due_ms[index])) continue;

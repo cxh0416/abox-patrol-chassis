@@ -43,7 +43,7 @@ uint8_t ChassisControl_SafetyReady(const ChassisControl* control, uint32_t now_m
     if (control->fault_latched || !control->remote_enabled || !f->calibrated || !f->steering_online || !f->drive_online ||
         f->can_bus_off || f->drive_fault || f->ota_busy || !f->power_ready) return 0U;
     if ((now_ms - f->feedback_ms) > CHASSIS_FEEDBACK_TIMEOUT_MS) return 0U;
-    if (labs(f->steering_actual_mdeg - f->encoder_actual_mdeg) > 2000L) return 0U;
+    if (llabs((int64_t)f->steering_actual_mdeg - f->encoder_actual_mdeg) > 2000L) return 0U;
     return 1U;
 }
 
@@ -59,7 +59,7 @@ static ChassisStopReason safety_reason(const ChassisControl* control, uint32_t n
     if (f->ota_busy) return CHASSIS_STOP_OTA_BUSY;
     if (!f->power_ready) return CHASSIS_STOP_POWER_NOT_READY;
     if ((now_ms - f->feedback_ms) > CHASSIS_FEEDBACK_TIMEOUT_MS) return CHASSIS_STOP_FEEDBACK_STALE;
-    if (labs(f->steering_actual_mdeg - f->encoder_actual_mdeg) > 2000L) return CHASSIS_STOP_ANGLE_MISMATCH;
+    if (llabs((int64_t)f->steering_actual_mdeg - f->encoder_actual_mdeg) > 2000L) return CHASSIS_STOP_ANGLE_MISMATCH;
     return CHASSIS_STOP_NONE;
 }
 

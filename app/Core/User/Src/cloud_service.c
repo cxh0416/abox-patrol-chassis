@@ -629,10 +629,11 @@ static void build_calibration_result(char* output, uint16_t size)
     const VcuRemoteConfig_t* cfg = VcuConfig_Get();
     if (output == 0 || size == 0U || cfg == 0) return;
     (void)snprintf(output, size,
-        "{\"configVersion\":%u,\"calibrated\":%s,\"remoteEnabled\":%s,\"steeringCenterCount\":%ld,"
+        "{\"profileCompatible\":%s,\"configVersion\":%u,\"calibrated\":%s,\"remoteEnabled\":%s,\"steeringCenterCount\":%ld,"
         "\"absoluteCenterCount\":%lu,\"steeringCountsPerDegreeMilli\":%lu,"
         "\"absoluteCountsPerDegreeMilli\":%lu,\"steeringDirection\":%d,"
         "\"absoluteDirection\":%d,\"steeringToleranceMdeg\":%u}",
+        VcuConfig_CalibrationCompatible() ? "true" : "false",
         (unsigned int)cfg->version, cfg->calibrated ? "true" : "false",
         cfg->remote_enabled ? "true" : "false",
         (long)cfg->steering_center_count, (unsigned long)cfg->absolute_center_count,
@@ -714,6 +715,8 @@ static void handle_config_request(const CloudProtocolRequest_t* request)
     {
         if (OtaService_IsBusy())
             schedule_simple_error(g_topic_config_resp, request_id, 409U, "OTA_BUSY");
+        else if (RemoteService_BenchPermitted())
+            schedule_simple_error(g_topic_config_resp, request_id, 409U, "BENCH_ACTIVE");
         else if (!VcuConfig_ClearCalibration())
             schedule_simple_error(g_topic_config_resp, request_id, 500U, "CONFIG_WRITE_FAILED");
         else
@@ -729,7 +732,7 @@ static void handle_config_request(const CloudProtocolRequest_t* request)
         VcuRtos_GetDiagnostics(&snapshot);
         if (OtaService_IsBusy())
             schedule_simple_error(g_topic_config_resp, request_id, 409U, "OTA_BUSY");
-        else if (!calibration_feedback_ready(request, &snapshot))
+        else if (RemoteService_BenchPermitted() || !calibration_feedback_ready(request, &snapshot))
             schedule_simple_error(g_topic_config_resp, request_id, 409U,
                                   "CALIBRATION_FEEDBACK_NOT_READY");
         else if (!VcuConfig_SetCalibration(request->steering_center_count,
@@ -742,6 +745,17 @@ static void handle_config_request(const CloudProtocolRequest_t* request)
             build_calibration_result(result, sizeof(result));
             (void)schedule_response(g_topic_config_resp, request_id, 200U,
                                     "CALIBRATION_SAVED_REMOTE_DISABLED", result, 0U);
+        }
+    }
+    else if (action == CLOUD_PROTOCOL_ACTION_BENCH_ARM || action == CLOUD_PROTOCOL_ACTION_BENCH_STOP ||
+             action == CLOUD_PROTOCOL_ACTION_BENCH_GET)
+    {
+        if (action == CLOUD_PROTOCOL_ACTION_BENCH_ARM && !VcuRtos_BenchArm(request->bench_limit_mdeg))
+            schedule_simple_error(g_topic_config_resp, request_id, 409U, "BENCH_NOT_READY");
+        else {
+            if (action == CLOUD_PROTOCOL_ACTION_BENCH_STOP) VcuRtos_BenchStop();
+            VcuRtos_FormatBench(result, sizeof(result));
+            (void)schedule_response(g_topic_config_resp, request_id, 200U, "OK", result, 0U);
         }
     }
     else if (action == CLOUD_PROTOCOL_ACTION_GET_LOG)

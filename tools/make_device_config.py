@@ -17,6 +17,8 @@ CONFIG_OFFSET = 148
 CONFIG_SIZE = 396
 CONFIG_MAGIC = 0x56435543
 CONFIG_VERSION = 4
+STEERING_COUNTS_MILLI = 2710800
+ABSOLUTE_COUNTS_MILLI = 55250
 DEFAULT_HOST = "36.153.162.171"
 DEFAULT_PORT = 19683
 DEFAULT_USERNAME = "patrol_vehicle_chassis_device"
@@ -65,8 +67,8 @@ def build_config_page(
     ota_origin: str = DEFAULT_OTA_ORIGIN,
     steering_center_count: int = 0,
     absolute_center_count: int = 0,
-    steering_counts_per_degree_milli: int = 0,
-    absolute_counts_per_degree_milli: int = 0,
+    steering_counts_per_degree_milli: int = STEERING_COUNTS_MILLI,
+    absolute_counts_per_degree_milli: int = ABSOLUTE_COUNTS_MILLI,
     steering_direction: int = 1,
     absolute_direction: int = 1,
     steering_tolerance_mdeg: int = 2000,
@@ -90,6 +92,10 @@ def build_config_page(
         raise ValueError("absolute counts per degree must fit uint32")
     if not 1 <= steering_tolerance_mdeg <= 2000:
         raise ValueError("steering tolerance must be in 1..2000 mdeg")
+    if (steering_counts_per_degree_milli != STEERING_COUNTS_MILLI or
+        absolute_counts_per_degree_milli != ABSOLUTE_COUNTS_MILLI or
+        steering_direction != 1 or absolute_direction != 1 or steering_tolerance_mdeg != 2000):
+        raise ValueError("calibration profile must match the product profile")
     if calibrated and (steering_counts_per_degree_milli <= 0 or absolute_counts_per_degree_milli <= 0):
         raise ValueError("calibrated config requires steering and absolute counts per degree")
 
@@ -206,8 +212,8 @@ def main() -> int:
     parser.add_argument("--ota-origin", default=DEFAULT_OTA_ORIGIN)
     parser.add_argument("--steering-center-count", type=int, default=0)
     parser.add_argument("--absolute-center-count", type=int, default=0)
-    parser.add_argument("--steering-counts-per-degree-milli", type=int, default=0)
-    parser.add_argument("--absolute-counts-per-degree-milli", type=int, default=0)
+    parser.add_argument("--steering-counts-per-degree-milli", type=int, default=STEERING_COUNTS_MILLI)
+    parser.add_argument("--absolute-counts-per-degree-milli", type=int, default=ABSOLUTE_COUNTS_MILLI)
     parser.add_argument("--steering-direction", type=int, choices=(-1, 1), default=1)
     parser.add_argument("--absolute-direction", type=int, choices=(-1, 1), default=1)
     parser.add_argument("--steering-tolerance-mdeg", type=int, default=2000)

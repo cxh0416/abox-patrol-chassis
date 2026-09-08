@@ -74,4 +74,31 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 & ctest --test-dir $hostBuild --output-on-failure
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+$benchTest = Join-Path $hostBuild 'bench_steering_test.exe'
+& $gcc -std=c11 -Wall -Wextra -Werror `
+    "-I$PSScriptRoot\..\app\Core\User\Inc" `
+    "$PSScriptRoot\..\app\Core\User\Src\bench_steering.c" `
+    "$PSScriptRoot\..\app\Core\User\Src\steering_angle.c" `
+    "$PSScriptRoot\..\app\Core\User\Src\patrol_canopen.c" `
+    "$PSScriptRoot\..\tests\bench_steering_test.c" -o $benchTest
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& $benchTest
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+$benchConfigTest = Join-Path $hostBuild 'bench_config_session_test.exe'
+& $gcc -std=c11 -Wall -Wextra -Werror `
+    "-I$PSScriptRoot\..\tests\bench_stubs" `
+    "-I$PSScriptRoot\..\app\Core\User\Inc" `
+    "-I$PSScriptRoot\..\shared\include" `
+    "-I$PSScriptRoot\..\platform\components\cjson" `
+    "$PSScriptRoot\..\app\Core\User\Src\vcu_config.c" `
+    "$PSScriptRoot\..\app\Core\User\Src\remote_service.c" `
+    "$PSScriptRoot\..\app\Core\User\Src\chassis_control.c" `
+    "$PSScriptRoot\..\app\Core\User\Src\cloud_protocol.c" `
+    "$PSScriptRoot\..\app\Core\User\Src\chassis_cloud_protocol.c" `
+    "$PSScriptRoot\..\app\Core\User\Src\fixed_point.c" `
+    "$PSScriptRoot\..\platform\components\cjson\cJSON.c" `
+    "$PSScriptRoot\..\tests\bench_config_session_test.c" -o $benchConfigTest
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& $benchConfigTest
 exit $LASTEXITCODE

@@ -32,6 +32,7 @@ set(PATROL_CHASSIS_APP_VERSION "" CACHE STRING "Override patrol chassis App sema
 set(PATROL_CHASSIS_MQTT_USERNAME "" CACHE STRING "Production MQTT username")
 set(PATROL_CHASSIS_MQTT_PASSWORD "" CACHE STRING "Production MQTT password")
 option(PATROL_CHASSIS_OTA_AUTO_SEED "Seed first stable OTA slot" ON)
+option(PATROL_CHASSIS_BENCH_STEERING_ENABLED "Compile RAM-armed steering-only bench executor" OFF)
 option(PATROL_CHASSIS_ACTUATION_ENABLED "Allow CANopen motion output after bench approval" OFF)
 option(PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED "Allow read-only CANopen and encoder polling" ON)
 option(PATROL_CHASSIS_POWER_OUTPUT_ENABLED "Allow the confirmed PA0 vehicle relay-supply output" ON)
@@ -85,6 +86,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/User/Src/patrol_diagnostics.c
     Core/User/Src/remote_service.c
     Core/User/Src/steering_angle.c
+    Core/User/Src/bench_steering.c
     Core/User/Src/time_base.c
     Core/User/Src/vehicle_power_output.c
     Core/User/Src/vehicle_power_port.c
@@ -105,6 +107,7 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
     $<$<CONFIG:Debug>:VCU_EC800_AT_TRACE=1>
     VCU_OTA_AUTO_SEED=$<BOOL:${PATROL_CHASSIS_OTA_AUTO_SEED}>
     PATROL_CHASSIS_ACTUATION_ENABLED=$<BOOL:${PATROL_CHASSIS_ACTUATION_ENABLED}>
+    PATROL_CHASSIS_BENCH_STEERING_ENABLED=$<BOOL:${PATROL_CHASSIS_BENCH_STEERING_ENABLED}>
     PATROL_CHASSIS_POWER_OUTPUT_ENABLED=$<BOOL:${PATROL_CHASSIS_POWER_OUTPUT_ENABLED}>
 )
 if(PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED)

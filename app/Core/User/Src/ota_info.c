@@ -171,7 +171,9 @@ uint8_t OTA_Info_SaveRemoteConfig(const VcuRemoteConfig_t* cfg)
     if ((cfg == 0) || !config_valid(cfg)) return 0U;
     ota_info_read_raw(&info);
     info.remote_config = *cfg;
-    return ota_info_write_raw(&info);
+    if (!ota_info_write_raw(&info)) return 0U;
+    ota_info_read_raw(&info);
+    return config_valid(&info.remote_config) && memcmp(cfg, &info.remote_config, sizeof(*cfg)) == 0;
 }
 
 static uint8_t ota_url_valid(const char* url)

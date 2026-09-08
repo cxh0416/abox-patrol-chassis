@@ -2,6 +2,19 @@
 
 #include <limits.h>
 
+uint8_t SteeringAngle_ToControllerCount(int32_t angle_mdeg, int32_t center,
+    uint32_t counts_milli, int8_t direction, int32_t minimum, int32_t maximum, int32_t* target)
+{
+    int64_t result;
+    if (!target || !counts_milli || (direction != 1 && direction != -1) || minimum > maximum) return 0U;
+    /* int32 * uint32 fits int64, including the most negative int32. */
+    result = (int64_t)angle_mdeg * counts_milli / 1000000LL;
+    result = (int64_t)center + result * direction;
+    if (result < INT32_MIN || result > INT32_MAX || result < minimum || result > maximum) return 0U;
+    *target = (int32_t)result;
+    return 1U;
+}
+
 static int32_t from_delta(int64_t delta, uint32_t counts_per_degree_milli, int8_t direction)
 {
     int64_t angle;

@@ -65,6 +65,7 @@ typedef struct {
     uint32_t pending_sent_ms;
     uint32_t sdo_due_ms[PATROL_DIAG_SDO_ENTRY_COUNT];
     uint8_t next_sdo_entry;
+    uint8_t motion_priority;
 } PatrolDiagnostics;
 
 typedef struct {

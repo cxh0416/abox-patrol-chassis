@@ -24,6 +24,9 @@ typedef enum {
     CLOUD_PROTOCOL_ACTION_GET_CALIBRATION,
     CLOUD_PROTOCOL_ACTION_SET_CALIBRATION,
     CLOUD_PROTOCOL_ACTION_CLEAR_CALIBRATION,
+    CLOUD_PROTOCOL_ACTION_BENCH_ARM,
+    CLOUD_PROTOCOL_ACTION_BENCH_STOP,
+    CLOUD_PROTOCOL_ACTION_BENCH_GET,
 } CloudProtocolAction_t;
 
 typedef enum {
@@ -45,6 +48,7 @@ typedef struct {
     uint16_t mqtt_port;
     char mqtt_username[CLOUD_PROTOCOL_MQTT_USER_SIZE];
     char mqtt_password[CLOUD_PROTOCOL_MQTT_PASSWORD_SIZE];
+    uint16_t bench_limit_mdeg;
     int32_t steering_center_count;
     uint32_t absolute_center_count;
     uint32_t steering_counts_per_degree_milli;

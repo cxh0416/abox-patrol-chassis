@@ -9,18 +9,57 @@
 #include "main.h"
 #include "time_base.h"
 #include "vcu_config.h"
+#include <stdlib.h>
+#include "FreeRTOS.h"
+#include "task.h"
 
 static uint8_t g_remote_initialized;
 static ChassisControl g_control;
 static char g_last_request_id[64];
 static char g_last_response[512];
+static uint8_t g_bench_permit, g_bench_started;
+static uint16_t g_bench_limit;
+static uint32_t g_arm_deadline, g_arm_serial;
+static char g_bench_session[40];
+
+void RemoteService_BenchRevoke(void)
+{
+    taskENTER_CRITICAL();
+    g_bench_permit = 0; g_control.remote_enabled = 0;
+    g_control.enable_request = 0; g_control.session_active = 0;
+    g_control.target_rpm = 0; g_control.requested_rpm = 0;
+    taskEXIT_CRITICAL();
+}
+uint8_t RemoteService_BenchPermitted(void) { return g_bench_permit; }
+uint16_t RemoteService_BenchLimit(void) { return g_bench_limit; }
+const char* RemoteService_BenchSession(void) { return g_bench_session; }
+uint8_t RemoteService_BenchArm(uint16_t limit_mdeg, uint32_t now)
+{
+    char stamp[21];
+    uint8_t ready;
+    if (!g_remote_initialized || (limit_mdeg != 1000 && limit_mdeg != 3000 && limit_mdeg != 5000) ||
+        !TimeBase_FormatUtcMs(stamp, sizeof(stamp))) return 0;
+    taskENTER_CRITICAL();
+    if (g_bench_permit || g_control.session_active) { taskEXIT_CRITICAL(); return 0; }
+    g_control.remote_enabled = 1;
+    ready = ChassisControl_SafetyReady(&g_control, now);
+    if (ready) {
+        g_bench_permit = 1; g_bench_started = 0; g_bench_limit = limit_mdeg;
+        g_arm_deadline = now + 15000U;
+        snprintf(g_bench_session, sizeof(g_bench_session), "b-%s-%lu", stamp, (unsigned long)++g_arm_serial);
+        g_last_request_id[0] = 0; g_last_response[0] = 0;
+    } else g_control.remote_enabled = 0;
+    taskEXIT_CRITICAL();
+    return ready;
+}
 
 void RemoteService_Init(void)
 {
     const VcuRemoteConfig_t* cfg = VcuConfig_Get();
     ChassisFeedback feedback = {0};
-    ChassisControl_Init(&g_control, cfg != 0 ? cfg->remote_enabled : 0U);
-    feedback.calibrated = cfg != 0 ? cfg->calibrated : 0U;
+    g_bench_permit = 0; g_bench_started = 0;
+    ChassisControl_Init(&g_control, 0U); /* A persisted flag never arms the bench. */
+    feedback.calibrated = cfg != 0 && cfg->calibrated && VcuConfig_CalibrationCompatible();
     feedback.feedback_ms = HAL_GetTick();
     ChassisControl_SetFeedback(&g_control, &feedback);
     g_last_request_id[0] = '\0';
@@ -33,12 +72,18 @@ void RemoteService_Init(void)
 void RemoteService_Task(void)
 {
     if (!g_remote_initialized) return;
-    ChassisControl_Tick(&g_control, HAL_GetTick());
+    RemoteService_SafetyTick(HAL_GetTick());
 }
 
 void RemoteService_SafetyTick(uint32_t now_ms)
 {
-    if (g_remote_initialized) ChassisControl_Tick(&g_control, now_ms);
+    if (!g_remote_initialized) return;
+    taskENTER_CRITICAL();
+    ChassisControl_Tick(&g_control, now_ms);
+    if (g_bench_permit && (!ChassisControl_SafetyReady(&g_control, now_ms) ||
+        (g_bench_started && (!g_control.session_active || !g_control.enable_request)) ||
+        (!g_bench_started && (int32_t)(now_ms - g_arm_deadline) >= 0))) RemoteService_BenchRevoke();
+    taskEXIT_CRITICAL();
 }
 
 void RemoteService_UpdateFeedback(const ChassisFeedback* feedback)
@@ -73,6 +118,12 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
     else if (parse_status == CHASSIS_CLOUD_OK)
     {
         uint8_t session_conflict = 0U;
+        if (strcmp(command.action, "stop") != 0 &&
+            (!g_bench_permit || strcmp(command.session_id, g_bench_session) != 0 ||
+             command.drive_rpm != 0 || labs(command.steering_mdeg) > g_bench_limit)) {
+            code = 400U; message = "bench permit or steering-only limit rejected";
+            goto format_response;
+        }
         if (strcmp(command.action, "renew") == 0)
             session_conflict = (uint8_t)(!g_control.session_active ||
                 strcmp(g_control.session_id, command.session_id) != 0);
@@ -97,13 +148,20 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
         }
         else
         {
+            taskENTER_CRITICAL();
             accepted = ChassisControl_Apply(&g_control, command.action, command.session_id,
                                             command.seq, command.lease_ms, command.drive_rpm,
                                             command.steering_mdeg, HAL_GetTick());
+            if (accepted) {
+                if (strcmp(command.action, "stop") == 0) RemoteService_BenchRevoke();
+                else g_bench_started = 1;
+            }
+            taskEXIT_CRITICAL();
             code = accepted ? 200U : 5001U;
             message = accepted ? "operation accepted" : "internal control error";
         }
     }
+format_response:
     if (!TimeBase_FormatUtcMs(timestamp, sizeof(timestamp))) strcpy(timestamp, "0");
     if (!FixedPoint_FormatMilli(steering_value, sizeof(steering_value),
                                 g_control.target_steering_mdeg)) return 0U;

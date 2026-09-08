@@ -5,6 +5,11 @@
 
 #include "chassis_control.h"
 
+uint8_t RemoteService_BenchArm(uint16_t limit_mdeg, uint32_t now);
+void RemoteService_BenchRevoke(void);
+uint8_t RemoteService_BenchPermitted(void);
+uint16_t RemoteService_BenchLimit(void);
+const char* RemoteService_BenchSession(void);
 void RemoteService_Init(void);
 void RemoteService_Task(void);
 void RemoteService_SafetyTick(uint32_t now_ms);

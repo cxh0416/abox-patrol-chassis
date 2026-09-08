@@ -22,6 +22,9 @@ typedef struct
     uint32_t timestamp_ms;
 } VcuCanFrame_t;
 
+uint8_t VcuRtos_BenchArm(uint16_t limit_mdeg);
+void VcuRtos_BenchStop(void);
+void VcuRtos_FormatBench(char* out, uint16_t size);
 void VcuRtos_Init(void);
 BaseType_t VcuRtos_CanRxFromISR(CAN_HandleTypeDef *hcan, BaseType_t *higher_priority_task_woken);
 BaseType_t VcuRtos_CanRxPop(VcuCanFrame_t *frame, TickType_t wait_ticks);

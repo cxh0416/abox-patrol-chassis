@@ -89,7 +89,7 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertEqual(len(page), 0x800)
         self.assertFalse(details["remoteEnabled"])
         self.assertFalse(details["calibrated"])
-        self.assertEqual(details["steeringCountsPerDegreeMilli"], 0)
+        self.assertEqual(details["steeringCountsPerDegreeMilli"], 2710800)
 
     def test_config_page_round_trips_wheel_angle_calibration(self):
         path = ROOT / "tools/make_device_config.py"

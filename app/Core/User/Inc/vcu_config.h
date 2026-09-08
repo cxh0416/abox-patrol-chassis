@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+uint8_t VcuConfig_CalibrationCompatible(void);
+
 #include "ota_info.h"
 
 #define VCU_CONFIG_DEFAULT_VID "PATROL-CHASSIS-000"

@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "app_log.h"
+#include "vehicle_steering_profile.h"
 
 static VcuRemoteConfig_t g_vcu_config;
 
@@ -65,8 +66,8 @@ void VcuConfig_ResetDefault(VcuRemoteConfig_t* cfg)
     copy_string(cfg->ota_origin, sizeof(cfg->ota_origin), VCU_CONFIG_DEFAULT_OTA_ORIGIN);
     cfg->steering_direction = 1;
     cfg->absolute_direction = 1;
-    cfg->steering_counts_per_degree_milli = 0U;
-    cfg->absolute_counts_per_degree_milli = 0U;
+    cfg->steering_counts_per_degree_milli = VEHICLE_STEERING_COUNTS_MILLI;
+    cfg->absolute_counts_per_degree_milli = VEHICLE_ABSOLUTE_COUNTS_MILLI;
     cfg->steering_tolerance_mdeg = 2000U;
     cfg->calibrated = 0U;
     cfg->checksum = config_checksum(cfg);
@@ -161,6 +162,15 @@ uint8_t VcuConfig_IsOtaOriginValid(const VcuRemoteConfig_t* cfg)
     return (strncmp(origin, "https://", 8U) == 0 && string_is_safe(origin, sizeof(cfg->ota_origin), 0U)) ? 1U : 0U;
 }
 
+uint8_t VcuConfig_CalibrationCompatible(void)
+{
+    return g_vcu_config.steering_counts_per_degree_milli == VEHICLE_STEERING_COUNTS_MILLI &&
+        g_vcu_config.absolute_counts_per_degree_milli == VEHICLE_ABSOLUTE_COUNTS_MILLI &&
+        g_vcu_config.steering_direction == VEHICLE_STEERING_DIRECTION &&
+        g_vcu_config.absolute_direction == VEHICLE_ABSOLUTE_DIRECTION &&
+        g_vcu_config.steering_tolerance_mdeg == VEHICLE_STEERING_TOLERANCE_MDEG;
+}
+
 uint8_t VcuConfig_SetCalibration(int32_t steering_center_count, uint32_t absolute_center_count,
                                  uint32_t steering_counts_per_degree_milli,
                                  uint32_t absolute_counts_per_degree_milli,
@@ -168,7 +178,10 @@ uint8_t VcuConfig_SetCalibration(int32_t steering_center_count, uint32_t absolut
                                  uint16_t tolerance_mdeg)
 {
     VcuRemoteConfig_t next = g_vcu_config;
-    if (steering_counts_per_degree_milli == 0U || absolute_counts_per_degree_milli == 0U ||
+    if (steering_counts_per_degree_milli != VEHICLE_STEERING_COUNTS_MILLI ||
+        absolute_counts_per_degree_milli != VEHICLE_ABSOLUTE_COUNTS_MILLI ||
+        steering_direction != VEHICLE_STEERING_DIRECTION || absolute_direction != VEHICLE_ABSOLUTE_DIRECTION ||
+        tolerance_mdeg != VEHICLE_STEERING_TOLERANCE_MDEG ||
         tolerance_mdeg == 0U || tolerance_mdeg > 2000U ||
         (steering_direction != 1 && steering_direction != -1) ||
         (absolute_direction != 1 && absolute_direction != -1)) return 0U;
