@@ -4,9 +4,14 @@
 
 static void transact(BenchDrive* b, uint32_t* now)
 {
-    PatrolCanFrame f,r;
+    PatrolCanFrame f,r; uint8_t step=b->step;
     assert(BenchDrive_Take(b,*now,&f));
     assert(f.id==0x602 || (f.id==0 && f.data[1]==2));
+    if(step==13 || step==14) {
+        int32_t commanded=(int32_t)((uint32_t)f.data[4] | ((uint32_t)f.data[5]<<8) |
+            ((uint32_t)f.data[6]<<16) | ((uint32_t)f.data[7]<<24));
+        assert(commanded==(step==13?b->writing:-b->writing));
+    }
     if(b->pending) {
         r=PatrolCanopen_SdoWrite32(2,b->index,0,b->step==24?0x21:b->expected);
         r.id=0x582; r.dlc=b->read?4+b->width:4;

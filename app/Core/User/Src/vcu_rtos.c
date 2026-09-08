@@ -568,8 +568,10 @@ static void Vcu_CanopenTask(void *argument)
             feedback.power_ready = PATROL_CHASSIS_BENCH_STEERING_ENABLED && g_feedback_gate_mask == 0;
             feedback.left_actual_rpm = snapshot.left_actual_rpm > 32767 ? 32767 :
                 (snapshot.left_actual_rpm < -32768 ? -32768 : (int16_t)snapshot.left_actual_rpm);
-            feedback.right_actual_rpm = snapshot.right_actual_rpm > 32767 ? 32767 :
-                (snapshot.right_actual_rpm < -32768 ? -32768 : (int16_t)snapshot.right_actual_rpm);
+            /* Normalize mirror-mounted right-wheel feedback to vehicle coordinates.
+             * Raw controller sign remains available in get_can_diag. */
+            feedback.right_actual_rpm = snapshot.right_actual_rpm > 32768 ? -32768 :
+                (snapshot.right_actual_rpm < -32767 ? 32767 : (int16_t)-snapshot.right_actual_rpm);
             if (feedback.calibrated)
             {
                 feedback.steering_actual_mdeg = SteeringAngle_FromControllerCount(

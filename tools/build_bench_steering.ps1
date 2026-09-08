@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param([ValidatePattern('^patrol-chassis-[0-9]+\.[0-9]+\.[0-9]+$')][string]$AppVersion = 'patrol-chassis-0.2.12', [switch]$Drive)
+param([ValidatePattern('^patrol-chassis-[0-9]+\.[0-9]+\.[0-9]+$')][string]$AppVersion = 'patrol-chassis-0.2.13', [switch]$Drive)
 $ErrorActionPreference = 'Stop'
 $product = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $build = Join-Path $product 'app/build/BenchSteering'

@@ -72,7 +72,12 @@ uint8_t BenchDrive_Take(BenchDrive* b, uint32_t now, PatrolCanFrame* f)
     /* VSY dual: bits 0/1/2 are Ready/Switched/Enabled (vendor PDF p24).
      * Observed Ready=0x1001; unlike Node 1, bit 5 is not set here. */
     case 6: case 8: case 10: b->index=0x6041; b->width=2; b->read=1; b->expected=b->step==6?1:b->step==8?3:7; break;
-    case 13: case 14: b->index=b->step==13?0x60FF:0x68FF; value=b->writing; break;
+    /* The right wheel is mirror-mounted. Vehicle-forward therefore maps to
+     * a positive left motor target and a negative right motor target. */
+    case 13: case 14:
+        b->index=b->step==13?0x60FF:0x68FF;
+        value=b->step==13?b->writing:-b->writing;
+        break;
     case 20: case 21: b->index=b->step==20?0x60FF:0x68FF; break;
     case 23: b->index=0x6040; b->width=2; value=6; break;
     case 24: b->index=0x6041; b->width=2; b->read=1; break;
