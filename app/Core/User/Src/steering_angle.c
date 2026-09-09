@@ -66,3 +66,16 @@ int32_t SteeringAngle_FromAbsoluteCount(uint32_t count, uint32_t center,
 {
     return from_delta((int64_t)count - (int64_t)center, counts_per_degree_milli, direction);
 }
+
+uint8_t SteeringAngle_AbsoluteWithinLimit(uint32_t count, uint32_t center,
+    uint32_t counts_per_degree_milli, int8_t direction, int32_t limit_mdeg,
+    int32_t* angle_mdeg)
+{
+    int32_t angle;
+    if (angle_mdeg == 0 || count >= VEHICLE_ABSOLUTE_SINGLE_TURN_COUNTS ||
+        center >= VEHICLE_ABSOLUTE_SINGLE_TURN_COUNTS || counts_per_degree_milli == 0U ||
+        (direction != 1 && direction != -1) || limit_mdeg < 0) return 0U;
+    angle = SteeringAngle_FromAbsoluteCount(count, center, counts_per_degree_milli, direction);
+    *angle_mdeg = angle;
+    return (angle >= -limit_mdeg && angle <= limit_mdeg) ? 1U : 0U;
+}

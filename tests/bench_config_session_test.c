@@ -27,12 +27,17 @@ int main(void)
     save_ok=0; assert(!VcuConfig_SetCalibration(-85123,3182,2710800,55250,1,1,2000));
     assert(!VcuConfig_Get()->calibrated);
     save_ok=1; assert(VcuConfig_SetCalibration(-85123,3182,2710800,55250,1,1,2000));
+    assert(!VcuConfig_SingleTurnProfileReady());
+    assert(VcuConfig_SetCalibration(-85123,2048,2710800,55250,1,1,2000));
+    assert(VcuConfig_SingleTurnProfileReady());
+    assert(VcuConfig_SetCalibration(-85123,3182,2710800,55250,1,1,2000));
     VcuConfig_Load(); assert(VcuConfig_Get()->calibrated&&!VcuConfig_Get()->remote_enabled);
     flash.steering_counts_per_degree_milli=555556; VcuConfig_Load();
     assert(!VcuConfig_CalibrationCompatible()&&VcuConfig_Get()->steering_center_count==-85123);
     flash.steering_counts_per_degree_milli=2710800;VcuConfig_Load();
     RemoteService_Init(); assert(!RemoteService_BenchPermitted());
-    ChassisFeedback f={.calibrated=1,.steering_online=1,.drive_online=1,.power_ready=1,.feedback_ms=1000};
+    ChassisFeedback f={.calibrated=1,.steering_online=1,.drive_online=1,.power_ready=1,
+        .encoder_range_valid=1,.encoder_profile_ready=1,.feedback_ms=1000};
     RemoteService_UpdateFeedback(&f);
     assert(RemoteService_BenchArm(1000,tick));
     char session[40]; strcpy(session,RemoteService_BenchSession());
@@ -59,10 +64,10 @@ int main(void)
     assert(RemoteService_State()->stop_reason==CHASSIS_STOP_EXECUTION_FAULT);
     RemoteService_Init();assert(!RemoteService_State()->remote_enabled);
     RemoteService_UpdateFeedback(&f);
-    assert(RemoteService_BenchDriveArm(40000,tick));
+    assert(RemoteService_BenchDriveArm(30000,tick));
     strcpy(session,RemoteService_BenchSession());
     command(session,201,0,"acquire",20); assert(!RemoteService_State()->session_active);
-    command(session,200,40,"acquire",21); assert(RemoteService_State()->enable_request);
+    command(session,200,30,"acquire",21); assert(RemoteService_State()->enable_request);
     command(session,0,0,"stop",22); assert(!RemoteService_BenchDrivePermitted());
     assert(RemoteService_BenchArm(1000,tick));
     strcpy(session,RemoteService_BenchSession());

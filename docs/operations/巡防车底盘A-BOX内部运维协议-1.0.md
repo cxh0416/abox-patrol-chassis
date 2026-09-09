@@ -2,13 +2,13 @@
 
 协议修订：1.0
 
-契约状态：固件与 OTA 平台源码切换及自动回归已完成；OTA 平台已发布到生产环境，巡防底盘自动 `get_info` 能力回填已闭环；CANopen 和编码器进入只读联调，执行器台架联调尚未完成
+契约状态：内部运维接口定义；具体实现、发布和现场验收状态见内部运维与验收文档
 
 产品标识：`patrol_vehicle_chassis`
 
 ## 1. 协议定位
 
-本文定义 OTA 平台与巡防车底盘 A-BOX 固件之间的设备信息、日志、远程电源输出、受控重启、MQTT 配置和 Boot V2 OTA 接口。它们使用 `/internal/*` Topic，不属于公共业务接口；底盘控制和状态见 [A-BOX 车辆底盘业务协议 V3](A-BOX车辆底盘业务协议-V3.0.md)。厂商 CANopen 对象字典和执行约束不在本文定义。
+本文定义 OTA 平台与巡防车底盘 A-BOX 固件之间的设备信息、日志、远程电源输出、受控重启、MQTT 配置和 Boot V2 OTA 接口。它们使用 `/internal/*` Topic，不属于公共业务接口；底盘控制和状态见 [A-BOX 车辆底盘业务协议 V3](../protocols/A-BOX车辆底盘业务协议-V3.0.md)。厂商 CANopen 对象字典和执行约束不在本文定义。
 
 公共业务与内部运维使用两套明确身份：
 
@@ -82,6 +82,11 @@ A-BOX 只订阅自身 VID 的精确配置和 OTA Topic。平台重试必须沿�
 | `get_calibration` | 查询当前轮胎转角标定参数和标定状态 |
 | `set_calibration` | 在远程控制禁用、车辆静止、反馈完整且控制器未使能时保存逐车转角标定；保存后继续保持远程控制禁用 |
 | `clear_calibration` | 清除标定状态并关闭远程控制使能 |
+| `start_center_calibration` | 创建受限转向中位标定会话；不直接执行运动 |
+| `get_center_calibration` | 查询标定阶段、两路原始计数、累计调整和失败原因 |
+| `jog_center_calibration` | 在标定会话内执行一次固定小步点动 |
+| `commit_center_calibration` | 确认机械中位，执行编码器 2048 写入及逐车中位保存 |
+| `cancel_center_calibration` | 停止点动、撤销许可并结束标定会话 |
 | `get_log` | 获取内存日志快照 |
 | `reboot` | 响应成功发布后受控重启 |
 | `power_on` | 将车辆电源控制输出置为高电平 |
@@ -125,9 +130,19 @@ OTA 请求使用 `command=ota_upgrade`，`params` 必须包含不可变 HTTPS `u
 
 `set_calibration` 必须提供两路中位；每度计数、方向及容差可省略，省略时采用产品公共参数，提供时必须与公共参数一致。`get_calibration.result.profileCompatible` 表示已保存参数是否匹配产品配置；不匹配时禁止运动。
 
-- `arm_bench_steering`：参数 `limitMdeg` 允许 1000、3000、5000、20000、30000、40000。条件不满足返回 409 `BENCH_NOT_READY`。成功返回 RAM 测试许可和 `sessionId`，15 秒内须以该会话发起公共 `chassis_control.acquire`。
+- `arm_bench_steering`：参数 `limitMdeg` 允许 1000、3000、5000、20000、30000。条件不满足返回 409 `BENCH_NOT_READY`。成功返回 RAM 测试许可和 `sessionId`，15 秒内须以该会话发起公共 `chassis_control.acquire`。
 - `arm_bench_drive`：参数 `limitMdeg` 同上，申请行走与转向测试许可。成功返回 `drivePermitted=true`；行走目标绝对值不得超过返回的 `driveLimitRpm`。条件不满足返回 409。
-- `get_bench_steering`：返回 available、permitted、phase、step、fault、limitMdeg、sessionId、contactorFeedbackAvailable。phase 为 0 空闲、1 准备、2 运行、3 停止中、4 故障；step 仅供维护诊断。
+- `get_bench_steering`：返回 available、permitted、phase、step、fault、limitMdeg、sessionId、contactorFeedbackAvailable、safetyProfile、profileReady 和 rangeValid。`safetyProfile=single_turn_4096_center2048_limit30_v1` 表示当前接口所要求的安全配置。phase 为 0 空闲、1 准备、2 运行、3 停止中、4 故障；step 仅供维护诊断。
 - `stop_bench_steering`：立即撤销许可并请求撤使能；200 表示停止请求已接受，须继续核验状态。
 
 转向许可只接受 driveRpm=0；行走许可允许限速范围内的行走目标，转角不得超出本次幅度。查询额外返回 driveAvailable、drivePermitted、drivePhase、driveFault、driveLimitRpm；drivePhase 与 phase 枚举相同。停止、租约到期、故障或重启撤销许可；重新许可会生成新的 sessionId。许可不写入持久配置。contactorFeedbackAvailable=false 时没有触点状态反馈，不得推断真实供电状态。
+
+## 转向中位标定接口
+
+- `start_center_calibration` 无参数。设备只在 OTA 空闲、普通远控和其他台架许可关闭、节点及反馈在线、CAN 正常、驱动无故障、行走未使能且左右轮连续满足静止要求时创建会话。已有有效的两路标定且角度一致，才允许后续电机点动。
+- `jog_center_calibration` 必须携带 `sessionId` 和 `deltaMdeg`；`deltaMdeg` 只允许 `-1000`、`-200`、`200`、`1000`。会话相对起始位置的累计调整必须处于 `-5000..5000 mdeg`。
+- `commit_center_calibration` 只携带 `sessionId`，不接受调用方提供编码器中位。设备固定执行编码器 2048 中位写入、读回校验及转向驱动器当前原始计数保存；响应已接受不表示整个异步提交已经完成。
+- `get_center_calibration` 必须携带 `sessionId`，返回 `phase`、`sessionId`、`fault`、`driverRaw`、`encoderRaw`、`targetMdeg`、`jogOffsetMdeg`、`rangeValid` 和 `calibrated`。标定可调整阶段以该查询作为短租约心跳；连续约 4 秒未收到有效查询时设备停止标定并关闭车辆电源输出。平台必须轮询至完成或失败，并结合后续掉电重启与反馈验证判断结果。
+- `cancel_center_calibration` 必须携带 `sessionId`。浏览器离开、网络异常、会话过期或人工停止时，平台应提交取消；设备停止执行、撤销许可并关闭车辆电源输出。
+
+标定任一步失败或掉电后，设备不得凭 MQTT 响应建立正式运行坐标。提交已经清除旧标定后发生失败时保持未标定；编码器写入结果不确定时只能通过后续读回判断，不回滚编码器。

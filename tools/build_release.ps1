@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [ValidateSet('Debug', 'Release')] [string] $Configuration = 'Release',
-    [ValidatePattern('^patrol-chassis-[0-9]+\.[0-9]+\.[0-9]+$')] [string] $AppVersion = 'patrol-chassis-0.2.14',
+    [ValidatePattern('^patrol-chassis-[0-9]+\.[0-9]+\.[0-9]+$')] [string] $AppVersion = 'patrol-chassis-0.2.15',
     [switch] $BenchSteering,
     [switch] $BenchDrive,
     [string] $VerifiedCandidate,
@@ -9,6 +9,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+if ($Configuration -ne 'Release') { throw 'Formal dist accepts Release only; use build_online_debug.ps1 for Debug.' }
 if ($BenchDrive) { $BenchSteering = $true }
 if ($BenchSteering -and ($Configuration -ne 'Release' -or $ReleasePair -or
     [string]::IsNullOrWhiteSpace($VerifiedCandidate) -or !(Test-Path -LiteralPath $VerifiedCandidate -PathType Leaf))) {
@@ -20,7 +21,6 @@ $bootTarget = Join-Path $platform 'targets/stm32f105_abox_boot'
 $bootArtifact = Join-Path $bootTarget 'dist/ABox_Boot.bin'
 $bootVerifier = Join-Path $bootTarget 'tools/verify_boot_artifact.py'
 $stableVersion = 'patrol-chassis-0.1.0'
-$candidateVersion = 'patrol-chassis-0.1.1'
 $versions = if ($ReleasePair) { @($stableVersion) } else { @($AppVersion) }
 $credentialBuildRoot = Join-Path ([IO.Path]::GetTempPath()) ('patrol-chassis-release-' + [Guid]::NewGuid().ToString('N'))
 $mqttUsername = $env:OTA_MQTT_PATROL_CHASSIS_DEVICE_USERNAME
@@ -131,14 +131,7 @@ try {
             }
         }
         if ((Get-Item -LiteralPath $app.bin).Length -ge 223232) { throw 'App artifact exceeds its 218 KiB region.' }
-        $release = Join-Path $product "dist"
-        if (Test-Path -LiteralPath $release) {
-            $resolvedRelease = [IO.Path]::GetFullPath($release)
-            if (-not $resolvedRelease.StartsWith($product + [IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase)) {
-                throw "Refusing to replace unexpected dist path: $resolvedRelease"
-            }
-            Remove-Item -LiteralPath $resolvedRelease -Recurse -Force
-        }
+        $release = Join-Path $credentialBuildRoot 'release-stage'
         New-Item -ItemType Directory -Force -Path $release | Out-Null
         $appOut = Join-Path $release 'Patrol_Vehicle_Chassis_App.bin'; $bootOut = Join-Path $release 'ABox_Boot.bin'; $fullOut = Join-Path $release 'Patrol_Vehicle_Chassis_Full.bin'
         Copy-Item -LiteralPath $app.bin -Destination $appOut -Force; Copy-Item -LiteralPath $bootArtifact -Destination $bootOut -Force
@@ -160,7 +153,9 @@ try {
             artifacts = @((Get-Artifact $appOut '0x08008000'), (Get-Artifact $bootOut '0x08000000'), (Get-Artifact $fullOut '0x08000000'))
         }
         $manifest | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $release 'release.manifest.json') -Encoding UTF8
-        Write-Host "Release $version written to $release"
+        & python (Join-Path $PSScriptRoot 'artifact_store.py') --root $product --stage $release --destination dist
+        if ($LASTEXITCODE -ne 0) { throw 'Release publication failed; inspect rollback/backup before retrying.' }
+        Write-Host "Release $version written to $(Join-Path $product 'dist')"
     }
 
 }

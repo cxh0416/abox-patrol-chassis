@@ -21,5 +21,8 @@ int32_t SteeringAngle_FromControllerCount(int32_t count, int32_t center,
 int32_t SteeringAngle_FromAbsoluteCount(uint32_t count, uint32_t center,
                                         uint32_t counts_per_degree_milli,
                                         int8_t direction);
+uint8_t SteeringAngle_AbsoluteWithinLimit(uint32_t count, uint32_t center,
+    uint32_t counts_per_degree_milli, int8_t direction, int32_t limit_mdeg,
+    int32_t* angle_mdeg);
 
 #endif

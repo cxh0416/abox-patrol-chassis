@@ -78,7 +78,7 @@
 | `data.params.seq` | Integer | 是 | 会话内严格递增，范围 `1..4294967295` |
 | `data.params.leaseMs` | Integer | 是 | `1..1000` ms；`stop` 仍携带该字段 |
 | `data.params.driveRpm` | Integer | 是 | `-200..200` rpm；正负方向由产品标定定义 |
-| `data.params.steeringDeg` | Number | 是 | `-40.0..40.0`°；正负方向由产品标定定义 |
+| `data.params.steeringDeg` | Number | 是 | `-30.0..30.0`°；正负方向由产品标定定义 |
 
 `acquire` 建立控制租约，`renew` 更新同一会话目标并续租，`stop` 明确请求零速和释放会话。平台停止发送、浏览器失联或租约超时后，设备必须安全停止，不得保持最后一次非零目标。
 
@@ -141,6 +141,8 @@
     "powerReady": true,
     "otaBusy": false,
     "safetyReady": true,
+    "steeringProfileReady": true,
+    "steeringRangeValid": true,
     "stopReason": 0,
     "faultLatched": false
   }
@@ -162,10 +164,12 @@
 | `driveFault` | Boolean | 转向或双驱控制器是否报告驱动故障 |
 | `feedbackFresh` | Boolean | 本报告使用的运动反馈是否在有效时限内 |
 | `safetyReady` | Boolean | 当前是否满足接受运动目标的全部门禁 |
+| `steeringProfileReady` | Boolean | 当前保存的转向安全配置是否满足本产品运行要求 |
+| `steeringRangeValid` | Boolean | 当前独立转角反馈是否处于本产品正式运行范围 |
 | `stopReason` | Integer | 产品定义的最近安全停止原因码 |
 | `faultLatched` | Boolean | 是否存在需要人工或明确命令处理的锁存故障 |
 
-`stopReason=13` 表示执行流程故障锁存；停止命令和会话续租不能清除该锁存。
+`stopReason=13` 表示执行流程故障锁存，`14` 表示编码器范围异常，`15` 表示编码器安全配置不匹配。停止命令和会话续租不能清除上述锁存。
 
 周期状态建议每 1 秒使用 QoS 0 发布；状态变化、故障产生/解除和安全停止使用 QoS 1。平台订阅该 Topic 时请求 QoS 1，按 `reportId` 去重，并阻止较旧 `timestamp` 覆盖较新状态。
 

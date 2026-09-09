@@ -36,8 +36,10 @@ void RemoteService_BenchFault(void)
 {
     taskENTER_CRITICAL();
     RemoteService_BenchRevoke();
+    if (!g_control.fault_latched) {
+        g_control.stop_reason = CHASSIS_STOP_EXECUTION_FAULT;
+    }
     g_control.fault_latched = 1;
-    g_control.stop_reason = CHASSIS_STOP_EXECUTION_FAULT;
     taskEXIT_CRITICAL();
 }
 uint16_t RemoteService_BenchLimit(void) { return g_bench_limit; }
@@ -48,7 +50,7 @@ uint8_t RemoteService_BenchArm(uint16_t limit_mdeg, uint32_t now)
     uint8_t ready;
     if (!g_remote_initialized ||
         (limit_mdeg != 1000 && limit_mdeg != 3000 && limit_mdeg != 5000 &&
-         limit_mdeg != 20000 && limit_mdeg != 30000 && limit_mdeg != 40000) ||
+         limit_mdeg != 20000 && limit_mdeg != 30000) ||
         !TimeBase_FormatUtcMs(stamp, sizeof(stamp))) return 0;
     taskENTER_CRITICAL();
     if (g_bench_permit || g_control.session_active) { taskEXIT_CRITICAL(); return 0; }

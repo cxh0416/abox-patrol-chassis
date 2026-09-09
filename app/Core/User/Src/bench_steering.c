@@ -10,12 +10,12 @@
 #define STOP_MS 200U
 #define STEP_ACTIVE 16U
 #define STEP_STOP 21U
-#define BENCH_STEERING_ENVELOPE_MDEG 40000
+#define BENCH_STEERING_ENVELOPE_MDEG VEHICLE_MAX_STEERING_MDEG
 
 static uint8_t valid_limit(uint16_t limit)
 {
     return (limit == 1000 || limit == 3000 || limit == 5000 ||
-            limit == 20000 || limit == 30000 || limit == 40000) ? 1U : 0U;
+            limit == 20000 || limit == 30000) ? 1U : 0U;
 }
 
 static void fail(BenchSteering* b, uint32_t reason)

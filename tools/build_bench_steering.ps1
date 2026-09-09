@@ -1,9 +1,11 @@
 [CmdletBinding()]
-param([ValidatePattern('^patrol-chassis-[0-9]+\.[0-9]+\.[0-9]+$')][string]$AppVersion = 'patrol-chassis-0.2.14', [switch]$Drive)
+param([ValidatePattern('^patrol-chassis-[0-9]+\.[0-9]+\.[0-9]+$')][string]$AppVersion = 'patrol-chassis-0.2.15', [switch]$Drive)
 $ErrorActionPreference = 'Stop'
 $product = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $build = Join-Path $product 'app/build/BenchSteering'
-$output = Join-Path $product "out/bench-$AppVersion"
+$destination = if ($Drive) { 'out/candidates/bench-drive' } else { 'out/candidates/bench-steering' }
+$output = Join-Path ([IO.Path]::GetTempPath()) ('patrol-chassis-bench-' + [guid]::NewGuid().ToString('N'))
+try {
 & cmake -S (Join-Path $product 'app') -B $build -G Ninja `
     "-DCMAKE_TOOLCHAIN_FILE=$product/app/cmake/gcc-arm-none-eabi.cmake" `
     '-DCMAKE_BUILD_TYPE=Release' "-DPATROL_CHASSIS_APP_VERSION=$AppVersion" `
@@ -31,4 +33,15 @@ if ($bytes.Length -gt 223232 -or [Text.Encoding]::ASCII.GetString($bytes).IndexO
     app_start='0x08008000'; app_end='0x0803E7FF'; config_page='0x0803F800'
     size=$bytes.Length; sha256=(Get-FileHash $artifact -Algorithm SHA256).Hash
 } | ConvertTo-Json | Set-Content (Join-Path $output 'candidate.manifest.json') -Encoding utf8
-Write-Host "Bench candidate: $output"
+& python (Join-Path $PSScriptRoot 'artifact_store.py') --root $product --stage $output --destination $destination
+if ($LASTEXITCODE -ne 0) { throw 'Bench publication failed; inspect rollback/backup before retrying.' }
+Write-Host "Bench candidate: $(Join-Path $product $destination)"
+}
+finally {
+    if (Test-Path -LiteralPath $output) {
+        $temporaryBase = [IO.Path]::GetFullPath([IO.Path]::GetTempPath())
+        $resolvedOutput = [IO.Path]::GetFullPath($output)
+        if (-not $resolvedOutput.StartsWith($temporaryBase, [StringComparison]::OrdinalIgnoreCase)) { throw 'Unexpected bench temporary path.' }
+        Remove-Item -LiteralPath $resolvedOutput -Recurse -Force
+    }
+}

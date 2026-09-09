@@ -27,6 +27,11 @@ typedef enum {
     CLOUD_PROTOCOL_ACTION_BENCH_ARM,
     CLOUD_PROTOCOL_ACTION_BENCH_STOP,
     CLOUD_PROTOCOL_ACTION_BENCH_GET,
+    CLOUD_PROTOCOL_ACTION_CENTER_CAL_START,
+    CLOUD_PROTOCOL_ACTION_CENTER_CAL_GET,
+    CLOUD_PROTOCOL_ACTION_CENTER_CAL_JOG,
+    CLOUD_PROTOCOL_ACTION_CENTER_CAL_COMMIT,
+    CLOUD_PROTOCOL_ACTION_CENTER_CAL_CANCEL,
 } CloudProtocolAction_t;
 
 typedef enum {
@@ -57,6 +62,8 @@ typedef struct {
     uint16_t steering_tolerance_mdeg;
     int8_t steering_direction;
     int8_t absolute_direction;
+    char center_session_id[40];
+    int16_t center_delta_mdeg;
 } CloudProtocolRequest_t;
 
 CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, uint8_t ota_topic,

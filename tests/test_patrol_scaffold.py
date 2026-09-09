@@ -37,11 +37,11 @@ class PatrolScaffoldTests(unittest.TestCase):
 
     def test_public_topics_and_limits_are_documented(self):
         mqtt = (ROOT / "docs/protocols/A-BOX车辆底盘业务协议-V3.0.md").read_text(encoding="utf-8")
-        canopen = (ROOT / "docs/protocols/CANopen执行约束.md").read_text(encoding="utf-8")
+        canopen = (ROOT / "docs/operations/CANopen执行约束.md").read_text(encoding="utf-8")
         self.assertIn("/zxwl/abox/{deviceId}", mqtt)
         self.assertIn("vehicle_chassis", mqtt)
-        self.assertIn("±300 rpm", canopen)
-        self.assertIn("±5°", canopen)
+        self.assertIn("`±200 rpm`", canopen)
+        self.assertIn("`±30°`", canopen)
         self.assertIn("连续三次", canopen)
 
     def test_public_and_internal_mqtt_contracts_are_separated(self):

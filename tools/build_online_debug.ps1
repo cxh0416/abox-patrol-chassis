@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [ValidatePattern('^patrol-chassis-[0-9]+\.[0-9]+\.[0-9]+(?:[A-Za-z0-9._+-]*)?$')]
-    [string] $AppVersion = 'patrol-chassis-0.2.2',
+    [string] $AppVersion = 'patrol-chassis-0.2.15',
     [switch] $EnableAutoSeed
 )
 
@@ -14,7 +14,7 @@ $password = $credential.GetNetworkCredential().Password
 
 $temporaryRoot = Join-Path ([IO.Path]::GetTempPath()) ("patrol-chassis-debug-" + [guid]::NewGuid().ToString('N'))
 $appBuild = Join-Path $temporaryRoot 'app'
-$output = Join-Path $product "dist/debug/$AppVersion-online-debug"
+$output = Join-Path $temporaryRoot 'debug-stage'
 $bootTarget = Join-Path $product 'platform/targets/stm32f105_abox_boot'
 $boot = Join-Path $bootTarget 'dist/ABox_Boot.bin'
 $bootVerifier = Join-Path $bootTarget 'tools/verify_boot_artifact.py'
@@ -88,7 +88,9 @@ try {
         credential = 'embedded-device-account; redacted'
     }
     $manifest | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $output 'debug.manifest.json') -Encoding UTF8
-    Write-Host "Debug Full written to $fullPath"
+    & python (Join-Path $PSScriptRoot 'artifact_store.py') --root $product --stage $output --destination out/debug/online
+    if ($LASTEXITCODE -ne 0) { throw 'Debug publication failed; inspect rollback/backup before retrying.' }
+    Write-Host "Debug Full written to $(Join-Path $product 'out/debug/online/Patrol_Vehicle_Chassis_Full.bin')"
     Write-Host ('SP=0x{0:X8} Reset=0x{1:X8} SHA256={2}' -f $sp, $reset, $manifest.full_sha256)
 }
 finally {

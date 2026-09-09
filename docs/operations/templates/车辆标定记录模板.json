@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "product": "patrol_vehicle_chassis",
   "deviceId": "FILL_PER_VEHICLE",
   "capturedAt": "FILL_ISO8601_TIME",
@@ -20,15 +20,18 @@
     "independentEncoderCenter": null,
     "independentEncoderDirection": null,
     "independentEncoderCountsPerDegreeMilli": null,
-    "negativeSoftwareLimit201A": null,
-    "positiveSoftwareLimit2019": null,
-    "steeringToleranceMilliDegree": null
+    "steeringToleranceMilliDegree": null,
+    "runtimeNegativeSoftwareLimit201A": null,
+    "runtimePositiveSoftwareLimit2019": null,
+    "driverCenterSavedInAbox": null,
+    "encoderHighWordAfterCommit": null,
+    "encoderCenterReadbackSamples": [],
+    "runtimeCenterAfterPowerCycle": null
   },
   "checks": {
     "controllerParametersBackedUp": false,
     "communicationLossParametersVerified": false,
     "centerSamplesStable": false,
-    "controllerLimitsSavedAndReadBack": false,
     "steeringDirectionVerified": false,
     "independentEncoderDirectionVerified": false,
     "plusMinus5DegreeVerified": false,
@@ -37,7 +40,15 @@
     "dualAngleDifferenceWithinTolerance": false,
     "physicalCommunicationLossVerified": false,
     "powerCyclePersistenceVerified": false,
-    "aboxCalibrationSaved": false
+    "aboxCalibrationSaved": false,
+    "controllerRamLimitsReadBack": false,
+    "encoder2048WriteAndReadbackVerified": false,
+    "plusMinus20DegreeVerified": false,
+    "plusMinus30DegreeVerified": false,
+    "outOfRangeRebootRejected": false,
+    "unexpectedPowerLossRecoveryVerified": false,
+    "noAutomaticControlAfterReboot": false,
+    "allPermitsRevokedAfterCommit": false
   },
   "evidence": {
     "parameterBackup": "FILL_PATH_OR_HASH",
@@ -46,12 +57,27 @@
     "independentEncoderSampling": "FILL_PATH_OR_HASH",
     "motionValidation": "FILL_PATH_OR_HASH",
     "communicationLossValidation": "FILL_PATH_OR_HASH",
-    "powerCycleReadback": "FILL_PATH_OR_HASH"
+    "powerCycleReadback": "FILL_PATH_OR_HASH",
+    "centerCommitReadback": "FILL_PATH_OR_HASH",
+    "runtimeLimitsReadback": "FILL_PATH_OR_HASH",
+    "unexpectedPowerLoss": "FILL_PATH_OR_HASH",
+    "outOfRangeRejection": "FILL_PATH_OR_HASH"
   },
   "result": {
     "wholeVehicleCalibrated": false,
     "operator": "FILL",
     "reviewer": "FILL",
     "notes": ""
+  },
+  "workflow": {
+    "firmwareVersion": "FILL_EXACT_VERSION",
+    "candidateSha256": "FILL_SHA256",
+    "safetyProfile": "single_turn_4096_center2048_limit30_v1",
+    "status": "pending_field_verification",
+    "encoderSingleTurnCounts": 4096,
+    "requiredEncoderCenter": 2048,
+    "steeringLimitMdeg": 30000,
+    "driveLimitRpm": 200,
+    "runtimeLimitsPersistedToControllerEep": false
   }
 }

@@ -72,10 +72,25 @@ int main(void)
         "\"command\":\"internal_config\",\"params\":{\"action\":\"power_off\"}}}";
     static const char arm_drive[] =
         "{\"version\":\"2.0\",\"data\":{\"requestId\":\"req-arm-drive\","
-        "\"command\":\"internal_config\",\"params\":{\"action\":\"arm_bench_drive\",\"limitMdeg\":40000}}}";
+        "\"command\":\"internal_config\",\"params\":{\"action\":\"arm_bench_drive\",\"limitMdeg\":30000}}}";
     static const char bad_arm_drive[] =
         "{\"version\":\"2.0\",\"data\":{\"requestId\":\"req-arm-bad\","
-        "\"command\":\"internal_config\",\"params\":{\"action\":\"arm_bench_drive\",\"limitMdeg\":40001}}}";
+        "\"command\":\"internal_config\",\"params\":{\"action\":\"arm_bench_drive\",\"limitMdeg\":30001}}}";
+    static const char center_jog[] =
+        "{\"version\":\"2.0\",\"data\":{\"requestId\":\"center-jog\","
+        "\"command\":\"internal_config\",\"params\":{\"action\":\"jog_center_calibration\","
+        "\"sessionId\":\"c-1-1\",\"deltaMdeg\":-200}}}";
+    static const char center_get[] =
+        "{\"version\":\"2.0\",\"data\":{\"requestId\":\"center-get\","
+        "\"command\":\"internal_config\",\"params\":{\"action\":\"get_center_calibration\","
+        "\"sessionId\":\"c-1-1\"}}}";
+    static const char center_bad_get[] =
+        "{\"version\":\"2.0\",\"data\":{\"requestId\":\"center-get-bad\","
+        "\"command\":\"internal_config\",\"params\":{\"action\":\"get_center_calibration\"}}}";
+    static const char center_bad_jog[] =
+        "{\"version\":\"2.0\",\"data\":{\"requestId\":\"center-bad\","
+        "\"command\":\"internal_config\",\"params\":{\"action\":\"jog_center_calibration\","
+        "\"sessionId\":\"c-1-1\",\"deltaMdeg\":500}}}";
     char oversized[1100];
     static const char oversized_prefix[] = "{\"requestId\":\"req-big\",\"padding\":\"";
 
@@ -103,10 +118,23 @@ int main(void)
                        CLOUD_PROTOCOL_ACTION_BENCH_ARM, "req-arm-drive")) return 1;
     if (!expect_status("bad_arm_drive", bad_arm_drive, 0U, CLOUD_PROTOCOL_INVALID,
                        CLOUD_PROTOCOL_ACTION_NONE, "req-arm-bad")) return 1;
+    if (!expect_status("center_jog", center_jog, 0U, CLOUD_PROTOCOL_OK,
+                       CLOUD_PROTOCOL_ACTION_CENTER_CAL_JOG, "center-jog")) return 1;
+    if (!expect_status("center_get", center_get, 0U, CLOUD_PROTOCOL_OK,
+                       CLOUD_PROTOCOL_ACTION_CENTER_CAL_GET, "center-get")) return 1;
+    if (!expect_status("center_bad_get", center_bad_get, 0U, CLOUD_PROTOCOL_INVALID,
+                       CLOUD_PROTOCOL_ACTION_NONE, "center-get-bad")) return 1;
+    if (!expect_status("center_bad_jog", center_bad_jog, 0U, CLOUD_PROTOCOL_INVALID,
+                       CLOUD_PROTOCOL_ACTION_NONE, "center-bad")) return 1;
     {
         CloudProtocolRequest_t request;
         if (CloudProtocol_Parse(arm_drive, (uint16_t)strlen(arm_drive), 0U, &request) != CLOUD_PROTOCOL_OK ||
-            request.bench_limit_mdeg != 40000U || !request.bench_drive) return 1;
+            request.bench_limit_mdeg != 30000U || !request.bench_drive) return 1;
+    }
+    {
+        CloudProtocolRequest_t request;
+        if (CloudProtocol_Parse(center_jog, (uint16_t)strlen(center_jog), 0U, &request) != CLOUD_PROTOCOL_OK ||
+            request.center_delta_mdeg != -200 || strcmp(request.center_session_id, "c-1-1") != 0) return 1;
     }
     {
         CloudProtocolRequest_t request;

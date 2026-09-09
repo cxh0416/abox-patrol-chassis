@@ -171,6 +171,12 @@ uint8_t VcuConfig_CalibrationCompatible(void)
         g_vcu_config.steering_tolerance_mdeg == VEHICLE_STEERING_TOLERANCE_MDEG;
 }
 
+uint8_t VcuConfig_SingleTurnProfileReady(void)
+{
+    return (uint8_t)(g_vcu_config.calibrated && VcuConfig_CalibrationCompatible() &&
+                     g_vcu_config.absolute_center_count == VEHICLE_ABSOLUTE_CENTER_COUNT);
+}
+
 uint8_t VcuConfig_SetCalibration(int32_t steering_center_count, uint32_t absolute_center_count,
                                  uint32_t steering_counts_per_degree_milli,
                                  uint32_t absolute_counts_per_degree_milli,

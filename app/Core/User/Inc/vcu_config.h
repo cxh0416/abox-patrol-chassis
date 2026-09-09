@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 uint8_t VcuConfig_CalibrationCompatible(void);
+uint8_t VcuConfig_SingleTurnProfileReady(void);
 
 #include "ota_info.h"
 

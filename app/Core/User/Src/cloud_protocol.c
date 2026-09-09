@@ -110,6 +110,8 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
     cJSON* steering_direction;
     cJSON* absolute_direction;
     cJSON* steering_tolerance;
+    cJSON* center_session;
+    cJSON* center_delta;
     CloudProtocolStatus_t status = CLOUD_PROTOCOL_INVALID;
 
     if (request == 0) return CLOUD_PROTOCOL_INVALID;
@@ -197,15 +199,48 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
     }
     else if (strcmp(action->valuestring, "get_bench_steering") == 0)
         request->action = CLOUD_PROTOCOL_ACTION_BENCH_GET;
+    else if (strcmp(action->valuestring, "start_center_calibration") == 0)
+        request->action = CLOUD_PROTOCOL_ACTION_CENTER_CAL_START;
+    else if (strcmp(action->valuestring, "get_center_calibration") == 0)
+    {
+        center_session = cJSON_GetObjectItemCaseSensitive(params, "sessionId");
+        if (!cJSON_IsString(center_session) || center_session->valuestring[0] == '\0' ||
+            strlen(center_session->valuestring) >= sizeof(request->center_session_id)) goto done;
+        strcpy(request->center_session_id, center_session->valuestring);
+        request->action = CLOUD_PROTOCOL_ACTION_CENTER_CAL_GET;
+    }
+    else if (strcmp(action->valuestring, "jog_center_calibration") == 0)
+    {
+        center_session = cJSON_GetObjectItemCaseSensitive(params, "sessionId");
+        center_delta = cJSON_GetObjectItemCaseSensitive(params, "deltaMdeg");
+        if (!cJSON_IsString(center_session) || center_session->valuestring[0] == '\0' ||
+            strlen(center_session->valuestring) >= sizeof(request->center_session_id) ||
+            !json_integer_between(center_delta, -1000, 1000) ||
+            (center_delta->valueint != -1000 && center_delta->valueint != -200 &&
+             center_delta->valueint != 200 && center_delta->valueint != 1000)) goto done;
+        strcpy(request->center_session_id, center_session->valuestring);
+        request->center_delta_mdeg = (int16_t)center_delta->valueint;
+        request->action = CLOUD_PROTOCOL_ACTION_CENTER_CAL_JOG;
+    }
+    else if (strcmp(action->valuestring, "commit_center_calibration") == 0 ||
+             strcmp(action->valuestring, "cancel_center_calibration") == 0)
+    {
+        center_session = cJSON_GetObjectItemCaseSensitive(params, "sessionId");
+        if (!cJSON_IsString(center_session) || center_session->valuestring[0] == '\0' ||
+            strlen(center_session->valuestring) >= sizeof(request->center_session_id)) goto done;
+        strcpy(request->center_session_id, center_session->valuestring);
+        request->action = strcmp(action->valuestring, "commit_center_calibration") == 0 ?
+            CLOUD_PROTOCOL_ACTION_CENTER_CAL_COMMIT : CLOUD_PROTOCOL_ACTION_CENTER_CAL_CANCEL;
+    }
     else if (strcmp(action->valuestring, "stop_bench_steering") == 0)
         request->action = CLOUD_PROTOCOL_ACTION_BENCH_STOP;
     else if (strcmp(action->valuestring, "arm_bench_steering") == 0 ||
              strcmp(action->valuestring, "arm_bench_drive") == 0)
     {
         cJSON* limit = cJSON_GetObjectItemCaseSensitive(params, "limitMdeg");
-        if (!json_integer_between(limit, 1000, 40000) ||
+        if (!json_integer_between(limit, 1000, VEHICLE_MAX_STEERING_MDEG) ||
             (limit->valueint != 1000 && limit->valueint != 3000 && limit->valueint != 5000 &&
-             limit->valueint != 20000 && limit->valueint != 30000 && limit->valueint != 40000)) goto done;
+             limit->valueint != 20000 && limit->valueint != 30000)) goto done;
         request->bench_limit_mdeg = (uint16_t)limit->valueint;
         request->bench_drive = strcmp(action->valuestring, "arm_bench_drive") == 0;
         request->action = CLOUD_PROTOCOL_ACTION_BENCH_ARM;

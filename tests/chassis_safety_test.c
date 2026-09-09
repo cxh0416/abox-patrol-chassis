@@ -154,6 +154,7 @@ int main(void)
     PatrolCanFrame frame;
     ChassisPower power;
     uint8_t request[8];
+    uint8_t write_response[8];
     uint8_t response[9] = {1, 3, 4, 0x12, 0x34, 0x56, 0x78, 0, 0};
     uint16_t crc;
     uint32_t count;
@@ -163,8 +164,8 @@ int main(void)
     PatrolDiagnosticsSnapshot diagnostic_snapshot;
     char fixed[24];
     ChassisCloudCommand command;
-    const char json[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"r1\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"acquire\",\"sessionId\":\"s1\",\"seq\":1,\"leaseMs\":1000,\"driveRpm\":200,\"steeringDeg\":40}}}";
-    const char over_limit[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"r3\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"renew\",\"sessionId\":\"s1\",\"seq\":2,\"leaseMs\":1000,\"driveRpm\":200,\"steeringDeg\":40.001}}}";
+    const char json[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"r1\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"acquire\",\"sessionId\":\"s1\",\"seq\":1,\"leaseMs\":1000,\"driveRpm\":200,\"steeringDeg\":30}}}";
+    const char over_limit[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"r3\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"renew\",\"sessionId\":\"s1\",\"seq\":2,\"leaseMs\":1000,\"driveRpm\":200,\"steeringDeg\":30.001}}}";
     const char wrong_type[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"r2\",\"deviceType\":\"wing_actuator\",\"command\":\"chassis_control\",\"params\":{}}}";
 
     CHECK(SteeringAngle_FromControllerCount(-58015, -85123, 2710800U, 1) == 10000);
@@ -172,6 +173,15 @@ int main(void)
     CHECK(SteeringAngle_FromAbsoluteCount(3734U, 3182U, 55250U, 1) == 9990);
     CHECK(SteeringAngle_FromAbsoluteCount(2629U, 3182U, 55250U, 1) == -10009);
     CHECK(SteeringAngle_FromAbsoluteCount(2629U, 3182U, 55250U, -1) == 10009);
+    {
+        int32_t angle = 0;
+        CHECK(SteeringAngle_AbsoluteWithinLimit(2048U, 2048U, 55250U, 1, 30000, &angle) && angle == 0);
+        CHECK(SteeringAngle_AbsoluteWithinLimit(391U, 2048U, 55250U, 1, 30000, &angle));
+        CHECK(!SteeringAngle_AbsoluteWithinLimit(390U, 2048U, 55250U, 1, 30000, &angle));
+        CHECK(SteeringAngle_AbsoluteWithinLimit(3705U, 2048U, 55250U, 1, 30000, &angle));
+        CHECK(!SteeringAngle_AbsoluteWithinLimit(3706U, 2048U, 55250U, 1, 30000, &angle));
+        CHECK(!SteeringAngle_AbsoluteWithinLimit(4096U, 2048U, 55250U, 1, 30000, &angle));
+    }
 
     frame = PatrolCanopen_SdoWrite16(2, 0x6040, 0, 0x000F);
     CHECK(frame.id == 0x602 && frame.data[0] == 0x2B && frame.data[1] == 0x40 && frame.data[2] == 0x60);
@@ -184,6 +194,12 @@ int main(void)
     response[7] = (uint8_t)crc; response[8] = (uint8_t)(crc >> 8);
     CHECK(AbsoluteEncoder_ParseResponse(response, sizeof(response), &count));
     CHECK(count == 0x56781234U);
+    AbsoluteEncoder_BuildWriteSingleRequest(3U, 2048U, write_response);
+    CHECK(write_response[0] == 1U && write_response[1] == 6U && write_response[3] == 3U &&
+          write_response[4] == 8U && write_response[5] == 0U);
+    CHECK(AbsoluteEncoder_ParseWriteSingleResponse(write_response, sizeof(write_response), 3U, 2048U));
+    write_response[5] = 1U;
+    CHECK(!AbsoluteEncoder_ParseWriteSingleResponse(write_response, sizeof(write_response), 3U, 2048U));
     crc = AbsoluteEncoder_Crc16(config_response, 9);
     config_response[9] = (uint8_t)crc; config_response[10] = (uint8_t)(crc >> 8);
     CHECK(AbsoluteEncoder_ParseHoldingResponse(config_response, sizeof(config_response), config_values, 3U));
@@ -233,7 +249,8 @@ int main(void)
     CHECK(frame.data[0] == 0x40U);
 
     ChassisControl_Init(&control, 1);
-    feedback.calibrated = 1; feedback.steering_online = 1; feedback.drive_online = 1;
+    feedback.calibrated = 1; feedback.encoder_range_valid = 1; feedback.encoder_profile_ready = 1;
+    feedback.steering_online = 1; feedback.drive_online = 1;
     feedback.power_ready = 1; feedback.feedback_ms = 100;
     ChassisControl_SetFeedback(&control, &feedback);
     CHECK(ChassisControl_Apply(&control, "acquire", "session", 1, 1000, 150, 3000, 100));
@@ -264,6 +281,19 @@ int main(void)
     CHECK(control.fault_latched && control.stop_reason == CHASSIS_STOP_DIRECTION_TIMEOUT);
     CHECK(!ChassisControl_Apply(&control, "acquire", "again", 1, 1000, 50, 0, 2010));
 
+    ChassisControl_Init(&control, 1);
+    memset(&feedback, 0, sizeof(feedback));
+    feedback.calibrated = 1; feedback.encoder_range_valid = 1; feedback.encoder_profile_ready = 1;
+    feedback.steering_online = 1; feedback.drive_online = 1; feedback.power_ready = 1;
+    feedback.feedback_ms = 3000;
+    ChassisControl_SetFeedback(&control, &feedback);
+    CHECK(ChassisControl_Apply(&control, "acquire", "range", 1, 1000, 20, 1000, 3000));
+    feedback.encoder_range_valid = 0; feedback.feedback_ms = 3010;
+    ChassisControl_SetFeedback(&control, &feedback);
+    ChassisControl_Tick(&control, 3010);
+    CHECK(control.fault_latched && control.stop_reason == CHASSIS_STOP_ENCODER_RANGE);
+    CHECK(control.target_rpm == 0 && control.target_steering_mdeg == 0 && !control.enable_request);
+
     ChassisControl_Init(&control, 0);
     ChassisControl_SetFeedback(&control, &feedback);
     CHECK(!ChassisControl_Apply(&control, "acquire", "blocked", 1, 1000, 50, 0, 0));
@@ -288,7 +318,7 @@ int main(void)
     CHECK(VehiclePowerOutput_Set(0U) && !VehiclePowerOutput_IsOn() && g_power_level == 0U);
 
     CHECK(ChassisCloud_Parse(json, (uint16_t)strlen(json), &command) == CHASSIS_CLOUD_OK);
-    CHECK(command.drive_rpm == 200 && command.steering_mdeg == 40000 && strcmp(command.session_id, "s1") == 0);
+    CHECK(command.drive_rpm == 200 && command.steering_mdeg == 30000 && strcmp(command.session_id, "s1") == 0);
     CHECK(ChassisCloud_Parse(over_limit, (uint16_t)strlen(over_limit), &command) == CHASSIS_CLOUD_INVALID);
     CHECK(ChassisCloud_Parse(wrong_type, (uint16_t)strlen(wrong_type), &command) ==
           CHASSIS_CLOUD_DEVICE_TYPE_MISMATCH);

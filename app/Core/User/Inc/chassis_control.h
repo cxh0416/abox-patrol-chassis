@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 #define CHASSIS_MAX_RPM 200
-#define CHASSIS_MAX_STEERING_MDEG 40000
+#define CHASSIS_MAX_STEERING_MDEG 30000
 #define CHASSIS_MAX_LEASE_MS 1000U
 #define CHASSIS_FEEDBACK_TIMEOUT_MS 250U
 
@@ -22,7 +22,9 @@ typedef enum {
     CHASSIS_STOP_LEASE_EXPIRED,
     CHASSIS_STOP_DIRECTION_TIMEOUT,
     CHASSIS_STOP_EXPLICIT,
-    CHASSIS_STOP_EXECUTION_FAULT
+    CHASSIS_STOP_EXECUTION_FAULT,
+    CHASSIS_STOP_ENCODER_RANGE,
+    CHASSIS_STOP_ENCODER_PROFILE
 } ChassisStopReason;
 
 typedef struct {
@@ -33,6 +35,8 @@ typedef struct {
     uint8_t drive_fault;
     uint8_t ota_busy;
     uint8_t power_ready;
+    uint8_t encoder_range_valid;
+    uint8_t encoder_profile_ready;
     int16_t left_actual_rpm;
     int16_t right_actual_rpm;
     int32_t steering_actual_mdeg;

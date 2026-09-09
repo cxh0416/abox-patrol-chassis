@@ -1,41 +1,37 @@
 # 巡防车底盘控制器
 
-`patrol_vehicle_chassis` 是巡防车底盘 A-Box 固件，当前版本 `0.2.14`。本仓库只复用已提交的 STM32F105、FreeRTOS、EC800、MQTT 和 Boot V2 基础设施，不包含清扫车业务。
+产品标识固定为 `patrol_vehicle_chassis`。当前正式固件为 **0.2.13**，源码为 **0.2.15 候选**；候选尚待现场验收，不能因主机测试或构建成功标记为正式版。
 
-当前阶段为架空逐级机械范围测试：同车型共用比例和方向，每车保存中位；独立编码器提供轮胎角度基准，上电静止建立驱动器 RAM 坐标。测试必须通过内部 RAM 许可和公共控制租约，默认不使能；独立行走许可支持 ±200 rpm 目标，转向测试许可最大 ±40°。这些是目标范围，不代表实测运动或机械范围已验收。转向、行走、停止与保护记录见内部实现文档；整车接触器反馈和本地安全输入尚未验收。
+0.2.13 正式包具备受 RAM 许可约束的转向和行走能力，清单行走限速 50 rpm。0.2.15 候选采用 4096 count 单圈编码器、固定中位 2048、±30° 转向范围和 ±200 rpm 行走目标限制；仍需逐车标定、安全门禁、RAM 许可和公共控制租约，默认不使能。真实角度、电源、异常掉电恢复及道路能力以对应现场证据为准。
 
-## 关键边界
+## 固定边界
 
-- Boot：`0x08000000..0x08007FFF`
-- App：`0x08008000..0x0803E7FF`
-- Boot State A/B：`0x0803E800`、`0x0803F000`
-- 产品配置页：`0x0803F800..0x0803FFFF`
-- 产品标识固定为 `patrol_vehicle_chassis`
-- 平台子模块固定到 `e60057c9639238c47fdc168cf2eed81594a1d034`
-- `dist/` 只保存最新正式版，正式打包会整体替换目录
+- Boot：`0x08000000..0x08007FFF`；App：`0x08008000..0x0803E7FF`。
+- Boot State A/B：`0x0803E800`、`0x0803F000`；配置页：`0x0803F800..0x0803FFFF`。
+- 平台子模块固定到 `e60057c9639238c47fdc168cf2eed81594a1d034`；只复用平台基础设施。
+- 换向先发送双零速，连续三次左右新反馈绝对值 ≤20 rpm，2 秒超时撤使能并锁存。
+- 未标定、反馈过期、双角度偏差超 2°、节点离线、Bus-Off、驱动故障、OTA 忙及编码器配置/范围异常时禁止运动。
+- 未确认硬件输入不绑定，PA0 命令状态不能代表接触器或整车供电反馈。
 
-## 构建与测试
+## 构建与维护
 
 ```powershell
 .\tools\run_tests.ps1
-cmake --preset Debug -S .\app
-cmake --build .\app\build\Debug
+.\tools\build_bench_steering.ps1
+.\tools\build_bench_steering.ps1 -Drive
+python tools/clean_workspace.py --build
 ```
 
-正式产物由 `.\tools\build_release.ps1` 生成 App、Full 和清单。发布脚本不会发起设备 OTA。
+纯转向和行走候选分别输出到 `out/candidates/bench-steering/`、`out/candidates/bench-drive/`；每类只保留最近成功构建。在线调试包使用 `out/debug/online/`，构建与主机测试日志放 `out/logs/`。
 
-台架候选由 `.\tools\build_bench_steering.ps1` 生成到 `out/`。完成实测后，使用 `build_release.ps1 -BenchSteering -VerifiedCandidate <已验证App.bin>` 整体生成正式产物；脚本要求正式构建与候选 SHA256 完全一致才替换 `dist/`。通用运动编译开关始终关闭。
+`dist/` 仅保留最新正式版的 Boot、App、Full、发布清单四个文件。正式打包须满足干净工作树及已验证候选一致性门禁，先在暂存目录完成文件集合、版本、向量、长度、CRC32、SHA256、Full 内容和分区校验，再整体替换；失败恢复原包。发布脚本不发起 OTA。
 
-## 文档
+清理命令默认只预览；加 `--apply` 才执行，加 `--build` 才清除 `app/build/`。脚本保护 `dist/`、当前候选、调试包、平台冻结 Boot 和持久证据，并拒绝越界目录及目录联接。旧 `out/` 的现场记录已保存到 [压缩包](docs/operations/evidence/raw/2026-09-09-out.zip)，原路径、成员名和 SHA256 见 [索引](docs/operations/evidence/raw/2026-09-09-out.index.json)。
 
-- `docs/operations/架空行走与平台远控实现.md`：架空行走执行、换向实测与平台入口；行走正式包使用 `build_release.ps1 -BenchDrive -VerifiedCandidate <已验证App.bin>`。
+## 文档入口
 
-- `docs/archive/2026-08-31-input/`：原始输入，原样归档并记录哈希
-- `docs/protocols/CANopen执行约束.md`：厂商 CANopen 的产品化执行约束
-- `docs/protocols/A-BOX车辆底盘业务协议-V3.0.md`：公共平台 V3 底盘业务 Profile，固定 `deviceType=vehicle_chassis`
-- `docs/protocols/巡防车底盘A-BOX内部运维协议-1.0.md`：设备信息、日志、配置和 OTA 的内部 V2 协议，响应固定携带 `product`
-- `docs/hardware/硬件与安全边界.md`：端口、分区和未确认硬件边界
-- `docs/requirements/首阶段需求与验收.md`：分阶段范围与验收门禁
-- `docs/operations/2026-09-02-CAN只读联调.md`：现场 SDO 短帧问题、修复与验收证据
-- `docs/operations/车型参数与台架转向实现.md`：公共标定、上电坐标同步、首轮转向与保护测试
-- `docs/references/RTBOX参考边界.md`：仅记录可借鉴状态机，不复制引脚和协议
+- [需求与验收](docs/requirements/首阶段需求与验收.md)：当前候选能力、待现场验证项目及早期阶段边界。
+- [公共业务协议](docs/protocols/A-BOX车辆底盘业务协议-V3.0.md)：对外身份、Topic、命令和状态语义。
+- [内部运维协议](docs/operations/巡防车底盘A-BOX内部运维协议-1.0.md)与 [CANopen 执行约束](docs/operations/CANopen执行约束.md)：内部接口和产品实现约束。
+- [逐车标定](docs/operations/巡防车底盘逐车标定与参数记录.md)：当前候选流程和记录模板。
+- [硬件与安全边界](docs/hardware/硬件与安全边界.md)：本产品端口、分区和待确认硬件边界。

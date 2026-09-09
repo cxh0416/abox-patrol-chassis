@@ -1,4 +1,5 @@
 #include "absolute_encoder.h"
+#include <string.h>
 
 uint16_t AbsoluteEncoder_Crc16(const uint8_t* data, uint16_t length)
 {
@@ -60,4 +61,28 @@ uint8_t AbsoluteEncoder_ParseResponse(const uint8_t* response, uint16_t length, 
     if (count == 0 || !AbsoluteEncoder_ParseHoldingResponse(response, length, registers, 2U)) return 0U;
     *count = (uint32_t)registers[0] | (uint32_t)registers[1] << 16;
     return 1U;
+}
+
+void AbsoluteEncoder_BuildWriteSingleRequest(uint16_t register_offset, uint16_t value,
+                                             uint8_t request[ABS_ENCODER_REQUEST_SIZE])
+{
+    uint16_t crc;
+    request[0] = ABS_ENCODER_ADDRESS;
+    request[1] = 0x06U;
+    request[2] = (uint8_t)(register_offset >> 8);
+    request[3] = (uint8_t)register_offset;
+    request[4] = (uint8_t)(value >> 8);
+    request[5] = (uint8_t)value;
+    crc = AbsoluteEncoder_Crc16(request, 6U);
+    request[6] = (uint8_t)crc;
+    request[7] = (uint8_t)(crc >> 8);
+}
+
+uint8_t AbsoluteEncoder_ParseWriteSingleResponse(const uint8_t* response, uint16_t length,
+                                                 uint16_t register_offset, uint16_t value)
+{
+    uint8_t expected[ABS_ENCODER_REQUEST_SIZE];
+    if (response == 0 || length != ABS_ENCODER_WRITE_RESPONSE_SIZE) return 0U;
+    AbsoluteEncoder_BuildWriteSingleRequest(register_offset, value, expected);
+    return memcmp(response, expected, ABS_ENCODER_WRITE_RESPONSE_SIZE) == 0 ? 1U : 0U;
 }

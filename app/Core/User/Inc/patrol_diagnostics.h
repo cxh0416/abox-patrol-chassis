@@ -86,6 +86,7 @@ typedef struct {
     int32_t left_actual_rpm;
     int32_t right_actual_rpm;
     uint32_t encoder_count;
+    uint32_t encoder_sample_ms;
     uint32_t coherent_feedback_ms;
     uint32_t can_rx_count;
     uint32_t can_ignored_count;

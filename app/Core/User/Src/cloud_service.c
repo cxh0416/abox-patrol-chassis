@@ -504,7 +504,8 @@ static uint8_t build_status_report(char* output, uint16_t size, const char* repo
         "\"rightActualRpm\":%d,\"steeringActualDeg\":%s,\"absoluteActualDeg\":%s,"
         "\"steeringOnline\":%s,\"driveOnline\":%s,\"encoderOnline\":%s,"
         "\"canBusOff\":%s,\"driveFault\":%s,\"feedbackFresh\":%s,"
-        "\"calibrated\":%s,\"powerReady\":%s,\"powerOutputOn\":%s,\"otaBusy\":%s,\"safetyReady\":%s,"
+        "\"calibrated\":%s,\"steeringProfileReady\":%s,\"steeringRangeValid\":%s,"
+        "\"powerReady\":%s,\"powerOutputOn\":%s,\"otaBusy\":%s,\"safetyReady\":%s,"
         "\"stopReason\":%u,\"faultLatched\":%s,"
         "\"transportDiagnostics\":{\"mqttRxLines\":%lu,\"mqttRxDecoded\":%lu,"
         "\"mqttRxRejected\":%lu,\"mqttRxDispatched\":%lu,\"mqttRxOverwrites\":%lu,"
@@ -518,7 +519,10 @@ static uint8_t build_status_report(char* output, uint16_t size, const char* repo
         diagnostics.encoder_online ? "true" : "false",
         feedback->can_bus_off ? "true" : "false",
         feedback->drive_fault ? "true" : "false", feedback_fresh ? "true" : "false",
-        feedback->calibrated ? "true" : "false", feedback->power_ready ? "true" : "false",
+        feedback->calibrated ? "true" : "false",
+        feedback->encoder_profile_ready ? "true" : "false",
+        feedback->encoder_range_valid ? "true" : "false",
+        feedback->power_ready ? "true" : "false",
         VehiclePowerOutput_IsOn() ? "true" : "false",
         feedback->ota_busy ? "true" : "false",
         ChassisControl_SafetyReady(control, now) ? "true" : "false",
@@ -746,6 +750,36 @@ static __attribute__((noinline)) void handle_config_request(const CloudProtocolR
             build_calibration_result(result, sizeof(result));
             (void)schedule_response(g_topic_config_resp, request_id, 200U,
                                     "CALIBRATION_SAVED_REMOTE_DISABLED", result, 0U);
+        }
+    }
+    else if (action == CLOUD_PROTOCOL_ACTION_CENTER_CAL_START ||
+             action == CLOUD_PROTOCOL_ACTION_CENTER_CAL_GET ||
+             action == CLOUD_PROTOCOL_ACTION_CENTER_CAL_JOG ||
+             action == CLOUD_PROTOCOL_ACTION_CENTER_CAL_COMMIT ||
+             action == CLOUD_PROTOCOL_ACTION_CENTER_CAL_CANCEL)
+    {
+        uint8_t accepted = 1U;
+        uint16_t code = 200U;
+        const char* message = "OK";
+        if (action == CLOUD_PROTOCOL_ACTION_CENTER_CAL_START)
+            accepted = VcuRtos_CenterCalibrationStart();
+        else if (action == CLOUD_PROTOCOL_ACTION_CENTER_CAL_GET)
+            accepted = VcuRtos_CenterCalibrationKeepAlive(request->center_session_id);
+        else if (action == CLOUD_PROTOCOL_ACTION_CENTER_CAL_JOG)
+            accepted = VcuRtos_CenterCalibrationJog(request->center_session_id,
+                                                     request->center_delta_mdeg);
+        else if (action == CLOUD_PROTOCOL_ACTION_CENTER_CAL_COMMIT) {
+            accepted = VcuRtos_CenterCalibrationCommit(request->center_session_id);
+            code = 202U;
+            message = "CENTER_CALIBRATION_COMMIT_STARTED";
+        } else if (action == CLOUD_PROTOCOL_ACTION_CENTER_CAL_CANCEL)
+            accepted = VcuRtos_CenterCalibrationCancel(request->center_session_id);
+        if (!accepted)
+            schedule_simple_error(g_topic_config_resp, request_id, 409U,
+                                  "CENTER_CALIBRATION_NOT_READY");
+        else {
+            VcuRtos_FormatCenterCalibration(result, sizeof(result));
+            (void)schedule_response(g_topic_config_resp, request_id, code, message, result, 0U);
         }
     }
     else if (action == CLOUD_PROTOCOL_ACTION_BENCH_ARM || action == CLOUD_PROTOCOL_ACTION_BENCH_STOP ||
