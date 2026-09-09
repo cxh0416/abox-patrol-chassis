@@ -125,7 +125,14 @@ typedef struct {
     int32_t target_mdeg;
     int32_t accumulated_mdeg;
     int32_t captured_driver_count;
+    int32_t start_driver_count;
+    int32_t encoder_delta_count;
+    int32_t driver_relative_mdeg;
+    int32_t encoder_relative_mdeg;
+    uint32_t last_encoder_count;
+    uint32_t last_encoder_sample_ms;
     uint8_t stable_samples;
+    uint8_t relative_valid;
     volatile uint8_t encoder_write_state; /* 0 idle, 1 requested, 2 echoed, 3 not sent, 4 executing, 5 uncertain. */
 } CenterCalibration;
 
@@ -356,6 +363,35 @@ static uint8_t center_feedback_ready(const PatrolDiagnosticsSnapshot* s, uint8_t
     return 1U;
 }
 
+static void center_update_relative(const PatrolDiagnosticsSnapshot* s)
+{
+    if (s == NULL || g_center_cal.phase == CENTER_CAL_IDLE ||
+        g_center_cal.phase == CENTER_CAL_COMPLETE || g_center_cal.phase == CENTER_CAL_FAILED) return;
+    if (s->encoder_count >= VEHICLE_ABSOLUTE_SINGLE_TURN_COUNTS) {
+        g_center_cal.relative_valid = 0U;
+        return;
+    }
+    if (s->encoder_sample_ms != 0U && s->encoder_sample_ms != g_center_cal.last_encoder_sample_ms) {
+        /* A larger one-sample jump cannot be produced by the bounded 100 rpm
+         * commissioning jog and is treated as an encoder discontinuity. */
+        if (!SteeringAngle_AccumulateSingleTurn(g_center_cal.last_encoder_count,
+                s->encoder_count, VEHICLE_ABSOLUTE_SINGLE_TURN_COUNTS, 256U,
+                &g_center_cal.encoder_delta_count))
+            g_center_cal.relative_valid = 0U;
+        g_center_cal.last_encoder_count = s->encoder_count;
+        g_center_cal.last_encoder_sample_ms = s->encoder_sample_ms;
+    }
+    g_center_cal.driver_relative_mdeg = SteeringAngle_FromControllerCount(
+        s->steering_position_count, g_center_cal.start_driver_count,
+        VEHICLE_STEERING_COUNTS_MILLI, VEHICLE_STEERING_DIRECTION);
+    g_center_cal.encoder_relative_mdeg = SteeringAngle_FromControllerCount(
+        g_center_cal.encoder_delta_count, 0, VEHICLE_ABSOLUTE_COUNTS_MILLI,
+        VEHICLE_ABSOLUTE_DIRECTION);
+    if (llabs((int64_t)g_center_cal.driver_relative_mdeg -
+              g_center_cal.encoder_relative_mdeg) > VEHICLE_STEERING_TOLERANCE_MDEG)
+        g_center_cal.relative_valid = 0U;
+}
+
 static void center_calibration_fail(uint32_t fault)
 {
     taskENTER_CRITICAL();
@@ -372,22 +408,24 @@ static void center_calibration_fail(uint32_t fault)
 uint8_t VcuRtos_CenterCalibrationStart(void)
 {
     PatrolDiagnosticsSnapshot s;
-    const ChassisControl* c = RemoteService_State();
     uint32_t now = HAL_GetTick();
     VcuRtos_GetDiagnostics(&s);
     taskENTER_CRITICAL();
     if (g_center_cal.phase != CENTER_CAL_IDLE || g_bench.phase != BENCH_IDLE ||
-        g_drive.phase != BENCH_IDLE || !center_feedback_ready(&s, 1U) ||
-        labs(c->feedback.encoder_actual_mdeg) > VEHICLE_CENTER_JOG_LIMIT_MDEG ||
-        labs(c->feedback.steering_actual_mdeg) > VEHICLE_CENTER_JOG_LIMIT_MDEG) {
+        g_drive.phase != BENCH_IDLE || !center_feedback_ready(&s, 0U) ||
+        s.encoder_count >= VEHICLE_ABSOLUTE_SINGLE_TURN_COUNTS) {
         taskEXIT_CRITICAL();
         return 0U;
     }
     memset(&g_center_cal, 0, sizeof(g_center_cal));
     g_center_cal.serial = ++g_center_cal_serial;
     g_center_cal.phase = CENTER_CAL_START_STABLE;
-    g_center_cal.start_mdeg = c->feedback.encoder_actual_mdeg;
-    g_center_cal.target_mdeg = g_center_cal.start_mdeg;
+    g_center_cal.start_driver_count = s.steering_position_count;
+    g_center_cal.last_encoder_count = s.encoder_count;
+    g_center_cal.last_encoder_sample_ms = s.encoder_sample_ms;
+    g_center_cal.relative_valid = 1U;
+    g_center_cal.start_mdeg = 0;
+    g_center_cal.target_mdeg = 0;
     g_center_cal.deadline_ms = now + 7000U;
     (void)snprintf(g_center_cal.session_id, sizeof(g_center_cal.session_id), "c-%lu-%lu",
                    (unsigned long)now, (unsigned long)g_center_cal.serial);
@@ -422,7 +460,8 @@ uint8_t VcuRtos_CenterCalibrationJog(const char* session_id, int16_t delta_mdeg)
     if (g_center_cal.phase != CENTER_CAL_READY || !center_session_matches(session_id) ||
         (delta_mdeg != VEHICLE_CENTER_JOG_FINE_MDEG && delta_mdeg != -VEHICLE_CENTER_JOG_FINE_MDEG &&
          delta_mdeg != VEHICLE_CENTER_JOG_COARSE_MDEG && delta_mdeg != -VEHICLE_CENTER_JOG_COARSE_MDEG) ||
-        labs(next) > VEHICLE_CENTER_JOG_LIMIT_MDEG || !center_feedback_ready(&s, 1U)) {
+        labs(next) > VEHICLE_CENTER_COMMISSIONING_LIMIT_MDEG || !g_center_cal.relative_valid ||
+        !center_feedback_ready(&s, 0U)) {
         taskEXIT_CRITICAL();
         return 0U;
     }
@@ -469,13 +508,18 @@ void VcuRtos_FormatCenterCalibration(char* out, uint16_t size)
     (void)snprintf(out, size,
         "{\"phase\":%u,\"sessionId\":\"%s\",\"fault\":%lu,\"driverRaw\":%ld,"
         "\"encoderRaw\":%lu,\"targetMdeg\":%ld,\"jogOffsetMdeg\":%ld,"
-        "\"profileReady\":%s,\"rangeValid\":%s,\"calibrated\":%s}",
+        "\"profileReady\":%s,\"rangeValid\":%s,\"calibrated\":%s,"
+        "\"driverRelativeMdeg\":%ld,\"encoderRelativeMdeg\":%ld,"
+        "\"relativeValid\":%s,\"commissioningLimitMdeg\":%ld}",
         (unsigned)g_center_cal.phase, g_center_cal.session_id, (unsigned long)g_center_cal.fault,
         (long)s.steering_position_count, (unsigned long)s.encoder_count,
         (long)g_center_cal.target_mdeg, (long)g_center_cal.accumulated_mdeg,
         VcuConfig_SingleTurnProfileReady() ? "true" : "false",
         c->feedback.encoder_range_valid ? "true" : "false",
-        VcuConfig_Get()->calibrated ? "true" : "false");
+        VcuConfig_Get()->calibrated ? "true" : "false",
+        (long)g_center_cal.driver_relative_mdeg, (long)g_center_cal.encoder_relative_mdeg,
+        g_center_cal.relative_valid ? "true" : "false",
+        (long)VEHICLE_CENTER_COMMISSIONING_LIMIT_MDEG);
     taskEXIT_CRITICAL();
 }
 
@@ -487,7 +531,7 @@ static void center_calibration_tick(uint32_t now)
     if ((int32_t)(now - g_center_cal.deadline_ms) >= 0) { center_calibration_fail(1U); return; }
     VcuRtos_GetDiagnostics(&s);
     if (phase == CENTER_CAL_START_STABLE) {
-        if (!center_feedback_ready(&s, 1U)) { center_calibration_fail(2U); return; }
+        if (!center_feedback_ready(&s, 0U) || !g_center_cal.relative_valid) { center_calibration_fail(2U); return; }
         if (s.coherent_feedback_ms == 0U || s.coherent_feedback_ms == g_center_cal.last_sample_ms) return;
         g_center_cal.last_sample_ms = s.coherent_feedback_ms;
         if (++g_center_cal.stable_samples < 3U) return;
@@ -498,7 +542,7 @@ static void center_calibration_tick(uint32_t now)
         return;
     }
     if (phase == CENTER_CAL_JOGGING || phase == CENTER_CAL_STOPPING) {
-        if (!center_feedback_ready(&s, 1U) || g_bench.phase == BENCH_FAULT) {
+        if (!center_feedback_ready(&s, 0U) || !g_center_cal.relative_valid || g_bench.phase == BENCH_FAULT) {
             center_calibration_fail(2U); return;
         }
         if (phase == CENTER_CAL_STOPPING && g_bench.phase == BENCH_IDLE) {
@@ -648,7 +692,7 @@ static void Vcu_CanopenTask(void *argument)
                 SteeringCoordinate_Reset(&g_coordinate);
                 g_coordinate_reset_requested = 0;
             }
-            uint8_t safe = g_coordinate.valid && VehiclePowerOutput_IsOn() && !VcuRtos_CanBusOffActive() &&
+            uint8_t normal_safe = g_coordinate.valid && VehiclePowerOutput_IsOn() && !VcuRtos_CanBusOffActive() &&
                 c->feedback.power_ready && c->feedback.calibrated &&
                 c->feedback.steering_online && c->feedback.drive_online &&
                 !c->feedback.drive_fault && !c->feedback.can_bus_off && !OtaService_IsBusy() &&
@@ -656,12 +700,25 @@ static void Vcu_CanopenTask(void *argument)
                 llabs((int64_t)c->feedback.steering_actual_mdeg - c->feedback.encoder_actual_mdeg) <= 2000;
             uint8_t remote_requested = RemoteService_BenchPermitted() && c->session_active && c->enable_request;
             uint8_t center_requested = g_center_cal.phase == CENTER_CAL_JOGGING;
+            uint8_t center_safe = VehiclePowerOutput_IsOn() && !VcuRtos_CanBusOffActive() &&
+                c->feedback.steering_online && c->feedback.drive_online && !c->feedback.drive_fault &&
+                !c->feedback.can_bus_off && !OtaService_IsBusy() && !c->fault_latched &&
+                now - c->feedback.feedback_ms <= CHASSIS_FEEDBACK_TIMEOUT_MS &&
+                (g_feedback_gate_mask & (uint16_t)~512U) == 0U && g_center_cal.relative_valid &&
+                llabs((int64_t)g_center_cal.driver_relative_mdeg -
+                      g_center_cal.encoder_relative_mdeg) <= VEHICLE_STEERING_TOLERANCE_MDEG;
+            uint8_t safe = center_requested ? center_safe : normal_safe;
             uint8_t requested = remote_requested || center_requested;
             int32_t requested_angle = center_requested ? g_center_cal.target_mdeg : c->target_steering_mdeg;
-            if (PATROL_CHASSIS_BENCH_STEERING_ENABLED && requested && safe && g_bench.phase == BENCH_IDLE)
-                BenchSteering_Start(&g_bench, g_diagnostics.steering_position_count, g_coordinate.runtime_center,
-                    cfg->steering_center_count,
-                    center_requested ? VEHICLE_MAX_STEERING_MDEG : RemoteService_BenchLimit(), now);
+            if (PATROL_CHASSIS_BENCH_STEERING_ENABLED && requested && safe && g_bench.phase == BENCH_IDLE) {
+                if (center_requested)
+                    BenchSteering_StartCommissioning(&g_bench, g_diagnostics.steering_position_count,
+                        g_center_cal.start_driver_count, VEHICLE_CENTER_COMMISSIONING_LIMIT_MDEG, now);
+                else
+                    BenchSteering_Start(&g_bench, g_diagnostics.steering_position_count,
+                        g_coordinate.runtime_center, cfg->steering_center_count,
+                        RemoteService_BenchLimit(), now);
+            }
             safe = safe && !c->fault_latched;
             if (PATROL_CHASSIS_BENCH_DRIVE_ENABLED && remote_requested && safe &&
                 RemoteService_BenchDrivePermitted() && g_bench.phase == BENCH_ACTIVE && g_drive.phase == BENCH_IDLE)
@@ -853,12 +910,14 @@ static void Vcu_CanopenTask(void *argument)
             feedback.feedback_ms = snapshot.coherent_feedback_ms != 0U ?
                 snapshot.coherent_feedback_ms : now - (CHASSIS_FEEDBACK_TIMEOUT_MS + 1U);
             taskENTER_CRITICAL();
+            center_update_relative(&snapshot);
             RemoteService_UpdateFeedback(&feedback);
             if (g_center_cal.phase == CENTER_CAL_JOGGING && g_bench.phase == BENCH_ACTIVE &&
                 snapshot.coherent_feedback_ms != 0U &&
                 snapshot.coherent_feedback_ms != g_center_cal.last_sample_ms &&
-                labs(feedback.steering_actual_mdeg - g_center_cal.target_mdeg) <= 200L &&
-                labs(feedback.encoder_actual_mdeg - g_center_cal.target_mdeg) <= 200L) {
+                g_center_cal.relative_valid &&
+                labs(g_center_cal.driver_relative_mdeg - g_center_cal.target_mdeg) <= 200L &&
+                labs(g_center_cal.encoder_relative_mdeg - g_center_cal.target_mdeg) <= 200L) {
                 g_center_cal.last_sample_ms = snapshot.coherent_feedback_ms;
                 if (++g_center_cal.stable_samples >= 3U) {
                     BenchSteering_Stop(&g_bench, now, 0U);

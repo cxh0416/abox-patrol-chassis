@@ -17,7 +17,7 @@ import artifact_store as store
 import clean_workspace as clean
 
 
-def candidate(path: Path, version: str = "patrol-chassis-0.2.15") -> None:
+def candidate(path: Path, version: str = "patrol-chassis-0.2.16") -> None:
     path.mkdir(parents=True)
     data = struct.pack("<II", 0x20010000, 0x08008009) + (
         "PATROL_VEHICLE_CHASSIS_FW_VERSION=" + version).encode() + b"\0"
@@ -37,10 +37,10 @@ def release(path: Path, debug: bool = False) -> None:
     full = boot + bytes(0x8000 - len(boot)) + app
     (path / store.FULL).write_bytes(full)
     if debug:
-        manifest = {"kind": "online-debug", "app_version": "patrol-chassis-0.2.15",
+        manifest = {"kind": "online-debug", "app_version": "patrol-chassis-0.2.16",
                     "full_length": len(full), "full_sha256": store.digest(path / store.FULL)}
     else:
-        manifest = {"product": "patrol_vehicle_chassis", "version": "patrol-chassis-0.2.15",
+        manifest = {"product": "patrol_vehicle_chassis", "version": "patrol-chassis-0.2.16",
                     "configuration": "Release", "product_dirty": False, "platform_dirty": False,
                     "startup_motion_permit": False, "app_range": "0x08008000..0x0803E7FF",
                     "boot_state_pages": ["0x0803E800", "0x0803F000"], "config_page": "0x0803F800",

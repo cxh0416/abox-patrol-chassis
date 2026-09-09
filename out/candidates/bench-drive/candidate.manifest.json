@@ -1,16 +1,16 @@
 {
   "product": "patrol_vehicle_chassis",
-  "version": "patrol-chassis-0.2.15",
+  "version": "patrol-chassis-0.2.16",
   "candidate": true,
   "steering_only": false,
   "startup_permit": false,
   "drive_actuation": true,
   "drive_limit_rpm": 200,
-  "commit": "3f34d76c4e3fba5e1574a92c7844c533f86b6eab",
-  "dirty": false,
+  "commit": "579d50077e757aca0cbec96fbdb716bb11e7213e",
+  "dirty": true,
   "app_start": "0x08008000",
   "app_end": "0x0803E7FF",
   "config_page": "0x0803F800",
-  "size": 102152,
-  "sha256": "7D30FBFA59367ABCE21E83D985B84D7748378AFBD62E2CD058E2F6A36E17333A"
+  "size": 102760,
+  "sha256": "B3236F8B1BAE52D5AD879E1833A500E05531469B09676044C219438DC5A0FD4B"
 }

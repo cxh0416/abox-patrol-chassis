@@ -140,7 +140,7 @@ OTA 请求使用 `command=ota_upgrade`，`params` 必须包含不可变 HTTPS `u
 ## 转向中位标定接口
 
 - `start_center_calibration` 无参数。设备只在 OTA 空闲、普通远控和其他台架许可关闭、节点及反馈在线、CAN 正常、驱动无故障、行走未使能且左右轮连续满足静止要求时创建会话。已有有效的两路标定且角度一致，才允许后续电机点动。
-- `jog_center_calibration` 必须携带 `sessionId` 和 `deltaMdeg`；`deltaMdeg` 只允许 `-1000`、`-200`、`200`、`1000`。会话相对起始位置的累计调整必须处于 `-5000..5000 mdeg`。
+- `jog_center_calibration` 必须携带 `sessionId` 和 `deltaMdeg`；`deltaMdeg` 只允许 `-1000`、`-200`、`200`、`1000`。会话以两路原始值建立临时相对坐标，连续校验相对变化；累计目标必须处于 `-60000..60000 mdeg`，并始终服从驱动器当前软限位。
 - `commit_center_calibration` 只携带 `sessionId`，不接受调用方提供编码器中位。设备固定执行编码器 2048 中位写入、读回校验及转向驱动器当前原始计数保存；响应已接受不表示整个异步提交已经完成。
 - `get_center_calibration` 必须携带 `sessionId`，返回 `phase`、`sessionId`、`fault`、`driverRaw`、`encoderRaw`、`targetMdeg`、`jogOffsetMdeg`、`rangeValid` 和 `calibrated`。标定可调整阶段以该查询作为短租约心跳；连续约 4 秒未收到有效查询时设备停止标定并关闭车辆电源输出。平台必须轮询至完成或失败，并结合后续掉电重启与反馈验证判断结果。
 - `cancel_center_calibration` 必须携带 `sessionId`。浏览器离开、网络异常、会话过期或人工停止时，平台应提交取消；设备停止执行、撤销许可并关闭车辆电源输出。

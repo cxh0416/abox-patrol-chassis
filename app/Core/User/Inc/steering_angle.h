@@ -24,5 +24,7 @@ int32_t SteeringAngle_FromAbsoluteCount(uint32_t count, uint32_t center,
 uint8_t SteeringAngle_AbsoluteWithinLimit(uint32_t count, uint32_t center,
     uint32_t counts_per_degree_milli, int8_t direction, int32_t limit_mdeg,
     int32_t* angle_mdeg);
+uint8_t SteeringAngle_AccumulateSingleTurn(uint32_t previous, uint32_t current,
+    uint32_t single_turn_counts, uint32_t max_step_counts, int32_t* accumulated);
 
 #endif

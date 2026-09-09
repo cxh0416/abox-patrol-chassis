@@ -80,6 +80,17 @@ int main(void)
     BenchSteering_OnFrame(&b,&r,now+3);
     assert(b.step==3 && b.minimum==-153511 && b.maximum==9137);
 
+    /* Commissioning uses the controller's existing limits and never rewrites
+       them around an uncalibrated provisional origin. */
+    BenchSteering_Init(&b); now=0;
+    assert(BenchSteering_StartCommissioning(&b,-83815,-83815,60000,now));
+    advance(&b,&now); /* NMT */
+    assert(BenchSteering_Take(&b,now,&f)); r=reply(&b,-111593);
+    BenchSteering_OnFrame(&b,&r,now+1);
+    assert(BenchSteering_Take(&b,now+2,&f)); r=reply(&b,-56037);
+    BenchSteering_OnFrame(&b,&r,now+3);
+    assert(b.step==3 && b.minimum==-111593 && b.maximum==-56037 && b.preserve_limits);
+
     BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0);
     advance(&b,&(uint32_t){0}); /* NMT */
     assert(BenchSteering_Take(&b,10,&f));

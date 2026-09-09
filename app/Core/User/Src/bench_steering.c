@@ -37,6 +37,19 @@ uint8_t BenchSteering_Start(BenchSteering* b, int32_t actual, int32_t center,
     b->applied = INT32_MIN;
     return 1;
 }
+uint8_t BenchSteering_StartCommissioning(BenchSteering* b, int32_t actual, int32_t center,
+    uint32_t limit, uint32_t now)
+{
+    if (limit == 0U || limit > INT32_MAX || b->phase != BENCH_IDLE) return 0U;
+    BenchSteering_Init(b);
+    b->preserve_limits = 1U;
+    b->calibration_center = center;
+    b->phase = BENCH_PREPARING; b->started_ms = now; b->center = center;
+    b->hold = actual; b->minimum = INT32_MIN; b->maximum = INT32_MAX;
+    b->limit_mdeg = limit > UINT16_MAX ? UINT16_MAX : (uint16_t)limit;
+    b->applied = INT32_MIN;
+    return 1U;
+}
 void BenchSteering_Stop(BenchSteering* b, uint32_t now, uint8_t cut_power)
 {
     if (cut_power) { fail(b, 1U); return; }
@@ -119,6 +132,14 @@ uint8_t BenchSteering_OnFrame(BenchSteering* b, const PatrolCanFrame* f, uint32_
         if (b->step == 1) b->previous_minimum = value;
         else if (b->step == 2) {
             int32_t envelope_low, envelope_high;
+            if (b->preserve_limits) {
+                if (b->previous_minimum >= value || b->hold < b->previous_minimum || b->hold > value) {
+                    fail(b, 8U); return 1;
+                }
+                b->minimum = b->previous_minimum; b->maximum = value;
+                b->limits_aligned = 1U; b->cached_minimum = b->minimum; b->cached_maximum = b->maximum;
+                b->pending = 0; b->step = 3; return 1;
+            }
             if (b->previous_minimum >= value ||
                 !SteeringAngle_ToControllerCount(-BENCH_STEERING_ENVELOPE_MDEG, b->center,
                     VEHICLE_STEERING_COUNTS_MILLI,

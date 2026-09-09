@@ -79,3 +79,20 @@ uint8_t SteeringAngle_AbsoluteWithinLimit(uint32_t count, uint32_t center,
     *angle_mdeg = angle;
     return (angle >= -limit_mdeg && angle <= limit_mdeg) ? 1U : 0U;
 }
+
+uint8_t SteeringAngle_AccumulateSingleTurn(uint32_t previous, uint32_t current,
+    uint32_t single_turn_counts, uint32_t max_step_counts, int32_t* accumulated)
+{
+    int64_t delta, next;
+    if (accumulated == NULL || single_turn_counts < 2U || previous >= single_turn_counts ||
+        current >= single_turn_counts || max_step_counts == 0U || max_step_counts > INT32_MAX)
+        return 0U;
+    delta = (int64_t)current - (int64_t)previous;
+    if (delta > (int64_t)single_turn_counts / 2LL) delta -= single_turn_counts;
+    else if (delta < -(int64_t)single_turn_counts / 2LL) delta += single_turn_counts;
+    if (llabs(delta) > max_step_counts) return 0U;
+    next = (int64_t)*accumulated + delta;
+    if (next < INT32_MIN || next > INT32_MAX) return 0U;
+    *accumulated = (int32_t)next;
+    return 1U;
+}

@@ -182,6 +182,16 @@ int main(void)
         CHECK(!SteeringAngle_AbsoluteWithinLimit(3706U, 2048U, 55250U, 1, 30000, &angle));
         CHECK(!SteeringAngle_AbsoluteWithinLimit(4096U, 2048U, 55250U, 1, 30000, &angle));
     }
+    {
+        int32_t accumulated = 0;
+        CHECK(SteeringAngle_AccumulateSingleTurn(4090U, 5U, 4096U, 256U, &accumulated));
+        CHECK(accumulated == 11);
+        CHECK(SteeringAngle_AccumulateSingleTurn(5U, 4090U, 4096U, 256U, &accumulated));
+        CHECK(accumulated == 0);
+        CHECK(!SteeringAngle_AccumulateSingleTurn(100U, 400U, 4096U, 256U, &accumulated));
+        CHECK(accumulated == 0);
+        CHECK(!SteeringAngle_AccumulateSingleTurn(4096U, 0U, 4096U, 256U, &accumulated));
+    }
 
     frame = PatrolCanopen_SdoWrite16(2, 0x6040, 0, 0x000F);
     CHECK(frame.id == 0x602 && frame.data[0] == 0x2B && frame.data[1] == 0x40 && frame.data[2] == 0x60);
