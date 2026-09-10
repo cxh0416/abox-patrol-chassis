@@ -1029,6 +1029,8 @@ static void Vcu_CanopenTask(void *argument)
                 llabs((int64_t)c->feedback.steering_actual_mdeg - c->feedback.encoder_actual_mdeg) <= 2000;
             uint8_t remote_requested = RemoteService_BenchPermitted() && c->session_active && c->enable_request;
             uint8_t center_requested = g_center_cal.phase == CENTER_CAL_JOGGING;
+            uint8_t center_executor_active = center_requested ||
+                g_center_cal.phase == CENTER_CAL_STOPPING;
             uint8_t center_safe = VehiclePowerOutput_IsOn() && !VcuRtos_CanBusOffActive() &&
                 c->feedback.steering_online && c->feedback.drive_online && !c->feedback.drive_fault &&
                 !c->feedback.can_bus_off && !OtaService_IsBusy() && !c->fault_latched &&
@@ -1036,7 +1038,11 @@ static void Vcu_CanopenTask(void *argument)
                 (g_feedback_gate_mask & (uint16_t)~512U) == 0U && g_center_cal.relative_valid &&
                 llabs((int64_t)g_center_cal.driver_relative_mdeg -
                       g_center_cal.encoder_relative_mdeg) <= VEHICLE_STEERING_TOLERANCE_MDEG;
-            uint8_t safe = center_requested ? center_safe : normal_safe;
+            /* STOPPING still belongs to the commissioning executor.  Falling
+             * back to normal_safe here rejects an intentionally uncalibrated
+             * vehicle while the executor is sending its bounded stop sequence,
+             * which turns a successful jog into BENCH_FAULT and cuts power. */
+            uint8_t safe = center_executor_active ? center_safe : normal_safe;
             uint8_t requested = remote_requested || center_requested;
             int32_t requested_angle = center_requested ? g_center_cal.target_mdeg : c->target_steering_mdeg;
             if (PATROL_CHASSIS_BENCH_STEERING_ENABLED && requested && safe && g_bench.phase == BENCH_IDLE) {

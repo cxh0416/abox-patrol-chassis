@@ -123,6 +123,14 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertIn("VcuRtos_FormatCenterCalibration", rejected)
         self.assertIn("schedule_response", rejected)
 
+    def test_center_calibration_stop_keeps_commissioning_safety_context(self):
+        rtos = (ROOT / "app/Core/User/Src/vcu_rtos.c").read_text(encoding="utf-8")
+        executor = rtos[rtos.index("uint8_t center_requested ="):
+                        rtos.index("BenchDrive_Tick", rtos.index("uint8_t center_requested ="))]
+        self.assertIn("g_center_cal.phase == CENTER_CAL_STOPPING", executor)
+        self.assertIn("center_executor_active ? center_safe : normal_safe", executor)
+        self.assertIn("uint8_t requested = remote_requested || center_requested", executor)
+
     def test_config_page_is_v4_and_unarmed_by_default(self):
         path = ROOT / "tools/make_device_config.py"
         spec = importlib.util.spec_from_file_location("patrol_config", path)
