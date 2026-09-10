@@ -175,6 +175,14 @@ int main(void)
     CHECK(SteeringAngle_FromAbsoluteCount(3734U, 3182U, 55250U, 1) == 9990);
     CHECK(SteeringAngle_FromAbsoluteCount(2629U, 3182U, 55250U, 1) == -10009);
     CHECK(SteeringAngle_FromAbsoluteCount(2629U, 3182U, 55250U, -1) == 10009);
+    /* Position-source loss invalidates the coordinate.  Unrelated drive/status
+     * gates only block the next motion request and do not fault an idle axis. */
+    CHECK(SteeringCoordinate_EpochLost(1U, 1U, 1U));
+    CHECK(SteeringCoordinate_EpochLost(4U, 1U, 1U));
+    CHECK(SteeringCoordinate_EpochLost(32U, 1U, 1U));
+    CHECK(SteeringCoordinate_EpochLost(0U, 0U, 1U));
+    CHECK(SteeringCoordinate_EpochLost(0U, 1U, 0U));
+    CHECK(!SteeringCoordinate_EpochLost(2U | 8U | 16U | 64U | 128U, 1U, 1U));
     {
         int32_t angle = 0;
         CHECK(SteeringAngle_AbsoluteWithinLimit(2048U, 2048U, 55250U, 1, 30000, &angle) && angle == 0);

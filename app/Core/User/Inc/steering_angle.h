@@ -11,6 +11,8 @@ typedef struct {
 void SteeringCoordinate_Reset(SteeringCoordinate* coordinate);
 void SteeringCoordinate_Observe(SteeringCoordinate* coordinate, uint8_t ready,
     int32_t driver, uint32_t absolute, uint32_t absolute_center, uint32_t sample_ms, uint32_t now);
+uint8_t SteeringCoordinate_EpochLost(uint16_t feedback_gate_mask, uint8_t steering_online,
+    uint8_t calibration_unchanged);
 
 uint8_t SteeringAngle_ToControllerCount(int32_t angle_mdeg, int32_t center,
     uint32_t counts_milli, int8_t direction, int32_t minimum, int32_t maximum, int32_t* target);

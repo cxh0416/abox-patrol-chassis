@@ -30,6 +30,17 @@ void SteeringCoordinate_Observe(SteeringCoordinate* c, uint8_t ready,
     c->valid = 1;
 }
 
+uint8_t SteeringCoordinate_EpochLost(uint16_t feedback_gate_mask, uint8_t steering_online,
+    uint8_t calibration_unchanged)
+{
+    /* Only loss of a position source destroys the live driver/encoder
+     * relationship.  Drive feedback/status and other motion gates still block
+     * motion, but they must not invalidate an idle steering coordinate. */
+    const uint16_t position_source_mask = 1U | 4U | 32U;
+    return ((feedback_gate_mask & position_source_mask) != 0U || !steering_online ||
+            !calibration_unchanged) ? 1U : 0U;
+}
+
 uint8_t SteeringAngle_ToControllerCount(int32_t angle_mdeg, int32_t center,
     uint32_t counts_milli, int8_t direction, int32_t minimum, int32_t maximum, int32_t* target)
 {

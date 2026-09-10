@@ -131,6 +131,19 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertIn("center_executor_active ? center_safe : normal_safe", executor)
         self.assertIn("uint8_t requested = remote_requested || center_requested", executor)
 
+    def test_idle_coordinate_watchdog_ignores_non_position_motion_gates(self):
+        rtos = (ROOT / "app/Core/User/Src/vcu_rtos.c").read_text(encoding="utf-8")
+        angle = (ROOT / "app/Core/User/Src/steering_angle.c").read_text(encoding="utf-8")
+        watchdog = rtos[rtos.index("else if (g_coordinate.valid"):
+                        rtos.index("SteeringCoordinate_Observe", rtos.index("else if (g_coordinate.valid"))]
+        self.assertIn("SteeringCoordinate_EpochLost", watchdog)
+        self.assertNotIn("!snapshot.drive_online", watchdog)
+        helper = angle[angle.index("uint8_t SteeringCoordinate_EpochLost"):
+                       angle.index("uint8_t SteeringAngle_ToControllerCount")]
+        self.assertIn("1U | 4U | 32U", helper)
+        self.assertNotIn("2U |", helper)
+        self.assertNotIn("16U", helper)
+
     def test_config_page_is_v4_and_unarmed_by_default(self):
         path = ROOT / "tools/make_device_config.py"
         spec = importlib.util.spec_from_file_location("patrol_config", path)

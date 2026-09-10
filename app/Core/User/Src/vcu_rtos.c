@@ -1199,10 +1199,10 @@ static void Vcu_CanopenTask(void *argument)
             if (PATROL_CHASSIS_BENCH_STEERING_ENABLED) {
                 uint8_t was_valid = g_coordinate.valid;
                 if (!VehiclePowerOutput_IsOn()) SteeringCoordinate_Reset(&g_coordinate);
-                else if (g_coordinate.valid && (g_feedback_gate_mask != 0 ||
-                    !snapshot.steering_online || !snapshot.drive_online ||
-                    cfg->steering_center_count != g_coordinate_calibration_center ||
-                    cfg->absolute_center_count != g_coordinate_absolute_center)) {
+                else if (g_coordinate.valid && SteeringCoordinate_EpochLost(
+                    g_feedback_gate_mask, snapshot.steering_online,
+                    cfg->steering_center_count == g_coordinate_calibration_center &&
+                    cfg->absolute_center_count == g_coordinate_absolute_center)) {
                     /* A lost position epoch requires power-off, never a live re-zero. */
                     taskENTER_CRITICAL();
                     BenchSteering_Stop(&g_bench, now, 1);
