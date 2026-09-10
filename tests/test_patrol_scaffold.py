@@ -144,6 +144,15 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertNotIn("2U |", helper)
         self.assertNotIn("16U", helper)
 
+    def test_intentional_power_off_consumes_late_coordinate_reset_without_idle_fault(self):
+        rtos = (ROOT / "app/Core/User/Src/vcu_rtos.c").read_text(encoding="utf-8")
+        power_off = rtos.index("if (!VehiclePowerOutput_IsOn()) {")
+        reset_request = rtos.index("if (g_coordinate_reset_requested)", power_off)
+        reset_block = rtos[reset_request:rtos.index("uint8_t normal_safe", reset_request)]
+        self.assertLess(rtos.index("SteeringCoordinate_Reset(&g_coordinate)", power_off), reset_request)
+        self.assertIn("if (g_coordinate.valid) BenchSteering_Stop(&g_bench, now, 1)", reset_block)
+        self.assertNotIn("\n                BenchSteering_Stop(&g_bench, now, 1);", reset_block)
+
     def test_config_page_is_v4_and_unarmed_by_default(self):
         path = ROOT / "tools/make_device_config.py"
         spec = importlib.util.spec_from_file_location("patrol_config", path)

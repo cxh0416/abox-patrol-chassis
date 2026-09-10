@@ -1017,7 +1017,12 @@ static void Vcu_CanopenTask(void *argument)
                 g_bench.limits_aligned = 0;
             }
             if (g_coordinate_reset_requested) {
-                BenchSteering_Stop(&g_bench, now, 1);
+                /* Power-off already invalidated the coordinate above.  A late
+                 * node Boot-up heartbeat during intentional de-energization
+                 * must not turn an idle executor into BENCH_FAULT.  While
+                 * powered, a reset of a valid coordinate remains a latched
+                 * safety fault. */
+                if (g_coordinate.valid) BenchSteering_Stop(&g_bench, now, 1);
                 SteeringCoordinate_Reset(&g_coordinate);
                 g_coordinate_reset_requested = 0;
             }
