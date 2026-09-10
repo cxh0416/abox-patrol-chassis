@@ -12,7 +12,15 @@ typedef enum {
     CHASSIS_CLOUD_DEVICE_TYPE_MISMATCH = 4004
 } ChassisCloudStatus;
 
+typedef enum {
+    CHASSIS_CLOUD_COMMAND_NONE = 0,
+    CHASSIS_CLOUD_COMMAND_MOTION,
+    CHASSIS_CLOUD_COMMAND_POWER_ON,
+    CHASSIS_CLOUD_COMMAND_POWER_OFF
+} ChassisCloudCommandType;
+
 typedef struct {
+    ChassisCloudCommandType type;
     char request_id[64];
     char action[8];
     char session_id[40];

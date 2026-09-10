@@ -1,6 +1,6 @@
 # 巡防车底盘 A-BOX 内部运维协议
 
-协议修订：1.0
+协议修订：1.1
 
 契约状态：内部运维接口定义；具体实现、发布和现场验收状态见内部运维与验收文档
 
@@ -8,7 +8,7 @@
 
 ## 1. 协议定位
 
-本文定义 OTA 平台与巡防车底盘 A-BOX 固件之间的设备信息、日志、远程电源输出、受控重启、MQTT 配置和 Boot V2 OTA 接口。它们使用 `/internal/*` Topic，不属于公共业务接口；底盘控制和状态见 [A-BOX 车辆底盘业务协议 V3](../protocols/A-BOX车辆底盘业务协议-V3.0.md)。厂商 CANopen 对象字典和执行约束不在本文定义。
+本文定义 OTA 平台与巡防车底盘 A-BOX 固件之间的设备信息、日志、受控重启、MQTT 配置和 Boot V2 OTA 接口。它们使用 `/internal/*` Topic，不属于公共业务接口；底盘控制、车辆上下电和状态见 [A-BOX 车辆底盘业务协议 V3](../protocols/A-BOX车辆底盘业务协议-V3.0.md)。厂商 CANopen 对象字典和执行约束不在本文定义。
 
 公共业务与内部运维使用两套明确身份：
 
@@ -89,11 +89,11 @@ A-BOX 只订阅自身 VID 的精确配置和 OTA Topic。平台重试必须沿�
 | `cancel_center_calibration` | 停止点动、撤销许可并结束标定会话 |
 | `get_log` | 获取内存日志快照 |
 | `reboot` | 响应成功发布后受控重启 |
-| `power_on` | 将车辆电源控制输出置为高电平 |
-| `power_off` | 将车辆电源控制输出置为低电平 |
+| `power_on` | 旧平台迁移兼容：将车辆电源控制输出置为高电平；新平台禁止调用 |
+| `power_off` | 旧平台迁移兼容：将车辆电源控制输出置为低电平；新平台禁止调用 |
 | `set_mqtt` | 保存新的 VID 和 MQTT 参数后重启 |
 
-`power_on` / `power_off` 成功响应的 `result.powerOutputOn` 表示 MCU 输出锁存的命令状态。该状态不是继电器触点或整车供电反馈，不得用来声称车辆已真实开机或关机。
+内部 `power_on` / `power_off` 仅用于已部署旧平台的迁移兼容，不再是当前平台接口，也不得提供给第三方。新平台必须发送公共 V3 `power_on` / `power_off`；兼容响应的 `result.powerOutputOn` 仍只表示 MCU 输出锁存的命令状态，不是继电器触点或整车供电反馈。
 
 `get_info` 的 `result.diagnostics` 是只读联调快照：`canRx` 为 CAN1 已接收标准数据帧计数，`steerHb/driveHb` 为 Node 1/2 心跳在线判断，`steerRaw`、`leftRpm/rightRpm` 和 `encoderRaw` 为最近原始反馈，`encoderOnline` 为编码器反馈时效判断，`sdoTimeouts/encoderTimeouts` 为累计超时计数。上述字段只用于诊断，不代表标定、运动或验收成功。
 

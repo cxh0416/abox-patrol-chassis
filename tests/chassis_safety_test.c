@@ -167,6 +167,8 @@ int main(void)
     const char json[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"r1\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"acquire\",\"sessionId\":\"s1\",\"seq\":1,\"leaseMs\":1000,\"driveRpm\":200,\"steeringDeg\":30}}}";
     const char over_limit[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"r3\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"renew\",\"sessionId\":\"s1\",\"seq\":2,\"leaseMs\":1000,\"driveRpm\":200,\"steeringDeg\":30.001}}}";
     const char wrong_type[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"r2\",\"deviceType\":\"wing_actuator\",\"command\":\"chassis_control\",\"params\":{}}}";
+    const char power_on[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"p1\",\"deviceType\":\"vehicle_chassis\",\"command\":\"power_on\",\"params\":null}}";
+    const char power_bad_params[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"p2\",\"deviceType\":\"vehicle_chassis\",\"command\":\"power_off\",\"params\":{}}}";
 
     CHECK(SteeringAngle_FromControllerCount(-58015, -85123, 2710800U, 1) == 10000);
     CHECK(SteeringAngle_FromControllerCount(-112231, -85123, 2710800U, 1) == -10000);
@@ -333,7 +335,12 @@ int main(void)
     CHECK(VehiclePowerOutput_Set(0U) && !VehiclePowerOutput_IsOn() && g_power_level == 0U);
 
     CHECK(ChassisCloud_Parse(json, (uint16_t)strlen(json), &command) == CHASSIS_CLOUD_OK);
-    CHECK(command.drive_rpm == 200 && command.steering_mdeg == 30000 && strcmp(command.session_id, "s1") == 0);
+    CHECK(command.type == CHASSIS_CLOUD_COMMAND_MOTION && command.drive_rpm == 200 &&
+          command.steering_mdeg == 30000 && strcmp(command.session_id, "s1") == 0);
+    CHECK(ChassisCloud_Parse(power_on, (uint16_t)strlen(power_on), &command) == CHASSIS_CLOUD_OK);
+    CHECK(command.type == CHASSIS_CLOUD_COMMAND_POWER_ON && strcmp(command.request_id, "p1") == 0);
+    CHECK(ChassisCloud_Parse(power_bad_params, (uint16_t)strlen(power_bad_params), &command) ==
+          CHASSIS_CLOUD_INVALID);
     CHECK(ChassisCloud_Parse(over_limit, (uint16_t)strlen(over_limit), &command) == CHASSIS_CLOUD_INVALID);
     CHECK(ChassisCloud_Parse(wrong_type, (uint16_t)strlen(wrong_type), &command) ==
           CHASSIS_CLOUD_DEVICE_TYPE_MISMATCH);

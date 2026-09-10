@@ -39,7 +39,18 @@ ChassisCloudStatus ChassisCloud_Parse(const char* payload, uint16_t length,
         status = CHASSIS_CLOUD_DEVICE_TYPE_MISMATCH;
         goto done;
     }
-    if (!cJSON_IsString(name) || strcmp(name->valuestring, "chassis_control") != 0) {
+    if (!cJSON_IsString(name)) {
+        status = CHASSIS_CLOUD_UNSUPPORTED;
+        goto done;
+    }
+    if (strcmp(name->valuestring, "power_on") == 0 || strcmp(name->valuestring, "power_off") == 0) {
+        if (!cJSON_IsNull(params)) goto done;
+        command->type = strcmp(name->valuestring, "power_on") == 0 ?
+            CHASSIS_CLOUD_COMMAND_POWER_ON : CHASSIS_CLOUD_COMMAND_POWER_OFF;
+        status = CHASSIS_CLOUD_OK;
+        goto done;
+    }
+    if (strcmp(name->valuestring, "chassis_control") != 0) {
         status = CHASSIS_CLOUD_UNSUPPORTED;
         goto done;
     }
@@ -65,6 +76,7 @@ ChassisCloudStatus ChassisCloud_Parse(const char* payload, uint16_t length,
     command->lease_ms = (uint32_t)lease->valuedouble;
     command->drive_rpm = (int16_t)rpm->valuedouble;
     command->steering_mdeg = (int32_t)(angle->valuedouble * 1000.0);
+    command->type = CHASSIS_CLOUD_COMMAND_MOTION;
     status = CHASSIS_CLOUD_OK;
 done:
     cJSON_Delete(root);

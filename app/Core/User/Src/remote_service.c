@@ -10,6 +10,7 @@
 #include "main.h"
 #include "time_base.h"
 #include "vcu_config.h"
+#include "vehicle_power_output.h"
 #include <stdlib.h>
 #include "FreeRTOS.h"
 #include "task.h"
@@ -18,10 +19,23 @@ static uint8_t g_remote_initialized;
 static ChassisControl g_control;
 static char g_last_request_id[64];
 static char g_last_response[512];
+static uint32_t g_last_request_hash;
+static uint16_t g_last_request_length;
 static uint8_t g_bench_permit, g_bench_started, g_drive_permit;
 static uint16_t g_bench_limit;
 static uint32_t g_arm_deadline, g_arm_serial;
 static char g_bench_session[40];
+
+static uint32_t request_hash(const char* payload, uint16_t length)
+{
+    uint32_t hash = 2166136261UL;
+    uint16_t i;
+    for (i = 0U; i < length; i++) {
+        hash ^= (uint8_t)payload[i];
+        hash *= 16777619UL;
+    }
+    return hash;
+}
 
 void RemoteService_BenchRevoke(void)
 {
@@ -88,6 +102,8 @@ void RemoteService_Init(void)
     ChassisControl_SetFeedback(&g_control, &feedback);
     g_last_request_id[0] = '\0';
     g_last_response[0] = '\0';
+    g_last_request_hash = 0U;
+    g_last_request_length = 0U;
     g_remote_initialized = 1U;
     APP_LOGI("REMOTE", "initialized enabled=%u calibrated=%u; outputs gated",
              (unsigned int)g_control.remote_enabled, (unsigned int)feedback.calibrated);
@@ -127,14 +143,21 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
     char timestamp[21];
     char steering_value[24];
     int written;
-    if (!g_remote_initialized || response == 0 || size == 0U) return 0U;
+    uint32_t payload_hash;
+    uint8_t request_conflict = 0U;
+    if (!g_remote_initialized || payload == 0 || response == 0 || size == 0U) return 0U;
+    payload_hash = request_hash(payload, length);
     parse_status = ChassisCloud_Parse(payload, length, &command);
     if (command.request_id[0] == '\0') return 0U;
     if (strcmp(command.request_id, g_last_request_id) == 0 && g_last_response[0] != '\0')
     {
-        if (strlen(g_last_response) >= size) return 0U;
-        strcpy(response, g_last_response);
-        return 1U;
+        if (length == g_last_request_length && payload_hash == g_last_request_hash) {
+            if (strlen(g_last_response) >= size) return 0U;
+            strcpy(response, g_last_response);
+            return 1U;
+        }
+        request_conflict = 1U;
+        parse_status = CHASSIS_CLOUD_INVALID;
     }
     accepted = 0U;
     code = (uint16_t)parse_status;
@@ -144,6 +167,24 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
     else if (parse_status == CHASSIS_CLOUD_OK)
     {
         uint8_t session_conflict = 0U;
+        if (command.type == CHASSIS_CLOUD_COMMAND_POWER_ON ||
+            command.type == CHASSIS_CLOUD_COMMAND_POWER_OFF)
+        {
+            uint8_t target_on = command.type == CHASSIS_CLOUD_COMMAND_POWER_ON ? 1U : 0U;
+            if (!target_on) RemoteService_BenchRevoke();
+            if (!VehiclePowerOutput_IsAvailable()) {
+                code = 5001U;
+                message = "power output unavailable";
+            } else if (!VehiclePowerOutput_Set(target_on)) {
+                code = 5001U;
+                message = "power output write failed";
+            } else {
+                accepted = 1U;
+                code = 200U;
+                message = "operation accepted";
+            }
+            goto format_response;
+        }
         if (strcmp(command.action, "stop") != 0 &&
             (!g_bench_permit || strcmp(command.session_id, g_bench_session) != 0 ||
              abs(command.drive_rpm) > (g_drive_permit ? BENCH_DRIVE_MAX_RPM : 0) ||
@@ -192,16 +233,28 @@ format_response:
     if (!TimeBase_FormatUtcMs(timestamp, sizeof(timestamp))) strcpy(timestamp, "0");
     if (!FixedPoint_FormatMilli(steering_value, sizeof(steering_value),
                                 g_control.target_steering_mdeg)) return 0U;
-    written = snprintf(response, size,
-        "{\"version\":\"3.0\",\"timestamp\":%s,\"data\":{\"deviceType\":\"%s\","
-        "\"requestId\":\"%s\",\"code\":%u,\"msg\":\"%s\",\"targetDriveRpm\":%d,"
-        "\"targetSteeringDeg\":%s,\"stopReason\":%u}}",
-        timestamp, CHASSIS_PUBLIC_DEVICE_TYPE, command.request_id, (unsigned int)code, message,
-        (int)g_control.target_rpm, steering_value, (unsigned int)g_control.stop_reason);
+    if (command.type == CHASSIS_CLOUD_COMMAND_POWER_ON ||
+        command.type == CHASSIS_CLOUD_COMMAND_POWER_OFF)
+        written = snprintf(response, size,
+            "{\"version\":\"3.0\",\"timestamp\":%s,\"data\":{\"deviceType\":\"%s\","
+            "\"requestId\":\"%s\",\"code\":%u,\"msg\":\"%s\",\"powerOutputOn\":%s}}",
+            timestamp, CHASSIS_PUBLIC_DEVICE_TYPE, command.request_id, (unsigned int)code, message,
+            VehiclePowerOutput_IsOn() ? "true" : "false");
+    else
+        written = snprintf(response, size,
+            "{\"version\":\"3.0\",\"timestamp\":%s,\"data\":{\"deviceType\":\"%s\","
+            "\"requestId\":\"%s\",\"code\":%u,\"msg\":\"%s\",\"targetDriveRpm\":%d,"
+            "\"targetSteeringDeg\":%s,\"stopReason\":%u}}",
+            timestamp, CHASSIS_PUBLIC_DEVICE_TYPE, command.request_id, (unsigned int)code, message,
+            (int)g_control.target_rpm, steering_value, (unsigned int)g_control.stop_reason);
     if (written <= 0 || written >= size) return 0U;
-    strncpy(g_last_request_id, command.request_id, sizeof(g_last_request_id) - 1U);
-    g_last_request_id[sizeof(g_last_request_id) - 1U] = '\0';
-    if ((size_t)written < sizeof(g_last_response)) strcpy(g_last_response, response);
+    if (!request_conflict) {
+        strncpy(g_last_request_id, command.request_id, sizeof(g_last_request_id) - 1U);
+        g_last_request_id[sizeof(g_last_request_id) - 1U] = '\0';
+        g_last_request_hash = payload_hash;
+        g_last_request_length = length;
+        if ((size_t)written < sizeof(g_last_response)) strcpy(g_last_response, response);
+    }
     return 1U;
 }
 

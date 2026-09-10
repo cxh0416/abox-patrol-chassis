@@ -97,6 +97,7 @@ $benchConfigTest = Join-Path $hostBuild 'bench_config_session_test.exe'
     "$PSScriptRoot\..\app\Core\User\Src\cloud_protocol.c" `
     "$PSScriptRoot\..\app\Core\User\Src\chassis_cloud_protocol.c" `
     "$PSScriptRoot\..\app\Core\User\Src\fixed_point.c" `
+    "$PSScriptRoot\..\app\Core\User\Src\vehicle_power_output.c" `
     "$PSScriptRoot\..\platform\components\cjson\cJSON.c" `
     "$PSScriptRoot\..\tests\bench_config_session_test.c" -o $benchConfigTest
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
