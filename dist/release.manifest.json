@@ -1,12 +1,12 @@
 {
   "manifest_version": 3,
   "product": "patrol_vehicle_chassis",
-  "version": "patrol-chassis-0.2.13",
+  "version": "patrol-chassis-0.2.17",
   "configuration": "Release",
   "bench_steering_available": true,
   "startup_motion_permit": false,
   "drive_actuation": true,
-  "drive_limit_rpm": 50,
+  "drive_limit_rpm": 200,
   "boot_version": "abox-boot-2.3.0",
   "ota_scheme": "boot_v2_ufs",
   "ota_downloader": "app",
@@ -16,19 +16,19 @@
     "0x0803F000"
   ],
   "config_page": "0x0803F800",
-  "product_commit": "f2411107ec0ff8502f4e5b2ef2c5831b75fba7f3",
+  "product_commit": "cf9895472f5e24d226ca562811cfb78200587063",
   "product_dirty": false,
   "platform_commit": "e60057c9639238c47fdc168cf2eed81594a1d034",
   "platform_dirty": false,
-  "version_marker": "PATROL_VEHICLE_CHASSIS_FW_VERSION=patrol-chassis-0.2.13",
+  "version_marker": "PATROL_VEHICLE_CHASSIS_FW_VERSION=patrol-chassis-0.2.17",
   "flash_ram": {
     "boot": {
       "image_bytes": 32768,
       "source": "platform/targets/stm32f105_abox_boot"
     },
     "app": {
-      "flash_bytes": 99076,
-      "ram_bytes": 59888
+      "flash_bytes": 105140,
+      "ram_bytes": 60116
     },
     "boot_limit_bytes": 32768,
     "app_limit_bytes": 223232,
@@ -37,10 +37,10 @@
   "artifacts": [
     {
       "name": "Patrol_Vehicle_Chassis_App.bin",
-      "length": 99088,
+      "length": 105152,
       "load_address": "0x08008000",
-      "crc32": "3376E0C8",
-      "sha256": "993F134FAD51F4EFD99816671830693DD7A2BFD3E5F1F396F8E10DFF5C99DB2A",
+      "crc32": "898BE36E",
+      "sha256": "F9BD2298B2BE22B129ADA01EB7C780EE5D65132F90A94D5D79C40AA94114364D",
       "includes_device_config": false,
       "includes_boot_state": false
     },
@@ -55,10 +55,10 @@
     },
     {
       "name": "Patrol_Vehicle_Chassis_Full.bin",
-      "length": 131856,
+      "length": 137920,
       "load_address": "0x08000000",
-      "crc32": "C6E66DFD",
-      "sha256": "D24B46B25BBEAFF73E629B51DFB37DDF5CBF2750FE229FF69E747DCF6B04625C",
+      "crc32": "2FF04D53",
+      "sha256": "C922CC371E1F12E411A89469AAEACD5E2170EBD826FB309E2C259A6F5A4263E3",
       "includes_device_config": false,
       "includes_boot_state": false
     }
