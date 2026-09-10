@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "product": "patrol_vehicle_chassis",
-  "version": "patrol-chassis-0.2.18",
+  "version": "patrol-chassis-0.2.19",
   "configuration": "Release",
   "bench_steering_available": true,
   "startup_motion_permit": false,
@@ -16,19 +16,19 @@
     "0x0803F000"
   ],
   "config_page": "0x0803F800",
-  "product_commit": "7f81e0929ef0aa2b8179cc83aedd06f973f03baf",
+  "product_commit": "d90ab78d5cb49867b7d9a7b433ed584abe16ffe3",
   "product_dirty": false,
   "platform_commit": "e60057c9639238c47fdc168cf2eed81594a1d034",
   "platform_dirty": false,
-  "version_marker": "PATROL_VEHICLE_CHASSIS_FW_VERSION=patrol-chassis-0.2.18",
+  "version_marker": "PATROL_VEHICLE_CHASSIS_FW_VERSION=patrol-chassis-0.2.19",
   "flash_ram": {
     "boot": {
       "image_bytes": 32768,
       "source": "platform/targets/stm32f105_abox_boot"
     },
     "app": {
-      "flash_bytes": 105180,
-      "ram_bytes": 60116
+      "flash_bytes": 105708,
+      "ram_bytes": 60120
     },
     "boot_limit_bytes": 32768,
     "app_limit_bytes": 223232,
@@ -37,10 +37,10 @@
   "artifacts": [
     {
       "name": "Patrol_Vehicle_Chassis_App.bin",
-      "length": 105192,
+      "length": 105720,
       "load_address": "0x08008000",
-      "crc32": "578FFEEE",
-      "sha256": "884954D3DAAF16BA6A6E72C2F5C97EA17EE6D489DF47FB173AF9E5A6CA5457C2",
+      "crc32": "C3DB29E6",
+      "sha256": "83D7F29C84779B1E5615DC30C36D5B567EA89FF5683625CCB739ADA1C21EB0B7",
       "includes_device_config": false,
       "includes_boot_state": false
     },
@@ -55,10 +55,10 @@
     },
     {
       "name": "Patrol_Vehicle_Chassis_Full.bin",
-      "length": 137960,
+      "length": 138488,
       "load_address": "0x08000000",
-      "crc32": "4399E48B",
-      "sha256": "7732A6F853AD9309017626FFFF4DCAB3FAB9D044E935831C5F0CAF635B8C5E41",
+      "crc32": "3578BCA4",
+      "sha256": "9138CD08352723041DB15EA4BB9214DF5EC877146E401D0C5CAF45050FC18247",
       "includes_device_config": false,
       "includes_boot_state": false
     }
