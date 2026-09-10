@@ -1,7 +1,7 @@
 [CmdletBinding()]
 param(
     [ValidateSet('Debug', 'Release')] [string] $Configuration = 'Release',
-    [ValidatePattern('^patrol-chassis-[0-9]+\.[0-9]+\.[0-9]+$')] [string] $AppVersion = 'patrol-chassis-0.2.16',
+    [string] $AppVersion = '',
     [switch] $BenchSteering,
     [switch] $BenchDrive,
     [string] $VerifiedCandidate,
@@ -16,6 +16,8 @@ if ($BenchSteering -and ($Configuration -ne 'Release' -or $ReleasePair -or
     throw 'Steering publication requires Release and the exact verified candidate image.'
 }
 $product = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
+. (Join-Path $PSScriptRoot 'product_version.ps1')
+$AppVersion = Resolve-PatrolChassisAppVersion -ProductRoot $product -Override $AppVersion
 $platform = Join-Path $product 'platform'
 $bootTarget = Join-Path $platform 'targets/stm32f105_abox_boot'
 $bootArtifact = Join-Path $bootTarget 'dist/ABox_Boot.bin'
@@ -112,7 +114,7 @@ try {
     $bootUsage = [ordered]@{ image_bytes = (Get-Item -LiteralPath $bootArtifact).Length; source = 'platform/targets/stm32f105_abox_boot' }
 
     foreach ($version in $versions) {
-        $appDefinitions = @("-DPATROL_CHASSIS_APP_VERSION=$version")
+        $appDefinitions = @("-DPATROL_CHASSIS_APP_VERSION_OVERRIDE=$version")
         $appDefinitions += '-DPATROL_CHASSIS_ACTUATION_ENABLED=OFF'
         $appDefinitions += "-DPATROL_CHASSIS_BENCH_STEERING_ENABLED=$(if ($BenchSteering) { 'ON' } else { 'OFF' })"
         $appDefinitions += "-DPATROL_CHASSIS_BENCH_DRIVE_ENABLED=$(if ($BenchDrive) { 'ON' } else { 'OFF' })"

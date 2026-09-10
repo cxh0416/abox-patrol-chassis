@@ -774,12 +774,17 @@ static __attribute__((noinline)) void handle_config_request(const CloudProtocolR
             message = "CENTER_CALIBRATION_COMMIT_STARTED";
         } else if (action == CLOUD_PROTOCOL_ACTION_CENTER_CAL_CANCEL)
             accepted = VcuRtos_CenterCalibrationCancel(request->center_session_id);
-        if (!accepted)
-            schedule_simple_error(g_topic_config_resp, request_id, 409U,
-                                  "CENTER_CALIBRATION_NOT_READY");
-        else {
-            VcuRtos_FormatCenterCalibration(result, sizeof(result));
-            (void)schedule_response(g_topic_config_resp, request_id, code, message, result, 0U);
+        if (!accepted) {
+            if (!VcuRtos_FormatCenterCalibration(result, sizeof(result)) ||
+                !schedule_response(g_topic_config_resp, request_id, 409U,
+                                   "CENTER_CALIBRATION_NOT_READY", result, 0U))
+                schedule_simple_error(g_topic_config_resp, request_id, 409U,
+                                      "CENTER_CALIBRATION_NOT_READY");
+        } else {
+            if (!VcuRtos_FormatCenterCalibration(result, sizeof(result)) ||
+                !schedule_response(g_topic_config_resp, request_id, code, message, result, 0U))
+                schedule_simple_error(g_topic_config_resp, request_id, 500U,
+                                      "CENTER_DIAGNOSTIC_TOO_LARGE");
         }
     }
     else if (action == CLOUD_PROTOCOL_ACTION_BENCH_ARM || action == CLOUD_PROTOCOL_ACTION_BENCH_STOP ||

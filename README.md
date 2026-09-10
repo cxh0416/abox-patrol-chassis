@@ -1,8 +1,8 @@
 # 巡防车底盘控制器
 
-产品标识固定为 `patrol_vehicle_chassis`。当前正式固件为 **0.2.13**，源码为 **0.2.16 候选**；候选尚待现场验收，不能因主机测试或构建成功标记为正式版。
+产品标识固定为 `patrol_vehicle_chassis`。当前正式固件为 **0.2.13**，源码为 **0.2.17 候选**；候选尚待现场验收，不能因主机测试或构建成功标记为正式版。
 
-0.2.13 正式包具备受 RAM 许可约束的转向和行走能力，清单行走限速 50 rpm。0.2.16 候选采用 4096 count 单圈编码器、固定中位 2048、±30° 转向范围和 ±200 rpm 行走目标限制，并增加新车首次建标的独占低速点动；仍需驱动器现有软限位、双传感器相对位移一致性、零行走及其余安全门禁，默认不使能。真实角度、电源、异常掉电恢复及道路能力以对应现场证据为准。
+0.2.13 正式包具备受 RAM 许可约束的转向和行走能力，清单行走限速 50 rpm。0.2.17 候选采用 4096 count 单圈编码器、固定中位 2048、±30° 转向范围和 ±200 rpm 行走目标限制，并增加新车首次建标的独占低速点动；可调整静止阶段的心跳窗口为 15 秒，静止心跳超时下电但不锁存为运动故障。仍需驱动器现有软限位、双传感器相对位移一致性、零行走及其余安全门禁，默认不使能。真实角度、电源、异常掉电恢复及道路能力以对应现场证据为准。
 
 ## 固定边界
 
@@ -16,13 +16,15 @@
 ## 构建与维护
 
 ```powershell
+# 默认读取仓库根目录 VERSION；临时候选也可显式传 -AppVersion 覆盖。
 .\tools\run_tests.ps1
 .\tools\build_bench_steering.ps1
 .\tools\build_bench_steering.ps1 -Drive
+.\tools\build_bench_steering.ps1 -Drive -AppVersion patrol-chassis-0.2.17
 python tools/clean_workspace.py --build
 ```
 
-纯转向和行走候选分别输出到 `out/candidates/bench-steering/`、`out/candidates/bench-drive/`；每类只保留最近成功构建。在线调试包使用 `out/debug/online/`，构建与主机测试日志放 `out/logs/`。
+当前源码的构建版本默认值只在仓库根目录 `VERSION` 维护；CMake 和 `tools/` 下的构建脚本默认读取该文件，`-AppVersion` 仅用于显式覆盖。纯转向和行走候选分别输出到 `out/candidates/bench-steering/`、`out/candidates/bench-drive/`；每类只保留最近成功构建。在线调试包使用 `out/debug/online/`，构建与主机测试日志放 `out/logs/`。
 
 `dist/` 仅保留最新正式版的 Boot、App、Full、发布清单四个文件。正式打包须满足干净工作树及已验证候选一致性门禁，先在暂存目录完成文件集合、版本、向量、长度、CRC32、SHA256、Full 内容和分区校验，再整体替换；失败恢复原包。发布脚本不发起 OTA。
 

@@ -120,6 +120,8 @@ OTA 请求使用 `command=ota_upgrade`，`params` 必须包含不可变 HTTPS `u
 - `steerHb/driveHb`、`steerNmt/driveNmt`：节点心跳在线状态及最近 NMT 状态字节。
 - `steerFresh/driveFresh`：转向原始位置、左右实测转速是否各自处于反馈有效期；不依赖独立编码器，不等同于整车 `feedbackFresh` 或 `safetyReady`。
 - `steerRaw`、`leftRpm/rightRpm`、`steerSw/driveSw`：最近转向原始位置、左右转速和两个状态字。数据过期时保留上次值，必须结合时效字段使用。
+- `encoderRaw`、`encoderOnline`、`encoderConfigValid`：独立编码器最近原始值、反馈时效与通讯配置校验结果；原始值同样必须结合时效字段使用。
+- `encoderLastError`、`encoderTimeouts/encoderCrcErrors/encoderExceptions/encoderFormatErrors/encoderTransportErrors`：最近一次编码器错误类别及本次上电以来各类累计计数。`encoderLastError` 为 0 无记录、1 超时、2 CRC、3 Modbus 异常响应、4 响应格式、5 串口传输；历史错误不等同于当前离线。
 - `sdoOk`、`sdoTimeouts`、`sdoAborts`、`lastAbort`、`sdoTxErrors`：成功应答、等待超时、明确 Abort、最近 Abort 码和发送错误的累计计数。
 - `driveObjects`：Node 2 的 `2000～2006` 最近读取值，按索引升序排列；未成功读取的初始零值不代表真实反馈。
 - `sdoReadMask/sdoAbortMask`：从本次启动以来各对象曾成功/曾返回 Abort 的位图，按以下顺序从 bit 0 到 bit 11：Node1 `6041,6064`，Node2 `6041,6069,6869,2000,2001,2002,2003,2004,2005,2006`。位图不代替实时反馈有效期。
@@ -142,7 +144,9 @@ OTA 请求使用 `command=ota_upgrade`，`params` 必须包含不可变 HTTPS `u
 - `start_center_calibration` 无参数。设备只在 OTA 空闲、普通远控和其他台架许可关闭、节点及反馈在线、CAN 正常、驱动无故障、行走未使能且左右轮连续满足静止要求时创建会话。已有有效的两路标定且角度一致，才允许后续电机点动。
 - `jog_center_calibration` 必须携带 `sessionId` 和 `deltaMdeg`；`deltaMdeg` 只允许 `-1000`、`-200`、`200`、`1000`。会话以两路原始值建立临时相对坐标，连续校验相对变化；累计目标必须处于 `-60000..60000 mdeg`，并始终服从驱动器当前软限位。
 - `commit_center_calibration` 只携带 `sessionId`，不接受调用方提供编码器中位。设备固定执行编码器 2048 中位写入、读回校验及转向驱动器当前原始计数保存；响应已接受不表示整个异步提交已经完成。
-- `get_center_calibration` 必须携带 `sessionId`，返回 `phase`、`sessionId`、`fault`、`driverRaw`、`encoderRaw`、`targetMdeg`、`jogOffsetMdeg`、`rangeValid` 和 `calibrated`。标定可调整阶段以该查询作为短租约心跳；连续约 4 秒未收到有效查询时设备停止标定并关闭车辆电源输出。平台必须轮询至完成或失败，并结合后续掉电重启与反馈验证判断结果。
+- `get_center_calibration` 必须携带 `sessionId`，返回 `phase`、`sessionId`、`fault`、`driverRaw`、`encoderRaw`、`targetMdeg`、`jogOffsetMdeg`、`rangeValid` 和 `calibrated`。`diagVersion=1` 时还返回 `failure` 和 `lastReject`：`failure` 只冻结本次会话首个失败，含失败阶段/原因、门禁位图、失败时两路原始值、轮速、样本年龄、失败前编码器累计错误数、CANopen 执行阶段/步骤/故障、两节点状态字、编码器写状态/最后错误和最近 SDO Abort；后续停机、下电或查询不覆盖。`lastReject` 记录最近一次未接受命令的原因和门禁位图。被拒绝的 start/jog/commit/keepalive/cancel 以 409 返回同一结构，平台须保存 `result`，不得只保留文字错误。标定可调整阶段以该查询作为短租约心跳；连续 15 秒未收到有效查询时设备停止标定并关闭车辆电源输出。静止可调整阶段的该超时不锁存为运动执行故障，运动或提交阶段的超时仍按执行故障处理。平台必须轮询至完成或失败，并结合后续掉电重启与反馈验证判断结果。
 - `cancel_center_calibration` 必须携带 `sessionId`。浏览器离开、网络异常、会话过期或人工停止时，平台应提交取消；设备停止执行、撤销许可并关闭车辆电源输出。
 
 标定任一步失败或掉电后，设备不得凭 MQTT 响应建立正式运行坐标。提交已经清除旧标定后发生失败时保持未标定；编码器写入结果不确定时只能通过后续读回判断，不回滚编码器。
+
+平台首次收到 `phase=8` 时，应将完整 `failure` 与原操作时间线写入审计，并自动排入一次只读 `get_can_diag`；不得自动重放点动、提交、编码器写入或故障恢复。首个失败快照用于还原故障瞬间，后续 CAN/编码器诊断用于判断链路是否仍异常，两者不能互相替代。

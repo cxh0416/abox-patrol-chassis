@@ -42,6 +42,7 @@ typedef struct {
     uint32_t encoder_exception_count;
     uint32_t encoder_format_error_count;
     uint32_t encoder_transport_error_count;
+    uint8_t last_encoder_error;
     uint32_t encoder_count;
     int32_t steering_position_count;
     int32_t left_actual_rpm;
@@ -101,6 +102,9 @@ typedef struct {
     uint32_t encoder_timeout_count;
     uint32_t encoder_crc_error_count;
     uint32_t encoder_exception_count;
+    uint32_t encoder_format_error_count;
+    uint32_t encoder_transport_error_count;
+    uint8_t last_encoder_error;
 } PatrolDiagnosticsSnapshot;
 
 void PatrolDiagnostics_Init(PatrolDiagnostics* diagnostics);

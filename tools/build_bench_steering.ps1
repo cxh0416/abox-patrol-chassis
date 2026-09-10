@@ -1,14 +1,16 @@
 [CmdletBinding()]
-param([ValidatePattern('^patrol-chassis-[0-9]+\.[0-9]+\.[0-9]+$')][string]$AppVersion = 'patrol-chassis-0.2.16', [switch]$Drive)
+param([string]$AppVersion = '', [switch]$Drive)
 $ErrorActionPreference = 'Stop'
 $product = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
+. (Join-Path $PSScriptRoot 'product_version.ps1')
+$AppVersion = Resolve-PatrolChassisAppVersion -ProductRoot $product -Override $AppVersion
 $build = Join-Path $product 'app/build/BenchSteering'
 $destination = if ($Drive) { 'out/candidates/bench-drive' } else { 'out/candidates/bench-steering' }
 $output = Join-Path ([IO.Path]::GetTempPath()) ('patrol-chassis-bench-' + [guid]::NewGuid().ToString('N'))
 try {
 & cmake -S (Join-Path $product 'app') -B $build -G Ninja `
     "-DCMAKE_TOOLCHAIN_FILE=$product/app/cmake/gcc-arm-none-eabi.cmake" `
-    '-DCMAKE_BUILD_TYPE=Release' "-DPATROL_CHASSIS_APP_VERSION=$AppVersion" `
+    '-DCMAKE_BUILD_TYPE=Release' "-DPATROL_CHASSIS_APP_VERSION_OVERRIDE=$AppVersion" `
     '-DPATROL_CHASSIS_ACTUATION_ENABLED=OFF' '-DPATROL_CHASSIS_BENCH_STEERING_ENABLED=ON' `
     "-DPATROL_CHASSIS_BENCH_DRIVE_ENABLED=$($Drive.IsPresent)" `
     '-DPATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED=ON' '-DPATROL_CHASSIS_APP_FAULT_INJECTION_TEST=OFF' `

@@ -27,6 +27,23 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertIn("request.data[0] == 0x40U", rtos)
         self.assertNotIn("PatrolCanopen_SdoWrite", rtos)
 
+    def test_product_version_has_one_external_default_and_optional_script_override(self):
+        version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+        self.assertRegex(version, r"^patrol-chassis-\d+\.\d+\.\d+$")
+        cmake = (ROOT / "app/CMakeLists.txt").read_text(encoding="utf-8")
+        header = (ROOT / "app/Core/User/Inc/app_version.h").read_text(encoding="utf-8")
+        helper = (ROOT / "tools/product_version.ps1").read_text(encoding="utf-8")
+        self.assertIn('../VERSION', cmake)
+        self.assertIn('PATROL_CHASSIS_APP_VERSION_OVERRIDE "" CACHE STRING', cmake)
+        self.assertIn('"patrol-chassis-unversioned"', header)
+        self.assertNotIn(version, header)
+        self.assertIn("Resolve-PatrolChassisAppVersion", helper)
+        for name in ("build_bench_steering.ps1", "build_online_debug.ps1", "build_release.ps1"):
+            script = (ROOT / "tools" / name).read_text(encoding="utf-8")
+            self.assertIn("product_version.ps1", script)
+            self.assertIn("-Override $AppVersion", script)
+            self.assertNotIn(version, script)
+
     def test_confirmed_vehicle_power_output_is_isolated_to_pvin_out1(self):
         port = (ROOT / "app/Core/User/Src/vehicle_power_port.c").read_text(encoding="utf-8")
         self.assertIn("PVIN_OUT1_GPIO_Port", port)
@@ -77,6 +94,34 @@ class PatrolScaffoldTests(unittest.TestCase):
         # ARM release .su reports: Watchdog 32 + Confirm 128 + StateSave 592
         # + nested StateLoad 240 = 992 bytes before HAL flash helpers.
         self.assertGreaterEqual(int(match.group(1)), 384)
+
+    def test_idle_center_calibration_lease_tolerates_platform_delay_without_latching_motion_fault(self):
+        rtos = (ROOT / "app/Core/User/Src/vcu_rtos.c").read_text(encoding="utf-8")
+        lease = re.search(r"#define\s+CENTER_CAL_READY_LEASE_MS\s+(\d+)U", rtos)
+        self.assertIsNotNone(lease)
+        self.assertGreaterEqual(int(lease.group(1)), 15000)
+        helper = rtos[rtos.index("static uint8_t center_calibration_expire_idle"):
+                      rtos.index("uint8_t VcuRtos_CenterCalibrationStart")]
+        self.assertIn("RemoteService_BenchRevoke()", helper)
+        self.assertIn("VehiclePowerOutput_Set(0U)", helper)
+        self.assertIn("g_bench.phase == BENCH_IDLE", helper)
+        self.assertNotIn("RemoteService_BenchFault()", helper)
+        self.assertNotIn("BenchSteering_Stop", helper)
+        self.assertGreaterEqual(rtos.count("deadline_ms = now + CENTER_CAL_READY_LEASE_MS"), 2)
+
+    def test_center_calibration_freezes_structured_failure_and_rejection_evidence(self):
+        rtos = (ROOT / "app/Core/User/Src/vcu_rtos.c").read_text(encoding="utf-8")
+        cloud = (ROOT / "app/Core/User/Src/cloud_service.c").read_text(encoding="utf-8")
+        diagnostics = (ROOT / "app/Core/User/Src/patrol_diagnostics.c").read_text(encoding="utf-8")
+        self.assertIn("center_capture_failure_locked", rtos)
+        for token in ("diagVersion", "gateMask", "driverRaw", "feedbackAge",
+                      "encoderAge", "encoderErrTotal", "lastReject", "lastAbort"):
+            self.assertIn(token, rtos)
+        self.assertIn("last_encoder_error", diagnostics)
+        self.assertIn("encoderTransportErrors", diagnostics)
+        rejected = cloud[cloud.index("if (!accepted) {"):cloud.index("} else {", cloud.index("if (!accepted) {"))]
+        self.assertIn("VcuRtos_FormatCenterCalibration", rejected)
+        self.assertIn("schedule_response", rejected)
 
     def test_config_page_is_v4_and_unarmed_by_default(self):
         path = ROOT / "tools/make_device_config.py"

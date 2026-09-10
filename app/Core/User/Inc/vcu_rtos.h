@@ -31,7 +31,7 @@ uint8_t VcuRtos_CenterCalibrationKeepAlive(const char* session_id);
 uint8_t VcuRtos_CenterCalibrationJog(const char* session_id, int16_t delta_mdeg);
 uint8_t VcuRtos_CenterCalibrationCommit(const char* session_id);
 uint8_t VcuRtos_CenterCalibrationCancel(const char* session_id);
-void VcuRtos_FormatCenterCalibration(char* out, uint16_t size);
+uint8_t VcuRtos_FormatCenterCalibration(char* out, uint16_t size);
 void VcuRtos_Init(void);
 BaseType_t VcuRtos_CanRxFromISR(CAN_HandleTypeDef *hcan, BaseType_t *higher_priority_task_woken);
 BaseType_t VcuRtos_CanRxPop(VcuCanFrame_t *frame, TickType_t wait_ticks);

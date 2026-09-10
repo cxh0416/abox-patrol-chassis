@@ -1,12 +1,13 @@
 [CmdletBinding()]
 param(
-    [ValidatePattern('^patrol-chassis-[0-9]+\.[0-9]+\.[0-9]+(?:[A-Za-z0-9._+-]*)?$')]
-    [string] $AppVersion = 'patrol-chassis-0.2.16',
+    [string] $AppVersion = '',
     [switch] $EnableAutoSeed
 )
 
 $ErrorActionPreference = 'Stop'
 $product = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
+. (Join-Path $PSScriptRoot 'product_version.ps1')
+$AppVersion = Resolve-PatrolChassisAppVersion -ProductRoot $product -Override $AppVersion
 . (Join-Path $PSScriptRoot 'ota_credentials.ps1')
 $credential = Get-PatrolChassisOtaBuildCredential
 $username = $credential.UserName
@@ -40,7 +41,7 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Frozen platform Boot validation failed.' }
     $seed = if ($EnableAutoSeed) { 'ON' } else { 'OFF' }
     Invoke-ArmBuild (Join-Path $product 'app') $appBuild 'Debug' @(
-        "-DPATROL_CHASSIS_APP_VERSION:STRING=$AppVersion",
+        "-DPATROL_CHASSIS_APP_VERSION_OVERRIDE:STRING=$AppVersion",
         "-DPATROL_CHASSIS_MQTT_USERNAME:STRING=$username",
         "-DPATROL_CHASSIS_MQTT_PASSWORD:STRING=$password",
         "-DPATROL_CHASSIS_OTA_AUTO_SEED:BOOL=$seed"

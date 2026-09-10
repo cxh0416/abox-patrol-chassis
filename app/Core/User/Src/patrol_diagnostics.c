@@ -236,6 +236,7 @@ void PatrolDiagnostics_OnEncoderCount(PatrolDiagnostics* diagnostics, uint32_t c
 void PatrolDiagnostics_OnEncoderError(PatrolDiagnostics* diagnostics, PatrolEncoderError error)
 {
     if (diagnostics == 0) return;
+    diagnostics->last_encoder_error = (uint8_t)error;
     if (error == PATROL_ENCODER_ERROR_TIMEOUT) diagnostics->encoder_timeout_count++;
     else if (error == PATROL_ENCODER_ERROR_CRC) diagnostics->encoder_crc_error_count++;
     else if (error == PATROL_ENCODER_ERROR_EXCEPTION) diagnostics->encoder_exception_count++;
@@ -302,6 +303,9 @@ void PatrolDiagnostics_Snapshot(const PatrolDiagnostics* diagnostics, uint32_t n
     snapshot->encoder_timeout_count = diagnostics->encoder_timeout_count;
     snapshot->encoder_crc_error_count = diagnostics->encoder_crc_error_count;
     snapshot->encoder_exception_count = diagnostics->encoder_exception_count;
+    snapshot->encoder_format_error_count = diagnostics->encoder_format_error_count;
+    snapshot->encoder_transport_error_count = diagnostics->encoder_transport_error_count;
+    snapshot->last_encoder_error = diagnostics->last_encoder_error;
 }
 
 uint8_t PatrolDiagnostics_FormatCanJson(const PatrolDiagnosticsSnapshot* s,
@@ -317,7 +321,10 @@ uint8_t PatrolDiagnostics_FormatCanJson(const PatrolDiagnosticsSnapshot* s,
         "\"steerFresh\":%s,\"driveFresh\":%s,\"steerRaw\":%ld,\"leftRpm\":%ld,\"rightRpm\":%ld,"
         "\"steerSw\":%u,\"driveSw\":%u,\"sdoOk\":%lu,\"sdoReadMask\":%u,\"sdoAbortMask\":%u,"
         "\"sdoTimeouts\":%lu,\"sdoAborts\":%lu,\"lastAbort\":%lu,\"sdoTxErrors\":%lu,"
-        "\"driveObjects\":[%ld,%ld,%ld,%ld,%ld,%ld,%ld]}",
+        "\"driveObjects\":[%ld,%ld,%ld,%ld,%ld,%ld,%ld],"
+        "\"encoderRaw\":%lu,\"encoderOnline\":%s,\"encoderConfigValid\":%s,"
+        "\"encoderLastError\":%u,\"encoderTimeouts\":%lu,\"encoderCrcErrors\":%lu,"
+        "\"encoderExceptions\":%lu,\"encoderFormatErrors\":%lu,\"encoderTransportErrors\":%lu}",
         (unsigned long)s->can_rx_count, (unsigned long)can1_raw_rx, (unsigned long)can2_raw_rx,
         (unsigned long)s->can_ignored_count,
         (unsigned long)rx_overflow, bus_off ? "true" : "false", bus_off_active ? "true" : "false",
@@ -332,6 +339,11 @@ uint8_t PatrolDiagnostics_FormatCanJson(const PatrolDiagnosticsSnapshot* s,
         (unsigned long)s->sdo_tx_error_count,
         (long)s->drive_objects[0], (long)s->drive_objects[1], (long)s->drive_objects[2],
         (long)s->drive_objects[3], (long)s->drive_objects[4], (long)s->drive_objects[5],
-        (long)s->drive_objects[6]);
+        (long)s->drive_objects[6], (unsigned long)s->encoder_count,
+        s->encoder_online ? "true" : "false", s->encoder_config_valid ? "true" : "false",
+        (unsigned int)s->last_encoder_error, (unsigned long)s->encoder_timeout_count,
+        (unsigned long)s->encoder_crc_error_count, (unsigned long)s->encoder_exception_count,
+        (unsigned long)s->encoder_format_error_count,
+        (unsigned long)s->encoder_transport_error_count);
     return (uint8_t)(length >= 0 && length < size);
 }

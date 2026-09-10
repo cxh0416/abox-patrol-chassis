@@ -246,6 +246,8 @@ int main(void)
     }
     PatrolDiagnostics_OnEncoderConfig(&diagnostics, config_values, 125U);
     PatrolDiagnostics_OnEncoderCount(&diagnostics, 123456U, 125U);
+    PatrolDiagnostics_OnEncoderError(&diagnostics, PATROL_ENCODER_ERROR_CRC);
+    PatrolDiagnostics_OnEncoderError(&diagnostics, PATROL_ENCODER_ERROR_TRANSPORT);
     PatrolDiagnostics_Snapshot(&diagnostics, 130U, &diagnostic_snapshot);
     CHECK(diagnostic_snapshot.steering_online && diagnostic_snapshot.drive_online);
     CHECK(diagnostic_snapshot.steering_feedback_fresh && diagnostic_snapshot.drive_feedback_fresh);
@@ -253,6 +255,9 @@ int main(void)
     CHECK(diagnostic_snapshot.steering_position_count == 1000);
     CHECK(diagnostic_snapshot.left_actual_rpm == -12 && diagnostic_snapshot.right_actual_rpm == 15);
     CHECK(diagnostic_snapshot.encoder_count == 123456U);
+    CHECK(diagnostic_snapshot.encoder_crc_error_count == 1U);
+    CHECK(diagnostic_snapshot.encoder_transport_error_count == 1U);
+    CHECK(diagnostic_snapshot.last_encoder_error == PATROL_ENCODER_ERROR_TRANSPORT);
     CHECK(PatrolDiagnostics_TakeSdoRead(&diagnostics, 200U, &frame));
     CHECK(!PatrolDiagnostics_TakeSdoRead(&diagnostics, 250U, &frame));
     CHECK(PatrolDiagnostics_TakeSdoRead(&diagnostics, 260U, &frame));
