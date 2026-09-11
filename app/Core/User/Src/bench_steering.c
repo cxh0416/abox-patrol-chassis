@@ -20,6 +20,8 @@ static uint8_t valid_limit(uint16_t limit)
 
 static void fail(BenchSteering* b, uint32_t reason)
 {
+    /* Cross-executor emergency stopping must not replace the first cause. */
+    if (b->phase == BENCH_FAULT) return;
     b->pending = 0; b->fault = reason; b->cut_power = 1; b->phase = BENCH_FAULT;
 }
 void BenchSteering_Init(BenchSteering* b) { memset(b, 0, sizeof(*b)); }

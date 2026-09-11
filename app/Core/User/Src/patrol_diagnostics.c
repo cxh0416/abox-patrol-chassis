@@ -190,9 +190,13 @@ uint8_t PatrolDiagnostics_TakeSdoRead(PatrolDiagnostics* diagnostics, uint32_t n
         *frame = PatrolCanopen_SdoRead(entry->node, entry->index, entry->subindex);
         return 1U;
     }
+    /* Sample position, wheel speeds and status before low-rate diagnostics.
+     * Each transaction still has one owner and its bounded retry policy. */
+    for (uint8_t priority = 0U; priority < 2U; priority++)
     for (offset = 0U; offset < PATROL_DIAG_SDO_ENTRY_COUNT; offset++)
     {
         uint8_t index = (uint8_t)((diagnostics->next_sdo_entry + offset) % PATROL_DIAG_SDO_ENTRY_COUNT);
+        if ((index < 5U) != (priority == 0U)) continue;
         if (diagnostics->motion_priority && index >= 7U) continue;
         const PatrolSdoEntry* entry = &g_sdo_entries[index];
         if (!sdo_node_ready(diagnostics, entry->node, now_ms)) continue;

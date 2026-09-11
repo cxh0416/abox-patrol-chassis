@@ -20,3 +20,10 @@ source=(Path(__file__).resolve().parents[1]/'app/Core/User/Src/vcu_rtos.c').read
 capacity=int(re.search(r'#define VCU_REMOTE_STACK_WORDS (\d+)U',source)[1])*4
 assert used+1024<=capacity, (used,capacity)
 print(f'PASS calibration stack: known frames {used} + 1024 byte reserve <= {capacity}')
+fault_chain=['Vcu_CanopenTask','center_calibration_fail','AppLog_Printf']
+for name in fault_chain:
+    if name not in frames:raise SystemExit('Missing fault stack evidence: '+name)
+fault_used=sum(frames[n] for n in fault_chain)
+fault_capacity=int(re.search(r'#define VCU_CANOPEN_STACK_WORDS (\d+)U',source)[1])*4
+assert fault_used+512<=fault_capacity, (fault_used,fault_capacity)
+print(f'PASS CANopen fault stack: known frames {fault_used} + 512 byte library reserve <= {fault_capacity}')

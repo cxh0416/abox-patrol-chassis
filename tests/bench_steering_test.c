@@ -99,6 +99,9 @@ int main(void)
     r=reply(&b,-111593); r.data[1]++;
     assert(!BenchSteering_OnFrame(&b,&r,12)&&b.pending);
     BenchSteering_Tick(&b,111,1,1,0); assert(b.phase==BENCH_FAULT&&b.cut_power);
+    assert(b.fault == 6U);
+    BenchSteering_Stop(&b,112,1);
+    assert(b.fault == 6U); /* emergency propagation preserves first timeout */
     assert(!BenchSteering_Take(&b,112,&f));
     BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0); now=0;
     while (b.step != 4) advance(&b,&now);

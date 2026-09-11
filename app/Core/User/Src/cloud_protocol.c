@@ -215,9 +215,10 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
         center_delta = cJSON_GetObjectItemCaseSensitive(params, "deltaMdeg");
         if (!cJSON_IsString(center_session) || center_session->valuestring[0] == '\0' ||
             strlen(center_session->valuestring) >= sizeof(request->center_session_id) ||
-            !json_integer_between(center_delta, -1000, 1000) ||
+            !json_integer_between(center_delta, -5000, 5000) ||
             (center_delta->valueint != -1000 && center_delta->valueint != -200 &&
-             center_delta->valueint != 200 && center_delta->valueint != 1000)) goto done;
+             center_delta->valueint != 200 && center_delta->valueint != 1000 &&
+             center_delta->valueint != -5000 && center_delta->valueint != 5000)) goto done;
         strcpy(request->center_session_id, center_session->valuestring);
         request->center_delta_mdeg = (int16_t)center_delta->valueint;
         request->action = CLOUD_PROTOCOL_ACTION_CENTER_CAL_JOG;

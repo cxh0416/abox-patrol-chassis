@@ -137,6 +137,20 @@ int main(void)
             request.center_delta_mdeg != -200 || strcmp(request.center_session_id, "c-1-1") != 0) return 1;
     }
     {
+        char payload[256];
+        const int steps[] = {-5000, -1000, -200, 200, 1000, 5000, 2000, 5001, -5001};
+        for (unsigned i = 0; i < sizeof(steps) / sizeof(steps[0]); ++i) {
+            CloudProtocolRequest_t request;
+            snprintf(payload, sizeof(payload), "{\"version\":\"2.0\",\"data\":{\"requestId\":\"step\","
+                "\"command\":\"internal_config\",\"params\":{\"action\":\"jog_center_calibration\","
+                "\"sessionId\":\"c-1-1\",\"deltaMdeg\":%d}}}", steps[i]);
+            CloudProtocolStatus_t status = CloudProtocol_Parse(payload, (uint16_t)strlen(payload), 0U, &request);
+            if (i < 6) {
+                if (status != CLOUD_PROTOCOL_OK || request.center_delta_mdeg != steps[i]) return 1;
+            } else if (status != CLOUD_PROTOCOL_INVALID) return 1;
+        }
+    }
+    {
         CloudProtocolRequest_t request;
         if (CloudProtocol_Parse(ota, (uint16_t)strlen(ota), 1U, &request) != CLOUD_PROTOCOL_OK ||
             request.ota_size != 12345U || request.ota_crc32 != 0x89ABCDEFU) return 1;

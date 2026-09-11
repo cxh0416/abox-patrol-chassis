@@ -137,7 +137,8 @@ typedef enum {
     CENTER_CAL_REASON_JOG_LIMIT,
     CENTER_CAL_REASON_ALREADY_ACTIVE,
     CENTER_CAL_REASON_ENCODER_OUT_OF_RANGE,
-    CENTER_CAL_REASON_EXECUTOR_BUSY
+    CENTER_CAL_REASON_EXECUTOR_BUSY,
+    CENTER_CAL_REASON_POSITION_EPOCH_RESET
 } CenterCalibrationReason;
 
 #define CENTER_GATE_POWER_OFF                  (1UL << 0)
@@ -214,6 +215,12 @@ typedef struct {
 
 static CenterCalibration g_center_cal;
 static uint32_t g_center_cal_serial;
+
+static uint8_t center_session_active(void)
+{
+    return g_center_cal.phase != CENTER_CAL_IDLE &&
+        g_center_cal.phase != CENTER_CAL_COMPLETE && g_center_cal.phase != CENTER_CAL_FAILED;
+}
 #ifndef PATROL_CHASSIS_BENCH_STEERING_ENABLED
 #define PATROL_CHASSIS_BENCH_STEERING_ENABLED 0
 #endif
@@ -443,6 +450,7 @@ static const char* center_reason_name(uint8_t reason)
     case CENTER_CAL_REASON_ALREADY_ACTIVE: return "already_active";
     case CENTER_CAL_REASON_ENCODER_OUT_OF_RANGE: return "encoder_out_of_range";
     case CENTER_CAL_REASON_EXECUTOR_BUSY: return "executor_busy";
+    case CENTER_CAL_REASON_POSITION_EPOCH_RESET: return "position_epoch_reset";
     default: return "none";
     }
 }
@@ -632,6 +640,10 @@ uint8_t VcuRtos_CenterCalibrationStart(void)
         return 0U;
     }
     memset(&g_center_cal, 0, sizeof(g_center_cal));
+    /* Commissioning owns its captured relative origin.  Do not retain or
+     * later acquire the ordinary driving coordinate using an old calibration. */
+    SteeringCoordinate_Reset(&g_coordinate);
+    g_bench.limits_aligned = 0U;
     g_center_cal.serial = ++g_center_cal_serial;
     g_center_cal.phase = CENTER_CAL_START_STABLE;
     g_center_cal.start_driver_count = s.steering_position_count;
@@ -662,7 +674,7 @@ uint8_t VcuRtos_CenterCalibrationKeepAlive(const char* session_id)
         center_reject_locked(g_center_cal.phase == CENTER_CAL_IDLE ?
             CENTER_CAL_REASON_WRONG_PHASE : CENTER_CAL_REASON_SESSION_MISMATCH, 0U);
     else {
-        g_center_cal.last_reject_reason = CENTER_CAL_REASON_NONE;
+        /* A read/keepalive is not a successful retry of the rejected command. */
         if (g_center_cal.phase == CENTER_CAL_READY)
             g_center_cal.deadline_ms = HAL_GetTick() + CENTER_CAL_READY_LEASE_MS;
     }
@@ -681,7 +693,9 @@ uint8_t VcuRtos_CenterCalibrationJog(const char* session_id, int16_t delta_mdeg)
     valid_delta = (uint8_t)(delta_mdeg == VEHICLE_CENTER_JOG_FINE_MDEG ||
         delta_mdeg == -VEHICLE_CENTER_JOG_FINE_MDEG ||
         delta_mdeg == VEHICLE_CENTER_JOG_COARSE_MDEG ||
-        delta_mdeg == -VEHICLE_CENTER_JOG_COARSE_MDEG);
+        delta_mdeg == -VEHICLE_CENTER_JOG_COARSE_MDEG ||
+        delta_mdeg == VEHICLE_CENTER_JOG_LARGE_MDEG ||
+        delta_mdeg == -VEHICLE_CENTER_JOG_LARGE_MDEG);
     taskENTER_CRITICAL();
     next = g_center_cal.accumulated_mdeg + delta_mdeg;
     if (g_center_cal.phase != CENTER_CAL_READY || !center_session_matches(session_id) ||
@@ -816,8 +830,25 @@ static void center_calibration_tick(uint32_t now)
     uint32_t gate_mask;
     if (phase == CENTER_CAL_IDLE || phase == CENTER_CAL_COMPLETE || phase == CENTER_CAL_FAILED) return;
     VcuRtos_GetDiagnostics(&s);
+    now = HAL_GetTick(); /* never subtract a newer RX sample from an older task timestamp */
     gate_mask = center_gate_mask(&s,
         (uint8_t)(phase == CENTER_CAL_START_STABLE || phase == CENTER_CAL_COMMIT_STABLE));
+    /* READY is idle, not immune to a terminal fault.  Keep transient stale
+     * samples as motion gates, but never advertise READY after power/fault loss. */
+    if (g_bench.phase == BENCH_FAULT || g_drive.phase == BENCH_FAULT) {
+        center_calibration_fail(2U, CENTER_CAL_REASON_BENCH_EXECUTOR_FAULT, &s, gate_mask);
+        return;
+    }
+    if (gate_mask & (CENTER_GATE_POWER_OFF | CENTER_GATE_CAN_BUS_OFF |
+                    CENTER_GATE_CAN_BUS_OFF_ACTIVE | CENTER_GATE_OTA_BUSY |
+                    CENTER_GATE_DRIVE_FAULT | CENTER_GATE_FAULT_LATCHED)) {
+        center_calibration_fail(2U, CENTER_CAL_REASON_GATE_NOT_READY, &s, gate_mask);
+        return;
+    }
+    if (phase == CENTER_CAL_READY && !g_center_cal.relative_valid) {
+        center_calibration_fail(2U, CENTER_CAL_REASON_RELATIVE_MISMATCH, &s, gate_mask);
+        return;
+    }
     if ((int32_t)(now - g_center_cal.deadline_ms) >= 0) {
         if (phase == CENTER_CAL_READY && center_calibration_expire_idle(now)) return;
         center_calibration_fail(1U, CENTER_CAL_REASON_PHASE_TIMEOUT, &s, gate_mask);
@@ -965,7 +996,8 @@ static void Vcu_CanRxTask(void *argument)
             memcpy(decoded.data, frame.data, sizeof(decoded.data));
             taskENTER_CRITICAL();
             /* Exactly one SDO owner; executor responses never satisfy a diagnostic request. */
-            if ((decoded.id == 0x701 || decoded.id == 0x702) && decoded.dlc == 1 && decoded.data[0] == 0 && g_coordinate.valid)
+            if ((decoded.id == 0x701 || decoded.id == 0x702) && decoded.dlc == 1 && decoded.data[0] == 0 &&
+                (g_coordinate.valid || center_session_active()))
                 g_coordinate_reset_requested = 1;
             uint8_t execution = BenchSteering_OnFrame(&g_bench, &decoded, frame.timestamp_ms) ? 1 :
                 BenchDrive_OnFrame(&g_drive, &decoded, frame.timestamp_ms) ? 2 : 0;
@@ -1022,6 +1054,12 @@ static void Vcu_CanopenTask(void *argument)
                  * must not turn an idle executor into BENCH_FAULT.  While
                  * powered, a reset of a valid coordinate remains a latched
                  * safety fault. */
+                if (VehiclePowerOutput_IsOn() && center_session_active()) {
+                    PatrolDiagnosticsSnapshot reset_snapshot;
+                    PatrolDiagnostics_Snapshot(&g_diagnostics, now, &reset_snapshot);
+                    center_calibration_fail(2U, CENTER_CAL_REASON_POSITION_EPOCH_RESET,
+                        &reset_snapshot, center_gate_mask(&reset_snapshot, 0U));
+                }
                 if (g_coordinate.valid) BenchSteering_Stop(&g_bench, now, 1);
                 SteeringCoordinate_Reset(&g_coordinate);
                 g_coordinate_reset_requested = 0;
@@ -1067,7 +1105,8 @@ static void Vcu_CanopenTask(void *argument)
                 c->target_rpm, g_diagnostics.left_actual_rpm, g_diagnostics.right_actual_rpm,
                 g_diagnostics.left_rpm_ms, g_diagnostics.right_rpm_ms);
             BenchSteering_Tick(&g_bench, now, requested && g_drive.phase != BENCH_FAULT, safe, requested_angle);
-            g_diagnostics.motion_priority = (g_bench.phase != BENCH_IDLE && g_bench.phase != BENCH_FAULT) ||
+            g_diagnostics.motion_priority = center_session_active() ||
+                (g_bench.phase != BENCH_IDLE && g_bench.phase != BENCH_FAULT) ||
                 (g_drive.phase != BENCH_IDLE && g_drive.phase != BENCH_FAULT);
             if (g_bench.phase == BENCH_STOPPING || g_bench.phase == BENCH_FAULT) {
                 RemoteService_BenchRevoke();
@@ -1080,12 +1119,26 @@ static void Vcu_CanopenTask(void *argument)
         }
         taskEXIT_CRITICAL();
         if (g_bench.cut_power || g_drive.cut_power) {
+            taskENTER_CRITICAL();
+            now = HAL_GetTick();
+            /* Capture before cross-stopping the other executor and before
+             * power-off turns healthy samples into secondary offline gates. */
+            if (center_session_active()) {
+                PatrolDiagnosticsSnapshot fault_snapshot;
+                PatrolDiagnostics_Snapshot(&g_diagnostics, now, &fault_snapshot);
+                center_capture_failure_locked(CENTER_CAL_REASON_BENCH_EXECUTOR_FAULT,
+                    center_gate_mask(&fault_snapshot, 0U), now, &fault_snapshot);
+                g_center_cal.phase = CENTER_CAL_FAILED;
+                g_center_cal.fault = 2U;
+                g_center_cal.encoder_write_state = 0U;
+            }
             BenchDrive_Stop(&g_drive, now, 1);
             BenchSteering_Stop(&g_bench, now, 1);
             g_bench_fault_gate_mask = g_feedback_gate_mask;
             RemoteService_BenchFault();
             (void)VehiclePowerOutput_Set(0);
             g_bench.cut_power = 0; g_drive.cut_power = 0;
+            taskEXIT_CRITICAL();
         }
         if (VehiclePowerOutput_IsOn() && !VcuRtos_CanBusOffActive() &&
             HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) > 0U)
@@ -1203,7 +1256,7 @@ static void Vcu_CanopenTask(void *argument)
                 VEHICLE_MAX_STEERING_MDEG, &feedback.encoder_actual_mdeg);
             if (PATROL_CHASSIS_BENCH_STEERING_ENABLED) {
                 uint8_t was_valid = g_coordinate.valid;
-                if (!VehiclePowerOutput_IsOn()) SteeringCoordinate_Reset(&g_coordinate);
+                if (!VehiclePowerOutput_IsOn() || center_session_active()) SteeringCoordinate_Reset(&g_coordinate);
                 else if (g_coordinate.valid && SteeringCoordinate_EpochLost(
                     g_feedback_gate_mask, snapshot.steering_online,
                     cfg->steering_center_count == g_coordinate_calibration_center &&

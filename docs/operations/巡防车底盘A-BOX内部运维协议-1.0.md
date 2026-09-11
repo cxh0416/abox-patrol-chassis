@@ -142,7 +142,9 @@ OTA 请求使用 `command=ota_upgrade`，`params` 必须包含不可变 HTTPS `u
 ## 转向中位标定接口
 
 - `start_center_calibration` 无参数。设备只在 OTA 空闲、普通远控和其他台架许可关闭、节点及反馈在线、CAN 正常、驱动无故障、行走未使能且左右轮连续满足静止要求时创建会话。已有有效的两路标定且角度一致，才允许后续电机点动。
-- `jog_center_calibration` 必须携带 `sessionId` 和 `deltaMdeg`；`deltaMdeg` 只允许 `-1000`、`-200`、`200`、`1000`。会话以两路原始值建立临时相对坐标，连续校验相对变化；累计目标必须处于 `-60000..60000 mdeg`，并始终服从驱动器当前软限位。
+- `jog_center_calibration` 必须携带 `sessionId` 和 `deltaMdeg`；`deltaMdeg` 只允许 `-5000`、`-1000`、`-200`、`200`、`1000`、`5000`（左／右 0.2°、1°、5°）。会话以两路原始值建立临时相对坐标，连续校验相对变化；累计目标必须处于 `-60000..60000 mdeg`，并始终服从驱动器当前软限位。5° 档位不放宽反馈新鲜度、静止、双路偏差及其他运动门禁。
+- 标定会话持有独立的临时相对坐标，期间不得从旧标定重新建立普通行驶坐标。可调整阶段的短暂反馈过期仅阻止下一次点动；执行／停止阶段过期仍故障断电。底层执行器故障、故障锁存或电源关闭必须终止可调整状态并留存首次失败；标定期间 CANopen 节点 Boot-up 使相对坐标失效，原因码为 `position_epoch_reset`，不得自动重建。
+- `failure.reason=none` 表示没有失败快照；页面不得将此机器码转换为通用失败。`get_center_calibration` 续租／读取不得清除 `lastReject`；成功的新点动、提交或新会话可清除最近拒绝。首次失败快照与原始执行器错误码不可被后续停车覆盖。
 - `commit_center_calibration` 只携带 `sessionId`，不接受调用方提供编码器中位。设备固定执行编码器 2048 中位写入、读回校验及转向驱动器当前原始计数保存；响应已接受不表示整个异步提交已经完成。
 - `get_center_calibration` 必须携带 `sessionId`，返回 `phase`、`sessionId`、`fault`、`driverRaw`、`encoderRaw`、`targetMdeg`、`jogOffsetMdeg`、`rangeValid` 和 `calibrated`。`diagVersion=1` 时还返回 `failure` 和 `lastReject`：`failure` 只冻结本次会话首个失败，含失败阶段/原因、门禁位图、失败时两路原始值、轮速、样本年龄、失败前编码器累计错误数、CANopen 执行阶段/步骤/故障、两节点状态字、编码器写状态/最后错误和最近 SDO Abort；后续停机、下电或查询不覆盖。`lastReject` 记录最近一次未接受命令的原因和门禁位图。被拒绝的 start/jog/commit/keepalive/cancel 以 409 返回同一结构，平台须保存 `result`，不得只保留文字错误。标定可调整阶段以该查询作为短租约心跳；连续 15 秒未收到有效查询时设备停止标定并关闭车辆电源输出。静止可调整阶段的该超时不锁存为运动执行故障，运动或提交阶段的超时仍按执行故障处理。平台必须轮询至完成或失败，并结合后续掉电重启与反馈验证判断结果。
 - `cancel_center_calibration` 必须携带 `sessionId`。浏览器离开、网络异常、会话过期或人工停止时，平台应提交取消；设备停止执行、撤销许可并关闭车辆电源输出。

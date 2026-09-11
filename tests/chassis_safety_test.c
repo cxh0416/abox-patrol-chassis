@@ -37,6 +37,30 @@ static uint8_t test_power_write(uint8_t on)
     return 1U;
 }
 
+static int test_sdo_safety_priority(void)
+{
+    PatrolDiagnostics d;
+    PatrolCanFrame f;
+    PatrolDiagnostics_Init(&d);
+    d.steering_heartbeat_seen = d.drive_heartbeat_seen = 1;
+    d.steering_heartbeat_state = d.drive_heartbeat_state = 0x7f;
+    d.steering_heartbeat_ms = d.drive_heartbeat_ms = 100;
+    d.next_sdo_entry = 11; /* optional object must not precede due feedback */
+    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 100, &f));
+    CHECK(d.pending_entry < 5);
+    d.pending_valid = 0;
+    for (unsigned i = 0; i < 5; ++i) d.sdo_due_ms[i] = 200;
+    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 101, &f));
+    CHECK(d.pending_entry >= 5); /* low-rate reads retain spare capacity */
+    d.pending_valid = 0;
+    d.motion_priority = 1;
+    for (unsigned i = 0; i < 7; ++i) d.sdo_due_ms[i] = 200;
+    CHECK(!PatrolDiagnostics_TakeSdoRead(&d, 102, &f));
+    d.sdo_due_ms[5] = 100; /* drive fault registers are never excluded */
+    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 103, &f) && d.pending_entry == 5);
+    return 0;
+}
+
 static int test_sdo_waits_for_node(void)
 {
     PatrolDiagnostics d;
@@ -148,6 +172,7 @@ int main(void)
 {
     CHECK(test_sdo_waits_for_node() == 0);
     CHECK(test_status_snapshot_age() == 0);
+    CHECK(test_sdo_safety_priority() == 0);
     CHECK(test_field_sdo_replies() == 0);
     ChassisControl control;
     ChassisFeedback feedback = {0};
