@@ -10,11 +10,11 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def motion_sources():
-    return "\n".join((ROOT / "app/Core/User/Src" / name).read_text(encoding="utf-8")
-                     for name in ("vcu_rtos.c", "center_calibration.c", "patrol_runtime.c"))
+    return "\n".join((ROOT / "app/Core/User" / name).read_text(encoding="utf-8")
+                     for name in ("system/src/vcu_rtos.c", "motion/src/center_calibration.c", "motion/src/patrol_runtime.c"))
 
 def cloud_sources():
-    return "\n".join((ROOT / "app/Core/User/Src" / name).read_text(encoding="utf-8")
+    return "\n".join((ROOT / "app/Core/User/cloud/src" / name).read_text(encoding="utf-8")
                      for name in ("cloud_service.c", "cloud_commands.c", "cloud_messages.c", "cloud_tx.c"))
 
 
@@ -22,7 +22,7 @@ class PatrolScaffoldTests(unittest.TestCase):
     def test_identity_and_safe_defaults(self):
         cmake = (ROOT / "app/CMakeLists.txt").read_text(encoding="utf-8")
         config = (ROOT / "platform_config/abox_product_config.h").read_text(encoding="utf-8")
-        device_config = (ROOT / "app/Core/User/Inc/vcu_config.h").read_text(encoding="utf-8")
+        device_config = (ROOT / "app/Core/User/system/include/vcu_config.h").read_text(encoding="utf-8")
         rtos = motion_sources()
         self.assertIn("Patrol_Vehicle_Chassis_App", cmake)
         self.assertIn('"patrol_vehicle_chassis"', config)
@@ -40,7 +40,7 @@ class PatrolScaffoldTests(unittest.TestCase):
         version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
         self.assertRegex(version, r"^patrol-chassis-\d+\.\d+\.\d+$")
         cmake = (ROOT / "app/CMakeLists.txt").read_text(encoding="utf-8")
-        header = (ROOT / "app/Core/User/Inc/app_version.h").read_text(encoding="utf-8")
+        header = (ROOT / "app/Core/User/system/include/app_version.h").read_text(encoding="utf-8")
         helper = (ROOT / "tools/product_version.ps1").read_text(encoding="utf-8")
         self.assertIn('../VERSION', cmake)
         self.assertIn('PATROL_CHASSIS_APP_VERSION_OVERRIDE "" CACHE STRING', cmake)
@@ -54,7 +54,7 @@ class PatrolScaffoldTests(unittest.TestCase):
             self.assertNotIn(version, script)
 
     def test_confirmed_vehicle_power_output_is_isolated_to_pvin_out1(self):
-        port = (ROOT / "app/Core/User/Src/vehicle_power_port.c").read_text(encoding="utf-8")
+        port = (ROOT / "app/Core/User/board/src/vehicle_power_port.c").read_text(encoding="utf-8")
         self.assertIn("PVIN_OUT1_GPIO_Port", port)
         self.assertIn("PVIN_OUT1_Pin", port)
         self.assertNotIn("PVIN_OUT2", port)
@@ -72,7 +72,7 @@ class PatrolScaffoldTests(unittest.TestCase):
 
     def test_public_and_internal_mqtt_contracts_are_separated(self):
         cloud = cloud_sources()
-        remote = (ROOT / "app/Core/User/Src/remote_service.c").read_text(encoding="utf-8")
+        remote = (ROOT / "app/Core/User/cloud/src/remote_service.c").read_text(encoding="utf-8")
         self.assertIn('"/zxwl/abox/%s/ctrl"', cloud)
         self.assertIn('"/zxwl/abox/%s/status/report"', cloud)
         self.assertIn('\\"deviceType\\":\\"vehicle_chassis', cloud)
@@ -81,7 +81,7 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertNotRegex(cloud, r"%[-+0-9.#]*[fFeEgGaA]")
         self.assertNotRegex(remote, r"%[-+0-9.#]*[fFeEgGaA]")
         self.assertIn('\\\"code\\\":%u', remote)
-        mqtt_core = (ROOT / "app/Core/User/Src/mqtt_core.c").read_text(encoding="utf-8")
+        mqtt_core = (ROOT / "app/Core/User/mqtt/src/mqtt_core.c").read_text(encoding="utf-8")
         self.assertIn('AT+QMTSUB=%d,1,\\\"%s\\\",1', mqtt_core)
         self.assertIn('\\\"transportDiagnostics\\\"', cloud)
         self.assertIn('\\\"ecDmaOverflows\\\"', cloud)
@@ -121,7 +121,7 @@ class PatrolScaffoldTests(unittest.TestCase):
     def test_center_calibration_freezes_structured_failure_and_rejection_evidence(self):
         rtos = motion_sources()
         cloud = cloud_sources()
-        diagnostics = (ROOT / "app/Core/User/Src/patrol_diagnostics.c").read_text(encoding="utf-8")
+        diagnostics = (ROOT / "app/Core/User/motion/src/patrol_diagnostics.c").read_text(encoding="utf-8")
         self.assertIn("CenterCalibration_CaptureFailureLocked", rtos)
         for token in ("diagVersion", "gateMask", "driverRaw", "feedbackAge",
                       "encoderAge", "encoderErrTotal", "lastReject", "lastAbort"):
@@ -142,7 +142,7 @@ class PatrolScaffoldTests(unittest.TestCase):
 
     def test_idle_coordinate_watchdog_ignores_non_position_motion_gates(self):
         rtos = motion_sources()
-        angle = (ROOT / "app/Core/User/Src/steering_angle.c").read_text(encoding="utf-8")
+        angle = (ROOT / "app/Core/User/motion/src/steering_angle.c").read_text(encoding="utf-8")
         watchdog = rtos[rtos.index("else if (g_motion.coordinate.valid"):
                         rtos.index("SteeringCoordinate_Observe", rtos.index("else if (g_motion.coordinate.valid"))]
         self.assertIn("SteeringCoordinate_EpochLost", watchdog)

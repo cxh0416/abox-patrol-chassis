@@ -9,6 +9,8 @@ for path in build.rglob('*.su'):
     for line in path.read_text(errors='replace').splitlines():
         fields=line.split('\t')
         if len(fields)>=3:
+            if not Path(fields[0].rsplit(':',3)[0]).is_file():
+                continue
             name=fields[0].rsplit(':',1)[-1].split('.')[0]
             frames[name]=max(frames.get(name,0),int(fields[1]))
 chain=['Vcu_RemoteTask','CloudService_Task','CloudCommands_OnMessage','handle_config_request','VcuConfig_SetCalibration',
@@ -16,7 +18,7 @@ chain=['Vcu_RemoteTask','CloudService_Task','CloudCommands_OnMessage','handle_co
 for name in chain:
     if name not in frames:raise SystemExit('Missing stack evidence: '+name)
 used=sum(frames[n] for n in chain)
-source=(Path(__file__).resolve().parents[1]/'app/Core/User/Src/vcu_rtos.c').read_text()
+source=(Path(__file__).resolve().parents[1]/'app/Core/User/system/src/vcu_rtos.c').read_text()
 capacity=int(re.search(r'#define VCU_REMOTE_STACK_WORDS (\d+)U',source)[1])*4
 assert used+1024<=capacity, (used,capacity)
 print(f'PASS calibration stack: known frames {used} + 1024 byte reserve <= {capacity}')

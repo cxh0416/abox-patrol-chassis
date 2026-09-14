@@ -4,6 +4,7 @@ import shutil
 import subprocess
 import tempfile
 import unittest
+from product_layout import include_args
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -18,11 +19,10 @@ class CenterRuntimeTests(unittest.TestCase):
             command = [gcc, "-std=c11", "-Wall", "-Wextra", "-Werror", "-Wno-format",
                        "-ffunction-sections", "-fdata-sections", "-Wl,--gc-sections",
                        "-DPATROL_CHASSIS_BENCH_STEERING_ENABLED=1",
-                       "-I" + str(ROOT / "app/Core/User/Inc"),
-                       "-I" + str(ROOT / "app/Core/User/Src"),
+                       *include_args(private=("motion",)),
                        "-I" + str(ROOT / "shared/include"),
                        str(ROOT / "tests/center_runtime_cases.c"),
-                       *[str(ROOT / "app/Core/User/Src" / name) for name in sources],
+                       *[str(ROOT / "app/Core/User/motion/src" / name) for name in sources],
                        "-o", str(binary)]
             built = subprocess.run(command, capture_output=True, text=True)
             self.assertEqual(built.returncode, 0, built.stdout + built.stderr)

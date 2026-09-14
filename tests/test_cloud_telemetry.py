@@ -3,6 +3,7 @@ import shutil
 import subprocess
 import tempfile
 import unittest
+from product_layout import include_args
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -12,12 +13,12 @@ class TelemetryTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             binary = Path(directory) / 'test.exe'
             subprocess.run([shutil.which('gcc') or 'gcc', '-std=c11', '-Wall', '-Wextra',
-                            '-Werror', '-I' + str(ROOT / 'app/Core/User/Inc'),
+                            '-Werror', *include_args(),
                             '-I' + str(ROOT / 'tests/bench_stubs'),
-                            '-I' + str(ROOT / 'app/Core/User/Src'),
+                            '-I' + str(ROOT / 'app/Core/User/cloud/private'),
                             '-I' + str(ROOT / 'platform/include'),
                             str(ROOT / 'tests/cloud_telemetry_scheduler_cases.c'),
-                            str(ROOT / 'app/Core/User/Src/cloud_tx.c'),
+                            str(ROOT / 'app/Core/User/cloud/src/cloud_tx.c'),
                             '-o', str(binary)], check=True)
             subprocess.run([str(binary)], check=True)
 
@@ -54,6 +55,6 @@ int main(void) {
             binary = Path(directory) / 'test.exe'
             source.write_text(code, encoding='utf-8')
             subprocess.run([shutil.which('gcc') or 'gcc', '-std=c11', '-Wall', '-Wextra',
-                            '-Werror', '-I' + str(ROOT / 'app/Core/User/Inc'),
+                            '-Werror', *include_args(),
                             str(source), '-o', str(binary)], check=True)
             subprocess.run([str(binary)], check=True)

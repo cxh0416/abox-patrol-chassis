@@ -77,49 +77,8 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined library search paths
 )
 
-# Add sources to executable
-target_sources(${CMAKE_PROJECT_NAME} PRIVATE
-    Core/User/Src/abox_product_port.c
-    Core/User/Src/absolute_encoder.c
-    Core/User/Src/app_log.c
-    Core/User/Src/vcu_config.c
-    Core/User/Src/app_version.c
-    Core/User/Src/cloud_service.c
-    Core/User/Src/cloud_commands.c
-    Core/User/Src/cloud_messages.c
-    Core/User/Src/cloud_tx.c
-    Core/User/Src/cloud_protocol.c
-    Core/User/Src/chassis_cloud_protocol.c
-    Core/User/Src/chassis_control.c
-    Core/User/Src/chassis_power.c
-    Core/User/Src/fixed_point.c
-    Core/User/Src/mqtt_core.c
-    Core/User/Src/mqtt_core_parser.c
-    Core/User/Src/mqtt_core_port.c
-    Core/User/Src/mqtt_qmtrecv.c
-    Core/User/Src/ota_info.c
-    Core/User/Src/ota_service.c
-    Core/User/Src/patrol_canopen.c
-    Core/User/Src/patrol_diagnostics.c
-    Core/User/Src/remote_service.c
-    Core/User/Src/steering_angle.c
-    Core/User/Src/bench_steering.c
-    Core/User/Src/bench_drive.c
-    Core/User/Src/time_base.c
-    Core/User/Src/vehicle_power_output.c
-    Core/User/Src/vehicle_power_port.c
-    Core/User/Src/patrol_runtime.c
-    Core/User/Src/center_calibration.c
-    Core/User/Src/vcu_rtos.c
-    ${CMAKE_SOURCE_DIR}/../shared/boot_state_compat.c
-    ${CMAKE_SOURCE_DIR}/../shared/fault_mailbox_compat.c
-)
-
-# Add include paths
-target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
-    Core/User/Inc
-    ${CMAKE_SOURCE_DIR}/../shared/include
-)
+# Product source files and module-scoped include paths.
+include(Core/User/modules.cmake)
 
 # Add project symbols (macros)
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
@@ -142,7 +101,7 @@ else()
     )
 endif()
 if(PATROL_CHASSIS_APP_FAULT_INJECTION_TEST)
-    target_sources(${CMAKE_PROJECT_NAME} PRIVATE Core/User/Src/app_test.c)
+    target_sources(${CMAKE_PROJECT_NAME} PRIVATE Core/User/system/src/app_test.c)
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
         PATROL_CHASSIS_APP_FAULT_INJECTION_TEST=1
         PATROL_CHASSIS_APP_TEST_FAULT_KIND=${PATROL_CHASSIS_APP_TEST_FAULT_KIND}

@@ -3,8 +3,8 @@ from pathlib import Path
 
 def main() -> None:
     root = Path(__file__).resolve().parents[1]
-    cloud = "\n".join((root / "app/Core/User/Src" / name).read_text(encoding="utf-8")
-                      for name in ("cloud_service.c", "cloud_internal.h"))
+    cloud = "\n".join((root / "app/Core/User/cloud" / name).read_text(encoding="utf-8")
+                      for name in ("src/cloud_service.c", "private/cloud_internal.h"))
     uart_source = (root / "app/Core/Src/usart.c").read_text(encoding="utf-8")
     ioc = (root / "app/Patrol_Vehicle_Chassis.ioc").read_text(encoding="utf-8")
     cmake = (root / "app/CMakeLists.txt").read_text(encoding="utf-8")
@@ -16,9 +16,8 @@ def main() -> None:
     assert "ABoxEc800Rx_Drain(&g_cloud.ec800_rx" in cloud
     assert "ABoxEc800At_AbortAll(&g_cloud.at_core, ABOX_EC800_RESULT_ERROR)" in cloud
     assert "EC800_AT_SetRxOverflowCount" in cloud
-    assert "Core/User/Src/ec800_at.c" not in cmake
     assert "abox::ec800" in cmake
-    assert not (root / "app/Core/User/Src/ec800_at.c").exists()
+    assert not list((root / "app/Core/User").glob("*/src/ec800_at.c"))
     print("uart1_circular_dma_contract: PASS")
 
 
