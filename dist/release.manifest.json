@@ -1,66 +1,66 @@
-{
-  "manifest_version": 3,
-  "product": "patrol_vehicle_chassis",
-  "version": "patrol-chassis-0.2.25",
-  "configuration": "Release",
-  "bench_steering_available": true,
-  "startup_motion_permit": false,
-  "drive_actuation": true,
-  "drive_limit_rpm": 200,
-  "boot_version": "abox-boot-2.3.0",
-  "ota_scheme": "boot_v2_ufs",
-  "ota_downloader": "app",
-  "app_range": "0x08008000..0x0803E7FF",
-  "boot_state_pages": [
-    "0x0803E800",
-    "0x0803F000"
-  ],
-  "config_page": "0x0803F800",
-  "product_commit": "c68330ab1c7aa184ce0bfdab861b1e267418497c",
-  "product_dirty": false,
-  "platform_commit": "e60057c9639238c47fdc168cf2eed81594a1d034",
-  "platform_dirty": false,
-  "version_marker": "PATROL_VEHICLE_CHASSIS_FW_VERSION=patrol-chassis-0.2.25",
-  "flash_ram": {
-    "boot": {
-      "image_bytes": 32768,
-      "source": "platform/targets/stm32f105_abox_boot"
-    },
-    "app": {
-      "flash_bytes": 106756,
-      "ram_bytes": 60132
-    },
-    "boot_limit_bytes": 32768,
-    "app_limit_bytes": 223232,
-    "ram_limit_bytes": 65536
-  },
-  "artifacts": [
-    {
-      "name": "Patrol_Vehicle_Chassis_App.bin",
-      "length": 106768,
-      "load_address": "0x08008000",
-      "crc32": "5C3151FC",
-      "sha256": "C242E463E7BFCF04067ED9FCBE93ECB1AC95F2430FDD1F8DA95E5638CC8AD8A0",
-      "includes_device_config": false,
-      "includes_boot_state": false
-    },
-    {
-      "name": "ABox_Boot.bin",
-      "length": 32768,
-      "load_address": "0x08000000",
-      "crc32": "F36320C9",
-      "sha256": "981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63",
-      "includes_device_config": false,
-      "includes_boot_state": false
-    },
-    {
-      "name": "Patrol_Vehicle_Chassis_Full.bin",
-      "length": 139536,
-      "load_address": "0x08000000",
-      "crc32": "37C65593",
-      "sha256": "919D9DB5D6325563C916E419C19BB74B364847F3147F3A9F8EBB7E66DD003EE3",
-      "includes_device_config": false,
-      "includes_boot_state": false
-    }
-  ]
+﻿{
+    "manifest_version":  3,
+    "product":  "patrol_vehicle_chassis",
+    "version":  "patrol-chassis-0.2.27",
+    "configuration":  "Release",
+    "bench_steering_available":  true,
+    "startup_motion_permit":  false,
+    "drive_actuation":  true,
+    "drive_limit_rpm":  200,
+    "boot_version":  "abox-boot-2.3.0",
+    "ota_scheme":  "boot_v2_ufs",
+    "ota_downloader":  "app",
+    "app_range":  "0x08008000..0x0803E7FF",
+    "boot_state_pages":  [
+                             "0x0803E800",
+                             "0x0803F000"
+                         ],
+    "config_page":  "0x0803F800",
+    "product_commit":  "adc5a60696581102174b0e49e886256acd7feb4a",
+    "product_dirty":  false,
+    "platform_commit":  "e60057c9639238c47fdc168cf2eed81594a1d034",
+    "platform_dirty":  false,
+    "version_marker":  "PATROL_VEHICLE_CHASSIS_FW_VERSION=patrol-chassis-0.2.27",
+    "flash_ram":  {
+                      "boot":  {
+                                   "image_bytes":  32768,
+                                   "source":  "platform/targets/stm32f105_abox_boot"
+                               },
+                      "app":  {
+                                  "flash_bytes":  107076,
+                                  "ram_bytes":  60136
+                              },
+                      "boot_limit_bytes":  32768,
+                      "app_limit_bytes":  223232,
+                      "ram_limit_bytes":  65536
+                  },
+    "artifacts":  [
+                      {
+                          "name":  "Patrol_Vehicle_Chassis_App.bin",
+                          "length":  107088,
+                          "load_address":  "0x08008000",
+                          "crc32":  "1019152D",
+                          "sha256":  "85B8777D2B84BA9ABF4D64B250EE5D7F1971D498CB782552B4F668D53085F337",
+                          "includes_device_config":  false,
+                          "includes_boot_state":  false
+                      },
+                      {
+                          "name":  "ABox_Boot.bin",
+                          "length":  32768,
+                          "load_address":  "0x08000000",
+                          "crc32":  "F36320C9",
+                          "sha256":  "981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63",
+                          "includes_device_config":  false,
+                          "includes_boot_state":  false
+                      },
+                      {
+                          "name":  "Patrol_Vehicle_Chassis_Full.bin",
+                          "length":  139856,
+                          "load_address":  "0x08000000",
+                          "crc32":  "3919C44C",
+                          "sha256":  "B77A8CB03ED284CDE8480DFD1D650EBD56CF224ED5F7F418ACE8624C6B4CBE45",
+                          "includes_device_config":  false,
+                          "includes_boot_state":  false
+                      }
+                  ]
 }
