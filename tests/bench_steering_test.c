@@ -47,9 +47,9 @@ int main(void)
     SteeringCoordinate_Observe(&coordinate,1,0,0,3182,500,500);
     assert(coordinate.runtime_center==-72187); /* never re-zero an established coordinate */
     SteeringCoordinate_Reset(&coordinate);
-    SteeringCoordinate_Observe(&coordinate,1,INT32_MAX,0,3182,0,0);
-    SteeringCoordinate_Observe(&coordinate,1,INT32_MAX,0,3182,200,200);
-    SteeringCoordinate_Observe(&coordinate,1,INT32_MAX,0,3182,400,400);
+    SteeringCoordinate_Observe(&coordinate,1,INT32_MIN,0,3182,0,0);
+    SteeringCoordinate_Observe(&coordinate,1,INT32_MIN,0,3182,200,200);
+    SteeringCoordinate_Observe(&coordinate,1,INT32_MIN,0,3182,400,400);
     assert(!coordinate.valid); /* runtime center overflow */
     assert(SteeringAngle_ToControllerCount(1000,-85123,2710800,1,-111593,-56037,&target)&&target==-82413);
     assert(SteeringAngle_ToControllerCount(-1000,-85123,2710800,1,-111593,-56037,&target)&&target==-87833);

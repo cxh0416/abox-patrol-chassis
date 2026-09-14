@@ -32,7 +32,7 @@ int main(void)
     assert(!VcuConfig_Get()->calibrated);
     save_ok=1; assert(VcuConfig_SetCalibration(-85123,3182,2710800,55250,1,1,2000));
     assert(!VcuConfig_SingleTurnProfileReady());
-    assert(VcuConfig_SetCalibration(-85123,2048,2710800,55250,1,1,2000));
+    assert(VcuConfig_SetCalibration(-85123,0,2710800,55250,1,1,2000));
     assert(VcuConfig_SingleTurnProfileReady());
     assert(VcuConfig_SetCalibration(-85123,3182,2710800,55250,1,1,2000));
     VcuConfig_Load(); assert(VcuConfig_Get()->calibrated&&!VcuConfig_Get()->remote_enabled);

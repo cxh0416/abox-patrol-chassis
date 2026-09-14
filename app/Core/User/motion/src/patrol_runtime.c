@@ -68,7 +68,7 @@ void PatrolRuntime_FormatBench(char* out, uint16_t size)
     snprintf(out, size, "{\"available\":%s,\"permitted\":%s,\"phase\":%u,\"step\":%u,"
         "\"fault\":%lu,\"feedbackGateMask\":%u,\"coordinateValid\":%s,\"runtimeCenterCount\":%ld,"
         "\"limitMdeg\":%u,\"sessionId\":\"%s\",\"driveAvailable\":%s,\"drivePermitted\":%s,\"drivePhase\":%u,\"driveFault\":%lu,\"driveLimitRpm\":200,"
-        "\"safetyProfile\":\"single_turn_4096_center2048_limit30_v1\",\"profileReady\":%s,\"rangeValid\":%s,\"contactorFeedbackAvailable\":false}",
+        "\"safetyProfile\":\"single_turn_4096_center0_wrap_limit30_v2\",\"profileReady\":%s,\"rangeValid\":%s,\"contactorFeedbackAvailable\":false}",
         PATROL_CHASSIS_BENCH_STEERING_ENABLED ? "true" : "false",
         RemoteService_BenchPermitted() ? "true" : "false", (unsigned)g_motion.bench.phase,
         (unsigned)g_motion.bench.step, (unsigned long)g_motion.bench.fault,

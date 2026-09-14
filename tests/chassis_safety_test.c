@@ -210,6 +210,15 @@ int main(void)
     CHECK(!SteeringCoordinate_EpochLost(2U | 8U | 16U | 64U | 128U, 1U, 1U));
     {
         int32_t angle = 0;
+        CHECK(SteeringAngle_AbsoluteWithinLimit(0U, 0U, 55250U, 1, 30000, &angle) && angle == 0);
+        CHECK(SteeringAngle_AbsoluteWithinLimit(4095U, 0U, 55250U, 1, 30000, &angle) && angle == -18);
+        CHECK(SteeringAngle_AbsoluteWithinLimit(1U, 0U, 55250U, 1, 30000, &angle) && angle == 18);
+        CHECK(SteeringAngle_AbsoluteWithinLimit(2439U, 0U, 55250U, 1, 30000, &angle));
+        CHECK(!SteeringAngle_AbsoluteWithinLimit(2438U, 0U, 55250U, 1, 30000, &angle));
+        CHECK(SteeringAngle_AbsoluteWithinLimit(1657U, 0U, 55250U, 1, 30000, &angle));
+        CHECK(!SteeringAngle_AbsoluteWithinLimit(1658U, 0U, 55250U, 1, 30000, &angle));
+        CHECK(!SteeringAngle_AbsoluteWithinLimit(4096U, 0U, 55250U, 1, 30000, &angle));
+        CHECK(!SteeringAngle_AbsoluteWithinLimit(2048U, 0U, 55250U, 1, 30000, &angle));
         CHECK(SteeringAngle_AbsoluteWithinLimit(2048U, 2048U, 55250U, 1, 30000, &angle) && angle == 0);
         CHECK(SteeringAngle_AbsoluteWithinLimit(391U, 2048U, 55250U, 1, 30000, &angle));
         CHECK(!SteeringAngle_AbsoluteWithinLimit(390U, 2048U, 55250U, 1, 30000, &angle));
@@ -239,12 +248,12 @@ int main(void)
     response[7] = (uint8_t)crc; response[8] = (uint8_t)(crc >> 8);
     CHECK(AbsoluteEncoder_ParseResponse(response, sizeof(response), &count));
     CHECK(count == 0x56781234U);
-    AbsoluteEncoder_BuildWriteSingleRequest(3U, 2048U, write_response);
+    AbsoluteEncoder_BuildWriteSingleRequest(3U, 15U, write_response);
     CHECK(write_response[0] == 1U && write_response[1] == 6U && write_response[3] == 3U &&
-          write_response[4] == 8U && write_response[5] == 0U);
-    CHECK(AbsoluteEncoder_ParseWriteSingleResponse(write_response, sizeof(write_response), 3U, 2048U));
+          write_response[4] == 0U && write_response[5] == 15U);
+    CHECK(AbsoluteEncoder_ParseWriteSingleResponse(write_response, sizeof(write_response), 3U, 15U));
     write_response[5] = 1U;
-    CHECK(!AbsoluteEncoder_ParseWriteSingleResponse(write_response, sizeof(write_response), 3U, 2048U));
+    CHECK(!AbsoluteEncoder_ParseWriteSingleResponse(write_response, sizeof(write_response), 3U, 15U));
     crc = AbsoluteEncoder_Crc16(config_response, 9);
     config_response[9] = (uint8_t)crc; config_response[10] = (uint8_t)(crc >> 8);
     CHECK(AbsoluteEncoder_ParseHoldingResponse(config_response, sizeof(config_response), config_values, 3U));

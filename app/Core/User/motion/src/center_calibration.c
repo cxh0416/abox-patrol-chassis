@@ -528,8 +528,8 @@ void CenterCalibration_Tick(uint32_t now)
     if (phase == CENTER_CAL_ENCODER_VERIFY) {
         if (s.encoder_sample_ms == 0U || s.encoder_sample_ms == g_motion.center_cal.last_sample_ms) return;
         g_motion.center_cal.last_sample_ms = s.encoder_sample_ms;
-        if (s.encoder_count < VEHICLE_ABSOLUTE_CENTER_COUNT - 2U ||
-            s.encoder_count > VEHICLE_ABSOLUTE_CENTER_COUNT + 2U) {
+        if (s.encoder_count >= VEHICLE_ABSOLUTE_SINGLE_TURN_COUNTS ||
+            (s.encoder_count > 2U && s.encoder_count < VEHICLE_ABSOLUTE_SINGLE_TURN_COUNTS - 2U)) {
             CenterCalibration_Fail(6U, CENTER_CAL_REASON_ENCODER_VERIFY_MISMATCH, &s, gate_mask);
             return;
         }

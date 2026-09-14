@@ -161,6 +161,30 @@ int main(void)
     PatrolRuntime_Tick();
     assert(!mock_sent && !mock_permit && g_motion.bench.phase == BENCH_STOPPING);
     assert(!g_motion.bench.pending);
+    /* Full commit: clear, write, and three fresh samples straddling zero. */
+    reset_fixture(); start_ready();
+    assert(CenterCalibration_Commit(g_motion.center_cal.session_id));
+    for (int i=0;i<3;i++) {
+        mock_now+=20; mock_snapshot.coherent_feedback_ms=mock_now;
+        CenterCalibration_Tick(mock_now);
+    }
+    assert(g_motion.center_cal.phase==CENTER_CAL_ENCODER_WRITE);
+    g_motion.center_cal.encoder_write_state=2;
+    CenterCalibration_Tick(++mock_now);
+    assert(g_motion.center_cal.phase==CENTER_CAL_ENCODER_VERIFY);
+    const uint32_t samples[3]={4095,0,1};
+    for (int i=0;i<3;i++) {
+        mock_now+=20; mock_snapshot.encoder_sample_ms=mock_now;
+        mock_snapshot.encoder_count=samples[i];
+        CenterCalibration_Tick(mock_now);
+        if(i<2) assert(g_motion.center_cal.phase==CENTER_CAL_ENCODER_VERIFY);
+    }
+    assert(g_motion.center_cal.phase==CENTER_CAL_COMPLETE && !mock_power);
+    reset_fixture(); start_ready();
+    g_motion.center_cal.phase=CENTER_CAL_ENCODER_VERIFY;
+    mock_snapshot.encoder_count=4096;
+    CenterCalibration_Tick(mock_now);
+    assert(g_motion.center_cal.phase==CENTER_CAL_FAILED);
     puts("PASS production center READY fault chain, preserved evidence, epoch ownership and +/-5 degree limits");
     return 0;
 }

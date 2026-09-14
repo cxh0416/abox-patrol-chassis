@@ -299,7 +299,7 @@ static void Vcu_EncoderTask(void *argument)
         write_center = PatrolRuntime_BeginEncoderCycle(&snapshot);
         taskEXIT_CRITICAL();
         if (write_center) {
-            AbsoluteEncoder_BuildWriteSingleRequest(3U, VEHICLE_ABSOLUTE_CENTER_COUNT, request);
+            AbsoluteEncoder_BuildWriteSingleRequest(3U, VEHICLE_ABSOLUTE_ZERO_COMMAND, request);
             (void)HAL_UART_AbortReceive(&huart5);
             __HAL_UART_FLUSH_DRREGISTER(&huart5);
             status = HAL_UART_Transmit(&huart5, request, sizeof(request), 30U);
@@ -309,7 +309,7 @@ static void Vcu_EncoderTask(void *argument)
                 taskENTER_CRITICAL();
                 PatrolRuntime_EncoderWriteCompleted((receive_status == HAL_OK &&
                     AbsoluteEncoder_ParseWriteSingleResponse(response, response_length, 3U,
-                        VEHICLE_ABSOLUTE_CENTER_COUNT)) ? 2U : 5U);
+                        VEHICLE_ABSOLUTE_ZERO_COMMAND)) ? 2U : 5U);
                 taskEXIT_CRITICAL();
             } else {
                 taskENTER_CRITICAL();
