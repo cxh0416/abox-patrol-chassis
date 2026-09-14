@@ -1,0 +1,1 @@
+{"id": "25103f12-b2b5-4a13-8f6e-06e786be44b3", "state": "succeeded", "result": {"fwVersion": "patrol-chassis-0.2.24", "otaState": "CONFIRMED", "otaPhase": "IDLE", "otaBusy": false, "otaReady": true, "lastOtaError": 0, "powerOutputOn": false, "trialFailCount": 0}}

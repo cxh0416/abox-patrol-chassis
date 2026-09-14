@@ -1,0 +1,42 @@
+[
+  {
+    "original": "F:\\work\\A-Box\\Patrol_Vehicle_Chassis\\out\\logs\\wyse-024-backup.log",
+    "archived": "docs\\operations\\evidence\\2026-09-14-jlink-0.2.24\\wyse-024-backup.log",
+    "sha256": "4167804c34b68ad6394a1a80cb30335c06595fd3941c15a6d3bbfe657c47af6e"
+  },
+  {
+    "original": "F:\\work\\A-Box\\Patrol_Vehicle_Chassis\\out\\logs\\wyse-024-flash.log",
+    "archived": "docs\\operations\\evidence\\2026-09-14-jlink-0.2.24\\wyse-024-flash.log",
+    "sha256": "e1c18fae79779e6b1694789f13f420bb025d467f0b97c228e14d0a31a33c84a7"
+  },
+  {
+    "original": "F:\\work\\A-Box\\Patrol_Vehicle_Chassis\\out\\logs\\wyse-024-runtime.log",
+    "archived": "docs\\operations\\evidence\\2026-09-14-jlink-0.2.24\\wyse-024-runtime.log",
+    "sha256": "2e924ecf2e8d2fc88e4b0476fa03dc965fc5994260d5e05f13520fccbf3dafe8"
+  },
+  {
+    "retained_private_original": "C:\\Users\\cxh\\.codex\\private\\patrol-jlink-0.2.24-2026-09-14\\before.bin",
+    "sha256": "3c5bfb3bc4cbf0d1bdfd2cb62d6fab17836122b595b926ce5791b46700499b36",
+    "size": 262144
+  },
+  {
+    "retained_private_original": "C:\\Users\\cxh\\.codex\\private\\patrol-jlink-0.2.24-2026-09-14\\after.bin",
+    "sha256": "46ec783c3a43e99dde31006b29469d27fa361bb68fbc4ca707add003181fcc6d",
+    "size": 262144
+  },
+  {
+    "retained_private_original": "C:\\Users\\cxh\\.codex\\private\\patrol-jlink-0.2.24-2026-09-14\\state-a.bin",
+    "sha256": "f8361db114d26f9cf713ba85883141b8d5bbf67f040798449ebf48fa92e4ecf4",
+    "size": 2048
+  },
+  {
+    "source": "server47 get_info operation response (selected fields)",
+    "archive": "docs\\operations\\evidence\\2026-09-14-jlink-0.2.24\\info-summary.json",
+    "sha256": "bea716510e1ef4cc778fc06629c6d961528f7d0030ee7863ee707c0a6813770c"
+  },
+  {
+    "source": "server47 get_info operation response (selected fields)",
+    "archive": "docs\\operations\\evidence\\2026-09-14-jlink-0.2.24\\info-final.json",
+    "sha256": "ed4212aae12f5b6830f77ecaa461cf9d22316a8e830d51799da2d4e4c2264e96"
+  }
+]
