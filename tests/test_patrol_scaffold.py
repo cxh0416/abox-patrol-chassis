@@ -9,12 +9,21 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def motion_sources():
+    return "\n".join((ROOT / "app/Core/User/Src" / name).read_text(encoding="utf-8")
+                     for name in ("vcu_rtos.c", "center_calibration.c", "patrol_runtime.c"))
+
+def cloud_sources():
+    return "\n".join((ROOT / "app/Core/User/Src" / name).read_text(encoding="utf-8")
+                     for name in ("cloud_service.c", "cloud_commands.c", "cloud_messages.c", "cloud_tx.c"))
+
+
 class PatrolScaffoldTests(unittest.TestCase):
     def test_identity_and_safe_defaults(self):
         cmake = (ROOT / "app/CMakeLists.txt").read_text(encoding="utf-8")
         config = (ROOT / "platform_config/abox_product_config.h").read_text(encoding="utf-8")
         device_config = (ROOT / "app/Core/User/Inc/vcu_config.h").read_text(encoding="utf-8")
-        rtos = (ROOT / "app/Core/User/Src/vcu_rtos.c").read_text(encoding="utf-8")
+        rtos = motion_sources()
         self.assertIn("Patrol_Vehicle_Chassis_App", cmake)
         self.assertIn('"patrol_vehicle_chassis"', config)
         self.assertIn("PATROL_CHASSIS_ACTUATION_ENABLED", cmake)
@@ -62,7 +71,7 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertIn("连续三次", canopen)
 
     def test_public_and_internal_mqtt_contracts_are_separated(self):
-        cloud = (ROOT / "app/Core/User/Src/cloud_service.c").read_text(encoding="utf-8")
+        cloud = cloud_sources()
         remote = (ROOT / "app/Core/User/Src/remote_service.c").read_text(encoding="utf-8")
         self.assertIn('"/zxwl/abox/%s/ctrl"', cloud)
         self.assertIn('"/zxwl/abox/%s/status/report"', cloud)
@@ -88,7 +97,7 @@ class PatrolScaffoldTests(unittest.TestCase):
             self.assertEqual(hashlib.sha256((archive / name).read_bytes()).hexdigest(), digest)
 
     def test_boot_trial_confirmation_has_flash_write_stack_margin(self):
-        rtos = (ROOT / "app/Core/User/Src/vcu_rtos.c").read_text(encoding="utf-8")
+        rtos = motion_sources()
         match = re.search(r"#define\s+VCU_WATCHDOG_STACK_WORDS\s+(\d+)U", rtos)
         self.assertIsNotNone(match)
         # ARM release .su reports: Watchdog 32 + Confirm 128 + StateSave 592
@@ -96,46 +105,46 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertGreaterEqual(int(match.group(1)), 384)
 
     def test_idle_center_calibration_lease_tolerates_platform_delay_without_latching_motion_fault(self):
-        rtos = (ROOT / "app/Core/User/Src/vcu_rtos.c").read_text(encoding="utf-8")
+        rtos = motion_sources()
         lease = re.search(r"#define\s+CENTER_CAL_READY_LEASE_MS\s+(\d+)U", rtos)
         self.assertIsNotNone(lease)
         self.assertGreaterEqual(int(lease.group(1)), 15000)
         helper = rtos[rtos.index("static uint8_t center_calibration_expire_idle"):
-                      rtos.index("uint8_t VcuRtos_CenterCalibrationStart")]
+                      rtos.index("uint8_t CenterCalibration_Start")]
         self.assertIn("RemoteService_BenchRevoke()", helper)
         self.assertIn("VehiclePowerOutput_Set(0U)", helper)
-        self.assertIn("g_bench.phase == BENCH_IDLE", helper)
+        self.assertIn("g_motion.bench.phase == BENCH_IDLE", helper)
         self.assertNotIn("RemoteService_BenchFault()", helper)
         self.assertNotIn("BenchSteering_Stop", helper)
         self.assertGreaterEqual(rtos.count("deadline_ms = now + CENTER_CAL_READY_LEASE_MS"), 2)
 
     def test_center_calibration_freezes_structured_failure_and_rejection_evidence(self):
-        rtos = (ROOT / "app/Core/User/Src/vcu_rtos.c").read_text(encoding="utf-8")
-        cloud = (ROOT / "app/Core/User/Src/cloud_service.c").read_text(encoding="utf-8")
+        rtos = motion_sources()
+        cloud = cloud_sources()
         diagnostics = (ROOT / "app/Core/User/Src/patrol_diagnostics.c").read_text(encoding="utf-8")
-        self.assertIn("center_capture_failure_locked", rtos)
+        self.assertIn("CenterCalibration_CaptureFailureLocked", rtos)
         for token in ("diagVersion", "gateMask", "driverRaw", "feedbackAge",
                       "encoderAge", "encoderErrTotal", "lastReject", "lastAbort"):
             self.assertIn(token, rtos)
         self.assertIn("last_encoder_error", diagnostics)
         self.assertIn("encoderTransportErrors", diagnostics)
         rejected = cloud[cloud.index("if (!accepted) {"):cloud.index("} else {", cloud.index("if (!accepted) {"))]
-        self.assertIn("VcuRtos_FormatCenterCalibration", rejected)
-        self.assertIn("schedule_response", rejected)
+        self.assertIn("CenterCalibration_Format", rejected)
+        self.assertIn("CloudMessages_ScheduleResponse", rejected)
 
     def test_center_calibration_stop_keeps_commissioning_safety_context(self):
-        rtos = (ROOT / "app/Core/User/Src/vcu_rtos.c").read_text(encoding="utf-8")
+        rtos = motion_sources()
         executor = rtos[rtos.index("uint8_t center_requested ="):
                         rtos.index("BenchDrive_Tick", rtos.index("uint8_t center_requested ="))]
-        self.assertIn("g_center_cal.phase == CENTER_CAL_STOPPING", executor)
+        self.assertIn("g_motion.center_cal.phase == CENTER_CAL_STOPPING", executor)
         self.assertIn("center_executor_active ? center_safe : normal_safe", executor)
         self.assertIn("uint8_t requested = remote_requested || center_requested", executor)
 
     def test_idle_coordinate_watchdog_ignores_non_position_motion_gates(self):
-        rtos = (ROOT / "app/Core/User/Src/vcu_rtos.c").read_text(encoding="utf-8")
+        rtos = motion_sources()
         angle = (ROOT / "app/Core/User/Src/steering_angle.c").read_text(encoding="utf-8")
-        watchdog = rtos[rtos.index("else if (g_coordinate.valid"):
-                        rtos.index("SteeringCoordinate_Observe", rtos.index("else if (g_coordinate.valid"))]
+        watchdog = rtos[rtos.index("else if (g_motion.coordinate.valid"):
+                        rtos.index("SteeringCoordinate_Observe", rtos.index("else if (g_motion.coordinate.valid"))]
         self.assertIn("SteeringCoordinate_EpochLost", watchdog)
         self.assertNotIn("!snapshot.drive_online", watchdog)
         helper = angle[angle.index("uint8_t SteeringCoordinate_EpochLost"):
@@ -145,13 +154,13 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertNotIn("16U", helper)
 
     def test_intentional_power_off_consumes_late_coordinate_reset_without_idle_fault(self):
-        rtos = (ROOT / "app/Core/User/Src/vcu_rtos.c").read_text(encoding="utf-8")
+        rtos = motion_sources()
         power_off = rtos.index("if (!VehiclePowerOutput_IsOn()) {")
-        reset_request = rtos.index("if (g_coordinate_reset_requested)", power_off)
-        reset_block = rtos[reset_request:rtos.index("uint8_t normal_safe", reset_request)]
-        self.assertLess(rtos.index("SteeringCoordinate_Reset(&g_coordinate)", power_off), reset_request)
-        self.assertIn("if (g_coordinate.valid) BenchSteering_Stop(&g_bench, now, 1)", reset_block)
-        self.assertNotIn("\n                BenchSteering_Stop(&g_bench, now, 1);", reset_block)
+        reset_request = rtos.index("if (g_motion.coordinate_reset_requested)", power_off)
+        reset_block = rtos[reset_request:rtos.index("uint32_t PatrolRuntime_ApplyCut", reset_request)]
+        self.assertLess(rtos.index("SteeringCoordinate_Reset(&g_motion.coordinate)", power_off), reset_request)
+        self.assertIn("if (g_motion.coordinate.valid) BenchSteering_Stop(&g_motion.bench, now, 1)", reset_block)
+        self.assertNotIn("\n                BenchSteering_Stop(&g_motion.bench, now, 1);", reset_block)
 
     def test_config_page_is_v4_and_unarmed_by_default(self):
         path = ROOT / "tools/make_device_config.py"

@@ -8,14 +8,6 @@
 #include "mqtt_qmtrecv.h"
 #include "time_base.h"
 
-extern volatile uint8_t g_mqtt_pub_prompt_pending;
-extern volatile uint8_t g_mqtt_rx_msg_pending;
-extern char g_mqtt_rx_pending_topic[MQTT_CORE_TOPIC_BUF_SZ];
-extern char g_mqtt_rx_pending_payload[MQTT_CORE_PAYLOAD_BUF_SZ];
-extern uint32_t g_mqtt_last_pub_ok_tick;
-extern uint32_t g_mqtt_last_mqtt_rx_tick;
-extern volatile uint8_t g_mqtt_last_evt_pending;
-extern char g_mqtt_last_evt_line[128];
 
 #define MQTT_CORE_RX_MULTILINE_TIMEOUT_MS 3000U
 

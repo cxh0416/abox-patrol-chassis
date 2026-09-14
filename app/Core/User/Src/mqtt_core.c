@@ -217,6 +217,12 @@ void MQTT_Core_RequestReconnect(void) { g_mqtt_rt.need_reconnect = 1; }
 
 void MQTT_Core_ForceReconnect(void) { mqtt_enter_reconnect_wait(); }
 
+uint8_t* MQTT_Core_OtaWorkspace(uint32_t* capacity)
+{
+    if (capacity != NULL) *capacity = sizeof(g_mqtt_rx_pending_payload);
+    return (uint8_t*)g_mqtt_rx_pending_payload;
+}
+
 void MQTT_Core_SetPaused(uint8_t paused)
 {
     if (paused)

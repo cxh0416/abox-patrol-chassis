@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include "cloud_protocol.h"
-#include "ec800_at.h"
+#include "abox_ec800_at_legacy.h"
 
 #define OTA_ERROR_EC800_UNSUPPORTED 1001U
 #define OTA_ERROR_CA_PROVISION_FAILED 1002U

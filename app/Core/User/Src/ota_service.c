@@ -10,7 +10,7 @@
 #include "app_version.h"
 #include "boot_cfg.h"
 #include "mqtt_core.h"
-#include "mqtt_core_int.h"
+#include "main.h"
 #include "vcu_config.h"
 
 typedef struct {
@@ -135,8 +135,7 @@ void OtaService_Init(Ec800AtCore_t *at)
     port.register_events = adapter_register;
     port.mqtt_pause = adapter_mqtt_pause;
     port.log = adapter_log;
-    port.transfer_buffer = (uint8_t *)g_mqtt_rx_pending_payload;
-    port.transfer_buffer_size = sizeof(g_mqtt_rx_pending_payload);
+    port.transfer_buffer = MQTT_Core_OtaWorkspace(&port.transfer_buffer_size);
     port.rx_overflow_count = adapter_rx_overflow;
 
     memset(&config, 0, sizeof(config));

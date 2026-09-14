@@ -1,0 +1,324 @@
+#include "cloud_internal.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "app_version.h"
+#include "boot_state.h"
+#include "mqtt_core.h"
+#include "ota_service.h"
+#include "remote_service.h"
+#include "vcu_config.h"
+#include "patrol_runtime.h"
+#include "center_calibration.h"
+#include "vcu_can_status.h"
+#include "vehicle_power_output.h"
+
+static uint8_t boot_state_allows_reboot(void)
+{
+    BootStateRecord_t state;
+    if (!BootState_Load(&state)) return 1U;
+    return (state.state == BOOT_STATE_NORMAL || state.state == BOOT_STATE_CONFIRMED) ? 1U : 0U;
+}
+
+static uint32_t signed_delta_mdeg(int64_t delta, uint32_t counts_per_degree_milli)
+{
+    uint64_t magnitude;
+    uint64_t result;
+    if (counts_per_degree_milli == 0U) return UINT32_MAX;
+    magnitude = (uint64_t)(delta < 0 ? -delta : delta);
+    result = magnitude * 1000000ULL / counts_per_degree_milli;
+    return result > UINT32_MAX ? UINT32_MAX : (uint32_t)result;
+}
+
+static uint8_t calibration_feedback_ready(const CloudProtocolRequest_t* request,
+                                          const PatrolDiagnosticsSnapshot* snapshot)
+{
+    uint32_t steering_offset;
+    uint32_t encoder_offset;
+    const ChassisControl* control = RemoteService_State();
+    if (request == 0 || snapshot == 0 || control == 0) return 0U;
+    if (!VehiclePowerOutput_IsOn() || VcuRtos_CanBusOff() || VcuRtos_CanBusOffActive() ||
+        !snapshot->steering_online || !snapshot->drive_online ||
+        !snapshot->steering_feedback_fresh || !snapshot->drive_feedback_fresh ||
+        !snapshot->encoder_online || !snapshot->encoder_config_valid || snapshot->drive_fault ||
+        labs(snapshot->left_actual_rpm) > 20L || labs(snapshot->right_actual_rpm) > 20L ||
+        control->remote_enabled || control->session_active || control->enable_request ||
+        (snapshot->steering_status_word & 0x006FU) == 0x0027U ||
+        (snapshot->drive_status_word & 0x006FU) == 0x0027U) return 0U;
+    steering_offset = signed_delta_mdeg(
+        (int64_t)snapshot->steering_position_count - (int64_t)request->steering_center_count,
+        request->steering_counts_per_degree_milli);
+    encoder_offset = signed_delta_mdeg(
+        (int64_t)snapshot->encoder_count - (int64_t)request->absolute_center_count,
+        request->absolute_counts_per_degree_milli);
+    return (uint8_t)(steering_offset <= request->steering_tolerance_mdeg &&
+                     encoder_offset <= request->steering_tolerance_mdeg);
+}
+
+static __attribute__((noinline)) void handle_config_request(const CloudProtocolRequest_t* request)
+{
+    /* Remote task is the sole caller. Keep Flash-save scratch off its nested MQTT stack. */
+    static char result[900];
+    CloudProtocolAction_t action;
+    const char* request_id;
+    if (request == 0) return;
+    action = request->action;
+    request_id = request->request_id;
+    /* A maintenance query opens a bounded observation window, never a motion permit. */
+    CloudTelemetry_Wake(&g_cloud.telemetry, CloudPort_Now());
+    if (action == CLOUD_PROTOCOL_ACTION_GET_INFO)
+    {
+        CloudMessages_BuildInfoResult(result, sizeof(result));
+        if (CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 200U, "OK", result, 0U))
+            g_cloud.response_ack_rollback = 1U;
+        else
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "DEVICE_BUSY");
+    }
+    else if (action == CLOUD_PROTOCOL_ACTION_GET_CAN_DIAG)
+    {
+        PatrolDiagnosticsSnapshot snapshot;
+        PatrolRuntime_GetDiagnostics(&snapshot);
+        if (!PatrolDiagnostics_FormatCanJson(&snapshot, VcuRtos_CanBusOff(),
+                VcuRtos_CanBusOffActive(), VcuRtos_CanRxOverflowCount(),
+                VcuRtos_CanRawRxCount(0U), VcuRtos_CanRawRxCount(1U), result, sizeof(result)))
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 500U, "DIAGNOSTIC_TOO_LARGE");
+        else if (!CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 200U, "OK", result, 0U))
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "DEVICE_BUSY");
+    }
+    else if (action == CLOUD_PROTOCOL_ACTION_GET_CALIBRATION)
+    {
+        CloudMessages_BuildCalibrationResult(result, sizeof(result));
+        if (!CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 200U, "OK", result, 0U))
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "DEVICE_BUSY");
+    }
+    else if (action == CLOUD_PROTOCOL_ACTION_CLEAR_CALIBRATION)
+    {
+        if (OtaService_IsBusy())
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "OTA_BUSY");
+        else if (RemoteService_BenchPermitted())
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "BENCH_ACTIVE");
+        else if (!VcuConfig_ClearCalibration())
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 500U, "CONFIG_WRITE_FAILED");
+        else
+        {
+            CloudMessages_BuildCalibrationResult(result, sizeof(result));
+            (void)CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 200U,
+                                    "CALIBRATION_CLEARED", result, 0U);
+        }
+    }
+    else if (action == CLOUD_PROTOCOL_ACTION_SET_CALIBRATION)
+    {
+        PatrolDiagnosticsSnapshot snapshot;
+        PatrolRuntime_GetDiagnostics(&snapshot);
+        if (OtaService_IsBusy())
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "OTA_BUSY");
+        else if (RemoteService_BenchPermitted() || !calibration_feedback_ready(request, &snapshot))
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U,
+                                  "CALIBRATION_FEEDBACK_NOT_READY");
+        else if (!VcuConfig_SetCalibration(request->steering_center_count,
+                    request->absolute_center_count, request->steering_counts_per_degree_milli,
+                    request->absolute_counts_per_degree_milli, request->steering_direction,
+                    request->absolute_direction, request->steering_tolerance_mdeg))
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 500U, "CONFIG_WRITE_FAILED");
+        else
+        {
+            CloudMessages_BuildCalibrationResult(result, sizeof(result));
+            (void)CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 200U,
+                                    "CALIBRATION_SAVED_REMOTE_DISABLED", result, 0U);
+        }
+    }
+    else if (action == CLOUD_PROTOCOL_ACTION_CENTER_CAL_START ||
+             action == CLOUD_PROTOCOL_ACTION_CENTER_CAL_GET ||
+             action == CLOUD_PROTOCOL_ACTION_CENTER_CAL_JOG ||
+             action == CLOUD_PROTOCOL_ACTION_CENTER_CAL_COMMIT ||
+             action == CLOUD_PROTOCOL_ACTION_CENTER_CAL_CANCEL)
+    {
+        uint8_t accepted = 1U;
+        uint16_t code = 200U;
+        const char* message = "OK";
+        if (action == CLOUD_PROTOCOL_ACTION_CENTER_CAL_START)
+            accepted = CenterCalibration_Start();
+        else if (action == CLOUD_PROTOCOL_ACTION_CENTER_CAL_GET)
+            accepted = CenterCalibration_KeepAlive(request->center_session_id);
+        else if (action == CLOUD_PROTOCOL_ACTION_CENTER_CAL_JOG)
+            accepted = CenterCalibration_Jog(request->center_session_id,
+                                                     request->center_delta_mdeg);
+        else if (action == CLOUD_PROTOCOL_ACTION_CENTER_CAL_COMMIT) {
+            accepted = CenterCalibration_Commit(request->center_session_id);
+            code = 202U;
+            message = "CENTER_CALIBRATION_COMMIT_STARTED";
+        } else if (action == CLOUD_PROTOCOL_ACTION_CENTER_CAL_CANCEL)
+            accepted = CenterCalibration_Cancel(request->center_session_id);
+        if (!accepted) {
+            if (!CenterCalibration_Format(result, sizeof(result)) ||
+                !CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 409U,
+                                   "CENTER_CALIBRATION_NOT_READY", result, 0U))
+                CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U,
+                                      "CENTER_CALIBRATION_NOT_READY");
+        } else {
+            if (!CenterCalibration_Format(result, sizeof(result)) ||
+                !CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, code, message, result, 0U))
+                CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 500U,
+                                      "CENTER_DIAGNOSTIC_TOO_LARGE");
+        }
+    }
+    else if (action == CLOUD_PROTOCOL_ACTION_BENCH_ARM || action == CLOUD_PROTOCOL_ACTION_BENCH_STOP ||
+             action == CLOUD_PROTOCOL_ACTION_BENCH_GET)
+    {
+        if (action == CLOUD_PROTOCOL_ACTION_BENCH_ARM && !(request->bench_drive ? PatrolRuntime_BenchDriveArm(request->bench_limit_mdeg) :
+                PatrolRuntime_BenchArm(request->bench_limit_mdeg)))
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "BENCH_NOT_READY");
+        else {
+            if (action == CLOUD_PROTOCOL_ACTION_BENCH_STOP) PatrolRuntime_BenchStop();
+            PatrolRuntime_FormatBench(result, sizeof(result));
+            (void)CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 200U, "OK", result, 0U);
+        }
+    }
+    else if (action == CLOUD_PROTOCOL_ACTION_GET_LOG)
+    {
+        if (g_cloud.log_active)
+        {
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "DEVICE_BUSY");
+            return;
+        }
+        CloudMessages_PrepareLogSnapshot(request_id);
+        if (!g_cloud.log_active)
+        {
+            (void)snprintf(result, sizeof(result), "{\"lineCount\":0,\"dropped\":%lu}",
+                           (unsigned long)AppLog_GetMqttDroppedCount());
+            (void)CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 200U, "OK", result, 0U);
+        }
+    }
+    else if (action == CLOUD_PROTOCOL_ACTION_REBOOT)
+    {
+        if (!boot_state_allows_reboot())
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "DEVICE_BUSY");
+        else
+            (void)CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 200U, "REBOOTING", "{}", 1U);
+    }
+    else if (action == CLOUD_PROTOCOL_ACTION_POWER_ON || action == CLOUD_PROTOCOL_ACTION_POWER_OFF)
+    {
+        uint8_t target_on = action == CLOUD_PROTOCOL_ACTION_POWER_ON ? 1U : 0U;
+        if (!VehiclePowerOutput_IsAvailable())
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 503U, "POWER_OUTPUT_UNAVAILABLE");
+        else if (!VehiclePowerOutput_Set(target_on))
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 500U, "POWER_OUTPUT_WRITE_FAILED");
+        else
+        {
+            (void)snprintf(result, sizeof(result), "{\"powerOutputOn\":%s}",
+                           target_on ? "true" : "false");
+            (void)CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 200U,
+                                    target_on ? "POWER_ON" : "POWER_OFF", result, 0U);
+        }
+    }
+    else if (action == CLOUD_PROTOCOL_ACTION_SET_MQTT)
+    {
+        /* Reply on the old VID topic before reset; the next heartbeat carries the new identity. */
+        if (!boot_state_allows_reboot()) {
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "DEVICE_BUSY");
+        } else if (!VcuConfig_SetMqtt(request->mqtt_vid, request->mqtt_host, request->mqtt_port,
+                                      request->mqtt_username, request->mqtt_password)) {
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 500U, "CONFIG_WRITE_FAILED");
+        } else {
+            (void)snprintf(result, sizeof(result), "{\"vid\":\"%s\",\"rebooting\":true}", request->mqtt_vid);
+            (void)CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 200U, "MQTT_CONFIG_SAVED", result, 1U);
+        }
+    }
+}
+
+static void handle_ota_request(const CloudProtocolRequest_t* request)
+{
+    BootStateRecord_t state;
+    if (request == 0) return;
+    /* Same requestId is idempotent while the QoS1 response is still in flight. */
+    if (g_cloud.ota_response_waiting) {
+        if (strcmp(request->request_id, g_cloud.ota_request_id) == 0) return;
+        CloudMessages_ScheduleSimpleError(g_cloud.topic_ota_resp, request->request_id, 409U, "DEVICE_BUSY");
+        return;
+    }
+    if (BootState_Load(&state) && state.state == BOOT_STATE_CONFIRMED &&
+        strcmp(request->ota_version, Vcu_AppFwVersion()) == 0) {
+        (void)CloudMessages_ScheduleResponse(g_cloud.topic_ota_resp, request->request_id, 200U, "ALREADY_CONFIRMED",
+                                "{\"otaPhase\":\"CONFIRMED\"}", 0U);
+        return;
+    }
+    if (OtaService_IsBusy()) { CloudMessages_ScheduleSimpleError(g_cloud.topic_ota_resp, request->request_id, 409U, "DEVICE_BUSY"); return; }
+    if (BootState_Load(&state) && (state.state != BOOT_STATE_NORMAL && state.state != BOOT_STATE_CONFIRMED)) {
+        CloudMessages_ScheduleSimpleError(g_cloud.topic_ota_resp, request->request_id, 409U, "DEVICE_BUSY"); return;
+    }
+    if (!OtaService_IsReady()) { CloudMessages_ScheduleSimpleError(g_cloud.topic_ota_resp, request->request_id, 503U, "EC800_UNSUPPORTED"); return; }
+    if (!OtaService_Start(request)) {
+        uint32_t error = OtaService_LastError();
+        uint16_t status = (error == OTA_ERROR_URL_REJECTED) ? 400U :
+                          (error == OTA_ERROR_EC800_UNSUPPORTED || error == OTA_ERROR_CA_PROVISION_FAILED) ? 503U : 500U;
+        char result[64];
+        (void)snprintf(result, sizeof(result), "{\"errorCode\":%lu}", (unsigned long)error);
+        (void)CloudMessages_ScheduleResponse(g_cloud.topic_ota_resp, request->request_id, status, "OTA_REQUEST_REJECTED", result, 0U);
+        return;
+    }
+    CloudMessages_CopyString(g_cloud.ota_request_id, sizeof(g_cloud.ota_request_id), request->request_id);
+    g_cloud.ota_response_waiting = 1U;
+}
+
+static __attribute__((noinline)) void handle_public_control(const char* payload)
+{
+    char response[CLOUD_PAYLOAD_SIZE];
+    if (RemoteService_HandleControl(payload, (uint16_t)strlen(payload), response, sizeof(response)))
+        (void)CloudMessages_ScheduleRawResponse(g_cloud.topic_control_resp, response);
+    else APP_LOGW("REMOTE", "invalid or busy chassis control request");
+}
+
+void CloudCommands_OnMessage(const char* topic, const char* payload)
+{
+    /* MQTT callbacks are serialized by the Remote task and never re-enter. */
+    static CloudProtocolRequest_t request;
+    CloudProtocolStatus_t status;
+    uint16_t payload_length;
+    const char* response_topic;
+    uint8_t ota_topic;
+
+    if ((topic == 0) || (payload == 0)) return;
+    if (strcmp(topic, g_cloud.topic_control_cmd) == 0)
+    {
+        handle_public_control(payload);
+        return;
+    }
+    if ((strcmp(topic, g_cloud.topic_config_cmd) != 0) && (strcmp(topic, g_cloud.topic_ota_cmd) != 0)) return;
+    ota_topic = (strcmp(topic, g_cloud.topic_ota_cmd) == 0) ? 1U : 0U;
+    response_topic = ota_topic ? g_cloud.topic_ota_resp : g_cloud.topic_config_resp;
+    payload_length = (uint16_t)strlen(payload);
+    status = CloudProtocol_Parse(payload, payload_length, ota_topic, &request);
+    if (status != CLOUD_PROTOCOL_OK)
+    {
+        if (request.request_id[0] != '\0')
+            CloudMessages_ScheduleSimpleError(response_topic, request.request_id, (uint16_t)status,
+                                  CloudProtocol_StatusMessage(status));
+        else APP_LOGW("CLOUD", "uncorrelated invalid request code=%u", (unsigned int)status);
+        return;
+    }
+    if (strcmp(request.request_id, g_cloud.last_request_id) == 0 && g_cloud.last_response_payload[0] != '\0')
+    {
+        if (!g_cloud.response_pending)
+        {
+            CloudMessages_CopyString(g_cloud.response_topic, sizeof(g_cloud.response_topic), g_cloud.last_response_topic);
+            CloudMessages_CopyString(g_cloud.response_payload, sizeof(g_cloud.response_payload), g_cloud.last_response_payload);
+            CloudMessages_CopyString(g_cloud.response_request_id, sizeof(g_cloud.response_request_id), request.request_id);
+            g_cloud.response_pending = 1U;
+            g_cloud.response_reboots = 0U;
+        }
+        return;
+    }
+    if (g_cloud.response_pending || g_cloud.reboot_pending)
+    {
+        APP_LOGW("CLOUD", "command busy");
+        return;
+    }
+    if (g_cloud.log_active)
+    {
+        if (strcmp(request.request_id, g_cloud.log_request_id) != 0)
+            CloudMessages_ScheduleSimpleError(response_topic, request.request_id, 409U, "DEVICE_BUSY");
+        return;
+    }
+    if (ota_topic) handle_ota_request(&request);
+    else handle_config_request(&request);
+}

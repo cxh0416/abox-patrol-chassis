@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include "ec800_at.h"
+#include "abox_ec800_at_legacy.h"
 
 typedef enum
 {
@@ -106,6 +106,11 @@ void MQTT_Core_OnAtEvent(Ec800AtEvent_t event, const uint8_t* data, uint16_t len
 void MQTT_Core_RequestReconnect(void);
 void MQTT_Core_ForceReconnect(void);
 void MQTT_Core_SetPaused(uint8_t paused);
+/* Register the existing shared RAM with OTA at startup. OTA may use it only
+ * between SetPaused(1) and SetPaused(0); resume resets the MQTT receive parser.
+ * The pointer remains owned by MQTT and must never be freed or retained by
+ * another consumer. This does not allocate an additional transfer buffer. */
+uint8_t* MQTT_Core_OtaWorkspace(uint32_t* capacity);
 void MQTT_Core_UpdateBroker(const char* host, uint16_t port, const char* username, const char* password);
 void MQTT_Core_RequestIccid(void);
 void MQTT_Core_SetTopics(const char* const* sub_topics, uint8_t sub_topic_count, const char* pub_topic);

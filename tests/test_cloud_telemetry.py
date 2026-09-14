@@ -9,17 +9,16 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class TelemetryTests(unittest.TestCase):
     def test_production_transmit_scheduler(self):
-        source = (ROOT / 'app/Core/User/Src/cloud_service.c').read_text(encoding='utf-8')
-        scheduler = source[source.index('static void service_tx(void)'):source.index('void CloudService_Init(void)')]
-        code = (ROOT / 'tests/cloud_telemetry_scheduler_stubs.h').read_text(encoding='utf-8')
-        code += scheduler + (ROOT / 'tests/cloud_telemetry_scheduler_cases.c').read_text(encoding='utf-8')
         with tempfile.TemporaryDirectory() as directory:
-            generated = Path(directory) / 'test.c'
             binary = Path(directory) / 'test.exe'
-            generated.write_text(code, encoding='utf-8')
             subprocess.run([shutil.which('gcc') or 'gcc', '-std=c11', '-Wall', '-Wextra',
                             '-Werror', '-I' + str(ROOT / 'app/Core/User/Inc'),
-                            str(generated), '-o', str(binary)], check=True)
+                            '-I' + str(ROOT / 'tests/bench_stubs'),
+                            '-I' + str(ROOT / 'app/Core/User/Src'),
+                            '-I' + str(ROOT / 'platform/include'),
+                            str(ROOT / 'tests/cloud_telemetry_scheduler_cases.c'),
+                            str(ROOT / 'app/Core/User/Src/cloud_tx.c'),
+                            '-o', str(binary)], check=True)
             subprocess.run([str(binary)], check=True)
 
     def test_activity_expiry_and_tick_wrap(self):

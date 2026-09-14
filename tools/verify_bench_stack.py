@@ -11,7 +11,7 @@ for path in build.rglob('*.su'):
         if len(fields)>=3:
             name=fields[0].rsplit(':',1)[-1].split('.')[0]
             frames[name]=max(frames.get(name,0),int(fields[1]))
-chain=['CloudService_Task','cloud_on_message','handle_config_request','VcuConfig_SetCalibration',
+chain=['Vcu_RemoteTask','CloudService_Task','CloudCommands_OnMessage','handle_config_request','VcuConfig_SetCalibration',
        'VcuConfig_Save','OTA_Info_SaveRemoteConfig','ota_info_write_raw']
 for name in chain:
     if name not in frames:raise SystemExit('Missing stack evidence: '+name)
@@ -20,10 +20,20 @@ source=(Path(__file__).resolve().parents[1]/'app/Core/User/Src/vcu_rtos.c').read
 capacity=int(re.search(r'#define VCU_REMOTE_STACK_WORDS (\d+)U',source)[1])*4
 assert used+1024<=capacity, (used,capacity)
 print(f'PASS calibration stack: known frames {used} + 1024 byte reserve <= {capacity}')
-fault_chain=['Vcu_CanopenTask','center_calibration_fail','AppLog_Printf']
+fault_chain=['Vcu_CanopenTask','PatrolRuntime_Tick','PatrolRuntime_ApplyReset',
+             'CenterCalibration_Fail','AppLog_Printf']
 for name in fault_chain:
     if name not in frames:raise SystemExit('Missing fault stack evidence: '+name)
 fault_used=sum(frames[n] for n in fault_chain)
 fault_capacity=int(re.search(r'#define VCU_CANOPEN_STACK_WORDS (\d+)U',source)[1])*4
 assert fault_used+512<=fault_capacity, (fault_used,fault_capacity)
 print(f'PASS CANopen fault stack: known frames {fault_used} + 512 byte library reserve <= {fault_capacity}')
+
+# Calibration commit executes from Remote after CloudService_Task has returned.
+center_chain=['Vcu_RemoteTask','CenterCalibration_Tick','VcuConfig_SetCalibration',
+              'VcuConfig_Save','OTA_Info_SaveRemoteConfig','ota_info_write_raw']
+for name in center_chain:
+    if name not in frames:raise SystemExit('Missing center stack evidence: '+name)
+center_used=sum(frames[n] for n in center_chain)
+assert center_used+1024<=capacity, (center_used,capacity)
+print(f'PASS center commit stack: known frames {center_used} + 1024 byte reserve <= {capacity}')

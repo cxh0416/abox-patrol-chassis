@@ -85,6 +85,9 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/User/Src/vcu_config.c
     Core/User/Src/app_version.c
     Core/User/Src/cloud_service.c
+    Core/User/Src/cloud_commands.c
+    Core/User/Src/cloud_messages.c
+    Core/User/Src/cloud_tx.c
     Core/User/Src/cloud_protocol.c
     Core/User/Src/chassis_cloud_protocol.c
     Core/User/Src/chassis_control.c
@@ -105,6 +108,8 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/User/Src/time_base.c
     Core/User/Src/vehicle_power_output.c
     Core/User/Src/vehicle_power_port.c
+    Core/User/Src/patrol_runtime.c
+    Core/User/Src/center_calibration.c
     Core/User/Src/vcu_rtos.c
     ${CMAKE_SOURCE_DIR}/../shared/boot_state_compat.c
     ${CMAKE_SOURCE_DIR}/../shared/fault_mailbox_compat.c
