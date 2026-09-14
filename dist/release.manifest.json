@@ -16,7 +16,7 @@
     "0x0803F000"
   ],
   "config_page": "0x0803F800",
-  "product_commit": "668f85f954ff1a674d78a43acdcc68e785817008",
+  "product_commit": "c68330ab1c7aa184ce0bfdab861b1e267418497c",
   "product_dirty": false,
   "platform_commit": "e60057c9639238c47fdc168cf2eed81594a1d034",
   "platform_dirty": false,
