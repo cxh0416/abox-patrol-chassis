@@ -6,7 +6,7 @@
   "startup_permit": false,
   "drive_actuation": false,
   "drive_limit_rpm": 0,
-  "commit": "d6ba2e7a9bac4b6ad76543e5ae695fad5d62a8e6",
+  "commit": "bdf50f1c34d4cc61ebb7baf22cd4ee743a0cd588",
   "dirty": false,
   "app_start": "0x08008000",
   "app_end": "0x0803E7FF",
