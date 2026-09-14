@@ -2,7 +2,7 @@
 
 产品标识固定为 `patrol_vehicle_chassis`。源码版本由 `VERSION` 维护；最新正式固件、产物及哈希以 `dist/release.manifest.json` 为准。主机测试、构建和制品发布不等同于台架或实车验收。
 
-当前控制配置采用 4096 count 单圈编码器、固定中位 2048、±30° 转向范围和 ±200 rpm 行走目标限制，支持新车首次建标的独占低速点动。转向和行走受驱动器软限位、双传感器一致性、反馈新鲜度及其余安全门禁约束，启动默认不授予运动许可。真实角度、电源、异常掉电恢复及道路能力以对应现场证据为准。
+当前控制配置采用 4096 count 单圈编码器、中位置零、±30° 转向目标和 ±200 rpm 行走目标限制，支持新车首次建标的独占低速点动。转向反馈设 ±30.5° 硬保护，轻微超调触发行走暂停和向内回退，详见 [车型参数](docs/operations/车型参数与台架转向实现.md)。转向和行走受驱动器软限位、双传感器一致性、反馈新鲜度及其余安全门禁约束，启动默认不授予运动许可。真实角度、电源、异常掉电恢复及道路能力以对应现场证据为准。
 
 产品代码位于 `app/Core/User/`，按 `system`、`motion`、`cloud`、`mqtt`、`ota`、`board`、`common` 分目录；各模块分别使用 `src/`、`include/` 和按需设置的 `private/`。目录树、模块入口、状态所有权及验证方式见 [内部源码结构](docs/implementation/源码模块与依赖.md)。
 
@@ -22,7 +22,6 @@
 .\tools\run_tests.ps1
 .\tools\build_bench_steering.ps1
 .\tools\build_bench_steering.ps1 -Drive
-.\tools\build_bench_steering.ps1 -Drive -AppVersion patrol-chassis-0.2.17
 python tools/clean_workspace.py --build
 ```
 

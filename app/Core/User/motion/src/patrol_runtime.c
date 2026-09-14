@@ -125,7 +125,7 @@ void PatrolRuntime_FormatBench(char* out, uint16_t size)
     snprintf(out, size, "{\"available\":%s,\"permitted\":%s,\"phase\":%u,\"step\":%u,"
         "\"fault\":%lu,\"feedbackGateMask\":%u,\"coordinateValid\":%s,\"runtimeCenterCount\":%ld,"
         "\"limitMdeg\":%u,\"sessionId\":\"%s\",\"driveAvailable\":%s,\"drivePermitted\":%s,\"drivePhase\":%u,\"driveFault\":%lu,\"driveLimitRpm\":200,"
-        "\"safetyProfile\":\"single_turn_4096_center0_wrap_limit30_v2\",\"profileReady\":%s,\"rangeValid\":%s,\"contactorFeedbackAvailable\":false}",
+        "\"safetyProfile\":\"single_turn_4096_center0_limit30_margin05_v3\",\"profileReady\":%s,\"rangeValid\":%s,\"contactorFeedbackAvailable\":false}",
         PATROL_CHASSIS_BENCH_STEERING_ENABLED ? "true" : "false",
         RemoteService_BenchPermitted() ? "true" : "false", (unsigned)g_motion.bench.phase,
         (unsigned)g_motion.bench.step, (unsigned long)g_motion.bench.fault,
@@ -299,7 +299,7 @@ void PatrolRuntime_UpdateFeedback(uint32_t now)
     feedback.encoder_range_valid = SteeringAngle_AbsoluteWithinLimit(
         snapshot.encoder_count, cfg->absolute_center_count,
         cfg->absolute_counts_per_degree_milli, cfg->absolute_direction,
-        VEHICLE_MAX_STEERING_MDEG, &feedback.encoder_actual_mdeg);
+        VEHICLE_STEERING_TRIP_MDEG, &feedback.encoder_actual_mdeg);
     if (PATROL_CHASSIS_BENCH_STEERING_ENABLED) {
         uint8_t was_valid = g_motion.coordinate.valid;
         if (!VehiclePowerOutput_IsOn() || CenterCalibration_IsActive()) SteeringCoordinate_Reset(&g_motion.coordinate);

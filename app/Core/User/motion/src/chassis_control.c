@@ -1,4 +1,5 @@
 #include "chassis_control.h"
+#include "vehicle_steering_profile.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -39,11 +40,35 @@ void ChassisControl_SetFeedback(ChassisControl* control, const ChassisFeedback* 
     control->feedback = *feedback;
 }
 
+static uint8_t steering_hard_range(const ChassisFeedback* f)
+{
+    return llabs((int64_t)f->steering_actual_mdeg)<=VEHICLE_STEERING_TRIP_MDEG &&
+           llabs((int64_t)f->encoder_actual_mdeg)<=VEHICLE_STEERING_TRIP_MDEG;
+}
+static void steering_boundary(ChassisControl* c, int32_t requested, uint8_t allow_clear)
+{
+    const ChassisFeedback* f=&c->feedback;
+    if (f->steering_actual_mdeg>CHASSIS_MAX_STEERING_MDEG || f->encoder_actual_mdeg>CHASSIS_MAX_STEERING_MDEG)
+        c->steering_boundary=1;
+    else if (f->steering_actual_mdeg<-CHASSIS_MAX_STEERING_MDEG || f->encoder_actual_mdeg<-CHASSIS_MAX_STEERING_MDEG)
+        c->steering_boundary=-1;
+    else if (allow_clear && llabs((int64_t)requested)<=VEHICLE_STEERING_RECOVER_MDEG &&
+             llabs((int64_t)f->steering_actual_mdeg)<=VEHICLE_STEERING_RECOVER_MDEG &&
+             llabs((int64_t)f->encoder_actual_mdeg)<=VEHICLE_STEERING_RECOVER_MDEG)
+        c->steering_boundary=0;
+    if (!c->steering_boundary) return;
+    c->target_rpm=0; c->requested_rpm=0; c->reversal_pending=0; c->zero_confirmations=0;
+    if (c->steering_boundary>0 && c->target_steering_mdeg>VEHICLE_STEERING_RECOVER_MDEG)
+        c->target_steering_mdeg=VEHICLE_STEERING_RECOVER_MDEG;
+    if (c->steering_boundary<0 && c->target_steering_mdeg<-VEHICLE_STEERING_RECOVER_MDEG)
+        c->target_steering_mdeg=-VEHICLE_STEERING_RECOVER_MDEG;
+}
+
 uint8_t ChassisControl_SafetyReady(const ChassisControl* control, uint32_t now_ms)
 {
     const ChassisFeedback* f = &control->feedback;
     if (control->fault_latched || !control->remote_enabled || !f->calibrated ||
-        !f->encoder_profile_ready || !f->encoder_range_valid || !f->steering_online || !f->drive_online ||
+        !f->encoder_profile_ready || !f->encoder_range_valid || !steering_hard_range(f) || !f->steering_online || !f->drive_online ||
         f->can_bus_off || f->drive_fault || f->ota_busy || !f->power_ready) return 0U;
     if ((now_ms - f->feedback_ms) > CHASSIS_FEEDBACK_TIMEOUT_MS) return 0U;
     if (llabs((int64_t)f->steering_actual_mdeg - f->encoder_actual_mdeg) > 2000L) return 0U;
@@ -57,7 +82,7 @@ static ChassisStopReason safety_reason(const ChassisControl* control, uint32_t n
     if (!control->remote_enabled) return CHASSIS_STOP_REMOTE_DISABLED;
     if (!f->calibrated) return CHASSIS_STOP_UNCALIBRATED;
     if (!f->encoder_profile_ready) return CHASSIS_STOP_ENCODER_PROFILE;
-    if (!f->encoder_range_valid) return CHASSIS_STOP_ENCODER_RANGE;
+    if (!f->encoder_range_valid || !steering_hard_range(f)) return CHASSIS_STOP_ENCODER_RANGE;
     if (!f->steering_online || !f->drive_online) return CHASSIS_STOP_NODE_OFFLINE;
     if (f->can_bus_off) return CHASSIS_STOP_CAN_BUS_OFF;
     if (f->drive_fault) return CHASSIS_STOP_DRIVE_FAULT;
@@ -111,6 +136,7 @@ uint8_t ChassisControl_Apply(ChassisControl* control, const char* action, const 
         control->target_rpm = drive_rpm;
         if (requested_direction != 0) control->active_direction = requested_direction;
     }
+    steering_boundary(control, steering_mdeg, 1U);
     control->enable_request = 1U;
     control->stop_reason = CHASSIS_STOP_NONE;
     return 1U;
@@ -124,6 +150,7 @@ void ChassisControl_Tick(ChassisControl* control, uint32_t now_ms)
         force_stop(control, CHASSIS_STOP_LEASE_EXPIRED, 1U);
         return;
     }
+    steering_boundary(control, control->target_steering_mdeg, 0U);
     if (!control->reversal_pending) return;
     control->target_rpm = 0;
     if (control->feedback.feedback_ms != control->last_zero_feedback_ms) {

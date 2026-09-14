@@ -9,7 +9,7 @@
 #define PREPARE_MS 5000U
 #define STOP_MS 200U
 #define STOP_FINISH_MS 100U
-#define BENCH_STEERING_ENVELOPE_MDEG VEHICLE_MAX_STEERING_MDEG
+#define BENCH_STEERING_ENVELOPE_MDEG VEHICLE_STEERING_TRIP_MDEG
 
 /* Values retain existing diagnostic codes and ordered transitions. */
 typedef enum
@@ -259,7 +259,9 @@ uint8_t BenchSteering_Take(BenchSteering *b, uint32_t now, PatrolCanFrame *f)
     case STEER_STEP_TRIGGER:
     case STEER_STEP_CLEAR_TRIGGER:
         b->index = 0x6040;
-        value = b->step == STEER_STEP_TRIGGER ? 0x1F : 0x0F;
+        /* Vendor PP control bit 5 replaces the active set-point immediately.
+           Queued positioning (0x1F) delays boundary retreat and return-to-center. */
+        value = b->step == STEER_STEP_TRIGGER ? 0x3F : 0x2F;
         break;
     case STEER_STEP_STOP:
         b->index = 0x6040;

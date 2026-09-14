@@ -386,5 +386,33 @@ int main(void)
     CHECK(ChassisCloud_Parse(over_limit, (uint16_t)strlen(over_limit), &command) == CHASSIS_CLOUD_INVALID);
     CHECK(ChassisCloud_Parse(wrong_type, (uint16_t)strlen(wrong_type), &command) ==
           CHASSIS_CLOUD_DEVICE_TYPE_MISMATCH);
+    /* Both signs: small overshoot remains controllable inward, not a fault. */
+    for (int sign=-1; sign<=1; sign+=2) {
+        ChassisControl_Init(&control,1); memset(&feedback,0,sizeof(feedback));
+        feedback.calibrated=feedback.encoder_profile_ready=feedback.encoder_range_valid=1;
+        feedback.steering_online=feedback.drive_online=feedback.power_ready=1;
+        feedback.feedback_ms=100; feedback.steering_actual_mdeg=sign*29963;
+        feedback.encoder_actual_mdeg=sign*30045;
+        ChassisControl_SetFeedback(&control,&feedback);
+        CHECK(ChassisControl_Apply(&control,"acquire","edge",1,1000,50,sign*30000,100));
+        CHECK(!control.fault_latched && control.steering_boundary==sign && control.target_rpm==0);
+        CHECK(control.target_steering_mdeg==sign*29500);
+        feedback.steering_actual_mdeg=feedback.encoder_actual_mdeg=sign*29400;
+        ChassisControl_SetFeedback(&control,&feedback);
+        CHECK(ChassisControl_Apply(&control,"renew","edge",2,1000,50,sign*30000,110));
+        CHECK(control.steering_boundary==sign && control.target_steering_mdeg==sign*29500);
+        ChassisControl_Tick(&control,120); CHECK(control.steering_boundary==sign);
+        CHECK(ChassisControl_Apply(&control,"renew","edge",3,1000,0,0,130));
+        CHECK(!control.steering_boundary && control.target_steering_mdeg==0);
+        feedback.steering_actual_mdeg=sign*30501;feedback.encoder_actual_mdeg=sign*30500;
+        ChassisControl_SetFeedback(&control,&feedback); ChassisControl_Tick(&control,140);
+        CHECK(control.fault_latched && !control.enable_request && control.stop_reason==CHASSIS_STOP_ENCODER_RANGE);
+        CHECK(!ChassisControl_Apply(&control,"renew","edge",4,1000,0,0,150));
+        ChassisControl_Init(&control,1);feedback.steering_actual_mdeg=sign*30045;feedback.encoder_actual_mdeg=sign*30045;
+        feedback.feedback_ms=0;ChassisControl_SetFeedback(&control,&feedback);
+        CHECK(!ChassisControl_Apply(&control,"acquire","stale",1,1000,0,0,500));
+        feedback.feedback_ms=500;feedback.drive_fault=1;ChassisControl_SetFeedback(&control,&feedback);
+        CHECK(!ChassisControl_Apply(&control,"acquire","fault",1,1000,0,0,500));
+    }
     return 0;
 }

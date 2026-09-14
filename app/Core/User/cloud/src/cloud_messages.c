@@ -354,7 +354,7 @@ uint8_t CloudMessages_BuildStatusReport(char* output, uint16_t size, const char*
         "\"calibrated\":%s,\"steeringProfileReady\":%s,\"steeringRangeValid\":%s,"
         "\"powerReady\":%s,\"powerOutputOn\":%s,\"otaBusy\":%s,\"safetyReady\":%s,"
         "\"stopReason\":%u,\"faultLatched\":%s,"
-        "\"faultRecordVersion\":1",
+        "\"steeringBoundary\":%d,\"faultRecordVersion\":1",
         (int)control->target_rpm, target_steering,
         (int)feedback->left_actual_rpm, (int)feedback->right_actual_rpm,
         actual_steering, actual_encoder,
@@ -370,7 +370,7 @@ uint8_t CloudMessages_BuildStatusReport(char* output, uint16_t size, const char*
         VehiclePowerOutput_IsOn() ? "true" : "false",
         feedback->ota_busy ? "true" : "false",
         ChassisControl_SafetyReady(control, now) ? "true" : "false",
-        (unsigned int)control->stop_reason, control->fault_latched ? "true" : "false");
+        (unsigned int)control->stop_reason, control->fault_latched ? "true" : "false", (int)control->steering_boundary);
     if (have_fault) {
         const uint32_t* words=(const uint32_t*)&fault;
         json_append(&writer, ",\"lastFault\":[");

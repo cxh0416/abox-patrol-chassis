@@ -54,6 +54,7 @@ typedef struct {
     int16_t target_rpm;
     int32_t target_steering_mdeg;
     int8_t active_direction;
+    int8_t steering_boundary; /* -1/+1 inward-only; clear only after operator backs off. */
     uint8_t remote_enabled;
     uint8_t session_active;
     uint8_t reversal_pending;

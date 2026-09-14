@@ -1,0 +1,97 @@
+[
+  {
+    "original": "out/logs/recover030-result.log",
+    "archive": "docs/operations/evidence/2026-09-14-030-steering-margin/recover030-result.log",
+    "sha256": "617edc0bb583f536901b0dd9d53ac56896e5cec0f7901f87113b007ce0040ec5"
+  },
+  {
+    "original": "out/logs/positive030-result.log",
+    "archive": "docs/operations/evidence/2026-09-14-030-steering-margin/positive030-result.log",
+    "sha256": "855405551688a3fefe3331a4e762f028df0a15674bb3d778985edbe40ceec7ed"
+  },
+  {
+    "original": "out/logs/limit030-can.log",
+    "archive": "docs/operations/evidence/2026-09-14-030-steering-margin/limit030-can.log",
+    "sha256": "6decf174102cc7129dbabcd5c886986c1f3b6f67c7f6b3b3a9c00ff61033be4e"
+  },
+  {
+    "original": "out/logs/verify030-immediate-result.log",
+    "archive": "docs/operations/evidence/2026-09-14-030-steering-margin/verify030-immediate-result.log",
+    "sha256": "ff4dbe3214564580af89818547eb42f9efbdd3ab903d2b8acb99e354337f86e6"
+  },
+  {
+    "original": "out/logs/wyse-030-backup.log",
+    "archive": "docs/operations/evidence/2026-09-14-030-steering-margin/wyse-030-backup.log",
+    "sha256": "f2d68622009c0897fbbe494454dd31a8d54e280f2adff224ba6eff59a81794bf"
+  },
+  {
+    "original": "out/logs/wyse-030-flash.log",
+    "archive": "docs/operations/evidence/2026-09-14-030-steering-margin/wyse-030-flash.log",
+    "sha256": "2c5e70a3d4294b637c5f89c11b9fa62d6f15db98edcac529714cb04f7e314804"
+  },
+  {
+    "original": "out/logs/wyse-030-immediate-backup.log",
+    "archive": "docs/operations/evidence/2026-09-14-030-steering-margin/wyse-030-immediate-backup.log",
+    "sha256": "f4a4cf7eb808e40108dc9ba2314cc7f3432634c2543aa386a3fa1b14f94042df"
+  },
+  {
+    "original": "out/logs/wyse-030-immediate-flash.log",
+    "archive": "docs/operations/evidence/2026-09-14-030-steering-margin/wyse-030-immediate-flash.log",
+    "sha256": "f13742f7f45296d3914378e6fbdbb7dbe524130ade6d64bc4d0f2fbe274f2c1e"
+  },
+  {
+    "original": "out/logs/tests030-immediate.log",
+    "archive": "docs/operations/evidence/2026-09-14-030-steering-margin/tests030-immediate.log",
+    "sha256": "c04a0bad8c2b4de7f44b1e86e483e036437d1425392bf40e2d529985e9bb51b4"
+  },
+  {
+    "original": "out/logs/build030-immediate.log",
+    "archive": "docs/operations/evidence/2026-09-14-030-steering-margin/build030-immediate.log",
+    "sha256": "42817c6338699cfcae4ea4486264d88f73aee08a41fa394aa8e0c4ec20aa5883"
+  },
+  {
+    "original": "out/logs/platform109-tests.log",
+    "archive": "docs/operations/evidence/2026-09-14-030-steering-margin/platform109-tests.log",
+    "sha256": "fda4ad63288fbaa6245b5ce671f968ac1fcac1f23a0525dd99028f688b799f0a"
+  },
+  {
+    "original": "out/logs/platform109-deploy.log",
+    "archive": "docs/operations/evidence/2026-09-14-030-steering-margin/platform109-deploy.log",
+    "sha256": "f537b27897e8cd49332cfeb3bddc08bc4e836e78c628606aa5ba824e992824d1"
+  },
+  {
+    "original": "out/logs/recover030.py",
+    "archive": "docs/operations/evidence/2026-09-14-030-steering-margin/recover030.py",
+    "sha256": "4da927bbfcd91cddd299174338a825ef049e3b70c3c0ae532d37f7e9c0baaf71"
+  },
+  {
+    "original": "out/logs/positive030.py",
+    "archive": "docs/operations/evidence/2026-09-14-030-steering-margin/positive030.py",
+    "sha256": "3a384ed485c6a2948cd4e8be62cc00c871132f37d5c6a82a38b4bed559ac302f"
+  },
+  {
+    "original": "out/logs/verify030-immediate.py",
+    "archive": "docs/operations/evidence/2026-09-14-030-steering-margin/verify030-immediate.py",
+    "sha256": "d40b3bf2b16924e439c73b5ebbb50f576cbb4b02b745953f8e30f10413745e5c"
+  },
+  {
+    "original": "out/logs/verify030-final.py",
+    "archive": "docs/operations/evidence/2026-09-14-030-steering-margin/verify030-final.py",
+    "sha256": "e7ab70060466598a8a8db2e77b0b223ecdd82c7494705dd799197386d155d646"
+  },
+  {
+    "original": "out/logs/limit030-immediate-can.log",
+    "archive": "docs/operations/evidence/2026-09-14-030-steering-margin/limit030-immediate-can.log",
+    "sha256": "db99cf59319518bafe0e0aaab8ee789f235f8114530b7003d756173b36ff21d9"
+  },
+  {
+    "original": "out/logs/limit030-final-can.log",
+    "archive": "docs/operations/evidence/2026-09-14-030-steering-margin/limit030-final-can.log",
+    "sha256": "d0c5c80870907b9b8b521031e5b6c7a18e03240153b28cedf938f4f7a3d7684d"
+  },
+  {
+    "original": "out/logs/verify030-final-result.log",
+    "archive": "docs/operations/evidence/2026-09-14-030-steering-margin/verify030-final-result.log",
+    "sha256": "9c65f71f2dd8ceb413ce10b2ff24cde5a27acda51c61a69cc72f59a2c6961e21"
+  }
+]

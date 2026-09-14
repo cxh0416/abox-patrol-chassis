@@ -1,0 +1,1585 @@
+
+==> Check source and release version
+
+==> Build offline release device-ota-service-0.4.109.tar.gz
+version_stamped version=0.4.109 web/index.html=2 web/style.css=7
+Collecting Flask<4,>=3.0
+  Using cached flask-3.1.3-py3-none-any.whl (103 kB)
+Collecting gunicorn<24,>=22
+  Using cached gunicorn-23.0.0-py3-none-any.whl (85 kB)
+Collecting paho-mqtt<3,>=2.0
+  Using cached paho_mqtt-2.1.0-py3-none-any.whl (67 kB)
+Collecting argon2-cffi<26,>=23.1
+  Using cached argon2_cffi-25.1.0-py3-none-any.whl (14 kB)
+Collecting pyotp<3,>=2.9
+  Using cached pyotp-2.10.0-py3-none-any.whl (13 kB)
+Collecting cryptography<45,>=42
+  Using cached cryptography-44.0.3-cp39-abi3-manylinux_2_34_x86_64.whl (4.2 MB)
+Collecting click>=8.1.3
+  Using cached click-8.5.0-py3-none-any.whl (125 kB)
+Collecting werkzeug>=3.1.0
+  Using cached werkzeug-3.1.8-py3-none-any.whl (226 kB)
+Collecting itsdangerous>=2.2.0
+  Using cached itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+Collecting jinja2>=3.1.2
+  Using cached jinja2-3.1.6-py3-none-any.whl (134 kB)
+Collecting markupsafe>=2.1.1
+  Using cached markupsafe-3.0.3-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (20 kB)
+Collecting blinker>=1.9.0
+  Using cached blinker-1.9.0-py3-none-any.whl (8.5 kB)
+Collecting packaging
+  Using cached packaging-26.3-py3-none-any.whl (129 kB)
+Collecting argon2-cffi-bindings
+  Using cached argon2_cffi_bindings-26.1.0-cp310-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (26 kB)
+Collecting cffi>=1.12
+  Using cached cffi-2.1.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (218 kB)
+Collecting pycparser
+  Using cached pycparser-3.0-py3-none-any.whl (48 kB)
+Saved /tmp/tmp.GpvcQJyujM/device-ota-service-0.4.109/vendor/python/flask-3.1.3-py3-none-any.whl
+Saved /tmp/tmp.GpvcQJyujM/device-ota-service-0.4.109/vendor/python/gunicorn-23.0.0-py3-none-any.whl
+Saved /tmp/tmp.GpvcQJyujM/device-ota-service-0.4.109/vendor/python/paho_mqtt-2.1.0-py3-none-any.whl
+Saved /tmp/tmp.GpvcQJyujM/device-ota-service-0.4.109/vendor/python/argon2_cffi-25.1.0-py3-none-any.whl
+Saved /tmp/tmp.GpvcQJyujM/device-ota-service-0.4.109/vendor/python/pyotp-2.10.0-py3-none-any.whl
+Saved /tmp/tmp.GpvcQJyujM/device-ota-service-0.4.109/vendor/python/cryptography-44.0.3-cp39-abi3-manylinux_2_34_x86_64.whl
+Saved /tmp/tmp.GpvcQJyujM/device-ota-service-0.4.109/vendor/python/blinker-1.9.0-py3-none-any.whl
+Saved /tmp/tmp.GpvcQJyujM/device-ota-service-0.4.109/vendor/python/cffi-2.1.1-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.whl
+Saved /tmp/tmp.GpvcQJyujM/device-ota-service-0.4.109/vendor/python/click-8.5.0-py3-none-any.whl
+Saved /tmp/tmp.GpvcQJyujM/device-ota-service-0.4.109/vendor/python/itsdangerous-2.2.0-py3-none-any.whl
+Saved /tmp/tmp.GpvcQJyujM/device-ota-service-0.4.109/vendor/python/jinja2-3.1.6-py3-none-any.whl
+Saved /tmp/tmp.GpvcQJyujM/device-ota-service-0.4.109/vendor/python/markupsafe-3.0.3-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl
+Saved /tmp/tmp.GpvcQJyujM/device-ota-service-0.4.109/vendor/python/werkzeug-3.1.8-py3-none-any.whl
+Saved /tmp/tmp.GpvcQJyujM/device-ota-service-0.4.109/vendor/python/argon2_cffi_bindings-26.1.0-cp310-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl
+Saved /tmp/tmp.GpvcQJyujM/device-ota-service-0.4.109/vendor/python/packaging-26.3-py3-none-any.whl
+Saved /tmp/tmp.GpvcQJyujM/device-ota-service-0.4.109/vendor/python/pycparser-3.0-py3-none-any.whl
+Successfully downloaded Flask gunicorn paho-mqtt argon2-cffi pyotp cryptography blinker cffi click itsdangerous jinja2 markupsafe werkzeug argon2-cffi-bindings packaging pycparser
+/mnt/f/work/device-ota-service/dist/device-ota-service-0.4.109.tar.gz
+artifact_ok version=0.4.109 sha256=214e8c26b12f85b496f6420a03f5fff204d01032e9e962213a11887636d3ced4 manifest_sha256=780a7c01a869b176c44ab780c43634059a64bff22b3bd40baf44a53544a20d11 size=5700180
+
+==> Check server47 access and release prerequisites
+
+==> Upload release archive
+sftp> put "F:/work/device-ota-service/dist/device-ota-service-0.4.109.tar.gz" "/tmp/device-ota-service-0.4.109.tar.gz"
+sftp> put "C:/Users/cxh/AppData/Local/Temp/device-ota-install-release-475d6de5d2024a10a588624771d8567d.sh" "/tmp/device-ota-install-release-0.4.109.sh"
+
+==> Stage release
+Looking in links: /opt/device-ota-service/releases/0.4.109/vendor/python
+Processing /opt/device-ota-service/releases/0.4.109/vendor/python/flask-3.1.3-py3-none-any.whl (from -r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 1))
+Processing /opt/device-ota-service/releases/0.4.109/vendor/python/gunicorn-23.0.0-py3-none-any.whl (from -r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 2))
+Processing /opt/device-ota-service/releases/0.4.109/vendor/python/paho_mqtt-2.1.0-py3-none-any.whl (from -r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 3))
+Processing /opt/device-ota-service/releases/0.4.109/vendor/python/argon2_cffi-25.1.0-py3-none-any.whl (from -r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 4))
+Processing /opt/device-ota-service/releases/0.4.109/vendor/python/pyotp-2.10.0-py3-none-any.whl (from -r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 5))
+Processing /opt/device-ota-service/releases/0.4.109/vendor/python/cryptography-44.0.3-cp39-abi3-manylinux_2_34_x86_64.whl (from -r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 6))
+Processing /opt/device-ota-service/releases/0.4.109/vendor/python/blinker-1.9.0-py3-none-any.whl (from Flask<4,>=3.0->-r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 1))
+Processing /opt/device-ota-service/releases/0.4.109/vendor/python/click-8.5.0-py3-none-any.whl (from Flask<4,>=3.0->-r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 1))
+Processing /opt/device-ota-service/releases/0.4.109/vendor/python/itsdangerous-2.2.0-py3-none-any.whl (from Flask<4,>=3.0->-r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 1))
+Processing /opt/device-ota-service/releases/0.4.109/vendor/python/jinja2-3.1.6-py3-none-any.whl (from Flask<4,>=3.0->-r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 1))
+INFO: pip is looking at multiple versions of flask to determine which version is compatible with other requirements. This could take a while.
+Collecting Flask<4,>=3.0 (from -r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 1))
+  Using cached flask-3.1.3-py3-none-any.whl.metadata (3.2 kB)
+Collecting gunicorn<24,>=22 (from -r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 2))
+  Using cached gunicorn-23.0.0-py3-none-any.whl.metadata (4.4 kB)
+Collecting paho-mqtt<3,>=2.0 (from -r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 3))
+  Using cached paho_mqtt-2.1.0-py3-none-any.whl.metadata (23 kB)
+Collecting argon2-cffi<26,>=23.1 (from -r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 4))
+  Using cached argon2_cffi-25.1.0-py3-none-any.whl.metadata (4.1 kB)
+Collecting pyotp<3,>=2.9 (from -r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 5))
+  Using cached pyotp-2.10.0-py3-none-any.whl.metadata (10 kB)
+Collecting cryptography<45,>=42 (from -r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 6))
+  Using cached cryptography-44.0.3-cp39-abi3-manylinux_2_34_x86_64.whl.metadata (5.7 kB)
+Collecting blinker>=1.9.0 (from Flask<4,>=3.0->-r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 1))
+  Using cached blinker-1.9.0-py3-none-any.whl.metadata (1.6 kB)
+Collecting click>=8.1.3 (from Flask<4,>=3.0->-r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 1))
+  Using cached click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+Collecting itsdangerous>=2.2.0 (from Flask<4,>=3.0->-r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 1))
+  Using cached itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+Collecting jinja2>=3.1.2 (from Flask<4,>=3.0->-r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 1))
+  Using cached jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Collecting markupsafe>=2.1.1 (from Flask<4,>=3.0->-r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 1))
+  Using cached markupsafe-3.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+Collecting werkzeug>=3.1.0 (from Flask<4,>=3.0->-r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 1))
+  Using cached werkzeug-3.1.8-py3-none-any.whl.metadata (4.0 kB)
+Collecting packaging (from gunicorn<24,>=22->-r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 2))
+  Using cached packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+Collecting argon2-cffi-bindings (from argon2-cffi<26,>=23.1->-r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 4))
+  Using cached argon2_cffi_bindings-26.1.0-cp310-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl.metadata (7.5 kB)
+Collecting cffi>=1.12 (from cryptography<45,>=42->-r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 6))
+  Using cached cffi-2.1.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (2.5 kB)
+Collecting pycparser (from cffi>=1.12->cryptography<45,>=42->-r /opt/device-ota-service/releases/0.4.109/requirements.txt (line 6))
+  Using cached pycparser-3.0-py3-none-any.whl.metadata (8.2 kB)
+Using cached flask-3.1.3-py3-none-any.whl (103 kB)
+Using cached gunicorn-23.0.0-py3-none-any.whl (85 kB)
+Using cached paho_mqtt-2.1.0-py3-none-any.whl (67 kB)
+Using cached argon2_cffi-25.1.0-py3-none-any.whl (14 kB)
+Using cached pyotp-2.10.0-py3-none-any.whl (13 kB)
+Using cached cryptography-44.0.3-cp39-abi3-manylinux_2_34_x86_64.whl (4.2 MB)
+Using cached blinker-1.9.0-py3-none-any.whl (8.5 kB)
+Using cached cffi-2.1.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (221 kB)
+Using cached click-8.5.0-py3-none-any.whl (125 kB)
+Using cached itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+Using cached jinja2-3.1.6-py3-none-any.whl (134 kB)
+Using cached markupsafe-3.0.3-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)
+Using cached werkzeug-3.1.8-py3-none-any.whl (226 kB)
+Using cached argon2_cffi_bindings-26.1.0-cp310-abi3-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (26 kB)
+Using cached packaging-26.3-py3-none-any.whl (129 kB)
+Using cached pycparser-3.0-py3-none-any.whl (48 kB)
+Installing collected packages: pyotp, pycparser, paho-mqtt, packaging, markupsafe, itsdangerous, click, blinker, werkzeug, jinja2, gunicorn, cffi, Flask, cryptography, argon2-cffi-bindings, argon2-cffi
+Successfully installed Flask-3.1.3 argon2-cffi-25.1.0 argon2-cffi-bindings-26.1.0 blinker-1.9.0 cffi-2.1.1 click-8.5.0 cryptography-44.0.3 gunicorn-23.0.0 itsdangerous-2.2.0 jinja2-3.1.6 markupsafe-3.0.3 packaging-26.3 paho-mqtt-2.1.0 pycparser-3.0 pyotp-2.10.0 werkzeug-3.1.8
+staged /opt/device-ota-service/releases/0.4.109
+
+==> Pre-activation backup and read-only firmware inventory
+/var/lib/device-ota-service/backups/20260914T081353Z
+{
+  "count": 120,
+  "items": [
+    {
+      "artifact": "app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "atbox",
+      "published_at": "2026-08-06T02:53:38+00:00",
+      "sha256": "8d64888b51c8d88bc67724285f162a49566359e37fc63a778ed94bebbf7d0cc1",
+      "size": 46080,
+      "stable_seed_source": "server_revision",
+      "version": "legacy-import"
+    },
+    {
+      "artifact": "",
+      "integrity": "missing_binary",
+      "lifecycle": "active",
+      "metadata_error": "revision directory has no .bin artifact",
+      "product": "legacy",
+      "published_at": "2026-08-06T03:19:28+00:00",
+      "sha256": "",
+      "size": 0,
+      "stable_seed_source": "unknown",
+      "version": "legacy-import"
+    },
+    {
+      "artifact": "lockctrlboard_boot_v2_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "lockctrlboard",
+      "published_at": "2026-09-10T04:02:37+00:00",
+      "sha256": "ef4a8446c3048a8fba03d4a5db25ccbcd0ed00ccba981ff51206ccc2a7d19372",
+      "size": 86108,
+      "stable_seed_source": "local_flash",
+      "version": "cheweishi-1.0.1"
+    },
+    {
+      "artifact": "lockctrlboard_boot_v2_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "lockctrlboard",
+      "published_at": "2026-08-24T09:55:18+00:00",
+      "sha256": "3a44e7026c926705f2ac6ba04900909a60f2307e5b302daf04dc80b237edca02",
+      "size": 85620,
+      "stable_seed_source": "server_revision",
+      "version": "cheweishi-20260824w-ota-common"
+    },
+    {
+      "artifact": "meal_delivery_vehicle_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "meal_delivery_vehicle",
+      "published_at": "2026-08-06T06:20:46+00:00",
+      "sha256": "46fa410279dfa2ffafa121d84c1a318f368dc2f1011cbc27fe54169f523cda6a",
+      "size": 67896,
+      "stable_seed_source": "server_revision",
+      "version": "abox-v2-20260806a"
+    },
+    {
+      "artifact": "meal_delivery_vehicle_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "meal_delivery_vehicle",
+      "published_at": "2026-08-07T02:15:57+00:00",
+      "sha256": "bea5da117499688171fe9e36c787c7aee55bb7bf887dcbf03d5be82d2dcd1a34",
+      "size": 67888,
+      "stable_seed_source": "server_revision",
+      "version": "abox-v2-20260807b"
+    },
+    {
+      "artifact": "meal_delivery_vehicle_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "meal_delivery_vehicle",
+      "published_at": "2026-08-10T03:15:51+00:00",
+      "sha256": "33e654512856d6ad68fdd1b62b5b56b2d2330b5b14dbf9e75625fa20238aed1f",
+      "size": 69344,
+      "stable_seed_source": "server_revision",
+      "version": "abox-v2-20260810a-rs485auto"
+    },
+    {
+      "artifact": "meal_delivery_vehicle_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "meal_delivery_vehicle",
+      "published_at": "2026-08-10T07:49:32+00:00",
+      "sha256": "21705da8b21fd85bdfc030a7786f401a3572ae3f806c701b8e4221a20e44f2b3",
+      "size": 69976,
+      "stable_seed_source": "server_revision",
+      "version": "abox-v2-20260810b-testchannel"
+    },
+    {
+      "artifact": "meal_delivery_vehicle_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "meal_delivery_vehicle",
+      "published_at": "2026-08-20T01:23:09+00:00",
+      "sha256": "66a9343a6724f85a91c3b877563bf4017fb7c06998a4c035fbcd379c7f8bfc64",
+      "size": 71064,
+      "stable_seed_source": "server_revision",
+      "version": "abox-v2-20260820a-bootv2"
+    },
+    {
+      "artifact": "meal_delivery_vehicle_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "meal_delivery_vehicle",
+      "published_at": "2026-08-20T03:33:48+00:00",
+      "sha256": "9dfe69be0149fc2e2cbd5177a09edc3910c3f31049b14a014203a2439b815664",
+      "size": 79600,
+      "stable_seed_source": "server_revision",
+      "version": "abox-v2-20260820b-bootv2"
+    },
+    {
+      "artifact": "meal_delivery_vehicle_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "meal_delivery_vehicle",
+      "published_at": "2026-08-06T02:53:38+00:00",
+      "sha256": "8751c8e0fd55c8d457f76b1abc8b3613095cd28407376452a4c60e5896b75ed3",
+      "size": 66896,
+      "stable_seed_source": "server_revision",
+      "version": "legacy-import"
+    },
+    {
+      "artifact": "meal_delivery_vehicle_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "meal_delivery_vehicle",
+      "published_at": "2026-08-31T06:57:14+00:00",
+      "sha256": "58c8130e2d129f7ce588bd1ba5dcca6eaffd6f6167b6c43e7fd9d5457d5f29fb",
+      "size": 88436,
+      "stable_seed_source": "local_flash",
+      "version": "meal-delivery-vehicle-1.0.2"
+    },
+    {
+      "artifact": "meal_delivery_vehicle_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "meal_delivery_vehicle",
+      "published_at": "2026-08-06T02:59:31+00:00",
+      "sha256": "8751c8e0fd55c8d457f76b1abc8b3613095cd28407376452a4c60e5896b75ed3",
+      "size": 66896,
+      "stable_seed_source": "server_revision",
+      "version": "preflight-20260806-meal_delivery_vehicle_app"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-08T06:24:30+00:00",
+      "sha256": "0f3fee46fc6b26d79d342966b0680c5570325373e076d81c0279557c4927c33a",
+      "size": 99032,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.2.10"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-08T06:32:13+00:00",
+      "sha256": "c4e96eadbf2eb61646b560070199776c408ef942023504afce4a16a46e04e510",
+      "size": 99064,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.2.11"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-08T06:42:12+00:00",
+      "sha256": "cd793e16959a585a102864e9530fc4bcaff36e71559ac64f9f03aa09e0cce5ca",
+      "size": 99080,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.2.12"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-08T08:13:15+00:00",
+      "sha256": "993f134fad51f4efd99816671830693dd7a2bfd3e5f1f396f8e10dff5c99db2a",
+      "size": 99088,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.2.13"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-08T09:43:19+00:00",
+      "sha256": "28a95bad08577d09c914be100c1ae380d259a6710a496fb64371e11c9c99f1b5",
+      "size": 99096,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.2.14"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-09T03:46:38+00:00",
+      "sha256": "7d30fbfa59367abce21e83d985b84d7748378afbd62e2cd058e2f6a36e17333a",
+      "size": 102152,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.2.15"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-09T05:36:29+00:00",
+      "sha256": "b3236f8b1bae52d5ad879e1833a500e05531469b09676044c219438dc5a0fd4b",
+      "size": 102760,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.2.16"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-10T05:54:19+00:00",
+      "sha256": "f9bd2298b2be22b129ada01eb7c780ee5d65132f90a94d5d79c40aa94114364d",
+      "size": 105152,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.2.17"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-10T06:29:33+00:00",
+      "sha256": "884954d3daaf16ba6a6e72c2f5c97ea17ee6d489df47fb173af9e5a6ca5457c2",
+      "size": 105192,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.2.18"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-10T07:25:35+00:00",
+      "sha256": "83d7f29c84779b1e5615dc30c36d5b567ea89ff5683625ccb739ada1c21eb0b7",
+      "size": 105720,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.2.19"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-10T09:17:39+00:00",
+      "sha256": "bfd79c367220a2de8347cef2c37cfc6a80f67ed02c927b0136e71f4e280f574f",
+      "size": 105752,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.2.20"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-10T09:37:49+00:00",
+      "sha256": "7ac7fa14850fd04057a8c651ef6546811036b7d4805f8a78c69d37cc55ab3100",
+      "size": 105704,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.2.21"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-11T01:03:42+00:00",
+      "sha256": "e3be6e516f09dbb111505f2097fd9f58adf92c74b4944a33484664eb0c1d0c5d",
+      "size": 106008,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.2.22"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-14T05:47:37+00:00",
+      "sha256": "c242e463e7bfcf04067ed9fcbe93ecb1ac95f2430fdd1f8da95e5638cc8ad8a0",
+      "size": 106768,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.2.25"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-02T03:09:57+00:00",
+      "sha256": "6bb4faf37c659afb5981b3966792a3ddfd62dcb06794b7e38b836614220b1f28",
+      "size": 89632,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.2.4"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-08T03:17:37+00:00",
+      "sha256": "8c2ed943c6a10fcdcdb2cd10f030dcd9548a6a80a5ec119752f887f238390ea6",
+      "size": 91872,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.2.5"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-08T05:15:17+00:00",
+      "sha256": "646a837b16f790c9640fdb499b1b5afa15a9b9711b2c6b1c4eb8859f90a24a64",
+      "size": 95672,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.2.6"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-08T05:21:41+00:00",
+      "sha256": "79934584fb0854dd6d8831f506557818c8c7dd0b1b45fd90d4a93c42719648fc",
+      "size": 95752,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.2.7"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-08T05:33:17+00:00",
+      "sha256": "ecec24c6dcd774b2a18ad899b9921fe2a61a5e4d444d5159940538b6476c7dd1",
+      "size": 96032,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.2.8"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-08T05:47:42+00:00",
+      "sha256": "443201a6fda2b2b3ea6746cf44e53e2f9ccc4bb7975c593ee8c273ac88a25178",
+      "size": 97056,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.2.9"
+    },
+    {
+      "artifact": "rtk_v7_app_latest.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "rtk_v7",
+      "published_at": "2026-08-28T02:25:06+00:00",
+      "sha256": "ee0f4431ca24400bd6f9d92b2962b6ea0f11dd7578ed2a8173c68847c654f599",
+      "size": 70176,
+      "stable_seed_source": "server_revision",
+      "version": "RTK_V1.0.6"
+    },
+    {
+      "artifact": "rtk_v7_app_latest.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "rtk_v7",
+      "published_at": "2026-08-28T05:00:22+00:00",
+      "sha256": "3812ad377cf489fcaa0b6e5228c060288ff819be8c9b8ed8cbd47a66456af73c",
+      "size": 70320,
+      "stable_seed_source": "server_revision",
+      "version": "RTK_V1.0.7"
+    },
+    {
+      "artifact": "rtk_v7_app_latest.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "rtk_v7",
+      "published_at": "2026-08-28T06:18:51+00:00",
+      "sha256": "170542c9b4d67ac3e092d52176c987c867f477384ed739bd4e4c2d7a26eb75fc",
+      "size": 72176,
+      "stable_seed_source": "server_revision",
+      "version": "RTK_V1.0.8"
+    },
+    {
+      "artifact": "",
+      "integrity": "ambiguous_binary",
+      "lifecycle": "active",
+      "metadata_error": "revision directory has multiple .bin artifacts",
+      "product": "rtk_v7",
+      "published_at": "2026-08-06T02:53:38+00:00",
+      "sha256": "",
+      "size": 115044,
+      "stable_seed_source": "unknown",
+      "version": "legacy-import"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-12T05:21:10+00:00",
+      "sha256": "91cc45039904e6b3345fb18d07f351e6c3260fe108baa1e6e800dd6311021a38",
+      "size": 24124,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.0.0"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-12T06:56:17+00:00",
+      "sha256": "dbe7d11d254740d7de9d2262506602b197676be691ed29c4ec925af6a95cd8ee",
+      "size": 64760,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.0"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-12T06:56:27+00:00",
+      "sha256": "ec5d9e61f29e873f76325df17fb9316d4b5a0b58f8fd71e025fcdfc22055181b",
+      "size": 64760,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.1"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-13T06:49:01+00:00",
+      "sha256": "3995d2fece0ebecff40c497a44aac0378823ace3de4268f9a67716b4ccb65b1f",
+      "size": 70944,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.10"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-13T06:49:01+00:00",
+      "sha256": "a3f6485fb290782ae8504d0003bfd24087e3da0f4ee9f1382c85b9511b93271c",
+      "size": 70944,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.11"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-13T06:59:18+00:00",
+      "sha256": "53de1028b3559057050a0b3cadb2cd99fef88c5177033eff1cff6910a95b6100",
+      "size": 71144,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.12"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-13T06:59:19+00:00",
+      "sha256": "33762b10d74cdef0d5d39003bd75a6029bbddd2909db6a0a098ea7d1c99cb7ff",
+      "size": 71144,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.13"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-13T07:06:49+00:00",
+      "sha256": "32ccb2cb7da00496a53f6304b6bfece9aa9c114b2eab2482f0cbc071bbb56deb",
+      "size": 71208,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.14"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-13T07:06:50+00:00",
+      "sha256": "aa62019db0c4ebb767f4cc597c1cac988fa32ca73e11425e7ee433147761d37f",
+      "size": 71208,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.15"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-13T09:44:04+00:00",
+      "sha256": "9fb6fc9d9695a265599cb2769215b6b7bdb60996463033ccd39a0281fe29c146",
+      "size": 72064,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.16"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-13T09:44:04+00:00",
+      "sha256": "2cc8f5dbe4999d17698006f504be21c4760537407a734c6541cfc82c1993cfa4",
+      "size": 72064,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.17"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-13T09:52:24+00:00",
+      "sha256": "c2672bb38d8b30f8b891874b069d76bb256be8c1904d02cec11aca250f85a5e2",
+      "size": 72112,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.18"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-13T09:52:24+00:00",
+      "sha256": "d8280b9aade1779019592969b3b48a2a2a898dd8ff8f740083279107ef44ae06",
+      "size": 72112,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.19"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-12T07:52:58+00:00",
+      "sha256": "8d6bda15fc02becd3e917a1b5b54970c8ca7c07318e0ffcf0bd2dc67295e7871",
+      "size": 68432,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.2"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-13T09:56:44+00:00",
+      "sha256": "75f5eb0e90e50552cbc05829dfd1cf379bd202b9fdff21b396eca376451b07ef",
+      "size": 72112,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.20"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-13T09:56:45+00:00",
+      "sha256": "b94dde1ca6af4017ba8830086c29de1479fd968234e876fa9b1589c094205711",
+      "size": 72112,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.21"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-13T10:22:38+00:00",
+      "sha256": "64bbf671a242ab4a76d1db09abd3e6ef6a6c503883ecd256a2f78ce5ed4583d7",
+      "size": 72112,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.22"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-13T10:22:39+00:00",
+      "sha256": "a03841c6fbe95d9807e0b3e2215528cd9ee9b5f30a5c4d18275b846fe011cf8e",
+      "size": 72112,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.23"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-13T10:36:56+00:00",
+      "sha256": "fadfc3a838299ea4b558f0e75ee57f0bdf2107c801f4416cdf683994b91d60bf",
+      "size": 72056,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.24"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-13T10:36:56+00:00",
+      "sha256": "69bf7e9882816a341e8068346688e62a42629bfdc3cdcc69b70786d377629a81",
+      "size": 72056,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.25"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-13T10:50:13+00:00",
+      "sha256": "e2bfe5b6526e0b8b244060206023bb9a4e823736587a9139ef7de36d0137c547",
+      "size": 72056,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.26"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-13T10:50:14+00:00",
+      "sha256": "d7f189429195f8e52ea03ec5e4e96b62203e18d50187f31db13b25507fc7e3b6",
+      "size": 72056,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.27"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-13T11:10:32+00:00",
+      "sha256": "e83f9984d359387ad2d2d86ff8b9642105a341c016dc003ac83d3ce22086616c",
+      "size": 72056,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.28"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-13T11:10:33+00:00",
+      "sha256": "6f897b3e0ef66ce51a095556d4dce26290708136bccafb77bb015ba00cb0921b",
+      "size": 72056,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.29"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-12T07:53:18+00:00",
+      "sha256": "e4cd46825a174feed984150f7f9c4671439e63beaf409046a2840f87d5ef20ac",
+      "size": 68432,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.3"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-14T05:23:37+00:00",
+      "sha256": "7891b75e00a7859386aba3929115844c5f9fe103702c7f172e48c8af5c82b760",
+      "size": 72048,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.30"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-14T07:23:37+00:00",
+      "sha256": "859d4d271ffdd0df94a224cb70a15280e69a8656a4f7286ba8e2bbf839c01a39",
+      "size": 72184,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.31"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-20T03:36:02+00:00",
+      "sha256": "488b4d9b9a478b983f771788dc51f2e1f4fea3b10f17d631eca80d24aecb8ef1",
+      "size": 72464,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.32"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-14T09:54:34+00:00",
+      "sha256": "0c37bc9608c9f56d2640e44eee28f62924abe147e23d151d6276bd087f80ec29",
+      "size": 72408,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.33"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-14T09:54:35+00:00",
+      "sha256": "866d5b49bfd5774ce5c2802d74faa2c300a73897ff61370a8270f3046cce417b",
+      "size": 72408,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.34"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-14T09:54:35+00:00",
+      "sha256": "de273248c31b4ab4630d549dcb45f7631c1ffef8db20db78d28de8170c943659",
+      "size": 72536,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.35"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-14T09:54:36+00:00",
+      "sha256": "0b47e16ba00e01739e59bf35af19a438e442942c9e4abe85d619452932438ff5",
+      "size": 72520,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.36"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-17T06:40:03+00:00",
+      "sha256": "39c0fba28f8a5ace108db09364025db50206cedc6145c56519837cdb422d70d0",
+      "size": 72416,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.37"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-17T06:40:04+00:00",
+      "sha256": "8fdee14b0fd881bb95bc11757cb22a59d0339874e15cabed3ea7508a36a377ba",
+      "size": 72416,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.38"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-17T06:40:05+00:00",
+      "sha256": "1748f88d9c69cd0c99d6315947d8f1eb413f49e5f76a727f8269baeb52898492",
+      "size": 72544,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.39"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-12T08:32:12+00:00",
+      "sha256": "64a016857ce5fb3f07f8d2c211fa1e5eb8c938a3089df5812eb2e470fe3bb9b1",
+      "size": 69624,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.4"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-17T06:40:06+00:00",
+      "sha256": "5fd451c28993a389bc1d3b40b0c93c61bfc123050d0c09c3b0e06ed3e093dec9",
+      "size": 72520,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.40"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-12T08:32:21+00:00",
+      "sha256": "573af3a1f2d0d67de395e85cbe494bb8acfa94511f9374bc123075395019fa88",
+      "size": 69624,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.5"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-12T09:34:15+00:00",
+      "sha256": "c38e55b1f316af9e40056ac8ea326a8f2405df4f54159ccee573a9232592efa1",
+      "size": 69640,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.6"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-12T09:34:28+00:00",
+      "sha256": "71a32951bc302177ebe66bb6da4ce87059392cc5cda56a548cbc0a5515e57d31",
+      "size": 69640,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.7"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-13T06:05:22+00:00",
+      "sha256": "303cf03998d69df19fd93311542fb7f573c6d822522075faf833be56c0929507",
+      "size": 70936,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.8"
+    },
+    {
+      "artifact": "sweeper_vcu_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "sweeper_vcu",
+      "published_at": "2026-08-13T06:10:33+00:00",
+      "sha256": "d65eec7d758e290d8942c675cd4c5d070953a23d7d376f957401f1453b1a7647",
+      "size": 70936,
+      "stable_seed_source": "server_revision",
+      "version": "sweeper-vcu-1.1.9"
+    },
+    {
+      "artifact": "top_flying_wing_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "top_flying_wing",
+      "published_at": "2026-08-26T09:05:44+00:00",
+      "sha256": "f0087cd79c5daaabaa3a35bc5a6f9943000d5da3d9a49000674cc6267957e47b",
+      "size": 79244,
+      "stable_seed_source": "local_flash",
+      "version": "top-flying-wing-1.0.11"
+    },
+    {
+      "artifact": "top_flying_wing_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "top_flying_wing",
+      "published_at": "2026-08-31T06:57:14+00:00",
+      "sha256": "d2c81554dad3fc57164884767e43a08b2b474a7599a3d249431eb4db58eb7cbd",
+      "size": 79756,
+      "stable_seed_source": "local_flash",
+      "version": "top-flying-wing-1.0.13"
+    },
+    {
+      "artifact": "top_flying_wing_app.bin",
+      "integrity": "ok",
+      "lifecycle": "active",
+      "metadata_error": "",
+      "product": "top_flying_wing",
+      "published_at": "2026-08-31T07:17:26+00:00",
+      "sha256": "d71023b740ea40108876b753afa6bf678d85cb2246dfb02cc3d126a9ed7cc5bc",
+      "size": 79756,
+      "stable_seed_source": "local_flash",
+      "version": "top-flying-wing-1.0.14"
+    },
+    {
+      "artifact": "lockctrlboard_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "lockctrlboard",
+      "published_at": "2026-08-18T09:48:16+00:00",
+      "sha256": "5956aaecc607198d0fa0c53ebcb3881a4e10de0aa9d1312957e7c5cdaad43bed",
+      "size": 70296,
+      "stable_seed_source": "server_revision",
+      "version": "cheweishi-20260818f"
+    },
+    {
+      "artifact": "",
+      "integrity": "ambiguous_binary",
+      "lifecycle": "quarantined",
+      "metadata_error": "revision directory has multiple .bin artifacts",
+      "product": "lockctrlboard",
+      "published_at": "2026-08-18T10:29:54+00:00",
+      "sha256": "",
+      "size": 141725,
+      "stable_seed_source": "unknown",
+      "version": "cheweishi-20260818g"
+    },
+    {
+      "artifact": "lockctrlboard_boot_v2_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "lockctrlboard",
+      "published_at": "2026-08-18T10:48:06+00:00",
+      "sha256": "a895d56d9bea237d94094de3298678bb649af37eb22dd057671c723fa7ee23ae",
+      "size": 70280,
+      "stable_seed_source": "server_revision",
+      "version": "cheweishi-20260818h"
+    },
+    {
+      "artifact": "lockctrlboard_boot_v2_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "lockctrlboard",
+      "published_at": "2026-08-20T03:33:47+00:00",
+      "sha256": "41121547de81829edcbe05d4114e3fdf03532cf9f4712748fa672cb2b119fcc4",
+      "size": 78960,
+      "stable_seed_source": "server_revision",
+      "version": "cheweishi-20260820i"
+    },
+    {
+      "artifact": "lockctrlboard_boot_v2_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "lockctrlboard",
+      "published_at": "2026-08-20T06:11:59+00:00",
+      "sha256": "b0fc2aa9fcea3cf8f2a86f9c61b782b63fb19eb18727fe1c189ed420ae31a2b0",
+      "size": 80448,
+      "stable_seed_source": "server_revision",
+      "version": "cheweishi-20260820j"
+    },
+    {
+      "artifact": "lockctrlboard_boot_v2_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "lockctrlboard",
+      "published_at": "2026-08-20T06:32:08+00:00",
+      "sha256": "a877527f8d8f0f5fd93ecea1154e097935c4680a9dac011a4107d90ae982822e",
+      "size": 80808,
+      "stable_seed_source": "server_revision",
+      "version": "cheweishi-20260820k"
+    },
+    {
+      "artifact": "lockctrlboard_boot_v2_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "lockctrlboard",
+      "published_at": "2026-08-20T06:40:23+00:00",
+      "sha256": "836aa7334f2c1d2d30c93dc7a6323ddb1a3f6dde138fcc148c6d9210cf334cd1",
+      "size": 80876,
+      "stable_seed_source": "server_revision",
+      "version": "cheweishi-20260820l"
+    },
+    {
+      "artifact": "lockctrlboard_boot_v2_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "lockctrlboard",
+      "published_at": "2026-08-24T07:15:03+00:00",
+      "sha256": "5694aa449c4401417158a42a0c73312d0bcdc3af960624b527225585470a83a4",
+      "size": 80876,
+      "stable_seed_source": "server_revision",
+      "version": "cheweishi-20260824m"
+    },
+    {
+      "artifact": "lockctrlboard_boot_v2_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "lockctrlboard",
+      "published_at": "2026-08-24T07:43:54+00:00",
+      "sha256": "63add6fbd0601cc71eb0ac2e8cd28380b8ce024593aa6de42f311db72785c8d3",
+      "size": 80876,
+      "stable_seed_source": "server_revision",
+      "version": "cheweishi-20260824n"
+    },
+    {
+      "artifact": "lockctrlboard_boot_v2_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "lockctrlboard",
+      "published_at": "2026-08-24T07:51:46+00:00",
+      "sha256": "a50a4c3b033ef2fb1ad0ed1cfa609639a8ead5c8d2a1e52aed2ddbfb2d0f3f4f",
+      "size": 80876,
+      "stable_seed_source": "server_revision",
+      "version": "cheweishi-20260824o"
+    },
+    {
+      "artifact": "lockctrlboard_boot_v2_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "lockctrlboard",
+      "published_at": "2026-08-24T09:44:46+00:00",
+      "sha256": "6003356c513d446ed636b207b72b012a2a13335a3aa2f2e33956771864a7745d",
+      "size": 85612,
+      "stable_seed_source": "server_revision",
+      "version": "cheweishi-20260824p-ota-common"
+    },
+    {
+      "artifact": "lockctrlboard_boot_v2_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "lockctrlboard",
+      "published_at": "2026-08-24T09:47:55+00:00",
+      "sha256": "3174735ea73e0426b7661203aa3b015ce6309439b2b19b542fe8524f0ee9b50c",
+      "size": 85612,
+      "stable_seed_source": "server_revision",
+      "version": "cheweishi-20260824q-ota-common"
+    },
+    {
+      "artifact": "lockctrlboard_boot_v2_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "lockctrlboard",
+      "published_at": "2026-08-24T09:47:55+00:00",
+      "sha256": "8bbd7b13171e99be9ca0a8090ec7dea584b42681f63ce1ad5acd508e17ec02e1",
+      "size": 85612,
+      "stable_seed_source": "server_revision",
+      "version": "cheweishi-20260824r-ota-common"
+    },
+    {
+      "artifact": "lockctrlboard_boot_v2_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "lockctrlboard",
+      "published_at": "2026-08-24T09:47:55+00:00",
+      "sha256": "84cc42a8ed89240df9e292cbc18d8b34cc677e364ffb5cfec0643d5de7b9da27",
+      "size": 85612,
+      "stable_seed_source": "server_revision",
+      "version": "cheweishi-20260824s-ota-common"
+    },
+    {
+      "artifact": "lockctrlboard_boot_v2_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "lockctrlboard",
+      "published_at": "2026-08-24T09:55:18+00:00",
+      "sha256": "b6ab87c653098432eaa766fae711b3d82130757dfbe7189b501c9b19a0b0d511",
+      "size": 85620,
+      "stable_seed_source": "server_revision",
+      "version": "cheweishi-20260824t-ota-common"
+    },
+    {
+      "artifact": "lockctrlboard_boot_v2_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "lockctrlboard",
+      "published_at": "2026-08-24T09:55:18+00:00",
+      "sha256": "5ebb8f5d2122626d9fe245817701dd1bd373465b0a63261e4d57adc2d6e8f195",
+      "size": 85620,
+      "stable_seed_source": "server_revision",
+      "version": "cheweishi-20260824u-ota-common"
+    },
+    {
+      "artifact": "lockctrlboard_boot_v2_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "lockctrlboard",
+      "published_at": "2026-08-24T09:55:18+00:00",
+      "sha256": "ec254501d24b8001287b2905407cbe95a580cc1ce3136564181c2a3f1efd1a12",
+      "size": 85620,
+      "stable_seed_source": "server_revision",
+      "version": "cheweishi-20260824v-ota-common"
+    },
+    {
+      "artifact": "lockctrlboard_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "lockctrlboard",
+      "published_at": "2026-08-06T02:53:38+00:00",
+      "sha256": "cfd68e9462339bcff31a385c185f11629261115225338817f023db7a8b9f4b52",
+      "size": 63736,
+      "stable_seed_source": "server_revision",
+      "version": "legacy-import"
+    },
+    {
+      "artifact": "lockctrlboard_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "lockctrlboard",
+      "published_at": "2026-08-06T02:57:44+00:00",
+      "sha256": "cfd68e9462339bcff31a385c185f11629261115225338817f023db7a8b9f4b52",
+      "size": 63736,
+      "stable_seed_source": "server_revision",
+      "version": "preflight-20260806"
+    },
+    {
+      "artifact": "lockctrlboard_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "lockctrlboard",
+      "published_at": "2026-08-06T02:58:51+00:00",
+      "sha256": "cfd68e9462339bcff31a385c185f11629261115225338817f023db7a8b9f4b52",
+      "size": 63736,
+      "stable_seed_source": "server_revision",
+      "version": "preflight-20260806c"
+    },
+    {
+      "artifact": "lockctrlboard_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "lockctrlboard",
+      "published_at": "2026-08-18T04:49:13+00:00",
+      "sha256": "abfd2f7d31f2f3b2f0ea761b4f3b07c0fb552a7acc7b314c135154d4e048d370",
+      "size": 69144,
+      "stable_seed_source": "server_revision",
+      "version": "rbox-protocol-20260818c-protocol-trace"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-01T06:45:00+00:00",
+      "sha256": "b4a3163ea78d70c36cf33d4682b39c9bdcd8f537ebc7e881c4fd46ef0424357e",
+      "size": 84408,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.1.2"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-01T07:40:11+00:00",
+      "sha256": "31700f8ebb0c96e22185db8f5cf72fac3deeb446c786b6ba446de606b67265ca",
+      "size": 84488,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.1.3"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-01T09:34:08+00:00",
+      "sha256": "7ab15e628effa1f24ce22917a32016a31a45dbbc2f6b7c74ff60bb1cc713c929",
+      "size": 87928,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.2.0"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-02T01:09:57+00:00",
+      "sha256": "e9e8601f20420600c42b5fdb8faac10acc1297f5124e4ff82c8042ddda766f50",
+      "size": 88568,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.2.1"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-02T01:28:34+00:00",
+      "sha256": "961b573511e0b57e21885f766086423a4657eaabac597f4cadd0cb32aab0fda7",
+      "size": 88568,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.2.2"
+    },
+    {
+      "artifact": "patrol_vehicle_chassis_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "patrol_vehicle_chassis",
+      "published_at": "2026-09-02T03:02:40+00:00",
+      "sha256": "d49f7fefc8ddcbd8c7d716c4894019feb20e0ca0e7ae0b6eb0c177666eb116d7",
+      "size": 89440,
+      "stable_seed_source": "local_flash",
+      "version": "patrol-chassis-0.2.3"
+    },
+    {
+      "artifact": "rtk_v7_app_latest.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "rtk_v7",
+      "published_at": "2026-08-27T09:58:16+00:00",
+      "sha256": "57824a41bb4d27445e287013fae9cea370d562387518b9b61119945fcf7556ed",
+      "size": 69736,
+      "stable_seed_source": "server_revision",
+      "version": "RTK_V1.0.4"
+    },
+    {
+      "artifact": "rtk_v7_app_latest.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "rtk_v7",
+      "published_at": "2026-08-06T02:59:32+00:00",
+      "sha256": "512ea605edd45bca29bec21f62f8dfcf606ffd13f80e43c0be872db416941e9c",
+      "size": 57056,
+      "stable_seed_source": "server_revision",
+      "version": "preflight-20260806-rtk_v7_app_latest"
+    },
+    {
+      "artifact": "top_flying_wing_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "top_flying_wing",
+      "published_at": "2026-08-21T06:17:06+00:00",
+      "sha256": "4135616a016e9241729ea8b0d67cb23d56507842b3afd075fe3a9fe5338c490d",
+      "size": 67828,
+      "stable_seed_source": "server_revision",
+      "version": "top-flying-wing-1.0.0"
+    },
+    {
+      "artifact": "top_flying_wing_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "top_flying_wing",
+      "published_at": "2026-08-26T07:34:22+00:00",
+      "sha256": "338e39b8391b8f3d9ecbf0a34e10d23ff89138c4591fc8a2a97cc4fe3f01da51",
+      "size": 80300,
+      "stable_seed_source": "local_flash",
+      "version": "top-flying-wing-1.0.10"
+    },
+    {
+      "artifact": "top_flying_wing_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "top_flying_wing",
+      "published_at": "2026-08-25T06:00:38+00:00",
+      "sha256": "6d6b9f345b2624746d874c51bf79d059edead2ae18a893ec73bf41fab5eba5c1",
+      "size": 74704,
+      "stable_seed_source": "server_revision",
+      "version": "top-flying-wing-1.0.2"
+    },
+    {
+      "artifact": "top_flying_wing_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "top_flying_wing",
+      "published_at": "2026-08-25T09:40:43+00:00",
+      "sha256": "f3ee0f71e327c4c588ff2f9e1b15056572cea9e91648f221b13d559b34094794",
+      "size": 75152,
+      "stable_seed_source": "local_flash",
+      "version": "top-flying-wing-1.0.3"
+    },
+    {
+      "artifact": "top_flying_wing_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "top_flying_wing",
+      "published_at": "2026-08-26T01:33:43+00:00",
+      "sha256": "04335e546a5c29961520f4969cfb93f2ae64e3021d538a3bfc5e52c10f86ac12",
+      "size": 78452,
+      "stable_seed_source": "local_flash",
+      "version": "top-flying-wing-1.0.4"
+    },
+    {
+      "artifact": "top_flying_wing_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "top_flying_wing",
+      "published_at": "2026-08-26T02:19:22+00:00",
+      "sha256": "a6445e7468fad304f8566d7d576ff0ef42bc9f85938c169eb790f41bee5029d8",
+      "size": 78852,
+      "stable_seed_source": "local_flash",
+      "version": "top-flying-wing-1.0.5"
+    },
+    {
+      "artifact": "top_flying_wing_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "top_flying_wing",
+      "published_at": "2026-08-26T05:59:55+00:00",
+      "sha256": "5ec16d7ff90a396b4354be3445b6c24ebac590028b68c87ba43e23bf3f7c8961",
+      "size": 79900,
+      "stable_seed_source": "local_flash",
+      "version": "top-flying-wing-1.0.7"
+    },
+    {
+      "artifact": "top_flying_wing_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "top_flying_wing",
+      "published_at": "2026-08-26T06:49:17+00:00",
+      "sha256": "56e1b7bcc65e064c4d725ee92f708ea3059f52f6686374a606541038d618753c",
+      "size": 80028,
+      "stable_seed_source": "local_flash",
+      "version": "top-flying-wing-1.0.8"
+    },
+    {
+      "artifact": "top_flying_wing_app.bin",
+      "integrity": "ok",
+      "lifecycle": "quarantined",
+      "metadata_error": "",
+      "product": "top_flying_wing",
+      "published_at": "2026-08-26T07:19:13+00:00",
+      "sha256": "40bc0fa125eeb16ab30b2a5353423637bd2232649296b1823983bd3a1227d51b",
+      "size": 80284,
+      "stable_seed_source": "local_flash",
+      "version": "top-flying-wing-1.0.9"
+    }
+  ]
+}
+
+==> Atomically activate 0.4.109
+database_ready path=/var/lib/device-ota-service/ota.sqlite3
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+activated /opt/device-ota-service/releases/0.4.109; backup=/var/lib/device-ota-service/backups/20260914T081400Z
+
+==> Fast health check
+health_ok version=0.4.109 url=http://127.0.0.1:20082/healthz
+deploy_complete version=0.4.109 elapsed=76s

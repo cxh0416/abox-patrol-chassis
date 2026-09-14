@@ -1,0 +1,13 @@
+Build type: Release
+-- Configuring done (0.3s)
+-- Generating done (0.1s)
+-- Build files have been written to: F:/work/A-Box/Patrol_Vehicle_Chassis/app/build/BenchSteering
+[1/2] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/bench_steering.c.obj
+[2/2] Linking C executable Patrol_Vehicle_Chassis_App.elf
+Memory region         Used Size  Region Size  %age Used
+             RAM:       61192 B        64 KB     93.37%
+           FLASH:      108832 B       218 KB     48.75%
+PASS calibration stack: known frames 2168 + 1024 byte reserve <= 4096
+PASS CANopen fault stack: known frames 424 + 512 byte library reserve <= 1024
+PASS center commit stack: known frames 1928 + 1024 byte reserve <= 4096
+Bench candidate: F:\work\A-Box\Patrol_Vehicle_Chassis\out\candidates\bench-drive

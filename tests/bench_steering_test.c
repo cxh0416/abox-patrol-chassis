@@ -62,6 +62,19 @@ int main(void)
     assert(b.phase==BENCH_ACTIVE);
     for(int i=0;i<3;i++) advance(&b,&now);
     assert(b.applied==-82413 && b.step==16);
+    /* A changed target during positioning must replace, not queue behind, the
+       old target. Drop only new-set-point bit 4 after each acknowledged trigger. */
+    for (int angle=500; angle>=0; angle-=500) {
+        BenchSteering_Tick(&b,now,1,1,angle);
+        assert(BenchSteering_Take(&b,now,&f) && b.index==0x607A);
+        r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+1));
+        assert(BenchSteering_Take(&b,now+2,&f) && b.index==0x6040 && f.data[4]==0x3F);
+        r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+3));
+        assert(BenchSteering_Take(&b,now+4,&f) && b.index==0x6040 && f.data[4]==0x2F);
+        r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+5));
+        assert(b.phase==BENCH_ACTIVE && b.step==16);
+        now+=10;
+    }
     BenchSteering_Tick(&b,now,0,1,0);
     assert(b.phase==BENCH_STOPPING);
     assert(BenchSteering_Take(&b,now,&f) && b.index==0x6040 && f.data[4]==6);
@@ -70,21 +83,21 @@ int main(void)
     r=reply(&b,0x21); BenchSteering_OnFrame(&b,&r,now+3);
     assert(BenchSteering_Take(&b,now+4,&f)&&f.id==0&&f.data[0]==0x80);
     assert(b.phase==BENCH_IDLE); /* stop emitted no target position */
-    assert(b.limits_aligned && b.minimum==-166447 && b.maximum==-3799);
+    assert(b.limits_aligned && b.minimum==-167802 && b.maximum==-2444);
 
     BenchSteering_Init(&b);
     assert(BenchSteering_Start(&b,-83815,-72187,-85123,30000,0)); now=0;
     for(int i=0;i<20;i++) advance(&b,&now);
-    assert(b.phase==BENCH_ACTIVE && b.minimum==-153511 && b.maximum==9137);
+    assert(b.phase==BENCH_ACTIVE && b.minimum==-154866 && b.maximum==10492);
     /* Rearming in the same power epoch must verify, not shift, the existing limits. */
     b.phase=BENCH_IDLE;
     assert(BenchSteering_Start(&b,-83815,-72187,-85123,30000,now));
     advance(&b,&now); /* NMT */
-    assert(BenchSteering_Take(&b,now,&f)); r=reply(&b,-153511);
+    assert(BenchSteering_Take(&b,now,&f)); r=reply(&b,-154866);
     BenchSteering_OnFrame(&b,&r,now+1);
-    assert(BenchSteering_Take(&b,now+2,&f)); r=reply(&b,9137);
+    assert(BenchSteering_Take(&b,now+2,&f)); r=reply(&b,10492);
     BenchSteering_OnFrame(&b,&r,now+3);
-    assert(b.step==3 && b.minimum==-153511 && b.maximum==9137);
+    assert(b.step==3 && b.minimum==-154866 && b.maximum==10492);
 
     /* Commissioning uses the controller's existing limits and never rewrites
        them around an uncalibrated provisional origin. */
