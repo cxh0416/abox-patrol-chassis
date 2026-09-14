@@ -1,0 +1,182 @@
+{
+  "captured_at": 1789361262.805502,
+  "source": "server47:/var/lib/device-ota-service/ota.sqlite3",
+  "window_start": 1789360940,
+  "operations": [
+    {
+      "id": "59c56499-a418-447f-8e93-4a57a85c7b34",
+      "capability": "power_on",
+      "params_json": "{}",
+      "state": "succeeded",
+      "request_id": "53f9a66f-e042-42ca-b731-dd205a9abe4d",
+      "created_at": 1789360955.4780054,
+      "sent_at": 1789360956.4951744,
+      "completed_at": 1789360956.8640583,
+      "response_code": "200",
+      "response_message": "operation accepted",
+      "result_json": "{\"code\": 200, \"deviceType\": \"vehicle_chassis\", \"msg\": \"operation accepted\", \"powerOutputOn\": true, \"requestId\": \"53f9a66f-e042-42ca-b731-dd205a9abe4d\"}",
+      "error": ""
+    },
+    {
+      "id": "2f415df2-ef38-4d83-b744-fe2c0ecceb5e",
+      "capability": "start_center_calibration",
+      "params_json": "{}",
+      "state": "succeeded",
+      "request_id": "e7f5a14f-33bf-4e4e-8b3e-ed584c3d790a",
+      "created_at": 1789360960.4611464,
+      "sent_at": 1789360961.464886,
+      "completed_at": 1789360962.2577305,
+      "response_code": "200",
+      "response_message": "OK",
+      "result_json": "{\"calibrated\": false, \"commissioningLimitMdeg\": 60000, \"diagVersion\": 1, \"driverRaw\": -83815, \"driverRelativeMdeg\": 0, \"encoderRaw\": 3913, \"encoderRelativeMdeg\": 0, \"failure\": {\"atMs\": 0, \"benchFault\": 0, \"benchPhase\": 0, \"benchStep\": 0, \"driveSw\": 0, \"driverRaw\": 0, \"encoderAge\": 0, \"encoderErrTotal\": 0, \"encoderError\": 0, \"encoderRaw\": 0, \"encoderWrite\": 0, \"feedbackAge\": 0, \"gateMask\": 0, \"lastAbort\": 0, \"leftRpm\": 0, \"phase\": 0, \"reason\": \"none\", \"rightRpm\": 0, \"steerSw\": 0}, \"fault\": 0, \"jogOffsetMdeg\": 0, \"lastReject\": {\"atMs\": 0, \"gateMask\": 0, \"reason\": \"none\"}, \"phase\": 9, \"profileReady\": false, \"rangeValid\": false, \"relativeValid\": true, \"sessionId\": \"c-5584204-1\", \"targetMdeg\": 0}",
+      "error": ""
+    },
+    {
+      "id": "c3e55878-fb58-4f10-96d9-da2e8ee2e1ce",
+      "capability": "get_center_calibration",
+      "params_json": "{\"sessionId\": \"c-5584204-1\"}",
+      "state": "succeeded",
+      "request_id": "48e50121-0a70-41f7-ad29-2c1868979053",
+      "created_at": 1789360962.690314,
+      "sent_at": 1789360963.4832518,
+      "completed_at": 1789360964.2102497,
+      "response_code": "200",
+      "response_message": "OK",
+      "result_json": "{\"calibrated\": false, \"commissioningLimitMdeg\": 60000, \"diagVersion\": 1, \"driverRaw\": -83815, \"driverRelativeMdeg\": 0, \"encoderRaw\": 3913, \"encoderRelativeMdeg\": 0, \"failure\": {\"atMs\": 0, \"benchFault\": 0, \"benchPhase\": 0, \"benchStep\": 0, \"driveSw\": 0, \"driverRaw\": 0, \"encoderAge\": 0, \"encoderErrTotal\": 0, \"encoderError\": 0, \"encoderRaw\": 0, \"encoderWrite\": 0, \"feedbackAge\": 0, \"gateMask\": 0, \"lastAbort\": 0, \"leftRpm\": 0, \"phase\": 0, \"reason\": \"none\", \"rightRpm\": 0, \"steerSw\": 0}, \"fault\": 0, \"jogOffsetMdeg\": 0, \"lastReject\": {\"atMs\": 0, \"gateMask\": 0, \"reason\": \"none\"}, \"phase\": 1, \"profileReady\": false, \"rangeValid\": false, \"relativeValid\": true, \"sessionId\": \"c-5584204-1\", \"targetMdeg\": 0}",
+      "error": ""
+    },
+    {
+      "id": "5beef386-aee0-4585-8556-265e0949edb0",
+      "capability": "get_center_calibration",
+      "params_json": "{\"sessionId\": \"c-5584204-1\"}",
+      "state": "succeeded",
+      "request_id": "f5dee796-5e79-4b2d-8e6e-338c0f3f2b92",
+      "created_at": 1789360965.9784214,
+      "sent_at": 1789360966.5715811,
+      "completed_at": 1789360967.2842858,
+      "response_code": "200",
+      "response_message": "OK",
+      "result_json": "{\"calibrated\": false, \"commissioningLimitMdeg\": 60000, \"diagVersion\": 1, \"driverRaw\": -83815, \"driverRelativeMdeg\": 0, \"encoderRaw\": 3913, \"encoderRelativeMdeg\": 0, \"failure\": {\"atMs\": 0, \"benchFault\": 0, \"benchPhase\": 0, \"benchStep\": 0, \"driveSw\": 0, \"driverRaw\": 0, \"encoderAge\": 0, \"encoderErrTotal\": 0, \"encoderError\": 0, \"encoderRaw\": 0, \"encoderWrite\": 0, \"feedbackAge\": 0, \"gateMask\": 0, \"lastAbort\": 0, \"leftRpm\": 0, \"phase\": 0, \"reason\": \"none\", \"rightRpm\": 0, \"steerSw\": 0}, \"fault\": 0, \"jogOffsetMdeg\": 0, \"lastReject\": {\"atMs\": 0, \"gateMask\": 0, \"reason\": \"none\"}, \"phase\": 1, \"profileReady\": false, \"rangeValid\": false, \"relativeValid\": true, \"sessionId\": \"c-5584204-1\", \"targetMdeg\": 0}",
+      "error": ""
+    },
+    {
+      "id": "3cda47b2-2200-473b-98dc-f9d42f82ab3d",
+      "capability": "get_center_calibration",
+      "params_json": "{\"sessionId\": \"c-5584204-1\"}",
+      "state": "succeeded",
+      "request_id": "57e89892-de52-49a4-a69f-a6c88d9b40d3",
+      "created_at": 1789360968.9988706,
+      "sent_at": 1789360969.5747123,
+      "completed_at": 1789360970.4214153,
+      "response_code": "200",
+      "response_message": "OK",
+      "result_json": "{\"calibrated\": false, \"commissioningLimitMdeg\": 60000, \"diagVersion\": 1, \"driverRaw\": -83815, \"driverRelativeMdeg\": 0, \"encoderRaw\": 3913, \"encoderRelativeMdeg\": 0, \"failure\": {\"atMs\": 0, \"benchFault\": 0, \"benchPhase\": 0, \"benchStep\": 0, \"driveSw\": 0, \"driverRaw\": 0, \"encoderAge\": 0, \"encoderErrTotal\": 0, \"encoderError\": 0, \"encoderRaw\": 0, \"encoderWrite\": 0, \"feedbackAge\": 0, \"gateMask\": 0, \"lastAbort\": 0, \"leftRpm\": 0, \"phase\": 0, \"reason\": \"none\", \"rightRpm\": 0, \"steerSw\": 0}, \"fault\": 0, \"jogOffsetMdeg\": 0, \"lastReject\": {\"atMs\": 0, \"gateMask\": 0, \"reason\": \"none\"}, \"phase\": 1, \"profileReady\": false, \"rangeValid\": false, \"relativeValid\": true, \"sessionId\": \"c-5584204-1\", \"targetMdeg\": 0}",
+      "error": ""
+    },
+    {
+      "id": "5d0fff23-0ed8-4ad1-ac5b-ad677191abdd",
+      "capability": "jog_center_calibration",
+      "params_json": "{\"deltaMdeg\": -5000, \"sessionId\": \"c-5584204-1\"}",
+      "state": "succeeded",
+      "request_id": "feec0ae1-6d65-4070-9e6d-08f97606089f",
+      "created_at": 1789360970.7315826,
+      "sent_at": 1789360975.7240393,
+      "completed_at": 1789360976.3360283,
+      "response_code": "200",
+      "response_message": "OK",
+      "result_json": "{\"calibrated\": false, \"commissioningLimitMdeg\": 60000, \"diagVersion\": 1, \"driverRaw\": -83815, \"driverRelativeMdeg\": 0, \"encoderRaw\": 3913, \"encoderRelativeMdeg\": 0, \"failure\": {\"atMs\": 0, \"benchFault\": 0, \"benchPhase\": 0, \"benchStep\": 0, \"driveSw\": 0, \"driverRaw\": 0, \"encoderAge\": 0, \"encoderErrTotal\": 0, \"encoderError\": 0, \"encoderRaw\": 0, \"encoderWrite\": 0, \"feedbackAge\": 0, \"gateMask\": 0, \"lastAbort\": 0, \"leftRpm\": 0, \"phase\": 0, \"reason\": \"none\", \"rightRpm\": 0, \"steerSw\": 0}, \"fault\": 0, \"jogOffsetMdeg\": -5000, \"lastReject\": {\"atMs\": 0, \"gateMask\": 0, \"reason\": \"none\"}, \"phase\": 2, \"profileReady\": false, \"rangeValid\": false, \"relativeValid\": true, \"sessionId\": \"c-5584204-1\", \"targetMdeg\": -5000}",
+      "error": ""
+    },
+    {
+      "id": "75a85f1a-6984-47c6-bdcc-d38b0d3202a3",
+      "capability": "get_center_calibration",
+      "params_json": "{\"sessionId\": \"c-5584204-1\"}",
+      "state": "succeeded",
+      "request_id": "9d0363c1-f108-4713-a211-e4df264e4693",
+      "created_at": 1789360976.8238504,
+      "sent_at": 1789360976.9337275,
+      "completed_at": 1789360977.5202055,
+      "response_code": "200",
+      "response_message": "OK",
+      "result_json": "{\"calibrated\": false, \"commissioningLimitMdeg\": 60000, \"diagVersion\": 1, \"driverRaw\": -88270, \"driverRelativeMdeg\": -1643, \"encoderRaw\": 3828, \"encoderRelativeMdeg\": -1538, \"failure\": {\"atMs\": 0, \"benchFault\": 0, \"benchPhase\": 0, \"benchStep\": 0, \"driveSw\": 0, \"driverRaw\": 0, \"encoderAge\": 0, \"encoderErrTotal\": 0, \"encoderError\": 0, \"encoderRaw\": 0, \"encoderWrite\": 0, \"feedbackAge\": 0, \"gateMask\": 0, \"lastAbort\": 0, \"leftRpm\": 0, \"phase\": 0, \"reason\": \"none\", \"rightRpm\": 0, \"steerSw\": 0}, \"fault\": 0, \"jogOffsetMdeg\": -5000, \"lastReject\": {\"atMs\": 0, \"gateMask\": 0, \"reason\": \"none\"}, \"phase\": 2, \"profileReady\": false, \"rangeValid\": false, \"relativeValid\": true, \"sessionId\": \"c-5584204-1\", \"targetMdeg\": -5000}",
+      "error": ""
+    },
+    {
+      "id": "2f3a57ac-b978-4fd4-8117-3598d11c3162",
+      "capability": "get_center_calibration",
+      "params_json": "{\"sessionId\": \"c-5584204-1\"}",
+      "state": "succeeded",
+      "request_id": "c2474ee4-c05b-446b-8a00-828b3d2842de",
+      "created_at": 1789360978.0459077,
+      "sent_at": 1789360978.99684,
+      "completed_at": 1789360979.7477877,
+      "response_code": "200",
+      "response_message": "OK",
+      "result_json": "{\"calibrated\": false, \"commissioningLimitMdeg\": 60000, \"diagVersion\": 1, \"driverRaw\": -97109, \"driverRelativeMdeg\": -4904, \"encoderRaw\": 3641, \"encoderRelativeMdeg\": -4923, \"failure\": {\"atMs\": 5601083, \"benchFault\": 0, \"benchPhase\": 3, \"benchStep\": 22, \"driveSw\": 8272, \"driverRaw\": -97109, \"encoderAge\": 31, \"encoderErrTotal\": 1, \"encoderError\": 1, \"encoderRaw\": 3641, \"encoderWrite\": 0, \"feedbackAge\": 228, \"gateMask\": 512, \"lastAbort\": 100794368, \"leftRpm\": 0, \"phase\": 3, \"reason\": \"gate_not_ready\", \"rightRpm\": 0, \"steerSw\": 8759}, \"fault\": 2, \"jogOffsetMdeg\": -5000, \"lastReject\": {\"atMs\": 0, \"gateMask\": 0, \"reason\": \"none\"}, \"phase\": 8, \"profileReady\": false, \"rangeValid\": false, \"relativeValid\": true, \"sessionId\": \"c-5584204-1\", \"targetMdeg\": -5000}",
+      "error": ""
+    },
+    {
+      "id": "58f14db2-9471-4a34-ba03-b7053028aea6",
+      "capability": "get_can_diag",
+      "params_json": "{}",
+      "state": "succeeded",
+      "request_id": "2c2137f4-161c-4323-8bcb-fd23651590a6",
+      "created_at": 1789360979.875088,
+      "sent_at": 1789360980.0082922,
+      "completed_at": 1789360980.6230257,
+      "response_code": "200",
+      "response_message": "OK",
+      "result_json": "{\"can1RawRx\": 2434, \"can2RawRx\": 0, \"canBusOff\": false, \"canBusOffActive\": false, \"canIgnored\": 546, \"canRx\": 2434, \"canRxOverflow\": 0, \"driveFresh\": false, \"driveHb\": true, \"driveNmt\": 127, \"driveObjects\": [0, 0, 5, 4, 27, 65496, 0], \"driveSw\": 8272, \"encoderConfigValid\": true, \"encoderCrcErrors\": 0, \"encoderExceptions\": 0, \"encoderFormatErrors\": 0, \"encoderLastError\": 1, \"encoderOnline\": true, \"encoderRaw\": 3641, \"encoderTimeouts\": 1, \"encoderTransportErrors\": 0, \"lastAbort\": 100794368, \"leftRpm\": 0, \"rightRpm\": 0, \"sdoAbortMask\": 2048, \"sdoAborts\": 4, \"sdoOk\": 1420, \"sdoReadMask\": 2047, \"sdoTimeouts\": 0, \"sdoTxErrors\": 0, \"steerFresh\": false, \"steerHb\": true, \"steerNmt\": 5, \"steerRaw\": -97109, \"steerSw\": 8759}",
+      "error": ""
+    },
+    {
+      "id": "764bb1db-484e-40a9-b8cc-af5f649078cb",
+      "capability": "cancel_center_calibration",
+      "params_json": "{\"sessionId\": \"c-5584204-1\"}",
+      "state": "succeeded",
+      "request_id": "d7c6ee16-8777-449a-bf80-a619ef1bb05c",
+      "created_at": 1789360996.6814752,
+      "sent_at": 1789360997.2385461,
+      "completed_at": 1789360997.8737173,
+      "response_code": "200",
+      "response_message": "OK",
+      "result_json": "{\"calibrated\": false, \"commissioningLimitMdeg\": 60000, \"diagVersion\": 1, \"driverRaw\": -97109, \"driverRelativeMdeg\": 0, \"encoderRaw\": 3641, \"encoderRelativeMdeg\": 0, \"failure\": {\"atMs\": 0, \"benchFault\": 0, \"benchPhase\": 0, \"benchStep\": 0, \"driveSw\": 0, \"driverRaw\": 0, \"encoderAge\": 0, \"encoderErrTotal\": 0, \"encoderError\": 0, \"encoderRaw\": 0, \"encoderWrite\": 0, \"feedbackAge\": 0, \"gateMask\": 0, \"lastAbort\": 0, \"leftRpm\": 0, \"phase\": 0, \"reason\": \"none\", \"rightRpm\": 0, \"steerSw\": 0}, \"fault\": 0, \"jogOffsetMdeg\": 0, \"lastReject\": {\"atMs\": 0, \"gateMask\": 0, \"reason\": \"none\"}, \"phase\": 0, \"profileReady\": false, \"rangeValid\": false, \"relativeValid\": false, \"sessionId\": \"\", \"targetMdeg\": 0}",
+      "error": ""
+    }
+  ],
+  "audits": [
+    {
+      "id": 51895,
+      "action": "chassis_center_calibration_started",
+      "created_at": 1789360960.5127604,
+      "details_json": "{\"operation_id\": \"2f415df2-ef38-4d83-b744-fe2c0ecceb5e\", \"session_id\": \"0b3362f3-3073-41b2-aa9d-d2647c19f304\", \"vid\": \"PATROL-CHASSIS-000\"}"
+    },
+    {
+      "id": 51897,
+      "action": "chassis_center_calibration_jog",
+      "created_at": 1789360970.7930555,
+      "details_json": "{\"delta_mdeg\": -5000, \"operation_id\": \"5d0fff23-0ed8-4ad1-ac5b-ad677191abdd\", \"session_id\": \"0b3362f3-3073-41b2-aa9d-d2647c19f304\", \"vid\": \"PATROL-CHASSIS-000\"}"
+    },
+    {
+      "id": 51900,
+      "action": "chassis_center_calibration_failed",
+      "created_at": 1789360979.8974152,
+      "details_json": "{\"diagnostic_operation_id\": \"58f14db2-9471-4a34-ba03-b7053028aea6\", \"operation_id\": \"2f3a57ac-b978-4fd4-8117-3598d11c3162\", \"request_id\": \"c2474ee4-c05b-446b-8a00-828b3d2842de\", \"response_code\": \"200\", \"response_message\": \"OK\", \"result\": {\"calibrated\": false, \"commissioningLimitMdeg\": 60000, \"diagVersion\": 1, \"driverRaw\": -97109, \"driverRelativeMdeg\": -4904, \"encoderRaw\": 3641, \"encoderRelativeMdeg\": -4923, \"failure\": {\"atMs\": 5601083, \"benchFault\": 0, \"benchPhase\": 3, \"benchStep\": 22, \"driveSw\": 8272, \"driverRaw\": -97109, \"encoderAge\": 31, \"encoderErrTotal\": 1, \"encoderError\": 1, \"encoderRaw\": 3641, \"encoderWrite\": 0, \"feedbackAge\": 228, \"gateMask\": 512, \"lastAbort\": 100794368, \"leftRpm\": 0, \"phase\": 3, \"reason\": \"gate_not_ready\", \"rightRpm\": 0, \"steerSw\": 8759}, \"fault\": 2, \"jogOffsetMdeg\": -5000, \"lastReject\": {\"atMs\": 0, \"gateMask\": 0, \"reason\": \"none\"}, \"phase\": 8, \"profileReady\": false, \"rangeValid\": false, \"relativeValid\": true, \"sessionId\": \"c-5584204-1\", \"targetMdeg\": -5000}, \"sent_at\": 1789360978.99684, \"session_id\": \"c-5584204-1\", \"vid\": \"PATROL-CHASSIS-000\"}"
+    },
+    {
+      "id": 51902,
+      "action": "chassis_center_calibration_closed",
+      "created_at": 1789360996.7708516,
+      "details_json": "{\"operation_id\": \"764bb1db-484e-40a9-b8cc-af5f649078cb\", \"session_id\": \"0b3362f3-3073-41b2-aa9d-d2647c19f304\", \"vid\": \"PATROL-CHASSIS-000\"}"
+    }
+  ],
+  "device": [
+    {
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-CHASSIS-000",
+      "online": 1,
+      "last_seen": 1789361208.2115765,
+      "fw_version": "patrol-chassis-0.2.23"
+    }
+  ]
+}

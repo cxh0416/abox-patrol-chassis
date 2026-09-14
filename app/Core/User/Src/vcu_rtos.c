@@ -1119,6 +1119,8 @@ static void Vcu_CanopenTask(void *argument)
                     g_diagnostics.pending_valid = 0;
                     HAL_CAN_AbortTxRequest(&hcan1, CAN_TX_MAILBOX0 | CAN_TX_MAILBOX1 | CAN_TX_MAILBOX2);
                     g_bench_transport_stopped = 1;
+                    /* Send shutdown first, then alternate confirmation and safety reads. */
+                    g_bench_turn = 1;
                 }
             } else g_bench_transport_stopped = 0;
         }
@@ -1150,8 +1152,9 @@ static void Vcu_CanopenTask(void *argument)
         {
             taskENTER_CRITICAL();
             /* Alternate execution and diagnostics, never overlap pending transactions. */
+            g_diagnostics.stop_priority = g_bench.phase == BENCH_STOPPING;
             if (!g_diagnostics.pending_valid && !g_bench.pending && !g_drive.pending &&
-                (g_bench_turn || g_bench.phase == BENCH_STOPPING)) {
+                g_bench_turn) {
                 if (g_drive_turn && g_bench.phase != BENCH_STOPPING) {
                     have_request = BenchDrive_Take(&g_drive, now, &request);
                     if (have_request) { bench_frame = 2; g_drive_turn = 0; }
@@ -1166,7 +1169,7 @@ static void Vcu_CanopenTask(void *argument)
                 }
                 if (have_request) g_bench_turn = 0;
             }
-            if (!have_request && !g_bench.pending && !g_drive.pending && g_bench.phase != BENCH_STOPPING) {
+            if (!have_request && !g_bench.pending && !g_drive.pending) {
                 have_request = PatrolDiagnostics_TakeSdoRead(&g_diagnostics, now, &request);
                 if (have_request) g_bench_turn = 1;
             }

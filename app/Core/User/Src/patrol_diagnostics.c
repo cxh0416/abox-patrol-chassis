@@ -190,6 +190,23 @@ uint8_t PatrolDiagnostics_TakeSdoRead(PatrolDiagnostics* diagnostics, uint32_t n
         *frame = PatrolCanopen_SdoRead(entry->node, entry->index, entry->subindex);
         return 1U;
     }
+    /* During the bounded stop, serve the oldest due safety sample first.
+     * Shutdown status polling must not starve the other node's feedback. */
+    if (diagnostics->stop_priority) {
+        const uint32_t stamps[5] = {diagnostics->steering_status_ms,
+            diagnostics->steering_position_ms, diagnostics->drive_status_ms,
+            diagnostics->left_rpm_ms, diagnostics->right_rpm_ms};
+        uint32_t oldest_age = 0U;
+        uint8_t selected = 0U;
+        for (uint8_t i = 0U; i < 5U; i++) {
+            if (!sdo_node_ready(diagnostics, g_sdo_entries[i].node, now_ms) ||
+                !due(now_ms, diagnostics->sdo_due_ms[i])) continue;
+            uint32_t age = now_ms - stamps[i];
+            if (!selected || age > oldest_age) {
+                selected = 1U; oldest_age = age; diagnostics->next_sdo_entry = i;
+            }
+        }
+    }
     /* Sample position, wheel speeds and status before low-rate diagnostics.
      * Each transaction still has one owner and its bounded retry policy. */
     for (uint8_t priority = 0U; priority < 2U; priority++)
@@ -197,6 +214,7 @@ uint8_t PatrolDiagnostics_TakeSdoRead(PatrolDiagnostics* diagnostics, uint32_t n
     {
         uint8_t index = (uint8_t)((diagnostics->next_sdo_entry + offset) % PATROL_DIAG_SDO_ENTRY_COUNT);
         if ((index < 5U) != (priority == 0U)) continue;
+        if (diagnostics->stop_priority && index >= 5U) continue;
         if (diagnostics->motion_priority && index >= 7U) continue;
         const PatrolSdoEntry* entry = &g_sdo_entries[index];
         if (!sdo_node_ready(diagnostics, entry->node, now_ms)) continue;
