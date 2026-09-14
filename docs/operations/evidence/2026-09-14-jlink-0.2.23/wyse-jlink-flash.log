@@ -1,0 +1,127 @@
+SEGGER J-Link Commander V9.74 (Compiled Sep  2 2026 12:35:07)
+DLL version V9.74, compiled Sep  2 2026 12:34:24
+
+J-Link Commander will now exit on Error
+
+J-Link Command File read successfully.
+Processing script file...
+J-Link>device STM32F105RC
+J-Link connection not established yet but required for command.
+Connecting to J-Link ...O.K.
+Firmware: J-Link V9 compiled Dec 13 2022 11:14:50
+Hardware version: V9.70
+J-Link uptime (since boot): N/A (Not supported by this model)
+S/N: 69730334
+License(s): RDI,FlashBP,FlashDL,JFlash,GDB
+VTref=3.304V
+J-Link>if SWD
+Selecting SWD as current target interface.
+J-Link>speed 4000
+Selecting 4000 kHz as target interface speed
+J-Link>RSetType 3
+Target connection not established yet but required for command.
+Device "STM32F105RC" selected.
+
+
+Connecting to target via SWD
+InitTarget() start
+SWD selected. Executing JTAG -> SWD switching sequence.
+DAP initialized successfully.
+InitTarget() end - Took 66.9ms
+Found SW-DP with ID 0x1BA01477
+DPv0 detected
+CoreSight SoC-400 or earlier
+Scanning AP map to find all available APs
+AP[1]: Stopped AP scan as end of AP map has been reached
+AP[0]: AHB-AP (IDR: 0x14770011, ADDR: 0x00000000)
+Iterating through AP map to find AHB-AP to use
+AP[0]: Core found
+AP[0]: AHB-AP ROM base: 0xE00FF000
+CPUID register: 0x411FC231. Implementer code: 0x41 (ARM)
+Found Cortex-M3 r1p1, Little endian.
+FPUnit: 6 code (BP) slots and 2 literal slots
+CoreSight components:
+ROMTbl[0] @ E00FF000
+[0][0]: E000E000 CID B105E00D PID 001BB000 SCS
+[0][1]: E0001000 CID B105E00D PID 001BB002 DWT
+[0][2]: E0002000 CID B105E00D PID 000BB003 FPB
+[0][3]: E0000000 CID B105E00D PID 001BB001 ITM
+[0][4]: E0040000 CID B105900D PID 001BB923 TPIU-Lite
+[0][5]: E0041000 CID B105900D PID 101BB924 ETM-M3
+Memory zones:
+  Zone: "Default" Description: Default access mode
+Cortex-M3 identified.
+Reset type: CONNECT UNDER RESET (https://kb.segger.com/J-Link_Reset_Strategies)
+J-Link>connect
+Device "STM32F105RC" selected.
+
+
+Connecting to target via SWD
+InitTarget() start
+SWD selected. Executing JTAG -> SWD switching sequence.
+DAP initialized successfully.
+InitTarget() end - Took 29.3ms
+Found SW-DP with ID 0x1BA01477
+DPv0 detected
+CoreSight SoC-400 or earlier
+AP map detection skipped. Manually configured AP map found.
+AP[0]: AHB-AP (IDR: Not set, ADDR: 0x00000000)
+AP[0]: Core found
+AP[0]: AHB-AP ROM base: 0xE00FF000
+CPUID register: 0x411FC231. Implementer code: 0x41 (ARM)
+Found Cortex-M3 r1p1, Little endian.
+FPUnit: 6 code (BP) slots and 2 literal slots
+CoreSight components:
+ROMTbl[0] @ E00FF000
+[0][0]: E000E000 CID B105E00D PID 001BB000 SCS
+[0][1]: E0001000 CID B105E00D PID 001BB002 DWT
+[0][2]: E0002000 CID B105E00D PID 000BB003 FPB
+[0][3]: E0000000 CID B105E00D PID 001BB001 ITM
+[0][4]: E0040000 CID B105900D PID 001BB923 TPIU-Lite
+[0][5]: E0041000 CID B105900D PID 101BB924 ETM-M3
+Memory zones:
+  Zone: "Default" Description: Default access mode
+Cortex-M3 identified.
+J-Link>h
+PC = FFFFFFFE, CycleCnt = 00000000
+R0 = 13124882, R1 = 3280840C, R2 = D504ACBD, R3 = 08C20B8C
+R4 = AC32E99B, R5 = 7C4D9044, R6 = F632BF55, R7 = A0522CD6
+R8 = E00700B0, R9 = 4D083391, R10= 8050100E, R11= A0A21823
+R12= D6E1C100
+SP(R13)= FFFFFFDC, MSP= FFFFFFDC, PSP= C90CF428, R14(LR) = FFFFFFF9
+XPSR = 01000003: APSR = nzcvq, EPSR = 01000000, IPSR = 003 (HardFault)
+CFBP = 00000000, CONTROL = 00, FAULTMASK = 00, BASEPRI = 00, PRIMASK = 00
+FPU regs: FPU not enabled / not implemented on connected CPU.
+J-Link>loadbin /tmp/patrol-jlink-0.2.23-cbQ1nw/full.bin, 0x08000000
+'loadbin': Performing implicit reset & halt of MCU.
+Reset type: CONNECT UNDER RESET (https://kb.segger.com/J-Link_Reset_Strategies)
+Reset: Halt core after reset via DEMCR.VC_CORERESET.
+Reset: Reset device via AIRCR.SYSRESETREQ.
+Downloading file [/tmp/patrol-jlink-0.2.23-cbQ1nw/full.bin]...
+Comparing flash   [000%]000%]045%]045%]050%]100%] Done.
+Erasing flash     [000%]100%] Done.
+Programming flash [000%]000%]000%]000%]005%]005%]005%]005%]010%]010%]010%]010%]015%]015%]020%]020%]020%]020%]025%]025%]025%]025%]030%]030%]035%]035%]035%]035%]040%]040%]040%]040%]045%]045%]050%]050%]050%]050%]055%]055%]055%]055%]060%]060%]060%]060%]065%]065%]070%]070%]070%]070%]075%]075%]075%]075%]080%]080%]085%]085%]085%]085%]090%]090%]090%]090%]095%]095%]100%] Done.
+J-Link: Flash download: Bank 0 @ 0x08000000: 1 range affected (139264 bytes)
+J-Link: Flash download: Total: 4.287s (Prepare: 0.112s, Compare: 0.049s, Erase: 0.000s, Program & Verify: 4.072s, Restore: 0.052s)
+J-Link: Flash download: Program & Verify speed: 33 KB/s
+O.K.
+J-Link>verifybin /tmp/patrol-jlink-0.2.23-cbQ1nw/full.bin, 0x08000000
+Loading binary file /tmp/patrol-jlink-0.2.23-cbQ1nw/full.bin
+Reading 138912 bytes data from target memory @ 0x08000000.
+Verify successful.
+J-Link>savebin /tmp/patrol-jlink-0.2.23-cbQ1nw/after.bin, 0x08000000, 0x40000
+Opening binary file for writing... [/tmp/patrol-jlink-0.2.23-cbQ1nw/after.bin]
+Reading 262144 bytes from addr 0x08000000 into file...O.K.
+J-Link>r
+Reset delay: 0 ms
+Reset type: CONNECT UNDER RESET (https://kb.segger.com/J-Link_Reset_Strategies)
+Reset: Halt core after reset via DEMCR.VC_CORERESET.
+Reset: Reset device via AIRCR.SYSRESETREQ.
+J-Link>g
+Memory map 'after startup completion point' is active
+J-Link>qc
+
+Script processing completed.
+
+OnDisconnectTarget() start
+OnDisconnectTarget() end - Took 1.80ms

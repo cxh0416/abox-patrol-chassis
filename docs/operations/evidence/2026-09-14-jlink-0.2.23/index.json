@@ -1,0 +1,31 @@
+{
+  "probe_serial": "69730334",
+  "target": "STM32F105RC",
+  "records": [
+    {
+      "original_path": "F:\\work\\A-Box\\Patrol_Vehicle_Chassis\\out\\logs\\wyse-jlink-backup.log",
+      "archive_path": "docs\\operations\\evidence\\2026-09-14-jlink-0.2.23\\wyse-jlink-backup.log",
+      "sha256": "0f5cfec5d7b78b90e5be285cad9c174c6fce9028d4c4461b9a9df92ffbc9d928"
+    },
+    {
+      "original_path": "F:\\work\\A-Box\\Patrol_Vehicle_Chassis\\out\\logs\\wyse-jlink-flash.log",
+      "archive_path": "docs\\operations\\evidence\\2026-09-14-jlink-0.2.23\\wyse-jlink-flash.log",
+      "sha256": "662b4c847d32ad516f9f0a4823398229e88eeb919bb9e6a793c710d8cc44f490"
+    },
+    {
+      "original_path": "F:\\work\\A-Box\\Patrol_Vehicle_Chassis\\out\\logs\\wyse-jlink-runtime.log",
+      "archive_path": "docs\\operations\\evidence\\2026-09-14-jlink-0.2.23\\wyse-jlink-runtime.log",
+      "sha256": "a509e953dee6ec46b4c005a5056703414b974b9f65f34f2636905030270d2937"
+    },
+    {
+      "retained_private_original": "C:\\Users\\cxh\\.codex\\private\\patrol-jlink-2026-09-14\\before.bin",
+      "sha256": "3b874d3ba46c638fc3094f8e92fb744ca974893873f8885f54e23760f9b6311b",
+      "size": 262144
+    },
+    {
+      "retained_private_original": "C:\\Users\\cxh\\.codex\\private\\patrol-jlink-2026-09-14\\after.bin",
+      "sha256": "57bea31d83b03260d1d9d64e963d8b2638a1c5578a88de9140cf2823831d4f56",
+      "size": 262144
+    }
+  ]
+}
