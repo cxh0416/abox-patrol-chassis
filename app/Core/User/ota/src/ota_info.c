@@ -1,4 +1,5 @@
 #include "ota_info.h"
+#include "motion_fault.h"
 
 #include <stddef.h>
 #include <string.h>
@@ -92,8 +93,56 @@ static uint8_t config_v3_valid(const VcuRemoteConfigV3_t* cfg)
     return (cfg->checksum == config_v3_checksum(cfg)) ? 1U : 0U;
 }
 
-static uint8_t ota_info_write_raw(const OTA_Info_t* info)
+/* Tail journal occupies only unused bytes of the existing 0x0803F800 page.
+ * Append-only writes cannot erase vehicle configuration. Full journal is
+ * reported, never silently erased. A normal configuration save compacts it. */
+#define MOTION_JOURNAL_ADDR (OTA_INFO_ADDR + 1024U)
+#define MOTION_JOURNAL_SLOTS 8U
+_Static_assert(sizeof(OTA_Info_t) <= 1024U, "configuration overlaps fault journal");
+static uint32_t fault_checksum(const MotionFaultRecord* r)
 {
+    const uint8_t* p=(const uint8_t*)r; uint32_t crc=0xFFFFFFFFU;
+    for (uint32_t i=0;i<offsetof(MotionFaultRecord,checksum);i++) {
+        crc^=p[i]; for (uint8_t b=0;b<8;b++) crc=(crc>>1)^((crc&1U)?0xEDB88320U:0U);
+    }
+    return crc^0xFFFFFFFFU;
+}
+uint8_t OTA_Info_LoadMotionFault(MotionFaultRecord* out)
+{
+    uint8_t found=0;
+    for (uint32_t i=0;i<MOTION_JOURNAL_SLOTS;i++) {
+        const MotionFaultRecord* r=(const MotionFaultRecord*)(MOTION_JOURNAL_ADDR+i*sizeof(*r));
+        if (r->magic==0x4D463031U && r->checksum==fault_checksum(r) &&
+            (!found || (int32_t)(r->sequence-out->sequence)>0)) { *out=*r; found=1; }
+    }
+    return found;
+}
+static uint8_t fault_save_unlocked(const MotionFaultRecord* record)
+{
+    MotionFaultRecord copy=*record; copy.checksum=fault_checksum(&copy);
+    if (copy.magic!=0x4D463031U) return 0;
+    for (uint32_t i=0;i<MOTION_JOURNAL_SLOTS;i++) {
+        uint32_t address=MOTION_JOURNAL_ADDR+i*sizeof(copy);
+        const uint32_t* old=(const uint32_t*)address; uint8_t empty=1;
+        for (uint32_t j=0;j<sizeof(copy)/4;j++) if (old[j]!=0xFFFFFFFFU) empty=0;
+        if (!empty) continue;
+        HAL_FLASH_Unlock();
+        for (uint32_t j=0;j<sizeof(copy)/4;j++) {
+            if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD,address+4*j,((uint32_t*)&copy)[j])!=HAL_OK) {
+                HAL_FLASH_Lock(); return 0;
+            }
+        }
+        HAL_FLASH_Lock();
+        return memcmp((const void*)address,&copy,sizeof(copy))==0;
+    }
+    return 0;
+}
+
+static uint8_t info_write_busy;
+static uint8_t ota_info_write_raw_unlocked(const OTA_Info_t* info)
+{
+    MotionFaultRecord saved_fault;
+    uint8_t have_fault=OTA_Info_LoadMotionFault(&saved_fault);
     HAL_StatusTypeDef status;
     FLASH_EraseInitTypeDef erase = {0};
     uint32_t page_error = 0U;
@@ -127,7 +176,21 @@ static uint8_t ota_info_write_raw(const OTA_Info_t* info)
         address += 4U;
     }
     HAL_FLASH_Lock();
+    if (have_fault && !fault_save_unlocked(&saved_fault)) return 0U;
     return 1U;
+}
+
+uint8_t OTA_Info_SaveMotionFault(const MotionFaultRecord* record)
+{
+    if (__atomic_test_and_set(&info_write_busy,__ATOMIC_ACQUIRE)) return 0;
+    uint8_t result=fault_save_unlocked(record);
+    __atomic_clear(&info_write_busy,__ATOMIC_RELEASE); return result;
+}
+static uint8_t ota_info_write_raw(const OTA_Info_t* info)
+{
+    if (__atomic_test_and_set(&info_write_busy,__ATOMIC_ACQUIRE)) return 0;
+    uint8_t result=ota_info_write_raw_unlocked(info);
+    __atomic_clear(&info_write_busy,__ATOMIC_RELEASE); return result;
 }
 
 void OTA_Info_Load(OTA_Info_t* info) { ota_info_read_raw(info); }

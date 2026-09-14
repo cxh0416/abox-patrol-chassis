@@ -162,6 +162,12 @@ static __attribute__((noinline)) void handle_config_request(const CloudProtocolR
                                       "CENTER_DIAGNOSTIC_TOO_LARGE");
         }
     }
+    else if (action == CLOUD_PROTOCOL_ACTION_RESET_MOTION_FAULT) {
+        if (!PatrolRuntime_ResetFault())
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "POWER_OFF_AND_OTA_IDLE_REQUIRED");
+        else (void)CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 200U,
+            "FAULT_RESET_REARM_REQUIRED", "{\"powerOutputOn\":false,\"faultRecordPreserved\":true}", 0U);
+    }
     else if (action == CLOUD_PROTOCOL_ACTION_BENCH_ARM || action == CLOUD_PROTOCOL_ACTION_BENCH_STOP ||
              action == CLOUD_PROTOCOL_ACTION_BENCH_GET)
     {

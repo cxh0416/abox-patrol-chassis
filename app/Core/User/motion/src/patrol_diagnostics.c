@@ -91,6 +91,7 @@ static void store_sdo_value(PatrolDiagnostics* diagnostics, const PatrolSdoEntry
     else if (entry->node == 2U && entry->index >= 0x2000U && entry->index <= 0x2006U)
     {
         diagnostics->drive_objects[entry->index - 0x2000U] = value;
+        if (entry->index <= 0x2001U) diagnostics->drive_code_ms[entry->index - 0x2000U] = now_ms;
     }
 }
 

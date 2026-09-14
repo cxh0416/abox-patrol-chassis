@@ -122,6 +122,7 @@ void CenterCalibration_CaptureFailureLocked(CenterCalibrationReason reason, uint
                                           const PatrolDiagnosticsSnapshot* snapshot)
 {
     if (g_motion.center_cal.failure.reason != CENTER_CAL_REASON_NONE) return;
+    PatrolRuntime_CaptureFault(2U, (uint32_t)reason, gate_mask);
     g_motion.center_cal.failure.phase = (uint8_t)g_motion.center_cal.phase;
     g_motion.center_cal.failure.reason = (uint8_t)reason;
     g_motion.center_cal.failure.at_ms = now;
@@ -227,6 +228,7 @@ uint8_t CenterCalibration_Start(void)
         PatrolRuntimePort_Exit();
         return 0U;
     }
+    PatrolRuntime_BeginFaultEpisode();
     memset(&g_motion.center_cal, 0, sizeof(g_motion.center_cal));
     /* Commissioning owns its captured relative origin.  Do not retain or
      * later acquire the ordinary driving coordinate using an old calibration. */

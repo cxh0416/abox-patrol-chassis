@@ -17,9 +17,50 @@ PatrolMotion g_motion;
 #define PATROL_CHASSIS_BENCH_DRIVE_ENABLED 0
 #endif
 
+static MotionFaultRecord last_fault;
+static uint8_t fault_captured, fault_dirty, fault_storage;
+uint8_t PatrolRuntime_GetFault(MotionFaultRecord* record)
+{
+    PatrolRuntimePort_Enter(); *record = last_fault; PatrolRuntimePort_Exit();
+    return record->magic == 0x4D463031U;
+}
+void PatrolRuntime_BeginFaultEpisode(void) { if (!fault_dirty) fault_captured=0; }
+uint8_t PatrolRuntime_FaultStorage(void) { return fault_storage; }
+void PatrolRuntime_CaptureFault(uint32_t source, uint32_t reason, uint32_t gates)
+{
+    PatrolRuntimePort_Enter();
+    if (!fault_captured) {
+        uint32_t now=PatrolRuntimePort_Now(), sequence=last_fault.sequence+1U;
+        const ChassisControl* c=RemoteService_State();
+        PatrolDiagnostics* d=&g_motion.diagnostics;
+        memset(&last_fault,0,sizeof(last_fault));
+        last_fault.magic=0x4D463031U; last_fault.sequence=sequence;
+        last_fault.at_ms=now; last_fault.source=source; last_fault.reason=reason; last_fault.gates=gates;
+        last_fault.target_rpm=g_motion.drive.phase != BENCH_IDLE ? g_motion.drive.writing : c->target_rpm; last_fault.target_mdeg=c->target_steering_mdeg;
+        last_fault.left_rpm=d->left_actual_rpm; last_fault.right_rpm=d->right_actual_rpm;
+        last_fault.driver_raw=d->steering_position_count; last_fault.encoder_raw=d->encoder_count;
+        last_fault.steer_sw=d->steering_status_word; last_fault.drive_sw=d->drive_status_word;
+        last_fault.left_code=(uint32_t)d->drive_objects[0]; last_fault.right_code=(uint32_t)d->drive_objects[1];
+        last_fault.left_code_age=d->drive_code_ms[0] ? now-d->drive_code_ms[0] : UINT32_MAX;
+        last_fault.right_code_age=d->drive_code_ms[1] ? now-d->drive_code_ms[1] : UINT32_MAX;
+        last_fault.steer_age=d->steering_status_ms ? now-d->steering_status_ms : UINT32_MAX;
+        last_fault.drive_age=d->drive_status_ms ? now-d->drive_status_ms : UINT32_MAX;
+        last_fault.bench_phase=g_motion.bench.phase; last_fault.bench_step=g_motion.bench.step;
+        last_fault.bench_fault=g_motion.bench.fault; last_fault.drive_phase=g_motion.drive.phase;
+        last_fault.drive_step=g_motion.drive.step; last_fault.drive_fault=g_motion.drive.fault;
+        last_fault.last_abort=d->last_sdo_abort_code; last_fault.encoder_error=d->last_encoder_error;
+        last_fault.center_phase=g_motion.center_cal.phase;
+        fault_captured=1; fault_dirty=1; fault_storage=0;
+    }
+    PatrolRuntimePort_Exit();
+}
+
 void PatrolRuntime_Init(void)
 {
     PatrolDiagnostics_Init(&g_motion.diagnostics);
+    memset(&last_fault,0,sizeof(last_fault));
+    fault_captured=0; fault_dirty=0;
+    fault_storage=OTA_Info_LoadMotionFault(&last_fault) ? 1U : 0U;
 }
 
 void PatrolRuntime_GetDiagnostics(PatrolDiagnosticsSnapshot* snapshot)
@@ -50,10 +91,26 @@ static uint8_t bench_arm(uint16_t limit_mdeg, uint8_t drive)
         result = drive ? RemoteService_BenchDriveArm(limit_mdeg, PatrolRuntimePort_Now()) :
             RemoteService_BenchArm(limit_mdeg, PatrolRuntimePort_Now());
     PatrolRuntimePort_Exit();
+    if (result) PatrolRuntime_BeginFaultEpisode();
     return result;
 }
 uint8_t PatrolRuntime_BenchArm(uint16_t limit) { return bench_arm(limit, 0); }
 uint8_t PatrolRuntime_BenchDriveArm(uint16_t limit) { return bench_arm(limit, 1); }
+uint8_t PatrolRuntime_ResetFault(void)
+{
+    PatrolRuntimePort_Enter();
+    if (VehiclePowerOutput_IsOn() || PatrolRuntimePort_OtaBusy() || fault_dirty ||
+        g_motion.center_cal.encoder_write_state==4U) { PatrolRuntimePort_Exit(); return 0; }
+    RemoteService_BenchRevoke(); PatrolRuntimePort_AbortCanTx();
+    BenchSteering_Init(&g_motion.bench); BenchDrive_Init(&g_motion.drive);
+    g_motion.diagnostics.pending_valid=0; g_motion.bench_transport_stopped=0;
+    SteeringCoordinate_Reset(&g_motion.coordinate); g_motion.coordinate_reset_requested=0;
+    g_motion.center_cal.phase=CENTER_CAL_IDLE; g_motion.center_cal.session_id[0]=0;
+    g_motion.center_cal.encoder_write_state=0; g_motion.center_cal.fault=0;
+    RemoteService_Init(); /* No permit, enable, target or previous session survives. */
+    fault_captured=0;
+    PatrolRuntimePort_Exit(); return 1;
+}
 void PatrolRuntime_BenchStop(void)
 {
     PatrolRuntimePort_Enter();
@@ -98,8 +155,7 @@ void PatrolRuntime_OnCanFrame(const PatrolCanFrame* frame, uint32_t now)
         g_motion.diagnostics.can_rx_count++;
         /* An executor-owned validated status upload is also fresh feedback;
          * it must not complete a diagnostics transaction or advance its cursor. */
-        if ((execution == 1 ? g_motion.bench.phase : g_motion.drive.phase) != BENCH_FAULT &&
-            PatrolCanopen_ParseSdoValue(frame, execution, 0x6041, 0, &status, &width) && width == 2) {
+        if (PatrolCanopen_ParseSdoValue(frame, execution, 0x6041, 0, &status, &width) && width == 2) {
             if (execution == 1) {
                 g_motion.diagnostics.steering_status_word = (uint16_t)status;
                 g_motion.diagnostics.steering_status_ms = now;
@@ -141,6 +197,7 @@ uint32_t PatrolRuntime_ApplyCut(uint32_t now)
     if (g_motion.bench.cut_power || g_motion.drive.cut_power) {
         PatrolRuntimePort_Enter();
         now = PatrolRuntimePort_Now();
+        PatrolRuntime_CaptureFault(1U, (uint32_t)RemoteService_State()->stop_reason, g_motion.feedback_gate_mask);
         /* Capture before cross-stopping the other executor and before
          * power-off turns healthy samples into secondary offline gates. */
         if (CenterCalibration_IsActive()) {
@@ -380,6 +437,11 @@ void PatrolRuntime_Tick(void)
     }
     PatrolRuntimePort_Exit();
     now = PatrolRuntime_ApplyCut(now);
+    /* Never write flash while powered or inside the safety critical section. */
+    if (fault_dirty && !VehiclePowerOutput_IsOn() && !PatrolRuntimePort_OtaBusy()) {
+        fault_storage=OTA_Info_SaveMotionFault(&last_fault) ? 1U : 2U;
+        fault_dirty=0;
+    }
     if (VehiclePowerOutput_IsOn() && !PatrolRuntimePort_CanBusOffActive() &&
         PatrolRuntimePort_CanTxReady())
     {

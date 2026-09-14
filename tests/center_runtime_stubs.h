@@ -72,3 +72,8 @@ uint8_t PatrolRuntimePort_CanTxReady(void)
 }
 uint8_t PatrolRuntimePort_SendCan(const PatrolCanFrame* frame)
 { (void)frame; mock_sent++; return 1; }
+
+uint8_t OTA_Info_LoadMotionFault(MotionFaultRecord* r) { (void)r; return 0; }
+uint8_t OTA_Info_SaveMotionFault(const MotionFaultRecord* r) { (void)r; return 1; }
+
+void RemoteService_Init(void) { memset(&mock_control,0,sizeof(mock_control)); mock_permit=0; }

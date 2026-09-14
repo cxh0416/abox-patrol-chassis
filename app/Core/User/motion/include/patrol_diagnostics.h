@@ -48,6 +48,7 @@ typedef struct {
     int32_t left_actual_rpm;
     int32_t right_actual_rpm;
     int32_t drive_objects[7];
+    uint32_t drive_code_ms[2];
     uint16_t steering_status_word;
     uint16_t drive_status_word;
     uint16_t encoder_config[PATROL_DIAG_ENCODER_CONFIG_REGS];
@@ -97,6 +98,7 @@ typedef struct {
     uint16_t sdo_abort_mask;
     uint32_t sdo_tx_error_count;
     int32_t drive_objects[7];
+    uint32_t drive_code_ms[2];
     uint32_t sdo_timeout_count;
     uint32_t sdo_abort_count;
     uint32_t last_sdo_abort_code;

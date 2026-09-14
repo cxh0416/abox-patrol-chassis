@@ -319,6 +319,8 @@ uint8_t CloudMessages_BuildStatusReport(char* output, uint16_t size, const char*
     char actual_encoder[24];
     PatrolDiagnosticsSnapshot diagnostics;
     MQTT_CoreRxDiagnostics_t mqtt_rx;
+    MotionFaultRecord fault;
+    uint8_t have_fault=PatrolRuntime_GetFault(&fault);
     if (control->fault_latched) motion_state = "fault";
     else if (control->reversal_pending) motion_state = "reversing_wait";
     else if (feedback_fresh &&
@@ -352,10 +354,7 @@ uint8_t CloudMessages_BuildStatusReport(char* output, uint16_t size, const char*
         "\"calibrated\":%s,\"steeringProfileReady\":%s,\"steeringRangeValid\":%s,"
         "\"powerReady\":%s,\"powerOutputOn\":%s,\"otaBusy\":%s,\"safetyReady\":%s,"
         "\"stopReason\":%u,\"faultLatched\":%s,"
-        "\"transportDiagnostics\":{\"mqttRxLines\":%lu,\"mqttRxDecoded\":%lu,"
-        "\"mqttRxRejected\":%lu,\"mqttRxDispatched\":%lu,\"mqttRxOverwrites\":%lu,"
-        "\"mqttRxTimeouts\":%lu,\"mqttRxLastMs\":%lu,\"ecDmaOverflows\":%lu,"
-        "\"ecDmaRestarts\":%lu,\"ecDmaMaxBacklog\":%lu,\"ecLineOverflows\":%lu}}}",
+        "\"faultRecordVersion\":1",
         (int)control->target_rpm, target_steering,
         (int)feedback->left_actual_rpm, (int)feedback->right_actual_rpm,
         actual_steering, actual_encoder,
@@ -371,18 +370,31 @@ uint8_t CloudMessages_BuildStatusReport(char* output, uint16_t size, const char*
         VehiclePowerOutput_IsOn() ? "true" : "false",
         feedback->ota_busy ? "true" : "false",
         ChassisControl_SafetyReady(control, now) ? "true" : "false",
-        (unsigned int)control->stop_reason, control->fault_latched ? "true" : "false",
-        (unsigned long)mqtt_rx.qmtrecv_line_count,
-        (unsigned long)mqtt_rx.decoded_message_count,
-        (unsigned long)mqtt_rx.rejected_frame_count,
-        (unsigned long)mqtt_rx.dispatched_message_count,
-        (unsigned long)mqtt_rx.pending_overwrite_count,
-        (unsigned long)mqtt_rx.multiline_timeout_count,
-        (unsigned long)mqtt_rx.last_qmtrecv_tick,
-        (unsigned long)ABoxEc800Rx_OverflowCount(&g_cloud.ec800_rx),
-        (unsigned long)ABoxEc800Rx_RestartCount(&g_cloud.ec800_rx),
-        (unsigned long)ABoxEc800Rx_MaxBacklog(&g_cloud.ec800_rx),
-        (unsigned long)EC800_AT_LineOverflowCount(&g_cloud.at_core));
+        (unsigned int)control->stop_reason, control->fault_latched ? "true" : "false");
+    if (have_fault) {
+        const uint32_t* words=(const uint32_t*)&fault;
+        json_append(&writer, ",\"lastFault\":[");
+        /* Word order is frozen by faultRecordVersion, signed words 6..10. */
+        for (unsigned i=1;i<=28;i++) {
+            if (i>1) json_append(&writer, ",");
+            if (i>=6 && i<=10) json_appendf(&writer,"%ld",(long)(int32_t)words[i]);
+            else json_appendf(&writer,"%lu",(unsigned long)words[i]);
+        }
+        json_appendf(&writer, ",%u]", (unsigned)PatrolRuntime_FaultStorage());
+    } else {
+        json_appendf(&writer,
+            ",\"transportDiagnostics\":{\"mqttRxLines\":%lu,\"mqttRxDecoded\":%lu,"
+            "\"mqttRxRejected\":%lu,\"mqttRxDispatched\":%lu,\"mqttRxOverwrites\":%lu,"
+            "\"mqttRxTimeouts\":%lu,\"mqttRxLastMs\":%lu,\"ecDmaOverflows\":%lu,"
+            "\"ecDmaRestarts\":%lu,\"ecDmaMaxBacklog\":%lu,\"ecLineOverflows\":%lu}",
+            (unsigned long)mqtt_rx.qmtrecv_line_count, (unsigned long)mqtt_rx.decoded_message_count,
+            (unsigned long)mqtt_rx.rejected_frame_count, (unsigned long)mqtt_rx.dispatched_message_count,
+            (unsigned long)mqtt_rx.pending_overwrite_count, (unsigned long)mqtt_rx.multiline_timeout_count,
+            (unsigned long)mqtt_rx.last_qmtrecv_tick, (unsigned long)ABoxEc800Rx_OverflowCount(&g_cloud.ec800_rx),
+            (unsigned long)ABoxEc800Rx_RestartCount(&g_cloud.ec800_rx),
+            (unsigned long)ABoxEc800Rx_MaxBacklog(&g_cloud.ec800_rx), (unsigned long)EC800_AT_LineOverflowCount(&g_cloud.at_core));
+    }
+    json_append(&writer,"}}");
     return (uint8_t)(writer.valid && writer.length < CLOUD_PAYLOAD_LIMIT);
 }
 

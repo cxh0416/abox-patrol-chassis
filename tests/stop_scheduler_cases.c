@@ -95,5 +95,21 @@ int main(void)
     assert(!s.drive_status_fresh);
     BenchSteering_Tick(&g_motion.bench, 1051, 0, 0, 0);
     assert(g_motion.bench.phase == BENCH_FAULT && g_motion.bench.cut_power);
+    /* Reset cannot energize outputs and must preserve the original evidence. */
+    PatrolRuntime_Init(); mock_now=2000;
+    g_motion.diagnostics.drive_status_word=0xBF;
+    g_motion.diagnostics.drive_code_ms[0]=1950;
+    g_motion.diagnostics.drive_code_ms[1]=0;
+    PatrolRuntime_CaptureFault(1,13,4096);
+    MotionFaultRecord before,after;
+    assert(PatrolRuntime_GetFault(&before));
+    assert(before.drive_sw==0xBF && before.left_code_age==50 && before.right_code_age==UINT32_MAX);
+    mock_power=1; assert(!PatrolRuntime_ResetFault());
+    mock_power=0; mock_ota=1; assert(!PatrolRuntime_ResetFault()); mock_ota=0;
+    PatrolRuntime_Tick();
+    assert(PatrolRuntime_FaultStorage()==1);
+    assert(PatrolRuntime_ResetFault());
+    assert(!mock_power && !mock_control.fault_latched && !mock_control.enable_request && !mock_permit);
+    assert(PatrolRuntime_GetFault(&after) && memcmp(&before,&after,sizeof(before))==0);
     return 0;
 }

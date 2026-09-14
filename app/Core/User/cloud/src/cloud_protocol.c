@@ -197,6 +197,7 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
         request->steering_tolerance_mdeg = VEHICLE_STEERING_TOLERANCE_MDEG;
         request->action = CLOUD_PROTOCOL_ACTION_SET_CALIBRATION;
     }
+    else if (strcmp(action->valuestring, "reset_motion_fault") == 0) request->action = CLOUD_PROTOCOL_ACTION_RESET_MOTION_FAULT;
     else if (strcmp(action->valuestring, "get_bench_steering") == 0)
         request->action = CLOUD_PROTOCOL_ACTION_BENCH_GET;
     else if (strcmp(action->valuestring, "start_center_calibration") == 0)

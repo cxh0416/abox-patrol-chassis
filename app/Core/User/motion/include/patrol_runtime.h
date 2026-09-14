@@ -1,6 +1,12 @@
 #ifndef PATROL_RUNTIME_H
 #define PATROL_RUNTIME_H
 #include <stdint.h>
+#include "motion_fault.h"
+uint8_t PatrolRuntime_ResetFault(void);
+void PatrolRuntime_BeginFaultEpisode(void);
+void PatrolRuntime_CaptureFault(uint32_t source, uint32_t reason, uint32_t gates);
+uint8_t PatrolRuntime_GetFault(MotionFaultRecord* record);
+uint8_t PatrolRuntime_FaultStorage(void);
 #include "patrol_diagnostics.h"
 
 uint8_t PatrolRuntime_BenchArm(uint16_t limit_mdeg);

@@ -185,6 +185,17 @@ int main(void)
     mock_snapshot.encoder_count=4096;
     CenterCalibration_Tick(mock_now);
     assert(g_motion.center_cal.phase==CENTER_CAL_FAILED);
+    /* First cause survives secondary shutdown and records unknown sample ages. */
+    MotionFaultRecord record;
+    reset_fixture();
+    g_motion.diagnostics.drive_status_word=0xBF;
+    g_motion.diagnostics.drive_code_ms[0]=900;
+    g_motion.diagnostics.drive_code_ms[1]=0;
+    /* All previous cases retain their original first record until reboot. */
+    assert(PatrolRuntime_GetFault(&record));
+    uint32_t first_at=record.at_ms, source=record.source;
+    mock_now+=100; PatrolRuntime_CaptureFault(1,99,123);
+    assert(PatrolRuntime_GetFault(&record) && record.at_ms==first_at && record.source==source);
     puts("PASS production center READY fault chain, preserved evidence, epoch ownership and +/-5 degree limits");
     return 0;
 }
