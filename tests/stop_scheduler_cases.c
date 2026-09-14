@@ -66,6 +66,17 @@ int main(void)
         if (take(now, &f)) reply(f, now+5, 0);
     }
     assert(g_motion.bench.phase == BENCH_IDLE && !g_motion.bench.cut_power);
+    /* Disable confirmation near the deadline must prioritize NMT over a due
+       diagnostic read, including when the alternator points to diagnostics. */
+    reset_fixture();
+    assert(take(1000, &f)); reply(f, 1001, 0);
+    assert(take(1010, &f)); reply(f, 1011, 0);
+    assert(take(1180, &f)); reply(f, 1181, 0);
+    assert(BenchSteering_StopFinishReady(&g_motion.bench));
+    assert(!g_motion.bench_turn);
+    BenchSteering_Tick(&g_motion.bench, 1200, 0, 1, 0);
+    assert(take(1200, &f));
+    assert(f.id == 0 && f.data[0] == 0x80 && g_motion.bench.phase == BENCH_IDLE);
     /* A genuinely stuck shutdown still trips the original 200 ms deadline. */
     reset_fixture();
     for (uint32_t now=1000; now<=1200; now+=10) {

@@ -1,16 +1,16 @@
-{
-  "product": "patrol_vehicle_chassis",
-  "version": "patrol-chassis-0.2.25",
-  "candidate": true,
-  "steering_only": false,
-  "startup_permit": false,
-  "drive_actuation": true,
-  "drive_limit_rpm": 200,
-  "commit": "3572611e715ad3e49fd1d11f84b767ee7a22d5fe",
-  "dirty": false,
-  "app_start": "0x08008000",
-  "app_end": "0x0803E7FF",
-  "config_page": "0x0803F800",
-  "size": 106768,
-  "sha256": "C242E463E7BFCF04067ED9FCBE93ECB1AC95F2430FDD1F8DA95E5638CC8AD8A0"
+﻿{
+    "product":  "patrol_vehicle_chassis",
+    "version":  "patrol-chassis-0.2.27",
+    "candidate":  true,
+    "steering_only":  false,
+    "startup_permit":  false,
+    "drive_actuation":  true,
+    "drive_limit_rpm":  200,
+    "commit":  "f03caf9bce22d3548927071e337a002d589e4696",
+    "dirty":  true,
+    "app_start":  "0x08008000",
+    "app_end":  "0x0803E7FF",
+    "config_page":  "0x0803F800",
+    "size":  107088,
+    "sha256":  "85B8777D2B84BA9ABF4D64B250EE5D7F1971D498CB782552B4F668D53085F337"
 }

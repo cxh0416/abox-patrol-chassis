@@ -12,6 +12,7 @@ typedef struct {
     int32_t minimum, maximum, center, hold, desired, applied, expected;
     int32_t calibration_center, cached_minimum, cached_maximum, previous_minimum;
     uint16_t limit_mdeg;
+    uint8_t tpdo_check, subindex, stop_confirmed;
 } BenchSteering;
 
 void BenchSteering_Init(BenchSteering* b);
@@ -24,4 +25,5 @@ void BenchSteering_Tick(BenchSteering* b, uint32_t now, uint8_t requested, uint8
 uint8_t BenchSteering_Take(BenchSteering* b, uint32_t now, PatrolCanFrame* frame);
 uint8_t BenchSteering_OnFrame(BenchSteering* b, const PatrolCanFrame* frame, uint32_t now);
 void BenchSteering_TxFailed(BenchSteering* b);
+uint8_t BenchSteering_StopFinishReady(const BenchSteering* b);
 #endif

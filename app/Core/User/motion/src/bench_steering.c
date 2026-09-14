@@ -8,6 +8,7 @@
 #define TRANSACTION_MS 100U
 #define PREPARE_MS 5000U
 #define STOP_MS 200U
+#define STOP_FINISH_MS 100U
 #define BENCH_STEERING_ENVELOPE_MDEG VEHICLE_MAX_STEERING_MDEG
 
 /* Values retain existing diagnostic codes and ordered transitions. */
@@ -122,6 +123,7 @@ void BenchSteering_Stop(BenchSteering *b, uint32_t now, uint8_t cut_power)
     b->phase = BENCH_STOPPING;
     b->step = STEER_STEP_STOP;
     b->stop_ms = now;
+    b->stop_confirmed = 0;
 }
 void BenchSteering_TxFailed(BenchSteering *b)
 {
@@ -140,7 +142,7 @@ void BenchSteering_Tick(BenchSteering *b, uint32_t now, uint8_t requested, uint8
         BenchSteering_Stop(b, now, 0U);
     if (b->phase == BENCH_STOPPING)
     {
-        if (now - b->stop_ms >= STOP_MS)
+        if (now - b->stop_ms >= (b->stop_confirmed || b->step == STEER_STEP_STOP_COMPLETE ? STOP_FINISH_MS : STOP_MS))
             fail(b, 3U);
     }
     else
@@ -182,6 +184,7 @@ uint8_t BenchSteering_Take(BenchSteering *b, uint32_t now, PatrolCanFrame *f)
         return 1;
     }
     b->read = 0;
+    b->subindex = 0;
     b->width = 2;
     switch (b->step)
     {
@@ -196,6 +199,14 @@ uint8_t BenchSteering_Take(BenchSteering *b, uint32_t now, PatrolCanFrame *f)
         b->width = 4;
         break;
     case STEER_STEP_WRITE_MODE:
+        if (b->tpdo_check < 2U) {
+            b->index = b->tpdo_check == 0U ? 0x1800 : 0x1A00;
+            b->subindex = 1;
+            b->width = 4;
+            b->read = 1;
+            b->expected = b->tpdo_check == 0U ? 0x181 : 0x60410010;
+            break;
+        }
         b->index = 0x6060;
         b->width = 1;
         value = 1;
@@ -273,7 +284,7 @@ uint8_t BenchSteering_Take(BenchSteering *b, uint32_t now, PatrolCanFrame *f)
         return 0;
     }
     if (b->read)
-        *f = PatrolCanopen_SdoRead(1, b->index, 0);
+        *f = PatrolCanopen_SdoRead(1, b->index, b->subindex);
     else if (b->width == 1)
         *f = PatrolCanopen_SdoWrite8(1, b->index, 0, (uint8_t)value);
     else if (b->width == 2)
@@ -289,12 +300,33 @@ uint8_t BenchSteering_OnFrame(BenchSteering *b, const PatrolCanFrame *f, uint32_
 {
     int32_t value;
     uint8_t width;
+    /* Mapping was read back this session before enabling. Only a post-shutdown
+       status can confirm disable; keep any in-flight SDO owned until drained. */
+    if (f->id == 0x181 && f->dlc >= 2 && f->dlc <= 8 && b->tpdo_check == 2 &&
+        b->phase == BENCH_STOPPING && b->step == STEER_STEP_READ_DISABLED &&
+        !b->stop_confirmed && now - b->stop_ms < STOP_MS) {
+        uint16_t status = (uint16_t)f->data[0] | (uint16_t)f->data[1] << 8;
+        if (status & 8U) { fail(b, 9U); return 1; }
+        if ((status & 0x6FU) == 0x21U || (status & 0x6FU) == 0x23U ||
+            (status & 0x6FU) == 0x40U) {
+            b->stop_confirmed = 1;
+            b->stop_ms = now;
+            if (!b->pending) b->step = STEER_STEP_STOP_COMPLETE;
+        }
+        return 1;
+    }
     if (!b->pending || f->id != 0x581 || f->dlc < 4 || f->dlc > 8 || f->data[1] != (uint8_t)b->index ||
-        f->data[2] != (uint8_t)(b->index >> 8) || f->data[3] != 0)
+        f->data[2] != (uint8_t)(b->index >> 8) || f->data[3] != b->subindex)
         return 0;
     if (now - b->sent_ms >= TRANSACTION_MS)
     {
         fail(b, 6U);
+        return 1;
+    }
+    /* A late reply must not turn an expired disable deadline into success. */
+    if (b->phase == BENCH_STOPPING && now - b->stop_ms >= (b->stop_confirmed ? STOP_FINISH_MS : STOP_MS))
+    {
+        fail(b, 3U);
         return 1;
     }
     if (f->data[0] == 0x80)
@@ -306,8 +338,17 @@ uint8_t BenchSteering_OnFrame(BenchSteering *b, const PatrolCanFrame *f, uint32_
     }
     if (b->read)
     {
-        if (!PatrolCanopen_ParseSdoValue(f, 1, b->index, 0, &value, &width) || width != b->width)
+        if (!PatrolCanopen_ParseSdoValue(f, 1, b->index, b->subindex, &value, &width) || width != b->width)
             return 1;
+        if (b->step == STEER_STEP_WRITE_MODE && b->tpdo_check < 2U) {
+            /* bit 30 only declares RTR policy; bit 31 must remain enabled. */
+            uint32_t actual = (uint32_t)value;
+            if (b->tpdo_check == 0U) actual &= ~0x40000000UL;
+            if (actual != (uint32_t)b->expected) { fail(b, 10U); return 1; }
+            b->tpdo_check++;
+            b->pending = 0;
+            return 1;
+        }
         if (b->step == STEER_STEP_READ_MINIMUM)
             b->previous_minimum = value;
         else if (b->step == STEER_STEP_READ_MAXIMUM)
@@ -374,7 +415,7 @@ uint8_t BenchSteering_OnFrame(BenchSteering *b, const PatrolCanFrame *f, uint32_
         else if (b->index == 0x6041)
         {
             uint16_t state = (uint16_t)value & 0x6F;
-            if ((value & 8) || (b->step == STEER_STEP_READ_DISABLED ? state == 0x27 : state != b->expected))
+            if ((value & 8) || (b->step == STEER_STEP_READ_DISABLED ? (!b->stop_confirmed && state == 0x27) : state != b->expected))
             {
                 if (value & 8)
                     fail(b, 9U);
@@ -393,6 +434,8 @@ uint8_t BenchSteering_OnFrame(BenchSteering *b, const PatrolCanFrame *f, uint32_
         return 1;
     b->pending = 0;
     b->step++;
+    if (b->phase == BENCH_STOPPING && b->step == STEER_STEP_STOP_COMPLETE && !b->stop_confirmed)
+        b->stop_ms = now; /* Disabled: separately bound NMT housekeeping. */
     if (b->step == STEER_STEP_LIMITS_COMPLETE)
     {
         b->limits_aligned = 1;
@@ -406,4 +449,9 @@ uint8_t BenchSteering_OnFrame(BenchSteering *b, const PatrolCanFrame *f, uint32_
         b->step = STEER_STEP_ACTIVE;
     }
     return 1;
+}
+
+uint8_t BenchSteering_StopFinishReady(const BenchSteering *b)
+{
+    return b->phase == BENCH_STOPPING && b->step == STEER_STEP_STOP_COMPLETE && !b->pending;
 }

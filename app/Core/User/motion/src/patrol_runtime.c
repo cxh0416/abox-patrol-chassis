@@ -169,7 +169,7 @@ uint8_t PatrolRuntime_Take(uint32_t now, PatrolCanFrame* request, uint8_t* owner
     /* Alternate execution and diagnostics, never overlap pending transactions. */
     g_motion.diagnostics.stop_priority = g_motion.bench.phase == BENCH_STOPPING;
     if (!g_motion.diagnostics.pending_valid && !g_motion.bench.pending && !g_motion.drive.pending &&
-        g_motion.bench_turn) {
+        (g_motion.bench_turn || BenchSteering_StopFinishReady(&g_motion.bench))) {
         if (g_motion.drive_turn && g_motion.bench.phase != BENCH_STOPPING) {
             have_request = BenchDrive_Take(&g_motion.drive, now, request);
             if (have_request) { bench_frame = 2; g_motion.drive_turn = 0; }

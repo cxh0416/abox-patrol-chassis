@@ -6,7 +6,7 @@
 
 static PatrolCanFrame reply(const BenchSteering* b, int32_t value)
 {
-    PatrolCanFrame f = PatrolCanopen_SdoWrite32(1,b->index,0,value);
+    PatrolCanFrame f = PatrolCanopen_SdoWrite32(1,b->index,b->subindex,value);
     f.id = 0x581;
     f.dlc = b->read ? 4+b->width : 4;
     f.data[0] = b->read ? b->width==4 ? 0x43 : b->width==2 ? 0x4b : 0x4f : 0x60;
@@ -15,6 +15,12 @@ static PatrolCanFrame reply(const BenchSteering* b, int32_t value)
 static void advance(BenchSteering* b, uint32_t* now)
 {
     PatrolCanFrame f,r;
+    while (b->step==3 && b->tpdo_check<2) {
+        assert(BenchSteering_Take(b,*now,&f));
+        r=reply(b,b->expected);
+        assert(BenchSteering_OnFrame(b,&r,*now+1));
+        *now+=10;
+    }
     BenchSteering_Tick(b,*now,1,1,1000);
     assert(BenchSteering_Take(b,*now,&f));
     assert(f.id==0 || f.id==0x601); /* never drive node */
@@ -125,5 +131,71 @@ int main(void)
     assert(b.phase==BENCH_FAULT&&b.cut_power);
     BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0);
     BenchSteering_Tick(&b,1,1,1,1001); assert(b.phase==BENCH_FAULT);
+    /* Field trace: disable confirmed at 181 ms; NMT serviced after 200 ms. */
+    BenchSteering_Init(&b); b.phase=BENCH_ACTIVE;
+    BenchSteering_Stop(&b,1000,0);
+    assert(BenchSteering_Take(&b,1000,&f)); r=reply(&b,0);
+    assert(BenchSteering_OnFrame(&b,&r,1001));
+    assert(BenchSteering_Take(&b,1180,&f)); r=reply(&b,0x2231);
+    assert(BenchSteering_OnFrame(&b,&r,1181));
+    assert(BenchSteering_StopFinishReady(&b));
+    BenchSteering_Tick(&b,1200,0,1,0);
+    assert(b.phase==BENCH_STOPPING);
+    assert(BenchSteering_Take(&b,1200,&f)&&f.id==0&&f.data[0]==0x80);
+    assert(b.phase==BENCH_IDLE);
+    BenchSteering_TxFailed(&b);
+    assert(b.phase==BENCH_FAULT&&b.cut_power); /* NMT transmit failure still faults. */
+
+    BenchSteering_Init(&b); b.phase=BENCH_ACTIVE;
+    BenchSteering_Stop(&b,1000,0);
+    assert(BenchSteering_Take(&b,1000,&f)); r=reply(&b,0);
+    assert(BenchSteering_OnFrame(&b,&r,1001));
+    assert(BenchSteering_Take(&b,1180,&f)); r=reply(&b,0x2231);
+    assert(BenchSteering_OnFrame(&b,&r,1200));
+    assert(b.phase==BENCH_FAULT&&b.fault==3); /* Late disable is not accepted. */
+
+    BenchSteering_Init(&b); b.phase=BENCH_ACTIVE;
+    BenchSteering_Stop(&b,1000,0);
+    assert(BenchSteering_Take(&b,1000,&f)); r=reply(&b,0);
+    assert(BenchSteering_OnFrame(&b,&r,1001));
+    assert(BenchSteering_Take(&b,1180,&f)); r=reply(&b,0x2231);
+    assert(BenchSteering_OnFrame(&b,&r,1181));
+    BenchSteering_Tick(&b,1281,0,1,0);
+    assert(b.phase==BENCH_FAULT&&b.cut_power); /* Housekeeping cannot hang forever. */
+    /* Verified TPDO arriving at 192 ms confirms disable, including while an
+       SDO reply is still outstanding. It must not release that transaction. */
+    for (int pending=0;pending<2;pending++) {
+        BenchSteering_Init(&b); b.phase=BENCH_ACTIVE; b.tpdo_check=2;
+        BenchSteering_Stop(&b,1000,0);
+        assert(BenchSteering_Take(&b,1000,&f)); r=reply(&b,0);
+        assert(BenchSteering_OnFrame(&b,&r,1001));
+        if (pending) assert(BenchSteering_Take(&b,1190,&f));
+        r=(PatrolCanFrame){.id=0x181,.dlc=7,.data={0x31,0x22}};
+        assert(BenchSteering_OnFrame(&b,&r,1192));
+        assert(b.stop_confirmed && b.pending==pending);
+        BenchSteering_Tick(&b,1200,0,1,0);
+        assert(b.phase==BENCH_STOPPING);
+        if (pending) {
+            assert(!BenchSteering_Take(&b,1200,&f));
+            r=reply(&b,0x2237); /* Older solicited status drained without undoing TPDO. */
+            assert(BenchSteering_OnFrame(&b,&r,1201));
+        }
+        assert(BenchSteering_Take(&b,1210,&f)&&f.id==0);
+    }
+    for (int kind=0;kind<3;kind++) {
+        BenchSteering_Init(&b); b.phase=BENCH_ACTIVE; b.tpdo_check=kind==0?0:2;
+        BenchSteering_Stop(&b,1000,0);
+        assert(BenchSteering_Take(&b,1000,&f)); r=reply(&b,0);
+        assert(BenchSteering_OnFrame(&b,&r,1001));
+        r=(PatrolCanFrame){.id=0x181,.dlc=kind==1?1:7,.data={0x31,0x22}};
+        BenchSteering_OnFrame(&b,&r,kind==2?1200:1192);
+        assert(!b.stop_confirmed); /* Unknown mapping, malformed or late PDO. */
+        BenchSteering_Tick(&b,1200,0,1,0);
+        assert(b.phase==BENCH_FAULT);
+    }
+    BenchSteering_Init(&b); b.phase=BENCH_PREPARING; b.step=3;
+    assert(BenchSteering_Take(&b,0,&f)&&f.data[3]==1);
+    r=reply(&b,0x80000181); /* Disabled COB-ID must not authorize PDO decoding. */
+    BenchSteering_OnFrame(&b,&r,1); assert(b.phase==BENCH_FAULT);
     puts("PASS bench handshake, target conversion, limits, stop, malformed replies, faults and timeout");
 }
