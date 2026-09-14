@@ -27,6 +27,7 @@ uint8_t VcuRtos_BenchDriveArm(uint16_t limit_mdeg);
 void VcuRtos_BenchStop(void);
 void VcuRtos_FormatBench(char* out, uint16_t size);
 uint8_t VcuRtos_CenterCalibrationStart(void);
+uint8_t VcuRtos_CenterCalibrationActive(void);
 uint8_t VcuRtos_CenterCalibrationKeepAlive(const char* session_id);
 uint8_t VcuRtos_CenterCalibrationJog(const char* session_id, int16_t delta_mdeg);
 uint8_t VcuRtos_CenterCalibrationCommit(const char* session_id);

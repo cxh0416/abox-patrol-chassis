@@ -225,6 +225,11 @@ static uint8_t center_session_active(void)
 #define PATROL_CHASSIS_BENCH_STEERING_ENABLED 0
 #endif
 
+uint8_t VcuRtos_CenterCalibrationActive(void)
+{
+    return center_session_active();
+}
+
 static void Vcu_SafetyControlTask(void *argument);
 static void Vcu_CanRxTask(void *argument);
 static void Vcu_CanopenTask(void *argument);

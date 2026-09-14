@@ -1,4 +1,5 @@
 #include "cloud_service.h"
+#include "cloud_telemetry.h"
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -31,8 +32,6 @@
 #define CLOUD_PAYLOAD_LIMIT 1080U
 #define CLOUD_TOPIC_SIZE 128U
 #define CLOUD_REQUEST_ID_SIZE CLOUD_PROTOCOL_REQUEST_ID_SIZE
-#define CLOUD_HEARTBEAT_MS 5000U
-#define CLOUD_STATUS_REPORT_MS 1000U
 #define CLOUD_REBOOT_DELAY_MS 300U
 #define CLOUD_LOG_SNAPSHOT_SIZE 3584U
 #define CLOUD_ALERT_PAYLOAD_SIZE 512U
@@ -91,6 +90,7 @@ static char g_ota_request_id[CLOUD_REQUEST_ID_SIZE];
 static uint32_t g_heartbeat_due;
 static uint32_t g_status_report_due;
 static uint32_t g_status_report_sequence;
+static CloudTelemetry g_telemetry;
 static ChassisStatusSnapshot_t g_status_snapshot;
 static uint32_t g_iccid_due;
 static uint32_t g_ota_begin_due;
@@ -691,6 +691,8 @@ static __attribute__((noinline)) void handle_config_request(const CloudProtocolR
     if (request == 0) return;
     action = request->action;
     request_id = request->request_id;
+    /* A maintenance query opens a bounded observation window, never a motion permit. */
+    CloudTelemetry_Wake(&g_telemetry, HAL_GetTick());
     if (action == CLOUD_PROTOCOL_ACTION_GET_INFO)
     {
         build_info_result(result, sizeof(result));
@@ -992,6 +994,13 @@ static void tx_completed(void)
 static void service_tx(void)
 {
     uint32_t now = HAL_GetTick();
+    const ChassisControl* control = RemoteService_State();
+    if (CloudTelemetry_Update(&g_telemetry, now,
+            control->session_active || RemoteService_BenchPermitted() ||
+            VcuRtos_CenterCalibrationActive())) {
+        g_status_report_due = now;
+        g_heartbeat_due = now;
+    }
     if (g_tx_kind != CLOUD_TX_NONE)
     {
         if (MQTT_Core_GetPubOkSeq() != g_tx_start_sequence) tx_completed();
@@ -1009,6 +1018,8 @@ static void service_tx(void)
         const char* event_reason = status_change_reason(now);
         if (event_reason != 0)
         {
+            /* Keep a short observation tail after faults and power/state changes. */
+            CloudTelemetry_Wake(&g_telemetry, now);
             if (build_status_report(g_tx_payload, sizeof(g_tx_payload), event_reason) &&
                 start_publish(CLOUD_TX_STATUS_REPORT, g_topic_status_report, g_tx_payload, 1U, 1U))
                 remember_status_snapshot(now);
@@ -1019,7 +1030,7 @@ static void service_tx(void)
     {
         if (build_heartbeat(g_tx_payload, sizeof(g_tx_payload)) &&
             start_publish(CLOUD_TX_HEARTBEAT, g_topic_heartbeat, g_tx_payload, 0U, 0U))
-            g_heartbeat_due = now + CLOUD_HEARTBEAT_MS;
+            g_heartbeat_due = now + (g_telemetry.fast ? CLOUD_ACTIVE_HEARTBEAT_MS : CLOUD_IDLE_HEARTBEAT_MS);
         return;
     }
     if ((int32_t)(now - g_status_report_due) >= 0)
@@ -1027,7 +1038,7 @@ static void service_tx(void)
         if (build_status_report(g_tx_payload, sizeof(g_tx_payload), "periodic") &&
             start_publish(CLOUD_TX_STATUS_REPORT, g_topic_status_report, g_tx_payload, 0U, 1U))
         {
-            g_status_report_due = now + CLOUD_STATUS_REPORT_MS;
+            g_status_report_due = now + (g_telemetry.fast ? CLOUD_ACTIVE_STATUS_MS : CLOUD_IDLE_STATUS_MS);
             remember_status_snapshot(now);
         }
         return;
@@ -1067,6 +1078,7 @@ static void service_tx(void)
 
 void CloudService_Init(void)
 {
+    memset(&g_telemetry, 0, sizeof(g_telemetry));
     MQTT_CoreConfig_t mqtt;
     const VcuRemoteConfig_t* cfg = VcuConfig_Get();
     memset(&mqtt, 0, sizeof(mqtt));
