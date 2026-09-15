@@ -1,0 +1,5 @@
+get_info 2cd63bc0-8901-4a77-8031-cd432f82f971 succeeded {"bootApiVersion": 1, "bootDescriptorValid": true, "bootFeatures": 15, "bootVersion": "abox-boot-2.3.0", "canBusOff": false, "canInitialized": true, "canRxOverflow": 0, "candidateSlot": 0, "diagnostics": {"canRx": 0, "driveHb": false, "encoderOnline": true, "encoderRaw": 2, "encoderTimeouts": 0, "leftRpm": 0, "rightRpm": 0, "sdoTimeouts": 0, "steerHb": false, "steerRaw": 0}, "fwVersion": "patrol-chassis-0.2.31", "iccid": "89860868102540109153", "lastOtaError": 0, "mqttState": "READY", "mqttStateCode": 29, "otaBootstrapNeedsRevision": false, "otaBusy": false, "otaDownloader": "app", "otaPhase": "IDLE", "otaProvisioned": true, "otaReady": true, "otaScheme": "boot_v2_ufs", "otaState": "CONFIRMED", "otaTargetVersion": "patrol-chassis-0.2.31", "powerOutputAvailable": true, "powerOutputOn": false, "resetReason": 0, "stableSeedSource": "local_flash", "stableSlot": 0, "trialFailCount": 0, "uptimeMs": 218885, "vid": "PATROL-CHASSIS-000"}
+Traceback (most recent call last):
+  File "<stdin>", line 18, in <module>
+  File "<stdin>", line 14, in op
+RuntimeError: operation timeout 2964a1b1-8ea0-4ea9-b6de-6eadde03d4ea
