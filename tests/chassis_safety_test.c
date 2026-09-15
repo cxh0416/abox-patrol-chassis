@@ -191,6 +191,10 @@ int main(void)
     ChassisCloudCommand command;
     const char json[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"r1\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"acquire\",\"sessionId\":\"s1\",\"seq\":1,\"leaseMs\":1000,\"driveRpm\":200,\"steeringDeg\":30}}}";
     const char over_limit[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"r3\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"renew\",\"sessionId\":\"s1\",\"seq\":2,\"leaseMs\":1000,\"driveRpm\":200,\"steeringDeg\":30.001}}}";
+    const char over_rpm[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"r4\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"renew\",\"sessionId\":\"s1\",\"seq\":2,\"leaseMs\":1000,\"driveRpm\":201,\"steeringDeg\":0}}}";
+    const char fractional_rpm[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"r5\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"renew\",\"sessionId\":\"s1\",\"seq\":2,\"leaseMs\":1000,\"driveRpm\":1.5,\"steeringDeg\":0}}}";
+    const char fractional_lease[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"r6\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"renew\",\"sessionId\":\"s1\",\"seq\":2,\"leaseMs\":999.5,\"driveRpm\":0,\"steeringDeg\":0}}}";
+    const char sub_mdeg_steering[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"r7\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"renew\",\"sessionId\":\"s1\",\"seq\":2,\"leaseMs\":1000,\"driveRpm\":0,\"steeringDeg\":1.0005}}}";
     const char wrong_type[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"r2\",\"deviceType\":\"wing_actuator\",\"command\":\"chassis_control\",\"params\":{}}}";
     const char power_on[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"p1\",\"deviceType\":\"vehicle_chassis\",\"command\":\"power_on\",\"params\":null}}";
     const char power_bad_params[] = "{\"version\":\"3.0\",\"data\":{\"requestId\":\"p2\",\"deviceType\":\"vehicle_chassis\",\"command\":\"power_off\",\"params\":{}}}";
@@ -384,6 +388,10 @@ int main(void)
     CHECK(ChassisCloud_Parse(power_bad_params, (uint16_t)strlen(power_bad_params), &command) ==
           CHASSIS_CLOUD_INVALID);
     CHECK(ChassisCloud_Parse(over_limit, (uint16_t)strlen(over_limit), &command) == CHASSIS_CLOUD_INVALID);
+    CHECK(ChassisCloud_Parse(over_rpm, (uint16_t)strlen(over_rpm), &command) == CHASSIS_CLOUD_INVALID);
+    CHECK(ChassisCloud_Parse(fractional_rpm, (uint16_t)strlen(fractional_rpm), &command) == CHASSIS_CLOUD_INVALID);
+    CHECK(ChassisCloud_Parse(fractional_lease, (uint16_t)strlen(fractional_lease), &command) == CHASSIS_CLOUD_INVALID);
+    CHECK(ChassisCloud_Parse(sub_mdeg_steering, (uint16_t)strlen(sub_mdeg_steering), &command) == CHASSIS_CLOUD_INVALID);
     CHECK(ChassisCloud_Parse(wrong_type, (uint16_t)strlen(wrong_type), &command) ==
           CHASSIS_CLOUD_DEVICE_TYPE_MISMATCH);
     /* Both signs: small overshoot remains controllable inward, not a fault. */
