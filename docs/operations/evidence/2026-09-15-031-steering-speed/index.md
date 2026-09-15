@@ -21,3 +21,7 @@
 - `C:/Users/cxh/.codex/private/patrol-jlink-0.2.31-20260915/after.bin`, SHA256 `CF6E823401E77A7D2D4AF641C64AD9F317259AC00FF2998A0D79E4D93AC71862`
 
 远端原始目录保留在 `wyse3040:/tmp/patrol-jlink-031-3kYeZh`。
+
+## 自适应速度现场验证
+
+刷写后的正向、负向、回中和重复性验证已完成，结论与原始 CAN/平台证据见 [`adaptive-validation/summary.md`](adaptive-validation/summary.md)。验证覆盖 Node 1 `0x6081:00` 的 200/100/50 rpm 自适应写入及逐次读回、三次边缘到位、三次回中、双转角一致性、零轮速、无 Bus-Off/故障锁存，以及测试开关恢复。

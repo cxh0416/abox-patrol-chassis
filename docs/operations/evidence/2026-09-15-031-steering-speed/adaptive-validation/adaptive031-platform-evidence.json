@@ -1,0 +1,663 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "vid": "PATROL-CHASSIS-000",
+  "firmware": "patrol-chassis-0.2.31",
+  "test_result": "PASS",
+  "session": {
+    "id": "b-1789451572413-7",
+    "product": "patrol_vehicle_chassis",
+    "vid": "PATROL-CHASSIS-000",
+    "actor": "codex-maintenance",
+    "auth_session_hash": "[redacted]",
+    "state": "ended",
+    "seq": 363,
+    "drive_rpm": 0,
+    "steering_mdeg": 0,
+    "last_client_at": 1789451678.479702,
+    "last_dispatched_at": 1789451678.3925989,
+    "device_accepted": true,
+    "created_at": 1789451574.091757,
+    "updated_at": 1789451679.0489836,
+    "ended_at": 1789451678.603685,
+    "end_reason": "explicit_stop",
+    "feedback": {
+      "deviceType": "vehicle_chassis",
+      "requestId": "cc:b-1789451572413-7:2745283532",
+      "code": 200,
+      "msg": "operation accepted",
+      "targetDriveRpm": 0,
+      "targetSteeringDeg": 0.0,
+      "stopReason": 12
+    }
+  },
+  "operations": [
+    {
+      "id": "9c179041-ddac-4a25-b357-0e4acff401c9",
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-CHASSIS-000",
+      "capability": "get_info",
+      "state": "succeeded",
+      "actor": "codex-maintenance",
+      "idempotency_key": "b2e5b64d-9a9d-4baa-961c-deab0538245c",
+      "request_id": "32330ad5-de5d-4615-9ea2-03ad73fdb176",
+      "created_at": 1789451557.6249096,
+      "updated_at": 1789451558.656679,
+      "sent_at": 1789451558.016118,
+      "completed_at": 1789451558.6566758,
+      "response_code": "200",
+      "response_message": "OK",
+      "error": "",
+      "params": {},
+      "result": {
+        "bootApiVersion": 1,
+        "bootDescriptorValid": true,
+        "bootFeatures": 15,
+        "bootVersion": "abox-boot-2.3.0",
+        "canBusOff": false,
+        "canInitialized": true,
+        "canRxOverflow": 0,
+        "candidateSlot": 0,
+        "diagnostics": {
+          "canRx": 194022,
+          "driveHb": false,
+          "encoderOnline": true,
+          "encoderRaw": 2,
+          "encoderTimeouts": 0,
+          "leftRpm": 0,
+          "rightRpm": 0,
+          "sdoTimeouts": 18,
+          "steerHb": false,
+          "steerRaw": -83477
+        },
+        "fwVersion": "patrol-chassis-0.2.31",
+        "iccid": "89860868102540109153",
+        "lastOtaError": 0,
+        "mqttState": "READY",
+        "mqttStateCode": 29,
+        "otaBootstrapNeedsRevision": false,
+        "otaBusy": false,
+        "otaDownloader": "app",
+        "otaPhase": "IDLE",
+        "otaProvisioned": true,
+        "otaReady": true,
+        "otaScheme": "boot_v2_ufs",
+        "otaState": "CONFIRMED",
+        "otaTargetVersion": "patrol-chassis-0.2.31",
+        "powerOutputAvailable": true,
+        "powerOutputOn": false,
+        "resetReason": 0,
+        "stableSeedSource": "local_flash",
+        "stableSlot": 0,
+        "trialFailCount": 0,
+        "uptimeMs": 2154896,
+        "vid": "PATROL-CHASSIS-000"
+      },
+      "events": [
+        {
+          "id": 3089,
+          "state": "queued",
+          "message": "",
+          "created_at": 1789451557.6249096
+        },
+        {
+          "id": 3090,
+          "state": "sent",
+          "message": "published get_info",
+          "created_at": 1789451558.0172474
+        },
+        {
+          "id": 3091,
+          "state": "succeeded",
+          "message": "OK",
+          "created_at": 1789451558.6579251
+        }
+      ]
+    },
+    {
+      "id": "8754a676-4fac-4ef6-8643-acc1846b382f",
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-CHASSIS-000",
+      "capability": "power_off",
+      "state": "succeeded",
+      "actor": "codex-maintenance",
+      "idempotency_key": "0d03adf4-65c9-4e58-8be2-f0b4b86e2b89",
+      "request_id": "fba71c83-3c5d-4fc2-a1d1-ff484f7d6a99",
+      "created_at": 1789451558.7310312,
+      "updated_at": 1789451559.3800151,
+      "sent_at": 1789451559.081239,
+      "completed_at": 1789451559.380013,
+      "response_code": "200",
+      "response_message": "operation accepted",
+      "error": "",
+      "params": {},
+      "result": {
+        "code": 200,
+        "deviceType": "vehicle_chassis",
+        "msg": "operation accepted",
+        "powerOutputOn": false,
+        "requestId": "fba71c83-3c5d-4fc2-a1d1-ff484f7d6a99"
+      },
+      "events": [
+        {
+          "id": 3092,
+          "state": "queued",
+          "message": "",
+          "created_at": 1789451558.7310312
+        },
+        {
+          "id": 3093,
+          "state": "sent",
+          "message": "published power_off",
+          "created_at": 1789451559.085541
+        },
+        {
+          "id": 3094,
+          "state": "succeeded",
+          "message": "operation accepted",
+          "created_at": 1789451559.3811057
+        }
+      ]
+    },
+    {
+      "id": "1930eee9-3822-4708-bfbd-8f0fa4a9eac5",
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-CHASSIS-000",
+      "capability": "power_on",
+      "state": "succeeded",
+      "actor": "codex-maintenance",
+      "idempotency_key": "53460ecb-c38b-4377-81e4-47dcf69c810b",
+      "request_id": "6cc463aa-1eab-462a-801b-7450368b323e",
+      "created_at": 1789451560.5362723,
+      "updated_at": 1789451566.5454557,
+      "sent_at": 1789451566.2467654,
+      "completed_at": 1789451566.5454533,
+      "response_code": "200",
+      "response_message": "operation accepted",
+      "error": "",
+      "params": {},
+      "result": {
+        "code": 200,
+        "deviceType": "vehicle_chassis",
+        "msg": "operation accepted",
+        "powerOutputOn": true,
+        "requestId": "6cc463aa-1eab-462a-801b-7450368b323e"
+      },
+      "events": [
+        {
+          "id": 3095,
+          "state": "queued",
+          "message": "",
+          "created_at": 1789451560.5362723
+        },
+        {
+          "id": 3096,
+          "state": "sent",
+          "message": "published power_on",
+          "created_at": 1789451566.2478697
+        },
+        {
+          "id": 3097,
+          "state": "succeeded",
+          "message": "operation accepted",
+          "created_at": 1789451566.5465734
+        }
+      ]
+    },
+    {
+      "id": "1d465f89-c962-43ab-a021-b53f1d60ee97",
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-CHASSIS-000",
+      "capability": "get_bench_steering",
+      "state": "succeeded",
+      "actor": "codex-maintenance",
+      "idempotency_key": "8644e40c-13c6-4796-95fe-31cc53959747",
+      "request_id": "745bf241-0800-4498-a27f-06df8caef6e4",
+      "created_at": 1789451571.6214285,
+      "updated_at": 1789451572.9839227,
+      "sent_at": 1789451572.443631,
+      "completed_at": 1789451572.98392,
+      "response_code": "200",
+      "response_message": "OK",
+      "error": "",
+      "params": {},
+      "result": {
+        "available": true,
+        "contactorFeedbackAvailable": false,
+        "coordinateValid": true,
+        "driveAvailable": true,
+        "driveFault": 0,
+        "driveLimitRpm": 200,
+        "drivePermitted": false,
+        "drivePhase": 0,
+        "fault": 0,
+        "feedbackGateMask": 0,
+        "limitMdeg": 30000,
+        "permitted": false,
+        "phase": 0,
+        "profileReady": true,
+        "rangeValid": true,
+        "runtimeCenterCount": -83913,
+        "safetyProfile": "single_turn_4096_center0_limit30_margin05_v3",
+        "sessionId": "b-1789451454067-6",
+        "step": 23
+      },
+      "events": [
+        {
+          "id": 3098,
+          "state": "queued",
+          "message": "",
+          "created_at": 1789451571.6214285
+        },
+        {
+          "id": 3099,
+          "state": "sent",
+          "message": "published get_bench_steering",
+          "created_at": 1789451572.4447782
+        },
+        {
+          "id": 3100,
+          "state": "succeeded",
+          "message": "OK",
+          "created_at": 1789451572.9851022
+        }
+      ]
+    },
+    {
+      "id": "14b9d713-9a9c-43f2-9b6e-fa315c6d3f42",
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-CHASSIS-000",
+      "capability": "arm_bench_drive",
+      "state": "succeeded",
+      "actor": "codex-maintenance",
+      "idempotency_key": "ac60e633-e577-4a9b-b508-52a334312e46",
+      "request_id": "d5313d91-8930-4f61-a1f1-695209d75526",
+      "created_at": 1789451573.2271392,
+      "updated_at": 1789451574.052854,
+      "sent_at": 1789451573.5829449,
+      "completed_at": 1789451574.052851,
+      "response_code": "200",
+      "response_message": "OK",
+      "error": "",
+      "params": {
+        "limitMdeg": 30000
+      },
+      "result": {
+        "available": true,
+        "contactorFeedbackAvailable": false,
+        "coordinateValid": true,
+        "driveAvailable": true,
+        "driveFault": 0,
+        "driveLimitRpm": 200,
+        "drivePermitted": true,
+        "drivePhase": 0,
+        "fault": 0,
+        "feedbackGateMask": 0,
+        "limitMdeg": 30000,
+        "permitted": true,
+        "phase": 0,
+        "profileReady": true,
+        "rangeValid": true,
+        "runtimeCenterCount": -83913,
+        "safetyProfile": "single_turn_4096_center0_limit30_margin05_v3",
+        "sessionId": "b-1789451572413-7",
+        "step": 23
+      },
+      "events": [
+        {
+          "id": 3101,
+          "state": "queued",
+          "message": "",
+          "created_at": 1789451573.2271392
+        },
+        {
+          "id": 3102,
+          "state": "sent",
+          "message": "published arm_bench_drive",
+          "created_at": 1789451573.5842144
+        },
+        {
+          "id": 3103,
+          "state": "succeeded",
+          "message": "OK",
+          "created_at": 1789451574.0592535
+        }
+      ]
+    },
+    {
+      "id": "4b32767d-e030-4bca-8a40-0037988c8c25",
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-CHASSIS-000",
+      "capability": "power_off",
+      "state": "succeeded",
+      "actor": "codex-maintenance",
+      "idempotency_key": "22cd25cb-84ca-4c52-8b0f-b242587bbd64",
+      "request_id": "eed852bf-f1ce-42b8-b271-be2fd2874c90",
+      "created_at": 1789451680.7076645,
+      "updated_at": 1789451682.0512805,
+      "sent_at": 1789451681.6764817,
+      "completed_at": 1789451682.0512772,
+      "response_code": "200",
+      "response_message": "operation accepted",
+      "error": "",
+      "params": {},
+      "result": {
+        "code": 200,
+        "deviceType": "vehicle_chassis",
+        "msg": "operation accepted",
+        "powerOutputOn": false,
+        "requestId": "eed852bf-f1ce-42b8-b271-be2fd2874c90"
+      },
+      "events": [
+        {
+          "id": 3104,
+          "state": "queued",
+          "message": "",
+          "created_at": 1789451680.7076645
+        },
+        {
+          "id": 3105,
+          "state": "sent",
+          "message": "published power_off",
+          "created_at": 1789451681.6776106
+        },
+        {
+          "id": 3106,
+          "state": "succeeded",
+          "message": "operation accepted",
+          "created_at": 1789451682.0525503
+        }
+      ]
+    },
+    {
+      "id": "b706ebc0-784b-4c60-8b92-59d85c3ab276",
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-CHASSIS-000",
+      "capability": "get_bench_steering",
+      "state": "succeeded",
+      "actor": "codex-maintenance",
+      "idempotency_key": "66265f77-453e-4efd-aacc-69e6bd722b40",
+      "request_id": "ebb7b0b8-5438-414c-9e0b-311bea4128c1",
+      "created_at": 1789451682.1284826,
+      "updated_at": 1789451683.1905212,
+      "sent_at": 1789451682.7233362,
+      "completed_at": 1789451683.190519,
+      "response_code": "200",
+      "response_message": "OK",
+      "error": "",
+      "params": {},
+      "result": {
+        "available": true,
+        "contactorFeedbackAvailable": false,
+        "coordinateValid": false,
+        "driveAvailable": true,
+        "driveFault": 0,
+        "driveLimitRpm": 200,
+        "drivePermitted": false,
+        "drivePhase": 0,
+        "fault": 0,
+        "feedbackGateMask": 795,
+        "limitMdeg": 30000,
+        "permitted": false,
+        "phase": 0,
+        "profileReady": true,
+        "rangeValid": true,
+        "runtimeCenterCount": 0,
+        "safetyProfile": "single_turn_4096_center0_limit30_margin05_v3",
+        "sessionId": "b-1789451572413-7",
+        "step": 23
+      },
+      "events": [
+        {
+          "id": 3107,
+          "state": "queued",
+          "message": "",
+          "created_at": 1789451682.1284826
+        },
+        {
+          "id": 3108,
+          "state": "sent",
+          "message": "published get_bench_steering",
+          "created_at": 1789451682.7248497
+        },
+        {
+          "id": 3109,
+          "state": "succeeded",
+          "message": "OK",
+          "created_at": 1789451683.1916647
+        }
+      ]
+    },
+    {
+      "id": "e0aa8de4-5f6f-4396-a8d8-39383449ce34",
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-CHASSIS-000",
+      "capability": "get_can_diag",
+      "state": "succeeded",
+      "actor": "codex-maintenance",
+      "idempotency_key": "5377ab13-4037-4b98-b885-9bb036a4a155",
+      "request_id": "4f664611-7c98-413f-8b3a-624d9ff697c2",
+      "created_at": 1789451683.3680382,
+      "updated_at": 1789451689.3204656,
+      "sent_at": 1789451688.8831193,
+      "completed_at": 1789451689.320463,
+      "response_code": "200",
+      "response_message": "OK",
+      "error": "",
+      "params": {},
+      "result": {
+        "can1RawRx": 224389,
+        "can2RawRx": 0,
+        "canBusOff": false,
+        "canBusOffActive": false,
+        "canIgnored": 39030,
+        "canRx": 224389,
+        "canRxOverflow": 0,
+        "driveFresh": false,
+        "driveHb": false,
+        "driveNmt": 127,
+        "driveObjects": [
+          0,
+          0,
+          5,
+          4,
+          31,
+          65496,
+          0
+        ],
+        "driveSw": 4113,
+        "encoderConfigValid": true,
+        "encoderCrcErrors": 0,
+        "encoderExceptions": 0,
+        "encoderFormatErrors": 0,
+        "encoderLastError": 0,
+        "encoderOnline": true,
+        "encoderRaw": 0,
+        "encoderTimeouts": 0,
+        "encoderTransportErrors": 0,
+        "lastAbort": 100794368,
+        "leftRpm": 0,
+        "rightRpm": 0,
+        "sdoAbortMask": 2048,
+        "sdoAborts": 1535,
+        "sdoOk": 148542,
+        "sdoReadMask": 2047,
+        "sdoTimeouts": 18,
+        "sdoTxErrors": 0,
+        "steerFresh": false,
+        "steerHb": false,
+        "steerNmt": 127,
+        "steerRaw": -83869,
+        "steerSw": 8753
+      },
+      "events": [
+        {
+          "id": 3110,
+          "state": "queued",
+          "message": "",
+          "created_at": 1789451683.3680382
+        },
+        {
+          "id": 3111,
+          "state": "sent",
+          "message": "published get_can_diag",
+          "created_at": 1789451688.885458
+        },
+        {
+          "id": 3112,
+          "state": "succeeded",
+          "message": "OK",
+          "created_at": 1789451689.3216157
+        }
+      ]
+    },
+    {
+      "id": "fb3d0275-2d25-4a8d-bdf3-d82590e1937c",
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-CHASSIS-000",
+      "capability": "get_info",
+      "state": "succeeded",
+      "actor": "codex-maintenance",
+      "idempotency_key": "3ec3d8e4-9748-45a2-8d7e-4acf048572d6",
+      "request_id": "334111e1-f901-4556-a682-c7f7b4387449",
+      "created_at": 1789451689.3998547,
+      "updated_at": 1789451690.6558793,
+      "sent_at": 1789451690.039327,
+      "completed_at": 1789451690.655875,
+      "response_code": "200",
+      "response_message": "OK",
+      "error": "",
+      "params": {},
+      "result": {
+        "bootApiVersion": 1,
+        "bootDescriptorValid": true,
+        "bootFeatures": 15,
+        "bootVersion": "abox-boot-2.3.0",
+        "canBusOff": false,
+        "canInitialized": true,
+        "canRxOverflow": 0,
+        "candidateSlot": 0,
+        "diagnostics": {
+          "canRx": 224389,
+          "driveHb": false,
+          "encoderOnline": true,
+          "encoderRaw": 0,
+          "encoderTimeouts": 0,
+          "leftRpm": 0,
+          "rightRpm": 0,
+          "sdoTimeouts": 18,
+          "steerHb": false,
+          "steerRaw": -83869
+        },
+        "fwVersion": "patrol-chassis-0.2.31",
+        "iccid": "89860868102540109153",
+        "lastOtaError": 0,
+        "mqttState": "READY",
+        "mqttStateCode": 29,
+        "otaBootstrapNeedsRevision": false,
+        "otaBusy": false,
+        "otaDownloader": "app",
+        "otaPhase": "IDLE",
+        "otaProvisioned": true,
+        "otaReady": true,
+        "otaScheme": "boot_v2_ufs",
+        "otaState": "CONFIRMED",
+        "otaTargetVersion": "patrol-chassis-0.2.31",
+        "powerOutputAvailable": true,
+        "powerOutputOn": false,
+        "resetReason": 0,
+        "stableSeedSource": "local_flash",
+        "stableSlot": 0,
+        "trialFailCount": 0,
+        "uptimeMs": 2286936,
+        "vid": "PATROL-CHASSIS-000"
+      },
+      "events": [
+        {
+          "id": 3113,
+          "state": "queued",
+          "message": "",
+          "created_at": 1789451689.3998547
+        },
+        {
+          "id": 3114,
+          "state": "sent",
+          "message": "published get_info",
+          "created_at": 1789451690.0404255
+        },
+        {
+          "id": 3115,
+          "state": "succeeded",
+          "message": "OK",
+          "created_at": 1789451690.736026
+        }
+      ]
+    }
+  ],
+  "final_status_snapshot": {
+    "payload": {
+      "version": "3.0",
+      "timestamp": 1789451719780,
+      "data": {
+        "deviceType": "vehicle_chassis",
+        "reportId": "PATROL-CHASSIS-000-1789451719780-700",
+        "reportReason": "periodic",
+        "motionState": "stopped",
+        "targetDriveRpm": 0,
+        "targetSteeringDeg": 0.0,
+        "leftActualRpm": 0,
+        "rightActualRpm": 0,
+        "steeringActualDeg": -0.019,
+        "absoluteActualDeg": 0.0,
+        "steeringOnline": false,
+        "driveOnline": false,
+        "encoderOnline": true,
+        "canBusOff": false,
+        "driveFault": false,
+        "feedbackFresh": false,
+        "calibrated": true,
+        "steeringProfileReady": true,
+        "steeringRangeValid": true,
+        "powerReady": false,
+        "powerOutputOn": false,
+        "otaBusy": false,
+        "safetyReady": false,
+        "stopReason": 1,
+        "faultLatched": false,
+        "steeringBoundary": 0,
+        "faultRecordVersion": 1,
+        "lastFault": [
+          3,
+          134041,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          -97541,
+          3,
+          8759,
+          4151,
+          0,
+          0,
+          539,
+          469,
+          119,
+          89,
+          4,
+          16,
+          1,
+          4,
+          12,
+          3,
+          100794368,
+          0,
+          0,
+          1
+        ]
+      }
+    },
+    "received_at": 1789451721.3295622
+  }
+}

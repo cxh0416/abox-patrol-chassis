@@ -1,0 +1,595 @@
+{
+  "source": "out/logs/adaptive031-can.log",
+  "window": [
+    1789451574.0,
+    1789451675.0
+  ],
+  "object": "CANopen Node 1 0x6081:00 profile velocity",
+  "write_sequence_rpm": [
+    50,
+    200,
+    100,
+    50,
+    100,
+    200,
+    100,
+    50,
+    200,
+    100,
+    50,
+    100,
+    200,
+    100,
+    50,
+    200,
+    100,
+    50,
+    100,
+    200,
+    100,
+    50
+  ],
+  "readback_sequence_rpm": [
+    50,
+    200,
+    100,
+    50,
+    100,
+    200,
+    100,
+    50,
+    200,
+    100,
+    50,
+    100,
+    200,
+    100,
+    50,
+    200,
+    100,
+    50,
+    100,
+    200,
+    100,
+    50
+  ],
+  "write_counts": {
+    "50": 7,
+    "100": 9,
+    "200": 6
+  },
+  "write_ack_count": 22,
+  "read_request_count": 22,
+  "readback_matches_writes": true,
+  "expected_speeds_observed": true,
+  "events": [
+    {
+      "timestamp": 1789451574.62315,
+      "kind": "write",
+      "rpm": 50,
+      "frame": "601#2381600032000000"
+    },
+    {
+      "timestamp": 1789451574.623177,
+      "kind": "write_ack",
+      "rpm": null,
+      "frame": "581#6081600000000000"
+    },
+    {
+      "timestamp": 1789451574.64296,
+      "kind": "read",
+      "rpm": null,
+      "frame": "601#4081600000000000"
+    },
+    {
+      "timestamp": 1789451574.643065,
+      "kind": "read_response",
+      "rpm": 50,
+      "frame": "581#4381600032000000"
+    },
+    {
+      "timestamp": 1789451574.942788,
+      "kind": "write",
+      "rpm": 200,
+      "frame": "601#23816000C8000000"
+    },
+    {
+      "timestamp": 1789451574.943208,
+      "kind": "write_ack",
+      "rpm": null,
+      "frame": "581#6081600000000000"
+    },
+    {
+      "timestamp": 1789451574.983229,
+      "kind": "read",
+      "rpm": null,
+      "frame": "601#4081600000000000"
+    },
+    {
+      "timestamp": 1789451574.983255,
+      "kind": "read_response",
+      "rpm": 200,
+      "frame": "581#43816000C8000000"
+    },
+    {
+      "timestamp": 1789451579.10262,
+      "kind": "write",
+      "rpm": 100,
+      "frame": "601#2381600064000000"
+    },
+    {
+      "timestamp": 1789451579.102753,
+      "kind": "write_ack",
+      "rpm": null,
+      "frame": "581#6081600000000000"
+    },
+    {
+      "timestamp": 1789451579.122668,
+      "kind": "read",
+      "rpm": null,
+      "frame": "601#4081600000000000"
+    },
+    {
+      "timestamp": 1789451579.122694,
+      "kind": "read_response",
+      "rpm": 100,
+      "frame": "581#4381600064000000"
+    },
+    {
+      "timestamp": 1789451580.542292,
+      "kind": "write",
+      "rpm": 50,
+      "frame": "601#2381600032000000"
+    },
+    {
+      "timestamp": 1789451580.542345,
+      "kind": "write_ack",
+      "rpm": null,
+      "frame": "581#6081600000000000"
+    },
+    {
+      "timestamp": 1789451580.562287,
+      "kind": "read",
+      "rpm": null,
+      "frame": "601#4081600000000000"
+    },
+    {
+      "timestamp": 1789451580.562313,
+      "kind": "read_response",
+      "rpm": 50,
+      "frame": "581#4381600032000000"
+    },
+    {
+      "timestamp": 1789451585.601414,
+      "kind": "write",
+      "rpm": 100,
+      "frame": "601#2381600064000000"
+    },
+    {
+      "timestamp": 1789451585.601608,
+      "kind": "write_ack",
+      "rpm": null,
+      "frame": "581#6081600000000000"
+    },
+    {
+      "timestamp": 1789451585.621676,
+      "kind": "read",
+      "rpm": null,
+      "frame": "601#4081600000000000"
+    },
+    {
+      "timestamp": 1789451585.621702,
+      "kind": "read_response",
+      "rpm": 100,
+      "frame": "581#4381600064000000"
+    },
+    {
+      "timestamp": 1789451588.041225,
+      "kind": "write",
+      "rpm": 200,
+      "frame": "601#23816000C8000000"
+    },
+    {
+      "timestamp": 1789451588.041278,
+      "kind": "write_ack",
+      "rpm": null,
+      "frame": "581#6081600000000000"
+    },
+    {
+      "timestamp": 1789451588.061354,
+      "kind": "read",
+      "rpm": null,
+      "frame": "601#4081600000000000"
+    },
+    {
+      "timestamp": 1789451588.061379,
+      "kind": "read_response",
+      "rpm": 200,
+      "frame": "581#43816000C8000000"
+    },
+    {
+      "timestamp": 1789451599.40972,
+      "kind": "write",
+      "rpm": 100,
+      "frame": "601#2381600064000000"
+    },
+    {
+      "timestamp": 1789451599.409821,
+      "kind": "write_ack",
+      "rpm": null,
+      "frame": "581#6081600000000000"
+    },
+    {
+      "timestamp": 1789451599.429867,
+      "kind": "read",
+      "rpm": null,
+      "frame": "601#4081600000000000"
+    },
+    {
+      "timestamp": 1789451599.429893,
+      "kind": "read_response",
+      "rpm": 100,
+      "frame": "581#4381600064000000"
+    },
+    {
+      "timestamp": 1789451605.098544,
+      "kind": "write",
+      "rpm": 50,
+      "frame": "601#2381600032000000"
+    },
+    {
+      "timestamp": 1789451605.098916,
+      "kind": "write_ack",
+      "rpm": null,
+      "frame": "581#6081600000000000"
+    },
+    {
+      "timestamp": 1789451605.118543,
+      "kind": "read",
+      "rpm": null,
+      "frame": "601#4081600000000000"
+    },
+    {
+      "timestamp": 1789451605.118918,
+      "kind": "read_response",
+      "rpm": 50,
+      "frame": "581#4381600032000000"
+    },
+    {
+      "timestamp": 1789451610.038594,
+      "kind": "write",
+      "rpm": 200,
+      "frame": "601#23816000C8000000"
+    },
+    {
+      "timestamp": 1789451610.038619,
+      "kind": "write_ack",
+      "rpm": null,
+      "frame": "581#6081600000000000"
+    },
+    {
+      "timestamp": 1789451610.058377,
+      "kind": "read",
+      "rpm": null,
+      "frame": "601#4081600000000000"
+    },
+    {
+      "timestamp": 1789451610.058404,
+      "kind": "read_response",
+      "rpm": 200,
+      "frame": "581#43816000C8000000"
+    },
+    {
+      "timestamp": 1789451614.137879,
+      "kind": "write",
+      "rpm": 100,
+      "frame": "601#2381600064000000"
+    },
+    {
+      "timestamp": 1789451614.137904,
+      "kind": "write_ack",
+      "rpm": null,
+      "frame": "581#6081600000000000"
+    },
+    {
+      "timestamp": 1789451614.157469,
+      "kind": "read",
+      "rpm": null,
+      "frame": "601#4081600000000000"
+    },
+    {
+      "timestamp": 1789451614.157691,
+      "kind": "read_response",
+      "rpm": 100,
+      "frame": "581#4381600064000000"
+    },
+    {
+      "timestamp": 1789451615.567296,
+      "kind": "write",
+      "rpm": 50,
+      "frame": "601#2381600032000000"
+    },
+    {
+      "timestamp": 1789451615.567634,
+      "kind": "write_ack",
+      "rpm": null,
+      "frame": "581#6081600000000000"
+    },
+    {
+      "timestamp": 1789451615.587658,
+      "kind": "read",
+      "rpm": null,
+      "frame": "601#4081600000000000"
+    },
+    {
+      "timestamp": 1789451615.587683,
+      "kind": "read_response",
+      "rpm": 50,
+      "frame": "581#4381600032000000"
+    },
+    {
+      "timestamp": 1789451620.557057,
+      "kind": "write",
+      "rpm": 100,
+      "frame": "601#2381600064000000"
+    },
+    {
+      "timestamp": 1789451620.557082,
+      "kind": "write_ack",
+      "rpm": null,
+      "frame": "581#6081600000000000"
+    },
+    {
+      "timestamp": 1789451620.57715,
+      "kind": "read",
+      "rpm": null,
+      "frame": "601#4081600000000000"
+    },
+    {
+      "timestamp": 1789451620.577176,
+      "kind": "read_response",
+      "rpm": 100,
+      "frame": "581#4381600064000000"
+    },
+    {
+      "timestamp": 1789451623.036522,
+      "kind": "write",
+      "rpm": 200,
+      "frame": "601#23816000C8000000"
+    },
+    {
+      "timestamp": 1789451623.036855,
+      "kind": "write_ack",
+      "rpm": null,
+      "frame": "581#6081600000000000"
+    },
+    {
+      "timestamp": 1789451623.056766,
+      "kind": "read",
+      "rpm": null,
+      "frame": "601#4081600000000000"
+    },
+    {
+      "timestamp": 1789451623.056802,
+      "kind": "read_response",
+      "rpm": 200,
+      "frame": "581#43816000C8000000"
+    },
+    {
+      "timestamp": 1789451634.375575,
+      "kind": "write",
+      "rpm": 100,
+      "frame": "601#2381600064000000"
+    },
+    {
+      "timestamp": 1789451634.3756,
+      "kind": "write_ack",
+      "rpm": null,
+      "frame": "581#6081600000000000"
+    },
+    {
+      "timestamp": 1789451634.395399,
+      "kind": "read",
+      "rpm": null,
+      "frame": "601#4081600000000000"
+    },
+    {
+      "timestamp": 1789451634.395433,
+      "kind": "read_response",
+      "rpm": 100,
+      "frame": "581#4381600064000000"
+    },
+    {
+      "timestamp": 1789451640.084377,
+      "kind": "write",
+      "rpm": 50,
+      "frame": "601#2381600032000000"
+    },
+    {
+      "timestamp": 1789451640.085251,
+      "kind": "write_ack",
+      "rpm": null,
+      "frame": "581#6081600000000000"
+    },
+    {
+      "timestamp": 1789451640.104446,
+      "kind": "read",
+      "rpm": null,
+      "frame": "601#4081600000000000"
+    },
+    {
+      "timestamp": 1789451640.104818,
+      "kind": "read_response",
+      "rpm": 50,
+      "frame": "581#4381600032000000"
+    },
+    {
+      "timestamp": 1789451644.504594,
+      "kind": "write",
+      "rpm": 200,
+      "frame": "601#23816000C8000000"
+    },
+    {
+      "timestamp": 1789451644.504621,
+      "kind": "write_ack",
+      "rpm": null,
+      "frame": "581#6081600000000000"
+    },
+    {
+      "timestamp": 1789451644.524485,
+      "kind": "read",
+      "rpm": null,
+      "frame": "601#4081600000000000"
+    },
+    {
+      "timestamp": 1789451644.524511,
+      "kind": "read_response",
+      "rpm": 200,
+      "frame": "581#43816000C8000000"
+    },
+    {
+      "timestamp": 1789451648.603991,
+      "kind": "write",
+      "rpm": 100,
+      "frame": "601#2381600064000000"
+    },
+    {
+      "timestamp": 1789451648.604016,
+      "kind": "write_ack",
+      "rpm": null,
+      "frame": "581#6081600000000000"
+    },
+    {
+      "timestamp": 1789451648.623976,
+      "kind": "read",
+      "rpm": null,
+      "frame": "601#4081600000000000"
+    },
+    {
+      "timestamp": 1789451648.624,
+      "kind": "read_response",
+      "rpm": 100,
+      "frame": "581#4381600064000000"
+    },
+    {
+      "timestamp": 1789451649.993659,
+      "kind": "write",
+      "rpm": 50,
+      "frame": "601#2381600032000000"
+    },
+    {
+      "timestamp": 1789451649.994193,
+      "kind": "write_ack",
+      "rpm": null,
+      "frame": "581#6081600000000000"
+    },
+    {
+      "timestamp": 1789451650.013914,
+      "kind": "read",
+      "rpm": null,
+      "frame": "601#4081600000000000"
+    },
+    {
+      "timestamp": 1789451650.013939,
+      "kind": "read_response",
+      "rpm": 50,
+      "frame": "581#4381600032000000"
+    },
+    {
+      "timestamp": 1789451654.882894,
+      "kind": "write",
+      "rpm": 100,
+      "frame": "601#2381600064000000"
+    },
+    {
+      "timestamp": 1789451654.883224,
+      "kind": "write_ack",
+      "rpm": null,
+      "frame": "581#6081600000000000"
+    },
+    {
+      "timestamp": 1789451654.902852,
+      "kind": "read",
+      "rpm": null,
+      "frame": "601#4081600000000000"
+    },
+    {
+      "timestamp": 1789451654.903218,
+      "kind": "read_response",
+      "rpm": 100,
+      "frame": "581#4381600064000000"
+    },
+    {
+      "timestamp": 1789451657.342858,
+      "kind": "write",
+      "rpm": 200,
+      "frame": "601#23816000C8000000"
+    },
+    {
+      "timestamp": 1789451657.343317,
+      "kind": "write_ack",
+      "rpm": null,
+      "frame": "581#6081600000000000"
+    },
+    {
+      "timestamp": 1789451657.362929,
+      "kind": "read",
+      "rpm": null,
+      "frame": "601#4081600000000000"
+    },
+    {
+      "timestamp": 1789451657.363561,
+      "kind": "read_response",
+      "rpm": 200,
+      "frame": "581#43816000C8000000"
+    },
+    {
+      "timestamp": 1789451668.70188,
+      "kind": "write",
+      "rpm": 100,
+      "frame": "601#2381600064000000"
+    },
+    {
+      "timestamp": 1789451668.702136,
+      "kind": "write_ack",
+      "rpm": null,
+      "frame": "581#6081600000000000"
+    },
+    {
+      "timestamp": 1789451668.721967,
+      "kind": "read",
+      "rpm": null,
+      "frame": "601#4081600000000000"
+    },
+    {
+      "timestamp": 1789451668.721994,
+      "kind": "read_response",
+      "rpm": 100,
+      "frame": "581#4381600064000000"
+    },
+    {
+      "timestamp": 1789451674.411615,
+      "kind": "write",
+      "rpm": 50,
+      "frame": "601#2381600032000000"
+    },
+    {
+      "timestamp": 1789451674.41164,
+      "kind": "write_ack",
+      "rpm": null,
+      "frame": "581#6081600000000000"
+    },
+    {
+      "timestamp": 1789451674.431027,
+      "kind": "read",
+      "rpm": null,
+      "frame": "601#4081600000000000"
+    },
+    {
+      "timestamp": 1789451674.431229,
+      "kind": "read_response",
+      "rpm": 50,
+      "frame": "581#4381600032000000"
+    }
+  ]
+}
