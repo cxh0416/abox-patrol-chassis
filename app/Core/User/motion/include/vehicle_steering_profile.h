@@ -7,7 +7,17 @@
 #define VEHICLE_STEERING_DIRECTION 1
 #define VEHICLE_ABSOLUTE_DIRECTION 1
 #define VEHICLE_STEERING_TOLERANCE_MDEG 2000U
-#define VEHICLE_BENCH_MOTOR_RPM 100U
+/* 0x6080 remains the driver ceiling.  0x6081 is selected internally from the
+ * commanded-versus-measured wheel angle; it is never supplied by cloud input. */
+#define VEHICLE_STEERING_PROFILE_MAX_RPM 200U
+#define VEHICLE_STEERING_PROFILE_MID_RPM 100U
+#define VEHICLE_STEERING_PROFILE_CREEP_RPM 50U
+#define VEHICLE_STEERING_PROFILE_NEAR_TARGET_MDEG 3000
+#define VEHICLE_STEERING_PROFILE_MID_TARGET_MDEG 10000
+/* Start slowing well inside the 30 degree command limit.  The 30.5 degree
+ * trip boundary is reserved for genuine tracking/configuration faults. */
+#define VEHICLE_STEERING_PROFILE_EDGE_MID_MDEG 24000
+#define VEHICLE_STEERING_PROFILE_EDGE_CREEP_MDEG 27000
 #define VEHICLE_ABSOLUTE_SINGLE_TURN_COUNTS 4096U
 #define VEHICLE_ABSOLUTE_CENTER_COUNT 0U
 #define VEHICLE_ABSOLUTE_ZERO_COMMAND 0x000FU

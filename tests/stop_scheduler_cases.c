@@ -61,7 +61,7 @@ int main(void)
         PatrolDiagnostics_Snapshot(&g_motion.diagnostics, now, &s);
         assert(s.drive_status_fresh && s.steering_status_fresh &&
                s.drive_feedback_fresh && s.steering_feedback_fresh);
-        BenchSteering_Tick(&g_motion.bench, now, 0, 1, 0);
+        BenchSteering_Tick(&g_motion.bench, now, 0, 1, 0, 0);
         assert(g_motion.bench.phase != BENCH_FAULT);
         if (take(now, &f)) reply(f, now+5, 0);
     }
@@ -74,13 +74,13 @@ int main(void)
     assert(take(1180, &f)); reply(f, 1181, 0);
     assert(BenchSteering_StopFinishReady(&g_motion.bench));
     assert(!g_motion.bench_turn);
-    BenchSteering_Tick(&g_motion.bench, 1200, 0, 1, 0);
+    BenchSteering_Tick(&g_motion.bench, 1200, 0, 1, 0, 0);
     assert(take(1200, &f));
     assert(f.id == 0 && f.data[0] == 0x80 && g_motion.bench.phase == BENCH_IDLE);
     /* A genuinely stuck shutdown still trips the original 200 ms deadline. */
     reset_fixture();
     for (uint32_t now=1000; now<=1200; now+=10) {
-        BenchSteering_Tick(&g_motion.bench, now, 0, 1, 0);
+        BenchSteering_Tick(&g_motion.bench, now, 0, 1, 0, 0);
         if (g_motion.bench.phase == BENCH_FAULT) break;
         if (take(now, &f)) reply(f, now+5, 1);
     }
@@ -93,7 +93,7 @@ int main(void)
     PatrolDiagnosticsSnapshot s;
     PatrolDiagnostics_Snapshot(&g_motion.diagnostics, 1051, &s);
     assert(!s.drive_status_fresh);
-    BenchSteering_Tick(&g_motion.bench, 1051, 0, 0, 0);
+    BenchSteering_Tick(&g_motion.bench, 1051, 0, 0, 0, 0);
     assert(g_motion.bench.phase == BENCH_FAULT && g_motion.bench.cut_power);
     /* Reset cannot energize outputs and must preserve the original evidence. */
     PatrolRuntime_Init(); mock_now=2000;

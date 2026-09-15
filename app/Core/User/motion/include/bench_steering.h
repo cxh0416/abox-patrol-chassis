@@ -12,7 +12,8 @@ typedef struct {
     int32_t minimum, maximum, center, hold, desired, applied, expected;
     int32_t calibration_center, cached_minimum, cached_maximum, previous_minimum;
     uint16_t limit_mdeg;
-    uint8_t tpdo_check, subindex, stop_confirmed;
+    uint16_t profile_rpm, applied_profile_rpm, speed_write_rpm;
+    uint8_t tpdo_check, subindex, stop_confirmed, target_pending;
 } BenchSteering;
 
 void BenchSteering_Init(BenchSteering* b);
@@ -21,7 +22,8 @@ uint8_t BenchSteering_Start(BenchSteering* b, int32_t actual, int32_t center,
 uint8_t BenchSteering_StartCommissioning(BenchSteering* b, int32_t actual, int32_t center,
     uint32_t limit, uint32_t now);
 void BenchSteering_Stop(BenchSteering* b, uint32_t now, uint8_t cut_power);
-void BenchSteering_Tick(BenchSteering* b, uint32_t now, uint8_t requested, uint8_t safe, int32_t angle);
+void BenchSteering_Tick(BenchSteering* b, uint32_t now, uint8_t requested, uint8_t safe,
+                        int32_t angle, int32_t actual_angle);
 uint8_t BenchSteering_Take(BenchSteering* b, uint32_t now, PatrolCanFrame* frame);
 uint8_t BenchSteering_OnFrame(BenchSteering* b, const PatrolCanFrame* frame, uint32_t now);
 void BenchSteering_TxFailed(BenchSteering* b);

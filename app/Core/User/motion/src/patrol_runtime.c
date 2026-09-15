@@ -420,7 +420,8 @@ void PatrolRuntime_Tick(void)
         BenchDrive_Tick(&g_motion.drive, now, remote_requested && RemoteService_BenchDrivePermitted(), safe,
             c->target_rpm, g_motion.diagnostics.left_actual_rpm, g_motion.diagnostics.right_actual_rpm,
             g_motion.diagnostics.left_rpm_ms, g_motion.diagnostics.right_rpm_ms);
-        BenchSteering_Tick(&g_motion.bench, now, requested && g_motion.drive.phase != BENCH_FAULT, safe, requested_angle);
+        BenchSteering_Tick(&g_motion.bench, now, requested && g_motion.drive.phase != BENCH_FAULT, safe,
+            requested_angle, c->feedback.steering_actual_mdeg);
         g_motion.diagnostics.motion_priority = CenterCalibration_IsActive() ||
             (g_motion.bench.phase != BENCH_IDLE && g_motion.bench.phase != BENCH_FAULT) ||
             (g_motion.drive.phase != BENCH_IDLE && g_motion.drive.phase != BENCH_FAULT);

@@ -43,11 +43,32 @@ typedef enum
     STEER_STEP_WRITE_SECOND_LIMIT = 26,
     STEER_STEP_READ_SECOND_LIMIT = 27,
     STEER_STEP_LIMITS_COMPLETE = 28,
+    STEER_STEP_WRITE_PROFILE_SPEED_ACTIVE = 29,
+    STEER_STEP_READ_PROFILE_SPEED_ACTIVE = 30,
+    STEER_STEP_PROFILE_SPEED_ACTIVE_COMPLETE = 31,
 } BenchSteeringStep;
 
 static uint8_t valid_limit(uint16_t limit)
 {
     return (limit == 1000 || limit == 3000 || limit == 5000 || limit == 20000 || limit == 30000) ? 1U : 0U;
+}
+
+static uint16_t profile_speed(int32_t target_mdeg, int32_t actual_mdeg)
+{
+    int64_t error = (int64_t)target_mdeg - actual_mdeg;
+    int64_t magnitude = error < 0 ? -error : error;
+    int64_t edge = actual_mdeg < 0 ? -(int64_t)actual_mdeg : actual_mdeg;
+
+    /* The last 3 degrees before a commanded soft limit are creep-only.  This
+       leaves the existing 0.5 degree hard-trip margin for faults, rather than
+       routinely consuming it as a braking allowance. */
+    if (edge >= VEHICLE_STEERING_PROFILE_EDGE_CREEP_MDEG ||
+        magnitude <= VEHICLE_STEERING_PROFILE_NEAR_TARGET_MDEG)
+        return VEHICLE_STEERING_PROFILE_CREEP_RPM;
+    if (edge >= VEHICLE_STEERING_PROFILE_EDGE_MID_MDEG ||
+        magnitude <= VEHICLE_STEERING_PROFILE_MID_TARGET_MDEG)
+        return VEHICLE_STEERING_PROFILE_MID_RPM;
+    return VEHICLE_STEERING_PROFILE_MAX_RPM;
 }
 
 static void fail(BenchSteering *b, uint32_t reason)
@@ -129,7 +150,8 @@ void BenchSteering_TxFailed(BenchSteering *b)
 {
     fail(b, 2U);
 }
-void BenchSteering_Tick(BenchSteering *b, uint32_t now, uint8_t requested, uint8_t safe, int32_t angle)
+void BenchSteering_Tick(BenchSteering *b, uint32_t now, uint8_t requested, uint8_t safe,
+                        int32_t angle, int32_t actual_angle)
 {
     if (b->phase == BENCH_IDLE || b->phase == BENCH_FAULT)
         return;
@@ -159,8 +181,15 @@ void BenchSteering_Tick(BenchSteering *b, uint32_t now, uint8_t requested, uint8
             fail(b, 5U);
             return;
         }
-        if (b->phase == BENCH_ACTIVE && b->step == STEER_STEP_ACTIVE && b->desired != b->applied)
-            b->step = STEER_STEP_TARGET;
+        b->profile_rpm = profile_speed(angle, actual_angle);
+        if (b->phase == BENCH_ACTIVE && b->step == STEER_STEP_ACTIVE)
+        {
+            b->target_pending = b->desired != b->applied;
+            if (b->profile_rpm != b->applied_profile_rpm)
+                b->step = STEER_STEP_WRITE_PROFILE_SPEED_ACTIVE;
+            else if (b->target_pending)
+                b->step = STEER_STEP_TARGET;
+        }
     }
     if (b->pending && now - b->sent_ms >= TRANSACTION_MS)
         fail(b, 6U);
@@ -219,16 +248,19 @@ uint8_t BenchSteering_Take(BenchSteering *b, uint32_t now, PatrolCanFrame *f)
         break;
     case STEER_STEP_WRITE_MAX_SPEED:
     case STEER_STEP_WRITE_PROFILE_SPEED:
+    case STEER_STEP_WRITE_PROFILE_SPEED_ACTIVE:
         b->index = b->step == STEER_STEP_WRITE_MAX_SPEED ? 0x6080 : 0x6081;
         b->width = 4;
-        value = VEHICLE_BENCH_MOTOR_RPM;
+        value = b->step == STEER_STEP_WRITE_MAX_SPEED ? VEHICLE_STEERING_PROFILE_MAX_RPM : b->profile_rpm;
+        if (b->index == 0x6081) b->speed_write_rpm = (uint16_t)value;
         break;
     case STEER_STEP_READ_MAX_SPEED:
     case STEER_STEP_READ_PROFILE_SPEED:
+    case STEER_STEP_READ_PROFILE_SPEED_ACTIVE:
         b->index = b->step == STEER_STEP_READ_MAX_SPEED ? 0x6080 : 0x6081;
         b->width = 4;
         b->read = 1;
-        b->expected = VEHICLE_BENCH_MOTOR_RPM;
+        b->expected = b->index == 0x6080 ? VEHICLE_STEERING_PROFILE_MAX_RPM : b->speed_write_rpm;
         break;
     case STEER_STEP_HOLD_POSITION:
         b->index = 0x607A;
@@ -255,6 +287,7 @@ uint8_t BenchSteering_Take(BenchSteering *b, uint32_t now, PatrolCanFrame *f)
         b->width = 4;
         value = b->desired;
         b->applied = value;
+        b->target_pending = 0U;
         break;
     case STEER_STEP_TRIGGER:
     case STEER_STEP_CLEAR_TRIGGER:
@@ -444,6 +477,13 @@ uint8_t BenchSteering_OnFrame(BenchSteering *b, const PatrolCanFrame *f, uint32_
         b->cached_minimum = b->minimum;
         b->cached_maximum = b->maximum;
         b->step = STEER_STEP_WRITE_MODE;
+    }
+    if (b->step == STEER_STEP_READ_PROFILE_SPEED + 1U ||
+        b->step == STEER_STEP_PROFILE_SPEED_ACTIVE_COMPLETE)
+    {
+        b->applied_profile_rpm = b->speed_write_rpm;
+        if (b->step == STEER_STEP_PROFILE_SPEED_ACTIVE_COMPLETE)
+            b->step = b->target_pending ? STEER_STEP_TARGET : STEER_STEP_ACTIVE;
     }
     if (b->step == STEER_STEP_ACTIVE || b->step == STEER_STEP_TARGET_COMPLETE)
     {
