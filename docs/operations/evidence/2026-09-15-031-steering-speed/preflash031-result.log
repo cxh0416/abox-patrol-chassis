@@ -1,0 +1,5 @@
+get_info 170863c8-24d1-4c5c-8ee1-a47812e84128 failed {}
+Traceback (most recent call last):
+  File "<stdin>", line 15, in <module>
+  File "<stdin>", line 11, in op
+RuntimeError: device is not online

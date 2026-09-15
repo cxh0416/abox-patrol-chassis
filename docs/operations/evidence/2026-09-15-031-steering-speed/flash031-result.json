@@ -1,0 +1,14 @@
+{
+  "version": "patrol-chassis-0.2.31",
+  "app_size": 109128,
+  "app_sha256": "C8AB6FAEAB6B3C77FAEABC39FD2A78F443F3EE4E76B9016541D6DCCF00760A34",
+  "before_sha256": "844912D3B60D40D1112BFE36C03D4B580152BFD29413D5946F6306851C2CD13A",
+  "after_sha256": "CF6E823401E77A7D2D4AF641C64AD9F317259AC00FF2998A0D79E4D93AC71862",
+  "boot_state_address": "0x803e800",
+  "remote_evidence_dir": "/tmp/patrol-jlink-031-3kYeZh",
+  "private_evidence_dir": "C:\\Users\\cxh\\.codex\\private\\patrol-jlink-0.2.31-20260915",
+  "boot_preserved": true,
+  "config_preserved": true,
+  "other_boot_state_preserved": true,
+  "app_readback_match": true
+}
