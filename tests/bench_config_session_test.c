@@ -17,7 +17,7 @@ static uint8_t write_power(uint8_t on) { power_level=on; return 1; }
 static void command(const char* session,int rpm,int angle,const char* action,int seq)
 {
     char json[512],response[512];
-    snprintf(json,sizeof(json),"{\"version\":\"3.0\",\"data\":{\"deviceType\":\"vehicle_chassis\",\"requestId\":\"r%d\",\"command\":\"chassis_control\",\"params\":{\"action\":\"%s\",\"sessionId\":\"%s\",\"seq\":%d,\"leaseMs\":1000,\"driveRpm\":%d,\"steeringDeg\":%d}}}",seq,action,session,seq,rpm,angle);
+    snprintf(json,sizeof(json),"{\"version\":\"4.0\",\"data\":{\"deviceType\":\"vehicle_chassis\",\"requestId\":\"r%d\",\"command\":\"chassis_control\",\"params\":{\"action\":\"%s\",\"sessionId\":\"%s\",\"seq\":%d,\"leaseMs\":1000,\"driveRpm\":%d,\"steeringDeg\":%d}}}",seq,action,session,seq,rpm,angle);
     assert(RemoteService_HandleControl(json,strlen(json),response,sizeof(response)));
 }
 int main(void)
@@ -78,13 +78,13 @@ int main(void)
     command(session,30,0,"acquire",23); assert(!RemoteService_State()->session_active);
     {
         char response[512];
-        const char* power_on="{\"version\":\"3.0\",\"data\":{\"deviceType\":\"vehicle_chassis\",\"requestId\":\"power-1\",\"command\":\"power_on\",\"params\":null}}";
-        const char* power_conflict="{\"version\":\"3.0\",\"data\":{\"deviceType\":\"vehicle_chassis\",\"requestId\":\"power-1\",\"command\":\"power_off\",\"params\":null}}";
-        const char* power_off="{\"version\":\"3.0\",\"data\":{\"deviceType\":\"vehicle_chassis\",\"requestId\":\"power-2\",\"command\":\"power_off\",\"params\":null}}";
+        const char* power_on="{\"version\":\"4.0\",\"data\":{\"deviceType\":\"vehicle_chassis\",\"requestId\":\"power-1\",\"command\":\"power_on\",\"params\":null}}";
+        const char* power_conflict="{\"version\":\"4.0\",\"data\":{\"deviceType\":\"vehicle_chassis\",\"requestId\":\"power-1\",\"command\":\"power_off\",\"params\":null}}";
+        const char* power_off="{\"version\":\"4.0\",\"data\":{\"deviceType\":\"vehicle_chassis\",\"requestId\":\"power-2\",\"command\":\"power_off\",\"params\":null}}";
         assert(RemoteService_HandleControl(power_on,strlen(power_on),response,sizeof(response)));
         assert(power_level==1 && strstr(response,"\"code\":200") && strstr(response,"\"powerOutputOn\":true"));
         assert(RemoteService_HandleControl(power_conflict,strlen(power_conflict),response,sizeof(response)));
-        assert(power_level==1 && strstr(response,"\"code\":4001") && strstr(response,"\"powerOutputOn\":true"));
+        assert(power_level==1 && strstr(response,"\"code\":4006") && strstr(response,"\"powerOutputOn\":true"));
         assert(RemoteService_HandleControl(power_on,strlen(power_on),response,sizeof(response)));
         assert(power_level==1 && strstr(response,"\"code\":200") && strstr(response,"\"powerOutputOn\":true"));
         assert(RemoteService_HandleControl(power_off,strlen(power_off),response,sizeof(response)));

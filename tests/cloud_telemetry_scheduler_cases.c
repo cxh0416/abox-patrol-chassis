@@ -8,9 +8,9 @@ int main(void)
 {
     drain();
     assert(status_packets == 1 && heartbeat_packets == 1);
-    tick = 59999; drain();
+    tick = 4999; drain();
     assert(status_packets == 1 && heartbeat_packets == 1);
-    tick = 60000; drain();
+    tick = 5000; drain();
     assert(status_packets == 1 && heartbeat_packets == 2);
     tick = 120000; drain();
     assert(status_packets == 2 && heartbeat_packets == 3);

@@ -34,7 +34,7 @@ python tools/clean_workspace.py --build
 ## 文档入口
 
 - [需求与验收](docs/requirements/首阶段需求与验收.md)：当前候选能力、待现场验证项目及早期阶段边界。
-- [公共业务协议](docs/protocols/A-BOX车辆底盘业务协议-V3.0.md)：对外身份、Topic、命令和状态语义。
+- [巡防车底盘业务协议 V4](docs/protocols/A-BOX巡防车底盘业务协议-V4.0.md)：`vehicle_chassis 1.0` Profile 的命令和状态语义。
 - [内部运维协议](docs/operations/巡防车底盘A-BOX内部运维协议-1.0.md)与 [CANopen 执行约束](docs/operations/CANopen执行约束.md)：内部接口和产品实现约束。
 - [逐车标定](docs/operations/巡防车底盘逐车标定与参数记录.md)：当前候选流程和记录模板。
 - [硬件与安全边界](docs/hardware/硬件与安全边界.md)：本产品端口、分区和待确认硬件边界。

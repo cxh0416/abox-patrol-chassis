@@ -8,11 +8,11 @@
 
 ## 1. 协议定位
 
-本文定义 OTA 平台与巡防车底盘 A-BOX 固件之间的设备信息、日志、受控重启、MQTT 配置和 Boot V2 OTA 接口。它们使用 `/internal/*` Topic，不属于公共业务接口；底盘控制、车辆上下电和状态见 [A-BOX 车辆底盘业务协议 V3](../protocols/A-BOX车辆底盘业务协议-V3.0.md)。厂商 CANopen 对象字典和执行约束不在本文定义。
+当前内部运维协议的规范入口为 [A-BOX 内部运维协议 V2.2](../protocols/A-BOX内部运维协议V2.2.md)。本文保留底盘标定、台架和诊断等实现级说明；底盘控制、车辆上下电和状态见 [巡防车底盘业务协议 V4](../protocols/A-BOX巡防车底盘业务协议-V4.0.md)。厂商 CANopen 对象字典和执行约束不在本文定义。
 
 公共业务与内部运维使用两套明确身份：
 
-- 公共 V3 请求、响应、状态和心跳使用 `data.deviceType=vehicle_chassis`，不得携带 `data.product`。
+- 公共 V4 业务按 `vehicle_chassis 1.0` Profile 路由，不携带内部 `data.product`。
 - 内部 V2 响应和日志使用 `data.product=patrol_vehicle_chassis`，不得用 `deviceType` 代替。
 
 ## 2. Topic 与交付等级
@@ -67,7 +67,7 @@ A-BOX 只订阅自身 VID 的精确配置和 OTA Topic。平台重试必须沿�
 
 | 作用域 | 字段 | 固定值 |
 |---|---|---|
-| 公共业务 V3 | `data.deviceType` | `vehicle_chassis` |
+| 公共业务 V4 | Manifest Profile | `vehicle_chassis 1.0` |
 | 内部运维 V2 | `data.product` | `patrol_vehicle_chassis` |
 | 固件/OTA 制品 | product | `patrol_vehicle_chassis` |
 
@@ -93,7 +93,7 @@ A-BOX 只订阅自身 VID 的精确配置和 OTA Topic。平台重试必须沿�
 | `power_off` | 旧平台迁移兼容：将车辆电源控制输出置为低电平；新平台禁止调用 |
 | `set_mqtt` | 保存新的 VID 和 MQTT 参数后重启 |
 
-内部 `power_on` / `power_off` 仅用于已部署旧平台的迁移兼容，不再是当前平台接口，也不得提供给第三方。新平台必须发送公共 V3 `power_on` / `power_off`；兼容响应的 `result.powerOutputOn` 仍只表示 MCU 输出锁存的命令状态，不是继电器触点或整车供电反馈。
+内部 `power_on` / `power_off` 仅用于已部署旧平台的迁移兼容，不再是当前平台接口，也不得提供给第三方。新平台必须发送 `vehicle_chassis 1.0` Profile 的公共 V4 `power_on` / `power_off`；兼容响应的 `result.powerOutputOn` 仍只表示 MCU 输出锁存的命令状态，不是继电器触点或整车供电反馈。
 
 `get_info` 的 `result.diagnostics` 是只读联调快照：`canRx` 为 CAN1 已接收标准数据帧计数，`steerHb/driveHb` 为 Node 1/2 心跳在线判断，`steerRaw`、`leftRpm/rightRpm` 和 `encoderRaw` 为最近原始反馈，`encoderOnline` 为编码器反馈时效判断，`sdoTimeouts/encoderTimeouts` 为累计超时计数。上述字段只用于诊断，不代表标定、运动或验收成功。
 

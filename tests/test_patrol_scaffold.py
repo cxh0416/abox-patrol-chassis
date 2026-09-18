@@ -61,10 +61,11 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertNotIn("PVIN_OUT3", port)
         self.assertIn("VehiclePowerOutput_Init(write_power_output)", port)
 
-    def test_public_topics_and_limits_are_documented(self):
-        mqtt = (ROOT / "docs/protocols/A-BOX车辆底盘业务协议-V3.0.md").read_text(encoding="utf-8")
+    def test_public_profile_references_v4_and_documents_business_limits(self):
+        mqtt = (ROOT / "docs/protocols/A-BOX巡防车底盘业务协议-V4.0.md").read_text(encoding="utf-8")
         canopen = (ROOT / "docs/operations/CANopen执行约束.md").read_text(encoding="utf-8")
-        self.assertIn("/zxwl/abox/{deviceId}", mqtt)
+        self.assertIn("A-BOX 设备公共 MQTT 协议 V4", mqtt)
+        self.assertNotIn("/zxwl/abox/{deviceId}", mqtt)
         self.assertIn("vehicle_chassis", mqtt)
         self.assertIn("`±200 rpm`", canopen)
         self.assertIn("`±30°`", canopen)
@@ -73,9 +74,11 @@ class PatrolScaffoldTests(unittest.TestCase):
     def test_public_and_internal_mqtt_contracts_are_separated(self):
         cloud = cloud_sources()
         remote = (ROOT / "app/Core/User/cloud/src/remote_service.c").read_text(encoding="utf-8")
-        self.assertIn('"/zxwl/abox/%s/ctrl"', cloud)
-        self.assertIn('"/zxwl/abox/%s/status/report"', cloud)
-        self.assertIn('\\"deviceType\\":\\"vehicle_chassis', cloud)
+        self.assertIn('"/zxwl/abox/%s/request"', cloud)
+        self.assertIn('"/zxwl/abox/%s/response"', cloud)
+        self.assertIn('"/zxwl/abox/%s/report"', cloud)
+        self.assertIn('"/zxwl/abox/%s/manifest"', cloud)
+        self.assertIn('\\"reportName\\":\\"chassis_status', cloud)
         self.assertIn('\\"product\\":\\"patrol_vehicle_chassis', cloud)
         self.assertNotIn("commandAccepted", remote)
         self.assertNotRegex(cloud, r"%[-+0-9.#]*[fFeEgGaA]")

@@ -80,16 +80,17 @@ void CloudService_Init(void)
         mqtt.server_port = cfg->mqtt_port;
         CloudMessages_CopyString(mqtt.username, sizeof(mqtt.username), cfg->mqtt_username);
         CloudMessages_CopyString(mqtt.password, sizeof(mqtt.password), cfg->mqtt_password);
-        (void)snprintf(mqtt.client_id, sizeof(mqtt.client_id), "patrol_vehicle_chassis_%s", cfg->vid);
+        CloudMessages_CopyString(mqtt.client_id, sizeof(mqtt.client_id), cfg->vid);
         (void)snprintf(g_cloud.topic_heartbeat, sizeof(g_cloud.topic_heartbeat), "/zxwl/abox/%s/heartbeat", cfg->vid);
-        (void)snprintf(g_cloud.topic_status_report, sizeof(g_cloud.topic_status_report), "/zxwl/abox/%s/status/report", cfg->vid);
+        (void)snprintf(g_cloud.topic_manifest, sizeof(g_cloud.topic_manifest), "/zxwl/abox/%s/manifest", cfg->vid);
+        (void)snprintf(g_cloud.topic_status_report, sizeof(g_cloud.topic_status_report), "/zxwl/abox/%s/report", cfg->vid);
         (void)snprintf(g_cloud.topic_config_cmd, sizeof(g_cloud.topic_config_cmd), "/zxwl/abox/%s/internal/config", cfg->vid);
         (void)snprintf(g_cloud.topic_config_resp, sizeof(g_cloud.topic_config_resp), "/zxwl/abox/%s/internal/config/resp", cfg->vid);
         (void)snprintf(g_cloud.topic_ota_cmd, sizeof(g_cloud.topic_ota_cmd), "/zxwl/abox/%s/internal/ota", cfg->vid);
         (void)snprintf(g_cloud.topic_ota_resp, sizeof(g_cloud.topic_ota_resp), "/zxwl/abox/%s/internal/ota/resp", cfg->vid);
         (void)snprintf(g_cloud.topic_log, sizeof(g_cloud.topic_log), "/zxwl/abox/%s/internal/log", cfg->vid);
-        (void)snprintf(g_cloud.topic_control_cmd, sizeof(g_cloud.topic_control_cmd), "/zxwl/abox/%s/ctrl", cfg->vid);
-        (void)snprintf(g_cloud.topic_control_resp, sizeof(g_cloud.topic_control_resp), "/zxwl/abox/%s/ctrl/resp", cfg->vid);
+        (void)snprintf(g_cloud.topic_control_cmd, sizeof(g_cloud.topic_control_cmd), "/zxwl/abox/%s/request", cfg->vid);
+        (void)snprintf(g_cloud.topic_control_resp, sizeof(g_cloud.topic_control_resp), "/zxwl/abox/%s/response", cfg->vid);
         CloudMessages_CopyString(mqtt.sub_topics[0], sizeof(mqtt.sub_topics[0]), g_cloud.topic_config_cmd);
         CloudMessages_CopyString(mqtt.sub_topics[1], sizeof(mqtt.sub_topics[1]), g_cloud.topic_ota_cmd);
         CloudMessages_CopyString(mqtt.sub_topics[2], sizeof(mqtt.sub_topics[2]), g_cloud.topic_control_cmd);
@@ -152,6 +153,7 @@ void CloudService_Task(void)
     ready = MQTT_Core_IsReady();
     if (ready && !g_cloud.mqtt_was_ready)
     {
+        g_cloud.v4_bootstrap_stage = 1U;
         g_cloud.heartbeat_due = HAL_GetTick();
         g_cloud.status_report_due = HAL_GetTick();
         g_cloud.ota_begin_due = HAL_GetTick() + 1000U;

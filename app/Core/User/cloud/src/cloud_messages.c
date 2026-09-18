@@ -16,6 +16,7 @@
 #include "patrol_runtime.h"
 #include "vcu_can_status.h"
 #include "vehicle_power_output.h"
+#include "abox_mqtt_v4.h"
 
 void CloudMessages_CopyString(char* dst, uint16_t size, const char* src)
 {
@@ -261,11 +262,24 @@ uint8_t CloudMessages_BuildHeartbeat(char* output, uint16_t size)
 {
     JsonWriter_t writer;
     json_init(&writer, output, size);
-    json_append(&writer, "{\"version\":\"3.0\",\"timestamp\":");
+    json_append(&writer, "{\"version\":\"4.0\",\"timestamp\":");
     json_append_timestamp(&writer);
-    json_append(&writer, ",\"data\":{\"deviceType\":\"vehicle_chassis\"");
-    json_append(&writer, ",\"firmware\":"); json_string(&writer, Vcu_AppFwVersion());
+    json_append(&writer, ",\"data\":{\"firmware\":"); json_string(&writer, Vcu_AppFwVersion());
     json_append(&writer, "}}");
+    return (uint8_t)(writer.valid && writer.length < CLOUD_PAYLOAD_LIMIT);
+}
+
+uint8_t CloudMessages_BuildManifest(char* output, uint16_t size)
+{
+    JsonWriter_t writer;
+    const ABoxMqttProfileDescriptor* profile = ABoxMqttV4_VehicleChassisProfile();
+    json_init(&writer, output, size);
+    json_append(&writer, "{\"version\":\"4.0\",\"timestamp\":");
+    json_append_timestamp(&writer);
+    json_append(&writer, ",\"data\":{\"firmware\":"); json_string(&writer, Vcu_AppFwVersion());
+    json_append(&writer, ",\"profiles\":[{\"name\":"); json_string(&writer, profile->name);
+    json_append(&writer, ",\"version\":"); json_string(&writer, profile->version);
+    json_append(&writer, "}]}}");
     return (uint8_t)(writer.valid && writer.length < CLOUD_PAYLOAD_LIMIT);
 }
 
@@ -338,11 +352,17 @@ uint8_t CloudMessages_BuildStatusReport(char* output, uint16_t size, const char*
     PatrolRuntime_GetDiagnostics(&diagnostics);
     MQTT_Core_GetRxDiagnostics(&mqtt_rx);
     json_init(&writer, output, size);
-    json_append(&writer, "{\"version\":\"3.0\",\"timestamp\":");
+    json_append(&writer, "{\"version\":\"4.0\",\"timestamp\":");
     json_append(&writer, timestamp);
-    json_append(&writer, ",\"data\":{\"deviceType\":\"vehicle_chassis\",\"reportId\":");
+    json_append(&writer, ",\"data\":{\"reportId\":");
     json_string(&writer, report_id);
-    json_append(&writer, ",\"reportReason\":");
+    json_append(&writer, ",\"reportType\":\"state\",\"reportName\":\"chassis_status\"");
+    if (g_cloud.status_report_request_id[0] != '\0')
+    {
+        json_append(&writer, ",\"requestId\":");
+        json_string(&writer, g_cloud.status_report_request_id);
+    }
+    json_append(&writer, ",\"payload\":{\"reportReason\":");
     json_string(&writer, report_reason ? report_reason : "periodic");
     json_append(&writer, ",\"motionState\":");
     json_string(&writer, motion_state);
@@ -394,7 +414,7 @@ uint8_t CloudMessages_BuildStatusReport(char* output, uint16_t size, const char*
             (unsigned long)ABoxEc800Rx_RestartCount(&g_cloud.ec800_rx),
             (unsigned long)ABoxEc800Rx_MaxBacklog(&g_cloud.ec800_rx), (unsigned long)EC800_AT_LineOverflowCount(&g_cloud.at_core));
     }
-    json_append(&writer,"}}");
+    json_append(&writer,"}}}");
     return (uint8_t)(writer.valid && writer.length < CLOUD_PAYLOAD_LIMIT);
 }
 

@@ -24,6 +24,7 @@
 
 typedef enum {
     CLOUD_TX_NONE = 0,
+    CLOUD_TX_MANIFEST,
     CLOUD_TX_HEARTBEAT,
     CLOUD_TX_STATUS_REPORT,
     CLOUD_TX_RESPONSE,
@@ -56,6 +57,7 @@ typedef struct {
     ABoxEc800Rx ec800_rx;
 
     char topic_heartbeat[CLOUD_TOPIC_SIZE];
+    char topic_manifest[64];
     char topic_status_report[CLOUD_TOPIC_SIZE];
     char topic_config_cmd[CLOUD_TOPIC_SIZE];
     char topic_config_resp[CLOUD_TOPIC_SIZE];
@@ -64,6 +66,7 @@ typedef struct {
     char topic_log[CLOUD_TOPIC_SIZE];
     char topic_control_cmd[CLOUD_TOPIC_SIZE];
     char topic_control_resp[CLOUD_TOPIC_SIZE];
+    uint8_t v4_bootstrap_stage;
 
     uint8_t initialized;
     uint8_t config_ready;
@@ -75,6 +78,7 @@ typedef struct {
     uint32_t heartbeat_due;
     uint32_t status_report_due;
     uint32_t status_report_sequence;
+    char status_report_request_id[CLOUD_REQUEST_ID_SIZE];
     CloudTelemetry telemetry;
     ChassisStatusSnapshot_t status_snapshot;
     uint32_t iccid_due;
@@ -123,6 +127,7 @@ void CloudMessages_ScheduleSimpleError(const char* topic, const char* request_id
 uint8_t CloudMessages_ScheduleRawResponse(const char* topic, const char* payload);
 void CloudMessages_BuildInfoResult(char* output, uint16_t size);
 uint8_t CloudMessages_BuildHeartbeat(char* output, uint16_t size);
+uint8_t CloudMessages_BuildManifest(char* output, uint16_t size);
 void CloudMessages_RememberStatusSnapshot(uint32_t now);
 const char* CloudMessages_StatusChangeReason(uint32_t now);
 uint8_t CloudMessages_BuildStatusReport(char* output, uint16_t size, const char* report_reason);

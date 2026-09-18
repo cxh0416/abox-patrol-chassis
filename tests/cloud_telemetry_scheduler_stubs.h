@@ -37,6 +37,8 @@ uint8_t CloudMessages_BuildStatusReport(char* out, uint16_t size, const char* re
 { (void)out; (void)size; (void)reason; return 1; }
 uint8_t CloudMessages_BuildHeartbeat(char* out, uint16_t size)
 { (void)out; (void)size; return 1; }
+uint8_t CloudMessages_BuildManifest(char* out, uint16_t size)
+{ (void)out; (void)size; return 1; }
 uint8_t CloudMessages_BuildLogChunk(char* out, uint16_t size)
 { (void)out; (void)size; return 1; }
 void CloudMessages_ScheduleSimpleError(const char* topic, const char* id, uint16_t code, const char* msg)

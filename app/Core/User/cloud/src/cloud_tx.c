@@ -38,10 +38,14 @@ static void tx_completed(void)
     }
     else if (completed == CLOUD_TX_HEARTBEAT)
     {
+        if (g_cloud.v4_bootstrap_stage == 2U) g_cloud.v4_bootstrap_stage = 3U;
     }
     else if (completed == CLOUD_TX_STATUS_REPORT)
     {
+        g_cloud.status_report_request_id[0] = '\0';
+        if (g_cloud.v4_bootstrap_stage == 3U) g_cloud.v4_bootstrap_stage = 0U;
     }
+    else if (completed == CLOUD_TX_MANIFEST) g_cloud.v4_bootstrap_stage = 2U;
     else if (completed == CLOUD_TX_LOG_CHUNK)
     {
         g_cloud.log_chunk_index++;
@@ -74,6 +78,27 @@ void CloudTx_Service(void)
     }
     if (!MQTT_Core_IsReady() || MQTT_Core_IsPublishActive()) return;
 
+    /* V4 reconnect order is Manifest -> Heartbeat -> complete State. */
+    if (g_cloud.v4_bootstrap_stage == 1U)
+    {
+        if (CloudMessages_BuildManifest(g_cloud.tx_payload, sizeof(g_cloud.tx_payload)))
+            (void)start_publish(CLOUD_TX_MANIFEST, g_cloud.topic_manifest, g_cloud.tx_payload, 1U, 1U);
+        return;
+    }
+    if (g_cloud.v4_bootstrap_stage == 2U)
+    {
+        if (CloudMessages_BuildHeartbeat(g_cloud.tx_payload, sizeof(g_cloud.tx_payload)))
+            (void)start_publish(CLOUD_TX_HEARTBEAT, g_cloud.topic_heartbeat, g_cloud.tx_payload, 0U, 0U);
+        return;
+    }
+    if (g_cloud.v4_bootstrap_stage == 3U)
+    {
+        if (CloudMessages_BuildStatusReport(g_cloud.tx_payload, sizeof(g_cloud.tx_payload), "reconnect") &&
+            start_publish(CLOUD_TX_STATUS_REPORT, g_cloud.topic_status_report, g_cloud.tx_payload, 1U, 0U))
+            CloudMessages_RememberStatusSnapshot(now);
+        return;
+    }
+
     if (g_cloud.response_pending)
     {
         (void)start_publish(CLOUD_TX_RESPONSE, g_cloud.response_topic, g_cloud.response_payload, 1U, 0U);
@@ -86,7 +111,7 @@ void CloudTx_Service(void)
             /* Keep a short observation tail after faults and power/state changes. */
             CloudTelemetry_Wake(&g_cloud.telemetry, now);
             if (CloudMessages_BuildStatusReport(g_cloud.tx_payload, sizeof(g_cloud.tx_payload), event_reason) &&
-                start_publish(CLOUD_TX_STATUS_REPORT, g_cloud.topic_status_report, g_cloud.tx_payload, 1U, 1U))
+                start_publish(CLOUD_TX_STATUS_REPORT, g_cloud.topic_status_report, g_cloud.tx_payload, 1U, 0U))
                 CloudMessages_RememberStatusSnapshot(now);
             return;
         }
@@ -101,7 +126,7 @@ void CloudTx_Service(void)
     if ((int32_t)(now - g_cloud.status_report_due) >= 0)
     {
         if (CloudMessages_BuildStatusReport(g_cloud.tx_payload, sizeof(g_cloud.tx_payload), "periodic") &&
-            start_publish(CLOUD_TX_STATUS_REPORT, g_cloud.topic_status_report, g_cloud.tx_payload, 0U, 1U))
+            start_publish(CLOUD_TX_STATUS_REPORT, g_cloud.topic_status_report, g_cloud.tx_payload, 1U, 0U))
         {
             g_cloud.status_report_due = now + (g_cloud.telemetry.fast ? CLOUD_ACTIVE_STATUS_MS : CLOUD_IDLE_STATUS_MS);
             CloudMessages_RememberStatusSnapshot(now);

@@ -129,6 +129,7 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 )
 
 abox_platform_attach(${CMAKE_PROJECT_NAME})
+abox_platform_attach_mqtt(${CMAKE_PROJECT_NAME} VERSION 4)
 abox_platform_attach_boot_v2_app(${CMAKE_PROJECT_NAME})
 
 add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD

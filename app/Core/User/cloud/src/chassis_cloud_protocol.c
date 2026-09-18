@@ -18,7 +18,7 @@ static uint8_t copy_identifier(char* output, uint16_t capacity, const cJSON* ite
 ChassisCloudStatus ChassisCloud_Parse(const char* payload, uint16_t length,
                                       ChassisCloudCommand* command)
 {
-    cJSON *root, *version, *data, *request_id, *device_type, *name, *params;
+    cJSON *root, *version, *data, *request_id, *name, *params;
     cJSON *action, *session_id, *seq, *lease, *rpm, *angle;
     double steering_mdeg;
     ChassisCloudStatus status = CHASSIS_CLOUD_INVALID;
@@ -29,17 +29,11 @@ ChassisCloudStatus ChassisCloud_Parse(const char* payload, uint16_t length,
     version = cJSON_GetObjectItemCaseSensitive(root, "version");
     data = cJSON_GetObjectItemCaseSensitive(root, "data");
     request_id = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "requestId") : 0;
-    device_type = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "deviceType") : 0;
     name = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "command") : 0;
     params = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "params") : 0;
     (void)copy_identifier(command->request_id, sizeof(command->request_id), request_id);
-    if (!cJSON_IsString(version) || strcmp(version->valuestring, "3.0") != 0 ||
+    if (!cJSON_IsString(version) || strcmp(version->valuestring, "4.0") != 0 ||
         command->request_id[0] == '\0') goto done;
-    if (!cJSON_IsString(device_type) ||
-        strcmp(device_type->valuestring, CHASSIS_PUBLIC_DEVICE_TYPE) != 0) {
-        status = CHASSIS_CLOUD_DEVICE_TYPE_MISMATCH;
-        goto done;
-    }
     if (!cJSON_IsString(name)) {
         status = CHASSIS_CLOUD_UNSUPPORTED;
         goto done;

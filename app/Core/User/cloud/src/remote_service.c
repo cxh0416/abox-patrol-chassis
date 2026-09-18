@@ -26,12 +26,19 @@ static uint16_t g_bench_limit;
 static uint32_t g_arm_deadline, g_arm_serial;
 static char g_bench_session[40];
 
-static uint32_t request_hash(const char* payload, uint16_t length)
+static uint32_t request_hash(const ChassisCloudCommand* command)
 {
     uint32_t hash = 2166136261UL;
-    uint16_t i;
-    for (i = 0U; i < length; i++) {
-        hash ^= (uint8_t)payload[i];
+    char canonical[192];
+    int length;
+    int i;
+    length = snprintf(canonical, sizeof(canonical), "%u|%s|%s|%lu|%lu|%d|%ld",
+        (unsigned)command->type, command->action, command->session_id,
+        (unsigned long)command->seq, (unsigned long)command->lease_ms,
+        (int)command->drive_rpm, (long)command->steering_mdeg);
+    if (length < 0 || length >= (int)sizeof(canonical)) return 0U;
+    for (i = 0; i < length; i++) {
+        hash ^= (uint8_t)canonical[i];
         hash *= 16777619UL;
     }
     return hash;
@@ -146,23 +153,23 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
     uint32_t payload_hash;
     uint8_t request_conflict = 0U;
     if (!g_remote_initialized || payload == 0 || response == 0 || size == 0U) return 0U;
-    payload_hash = request_hash(payload, length);
     parse_status = ChassisCloud_Parse(payload, length, &command);
     if (command.request_id[0] == '\0') return 0U;
+    payload_hash = request_hash(&command);
     if (strcmp(command.request_id, g_last_request_id) == 0 && g_last_response[0] != '\0')
     {
-        if (length == g_last_request_length && payload_hash == g_last_request_hash) {
+        if (payload_hash == g_last_request_hash) {
             if (strlen(g_last_response) >= size) return 0U;
             strcpy(response, g_last_response);
             return 1U;
         }
         request_conflict = 1U;
-        parse_status = CHASSIS_CLOUD_INVALID;
+        parse_status = CHASSIS_CLOUD_REQUEST_ID_CONFLICT;
     }
     accepted = 0U;
     code = (uint16_t)parse_status;
     message = "invalid request";
-    if (parse_status == CHASSIS_CLOUD_DEVICE_TYPE_MISMATCH) message = "device type mismatch";
+    if (parse_status == CHASSIS_CLOUD_REQUEST_ID_CONFLICT) message = "requestId conflict";
     else if (parse_status == CHASSIS_CLOUD_UNSUPPORTED) message = "unsupported command or action";
     else if (parse_status == CHASSIS_CLOUD_OK)
     {
@@ -236,16 +243,16 @@ format_response:
     if (command.type == CHASSIS_CLOUD_COMMAND_POWER_ON ||
         command.type == CHASSIS_CLOUD_COMMAND_POWER_OFF)
         written = snprintf(response, size,
-            "{\"version\":\"3.0\",\"timestamp\":%s,\"data\":{\"deviceType\":\"%s\","
-            "\"requestId\":\"%s\",\"code\":%u,\"msg\":\"%s\",\"powerOutputOn\":%s}}",
-            timestamp, CHASSIS_PUBLIC_DEVICE_TYPE, command.request_id, (unsigned int)code, message,
+            "{\"version\":\"4.0\",\"timestamp\":%s,\"data\":{"
+            "\"requestId\":\"%s\",\"code\":%u,\"msg\":\"%s\",\"result\":{\"powerOutputOn\":%s}}}",
+            timestamp, command.request_id, (unsigned int)code, message,
             VehiclePowerOutput_IsOn() ? "true" : "false");
     else
         written = snprintf(response, size,
-            "{\"version\":\"3.0\",\"timestamp\":%s,\"data\":{\"deviceType\":\"%s\","
-            "\"requestId\":\"%s\",\"code\":%u,\"msg\":\"%s\",\"targetDriveRpm\":%d,"
-            "\"targetSteeringDeg\":%s,\"stopReason\":%u}}",
-            timestamp, CHASSIS_PUBLIC_DEVICE_TYPE, command.request_id, (unsigned int)code, message,
+            "{\"version\":\"4.0\",\"timestamp\":%s,\"data\":{"
+            "\"requestId\":\"%s\",\"code\":%u,\"msg\":\"%s\",\"result\":{\"targetDriveRpm\":%d,"
+            "\"targetSteeringDeg\":%s,\"stopReason\":%u}}}",
+            timestamp, command.request_id, (unsigned int)code, message,
             (int)g_control.target_rpm, steering_value, (unsigned int)g_control.stop_reason);
     if (written <= 0 || written >= size) return 0U;
     if (!request_conflict) {

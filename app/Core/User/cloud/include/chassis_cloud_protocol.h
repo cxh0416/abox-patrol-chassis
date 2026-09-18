@@ -3,13 +3,14 @@
 
 #include <stdint.h>
 
-#define CHASSIS_PUBLIC_DEVICE_TYPE "vehicle_chassis"
+#define CHASSIS_PUBLIC_PROFILE "vehicle_chassis"
 
 typedef enum {
     CHASSIS_CLOUD_OK = 0,
     CHASSIS_CLOUD_INVALID = 4001,
     CHASSIS_CLOUD_UNSUPPORTED = 4002,
-    CHASSIS_CLOUD_DEVICE_TYPE_MISMATCH = 4004
+    CHASSIS_CLOUD_REQUEST_EXPIRED = 4005,
+    CHASSIS_CLOUD_REQUEST_ID_CONFLICT = 4006
 } ChassisCloudStatus;
 
 typedef enum {

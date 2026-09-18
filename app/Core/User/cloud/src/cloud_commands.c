@@ -1,4 +1,6 @@
 #include "cloud_internal.h"
+#include "cJSON.h"
+#include "time_base.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -269,6 +271,31 @@ static void handle_ota_request(const CloudProtocolRequest_t* request)
 static __attribute__((noinline)) void handle_public_control(const char* payload)
 {
     char response[CLOUD_PAYLOAD_SIZE];
+    cJSON* root = cJSON_Parse(payload);
+    cJSON* data = root ? cJSON_GetObjectItemCaseSensitive(root, "data") : 0;
+    cJSON* command = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "command") : 0;
+    cJSON* request_id = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "requestId") : 0;
+    cJSON* params = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "params") : 0;
+    cJSON* version = root ? cJSON_GetObjectItemCaseSensitive(root, "version") : 0;
+    if (cJSON_IsString(version) && strcmp(version->valuestring, "4.0") == 0 &&
+        cJSON_IsString(command) && strcmp(command->valuestring, "sync_state") == 0 &&
+        cJSON_IsString(request_id) && request_id->valuestring[0] != '\0' && cJSON_IsNull(params))
+    {
+        char timestamp[21];
+        if (!TimeBase_FormatUtcMs(timestamp, sizeof(timestamp))) strcpy(timestamp, "0");
+        (void)snprintf(response, sizeof(response),
+            "{\"version\":\"4.0\",\"timestamp\":%s,\"data\":{\"requestId\":\"%s\","
+            "\"code\":200,\"msg\":\"state synchronization scheduled\","
+            "\"result\":{\"expectedStates\":[{\"reportName\":\"chassis_status\"}]}}}",
+            timestamp, request_id->valuestring);
+        CloudMessages_CopyString(g_cloud.status_report_request_id,
+                                 sizeof(g_cloud.status_report_request_id), request_id->valuestring);
+        g_cloud.status_report_due = CloudPort_Now();
+        (void)CloudMessages_ScheduleRawResponse(g_cloud.topic_control_resp, response);
+        cJSON_Delete(root);
+        return;
+    }
+    if (root) cJSON_Delete(root);
     if (RemoteService_HandleControl(payload, (uint16_t)strlen(payload), response, sizeof(response)))
         (void)CloudMessages_ScheduleRawResponse(g_cloud.topic_control_resp, response);
     else APP_LOGW("REMOTE", "invalid or busy chassis control request");
