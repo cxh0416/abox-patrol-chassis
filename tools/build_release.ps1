@@ -154,7 +154,8 @@ try {
             flash_ram = [ordered]@{ boot = $bootUsage; app = $appUsage; boot_limit_bytes = 32768; app_limit_bytes = 223232; ram_limit_bytes = 65536 }
             artifacts = @((Get-Artifact $appOut '0x08008000'), (Get-Artifact $bootOut '0x08000000'), (Get-Artifact $fullOut '0x08000000'))
         }
-        $manifest | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath (Join-Path $release 'release.manifest.json') -Encoding UTF8
+        $manifestJson = ($manifest | ConvertTo-Json -Depth 6) + "`n"
+        [System.IO.File]::WriteAllText((Join-Path $release 'release.manifest.json'), $manifestJson, [System.Text.UTF8Encoding]::new($false))
         & python (Join-Path $PSScriptRoot 'artifact_store.py') --root $product --stage $release --destination dist
         if ($LASTEXITCODE -ne 0) { throw 'Release publication failed; inspect rollback/backup before retrying.' }
         Write-Host "Release $version written to $(Join-Path $product 'dist')"
