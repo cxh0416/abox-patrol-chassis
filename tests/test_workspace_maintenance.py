@@ -42,7 +42,7 @@ def release(path: Path, debug: bool = False) -> None:
     else:
         manifest = {"product": "patrol_vehicle_chassis", "version": "patrol-chassis-0.2.16",
                     "configuration": "Release", "product_dirty": False, "platform_dirty": False,
-                    "startup_motion_permit": False, "app_range": "0x08008000..0x0803E7FF",
+                    "startup_motion_permit": False, "app_range": "0x08008000..0x0803DFFF", "config_recovery_page": "0x0803E000",
                     "boot_state_pages": ["0x0803E800", "0x0803F000"], "config_page": "0x0803F800",
                     "artifacts": [{"name": name, "length": (path / name).stat().st_size,
                                    "sha256": store.digest(path / name),

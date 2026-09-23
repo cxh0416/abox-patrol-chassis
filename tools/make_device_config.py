@@ -14,9 +14,10 @@ from pathlib import Path
 
 PAGE_SIZE = 0x800
 CONFIG_OFFSET = 148
-CONFIG_SIZE = 396
+CONFIG_SIZE = 400
 CONFIG_MAGIC = 0x56435543
-CONFIG_VERSION = 4
+CONFIG_VERSION = 5
+DEFAULT_TLS_PROFILE_ID = 0
 STEERING_COUNTS_MILLI = 2710800
 ABSOLUTE_COUNTS_MILLI = 55250
 DEFAULT_HOST = "36.153.162.171"
@@ -43,7 +44,7 @@ def _ascii(value: str, field: str, maximum: int, *, topic_component: bool = Fals
 
 def config_checksum(config: bytes) -> int:
     if len(config) != CONFIG_SIZE:
-        raise ValueError("unexpected VCU config size")
+        raise ValueError("unexpected Patrol Config V5 size")
     checksum = 0x13572468
     for index, byte in enumerate(config):
         if 8 <= index < 12:
@@ -73,6 +74,8 @@ def build_config_page(
     absolute_direction: int = 1,
     steering_tolerance_mdeg: int = 2000,
     calibrated: bool = False,
+    mqtt_tls_enabled: bool = False,
+    mqtt_tls_profile_id: int = DEFAULT_TLS_PROFILE_ID,
 ) -> bytes:
     if not VID_RE.fullmatch(vid):
         raise ValueError("VID must match [A-Za-z0-9._-]{1,31}")
@@ -98,6 +101,8 @@ def build_config_page(
         raise ValueError("calibration profile must match the product profile")
     if calibrated and (steering_counts_per_degree_milli <= 0 or absolute_counts_per_degree_milli <= 0):
         raise ValueError("calibrated config requires steering and absolute counts per degree")
+    if not 0 <= mqtt_tls_profile_id <= 255:
+        raise ValueError("MQTT TLS profile ID must fit uint8")
 
     vid_b = _ascii(vid, "VID", 32, topic_component=True)
     host_b = _ascii(host, "MQTT host", 64)
@@ -143,6 +148,7 @@ def build_config_page(
         0,
     )
     struct.pack_into("<I", config, 392, steering_counts_per_degree_milli)
+    struct.pack_into("<BB", config, 396, int(mqtt_tls_enabled), mqtt_tls_profile_id)
     struct.pack_into("<I", config, 8, config_checksum(config))
 
     page = bytearray(b"\xFF" * PAGE_SIZE)
@@ -153,10 +159,10 @@ def build_config_page(
 def inspect_config_page(page: bytes) -> dict[str, object]:
     if len(page) != PAGE_SIZE:
         raise ValueError("Config page must be exactly 2048 bytes")
-    config = page[CONFIG_OFFSET : CONFIG_OFFSET + CONFIG_SIZE]
-    magic, version, length, checksum = struct.unpack_from("<IHHI", config, 0)
-    if (magic, version, length) != (CONFIG_MAGIC, CONFIG_VERSION, CONFIG_SIZE):
+    magic, version, length, checksum = struct.unpack_from("<IHHI", page, CONFIG_OFFSET)
+    if magic != CONFIG_MAGIC or version != CONFIG_VERSION or length != CONFIG_SIZE:
         raise ValueError("Config header is invalid")
+    config = page[CONFIG_OFFSET : CONFIG_OFFSET + length]
     if checksum != config_checksum(config):
         raise ValueError("Config checksum is invalid")
 
@@ -188,6 +194,9 @@ def inspect_config_page(page: bytes) -> dict[str, object]:
         "steeringDirection": steering_direction,
         "absoluteDirection": absolute_direction,
         "calibrated": bool(calibrated),
+        "configVersion": version,
+        "mqttTlsEnabled": bool(config[396]),
+        "mqttTlsProfileId": config[397],
     }
 
 
@@ -218,6 +227,9 @@ def main() -> int:
     parser.add_argument("--absolute-direction", type=int, choices=(-1, 1), default=1)
     parser.add_argument("--steering-tolerance-mdeg", type=int, default=2000)
     parser.add_argument("--calibrated", action="store_true")
+    parser.add_argument("--mqtt-tls-enabled", action="store_true",
+                        help="store the V5 policy flag only; firmware runtime remains plaintext in work package 6")
+    parser.add_argument("--mqtt-tls-profile-id", type=int, default=DEFAULT_TLS_PROFILE_ID)
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()
 
@@ -238,6 +250,8 @@ def main() -> int:
             absolute_direction=args.absolute_direction,
             steering_tolerance_mdeg=args.steering_tolerance_mdeg,
             calibrated=args.calibrated,
+            mqtt_tls_enabled=args.mqtt_tls_enabled,
+            mqtt_tls_profile_id=args.mqtt_tls_profile_id,
         )
         details = inspect_config_page(page)
     except ValueError as exc:
@@ -245,7 +259,7 @@ def main() -> int:
 
     _atomic_write(args.output, page)
     manifest = {
-        "format": "patrol-chassis-config-v1",
+        "format": "patrol-chassis-config-v5",
         "flashAddress": "0x0803F800",
         "size": len(page),
         "sha256": hashlib.sha256(page).hexdigest(),

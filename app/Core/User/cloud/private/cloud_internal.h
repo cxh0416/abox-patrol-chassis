@@ -17,7 +17,9 @@
 #define CLOUD_TOPIC_SIZE 128U
 #define CLOUD_REQUEST_ID_SIZE CLOUD_PROTOCOL_REQUEST_ID_SIZE
 #define CLOUD_REBOOT_DELAY_MS 300U
-#define CLOUD_LOG_SNAPSHOT_SIZE 3584U
+/* Keep the diagnostic snapshot bounded so the shared TLS manager fits while
+ * retaining the formal 4 KiB RAM guard. Transport payload limits are unchanged. */
+#define CLOUD_LOG_SNAPSHOT_SIZE 1536U
 #define CLOUD_ALERT_PAYLOAD_SIZE 512U
 #define CLOUD_LOG_MAX_LINES 32U
 #define CLOUD_LOG_LINES_PER_PACKET 6U
@@ -74,6 +76,7 @@ typedef struct {
     uint8_t reset_reason;
     uint8_t ota_response_waiting;
     uint8_t ota_begin_pending;
+    uint8_t tls_provision_started;
     char ota_request_id[CLOUD_REQUEST_ID_SIZE];
     uint32_t heartbeat_due;
     uint32_t status_report_due;
@@ -91,6 +94,8 @@ typedef struct {
     uint8_t response_pending;
     uint8_t response_reboots;
     uint8_t response_ack_rollback;
+    uint8_t mqtt_candidate_pending;
+    uint8_t mqtt_cancel_pending;
     char response_request_id[CLOUD_REQUEST_ID_SIZE];
     char response_topic[CLOUD_TOPIC_SIZE];
     char response_payload[CLOUD_PAYLOAD_SIZE];
@@ -137,5 +142,6 @@ uint8_t CloudMessages_BuildAlert(char* output, uint16_t size, const char* line, 
 void CloudMessages_BuildCalibrationResult(char* output, uint16_t size);
 void CloudCommands_OnMessage(const char* topic, const char* payload);
 void CloudTx_Service(void);
+void CloudTx_NetworkChanged(void);
 uint32_t CloudPort_Now(void);
 #endif

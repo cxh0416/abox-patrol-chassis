@@ -5,9 +5,12 @@
 #include "app_log.h"
 #include "ec_power.h"
 #include "mqtt_core.h"
+#include "mqtt_runtime.h"
+#include "mqtt_trial_manager.h"
+#include "mqtt_config_adapter.h"
 #include "ota_service.h"
 #include "usart.h"
-#include "vcu_config.h"
+#include "patrol_config.h"
 
 CloudContext g_cloud;
 
@@ -53,7 +56,8 @@ void CloudService_Init(void)
 {
     memset(&g_cloud.telemetry, 0, sizeof(g_cloud.telemetry));
     MQTT_CoreConfig_t mqtt;
-    const VcuRemoteConfig_t* cfg = VcuConfig_Get();
+    ABoxMqttConfig runtime;
+    const PatrolRemoteConfigV5_t* cfg = PatrolConfig_Get();
     memset(&mqtt, 0, sizeof(mqtt));
     (void)ABoxEc800Rx_Init(&g_cloud.ec800_rx, g_cloud.uart_dma, sizeof(g_cloud.uart_dma),
                            g_cloud.rx_ring, sizeof(g_cloud.rx_ring));
@@ -66,14 +70,14 @@ void CloudService_Init(void)
     g_cloud.last_request_id[0] = '\0';
     g_cloud.last_response_payload[0] = '\0';
     g_cloud.reset_reason = read_reset_reason();
-    g_cloud.config_ready = VcuConfig_IsCloudReady(cfg);
+    g_cloud.config_ready = PatrolConfig_IsCloudReady(cfg);
 
     {
         const ABoxEc800AtPort at_port = {&huart1, ec800_tick, ec800_write, 0};
         (void)EC800_AT_Init(&g_cloud.at_core, &at_port);
     }
     OtaService_Init(&g_cloud.at_core);
-    mqtt.client_idx = 0U;
+    memset(&runtime, 0, sizeof(runtime));
     if (cfg != 0)
     {
         CloudMessages_CopyString(mqtt.server_host, sizeof(mqtt.server_host), cfg->mqtt_host);
@@ -81,6 +85,7 @@ void CloudService_Init(void)
         CloudMessages_CopyString(mqtt.username, sizeof(mqtt.username), cfg->mqtt_username);
         CloudMessages_CopyString(mqtt.password, sizeof(mqtt.password), cfg->mqtt_password);
         CloudMessages_CopyString(mqtt.client_id, sizeof(mqtt.client_id), cfg->vid);
+        if (!PatrolMqttConfig_FromV5(cfg, &runtime)) g_cloud.config_ready = 0U;
         (void)snprintf(g_cloud.topic_heartbeat, sizeof(g_cloud.topic_heartbeat), "/zxwl/abox/%s/heartbeat", cfg->vid);
         (void)snprintf(g_cloud.topic_manifest, sizeof(g_cloud.topic_manifest), "/zxwl/abox/%s/manifest", cfg->vid);
         (void)snprintf(g_cloud.topic_status_report, sizeof(g_cloud.topic_status_report), "/zxwl/abox/%s/report", cfg->vid);
@@ -99,6 +104,11 @@ void CloudService_Init(void)
     }
     MQTT_Core_Init(&mqtt, CloudCommands_OnMessage);
     MQTT_Core_SetAtCore(&g_cloud.at_core);
+    if (!MqttRuntime_Init(&g_cloud.at_core, &runtime, HAL_GetTick())) {
+        g_cloud.config_ready = 0U;
+        APP_LOGE("CLOUD", "invalid MQTT V5 runtime configuration");
+    }
+    MqttTrialManager_Init();
 
     EC_Power_Init();
     EC_Power_StartOnSequence();
@@ -149,6 +159,14 @@ void CloudService_Task(void)
         }
     }
     if (!g_cloud.config_ready || !EC_Power_IsOnDone()) return;
+    if (PatrolConfig_Get() != 0 && PatrolConfig_Get()->mqtt_tls_enabled && !OtaService_IsProvisioned() &&
+        !g_cloud.tls_provision_started)
+    {
+        if (OtaService_BeginProvisioning()) g_cloud.tls_provision_started = 1U;
+    }
+    MqttRuntime_Task(HAL_GetTick());
+    MqttTrialManager_Poll(HAL_GetTick());
+    if (!MqttRuntime_IsReady()) { g_cloud.mqtt_was_ready = 0U; return; }
     MQTT_Core_Task();
     ready = MQTT_Core_IsReady();
     if (ready && !g_cloud.mqtt_was_ready)

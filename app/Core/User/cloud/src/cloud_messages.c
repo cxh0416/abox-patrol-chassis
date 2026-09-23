@@ -12,9 +12,9 @@
 #include "ota_service.h"
 #include "remote_service.h"
 #include "time_base.h"
-#include "vcu_config.h"
+#include "patrol_config.h"
 #include "patrol_runtime.h"
-#include "vcu_can_status.h"
+#include "patrol_can_status.h"
 #include "vehicle_power_output.h"
 #include "abox_mqtt_v4.h"
 
@@ -208,7 +208,7 @@ void CloudMessages_BuildInfoResult(char* output, uint16_t size)
     PatrolDiagnosticsSnapshot diagnostics;
     PatrolRuntime_GetDiagnostics(&diagnostics);
     json_init(&writer, output, size);
-    json_append(&writer, "{\"fwVersion\":"); json_string(&writer, Vcu_AppFwVersion());
+    json_append(&writer, "{\"fwVersion\":"); json_string(&writer, Patrol_AppFwVersion());
     json_append(&writer, ",\"bootVersion\":"); json_string(&writer, descriptor_valid ? descriptor.build_version : "");
     json_appendf(&writer, ",\"bootDescriptorValid\":%s,\"bootApiVersion\":%u,\"bootFeatures\":%lu",
                  descriptor_valid ? "true" : "false", descriptor_valid ? descriptor.abi_version : 0U,
@@ -217,15 +217,15 @@ void CloudMessages_BuildInfoResult(char* output, uint16_t size)
     json_append(&writer, ",\"stableSeedSource\":");
     json_string(&writer, ABoxBootV2App_StableSeedSource());
     json_append(&writer, ",\"otaBootstrapNeedsRevision\":false");
-    json_append(&writer, ",\"vid\":"); json_string(&writer, VcuConfig_Get()->vid);
+    json_append(&writer, ",\"vid\":"); json_string(&writer, PatrolConfig_Get()->vid);
     json_appendf(&writer, ",\"uptimeMs\":%lu,\"mqttState\":", (unsigned long)CloudPort_Now());
     json_string(&writer, mqtt_state_name(MQTT_Core_GetState()));
     json_appendf(&writer, ",\"mqttStateCode\":%u,\"iccid\":", (unsigned int)MQTT_Core_GetState());
     json_string(&writer, iccid ? iccid : "");
     json_appendf(&writer,
                  ",\"canInitialized\":%s,\"canBusOff\":%s,\"canRxOverflow\":%lu,\"otaState\":",
-                 VcuRtos_CanStarted() ? "true" : "false", VcuRtos_CanBusOff() ? "true" : "false",
-                 (unsigned long)VcuRtos_CanRxOverflowCount());
+                 PatrolRtos_CanStarted() ? "true" : "false", PatrolRtos_CanBusOff() ? "true" : "false",
+                 (unsigned long)PatrolRtos_CanRxOverflowCount());
     json_string(&writer, (have_state && state.rollback_report_pending) ? "ROLLBACK" :
                 boot_state_name(have_state ? state.state : BOOT_STATE_NORMAL));
     json_appendf(&writer, ",\"powerOutputAvailable\":%s,\"powerOutputOn\":%s",
@@ -264,7 +264,7 @@ uint8_t CloudMessages_BuildHeartbeat(char* output, uint16_t size)
     json_init(&writer, output, size);
     json_append(&writer, "{\"version\":\"4.0\",\"timestamp\":");
     json_append_timestamp(&writer);
-    json_append(&writer, ",\"data\":{\"firmware\":"); json_string(&writer, Vcu_AppFwVersion());
+    json_append(&writer, ",\"data\":{\"firmware\":"); json_string(&writer, Patrol_AppFwVersion());
     json_append(&writer, "}}");
     return (uint8_t)(writer.valid && writer.length < CLOUD_PAYLOAD_LIMIT);
 }
@@ -276,7 +276,7 @@ uint8_t CloudMessages_BuildManifest(char* output, uint16_t size)
     json_init(&writer, output, size);
     json_append(&writer, "{\"version\":\"4.0\",\"timestamp\":");
     json_append_timestamp(&writer);
-    json_append(&writer, ",\"data\":{\"firmware\":"); json_string(&writer, Vcu_AppFwVersion());
+    json_append(&writer, ",\"data\":{\"firmware\":"); json_string(&writer, Patrol_AppFwVersion());
     json_append(&writer, ",\"profiles\":[{\"name\":"); json_string(&writer, profile->name);
     json_append(&writer, ",\"version\":"); json_string(&writer, profile->version);
     json_append(&writer, "}]}}");
@@ -341,7 +341,7 @@ uint8_t CloudMessages_BuildStatusReport(char* output, uint16_t size, const char*
              (abs(feedback->left_actual_rpm) > 20 || abs(feedback->right_actual_rpm) > 20))
         motion_state = "driving";
     if (!TimeBase_FormatUtcMs(timestamp, sizeof(timestamp))) strcpy(timestamp, "0");
-    (void)snprintf(report_id, sizeof(report_id), "%s-%s-%lu", VcuConfig_Get()->vid,
+    (void)snprintf(report_id, sizeof(report_id), "%s-%s-%lu", PatrolConfig_Get()->vid,
                    timestamp, (unsigned long)g_cloud.status_report_sequence++);
     if (!FixedPoint_FormatMilli(target_steering, sizeof(target_steering),
                                 control->target_steering_mdeg) ||
@@ -500,14 +500,14 @@ uint8_t CloudMessages_BuildAlert(char* output, uint16_t size, const char* line, 
 
 void CloudMessages_BuildCalibrationResult(char* output, uint16_t size)
 {
-    const VcuRemoteConfig_t* cfg = VcuConfig_Get();
+    const PatrolRemoteConfigV5_t* cfg = PatrolConfig_Get();
     if (output == 0 || size == 0U || cfg == 0) return;
     (void)snprintf(output, size,
         "{\"profileCompatible\":%s,\"configVersion\":%u,\"calibrated\":%s,\"remoteEnabled\":%s,\"steeringCenterCount\":%ld,"
         "\"absoluteCenterCount\":%lu,\"steeringCountsPerDegreeMilli\":%lu,"
         "\"absoluteCountsPerDegreeMilli\":%lu,\"steeringDirection\":%d,"
         "\"absoluteDirection\":%d,\"steeringToleranceMdeg\":%u}",
-        VcuConfig_CalibrationCompatible() ? "true" : "false",
+        PatrolConfig_CalibrationCompatible() ? "true" : "false",
         (unsigned int)cfg->version, cfg->calibrated ? "true" : "false",
         cfg->remote_enabled ? "true" : "false",
         (long)cfg->steering_center_count, (unsigned long)cfg->absolute_center_count,

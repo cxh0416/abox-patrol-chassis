@@ -65,7 +65,7 @@ A-BOX 只订阅自身 VID 的精确配置和 OTA Topic。内部响应优先于�
 | `params.action` | 能力 |
 |---|---|
 | `get_info` | 查询 App、Boot、OTA、MQTT、电源及 CAN 摘要 |
-| `set_mqtt` | 保存 VID、Broker 地址、端口、用户名和密码，响应发布后重启 |
+| `set_mqtt` | 试连并提交 VID、Broker、凭据和 MQTT TLS 策略 |
 | `get_log` | 获取当前内存日志快照 |
 | `reboot` | 在 Boot 状态允许时响应后受控重启 |
 | `get_can_diag` | 查询 CAN、节点、反馈、编码器和 SDO 只读诊断 |
@@ -93,7 +93,7 @@ A-BOX 只订阅自身 VID 的精确配置和 OTA Topic。内部响应优先于�
 | 分组 | 字段 |
 |---|---|
 | 固件与 Boot | `fwVersion`、`bootVersion`、`bootDescriptorValid`、`bootApiVersion`、`bootFeatures` |
-| 设备与 MQTT | `vid`、`uptimeMs`、`mqttState`、`mqttStateCode`、`iccid` |
+| 设备与 MQTT | `vid`、`uptimeMs`、`mqttState`、`mqttStateCode`、`mqttHost`、`mqttPort`、`mqttTls`、`mqttTlsProfileId`、`iccid` |
 | OTA | `otaScheme`、`otaDownloader`、`otaState`、`otaPhase`、`otaReady`、`otaBusy`、`otaTargetVersion`、`stableSlot`、`candidateSlot`、`trialFailCount`、`lastOtaError` |
 | 电源 | `powerOutputAvailable`、`powerOutputOn` |
 | CAN 摘要 | `canInitialized`、`canBusOff`、`canRxOverflow`、`diagnostics` |
@@ -113,8 +113,18 @@ OTA 平台只能用最新 `get_info` 的实测 Boot 描述符、`otaReady`、`ot
 | `port` | Integer | MQTT 端口 |
 | `username` | String | 设备用户名 |
 | `password` | String | 设备密码 |
+| `tlsEnabled` | Boolean | `false` 使用明文 MQTT；`true` 使用 MQTT TLS |
+| `tlsProfileId` | Integer | TLS profile 标识，范围 0～255 |
 
-设备先在旧 VID 的响应 Topic 返回 `MQTT_CONFIG_SAVED` 和新 VID，再受控重启。平台必须等待设备以新身份重新上线；成功响应不等于新 Broker 已连接。
+以上字段共同组成一个不可拆分的 MQTT candidate。设备必须在旧连接上确认受理后，
+依次执行 candidate 准备、连接、订阅、指定 proof、持久化回读和提交；任一步失败均
+恢复完整 active 配置。明文与 TLS 的任意方向切换都使用同一 trial，不得先保存再重启
+碰运气。
+
+当 active 为 TLS 时，TLS 失败不得自动尝试明文。只有收到明确的
+`tlsEnabled=false` candidate 且明文 trial 全部成功后，才允许保存并切回明文。
+成功响应表示 candidate 已完成 proof、持久化回读并成为 active；它不代表现场网络、
+Broker 或后续长连接永远可用。
 
 ### 4.4 日志
 
@@ -160,7 +170,7 @@ OTA 请求发送到 `/internal/ota`：
 约束：
 
 - `version` 必须使用 `patrol-chassis-` 前缀并符合固件版本格式；
-- `size` 为正整数且不超过 App 区 `0x36800` 字节；
+- `size` 为正整数且不超过产品 App 区 `0x36000` 字节；
 - `crc32` 为恰好八位的十六进制字符串；
 - `url` 必须通过产品 OTA origin、产品目录、版本和制品名校验；
 - OTA 忙、Boot 状态不允许或下载器未就绪时不得开始新任务；

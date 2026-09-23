@@ -5,8 +5,9 @@
 
 #include "boot_cfg.h"
 
-#define VCU_CONFIG_MAGIC 0x56435543U /* VCU C */
-#define VCU_CONFIG_VERSION 4U
+#define PATROL_CONFIG_MAGIC 0x56435543U /* On-flash value is frozen. */
+#define PATROL_CONFIG_VERSION 5U
+#define PATROL_CONFIG_TLS_PROFILE_DEFAULT 0U
 
 typedef struct
 {
@@ -35,7 +36,10 @@ typedef struct
     uint8_t calibrated;
     uint8_t reserved1;
     uint32_t steering_counts_per_degree_milli;
-} VcuRemoteConfig_t;
+    uint8_t mqtt_tls_enabled;
+    uint8_t mqtt_tls_profile_id;
+    uint8_t reserved2[2];
+} PatrolRemoteConfigV5_t;
 
 typedef struct
 {
@@ -45,7 +49,7 @@ typedef struct
     uint32_t fw_crc32;
     uint32_t req_fail_count;
     char url[128];
-    VcuRemoteConfig_t remote_config;
+    PatrolRemoteConfigV5_t remote_config;
     uint32_t reserved[8];
 } OTA_Info_t;
 
@@ -53,8 +57,8 @@ void OTA_Info_Load(OTA_Info_t* info);
 uint8_t OTA_Info_Save(const OTA_Info_t* info);
 uint8_t OTA_Info_Clear(void);
 
-uint8_t OTA_Info_LoadRemoteConfig(VcuRemoteConfig_t* cfg);
-uint8_t OTA_Info_SaveRemoteConfig(const VcuRemoteConfig_t* cfg);
+uint8_t OTA_Info_LoadRemoteConfig(PatrolRemoteConfigV5_t* cfg);
+uint8_t OTA_Info_SaveRemoteConfig(const PatrolRemoteConfigV5_t* cfg);
 
 uint8_t OTA_Info_IsRequestValid(const OTA_Info_t* info);
 uint8_t OTA_Info_HasRequest(void);

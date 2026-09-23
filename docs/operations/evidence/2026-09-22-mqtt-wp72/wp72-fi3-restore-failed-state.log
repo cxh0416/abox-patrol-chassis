@@ -1,0 +1,75 @@
+SEGGER J-Link Commander V7.94j (Compiled Feb 14 2024 15:37:25)
+DLL version V7.94j, compiled Feb 14 2024 15:36:06
+
+
+J-Link Command File read successfully.
+Processing script file...
+J-Link>device STM32F105RC
+J-Link connection not established yet but required for command.
+Connecting to J-Link via USB...O.K.
+Firmware: J-Link V9 compiled Dec 13 2022 11:14:50
+Hardware version: V9.70
+J-Link uptime (since boot): N/A (Not supported by this model)
+S/N: 69730334
+License(s): RDI, GDB, FlashDL, FlashBP, JFlash
+VTref=3.304V
+J-Link>if SWD
+Selecting SWD as current target interface.
+J-Link>speed 4000
+Selecting 4000 kHz as target interface speed
+J-Link>connect
+Device "STM32F105RC" selected.
+
+
+Connecting to target via SWD
+InitTarget() start
+SWD selected. Executing JTAG -> SWD switching sequence.
+DAP initialized successfully.
+InitTarget() end - Took 7.95ms
+Found SW-DP with ID 0x1BA01477
+DPv0 detected
+CoreSight SoC-400 or earlier
+Scanning AP map to find all available APs
+AP[1]: Stopped AP scan as end of AP map has been reached
+AP[0]: AHB-AP (IDR: 0x14770011)
+Iterating through AP map to find AHB-AP to use
+AP[0]: Core found
+AP[0]: AHB-AP ROM base: 0xE00FF000
+CPUID register: 0x411FC231. Implementer code: 0x41 (ARM)
+Found Cortex-M3 r1p1, Little endian.
+FPUnit: 6 code (BP) slots and 2 literal slots
+CoreSight components:
+ROMTbl[0] @ E00FF000
+[0][0]: E000E000 CID B105E00D PID 001BB000 SCS
+[0][1]: E0001000 CID B105E00D PID 001BB002 DWT
+[0][2]: E0002000 CID B105E00D PID 000BB003 FPB
+[0][3]: E0000000 CID B105E00D PID 001BB001 ITM
+[0][4]: E0040000 CID B105900D PID 001BB923 TPIU-Lite
+[0][5]: E0041000 CID B105900D PID 101BB924 ETM-M3
+Memory zones:
+  Zone: "Default" Description: Default access mode
+Cortex-M3 identified.
+J-Link>h
+PC = 0800E860, CycleCnt = 03613B49
+R0 = 00000000, R1 = A5A5A5A5, R2 = A5A5A5A5, R3 = 00000001
+R4 = A5A5A5A5, R5 = A5A5A5A5, R6 = A5A5A5A5, R7 = 20000B00
+R8 = A5A5A5A5, R9 = A5A5A5A5, R10= A5A5A5A5, R11= A5A5A5A5
+R12= A5A5A5A5
+SP(R13)= 20000B00, MSP= 2000FFE0, PSP= 20000B00, R14(LR) = 0800E85D
+XPSR = 01000000: APSR = nzcvq, EPSR = 01000000, IPSR = 000 (NoException)
+CFBP = 02000000, CONTROL = 02, FAULTMASK = 00, BASEPRI = 00, PRIMASK = 00
+FPU regs: FPU not enabled / not implemented on connected CPU.
+J-Link>mem8 0x20007B80 1
+20007B80 = 0B 
+J-Link>mem8 0x20007D50 2
+20007D50 = 0A 02 
+J-Link>mem8 0x20007731 1
+20007731 = 00 
+J-Link>g
+Memory map 'after startup completion point' is active
+J-Link>qc
+
+Script processing completed.
+
+OnDisconnectTarget() start
+OnDisconnectTarget() end - Took 473us

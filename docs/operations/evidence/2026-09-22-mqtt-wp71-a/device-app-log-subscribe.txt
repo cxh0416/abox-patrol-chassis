@@ -1,0 +1,21 @@
+I CFG loaded vid=PATROL-TLS-LAB-001 enabled=0
+
+
+I MQTT state=0
+
+
+I MQTT state=0
+
+
+I MQTT_TLS plain runtime client=0; no SSL context configured
+
+
+I CLOUD configured vid=PATROL-TLS-LAB-001 broker=36.153.162.171:19683
+
+
+I REMOTE initialized enabled=0 calibrated=0; outputs gated
+
+
+I BOOT version=patrol-chassis-0.2.32 app=0x08008000
+
+

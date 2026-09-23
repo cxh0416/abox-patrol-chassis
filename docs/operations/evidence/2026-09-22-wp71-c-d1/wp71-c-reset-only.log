@@ -1,0 +1,23 @@
+GNU gdb (Arm GNU Toolchain 14.2.Rel1 (Build arm-14.52)) 15.2.90.20241130-git
+Copyright (C) 2024 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "--host=i686-w64-mingw32 --target=arm-none-eabi".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<https://bugs.linaro.org/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from docs\operations\evidence\2026-09-22-wp71-rtos-ab\wp71-fixed.elf...
+(No debugging symbols found in docs\operations\evidence\2026-09-22-wp71-rtos-ab\wp71-fixed.elf)
+`F:\work\A-Box\Patrol_Vehicle_Chassis\docs\operations\evidence\2026-09-22-wp71-rtos-ab\wp71-fixed.elf' has changed; re-reading symbols.
+(no debugging symbols found)
+0x0800b6be in prvIdleTask ()
+Breakpoint 1 at 0x800cf5a
+Breakpoint 2 at 0x8016a7a
+Breakpoint 3 at 0x80028a6

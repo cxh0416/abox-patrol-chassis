@@ -18,6 +18,8 @@ const ChassisControl* RemoteService_State(void) { return &control; }
 uint8_t RemoteService_BenchPermitted(void) { return bench_active; }
 uint8_t CenterCalibration_IsActive(void) { return center_active; }
 uint32_t MQTT_Core_GetPubOkSeq(void) { return pub_sequence; }
+void MqttTrialManager_OnHeartbeatProof(uint32_t publish_sequence, uint32_t now)
+{ (void)publish_sequence; (void)now; }
 uint8_t MQTT_Core_IsReady(void) { return connected; }
 uint8_t MQTT_Core_IsPublishActive(void) { return publish_active; }
 uint8_t MQTT_Core_PublishEx(const char* topic, const char* payload, uint8_t qos, uint8_t retain)

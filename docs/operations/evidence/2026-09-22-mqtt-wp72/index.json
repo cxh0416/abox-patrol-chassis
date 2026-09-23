@@ -1,0 +1,93 @@
+{
+  "workPackage": "7.2",
+  "status": "CLOSED",
+  "scope": "local ABox + EC800 + Broker only",
+  "platformCommit": "56bd4f5663b3ee01ece0a701c6ebd6b468cdcfdc",
+  "candidateAppSha256": "5AE13A1367345515245F9D2C694710BA3140DD18F9DEC3FFF81BE3ABD471B5D4",
+  "ram": {
+    "used": 61432,
+    "total": 65536,
+    "guard": 4104
+  },
+  "configBeforeSha256": "A1E93C70B13B43FBF149402EE03FA8AC5A1B1FCF6A8004F2301C210DDD978835",
+  "configAfterSha256": "A1E93C70B13B43FBF149402EE03FA8AC5A1B1FCF6A8004F2301C210DDD978835",
+  "endpoints": {
+    "plain": "36.153.162.171:19683",
+    "tlsPublic": "zxwl.ntiov.com:19688",
+    "tlsBackendListener": "192.168.4.196:8883"
+  },
+  "evidenceSha256": {
+    "plain-to-tls-19688-broker.jsonl": "8A765352C6F12D138A96A237AF0B3C5CD64BB88B3E9972E54A93142328F3C1F5",
+    "tls-to-plain-broker.jsonl": "909214D845F58395A0CDEE0507781354A3CC257B837780A2267B8146977FF295",
+    "tls-to-tls-broker.jsonl": "4FC45299E2B7587F159CDAA475672642FB30521A01FC56FE5015E6A5C2DFE05C",
+    "config-after-wp72.bin": "A1E93C70B13B43FBF149402EE03FA8AC5A1B1FCF6A8004F2301C210DDD978835",
+    "config-after-wp72-readback.log": "0CD2170D6C79034B024F4CCEE3E3A79BF71B263E399A084C26C745D8CA35C996",
+    "boot-after-wp72.bin": "981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63",
+    "wp72-boot-read.log": "6FFA209BE26ABAEB1EF42823D330171FF6C5AA55D7A7D2485A8DE5055924959A",
+    "wp72-2026-09-23-broker-observer.jsonl": "AC14DB793E91B97074B41FED2AE226D044132F0A1FA248019939A7750DCD751C",
+    "wp72-2026-09-23-com11.log": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "wp72-fi1-final2-flash.log": "DAC4654B85503D97E0C9EFE7ECACA547C2A7E553E82C29A84C4465B62F318302",
+    "wp72-fi1-final-state-1.log": "715279F1878230BBDD6B5D82A0C9167E5372C3152C634BC13408073119AC22DF",
+    "wp72-fi1-final-state-2.log": "005658C96287F9B8294B779975B144C4FC7A349A518C724C5A58248AF1B02290",
+    "wp72-fi2-final-flash.log": "81651274CF175F661E0728C03967057CB4A2F5328E5D3715BDA8ABAEC135A481",
+    "wp72-fi2-proof-timeout-state.log": "29297076EF29C273FD1F8BD128D8681A6887002B7254BB1B4A62546553C7D217",
+    "wp72-fi2-cancel-restoring-state.log": "9221AEC71F89B5CB4A9D97AF587039A24A34086D3F71018487889C1C34A3F254",
+    "wp72-fi3-final-flash.log": "87D6F78CF75EAF17FAC30ABB348DF32D048432C3BFABC80ECCA80EC7F7FAB042",
+    "wp72-fi3-restore-failed-state.log": "70180F84753BDA323F63755A094C78375042B9F02AFA852C69AB43FC122A8EFB",
+    "wp72-success-flash.log": "EE251E8A515FC8FA9B4FF02FD0A9560A4B75E27BA02B91E90E7E80B16285DDA3",
+    "wp72-com3-20260923-raw.log": "97CC45A76E54A40EBCF29A1DAFDF2AC64D2CB4285FB6853CB5B6B68E6391EDB3",
+    "wp72-com3-trial-20260923-raw.log": "834AF96AEBD03ED1B65520ACADCC8FF9801CE0D6788E82767D7454E6F2B441E6",
+    "wp72-emqx-session-trace.zip": "B7C4E0CAE4E36640E4246D76EAE960D8CF3850CD9B325BF29C8209AFCC336D7E"
+  },
+  "results": {
+    "plainToPlain": "PASS",
+    "candidateFailureRestorePlain": "PASS",
+    "plainToTls": "PASS",
+    "tlsToPlain": "PASS",
+    "tlsToTls": "PASS",
+    "subscribeTimeout": "PASS_DEVICE_RUNTIME_TRIAL_TIMEOUT_AND_ACTIVE_RESTORE",
+    "businessProofTimeout": "PASS_DEVICE_VERIFYING_TIMEOUT_AND_ACTIVE_RESTORE",
+    "cancel": "PASS_DEVICE_VERIFYING_CANCEL_AND_ACTIVE_RESTORE",
+    "restoreFailure": "PASS_DEVICE_RESTORE_FAILED_SECURITY_GATE_CLOSED",
+    "wp72Close": true,
+    "successMatrixRetest": "PASS_DEBUG_NO_FAULT_INJECTION",
+    "configAfterSuccessMatrix": "PASS_PHYSICAL_READBACK_MATCH",
+    "bootAfterTrials": "PASS_PHYSICAL_READBACK_MATCH_FROZEN",
+    "atRawCom3": "PASS_19200_8N1_QMTOPEN_QMTCONN_TRIAL_STAGES",
+    "emqxSessionTrace": "PASS_CONNECT_CONNACK_SUBSCRIBE_SUBACK",
+    "finalFullRegression": "PASS_PRODUCT_PLATFORM_CTEST_14_OF_14_BENCH",
+    "finalCleanArmRelease": "PASS_FAULT_OFF_LAB_OFF_RAM_GUARD_4104"
+  },
+  "notes": [
+    "Four fault injection scenarios and the four success switches were observed on the local test device on 2026-09-23.",
+    "Trial timeout reason is 2 for subscribe and proof timeout; cancel reason is 3; forced restore failure leaves runtime FAILED and MQTT security ready 0.",
+    "The new physical Config V5 readback followed the 2026-09-23 success matrix and matches the fixed baseline SHA256.",
+    "The new physical Boot readback matches the frozen Boot binary SHA256.",
+    "No Config V5 save, Boot modification, MQTT V4 protocol change, OTA deployment or vehicle acceptance is claimed.",
+    "COM3 was present as an FTDI port at 19200 8N1; native EMQX session trace and one targeted TLS trial complete the evidence gap. WP7.2 is closed; WP7.3 has not started."
+  ],
+  "candidateAppPath": "out/logs/wp72-success-app.bin",
+  "faultDebugAppSha256": {
+    "stallSubscribe": "20F1D108C25CE60E848CEDB13934CF6F27A27A5DF4567D21DA796D6C13082BCB",
+    "dropProof": "701EFFADF9A124C366A9ADAFEDB2236F188430202F5F18A76BC69FA68262B779",
+    "forceRestoreFail": "4A3D5516F7D3853216817C3BAD33E7E22CCF34AD4784D52525F749580DABC26E"
+  },
+  "configReadbackFile": "config-after-wp72.bin",
+  "bootAfterSha256": "981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63",
+  "traceCoverage": {
+    "brokerObserver": "requests, responses, candidate heartbeats, and active recovery heartbeats",
+    "emqxSessionTrace": "PRESENT_NATIVE_ZIP_CONNECT_CONNACK_3_SUBSCRIBE_SUBACK_9",
+    "deviceAtTrace": "PRESENT_COM3_FTDI_19200_8N1_BOOT_AND_TLS_TRIAL",
+    "jlinkRuntimeState": "PRESENT_FOR_SUBSCRIBE_TIMEOUT_PROOF_TIMEOUT_CANCEL_RESTORE_FAILURE"
+  },
+  "platformRuntimeWorkingTreeModified": true,
+  "finalGate": {
+    "cleanReleaseAppSha256": "37F182C8D1772A7A9EB4AEB67B8BAA20723FE5779D5203EF1CCEA05A75C2CDF9",
+    "cleanReleaseFaultInjection": false,
+    "cleanReleaseLabTest": false,
+    "ramGuardBytes": 4104,
+    "productTests": "PASS",
+    "platformCTest": "14/14 PASS",
+    "benchTests": "PASS"
+  }
+}

@@ -3,7 +3,8 @@ set(PATROL_PRODUCT_SOURCES
     Core/User/board/src/abox_product_port.c
     Core/User/motion/src/absolute_encoder.c
     Core/User/common/src/app_log.c
-    Core/User/system/src/vcu_config.c
+    Core/User/system/src/patrol_config.c
+    Core/User/system/src/mqtt_config_adapter.c
     Core/User/system/src/app_version.c
     Core/User/cloud/src/cloud_service.c
     Core/User/cloud/src/cloud_commands.c
@@ -17,6 +18,8 @@ set(PATROL_PRODUCT_SOURCES
     Core/User/mqtt/src/mqtt_core.c
     Core/User/mqtt/src/mqtt_core_parser.c
     Core/User/mqtt/src/mqtt_core_port.c
+    Core/User/mqtt/src/mqtt_runtime.c
+    Core/User/mqtt/src/mqtt_trial_manager.c
     Core/User/mqtt/src/mqtt_qmtrecv.c
     Core/User/ota/src/ota_info.c
     Core/User/ota/src/ota_service.c
@@ -31,7 +34,7 @@ set(PATROL_PRODUCT_SOURCES
     Core/User/board/src/vehicle_power_port.c
     Core/User/motion/src/patrol_runtime.c
     Core/User/motion/src/center_calibration.c
-    Core/User/system/src/vcu_rtos.c
+    Core/User/system/src/patrol_rtos.c
     ${CMAKE_SOURCE_DIR}/../shared/boot_state_compat.c
     ${CMAKE_SOURCE_DIR}/../shared/fault_mailbox_compat.c
 )

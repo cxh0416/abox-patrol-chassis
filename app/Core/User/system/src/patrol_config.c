@@ -1,11 +1,11 @@
-#include "vcu_config.h"
+#include "patrol_config.h"
 
 #include <string.h>
 
 #include "app_log.h"
 #include "vehicle_steering_profile.h"
 
-static VcuRemoteConfig_t g_vcu_config;
+static PatrolRemoteConfigV5_t g_patrol_config;
 
 static void copy_string(char* dst, uint16_t size, const char* src)
 {
@@ -19,7 +19,7 @@ static void copy_string(char* dst, uint16_t size, const char* src)
     dst[size - 1U] = '\0';
 }
 
-static uint32_t config_checksum(const VcuRemoteConfig_t* cfg)
+static uint32_t config_checksum(const PatrolRemoteConfigV5_t* cfg)
 {
     const uint8_t* bytes = (const uint8_t*)cfg;
     uint32_t sum = 0x13572468U;
@@ -47,23 +47,25 @@ static uint8_t string_is_safe(const char* value, uint16_t size, uint8_t topic_co
     return 0U;
 }
 
-void VcuConfig_ResetDefault(VcuRemoteConfig_t* cfg)
+void PatrolConfig_ResetDefault(PatrolRemoteConfigV5_t* cfg)
 {
     if (cfg == 0) return;
     memset(cfg, 0, sizeof(*cfg));
-    cfg->magic = VCU_CONFIG_MAGIC;
-    cfg->version = VCU_CONFIG_VERSION;
+    cfg->magic = PATROL_CONFIG_MAGIC;
+    cfg->version = PATROL_CONFIG_VERSION;
     cfg->length = sizeof(*cfg);
     cfg->remote_enabled = 0U;
-    copy_string(cfg->vid, sizeof(cfg->vid), VCU_CONFIG_DEFAULT_VID);
-    copy_string(cfg->mqtt_host, sizeof(cfg->mqtt_host), VCU_CONFIG_DEFAULT_MQTT_HOST);
-    cfg->mqtt_port = VCU_CONFIG_DEFAULT_MQTT_PORT;
-    copy_string(cfg->mqtt_username, sizeof(cfg->mqtt_username), VCU_CONFIG_DEFAULT_MQTT_USER);
-    copy_string(cfg->mqtt_password, sizeof(cfg->mqtt_password), VCU_CONFIG_DEFAULT_MQTT_PASS);
-    copy_string(cfg->diag_log_host, sizeof(cfg->diag_log_host), VCU_CONFIG_DEFAULT_DIAG_HOST);
-    cfg->diag_log_port = VCU_CONFIG_DEFAULT_DIAG_PORT;
-    cfg->diag_log_level = VCU_CONFIG_DEFAULT_DIAG_LEVEL;
-    copy_string(cfg->ota_origin, sizeof(cfg->ota_origin), VCU_CONFIG_DEFAULT_OTA_ORIGIN);
+    cfg->mqtt_tls_enabled = 0U;
+    cfg->mqtt_tls_profile_id = PATROL_CONFIG_TLS_PROFILE_DEFAULT;
+    copy_string(cfg->vid, sizeof(cfg->vid), PATROL_CONFIG_DEFAULT_VID);
+    copy_string(cfg->mqtt_host, sizeof(cfg->mqtt_host), PATROL_CONFIG_DEFAULT_MQTT_HOST);
+    cfg->mqtt_port = PATROL_CONFIG_DEFAULT_MQTT_PORT;
+    copy_string(cfg->mqtt_username, sizeof(cfg->mqtt_username), PATROL_CONFIG_DEFAULT_MQTT_USER);
+    copy_string(cfg->mqtt_password, sizeof(cfg->mqtt_password), PATROL_CONFIG_DEFAULT_MQTT_PASS);
+    copy_string(cfg->diag_log_host, sizeof(cfg->diag_log_host), PATROL_CONFIG_DEFAULT_DIAG_HOST);
+    cfg->diag_log_port = PATROL_CONFIG_DEFAULT_DIAG_PORT;
+    cfg->diag_log_level = PATROL_CONFIG_DEFAULT_DIAG_LEVEL;
+    copy_string(cfg->ota_origin, sizeof(cfg->ota_origin), PATROL_CONFIG_DEFAULT_OTA_ORIGIN);
     cfg->steering_direction = 1;
     cfg->absolute_direction = 1;
     cfg->steering_counts_per_degree_milli = VEHICLE_STEERING_COUNTS_MILLI;
@@ -73,31 +75,32 @@ void VcuConfig_ResetDefault(VcuRemoteConfig_t* cfg)
     cfg->checksum = config_checksum(cfg);
 }
 
-void VcuConfig_Load(void)
+void PatrolConfig_Load(void)
 {
-    if (!OTA_Info_LoadRemoteConfig(&g_vcu_config))
+    if (!OTA_Info_LoadRemoteConfig(&g_patrol_config))
     {
-        VcuConfig_ResetDefault(&g_vcu_config);
+        PatrolConfig_ResetDefault(&g_patrol_config);
         APP_LOGW("CFG", "default VCU config; remote disabled");
     }
     else
     {
-        APP_LOGI("CFG", "loaded vid=%s enabled=%u", g_vcu_config.vid,
-                 (unsigned int)g_vcu_config.remote_enabled);
+        APP_LOGI("CFG", "loaded vid=%s enabled=%u", g_patrol_config.vid,
+                 (unsigned int)g_patrol_config.remote_enabled);
     }
 }
 
-const VcuRemoteConfig_t* VcuConfig_Get(void) { return &g_vcu_config; }
+const PatrolRemoteConfigV5_t* PatrolConfig_Get(void) { return &g_patrol_config; }
 
-uint8_t VcuConfig_Save(const VcuRemoteConfig_t* cfg)
+uint8_t PatrolConfig_Save(const PatrolRemoteConfigV5_t* cfg)
 {
-    VcuRemoteConfig_t next;
+    PatrolRemoteConfigV5_t next;
     if (cfg == 0) return 0U;
     next = *cfg;
-    next.magic = VCU_CONFIG_MAGIC;
-    next.version = VCU_CONFIG_VERSION;
+    next.magic = PATROL_CONFIG_MAGIC;
+    next.version = PATROL_CONFIG_VERSION;
     next.length = sizeof(next);
     next.remote_enabled = next.remote_enabled ? 1U : 0U;
+    next.mqtt_tls_enabled = next.mqtt_tls_enabled ? 1U : 0U;
     next.calibrated = next.calibrated ? 1U : 0U;
     if (next.calibrated && (next.steering_counts_per_degree_milli == 0U ||
                             next.absolute_counts_per_degree_milli == 0U ||
@@ -105,46 +108,46 @@ uint8_t VcuConfig_Save(const VcuRemoteConfig_t* cfg)
                             (next.absolute_direction != 1 && next.absolute_direction != -1) ||
                             next.steering_tolerance_mdeg == 0U || next.steering_tolerance_mdeg > 2000U))
         return 0U;
-    if (next.diag_log_level > 3U) next.diag_log_level = VCU_CONFIG_DEFAULT_DIAG_LEVEL;
-    if (next.mqtt_port == 0U) next.mqtt_port = VCU_CONFIG_DEFAULT_MQTT_PORT;
-    if (next.diag_log_port == 0U) next.diag_log_port = VCU_CONFIG_DEFAULT_DIAG_PORT;
+    if (next.diag_log_level > 3U) next.diag_log_level = PATROL_CONFIG_DEFAULT_DIAG_LEVEL;
+    if (next.mqtt_port == 0U) next.mqtt_port = PATROL_CONFIG_DEFAULT_MQTT_PORT;
+    if (next.diag_log_port == 0U) next.diag_log_port = PATROL_CONFIG_DEFAULT_DIAG_PORT;
     next.checksum = config_checksum(&next);
     if (!OTA_Info_SaveRemoteConfig(&next)) return 0U;
-    g_vcu_config = next;
+    g_patrol_config = next;
     APP_LOGI("CFG", "saved enabled=%u vid=%s", (unsigned int)next.remote_enabled, next.vid);
     return 1U;
 }
 
-uint8_t VcuConfig_SetRemoteEnabled(uint8_t enabled)
+uint8_t PatrolConfig_SetRemoteEnabled(uint8_t enabled)
 {
-    VcuRemoteConfig_t next = g_vcu_config;
+    PatrolRemoteConfigV5_t next = g_patrol_config;
     next.remote_enabled = enabled ? 1U : 0U;
-    return VcuConfig_Save(&next);
+    return PatrolConfig_Save(&next);
 }
 
-uint8_t VcuConfig_SetMqtt(const char* vid, const char* host, uint16_t port, const char* username,
+uint8_t PatrolConfig_SetMqtt(const char* vid, const char* host, uint16_t port, const char* username,
                           const char* password)
 {
-    VcuRemoteConfig_t next = g_vcu_config;
+    PatrolRemoteConfigV5_t next = g_patrol_config;
     if (vid != 0) copy_string(next.vid, sizeof(next.vid), vid);
     if (host != 0) copy_string(next.mqtt_host, sizeof(next.mqtt_host), host);
     if (port != 0U) next.mqtt_port = port;
     if (username != 0) copy_string(next.mqtt_username, sizeof(next.mqtt_username), username);
     if (password != 0) copy_string(next.mqtt_password, sizeof(next.mqtt_password), password);
-    return VcuConfig_Save(&next);
+    return PatrolConfig_Save(&next);
 }
 
-uint8_t VcuConfig_SetDiagLog(uint8_t enabled, const char* host, uint16_t port, uint8_t level)
+uint8_t PatrolConfig_SetDiagLog(uint8_t enabled, const char* host, uint16_t port, uint8_t level)
 {
-    VcuRemoteConfig_t next = g_vcu_config;
+    PatrolRemoteConfigV5_t next = g_patrol_config;
     next.diag_log_enabled = enabled ? 1U : 0U;
     if (host != 0) copy_string(next.diag_log_host, sizeof(next.diag_log_host), host);
     if (port != 0U) next.diag_log_port = port;
     if (level <= 3U) next.diag_log_level = level;
-    return VcuConfig_Save(&next);
+    return PatrolConfig_Save(&next);
 }
 
-uint8_t VcuConfig_IsCloudReady(const VcuRemoteConfig_t* cfg)
+uint8_t PatrolConfig_IsCloudReady(const PatrolRemoteConfigV5_t* cfg)
 {
     if (cfg == 0) return 0U;
     if (!string_is_safe(cfg->vid, sizeof(cfg->vid), 1U)) return 0U;
@@ -154,7 +157,7 @@ uint8_t VcuConfig_IsCloudReady(const VcuRemoteConfig_t* cfg)
     return (cfg->mqtt_port != 0U) ? 1U : 0U;
 }
 
-uint8_t VcuConfig_IsOtaOriginValid(const VcuRemoteConfig_t* cfg)
+uint8_t PatrolConfig_IsOtaOriginValid(const PatrolRemoteConfigV5_t* cfg)
 {
     const char* origin;
     if (cfg == 0) return 0U;
@@ -162,28 +165,28 @@ uint8_t VcuConfig_IsOtaOriginValid(const VcuRemoteConfig_t* cfg)
     return (strncmp(origin, "https://", 8U) == 0 && string_is_safe(origin, sizeof(cfg->ota_origin), 0U)) ? 1U : 0U;
 }
 
-uint8_t VcuConfig_CalibrationCompatible(void)
+uint8_t PatrolConfig_CalibrationCompatible(void)
 {
-    return g_vcu_config.steering_counts_per_degree_milli == VEHICLE_STEERING_COUNTS_MILLI &&
-        g_vcu_config.absolute_counts_per_degree_milli == VEHICLE_ABSOLUTE_COUNTS_MILLI &&
-        g_vcu_config.steering_direction == VEHICLE_STEERING_DIRECTION &&
-        g_vcu_config.absolute_direction == VEHICLE_ABSOLUTE_DIRECTION &&
-        g_vcu_config.steering_tolerance_mdeg == VEHICLE_STEERING_TOLERANCE_MDEG;
+    return g_patrol_config.steering_counts_per_degree_milli == VEHICLE_STEERING_COUNTS_MILLI &&
+        g_patrol_config.absolute_counts_per_degree_milli == VEHICLE_ABSOLUTE_COUNTS_MILLI &&
+        g_patrol_config.steering_direction == VEHICLE_STEERING_DIRECTION &&
+        g_patrol_config.absolute_direction == VEHICLE_ABSOLUTE_DIRECTION &&
+        g_patrol_config.steering_tolerance_mdeg == VEHICLE_STEERING_TOLERANCE_MDEG;
 }
 
-uint8_t VcuConfig_SingleTurnProfileReady(void)
+uint8_t PatrolConfig_SingleTurnProfileReady(void)
 {
-    return (uint8_t)(g_vcu_config.calibrated && VcuConfig_CalibrationCompatible() &&
-                     g_vcu_config.absolute_center_count == VEHICLE_ABSOLUTE_CENTER_COUNT);
+    return (uint8_t)(g_patrol_config.calibrated && PatrolConfig_CalibrationCompatible() &&
+                     g_patrol_config.absolute_center_count == VEHICLE_ABSOLUTE_CENTER_COUNT);
 }
 
-uint8_t VcuConfig_SetCalibration(int32_t steering_center_count, uint32_t absolute_center_count,
+uint8_t PatrolConfig_SetCalibration(int32_t steering_center_count, uint32_t absolute_center_count,
                                  uint32_t steering_counts_per_degree_milli,
                                  uint32_t absolute_counts_per_degree_milli,
                                  int8_t steering_direction, int8_t absolute_direction,
                                  uint16_t tolerance_mdeg)
 {
-    VcuRemoteConfig_t next = g_vcu_config;
+    PatrolRemoteConfigV5_t next = g_patrol_config;
     if (steering_counts_per_degree_milli != VEHICLE_STEERING_COUNTS_MILLI ||
         absolute_counts_per_degree_milli != VEHICLE_ABSOLUTE_COUNTS_MILLI ||
         steering_direction != VEHICLE_STEERING_DIRECTION || absolute_direction != VEHICLE_ABSOLUTE_DIRECTION ||
@@ -201,13 +204,13 @@ uint8_t VcuConfig_SetCalibration(int32_t steering_center_count, uint32_t absolut
     /* A calibration write never arms remote motion. */
     next.remote_enabled = 0U;
     next.calibrated = 1U;
-    return VcuConfig_Save(&next);
+    return PatrolConfig_Save(&next);
 }
 
-uint8_t VcuConfig_ClearCalibration(void)
+uint8_t PatrolConfig_ClearCalibration(void)
 {
-    VcuRemoteConfig_t next = g_vcu_config;
+    PatrolRemoteConfigV5_t next = g_patrol_config;
     next.remote_enabled = 0U;
     next.calibrated = 0U;
-    return VcuConfig_Save(&next);
+    return PatrolConfig_Save(&next);
 }

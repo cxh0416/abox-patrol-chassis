@@ -1,0 +1,3 @@
+`F:\work\A-Box\Patrol_Vehicle_Chassis\docs\operations\evidence\2026-09-22-wp71-rtos-ab\wp71-fixed.elf' has changed; re-reading symbols.
+(no debugging symbols found)
+0x0800b6c6 in prvIdleTask ()

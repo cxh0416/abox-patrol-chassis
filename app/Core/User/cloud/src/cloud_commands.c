@@ -7,12 +7,14 @@
 #include "app_version.h"
 #include "boot_state.h"
 #include "mqtt_core.h"
+#include "mqtt_runtime.h"
+#include "mqtt_trial_manager.h"
 #include "ota_service.h"
 #include "remote_service.h"
-#include "vcu_config.h"
+#include "patrol_config.h"
 #include "patrol_runtime.h"
 #include "center_calibration.h"
-#include "vcu_can_status.h"
+#include "patrol_can_status.h"
 #include "vehicle_power_output.h"
 
 static uint8_t boot_state_allows_reboot(void)
@@ -20,6 +22,22 @@ static uint8_t boot_state_allows_reboot(void)
     BootStateRecord_t state;
     if (!BootState_Load(&state)) return 1U;
     return (state.state == BOOT_STATE_NORMAL || state.state == BOOT_STATE_CONFIRMED) ? 1U : 0U;
+}
+#if PATROL_CHASSIS_MQTT_LAB_TEST
+static uint64_t mqtt_trial_proof_id(const char *text)
+{
+    uint64_t hash = UINT64_C(1469598103934665603);
+    while (text != 0 && *text != '\0') { hash ^= (uint8_t)*text++; hash *= UINT64_C(1099511628211); }
+    return hash != 0U ? hash : 1U;
+}
+#endif
+static void mqtt_trial_session_decimal(uint64_t value, char output[21])
+{
+    char reverse[20];
+    unsigned count = 0U, i;
+    do { reverse[count++] = (char)('0' + (value % 10U)); value /= 10U; } while (value != 0U);
+    for (i = 0U; i < count; ++i) output[i] = reverse[count - i - 1U];
+    output[count] = '\0';
 }
 
 static uint32_t signed_delta_mdeg(int64_t delta, uint32_t counts_per_degree_milli)
@@ -39,7 +57,7 @@ static uint8_t calibration_feedback_ready(const CloudProtocolRequest_t* request,
     uint32_t encoder_offset;
     const ChassisControl* control = RemoteService_State();
     if (request == 0 || snapshot == 0 || control == 0) return 0U;
-    if (!VehiclePowerOutput_IsOn() || VcuRtos_CanBusOff() || VcuRtos_CanBusOffActive() ||
+    if (!VehiclePowerOutput_IsOn() || PatrolRtos_CanBusOff() || PatrolRtos_CanBusOffActive() ||
         !snapshot->steering_online || !snapshot->drive_online ||
         !snapshot->steering_feedback_fresh || !snapshot->drive_feedback_fresh ||
         !snapshot->encoder_online || !snapshot->encoder_config_valid || snapshot->drive_fault ||
@@ -80,9 +98,9 @@ static __attribute__((noinline)) void handle_config_request(const CloudProtocolR
     {
         PatrolDiagnosticsSnapshot snapshot;
         PatrolRuntime_GetDiagnostics(&snapshot);
-        if (!PatrolDiagnostics_FormatCanJson(&snapshot, VcuRtos_CanBusOff(),
-                VcuRtos_CanBusOffActive(), VcuRtos_CanRxOverflowCount(),
-                VcuRtos_CanRawRxCount(0U), VcuRtos_CanRawRxCount(1U), result, sizeof(result)))
+        if (!PatrolDiagnostics_FormatCanJson(&snapshot, PatrolRtos_CanBusOff(),
+                PatrolRtos_CanBusOffActive(), PatrolRtos_CanRxOverflowCount(),
+                PatrolRtos_CanRawRxCount(0U), PatrolRtos_CanRawRxCount(1U), result, sizeof(result)))
             CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 500U, "DIAGNOSTIC_TOO_LARGE");
         else if (!CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 200U, "OK", result, 0U))
             CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "DEVICE_BUSY");
@@ -99,7 +117,7 @@ static __attribute__((noinline)) void handle_config_request(const CloudProtocolR
             CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "OTA_BUSY");
         else if (RemoteService_BenchPermitted())
             CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "BENCH_ACTIVE");
-        else if (!VcuConfig_ClearCalibration())
+        else if (!PatrolConfig_ClearCalibration())
             CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 500U, "CONFIG_WRITE_FAILED");
         else
         {
@@ -117,7 +135,7 @@ static __attribute__((noinline)) void handle_config_request(const CloudProtocolR
         else if (RemoteService_BenchPermitted() || !calibration_feedback_ready(request, &snapshot))
             CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U,
                                   "CALIBRATION_FEEDBACK_NOT_READY");
-        else if (!VcuConfig_SetCalibration(request->steering_center_count,
+        else if (!PatrolConfig_SetCalibration(request->steering_center_count,
                     request->absolute_center_count, request->steering_counts_per_degree_milli,
                     request->absolute_counts_per_degree_milli, request->steering_direction,
                     request->absolute_direction, request->steering_tolerance_mdeg))
@@ -224,13 +242,82 @@ static __attribute__((noinline)) void handle_config_request(const CloudProtocolR
         /* Reply on the old VID topic before reset; the next heartbeat carries the new identity. */
         if (!boot_state_allows_reboot()) {
             CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "DEVICE_BUSY");
-        } else if (!VcuConfig_SetMqtt(request->mqtt_vid, request->mqtt_host, request->mqtt_port,
+        } else if (!PatrolConfig_SetMqtt(request->mqtt_vid, request->mqtt_host, request->mqtt_port,
                                       request->mqtt_username, request->mqtt_password)) {
             CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 500U, "CONFIG_WRITE_FAILED");
         } else {
             (void)snprintf(result, sizeof(result), "{\"vid\":\"%s\",\"rebooting\":true}", request->mqtt_vid);
             (void)CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 200U, "MQTT_CONFIG_SAVED", result, 1U);
         }
+    }
+#if PATROL_CHASSIS_MQTT_LAB_TEST
+    else if (action == CLOUD_PROTOCOL_ACTION_MQTT_LAB_SEED_CONTROL)
+    {
+        RemoteService_LabSeedNetworkState();
+        if (!RemoteService_FormatNetworkState(result, sizeof(result)) ||
+            !CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 200U,
+                                            "LAB_CONTROL_STATE_SEEDED", result, 0U))
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 500U, "LAB_STATE_ERROR");
+    }
+#endif
+    else if (action == CLOUD_PROTOCOL_ACTION_MQTT_RUNTIME_GET)
+    {
+        char remote[384];
+        char session[21];
+        mqtt_trial_session_decimal(MqttTrialManager_Session(), session);
+        if (!RemoteService_FormatNetworkState(remote, sizeof(remote)))
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 500U, "STATE_TOO_LARGE");
+        else {
+            (void)snprintf(result, sizeof(result),
+                "{\"runtimeState\":%u,\"ready\":%s,\"tls\":%s,\"client\":%u,\"context\":%u,\"trialState\":%u,\"trialSession\":%s,\"remote\":%s}",
+                (unsigned)MqttRuntime_State(), MqttRuntime_IsReady() ? "true" : "false",
+                MqttRuntime_ActiveTls() ? "true" : "false", (unsigned)MqttRuntime_ActiveClient(),
+                (unsigned)MqttRuntime_ActiveContext(), (unsigned)MqttTrialManager_State(),
+                session, remote);
+            (void)CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 200U, "OK", result, 0U);
+        }
+    }
+    else if (action == CLOUD_PROTOCOL_ACTION_MQTT_RUNTIME_CANDIDATE)
+    {
+#if PATROL_CHASSIS_MQTT_LAB_TEST
+        ABoxMqttConfig candidate = {request->mqtt_host, request->mqtt_port, request->mqtt_username,
+                                    request->mqtt_password, request->mqtt_tls_enabled,
+                                    request->mqtt_tls_profile_id};
+        if (g_cloud.mqtt_candidate_pending ||
+            !MqttTrialManager_Stage(&candidate, mqtt_trial_proof_id(request_id), CloudPort_Now()))
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "RUNTIME_NOT_READY");
+        else {
+            g_cloud.mqtt_candidate_pending = 1U;
+            (void)snprintf(result, sizeof(result),
+                "{\"accepted\":true,\"tlsEnabled\":%s,\"tlsProfileId\":%u,\"flashWrite\":false}",
+                request->mqtt_tls_enabled ? "true" : "false", (unsigned)request->mqtt_tls_profile_id);
+            if (!CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 202U,
+                                                "RAM_CANDIDATE_ACCEPTED", result, 0U))
+                g_cloud.mqtt_candidate_pending = 0U;
+        }
+#else
+        CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 404U, "LAB_COMMAND_DISABLED");
+#endif
+    }
+    else if (action == CLOUD_PROTOCOL_ACTION_MQTT_RUNTIME_CANCEL)
+    {
+#if PATROL_CHASSIS_MQTT_LAB_TEST
+        ABoxMqttTrialState state = MqttTrialManager_State();
+        if (state != ABOX_MQTT_TRIAL_VERIFYING || g_cloud.mqtt_cancel_pending)
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "TRIAL_NOT_CANCELLABLE");
+        else {
+            g_cloud.mqtt_cancel_pending = 1U;
+            MqttTrialManager_DeferCancel();
+            if (!CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 202U,
+                                                "RAM_TRIAL_CANCEL_ACCEPTED", "{}", 0U))
+            {
+                g_cloud.mqtt_cancel_pending = 0U;
+                MqttTrialManager_Cancel(CloudPort_Now());
+            }
+        }
+#else
+        CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 404U, "LAB_COMMAND_DISABLED");
+#endif
     }
 }
 
@@ -245,7 +332,7 @@ static void handle_ota_request(const CloudProtocolRequest_t* request)
         return;
     }
     if (BootState_Load(&state) && state.state == BOOT_STATE_CONFIRMED &&
-        strcmp(request->ota_version, Vcu_AppFwVersion()) == 0) {
+        strcmp(request->ota_version, Patrol_AppFwVersion()) == 0) {
         (void)CloudMessages_ScheduleResponse(g_cloud.topic_ota_resp, request->request_id, 200U, "ALREADY_CONFIRMED",
                                 "{\"otaPhase\":\"CONFIRMED\"}", 0U);
         return;

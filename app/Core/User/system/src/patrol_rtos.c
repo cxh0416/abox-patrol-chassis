@@ -1,4 +1,4 @@
-#include "vcu_rtos.h"
+#include "patrol_rtos.h"
 #include "patrol_runtime.h"
 #include "center_calibration.h"
 #include "patrol_runtime_port.h"
@@ -27,28 +27,28 @@
 #define PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED 0
 #endif
 
-#define VCU_HEALTH_SAFETY  (1U << 0)
-#define VCU_HEALTH_CAN_RX  (1U << 1)
-#define VCU_HEALTH_CANOPEN  (1U << 2)
-#define VCU_EVENT_CAN_ERROR (1U << 3)
-#define VCU_HEALTH_REQUIRED (VCU_HEALTH_SAFETY | VCU_HEALTH_CAN_RX | VCU_HEALTH_CANOPEN)
+#define PATROL_HEALTH_SAFETY  (1U << 0)
+#define PATROL_HEALTH_CAN_RX  (1U << 1)
+#define PATROL_HEALTH_CANOPEN  (1U << 2)
+#define PATROL_EVENT_CAN_ERROR (1U << 3)
+#define PATROL_HEALTH_REQUIRED (PATROL_HEALTH_SAFETY | PATROL_HEALTH_CAN_RX | PATROL_HEALTH_CANOPEN)
 
-#define VCU_SAFETY_STACK_WORDS 256U
-#define VCU_CAN_RX_STACK_WORDS 256U
-#define VCU_CANOPEN_STACK_WORDS 256U
-#define VCU_ENCODER_STACK_WORDS 192U
-#define VCU_POWER_STACK_WORDS 192U
-#define VCU_REMOTE_STACK_WORDS 1024U
-#define VCU_DIAG_STACK_WORDS 256U
+#define PATROL_SAFETY_STACK_WORDS 256U
+#define PATROL_CAN_RX_STACK_WORDS 256U
+#define PATROL_CANOPEN_STACK_WORDS 256U
+#define PATROL_ENCODER_STACK_WORDS 192U
+#define PATROL_POWER_STACK_WORDS 192U
+#define PATROL_REMOTE_STACK_WORDS 1024U
+#define PATROL_DIAG_STACK_WORDS 256U
 /*
  * BootState_Confirm() persists a Boot V2 record from this task.  The ARM
  * release stack reports show a 992-byte static call-chain peak before the
  * HAL flash helper margin, so 256 words is not sufficient for trial confirm.
  */
-#define VCU_WATCHDOG_STACK_WORDS 384U
+#define PATROL_WATCHDOG_STACK_WORDS 384U
 
 static StaticQueue_t g_can_rx_queue_control;
-static VcuCanFrame_t g_can_rx_queue_storage[VCU_CAN_RX_QUEUE_LENGTH];
+static PatrolCanFrame_t g_can_rx_queue_storage[PATROL_CAN_RX_QUEUE_LENGTH];
 static QueueHandle_t g_can_rx_queue;
 static StaticEventGroup_t g_health_control;
 static EventGroupHandle_t g_health_events;
@@ -61,14 +61,14 @@ static StaticTask_t g_power_tcb;
 static StaticTask_t g_remote_tcb;
 static StaticTask_t g_diag_tcb;
 static StaticTask_t g_watchdog_tcb;
-static StackType_t g_safety_stack[VCU_SAFETY_STACK_WORDS];
-static StackType_t g_can_rx_stack[VCU_CAN_RX_STACK_WORDS];
-static StackType_t g_canopen_stack[VCU_CANOPEN_STACK_WORDS];
-static StackType_t g_encoder_stack[VCU_ENCODER_STACK_WORDS];
-static StackType_t g_power_stack[VCU_POWER_STACK_WORDS];
-static StackType_t g_remote_stack[VCU_REMOTE_STACK_WORDS];
-static StackType_t g_diag_stack[VCU_DIAG_STACK_WORDS];
-static StackType_t g_watchdog_stack[VCU_WATCHDOG_STACK_WORDS];
+static StackType_t g_safety_stack[PATROL_SAFETY_STACK_WORDS];
+static StackType_t g_can_rx_stack[PATROL_CAN_RX_STACK_WORDS];
+static StackType_t g_canopen_stack[PATROL_CANOPEN_STACK_WORDS];
+static StackType_t g_encoder_stack[PATROL_ENCODER_STACK_WORDS];
+static StackType_t g_power_stack[PATROL_POWER_STACK_WORDS];
+static StackType_t g_remote_stack[PATROL_REMOTE_STACK_WORDS];
+static StackType_t g_diag_stack[PATROL_DIAG_STACK_WORDS];
+static StackType_t g_watchdog_stack[PATROL_WATCHDOG_STACK_WORDS];
 static TaskHandle_t g_safety_task;
 static TaskHandle_t g_can_rx_task;
 static TaskHandle_t g_canopen_task;
@@ -82,21 +82,21 @@ static volatile uint32_t g_can_raw_rx_count[2];
 static volatile uint8_t g_can_started;
 static volatile uint8_t g_can_bus_off_mask;
 static uint8_t g_boot_confirmed;
-static void Vcu_SafetyControlTask(void *argument);
-static void Vcu_CanRxTask(void *argument);
-static void Vcu_CanopenTask(void *argument);
-static void Vcu_EncoderTask(void *argument);
-static void Vcu_PowerTask(void *argument);
-static void Vcu_RemoteTask(void *argument);
-static void Vcu_DiagTask(void *argument);
-static void Vcu_WatchdogTask(void *argument);
+static void Patrol_SafetyControlTask(void *argument);
+static void Patrol_CanRxTask(void *argument);
+static void Patrol_CanopenTask(void *argument);
+static void Patrol_EncoderTask(void *argument);
+static void Patrol_PowerTask(void *argument);
+static void Patrol_RemoteTask(void *argument);
+static void Patrol_DiagTask(void *argument);
+static void Patrol_WatchdogTask(void *argument);
 
-static uint8_t vcu_can_bus_index(const CAN_HandleTypeDef *hcan)
+static uint8_t patrol_can_bus_index(const CAN_HandleTypeDef *hcan)
 {
     return (hcan != NULL && hcan->Instance == CAN2) ? 1U : 0U;
 }
 
-static void vcu_start_can(void)
+static void patrol_start_can(void)
 {
     const uint32_t notifications = CAN_IT_RX_FIFO0_MSG_PENDING |
                                    CAN_IT_ERROR | CAN_IT_BUSOFF |
@@ -110,38 +110,38 @@ static void vcu_start_can(void)
     g_can_started = 1U;
 }
 
-void VcuRtos_Init(void)
+void PatrolRtos_Init(void)
 {
     PatrolRuntime_Init();
-    g_can_rx_queue = xQueueCreateStatic(VCU_CAN_RX_QUEUE_LENGTH,
-                                         sizeof(VcuCanFrame_t),
+    g_can_rx_queue = xQueueCreateStatic(PATROL_CAN_RX_QUEUE_LENGTH,
+                                         sizeof(PatrolCanFrame_t),
                                          (uint8_t *)g_can_rx_queue_storage,
                                          &g_can_rx_queue_control);
     g_health_events = xEventGroupCreateStatic(&g_health_control);
 
-    g_safety_task = xTaskCreateStatic(Vcu_SafetyControlTask, "SafetyControl",
-                                      VCU_SAFETY_STACK_WORDS, NULL, 6U,
+    g_safety_task = xTaskCreateStatic(Patrol_SafetyControlTask, "SafetyControl",
+                                      PATROL_SAFETY_STACK_WORDS, NULL, 6U,
                                       g_safety_stack, &g_safety_tcb);
-    g_can_rx_task = xTaskCreateStatic(Vcu_CanRxTask, "CanRx",
-                                      VCU_CAN_RX_STACK_WORDS, NULL, 5U,
+    g_can_rx_task = xTaskCreateStatic(Patrol_CanRxTask, "CanRx",
+                                      PATROL_CAN_RX_STACK_WORDS, NULL, 5U,
                                       g_can_rx_stack, &g_can_rx_tcb);
-    g_canopen_task = xTaskCreateStatic(Vcu_CanopenTask, "Canopen",
-                                      VCU_CANOPEN_STACK_WORDS, NULL, 4U,
+    g_canopen_task = xTaskCreateStatic(Patrol_CanopenTask, "Canopen",
+                                      PATROL_CANOPEN_STACK_WORDS, NULL, 4U,
                                       g_canopen_stack, &g_canopen_tcb);
-    g_encoder_task = xTaskCreateStatic(Vcu_EncoderTask, "EncoderUart5",
-                                       VCU_ENCODER_STACK_WORDS, NULL, 4U,
+    g_encoder_task = xTaskCreateStatic(Patrol_EncoderTask, "EncoderUart5",
+                                       PATROL_ENCODER_STACK_WORDS, NULL, 4U,
                                        g_encoder_stack, &g_encoder_tcb);
-    g_power_task = xTaskCreateStatic(Vcu_PowerTask, "ChassisPower",
-                                     VCU_POWER_STACK_WORDS, NULL, 4U,
+    g_power_task = xTaskCreateStatic(Patrol_PowerTask, "ChassisPower",
+                                     PATROL_POWER_STACK_WORDS, NULL, 4U,
                                      g_power_stack, &g_power_tcb);
-    g_watchdog_task = xTaskCreateStatic(Vcu_WatchdogTask, "Watchdog",
-                                        VCU_WATCHDOG_STACK_WORDS, NULL, 3U,
+    g_watchdog_task = xTaskCreateStatic(Patrol_WatchdogTask, "Watchdog",
+                                        PATROL_WATCHDOG_STACK_WORDS, NULL, 3U,
                                         g_watchdog_stack, &g_watchdog_tcb);
-    g_remote_task = xTaskCreateStatic(Vcu_RemoteTask, "Remote",
-                                      VCU_REMOTE_STACK_WORDS, NULL, 2U,
+    g_remote_task = xTaskCreateStatic(Patrol_RemoteTask, "Remote",
+                                      PATROL_REMOTE_STACK_WORDS, NULL, 2U,
                                       g_remote_stack, &g_remote_tcb);
-    g_diag_task = xTaskCreateStatic(Vcu_DiagTask, "Diag",
-                                    VCU_DIAG_STACK_WORDS, NULL, 1U,
+    g_diag_task = xTaskCreateStatic(Patrol_DiagTask, "Diag",
+                                    PATROL_DIAG_STACK_WORDS, NULL, 1U,
                                     g_diag_stack, &g_diag_tcb);
 
     configASSERT(g_can_rx_queue != NULL);
@@ -155,15 +155,15 @@ void VcuRtos_Init(void)
 #endif
 }
 
-BaseType_t VcuRtos_CanRxFromISR(CAN_HandleTypeDef *hcan, BaseType_t *higher_priority_task_woken)
+BaseType_t PatrolRtos_CanRxFromISR(CAN_HandleTypeDef *hcan, BaseType_t *higher_priority_task_woken)
 {
     CAN_RxHeaderTypeDef header;
-    VcuCanFrame_t frame;
+    PatrolCanFrame_t frame;
 
     if (hcan == NULL || g_can_rx_queue == NULL) return pdFAIL;
     memset(&frame, 0, sizeof(frame));
     if (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &header, frame.data) != HAL_OK) return pdFAIL;
-    frame.bus = vcu_can_bus_index(hcan);
+    frame.bus = patrol_can_bus_index(hcan);
     g_can_raw_rx_count[frame.bus]++;
     frame.header = header;
     frame.timestamp_ms = HAL_GetTick();
@@ -179,29 +179,29 @@ BaseType_t VcuRtos_CanRxFromISR(CAN_HandleTypeDef *hcan, BaseType_t *higher_prio
     return pdPASS;
 }
 
-BaseType_t VcuRtos_CanRxPop(VcuCanFrame_t *frame, TickType_t wait_ticks)
+BaseType_t PatrolRtos_CanRxPop(PatrolCanFrame_t *frame, TickType_t wait_ticks)
 {
     if (frame == NULL || g_can_rx_queue == NULL) return pdFAIL;
     return xQueueReceive(g_can_rx_queue, frame, wait_ticks);
 }
 
-uint32_t VcuRtos_CanRxOverflowCount(void)
+uint32_t PatrolRtos_CanRxOverflowCount(void)
 {
     return g_can_rx_overflow_count;
 }
 
-uint8_t VcuRtos_CanStarted(void) { return g_can_started; }
-uint8_t VcuRtos_CanBusOff(void)
+uint8_t PatrolRtos_CanStarted(void) { return g_can_started; }
+uint8_t PatrolRtos_CanBusOff(void)
 {
     return (g_can_bus_off_mask & 0x01U) ? 1U : 0U;
 }
 
-uint32_t VcuRtos_CanRawRxCount(uint8_t bus)
+uint32_t PatrolRtos_CanRawRxCount(uint8_t bus)
 {
     return bus < 2U ? g_can_raw_rx_count[bus] : 0U;
 }
 
-uint8_t VcuRtos_CanBusOffActive(void)
+uint8_t PatrolRtos_CanBusOffActive(void)
 {
     return (hcan1.Instance->ESR & CAN_ESR_BOFF) != 0U ? 1U : 0U;
 }
@@ -210,7 +210,7 @@ uint8_t VcuRtos_CanBusOffActive(void)
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
     BaseType_t higher_priority_task_woken = pdFALSE;
-    (void)VcuRtos_CanRxFromISR(hcan, &higher_priority_task_woken);
+    (void)PatrolRtos_CanRxFromISR(hcan, &higher_priority_task_woken);
     portYIELD_FROM_ISR(higher_priority_task_woken);
 }
 
@@ -221,12 +221,12 @@ void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan)
     {
         g_can_bus_off_mask |= hcan->Instance == CAN1 ? 0x01U : 0x02U;
         if (hcan->Instance == CAN1)
-            xEventGroupSetBitsFromISR(g_health_events, VCU_EVENT_CAN_ERROR, &higher_priority_task_woken);
+            xEventGroupSetBitsFromISR(g_health_events, PATROL_EVENT_CAN_ERROR, &higher_priority_task_woken);
     }
     portYIELD_FROM_ISR(higher_priority_task_woken);
 }
 
-static void Vcu_SafetyControlTask(void *argument)
+static void Patrol_SafetyControlTask(void *argument)
 {
     TickType_t last_wake = xTaskGetTickCount();
     (void)argument;
@@ -235,21 +235,21 @@ static void Vcu_SafetyControlTask(void *argument)
         taskENTER_CRITICAL();
         RemoteService_SafetyTick(HAL_GetTick());
         taskEXIT_CRITICAL();
-        xEventGroupSetBits(g_health_events, VCU_HEALTH_SAFETY);
+        xEventGroupSetBits(g_health_events, PATROL_HEALTH_SAFETY);
         vTaskDelayUntil(&last_wake, pdMS_TO_TICKS(10U));
     }
 }
 
-static void Vcu_CanRxTask(void *argument)
+static void Patrol_CanRxTask(void *argument)
 {
-    VcuCanFrame_t frame;
+    PatrolCanFrame_t frame;
     PatrolCanFrame decoded;
     (void)argument;
-    vcu_start_can();
+    patrol_start_can();
     for (;;)
     {
         (void)ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(100U));
-        while (VcuRtos_CanRxPop(&frame, 0U) == pdPASS)
+        while (PatrolRtos_CanRxPop(&frame, 0U) == pdPASS)
         {
             if (frame.bus != 0U || frame.header.IDE != CAN_ID_STD || frame.header.RTR != CAN_RTR_DATA)
                 continue;
@@ -261,11 +261,11 @@ static void Vcu_CanRxTask(void *argument)
             PatrolRuntime_OnCanFrame(&decoded, frame.timestamp_ms);
             taskEXIT_CRITICAL();
         }
-        xEventGroupSetBits(g_health_events, VCU_HEALTH_CAN_RX);
+        xEventGroupSetBits(g_health_events, PATROL_HEALTH_CAN_RX);
     }
 }
 
-static void Vcu_CanopenTask(void *argument)
+static void Patrol_CanopenTask(void *argument)
 {
     TickType_t last_wake = xTaskGetTickCount();
     (void)argument;
@@ -273,12 +273,12 @@ static void Vcu_CanopenTask(void *argument)
 #if PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED
         PatrolRuntime_Tick();
 #endif
-        xEventGroupSetBits(g_health_events, VCU_HEALTH_CANOPEN);
+        xEventGroupSetBits(g_health_events, PATROL_HEALTH_CANOPEN);
         vTaskDelayUntil(&last_wake, pdMS_TO_TICKS(10U));
     }
 }
 
-static void Vcu_EncoderTask(void *argument)
+static void Patrol_EncoderTask(void *argument)
 {
     (void)argument;
     for (;;)
@@ -358,7 +358,7 @@ static void Vcu_EncoderTask(void *argument)
     }
 }
 
-static void Vcu_PowerTask(void *argument)
+static void Patrol_PowerTask(void *argument)
 {
     ChassisPower power;
     (void)argument;
@@ -371,7 +371,7 @@ static void Vcu_PowerTask(void *argument)
     }
 }
 
-static void Vcu_RemoteTask(void *argument)
+static void Patrol_RemoteTask(void *argument)
 {
     (void)argument;
     for (;;)
@@ -383,7 +383,7 @@ static void Vcu_RemoteTask(void *argument)
     }
 }
 
-static void Vcu_DiagTask(void *argument)
+static void Patrol_DiagTask(void *argument)
 {
     (void)argument;
     for (;;)
@@ -393,9 +393,9 @@ static void Vcu_DiagTask(void *argument)
     }
 }
 
-static void Vcu_WatchdogTask(void *argument)
+static void Patrol_WatchdogTask(void *argument)
 {
-    const EventBits_t required = VCU_HEALTH_REQUIRED;
+    const EventBits_t required = PATROL_HEALTH_REQUIRED;
     const TickType_t trial_started = xTaskGetTickCount();
     (void)argument;
     for (;;)
@@ -412,7 +412,7 @@ static void Vcu_WatchdogTask(void *argument)
             (void)HAL_IWDG_Refresh(&hiwdg);
             /* Do not require MQTT, 4G, or a vehicle CAN peer for trial success. */
             if (g_boot_confirmed == 0U && (xTaskGetTickCount() - trial_started) >= pdMS_TO_TICKS(30000U) &&
-                (xEventGroupGetBits(g_health_events) & VCU_EVENT_CAN_ERROR) == 0U)
+                (xEventGroupGetBits(g_health_events) & PATROL_EVENT_CAN_ERROR) == 0U)
             {
                 g_boot_confirmed = BootState_Confirm();
             }
@@ -442,8 +442,8 @@ void vApplicationMallocFailedHook(void)
 uint32_t PatrolRuntimePort_Now(void) { return HAL_GetTick(); }
 void PatrolRuntimePort_Enter(void) { taskENTER_CRITICAL(); }
 void PatrolRuntimePort_Exit(void) { taskEXIT_CRITICAL(); }
-uint8_t PatrolRuntimePort_CanBusOff(void) { return VcuRtos_CanBusOff(); }
-uint8_t PatrolRuntimePort_CanBusOffActive(void) { return VcuRtos_CanBusOffActive(); }
+uint8_t PatrolRuntimePort_CanBusOff(void) { return PatrolRtos_CanBusOff(); }
+uint8_t PatrolRuntimePort_CanBusOffActive(void) { return PatrolRtos_CanBusOffActive(); }
 uint8_t PatrolRuntimePort_OtaBusy(void) { return OtaService_IsBusy(); }
 uint8_t PatrolRuntimePort_CanTxReady(void) { return HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) > 0U; }
 void PatrolRuntimePort_AbortCanTx(void)

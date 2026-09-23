@@ -33,6 +33,10 @@ typedef enum {
     CLOUD_PROTOCOL_ACTION_CENTER_CAL_COMMIT,
     CLOUD_PROTOCOL_ACTION_CENTER_CAL_CANCEL,
     CLOUD_PROTOCOL_ACTION_RESET_MOTION_FAULT,
+    CLOUD_PROTOCOL_ACTION_MQTT_RUNTIME_CANDIDATE,
+    CLOUD_PROTOCOL_ACTION_MQTT_RUNTIME_CANCEL,
+    CLOUD_PROTOCOL_ACTION_MQTT_RUNTIME_GET,
+    CLOUD_PROTOCOL_ACTION_MQTT_LAB_SEED_CONTROL,
 } CloudProtocolAction_t;
 
 typedef enum {
@@ -54,6 +58,8 @@ typedef struct {
     uint16_t mqtt_port;
     char mqtt_username[CLOUD_PROTOCOL_MQTT_USER_SIZE];
     char mqtt_password[CLOUD_PROTOCOL_MQTT_PASSWORD_SIZE];
+    uint8_t mqtt_tls_enabled;
+    uint8_t mqtt_tls_profile_id;
     uint16_t bench_limit_mdeg;
     uint8_t bench_drive;
     int32_t steering_center_count;

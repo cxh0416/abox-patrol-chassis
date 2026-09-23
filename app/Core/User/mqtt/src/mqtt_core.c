@@ -3,9 +3,12 @@
 #include <string.h>
 
 #include "app_log.h"
-#include "vcu_diag_config.h"
+#include "patrol_diag_config.h"
 #include "main.h"
 #include "mqtt_core_int.h"
+#if PATROL_MQTT_TRIAL_FAULT_INJECTION && PATROL_MQTT_TRIAL_FAULT_KIND == 1
+#include "mqtt_trial_manager.h"
+#endif
 
 #define MQTT_CORE_READY_LINE_SILENCE_MS 70000U
 #define MQTT_CORE_PUB_OK_TIMEOUT_MS 90000U
@@ -42,8 +45,9 @@ uint32_t g_mqtt_pub_ok_seq = 0;
 uint8_t g_mqtt_pub_timeout_count = 0U;
 MQTT_CoreRxDiagnostics_t g_mqtt_rx_diagnostics;
 static uint8_t g_mqtt_paused = 0U;
+static uint8_t g_mqtt_security_ready = 0U;
 
-#if VCU_EC800_AT_DIAG_UART5
+#if PATROL_EC800_AT_DIAG_UART5
 static const char* const g_mqtt_diag_names[] = {
     "SIM",
     "SIGNAL",
@@ -152,6 +156,7 @@ void MQTT_Core_Init(const MQTT_CoreConfig_t* cfg, MQTT_CoreMsgCallback_t cb)
     g_mqtt_iccid_query_pending = 0U;
     g_mqtt_iccid_query_tick = 0U;
     g_mqtt_paused = 0U;
+    g_mqtt_security_ready = 0U;
     g_mqtt_pub_prompt_pending = 0U;
     g_mqtt_rx_msg_pending = 0U;
     // g_mqtt_need_full_reinit = 0U;
@@ -359,6 +364,20 @@ void MQTT_Core_GetRxDiagnostics(MQTT_CoreRxDiagnostics_t* diagnostics)
     __enable_irq();
 }
 
+void MQTT_Core_SetSecurityReady(uint8_t ready)
+{
+    g_mqtt_security_ready = ready ? 1U : 0U;
+}
+
+uint8_t MQTT_Core_ApplyRuntimeConfig(const ABoxMqttConfig* config)
+{
+    if (config == 0 || config->host == 0 || config->host[0] == '\0' || config->port == 0U ||
+        config->username == 0 || config->password == 0 || config->tls_enabled > 1U) return 0U;
+    MQTT_Core_UpdateBroker(config->host, config->port, config->username, config->password);
+    g_mqtt_cfg.client_idx = config->tls_enabled ? 1U : 0U;
+    return 1U;
+}
+
 uint8_t MQTT_Core_IsPublishActive(void) { return mqtt_pub_flow_active(); }
 
 uint32_t MQTT_Core_GetPubOkSeq(void) { return g_mqtt_pub_ok_seq; }
@@ -435,7 +454,7 @@ void MQTT_Core_Task(void)
 {
     uint32_t wait_ms;
 
-    if (g_mqtt_paused) return;
+    if (g_mqtt_paused || !g_mqtt_security_ready) return;
 
     if (g_mqtt_last_evt_pending)
     {
@@ -490,7 +509,7 @@ void MQTT_Core_Task(void)
             if (g_mqtt_rt.flag_cfg_ok)
             {
                 g_mqtt_rt.retry_in_state = 0;
-#if VCU_EC800_AT_DIAG_UART5
+#if PATROL_EC800_AT_DIAG_UART5
                 g_mqtt_rt.diag_index = 0U;
                 mqtt_set_state(MQTT_CORE_ST_DIAG);
 #else
@@ -501,7 +520,7 @@ void MQTT_Core_Task(void)
             break;
 
         case MQTT_CORE_ST_DIAG:
-#if VCU_EC800_AT_DIAG_UART5
+#if PATROL_EC800_AT_DIAG_UART5
             if (g_mqtt_rt.diag_index >= MQTT_CORE_DIAG_COUNT)
             {
                 APP_LOGI("EC", "MQTT pre-open diagnostics complete");
@@ -523,7 +542,7 @@ void MQTT_Core_Task(void)
             break;
 
         case MQTT_CORE_ST_WAIT_DIAG:
-#if VCU_EC800_AT_DIAG_UART5
+#if PATROL_EC800_AT_DIAG_UART5
             if (g_mqtt_rt.flag_cfg_ok)
             {
                 APP_LOGI("EC", "diag[%u] %s terminal=OK", (unsigned)g_mqtt_rt.diag_index,
@@ -769,6 +788,9 @@ void MQTT_Core_Task(void)
             break;
 
         case MQTT_CORE_ST_SUB:
+#if PATROL_MQTT_TRIAL_FAULT_INJECTION && PATROL_MQTT_TRIAL_FAULT_KIND == 1
+            if (MqttTrialManager_State() == ABOX_MQTT_TRIAL_SUBSCRIBING) break;
+#endif
             if ((g_mqtt_sub_topic_count == 0U) || (g_mqtt_rt.sub_index >= g_mqtt_sub_topic_count))
             {
                 mqtt_set_ready_after_subscribe();

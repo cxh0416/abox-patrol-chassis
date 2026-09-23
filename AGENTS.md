@@ -17,3 +17,23 @@
 - 清理使用 `python tools/clean_workspace.py` 预览，显式加 `--apply` 执行；清除产品构建缓存需加 `--build`。不得清除平台子模块的冻结 Boot、源码或逐车配置。
 - 现场原始记录不能作为普通日志清除。先归档到内部 `docs/operations/evidence/`，建立原路径、归档位置和 SHA256 索引，校验成功后才删除原件；历史证据正文和哈希不得改写。
 - 当前运维步骤与带日期/版本的历史记录分开维护。历史参数不得直接作为新固件操作步骤，当前文档必须区分源码、主机测试、构建和现场验收证据。
+
+## 文档生命周期
+
+- `docs/CURRENT.md` 是唯一当前项目状态入口；README 只做稳定入口导航，不维护工作包细节、临时候选哈希或阶段 TODO。
+- CONTRACT：长期有效接口规范放在 `docs/protocols/`。
+- IMPLEMENTATION：当前实现设计放在 `docs/implementation/`。
+- RUNBOOK：当前可执行维护和测试流程放在 `docs/operations/`。
+- HISTORY：已关闭工作包、旧版本设计和阶段结果放在 `docs/operations/history/`，不作为当前操作依据。
+- EVIDENCE：原始不可变证据放在 `docs/operations/evidence/`；只允许增加导航索引，不得为整理目录改写原始日志和既有哈希。
+- 工作包关闭后，其结论进入 `docs/CURRENT.md` 或长期实现文档，过程进入 history，原始材料留在 evidence；关闭的工作包不再作为 Current 文档维护。
+- 新建文档前先归类并检查是否已有权威入口；能够更新 CURRENT、现有长期 implementation、protocol 或 runbook 时，不新增同主题总结文档。
+
+## 能力归属与命名
+
+- ABox Platform 已提供的公共能力使用 `ABox*`，不得为统一前缀重新包装成产品私有能力。
+- 跨产品通用但尚位于产品仓的服务、持久化和 transport adapter 使用中性能力名。
+- 只有 Patrol Chassis 专属业务、配置和控制能力使用 `Patrol*`。
+- 当前维护代码禁止新增 `Vcu*` / `VCU_*` 历史命名。
+- 产品 Flash Config 正式格式仅为 Config V5；Config V3/V4 不进入正式运行路径。
+- Config V4 与公共 MQTT V4 是完全不同的版本概念，不得混淆；MQTT V4 保持冻结。

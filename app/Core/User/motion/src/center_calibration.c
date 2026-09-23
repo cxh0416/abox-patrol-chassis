@@ -4,7 +4,7 @@
 #include <string.h>
 #include "app_log.h"
 #include "remote_service.h"
-#include "vcu_config.h"
+#include "patrol_config.h"
 #include "vehicle_power_output.h"
 #include "vehicle_steering_profile.h"
 
@@ -381,9 +381,9 @@ uint8_t CenterCalibration_Format(char* out, uint16_t size)
         (unsigned)g_motion.center_cal.phase, g_motion.center_cal.session_id, (unsigned long)g_motion.center_cal.fault,
         (long)s.steering_position_count, (unsigned long)s.encoder_count,
         (long)g_motion.center_cal.target_mdeg, (long)g_motion.center_cal.accumulated_mdeg,
-        VcuConfig_SingleTurnProfileReady() ? "true" : "false",
+        PatrolConfig_SingleTurnProfileReady() ? "true" : "false",
         c->feedback.encoder_range_valid ? "true" : "false",
-        VcuConfig_Get()->calibrated ? "true" : "false",
+        PatrolConfig_Get()->calibrated ? "true" : "false",
         (long)g_motion.center_cal.driver_relative_mdeg, (long)g_motion.center_cal.encoder_relative_mdeg,
         g_motion.center_cal.relative_valid ? "true" : "false",
         (long)VEHICLE_CENTER_COMMISSIONING_LIMIT_MDEG,
@@ -500,7 +500,7 @@ void CenterCalibration_Tick(uint32_t now)
         g_motion.center_cal.last_sample_ms = s.coherent_feedback_ms;
         if (++g_motion.center_cal.stable_samples < 3U) return;
         g_motion.center_cal.captured_driver_count = s.steering_position_count;
-        if (!VcuConfig_ClearCalibration()) {
+        if (!PatrolConfig_ClearCalibration()) {
             CenterCalibration_Fail(4U, CENTER_CAL_REASON_CONFIG_CLEAR_FAILED, &s, gate_mask);
             return;
         }
@@ -536,7 +536,7 @@ void CenterCalibration_Tick(uint32_t now)
             return;
         }
         if (++g_motion.center_cal.stable_samples < 3U) return;
-        if (!VcuConfig_SetCalibration(g_motion.center_cal.captured_driver_count,
+        if (!PatrolConfig_SetCalibration(g_motion.center_cal.captured_driver_count,
                 VEHICLE_ABSOLUTE_CENTER_COUNT, VEHICLE_STEERING_COUNTS_MILLI,
                 VEHICLE_ABSOLUTE_COUNTS_MILLI, VEHICLE_STEERING_DIRECTION,
                 VEHICLE_ABSOLUTE_DIRECTION, VEHICLE_STEERING_TOLERANCE_MDEG)) {

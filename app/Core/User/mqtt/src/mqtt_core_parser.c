@@ -2,7 +2,7 @@
 #include <string.h>
 
 #include "app_log.h"
-#include "vcu_diag_config.h"
+#include "patrol_diag_config.h"
 #include "main.h"
 #include "mqtt_core_int.h"
 #include "mqtt_qmtrecv.h"
@@ -253,7 +253,7 @@ void mqtt_handle_line(const char* line)
     TimeBase_UpdateFromCCLK(line);
     mqtt_dbg_printf("[MQTT] LINE: %s\r\n", line);
 
-#if VCU_EC800_AT_DIAG_UART5
+#if PATROL_EC800_AT_DIAG_UART5
     if ((strncmp(line, "+CPIN:", 6U) == 0) || (strncmp(line, "+CSQ:", 5U) == 0) ||
         (strncmp(line, "+CEREG:", 7U) == 0) || (strncmp(line, "+CGATT:", 7U) == 0) ||
         (strncmp(line, "+CGPADDR:", 9U) == 0) || (strncmp(line, "+QNWINFO:", 9U) == 0))
@@ -322,7 +322,7 @@ void mqtt_handle_line(const char* line)
         {
             status = (count >= 2) ? second : first;
             g_mqtt_rt.network_registered = ((status == 1U) || (status == 5U)) ? 1U : 0U;
-#if VCU_EC800_AT_DIAG_UART5
+#if PATROL_EC800_AT_DIAG_UART5
             APP_LOGI("EC", "registration status=%u ready=%u", status,
                      (unsigned)g_mqtt_rt.network_registered);
 #endif
@@ -337,7 +337,7 @@ void mqtt_handle_line(const char* line)
         if (sscanf(line + 7U, " %u", &attached) == 1)
         {
             g_mqtt_rt.packet_attached = (attached == 1U) ? 1U : 0U;
-#if VCU_EC800_AT_DIAG_UART5
+#if PATROL_EC800_AT_DIAG_UART5
             APP_LOGI("EC", "packet attached=%u", (unsigned)g_mqtt_rt.packet_attached);
 #endif
         }
@@ -370,7 +370,7 @@ void mqtt_handle_line(const char* line)
         {
             if (result == 0)
             {
-#if VCU_EC800_AT_DIAG_UART5
+#if PATROL_EC800_AT_DIAG_UART5
                 APP_LOGI("MQTT", "publish confirmed msg=%u topic=%s", (unsigned)msg_id,
                          g_mqtt_pub_pending_topic);
 #endif
@@ -404,7 +404,7 @@ void mqtt_handle_line(const char* line)
 
         if (sscanf(strstr(line, "+QMTOPEN:") + strlen("+QMTOPEN:"), " %u,%d", &client_idx, &result) == 2)
         {
-#if VCU_EC800_AT_DIAG_UART5
+#if PATROL_EC800_AT_DIAG_UART5
             APP_LOGI("MQTT", "QMTOPEN client=%u result=%d", client_idx, result);
 #endif
             if (result == 0) { g_mqtt_rt.flag_open_ok = 1; }
@@ -426,7 +426,7 @@ void mqtt_handle_line(const char* line)
     {
         mqtt_save_last_evt(line);
 
-#if VCU_EC800_AT_DIAG_UART5
+#if PATROL_EC800_AT_DIAG_UART5
         {
             unsigned client_idx;
             int result;
@@ -475,7 +475,7 @@ void mqtt_handle_line(const char* line)
         if (sscanf(line + 7U, " %u,%u", &context_id, &context_state) >= 2 && context_id == 1U)
         {
             g_mqtt_rt.pdp_active = (context_state == 1U) ? 1U : 0U;
-#if VCU_EC800_AT_DIAG_UART5
+#if PATROL_EC800_AT_DIAG_UART5
             APP_LOGI("EC", "PDP ctx=%u state=%u active=%u", context_id, context_state,
                      (unsigned)g_mqtt_rt.pdp_active);
 #endif

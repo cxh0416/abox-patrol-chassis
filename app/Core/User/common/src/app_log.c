@@ -4,10 +4,10 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "vcu_diag_config.h"
+#include "patrol_diag_config.h"
 #include "main.h"
 #include "time_base.h"
-#if VCU_EC800_AT_DIAG_UART5 || defined(VCU_OTA_FIELD_PROGRESS_UART5)
+#if PATROL_EC800_AT_DIAG_UART5 || defined(PATROL_OTA_FIELD_PROGRESS_UART5)
 #include "usart.h"
 #endif
 
@@ -24,7 +24,7 @@ static uint16_t g_log_mqtt_rd = 0U;
 static uint32_t g_log_next_sequence = 1U;
 static uint32_t g_log_mqtt_sequence = 0U;
 static uint32_t g_log_mqtt_dropped = 0U;
-#if VCU_EC800_AT_DIAG_UART5
+#if PATROL_EC800_AT_DIAG_UART5
 static uint16_t g_log_debug_rd = 0U;
 #endif
 static AppLogLevel_t g_log_level = APP_LOG_LEVEL_INFO;
@@ -92,7 +92,7 @@ void AppLog_Clear(void)
     g_log_next_sequence = 1U;
     g_log_mqtt_sequence = 0U;
     g_log_mqtt_dropped = 0U;
-#if VCU_EC800_AT_DIAG_UART5
+#if PATROL_EC800_AT_DIAG_UART5
     g_log_debug_rd = 0U;
 #endif
 }
@@ -102,7 +102,7 @@ AppLogLevel_t AppLog_GetLevel(void) { return g_log_level; }
 
 void AppLog_FieldStartup(const char* version)
 {
-#ifdef VCU_OTA_FIELD_PROGRESS_UART5
+#ifdef PATROL_OTA_FIELD_PROGRESS_UART5
     char line[128];
     int n = snprintf(line, sizeof(line), "[APP2] evt=APP_START version=%s fieldBuild=1 role=OTA_OBSERVE\r\n",
                      version == 0 ? "unknown" : version);
@@ -115,7 +115,7 @@ void AppLog_FieldStartup(const char* version)
 void AppLog_FieldOtaProgress(uint32_t threshold_percent, uint32_t actual_percent,
                              uint32_t downloaded, uint32_t size, uint8_t slot)
 {
-#ifdef VCU_OTA_FIELD_PROGRESS_UART5
+#ifdef PATROL_OTA_FIELD_PROGRESS_UART5
     char line[160];
     int n = snprintf(line, sizeof(line),
                      "[APP2] evt=OTA_DOWNLOAD_PROGRESS threshold=%lu actualPercent=%lu downloaded=%lu size=%lu slot=%u\r\n",
@@ -286,7 +286,7 @@ uint16_t AppLog_ReadMqttAlert(char* out, uint16_t out_sz, AppLogLevel_t* level)
 
 uint32_t AppLog_GetMqttDroppedCount(void) { return g_log_mqtt_dropped; }
 
-#if VCU_EC800_AT_DIAG_UART5
+#if PATROL_EC800_AT_DIAG_UART5
 void AppLog_DebugTask(void)
 {
     char line[128];

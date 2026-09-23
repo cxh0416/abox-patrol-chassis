@@ -9,7 +9,7 @@
 #include "fixed_point.h"
 #include "main.h"
 #include "time_base.h"
-#include "vcu_config.h"
+#include "patrol_config.h"
 #include "vehicle_power_output.h"
 #include <stdlib.h>
 #include "FreeRTOS.h"
@@ -25,6 +25,9 @@ static uint8_t g_bench_permit, g_bench_started, g_drive_permit;
 static uint16_t g_bench_limit;
 static uint32_t g_arm_deadline, g_arm_serial;
 static char g_bench_session[40];
+#if PATROL_CHASSIS_MQTT_LAB_TEST
+static uint8_t g_lab_hold_state;
+#endif
 
 static uint32_t request_hash(const ChassisCloudCommand* command)
 {
@@ -50,8 +53,58 @@ void RemoteService_BenchRevoke(void)
     g_bench_permit = 0; g_drive_permit = 0; g_control.remote_enabled = 0;
     g_control.enable_request = 0; g_control.session_active = 0;
     g_control.target_rpm = 0; g_control.requested_rpm = 0;
+    g_control.target_steering_mdeg = 0; g_control.session_id[0] = '\0';
+    g_bench_session[0] = '\0';
     taskEXIT_CRITICAL();
 }
+void RemoteService_RevokeForNetworkChange(void)
+{
+    RemoteService_BenchRevoke();
+    g_last_request_id[0] = '\0';
+    g_last_response[0] = '\0';
+    g_last_request_hash = 0U;
+    g_last_request_length = 0U;
+#if PATROL_CHASSIS_MQTT_LAB_TEST
+    g_lab_hold_state = 0U;
+#endif
+    APP_LOGW("REMOTE", "MQTT runtime change revoked motion session and targets");
+}
+uint8_t RemoteService_FormatNetworkState(char *output, uint16_t size)
+{
+    int written;
+    if (output == 0 || size == 0U) return 0U;
+    written = snprintf(output, size,
+        "{\"remotePermit\":%s,\"sessionActive\":%s,\"sessionId\":\"%s\","
+        "\"enableRequest\":%s,\"targetRpm\":%d,\"requestedRpm\":%d,"
+        "\"steeringTargetMdeg\":%ld,\"replayCached\":%s}",
+        g_control.remote_enabled ? "true" : "false",
+        g_control.session_active ? "true" : "false", g_control.session_id,
+        g_control.enable_request ? "true" : "false", (int)g_control.target_rpm,
+        (int)g_control.requested_rpm, (long)g_control.target_steering_mdeg,
+        (g_last_request_id[0] != '\0' || g_last_response[0] != '\0' ||
+         g_last_request_hash != 0U || g_last_request_length != 0U) ? "true" : "false");
+    return written > 0 && written < size;
+}
+#if PATROL_CHASSIS_MQTT_LAB_TEST
+void RemoteService_LabSeedNetworkState(void)
+{
+    taskENTER_CRITICAL();
+    g_control.remote_enabled = 1U;
+    g_control.session_active = 1U;
+    g_control.enable_request = 1U;
+    g_control.target_rpm = 37;
+    g_control.requested_rpm = 41;
+    g_control.target_steering_mdeg = 3200;
+    strcpy(g_control.session_id, "mqtt-lab-old-session");
+    strcpy(g_last_request_id, "mqtt-lab-replay");
+    strcpy(g_last_response, "cached");
+    g_last_request_hash = 0xA5A55A5AUL;
+    g_last_request_length = 123U;
+    g_lab_hold_state = 1U;
+    taskEXIT_CRITICAL();
+    APP_LOGW("REMOTE", "lab-only non-actuating network state seeded");
+}
+#endif
 uint8_t RemoteService_BenchPermitted(void) { return g_bench_permit; }
 void RemoteService_BenchFault(void)
 {
@@ -100,11 +153,11 @@ uint8_t RemoteService_BenchDriveArm(uint16_t limit, uint32_t now)
 
 void RemoteService_Init(void)
 {
-    const VcuRemoteConfig_t* cfg = VcuConfig_Get();
+    const PatrolRemoteConfigV5_t* cfg = PatrolConfig_Get();
     ChassisFeedback feedback = {0};
     g_bench_permit = 0; g_bench_started = 0; g_drive_permit = 0;
     ChassisControl_Init(&g_control, 0U); /* A persisted flag never arms the bench. */
-    feedback.calibrated = cfg != 0 && cfg->calibrated && VcuConfig_CalibrationCompatible();
+    feedback.calibrated = cfg != 0 && cfg->calibrated && PatrolConfig_CalibrationCompatible();
     feedback.feedback_ms = HAL_GetTick();
     ChassisControl_SetFeedback(&g_control, &feedback);
     g_last_request_id[0] = '\0';
@@ -119,6 +172,9 @@ void RemoteService_Init(void)
 void RemoteService_Task(void)
 {
     if (!g_remote_initialized) return;
+#if PATROL_CHASSIS_MQTT_LAB_TEST
+    if (g_lab_hold_state) return;
+#endif
     taskENTER_CRITICAL();
     RemoteService_SafetyTick(HAL_GetTick());
     taskEXIT_CRITICAL();

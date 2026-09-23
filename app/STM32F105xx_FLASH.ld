@@ -56,14 +56,17 @@ ENTRY(Reset_Handler)
 MEMORY
 {
 RAM (xrw)      : ORIGIN = 0x20000000, LENGTH = 64K
-FLASH (rx)      : ORIGIN = 0x08008000, LENGTH = 0x36800
+/* Last App-adjacent page is a transactional backup for the product config page. */
+FLASH (rx)      : ORIGIN = 0x08008000, LENGTH = 0x36000
 }
 
 /* Highest address of the user mode stack */
 _estack = ORIGIN(RAM) + LENGTH(RAM);    /* end of RAM */
 _sstack = _estack - _Min_Stack_Size;
 /* Generate a link error if heap and stack don't fit into RAM */
-_Min_Heap_Size = 0x2000;      /* required amount of heap  */
+/* The phase-2 common OTA context grew by 272 bytes. Keep the formal 4 KiB RAM
+   guard without weakening the 4 KiB stack reservation; newlib retains 8160 B. */
+_Min_Heap_Size = 0x1FE0;
 _Min_Stack_Size = 0x1000; /* required amount of stack */
 
 /* Define output sections */

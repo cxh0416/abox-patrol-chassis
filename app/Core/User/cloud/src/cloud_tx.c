@@ -1,6 +1,8 @@
 #include "cloud_internal.h"
 #include <stdio.h>
 #include "mqtt_core.h"
+#include "mqtt_runtime.h"
+#include "mqtt_trial_manager.h"
 #include "remote_service.h"
 #include "center_calibration.h"
 #include "ota_service.h"
@@ -13,6 +15,13 @@ static uint8_t start_publish(CloudTxKind_t kind, const char* topic, const char* 
     g_cloud.tx_kind = kind;
     g_cloud.tx_start_sequence = MQTT_Core_GetPubOkSeq();
     return 1U;
+}
+void CloudTx_NetworkChanged(void)
+{
+    g_cloud.tx_kind = CLOUD_TX_NONE;
+    g_cloud.tx_start_sequence = 0U;
+    g_cloud.mqtt_was_ready = 0U;
+    g_cloud.mqtt_cancel_pending = 0U;
 }
 
 static void tx_completed(void)
@@ -35,10 +44,23 @@ static void tx_completed(void)
             OtaService_AcknowledgeRollback();
             g_cloud.response_ack_rollback = 0U;
         }
+#if PATROL_CHASSIS_MQTT_LAB_TEST
+        if (g_cloud.mqtt_candidate_pending)
+        {
+            g_cloud.mqtt_candidate_pending = 0U;
+            MqttTrialManager_Accepted(CloudPort_Now());
+        }
+        if (g_cloud.mqtt_cancel_pending)
+        {
+            g_cloud.mqtt_cancel_pending = 0U;
+            MqttTrialManager_Cancel(CloudPort_Now());
+        }
+#endif
     }
     else if (completed == CLOUD_TX_HEARTBEAT)
     {
         if (g_cloud.v4_bootstrap_stage == 2U) g_cloud.v4_bootstrap_stage = 3U;
+        MqttTrialManager_OnHeartbeatProof(MQTT_Core_GetPubOkSeq(), CloudPort_Now());
     }
     else if (completed == CLOUD_TX_STATUS_REPORT)
     {

@@ -51,6 +51,18 @@ option(PATROL_CHASSIS_ACTUATION_ENABLED "Allow CANopen motion output after bench
 option(PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED "Allow read-only CANopen and encoder polling" ON)
 option(PATROL_CHASSIS_POWER_OUTPUT_ENABLED "Allow the confirmed PA0 vehicle relay-supply output" ON)
 option(PATROL_CHASSIS_APP_FAULT_INJECTION_TEST "Build intentional Boot confirmation fault" OFF)
+option(PATROL_CHASSIS_MQTT_LAB_TEST "Enable RAM-only MQTT runtime acceptance commands" OFF)
+option(PATROL_MQTT_TRIAL_FAULT_INJECTION "Enable WP7.2 test-only MQTT trial fault injection" OFF)
+set(PATROL_MQTT_TRIAL_FAULT_KIND "0" CACHE STRING "0=none, 1=stall subscribe, 2=drop proof, 3=drop proof then force restore failure")
+if(PATROL_MQTT_TRIAL_FAULT_INJECTION AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+    message(FATAL_ERROR "MQTT trial fault injection is permitted only in Debug builds")
+endif()
+if(PATROL_MQTT_TRIAL_FAULT_INJECTION AND NOT PATROL_CHASSIS_MQTT_LAB_TEST)
+    message(FATAL_ERROR "MQTT trial fault injection requires the lab test command gate")
+endif()
+if(NOT PATROL_MQTT_TRIAL_FAULT_KIND MATCHES "^[0-3]$")
+    message(FATAL_ERROR "Invalid MQTT trial fault kind")
+endif()
 set(PATROL_CHASSIS_APP_TEST_FAULT_KIND "0" CACHE STRING "1=HardFault, 2=IWDG")
 
 # Credentials may be provisioned later in the protected Config page.  An
@@ -82,13 +94,16 @@ include(Core/User/modules.cmake)
 
 # Add project symbols (macros)
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
-    $<$<CONFIG:Debug>:VCU_EC800_AT_DIAG_UART5=1>
-    $<$<CONFIG:Debug>:VCU_EC800_AT_TRACE=1>
-    VCU_OTA_AUTO_SEED=$<BOOL:${PATROL_CHASSIS_OTA_AUTO_SEED}>
+    $<$<CONFIG:Debug>:PATROL_EC800_AT_DIAG_UART5=1>
+    $<$<CONFIG:Debug>:PATROL_EC800_AT_TRACE=1>
+    PATROL_OTA_AUTO_SEED=$<BOOL:${PATROL_CHASSIS_OTA_AUTO_SEED}>
     PATROL_CHASSIS_ACTUATION_ENABLED=$<BOOL:${PATROL_CHASSIS_ACTUATION_ENABLED}>
     PATROL_CHASSIS_BENCH_STEERING_ENABLED=$<BOOL:${PATROL_CHASSIS_BENCH_STEERING_ENABLED}>
     PATROL_CHASSIS_BENCH_DRIVE_ENABLED=$<BOOL:${PATROL_CHASSIS_BENCH_DRIVE_ENABLED}>
     PATROL_CHASSIS_POWER_OUTPUT_ENABLED=$<BOOL:${PATROL_CHASSIS_POWER_OUTPUT_ENABLED}>
+    PATROL_CHASSIS_MQTT_LAB_TEST=$<BOOL:${PATROL_CHASSIS_MQTT_LAB_TEST}>
+    PATROL_MQTT_TRIAL_FAULT_INJECTION=$<BOOL:${PATROL_MQTT_TRIAL_FAULT_INJECTION}>
+    PATROL_MQTT_TRIAL_FAULT_KIND=${PATROL_MQTT_TRIAL_FAULT_KIND}
 )
 if(PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED)
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
@@ -100,6 +115,12 @@ else()
         PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED=0
     )
 endif()
+if(PATROL_CHASSIS_MQTT_LAB_TEST)
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+        PATROL_EC800_AT_DIAG_UART5=1
+        PATROL_EC800_AT_TRACE=1
+    )
+endif()
 if(PATROL_CHASSIS_APP_FAULT_INJECTION_TEST)
     target_sources(${CMAKE_PROJECT_NAME} PRIVATE Core/User/system/src/app_test.c)
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
@@ -108,13 +129,13 @@ if(PATROL_CHASSIS_APP_FAULT_INJECTION_TEST)
     )
 endif()
 if(PATROL_CHASSIS_MQTT_USERNAME)
-    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE VCU_CONFIG_DEFAULT_MQTT_USER="${PATROL_CHASSIS_MQTT_USERNAME}")
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE PATROL_CONFIG_DEFAULT_MQTT_USER="${PATROL_CHASSIS_MQTT_USERNAME}")
 endif()
 if(PATROL_CHASSIS_MQTT_PASSWORD)
-    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE VCU_CONFIG_DEFAULT_MQTT_PASS="${PATROL_CHASSIS_MQTT_PASSWORD}")
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE PATROL_CONFIG_DEFAULT_MQTT_PASS="${PATROL_CHASSIS_MQTT_PASSWORD}")
 endif()
 if(PATROL_CHASSIS_APP_VERSION)
-    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE VCU_APP_FW_VERSION="${PATROL_CHASSIS_APP_VERSION}")
+    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE PATROL_APP_FW_VERSION="${PATROL_CHASSIS_APP_VERSION}")
 endif()
 
 # Remove wrong libob.a library dependency when using cpp files
@@ -124,6 +145,11 @@ list(REMOVE_ITEM CMAKE_C_IMPLICIT_LINK_LIBRARIES ob)
 target_link_libraries(${CMAKE_PROJECT_NAME}
     stm32cubemx
     abox::ec800
+    abox::ec800_command_port
+    abox::ec800_tls
+    abox::mqtt_tls
+    abox::mqtt_runtime
+    abox::mqtt_trial
 
     # Add user defined libraries
 )

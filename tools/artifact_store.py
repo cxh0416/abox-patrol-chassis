@@ -70,8 +70,8 @@ def validate(directory: Path, kind: str) -> None:
         raise ValueError(f"Unexpected artifact set: {directory}")
     m = json.loads((directory / manifest_name).read_text(encoding="utf-8-sig"))
     app = (directory / APP).read_bytes()
-    if not 8 <= len(app) <= 0x36800:
-        raise ValueError("App exceeds 0x08008000..0x0803E7FF")
+    if not 8 <= len(app) <= 0x36000:
+        raise ValueError("App exceeds 0x08008000..0x0803DFFF")
     sp, reset = struct.unpack_from("<II", app)
     if not (0x20000000 <= sp <= 0x20010000 and sp % 8 == 0 and
             reset & 1 and 0x08008000 <= (reset & ~1) < 0x08008000 + len(app)):
@@ -102,7 +102,8 @@ def validate(directory: Path, kind: str) -> None:
     if (m["product"] != "patrol_vehicle_chassis" or m["configuration"] != "Release" or
             m["product_dirty"] or m["platform_dirty"] or m["startup_motion_permit"]):
         raise ValueError("Invalid formal release identity/build state")
-    if (m["app_range"] != "0x08008000..0x0803E7FF" or
+    if (m["app_range"] != "0x08008000..0x0803DFFF" or
+            m.get("config_recovery_page") != "0x0803E000" or
             m["boot_state_pages"] != ["0x0803E800", "0x0803F000"] or m["config_page"] != "0x0803F800"):
         raise ValueError("Flash layout mismatch")
     artifacts = m["artifacts"]

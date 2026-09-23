@@ -10,8 +10,9 @@
 #include "app_version.h"
 #include "boot_cfg.h"
 #include "mqtt_core.h"
+#include "mqtt_runtime.h"
 #include "main.h"
-#include "vcu_config.h"
+#include "patrol_config.h"
 
 typedef struct {
     Ec800AtCore_t *at;
@@ -96,6 +97,12 @@ static void adapter_register(void *context, ABoxBootV2AtEventFn callback, void *
 
 static void adapter_mqtt_pause(void *context, uint8_t paused) { (void)context; MQTT_Core_SetPaused(paused); }
 
+static uint8_t adapter_mqtt_client_index(void *context)
+{
+    (void)context;
+    return MqttRuntime_ActiveClient();
+}
+
 static void adapter_log(void *context, uint8_t level, const char *message)
 {
     (void)context;
@@ -118,7 +125,7 @@ void OtaService_Init(Ec800AtCore_t *at)
         BOOT_STATE_A_ADDR, BOOT_STATE_B_ADDR, BOOT_STATE_PAGE_SIZE,
         APP_START_ADDR, APP_END_ADDR, 0x20000000U, 0x20010000U
     };
-    const VcuRemoteConfig_t *runtime = VcuConfig_Get();
+    const PatrolRemoteConfigV5_t *runtime = PatrolConfig_Get();
     extern uint8_t __app_image_end;
 
     memset(&g_adapter, 0, sizeof(g_adapter));
@@ -134,6 +141,7 @@ void OtaService_Init(Ec800AtCore_t *at)
     port.cancel = adapter_cancel;
     port.register_events = adapter_register;
     port.mqtt_pause = adapter_mqtt_pause;
+    port.mqtt_client_index = adapter_mqtt_client_index;
     port.log = adapter_log;
     port.transfer_buffer = MQTT_Core_OtaWorkspace(&port.transfer_buffer_size);
     port.rx_overflow_count = adapter_rx_overflow;
@@ -143,7 +151,7 @@ void OtaService_Init(Ec800AtCore_t *at)
     config.revision_product = "patrol_vehicle_chassis";
     config.artifact_name = "patrol_vehicle_chassis_app.bin";
     config.version_prefix = "patrol-chassis-";
-    config.running_version = Vcu_AppFwVersion();
+    config.running_version = Patrol_AppFwVersion();
     config.ca_pem = (const uint8_t *)g_ota_ca_pem;
     config.ca_pem_length = (uint32_t)(sizeof(g_ota_ca_pem) - 1U);
     config.app_start_addr = APP_START_ADDR;

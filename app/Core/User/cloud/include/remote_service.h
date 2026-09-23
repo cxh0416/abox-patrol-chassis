@@ -9,6 +9,13 @@ uint8_t RemoteService_BenchArm(uint16_t limit_mdeg, uint32_t now);
 uint8_t RemoteService_BenchDriveArm(uint16_t limit_mdeg, uint32_t now);
 uint8_t RemoteService_BenchDrivePermitted(void);
 void RemoteService_BenchRevoke(void);
+/* Fail-closed network boundary. No authorization, session identity, enable
+ * request or motion target may survive an MQTT runtime switch. */
+void RemoteService_RevokeForNetworkChange(void);
+uint8_t RemoteService_FormatNetworkState(char *output, uint16_t size);
+#if PATROL_CHASSIS_MQTT_LAB_TEST
+void RemoteService_LabSeedNetworkState(void);
+#endif
 void RemoteService_BenchFault(void);
 uint8_t RemoteService_BenchPermitted(void);
 uint16_t RemoteService_BenchLimit(void);

@@ -1,18 +1,19 @@
-#include "vcu_config.h"
+#include "patrol_config.h"
 #include "remote_service.h"
+#include "mqtt_config_adapter.h"
 #include "cloud_protocol.h"
 #include "vehicle_power_output.h"
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
-static VcuRemoteConfig_t flash;
+static PatrolRemoteConfigV5_t flash;
 static uint8_t valid, save_ok=1;
 static uint32_t tick=1000;
 static uint8_t power_level;
 uint32_t HAL_GetTick(void) { return tick; }
 uint8_t TimeBase_FormatUtcMs(char* s,uint16_t n) { snprintf(s,n,"1788838333000"); return 1; }
-uint8_t OTA_Info_LoadRemoteConfig(VcuRemoteConfig_t* c) { if(valid)*c=flash; return valid; }
-uint8_t OTA_Info_SaveRemoteConfig(const VcuRemoteConfig_t* c) { if(!save_ok)return 0; flash=*c;valid=1;return 1; }
+uint8_t OTA_Info_LoadRemoteConfig(PatrolRemoteConfigV5_t* c) { if(valid)*c=flash; return valid; }
+uint8_t OTA_Info_SaveRemoteConfig(const PatrolRemoteConfigV5_t* c) { if(!save_ok)return 0; flash=*c;valid=1;return 1; }
 static uint8_t write_power(uint8_t on) { power_level=on; return 1; }
 static void command(const char* session,int rpm,int angle,const char* action,int seq)
 {
@@ -23,22 +24,29 @@ static void command(const char* session,int rpm,int angle,const char* action,int
 int main(void)
 {
     CloudProtocolRequest_t req;
+    ABoxMqttConfig mqtt_runtime;
     const char* json="{\"version\":\"2.0\",\"data\":{\"requestId\":\"center\",\"command\":\"internal_config\",\"params\":{\"action\":\"set_calibration\",\"steeringCenterCount\":-85123,\"absoluteCenterCount\":3182}}}";
     assert(CloudProtocol_Parse(json,strlen(json),0,&req)==CLOUD_PROTOCOL_OK);
     assert(req.steering_counts_per_degree_milli==2710800&&req.absolute_counts_per_degree_milli==55250);
     VehiclePowerOutput_Init(write_power);
-    VcuConfig_Load(); assert(!VcuConfig_Get()->calibrated&&VcuConfig_CalibrationCompatible());
-    save_ok=0; assert(!VcuConfig_SetCalibration(-85123,3182,2710800,55250,1,1,2000));
-    assert(!VcuConfig_Get()->calibrated);
-    save_ok=1; assert(VcuConfig_SetCalibration(-85123,3182,2710800,55250,1,1,2000));
-    assert(!VcuConfig_SingleTurnProfileReady());
-    assert(VcuConfig_SetCalibration(-85123,0,2710800,55250,1,1,2000));
-    assert(VcuConfig_SingleTurnProfileReady());
-    assert(VcuConfig_SetCalibration(-85123,3182,2710800,55250,1,1,2000));
-    VcuConfig_Load(); assert(VcuConfig_Get()->calibrated&&!VcuConfig_Get()->remote_enabled);
-    flash.steering_counts_per_degree_milli=555556; VcuConfig_Load();
-    assert(!VcuConfig_CalibrationCompatible()&&VcuConfig_Get()->steering_center_count==-85123);
-    flash.steering_counts_per_degree_milli=2710800;VcuConfig_Load();
+    PatrolConfig_Load(); assert(!PatrolConfig_Get()->calibrated&&PatrolConfig_CalibrationCompatible());
+    save_ok=0; assert(!PatrolConfig_SetCalibration(-85123,3182,2710800,55250,1,1,2000));
+    assert(!PatrolConfig_Get()->calibrated);
+    save_ok=1; assert(PatrolConfig_SetCalibration(-85123,3182,2710800,55250,1,1,2000));
+    assert(!PatrolConfig_SingleTurnProfileReady());
+    assert(PatrolConfig_SetCalibration(-85123,0,2710800,55250,1,1,2000));
+    assert(PatrolConfig_SingleTurnProfileReady());
+    assert(PatrolConfig_SetCalibration(-85123,3182,2710800,55250,1,1,2000));
+    PatrolConfig_Load(); assert(PatrolConfig_Get()->calibrated&&!PatrolConfig_Get()->remote_enabled);
+    flash.mqtt_tls_enabled=1; flash.mqtt_tls_profile_id=0; PatrolConfig_Load();
+    assert(PatrolMqttConfig_FromV5(PatrolConfig_Get(),&mqtt_runtime));
+    assert(!strcmp(mqtt_runtime.host,flash.mqtt_host)&&mqtt_runtime.port==flash.mqtt_port&&
+           !strcmp(mqtt_runtime.username,flash.mqtt_username)&&
+           !strcmp(mqtt_runtime.password,flash.mqtt_password)&&mqtt_runtime.tls_enabled==1&&
+           mqtt_runtime.tls_profile_id==0);
+    flash.steering_counts_per_degree_milli=555556; PatrolConfig_Load();
+    assert(!PatrolConfig_CalibrationCompatible()&&PatrolConfig_Get()->steering_center_count==-85123);
+    flash.steering_counts_per_degree_milli=2710800;PatrolConfig_Load();
     RemoteService_Init(); assert(!RemoteService_BenchPermitted());
     ChassisFeedback f={.calibrated=1,.steering_online=1,.drive_online=1,.power_ready=1,
         .encoder_range_valid=1,.encoder_profile_ready=1,.feedback_ms=1000};
@@ -72,7 +80,14 @@ int main(void)
     strcpy(session,RemoteService_BenchSession());
     command(session,201,0,"acquire",20); assert(!RemoteService_State()->session_active);
     command(session,200,30,"acquire",21); assert(RemoteService_State()->enable_request);
-    command(session,0,0,"stop",22); assert(!RemoteService_BenchDrivePermitted());
+    assert(RemoteService_State()->session_active && RemoteService_State()->target_rpm==200 &&
+           RemoteService_State()->target_steering_mdeg==30000);
+    RemoteService_RevokeForNetworkChange();
+    assert(!RemoteService_BenchDrivePermitted() && !RemoteService_State()->session_active &&
+           !RemoteService_State()->enable_request && RemoteService_State()->target_rpm==0 &&
+           RemoteService_State()->target_steering_mdeg==0 && RemoteService_State()->session_id[0]=='\0' &&
+           RemoteService_BenchSession()[0]=='\0');
+    command(session,0,0,"renew",22); assert(!RemoteService_State()->session_active);
     assert(RemoteService_BenchArm(1000,tick));
     strcpy(session,RemoteService_BenchSession());
     command(session,30,0,"acquire",23); assert(!RemoteService_State()->session_active);

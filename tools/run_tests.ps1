@@ -92,8 +92,10 @@ $benchConfigTest = Join-Path $hostBuild 'bench_config_session_test.exe'
     "-I$PSScriptRoot\..\tests\bench_stubs" `
     @productIncludes `
     "-I$PSScriptRoot\..\shared\include" `
+    "-I$PSScriptRoot\..\platform\include" `
     "-I$PSScriptRoot\..\platform\components\cjson" `
-    "$PSScriptRoot\..\app\Core\User\system\src\vcu_config.c" `
+    "$PSScriptRoot\..\app\Core\User\system\src\patrol_config.c" `
+    "$PSScriptRoot\..\app\Core\User\system\src\mqtt_config_adapter.c" `
     "$PSScriptRoot\..\app\Core\User\cloud\src\remote_service.c" `
     "$PSScriptRoot\..\app\Core\User\motion\src\chassis_control.c" `
     "$PSScriptRoot\..\app\Core\User\cloud\src\cloud_protocol.c" `

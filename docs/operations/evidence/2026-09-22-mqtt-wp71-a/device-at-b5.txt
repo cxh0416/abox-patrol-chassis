@@ -1,0 +1,219 @@
+I EC diag[6] NETWORK terminal=OK
+
+
+ic=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I MQTT state=6
+
+
+nfirmed msg=15 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I EC MQTT pre-open diagnostics complete
+
+
+l/abox/PATROL-TLS-LAB-001/re
+
+
+I MQTT state=8
+
+
+nfirmed msg=17 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I MQTT state=9
+
+
+99
+
+
+ed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+
+
+I EC AT +CEREG: 0,1
+
+
+rminal=OK
+
+
+pic=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I EC registration status=1 ready=1
+
+
+=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I MQTT packet network registered
+
+
+ic=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I MQTT state=10
+
+
+firmed msg=21 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I MQTT state=11
+
+
+1
+
+
+ed msg=22 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I EC AT +CGATT: 1
+
+
+atus=1 ready=1
+
+
+/zxwl/abox/PATROL-TLS-LAB-001/hea
+
+
+I EC packet attached=1
+
+
+=OK
+
+
+ topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I MQTT packet service attached
+
+
+opic=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I MQTT state=15
+
+
+H -> AT+CGATT?
+
+
+ic=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I MQTT state=16
+
+
+firmed msg=26 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I EC PDP ctx=1 state=1 active=1
+
+
+ic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+
+
+I MQTT PDP context 1 already active
+
+
+zxwl/abox/PATROL-TLS-LAB-001/hea
+
+
+I MQTT state=23
+
+
+H terminal=OK
+
+
+ic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+
+
+I MQTT state=24
+
+
+firmed msg=27 topic=/zxwl/abox/PATROL-TLS-LAB-001/in
+
+
+I EC diag[4] PDP -> AT+QIACT?
+
+
+oked motion session and targets
+
+
+1/re
+
+
+I MQTT state=7
+
+
+nfirmed msg=4 topic=/zxwl/abox/PATROL-TLS-LAB-001/rep
+
+
+I EC PDP ctx=1 state=1 active=1
+
+
+ntext=2 CA/time verification enabled
+
+
+I EC diag[4] PDP terminal=OK
+
+
+topic=/zxwl/abox/PATROL-TLS-LAB-001/rep
+
+
+I MQTT state=6
+
+
+onnected
+
+
+=7 topic=/zxwl/abox/PATROL-TLS-LAB-001/rep
+
+
+I EC diag[5] IP -> AT+CGPADDR=1
+
+
+ic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+
+
+I MQTT state=7
+
+
+nfirmed msg=8 topic=/zxwl/abox/PATROL-TLS-LAB-001/rep
+
+
+I EC AT +CGPADDR: 1,"10.96.192.239"
+
+
+zxwl/abox/PATROL-TLS-LAB-001/rep
+
+
+I EC diag[5] IP terminal=OK
+
+
+0 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I MQTT state=6
+
+
+nfirmed msg=11 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I EC diag[6] NETWORK -> AT+QNWINFO
+
+
+=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I MQTT state=7
+
+
+nfirmed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+
+
+I EC AT +QNWINFO: "TDD LTE","46000","LTE BAND 39",38400
+
+
+S-LAB-001/re
+
+

@@ -1,0 +1,55 @@
+{
+  "workPackage": "7.1-A",
+  "result": "PASS",
+  "testedAt": "2026-09-22T14:08:26+08:00",
+  "device": {
+    "vid": "PATROL-TLS-LAB-001",
+    "jlinkSerial": "69730334",
+    "broker": "36.153.162.171:19683",
+    "clientIndex": 0,
+    "mqttClientId": "PATROL-TLS-LAB-001"
+  },
+  "build": {
+    "configuration": "Release",
+    "freshBuildDirectoryUsed": true,
+    "actuationEnabled": false,
+    "productCommit": "9fb1f0997894e4b3a53306795bd88893a9a62627",
+    "productDirty": true,
+    "platformCommit": "32574cdc38cf42c4ed7f8c11a59ac241a65a8872",
+    "platformDirty": true,
+    "appLength": 111528,
+    "appSha256": "d7d796fcd274023e9d06ecadbf571756bc6cd66e24f3b834e13ab51a3f799e90",
+    "bootSha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+    "configPageSha256": "a1e93c70b13b43fbf149402ee03fa8ac5a1b1fcf6a8004f2301c210ddd978835"
+  },
+  "configV5": {
+    "sourceVersion": 5,
+    "mqttTlsEnabled": false,
+    "mqttTlsProfileId": 0,
+    "remoteEnabled": false,
+    "diagnosticEnabled": false
+  },
+  "checks": {
+    "networkRegistered": "PASS",
+    "pdpContext1Active": "PASS",
+    "qmtopenClient0": "PASS",
+    "qmtconnClient0": "PASS",
+    "threeSubscriptions": "PASS",
+    "heartbeatPublished": "PASS",
+    "statusReportPublished": "PASS",
+    "qos1Puback": "PASS",
+    "brokerClientAndSubscriptions": "PASS",
+    "noTlsQsslcfg": "PASS",
+    "noMqttSslBinding": "PASS",
+    "noClient1Connection": "PASS",
+    "noContext2": "PASS",
+    "actuationDisabled": "PASS"
+  },
+  "evidence": {
+    "flash-before.bin": "fcc84301e0c6c9fc6566b400e90e2afff4e6959f362792c4a17ab16e7fdda0bc",
+    "broker-trace.jsonl": "2612a114a73dbdc0450b3e79affaaea6e031167652185954af7b9cb8a2604a8a",
+    "device-app-log-startup.txt": "f20a8cd077e295a55c2adc4adfacbcf2a29dd22ea909d9e92a78bbf43188dbb9",
+    "device-app-log-subscribe.txt": "9c9f413aa7cc2a0b159362f3e712cd7a52e490f58348e201e30775e058695075",
+    "runtime-snapshot.txt": "20439346b7fae6af8013a998807479da42e652ee73ce0347f3f17c0f0a0ba404"
+  }
+}

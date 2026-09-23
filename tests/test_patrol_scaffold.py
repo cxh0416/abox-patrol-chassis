@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import importlib.util
 import re
+import struct
 import unittest
 from pathlib import Path
 
@@ -11,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def motion_sources():
     return "\n".join((ROOT / "app/Core/User" / name).read_text(encoding="utf-8")
-                     for name in ("system/src/vcu_rtos.c", "motion/src/center_calibration.c", "motion/src/patrol_runtime.c"))
+                     for name in ("system/src/patrol_rtos.c", "motion/src/center_calibration.c", "motion/src/patrol_runtime.c"))
 
 def cloud_sources():
     return "\n".join((ROOT / "app/Core/User/cloud/src" / name).read_text(encoding="utf-8")
@@ -22,15 +23,15 @@ class PatrolScaffoldTests(unittest.TestCase):
     def test_identity_and_safe_defaults(self):
         cmake = (ROOT / "app/CMakeLists.txt").read_text(encoding="utf-8")
         config = (ROOT / "platform_config/abox_product_config.h").read_text(encoding="utf-8")
-        device_config = (ROOT / "app/Core/User/system/include/vcu_config.h").read_text(encoding="utf-8")
+        device_config = (ROOT / "app/Core/User/system/include/patrol_config.h").read_text(encoding="utf-8")
         rtos = motion_sources()
         self.assertIn("Patrol_Vehicle_Chassis_App", cmake)
         self.assertIn('"patrol_vehicle_chassis"', config)
         self.assertIn("PATROL_CHASSIS_ACTUATION_ENABLED", cmake)
         self.assertIn("PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED", cmake)
         self.assertIn("PATROL_CHASSIS_POWER_OUTPUT_ENABLED", cmake)
-        self.assertNotIn('#define VCU_CONFIG_DEFAULT_MQTT_USER ""', device_config)
-        self.assertNotIn('#define VCU_CONFIG_DEFAULT_MQTT_PASS ""', device_config)
+        self.assertNotIn('#define PATROL_CONFIG_DEFAULT_MQTT_USER ""', device_config)
+        self.assertNotIn('#define PATROL_CONFIG_DEFAULT_MQTT_PASS ""', device_config)
         self.assertIn("hardware_available=0", rtos)
         self.assertIn("HAL_CAN_AddTxMessage", rtos)
         self.assertIn("request.data[0] == 0x40U", rtos)
@@ -101,7 +102,7 @@ class PatrolScaffoldTests(unittest.TestCase):
 
     def test_boot_trial_confirmation_has_flash_write_stack_margin(self):
         rtos = motion_sources()
-        match = re.search(r"#define\s+VCU_WATCHDOG_STACK_WORDS\s+(\d+)U", rtos)
+        match = re.search(r"#define\s+PATROL_WATCHDOG_STACK_WORDS\s+(\d+)U", rtos)
         self.assertIsNotNone(match)
         # ARM release .su reports: Watchdog 32 + Confirm 128 + StateSave 592
         # + nested StateLoad 240 = 992 bytes before HAL flash helpers.
@@ -165,7 +166,7 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertIn("if (g_motion.coordinate.valid) BenchSteering_Stop(&g_motion.bench, now, 1)", reset_block)
         self.assertNotIn("\n                BenchSteering_Stop(&g_motion.bench, now, 1);", reset_block)
 
-    def test_config_page_is_v4_and_unarmed_by_default(self):
+    def test_config_page_is_v5_and_unarmed_by_default(self):
         path = ROOT / "tools/make_device_config.py"
         spec = importlib.util.spec_from_file_location("patrol_config", path)
         module = importlib.util.module_from_spec(spec)
@@ -175,6 +176,8 @@ class PatrolScaffoldTests(unittest.TestCase):
         details = module.inspect_config_page(page)
         self.assertEqual(len(page), 0x800)
         self.assertFalse(details["remoteEnabled"])
+        self.assertFalse(details["mqttTlsEnabled"])
+        self.assertEqual(details["mqttTlsProfileId"], 0)
         self.assertFalse(details["calibrated"])
         self.assertEqual(details["steeringCountsPerDegreeMilli"], 2710800)
 
@@ -199,6 +202,27 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertEqual(details["steeringCountsPerDegreeMilli"], 2710800)
         self.assertEqual(details["absoluteCountsPerDegreeMilli"], 55250)
         self.assertTrue(details["calibrated"])
+
+    def test_config_tool_rejects_non_v5_layouts(self):
+        path = ROOT / "tools/make_device_config.py"
+        spec = importlib.util.spec_from_file_location("patrol_config_v5", path)
+        module = importlib.util.module_from_spec(spec)
+        assert spec.loader
+        spec.loader.exec_module(module)
+        current = module.build_config_page(vid="PATROL-LEGACY", password="local-test-secret")
+        for version, size in ((3, 392), (4, 396)):
+            page = bytearray(b"\xff" * module.PAGE_SIZE)
+            config = bytearray(current[module.CONFIG_OFFSET:module.CONFIG_OFFSET + module.CONFIG_SIZE])
+            struct.pack_into("<HHI", config, 4, version, size, 0)
+            page[module.CONFIG_OFFSET:module.CONFIG_OFFSET + module.CONFIG_SIZE] = config
+            with self.assertRaisesRegex(ValueError, "header is invalid"):
+                module.inspect_config_page(bytes(page))
+
+    def test_ota_port_tracks_active_mqtt_client(self):
+        source = (ROOT / "app/Core/User/ota/src/ota_service.c").read_text(encoding="utf-8")
+        self.assertIn('#include "mqtt_runtime.h"', source)
+        self.assertIn("return MqttRuntime_ActiveClient();", source)
+        self.assertIn("port.mqtt_client_index = adapter_mqtt_client_index;", source)
 
 
 if __name__ == "__main__":

@@ -26,7 +26,7 @@
 #include "cloud_service.h"
 #include "remote_service.h"
 #include "time_base.h"
-#include "vcu_config.h"
+#include "patrol_config.h"
 #include "vehicle_power_port.h"
 /* USER CODE END Includes */
 
@@ -104,13 +104,13 @@ int main(void)
   /* USER CODE BEGIN 2 */
   ABox_ProductPlatform_Init();
   AppLog_Init();
-  AppLog_FieldStartup(Vcu_AppFwVersion());
+  AppLog_FieldStartup(Patrol_AppFwVersion());
   TimeBase_Init();
-  VcuConfig_Load();
+  PatrolConfig_Load();
   VehiclePowerPort_Init();
   CloudService_Init();
   RemoteService_Init();
-  APP_LOGI("BOOT", "version=%s app=0x%08lX", Vcu_AppFwVersion(),
+  APP_LOGI("BOOT", "version=%s app=0x%08lX", Patrol_AppFwVersion(),
            (unsigned long)APP_START_ADDR);
 
   /* USER CODE END 2 */

@@ -103,6 +103,8 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
     cJSON* mqtt_port;
     cJSON* mqtt_username;
     cJSON* mqtt_password;
+    cJSON* mqtt_tls_enabled;
+    cJSON* mqtt_tls_profile_id;
     cJSON* steering_center;
     cJSON* absolute_center;
     cJSON* steering_counts_per_degree;
@@ -145,7 +147,7 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
         crc32 = cJSON_GetObjectItemCaseSensitive(params, "crc32");
         if (!cJSON_IsString(url) || !cJSON_IsString(ota_version) || !cJSON_IsNumber(size) || !cJSON_IsString(crc32) ||
             strlen(url->valuestring) >= sizeof(request->ota_url) || !version_valid(ota_version->valuestring) ||
-            size->valuedouble < 1 || size->valuedouble > 0x36800 || strlen(crc32->valuestring) != 8U) goto done;
+            size->valuedouble < 1 || size->valuedouble > 0x36000 || strlen(crc32->valuestring) != 8U) goto done;
         for (uint8_t i = 0U; i < 8U; i++) {
             char ch = crc32->valuestring[i];
             if (!((ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f') || (ch >= 'A' && ch <= 'F'))) goto done;
@@ -251,6 +253,37 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
     else if (strcmp(action->valuestring, "reboot") == 0) request->action = CLOUD_PROTOCOL_ACTION_REBOOT;
     else if (strcmp(action->valuestring, "power_on") == 0) request->action = CLOUD_PROTOCOL_ACTION_POWER_ON;
     else if (strcmp(action->valuestring, "power_off") == 0) request->action = CLOUD_PROTOCOL_ACTION_POWER_OFF;
+    else if (strcmp(action->valuestring, "mqtt_runtime_get") == 0)
+        request->action = CLOUD_PROTOCOL_ACTION_MQTT_RUNTIME_GET;
+    else if (strcmp(action->valuestring, "mqtt_lab_seed_control") == 0)
+        request->action = CLOUD_PROTOCOL_ACTION_MQTT_LAB_SEED_CONTROL;
+    else if (strcmp(action->valuestring, "mqtt_runtime_candidate") == 0)
+    {
+        mqtt_host = cJSON_GetObjectItemCaseSensitive(params, "host");
+        mqtt_port = cJSON_GetObjectItemCaseSensitive(params, "port");
+        mqtt_username = cJSON_GetObjectItemCaseSensitive(params, "username");
+        mqtt_password = cJSON_GetObjectItemCaseSensitive(params, "password");
+        mqtt_tls_enabled = cJSON_GetObjectItemCaseSensitive(params, "tlsEnabled");
+        mqtt_tls_profile_id = cJSON_GetObjectItemCaseSensitive(params, "tlsProfileId");
+        if (!cJSON_IsString(mqtt_host) || !cJSON_IsNumber(mqtt_port) ||
+            !cJSON_IsString(mqtt_username) || !cJSON_IsString(mqtt_password) ||
+            !cJSON_IsBool(mqtt_tls_enabled) || !json_integer_between(mqtt_tls_profile_id, 0, 255) ||
+            !config_string_valid(mqtt_host->valuestring, sizeof(request->mqtt_host), 0U) ||
+            !config_string_valid(mqtt_username->valuestring, sizeof(request->mqtt_username), 0U) ||
+            !config_string_valid(mqtt_password->valuestring, sizeof(request->mqtt_password), 0U) ||
+            mqtt_port->valuedouble < 1 || mqtt_port->valuedouble > 65535) goto done;
+        strncpy(request->mqtt_host, mqtt_host->valuestring, sizeof(request->mqtt_host) - 1U);
+        strncpy(request->mqtt_username, mqtt_username->valuestring, sizeof(request->mqtt_username) - 1U);
+        strncpy(request->mqtt_password, mqtt_password->valuestring, sizeof(request->mqtt_password) - 1U);
+        request->mqtt_port = (uint16_t)mqtt_port->valuedouble;
+        request->mqtt_tls_enabled = cJSON_IsTrue(mqtt_tls_enabled) ? 1U : 0U;
+        request->mqtt_tls_profile_id = (uint8_t)mqtt_tls_profile_id->valueint;
+        request->action = CLOUD_PROTOCOL_ACTION_MQTT_RUNTIME_CANDIDATE;
+    }
+#if PATROL_CHASSIS_MQTT_LAB_TEST
+    else if (strcmp(action->valuestring, "mqtt_runtime_cancel") == 0)
+        request->action = CLOUD_PROTOCOL_ACTION_MQTT_RUNTIME_CANCEL;
+#endif
     else if (strcmp(action->valuestring, "set_mqtt") == 0)
     {
         mqtt_vid = cJSON_GetObjectItemCaseSensitive(params, "vid");

@@ -10,7 +10,7 @@
 
 void mqtt_dbg_printf(const char* fmt, ...)
 {
-#if VCU_EC800_AT_DIAG_UART5
+#if PATROL_EC800_AT_DIAG_UART5
     char msg[128];
     va_list ap;
 

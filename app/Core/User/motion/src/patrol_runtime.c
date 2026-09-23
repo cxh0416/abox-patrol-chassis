@@ -4,7 +4,7 @@
 #include <string.h>
 #include "app_log.h"
 #include "remote_service.h"
-#include "vcu_config.h"
+#include "patrol_config.h"
 #include "vehicle_power_output.h"
 #include "vehicle_steering_profile.h"
 
@@ -80,8 +80,8 @@ static uint8_t bench_arm(uint16_t limit_mdeg, uint8_t drive)
     if (PATROL_CHASSIS_BENCH_STEERING_ENABLED && (!drive || PATROL_CHASSIS_BENCH_DRIVE_ENABLED) &&
         g_motion.bench.phase == BENCH_IDLE && g_motion.drive.phase == BENCH_IDLE &&
         g_motion.coordinate.valid &&
-        VcuConfig_Get()->calibrated && VcuConfig_CalibrationCompatible() &&
-        VcuConfig_SingleTurnProfileReady() && RemoteService_State()->feedback.encoder_range_valid &&
+        PatrolConfig_Get()->calibrated && PatrolConfig_CalibrationCompatible() &&
+        PatrolConfig_SingleTurnProfileReady() && RemoteService_State()->feedback.encoder_range_valid &&
         s.steering_feedback_fresh && s.drive_feedback_fresh && s.encoder_online &&
         s.steering_status_fresh && s.drive_status_fresh &&
         s.encoder_config_valid && !s.drive_fault && !PatrolRuntimePort_OtaBusy() &&
@@ -134,7 +134,7 @@ void PatrolRuntime_FormatBench(char* out, uint16_t size)
         RemoteService_BenchLimit(), RemoteService_BenchSession(),
         PATROL_CHASSIS_BENCH_DRIVE_ENABLED ? "true" : "false",
         RemoteService_BenchDrivePermitted() ? "true" : "false", (unsigned)g_motion.drive.phase, (unsigned long)g_motion.drive.fault,
-        VcuConfig_SingleTurnProfileReady() ? "true" : "false",
+        PatrolConfig_SingleTurnProfileReady() ? "true" : "false",
         RemoteService_State()->feedback.encoder_range_valid ? "true" : "false");
     PatrolRuntimePort_Exit();
 }
@@ -269,7 +269,7 @@ void PatrolRuntime_UpdateFeedback(uint32_t now)
 {
     PatrolDiagnosticsSnapshot snapshot;
     ChassisFeedback feedback;
-    const VcuRemoteConfig_t* cfg = VcuConfig_Get();
+    const PatrolRemoteConfigV5_t* cfg = PatrolConfig_Get();
     memset(&feedback, 0, sizeof(feedback));
     PatrolRuntimePort_Enter();
     /* Read time and feedback under the same lock: RX can otherwise publish a
@@ -277,8 +277,8 @@ void PatrolRuntime_UpdateFeedback(uint32_t now)
     now = PatrolRuntimePort_Now();
     PatrolDiagnostics_Snapshot(&g_motion.diagnostics, now, &snapshot);
     PatrolRuntimePort_Exit();
-    feedback.calibrated = cfg != NULL && cfg->calibrated && VcuConfig_CalibrationCompatible();
-    feedback.encoder_profile_ready = VcuConfig_SingleTurnProfileReady();
+    feedback.calibrated = cfg != NULL && cfg->calibrated && PatrolConfig_CalibrationCompatible();
+    feedback.encoder_profile_ready = PatrolConfig_SingleTurnProfileReady();
     feedback.steering_online = snapshot.steering_online;
     feedback.drive_online = snapshot.drive_online;
     feedback.can_bus_off = PatrolRuntimePort_CanBusOff();
@@ -378,7 +378,7 @@ void PatrolRuntime_Tick(void)
     now = PatrolRuntimePort_Now();
     {
         const ChassisControl* c = RemoteService_State();
-        const VcuRemoteConfig_t* cfg = VcuConfig_Get();
+        const PatrolRemoteConfigV5_t* cfg = PatrolConfig_Get();
         PatrolRuntime_ApplyReset(now);
         uint8_t normal_safe = g_motion.coordinate.valid && VehiclePowerOutput_IsOn() && !PatrolRuntimePort_CanBusOffActive() &&
             c->feedback.power_ready && c->feedback.calibrated &&

@@ -1,0 +1,27 @@
+SEGGER J-Link GDB Server V7.94j Command Line Version
+
+JLinkARM.dll V7.94j (DLL compiled Feb 14 2024 15:36:06)
+
+-----GDB Server start settings-----
+GDBInit file:                  none
+GDB Server Listening port:     2331
+SWO raw output listening port: 2332
+Terminal I/O port:             2333
+Accept remote connection:      localhost only
+Generate logfile:              off
+Verify download:               off
+Init regs on start:            off
+Silent mode:                   on
+Single run mode:               on
+Target connection timeout:     0 ms
+------J-Link related settings------
+J-Link Host interface:         USB
+J-Link script:                 none
+J-Link settings file:          none
+------Target related settings------
+Target device:                 STM32F105RC
+Target device parameters:      none
+Target interface:              SWD
+Target interface speed:        4000kHz
+Target endian:                 little
+

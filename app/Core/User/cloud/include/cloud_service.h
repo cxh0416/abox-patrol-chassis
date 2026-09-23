@@ -9,5 +9,6 @@ void CloudService_Init(void);
 void CloudService_Task(void);
 void CloudService_OnUartRxEvent(UART_HandleTypeDef* huart, uint16_t size);
 void CloudService_OnUartError(UART_HandleTypeDef* huart);
+void CloudTx_NetworkChanged(void);
 
 #endif

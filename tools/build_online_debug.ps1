@@ -51,14 +51,14 @@ try {
     $bootBytes = [IO.File]::ReadAllBytes($boot)
     $appBytes = [IO.File]::ReadAllBytes($app)
     if ($bootBytes.Length -gt 0x8000) { throw 'Boot artifact exceeds its 32 KiB region.' }
-    if ($appBytes.Length -ge 0x36800) { throw 'App artifact exceeds its 218 KiB region.' }
+    if ($appBytes.Length -gt 0x36000) { throw 'App artifact exceeds its 216 KiB region.' }
 
     $marker = "PATROL_VEHICLE_CHASSIS_FW_VERSION=$AppVersion"
     if (-not [Text.Encoding]::ASCII.GetString($appBytes).Contains($marker)) { throw 'App version marker is missing.' }
     $sp = [BitConverter]::ToUInt32($appBytes, 0)
     $reset = [BitConverter]::ToUInt32($appBytes, 4)
     if ($sp -lt 0x20000000 -or $sp -gt 0x20010000 -or ($reset -band 1) -ne 1 -or
-        $reset -lt 0x08008000 -or $reset -gt 0x0803E7FF) {
+        $reset -lt 0x08008000 -or $reset -gt 0x0803DFFF) {
         throw ('Invalid App vectors: SP=0x{0:X8} Reset=0x{1:X8}' -f $sp, $reset)
     }
 

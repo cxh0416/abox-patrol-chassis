@@ -1,0 +1,144 @@
+I MQTT publish confirmed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+
+
+I MQTT publish confirmed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+
+
+I MQTT state=18
+
+
+ed=1
+
+
+I MQTT state=19
+
+
+H terminal=OK
+
+
+ no SSL context configured
+
+
+I MQTT state=20
+
+
+ vid=PATROL-TLS-LAB-001 broker=36.153.162.171:19683
+
+
+I MQTT state=21
+
+
+> AT+QIACT?
+
+
+alibrated=0; outputs gated
+
+
+I MQTT state=22
+
+
+rol-chassis-0.2.32 app=0x08008000
+
+
+I EC PDP ctx=1 state=1 active=1
+
+
+I MQTT PDP context 1 active; opening MQTT network
+
+
+nfigured
+
+
+I MQTT state=23
+
+
+ AT+CGPADDR=1
+
+
+I MQTT state=24
+
+
+I MQTT QMTOPEN client=0 result=0
+
+
+I MQTT state=25
+
+
+rminal=OK
+
+
+I MQTT state=26
+
+
+I MQTT QMTCONN client=0 result=0 ret=0
+
+
+I MQTT state=27
+
+
+> AT+CPIN?
+
+
+I MQTT state=28
+
+
+"TDD LTE","46000","LTE BAND 39",38400
+
+
+I MQTT state=27
+
+
+RK terminal=OK
+
+
+I MQTT state=28
+
+
+erminal=OK
+
+
+I MQTT state=27
+
+
+ diagnostics complete
+
+
+I MQTT state=28
+
+
+L -> AT+CSQ
+
+
+I MQTT state=29
+
+
+I CLOUD mqtt ready
+
+
+I MQTT publish confirmed msg=1 topic=/zxwl/abox/PATROL-TLS-LAB-001/man
+
+
+I MQTT publish confirmed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+
+
+I MQTT publish confirmed msg=2 topic=/zxwl/abox/PATROL-TLS-LAB-001/rep
+
+
+I MQTT publish confirmed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+
+
+I MQTT publish confirmed msg=3 topic=/zxwl/abox/PATROL-TLS-LAB-001/rep
+
+
+I OTA Boot V2 App UFS/HTTP/TLS/CA ready
+
+
+I MQTT publish confirmed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/int
+
+
+I MQTT publish confirmed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+
+
+I MQTT publish confirmed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+
+

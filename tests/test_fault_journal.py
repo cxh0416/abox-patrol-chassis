@@ -28,12 +28,19 @@ int HAL_FLASH_Program(uint32_t,uint32_t,uint64_t);
 #include "ota_info.h"
 #include "motion_fault.h"
 static int fail_after=-1;
+static int fail_primary_after=-1;
+static int fail_recovery_erase_after=-1;
 void HAL_FLASH_Unlock(void) {} void HAL_FLASH_Lock(void) {}
 int HAL_FLASHEx_Erase(FLASH_EraseInitTypeDef* e,uint32_t* error) {
+ if(e->PageAddress==CONFIG_RECOVERY_ADDR && fail_recovery_erase_after==0)return 1;
+ if(e->PageAddress==CONFIG_RECOVERY_ADDR && fail_recovery_erase_after>0)fail_recovery_erase_after--;
  (void)error; memset((void*)(uintptr_t)e->PageAddress,255,2048); return 0;
 }
 int HAL_FLASH_Program(uint32_t type,uint32_t address,uint64_t value) {
  (void)type; if(fail_after==0)return 1; if(fail_after>0)fail_after--;
+ if(address>=OTA_INFO_ADDR && address<OTA_INFO_ADDR+2048) {
+  if(fail_primary_after==0)return 1; if(fail_primary_after>0)fail_primary_after--;
+ }
  uint32_t* p=(uint32_t*)(uintptr_t)address; assert((*p & (uint32_t)value)==(uint32_t)value); *p=(uint32_t)value; return 0;
 }
 int main(void) {
@@ -55,6 +62,13 @@ int main(void) {
  assert(memcmp((void*)OTA_INFO_ADDR,&cfg,sizeof(cfg))==0);
  assert(OTA_Info_LoadMotionFault(&out)&&out.sequence==7);
  assert(OTA_Info_SaveMotionFault(&r)); assert(OTA_Info_LoadMotionFault(&out)&&out.sequence==8);
+ OTA_Info_t old=cfg,next=cfg,loaded;
+ next.fw_size=0x12345678;
+ fail_primary_after=3; assert(!OTA_Info_Save(&next)); fail_primary_after=-1;
+ OTA_Info_Load(&loaded); assert(memcmp(&loaded,&old,sizeof(old))==0);
+ /* Power after primary verification but before recovery-page erase also rolls back. */
+ fail_recovery_erase_after=1; assert(!OTA_Info_Save(&next)); fail_recovery_erase_after=-1;
+ OTA_Info_Load(&loaded); assert(memcmp(&loaded,&old,sizeof(old))==0);
  return 0;
 }
 """)

@@ -132,7 +132,7 @@ try {
                 throw 'Release differs from verified candidate; dist has not been replaced.'
             }
         }
-        if ((Get-Item -LiteralPath $app.bin).Length -ge 223232) { throw 'App artifact exceeds its 218 KiB region.' }
+        if ((Get-Item -LiteralPath $app.bin).Length -gt 221184) { throw 'App artifact exceeds its 216 KiB region.' }
         $release = Join-Path $credentialBuildRoot 'release-stage'
         New-Item -ItemType Directory -Force -Path $release | Out-Null
         $appOut = Join-Path $release 'Patrol_Vehicle_Chassis_App.bin'; $bootOut = Join-Path $release 'ABox_Boot.bin'; $fullOut = Join-Path $release 'Patrol_Vehicle_Chassis_Full.bin'
@@ -148,10 +148,10 @@ try {
             bench_steering_available = [bool]$BenchSteering; startup_motion_permit = $false; drive_actuation = [bool]$BenchDrive
             drive_limit_rpm = $(if ($BenchDrive) {200} else {0})
             boot_version = 'abox-boot-2.3.0'; ota_scheme = 'boot_v2_ufs'; ota_downloader = 'app'
-            app_range = '0x08008000..0x0803E7FF'; boot_state_pages = @('0x0803E800', '0x0803F000'); config_page = '0x0803F800'
+            app_range = '0x08008000..0x0803DFFF'; config_recovery_page = '0x0803E000'; boot_state_pages = @('0x0803E800', '0x0803F000'); config_page = '0x0803F800'
             product_commit = $productCommit; product_dirty = $false; platform_commit = $platformCommit; platform_dirty = $false
             version_marker = "PATROL_VEHICLE_CHASSIS_FW_VERSION=$version"
-            flash_ram = [ordered]@{ boot = $bootUsage; app = $appUsage; boot_limit_bytes = 32768; app_limit_bytes = 223232; ram_limit_bytes = 65536 }
+            flash_ram = [ordered]@{ boot = $bootUsage; app = $appUsage; boot_limit_bytes = 32768; app_limit_bytes = 221184; ram_limit_bytes = 65536 }
             artifacts = @((Get-Artifact $appOut '0x08008000'), (Get-Artifact $bootOut '0x08000000'), (Get-Artifact $fullOut '0x08000000'))
         }
         $manifestJson = ($manifest | ConvertTo-Json -Depth 6).Replace("`r`n", "`n") + "`n"

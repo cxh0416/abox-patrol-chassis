@@ -10,7 +10,7 @@
 #include "steering_angle.h"
 #include "patrol_diagnostics.h"
 #include "remote_service.h"
-#include "vcu_config.h"
+#include "patrol_config.h"
 #include "vehicle_power_output.h"
 #include "vehicle_steering_profile.h"
 
@@ -18,7 +18,7 @@ uint32_t mock_now;
 uint8_t mock_power, mock_bus_off, mock_ota, mock_permit;
 uint8_t mock_can_ready, mock_revoke_before_send, mock_sent;
 ChassisControl mock_control;
-VcuRemoteConfig_t mock_config;
+PatrolRemoteConfigV5_t mock_config;
 PatrolDiagnosticsSnapshot mock_snapshot;
 uint32_t PatrolRuntimePort_Now(void) { return mock_now; }
 const ChassisControl* RemoteService_State(void) { return &mock_control; }
@@ -45,10 +45,10 @@ void PatrolDiagnostics_OnEncoderCount(PatrolDiagnostics* d, uint32_t c, uint32_t
 { (void)d; (void)c; (void)now; }
 void PatrolDiagnostics_OnEncoderError(PatrolDiagnostics* d, PatrolEncoderError e) { (void)d; (void)e; }
 #endif
-const VcuRemoteConfig_t* VcuConfig_Get(void) { return &mock_config; }
-uint8_t VcuConfig_SingleTurnProfileReady(void) { return 0; }
-uint8_t VcuConfig_ClearCalibration(void) { return 1; }
-uint8_t VcuConfig_SetCalibration(int32_t driver, uint32_t encoder, uint32_t dc, uint32_t ec,
+const PatrolRemoteConfigV5_t* PatrolConfig_Get(void) { return &mock_config; }
+uint8_t PatrolConfig_SingleTurnProfileReady(void) { return 0; }
+uint8_t PatrolConfig_ClearCalibration(void) { return 1; }
+uint8_t PatrolConfig_SetCalibration(int32_t driver, uint32_t encoder, uint32_t dc, uint32_t ec,
     int8_t dd, int8_t ed, uint16_t tolerance)
 { (void)driver; (void)encoder; (void)dc; (void)ec; (void)dd; (void)ed; (void)tolerance; return 1; }
 
@@ -56,7 +56,7 @@ void PatrolRuntimePort_Enter(void) {}
 void PatrolRuntimePort_Exit(void) {}
 void AppLog_Printf(AppLogLevel_t level, const char* tag, const char* format, ...)
 { (void)level; (void)tag; (void)format; }
-uint8_t VcuConfig_CalibrationCompatible(void) { return 1; }
+uint8_t PatrolConfig_CalibrationCompatible(void) { return 1; }
 void RemoteService_UpdateFeedback(const ChassisFeedback* feedback) { mock_control.feedback = *feedback; }
 uint8_t RemoteService_BenchArm(uint16_t limit, uint32_t now) { (void)limit; (void)now; return 0; }
 uint8_t RemoteService_BenchDriveArm(uint16_t limit, uint32_t now) { (void)limit; (void)now; return 0; }

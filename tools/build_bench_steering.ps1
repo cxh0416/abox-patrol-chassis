@@ -25,14 +25,14 @@ $source = Join-Path $build 'Patrol_Vehicle_Chassis_App.bin'
 $artifact = Join-Path $output 'Patrol_Vehicle_Chassis_App.bin'
 Copy-Item -LiteralPath $source -Destination $artifact -Force
 $bytes = [IO.File]::ReadAllBytes($artifact)
-if ($bytes.Length -gt 223232 -or [Text.Encoding]::ASCII.GetString($bytes).IndexOf("PATROL_VEHICLE_CHASSIS_FW_VERSION=$AppVersion") -lt 0) { throw 'Invalid bench image' }
+if ($bytes.Length -gt 221184 -or [Text.Encoding]::ASCII.GetString($bytes).IndexOf("PATROL_VEHICLE_CHASSIS_FW_VERSION=$AppVersion") -lt 0) { throw 'Invalid bench image' }
 [ordered]@{
     product='patrol_vehicle_chassis'; version=$AppVersion; candidate=$true
     steering_only=(-not $Drive.IsPresent); startup_permit=$false; drive_actuation=$Drive.IsPresent
     drive_limit_rpm=$(if ($Drive) {200} else {0})
     commit=(& git -C $product rev-parse HEAD | Out-String).Trim()
     dirty=(-not [string]::IsNullOrWhiteSpace((& git -C $product status --porcelain | Out-String)))
-    app_start='0x08008000'; app_end='0x0803E7FF'; config_page='0x0803F800'
+    app_start='0x08008000'; app_end='0x0803DFFF'; config_recovery_page='0x0803E000'; config_page='0x0803F800'
     size=$bytes.Length; sha256=(Get-FileHash $artifact -Algorithm SHA256).Hash
 } | ConvertTo-Json | Set-Content (Join-Path $output 'candidate.manifest.json') -Encoding utf8
 & python (Join-Path $PSScriptRoot 'artifact_store.py') --root $product --stage $output --destination $destination

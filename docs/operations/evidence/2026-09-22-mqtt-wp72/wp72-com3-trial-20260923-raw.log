@@ -1,0 +1,89 @@
+[2026-09-23 09:43:28] I MQTT publish confirmed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+[2026-09-23 09:43:33] I MQTT publish confirmed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+[2026-09-23 09:43:35] I MQTT publish confirmed msg=19 topic=/zxwl/abox/PATROL-TLS-LAB-001/in
+[2026-09-23 09:43:35] W REMOTE MQTT runtime change revoked motion session and targets
+[2026-09-23 09:43:35] I MQTT_TLS runtime state=1 stage=disconnect
+[2026-09-23 09:43:35] I MQTT_TLS runtime state=2 stage=unbind
+[2026-09-23 09:43:35] I MQTT_TLS runtime state=3 stage=wait-ca
+[2026-09-23 09:43:35] I MQTT_TLS runtime state=4 stage=clock
+[2026-09-23 09:43:36] I MQTT_TLS runtime state=5 stage=prepare
+[2026-09-23 09:43:36] I MQTT_TLS runtime state=6 stage=bind
+[2026-09-23 09:43:36] I MQTT state=0
+[2026-09-23 09:43:36] I MQTT_TLS runtime state=7 stage=tls-prepared
+[2026-09-23 09:43:36] I MQTT_TRIAL session=2 runtime=7 trial=3 reason=0
+[2026-09-23 09:43:36] I MQTT_TLS runtime state=8 stage=connect
+[2026-09-23 09:43:36] I MQTT state=1
+[2026-09-23 09:43:41] I MQTT state=2
+[2026-09-23 09:43:41] I MQTT state=3
+[2026-09-23 09:43:41] I EC AT +CGPADDR: 1,"10.247.12.195"
+[2026-09-23 09:43:41] I EC diag[5] IP terminal=OK
+[2026-09-23 09:43:41] I MQTT state=6
+[2026-09-23 09:43:41] I EC diag[6] NETWORK -> AT+QNWINFO
+[2026-09-23 09:43:41] I MQTT state=7
+[2026-09-23 09:43:41] I EC AT +QNWINFO: "TDD LTE","46000","LTE BAND 39",38400
+[2026-09-23 09:43:41] I EC diag[6] NETWORK terminal=OK
+[2026-09-23 09:43:41] I MQTT state=6
+[2026-09-23 09:43:41] I EC MQTT pre-open diagnostics complete
+[2026-09-23 09:43:41] I MQTT state=8
+[2026-09-23 09:43:41] I MQTT state=9
+[2026-09-23 09:43:41] I EC AT +CEREG: 0,1
+[2026-09-23 09:43:41] I EC registration status=1 ready=1
+[2026-09-23 09:43:41] I MQTT packet network registered
+[2026-09-23 09:43:41] I MQTT state=10
+[2026-09-23 09:43:41] I MQTT state=11
+[2026-09-23 09:43:41] I EC AT +CGATT: 1
+[2026-09-23 09:43:41] I EC packet attached=1
+[2026-09-23 09:43:41] I MQTT packet service attached
+[2026-09-23 09:43:41] I MQTT state=15
+[2026-09-23 09:43:41] I MQTT state=16
+[2026-09-23 09:43:41] I EC PDP ctx=1 state=1 active=1
+[2026-09-23 09:43:41] I MQTT PDP context 1 already active
+[2026-09-23 09:43:41] I MQTT state=23
+[2026-09-23 09:43:41] I MQTT state=24
+[2026-09-23 09:43:48] I MQTT QMTOPEN client=1 result=0
+[2026-09-23 09:43:48] I MQTT state=25
+[2026-09-23 09:43:48] I MQTT state=26
+[2026-09-23 09:43:48] I MQTT QMTCONN client=1 result=0 ret=0
+[2026-09-23 09:43:48] I MQTT state=27
+[2026-09-23 09:43:48] I MQTT_TLS runtime state=9 stage=connected
+[2026-09-23 09:43:48] I MQTT_TRIAL session=2 runtime=9 trial=4 reason=0
+[2026-09-23 09:43:48] I MQTT state=28
+[2026-09-23 09:43:48] I MQTT state=27
+[2026-09-23 09:43:48] I MQTT state=28
+[2026-09-23 09:43:48] I MQTT state=27
+[2026-09-23 09:43:48] I MQTT state=28
+[2026-09-23 09:43:48] I MQTT state=29
+[2026-09-23 09:43:48] I MQTT_TLS runtime state=10 stage=ready
+[2026-09-23 09:43:48] I MQTT_TRIAL session=2 runtime=10 trial=5 reason=0
+[2026-09-23 09:43:48] I MQTT_TLS runtime ready client=1 context=2 connected and subscribed
+[2026-09-23 09:43:48] I CLOUD mqtt ready
+[2026-09-23 09:43:49] I MQTT publish confirmed msg=1 topic=/zxwl/abox/PATROL-TLS-LAB-001/man
+[2026-09-23 09:43:49] I MQTT publish confirmed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+[2026-09-23 09:43:49] I MQTT_TRIAL heartbeat proof session=2 trial=6
+[2026-09-23 09:43:49] I MQTT_TRIAL commit session=2 trial=8 reason=0
+[2026-09-23 09:43:49] I MQTT publish confirmed msg=2 topic=/zxwl/abox/PATROL-TLS-LAB-001/rep
+[2026-09-23 09:43:49] I MQTT publish confirmed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+[2026-09-23 09:43:50] I MQTT publish confirmed msg=3 topic=/zxwl/abox/PATROL-TLS-LAB-001/rep
+[2026-09-23 09:43:50] I OTA Boot V2 App UFS/HTTP/TLS/CA ready
+[2026-09-23 09:43:51] I MQTT publish confirmed msg=4 topic=/zxwl/abox/PATROL-TLS-LAB-001/rep
+[2026-09-23 09:43:52] I MQTT publish confirmed msg=5 topic=/zxwl/abox/PATROL-TLS-LAB-001/rep
+[2026-09-23 09:43:53] I MQTT publish confirmed msg=6 topic=/zxwl/abox/PATROL-TLS-LAB-001/rep
+[2026-09-23 09:43:54] I MQTT publish confirmed msg=7 topic=/zxwl/abox/PATROL-TLS-LAB-001/rep
+[2026-09-23 09:43:54] I MQTT publish confirmed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+[2026-09-23 09:43:55] I MQTT publish confirmed msg=8 topic=/zxwl/abox/PATROL-TLS-LAB-001/rep
+[2026-09-23 09:43:56] I MQTT publish confirmed msg=9 topic=/zxwl/abox/PATROL-TLS-LAB-001/rep
+[2026-09-23 09:43:57] I MQTT publish confirmed msg=10 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+[2026-09-23 09:43:58] I MQTT publish confirmed msg=11 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+[2026-09-23 09:43:59] I MQTT publish confirmed msg=12 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+[2026-09-23 09:43:59] I MQTT publish confirmed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+[2026-09-23 09:44:00] I MQTT publish confirmed msg=13 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+[2026-09-23 09:44:01] I MQTT publish confirmed msg=14 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+[2026-09-23 09:44:02] I MQTT publish confirmed msg=15 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+[2026-09-23 09:44:03] I MQTT publish confirmed msg=16 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+[2026-09-23 09:44:04] I MQTT publish confirmed msg=17 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+[2026-09-23 09:44:04] I MQTT publish confirmed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+[2026-09-23 09:44:05] I MQTT publish confirmed msg=18 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+[2026-09-23 09:44:09] I MQTT publish confirmed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+[2026-09-23 09:44:14] I MQTT publish confirmed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+[2026-09-23 09:44:19] I MQTT publish confirmed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+[2026-09-23 09:44:24] I MQTT publish confirmed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea

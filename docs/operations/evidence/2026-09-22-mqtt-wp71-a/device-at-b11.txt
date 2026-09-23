@@ -1,0 +1,126 @@
+I MQTT publish confirmed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+
+
+I MQTT publish confirmed msg=2 topic=/zxwl/abox/PATROL-TLS-LAB-001/rep
+
+
+I MQTT publish confirmed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+
+
+I MQTT publish confirmed msg=3 topic=/zxwl/abox/PATROL-TLS-LAB-001/rep
+
+
+I OTA Boot V2 App UFS/HTTP/TLS/CA ready
+
+
+/abox/PATROL-TLS-LAB-001/hea
+
+
+I MQTT publish confirmed msg=4 topic=/zxwl/abox/PATROL-TLS-LAB-001/rep
+
+
+I MQTT publish confirmed msg=5 topic=/zxwl/abox/PATROL-TLS-LAB-001/rep
+
+
+I MQTT publish confirmed msg=6 topic=/zxwl/abox/PATROL-TLS-LAB-001/rep
+
+
+I MQTT publish confirmed msg=7 topic=/zxwl/abox/PATROL-TLS-LAB-001/rep
+
+
+I MQTT publish confirmed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+
+
+I MQTT publish confirmed msg=8 topic=/zxwl/abox/PATROL-TLS-LAB-001/rep
+
+
+I MQTT publish confirmed msg=9 topic=/zxwl/abox/PATROL-TLS-LAB-001/rep
+
+
+I MQTT publish confirmed msg=10 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I MQTT publish confirmed msg=11 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I MQTT publish confirmed msg=12 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I MQTT publish confirmed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+
+
+I MQTT publish confirmed msg=13 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I MQTT publish confirmed msg=14 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I MQTT publish confirmed msg=15 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I MQTT publish confirmed msg=16 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I MQTT publish confirmed msg=17 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I MQTT publish confirmed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+
+
+I MQTT publish confirmed msg=18 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I MQTT publish confirmed msg=19 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I MQTT publish confirmed msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+
+
+I MQTT state=27
+
+
+firmed msg=8 topic=/zxwl/abox/PATROL-TLS-LAB-001/rep
+
+
+I MQTT state=28
+
+
+1,"10.96.192.239"
+
+
+zxwl/abox/PATROL-TLS-LAB-001/rep
+
+
+I MQTT state=27
+
+
+rminal=OK
+
+
+0 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I MQTT state=28
+
+
+firmed msg=11 topic=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I MQTT state=29
+
+
+RK -> AT+QNWINFO
+
+
+=/zxwl/abox/PATROL-TLS-LAB-001/re
+
+
+I CLOUD mqtt ready
+
+
+med msg=0 topic=/zxwl/abox/PATROL-TLS-LAB-001/hea
+
+
+I MQTT publish confirmed msg=1 topic=/zxwl/abox/PATROL-TLS-LAB-001/man
+
+
