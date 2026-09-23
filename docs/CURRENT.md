@@ -28,7 +28,7 @@ D2 REAL VEHICLE NOT STARTED
 ## Current Checkpoint
 
 ```text
-Patrol commit = recorded by the immediate CURRENT metadata commit
+Patrol checkpoint commit = a8b952663a8e5c109a5c30da889d3cef465d0ad5
 Platform commit = 26a8ab3687336a39f30e578b713b43edbb3488b0
 App SHA256 = 6EE9E4188E001B8581CA4198F9A4B7D1D0D91F132273CA0955325C1295BB450E
 ```
