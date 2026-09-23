@@ -1,0 +1,41 @@
+{
+  "workPackage": "7.3",
+  "status": "CLOSED",
+  "scope": "local ABox, EC800 and Broker persistence acceptance; not real vehicle D2",
+  "patrolBaseCommit": "062eb656e833d879f1ca8ab9b5145f83ddfe49ae",
+  "platformCommit": "26a8ab3687336a39f30e578b713b43edbb3488b0",
+  "platformModified": false,
+  "candidateAppSha256": "DE38325CE586CC1F703FAD78C6BC4D219450CDE110A5E56400897A237A6C7251",
+  "ram": {
+    "reservedEnd": "0x2000EFF8",
+    "total": 65536,
+    "guard": 4104
+  },
+  "host": {
+    "productRegression": "PASS",
+    "platformCTest": "14/14 PASS",
+    "bench": "PASS",
+    "mqttTrialSaveStackBytes": 2520,
+    "mqttTrialStackReserveBytes": 1024,
+    "remoteTaskStackBytes": 4096,
+    "cleanArmRelease": "PASS",
+    "gitDiffCheck": "PASS"
+  },
+  "hardware": {
+    "plainToTls": "202 on old connection, 200 on candidate, physical V5 TLS readback, TLS reconnect after reboot",
+    "tlsToPlain": "explicit tlsEnabled=false, 202 then 200, physical V5 plain readback, plain reconnect after reboot",
+    "failedCandidate": "202 then 500 restored, candidate trial and final physical Config SHA unchanged",
+    "vidSwitch": "202 on old VID, new ClientId and three subscriptions, 200 on new VID, physical V5 readback and reboot persistence",
+    "failedVidCandidate": "202 then 500 on restored VID, original ClientId and Topics restored, Config SHA unchanged",
+    "requestIdIdempotence": "duplicate failed request replayed final 500, not initial 202",
+    "physicalConfigBeforeSha256": "A1E93C70B13B43FBF149402EE03FA8AC5A1B1FCF6A8004F2301C210DDD978835",
+    "physicalConfigTlsSha256": "4BC6CDCADBD327AB49175FEB6F254BAA6E93B84E5BC7A223BF07996F0FF328C7",
+    "physicalConfigVidSha256": "DECC2B205660793F9899593AFE0C20B5D1E74A775BA27F005A29B03D6B89DC34",
+    "physicalConfigRestoredSha256": "A1E93C70B13B43FBF149402EE03FA8AC5A1B1FCF6A8004F2301C210DDD978835",
+    "otaInfoHeaderAndFaultJournal": "byte identical before and after set_mqtt",
+    "bootStateAB": "byte identical throughout each candidate; original pages restored after test",
+    "finalDeviceBaseline": "original App, Boot State A/B and Config physically read back byte identical; heartbeat resumed"
+  },
+  "rawArchiveIndex": "hardware-raw-wp73.index.json",
+  "rawArchiveSha256": "9014E952C22C309BFA61AE4B95B2EBDBDBDBA26567EB8A8A19802E617AA9E5E8"
+}

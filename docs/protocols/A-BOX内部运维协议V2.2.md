@@ -98,7 +98,7 @@ A-BOX 只订阅自身 VID 的精确配置和 OTA Topic。内部响应优先于�
 | 电源 | `powerOutputAvailable`、`powerOutputOn` |
 | CAN 摘要 | `canInitialized`、`canBusOff`、`canRxOverflow`、`diagnostics` |
 
-`diagnostics` 包含 CAN 收帧数、节点心跳、原始转向位置、左右轮速、编码器值和在线状态，以及 SDO/编码器超时计数。这些字段只用于诊断，不能证明标定、真实运动、真实供电或现场验收成功。
+`get_info.diagnostics` 只给出 CAN 收帧数及转向、行走、编码器在线摘要。原始转向位置、左右轮速、编码器值和 SDO/编码器超时计数由 `get_can_diag` 提供。诊断字段不能证明标定、真实运动、真实供电或现场验收成功。
 
 OTA 平台只能用最新 `get_info` 的实测 Boot 描述符、`otaReady`、`otaState` 和实际 `fwVersion` 判断升级条件及结果。
 
@@ -120,6 +120,13 @@ OTA 平台只能用最新 `get_info` 的实测 Boot 描述符、`otaReady`、`ot
 依次执行 candidate 准备、连接、订阅、指定 proof、持久化回读和提交；任一步失败均
 恢复完整 active 配置。明文与 TLS 的任意方向切换都使用同一 trial，不得先保存再重启
 碰运气。
+
+`set_mqtt` 使用同一 `requestId` 的两阶段响应：旧连接先返回
+`202 MQTT_CANDIDATE_TESTING`；只有该 QoS1 响应确认发送完成才切换 candidate。
+新连接完成 proof、Config V5 持久化及回读后返回 `200 MQTT_CONFIG_SAVED`；
+失败且旧连接恢复后返回 `500 MQTT_CANDIDATE_RESTORED`。
+同一 `requestId` 的重试在试连期间不重启事务；最终响应完成发送后，幂等缓存
+保存最终结果。`get_info` 的 MQTT 字段始终来自已持久化配置。
 
 当 active 为 TLS 时，TLS 失败不得自动尝试明文。只有收到明确的
 `tlsEnabled=false` candidate 且明文 trial 全部成功后，才允许保存并切回明文。

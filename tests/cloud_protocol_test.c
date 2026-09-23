@@ -58,12 +58,23 @@ int main(void)
         "{\"version\":\"2.0\",\"data\":{\"requestId\":\"req-4\","
         "\"command\":\"internal_config\",\"params\":{\"action\":\"set_mqtt\","
         "\"vid\":\"PATROL_CHASSIS-001\",\"host\":\"36.153.162.171\",\"port\":19683,"
-        "\"username\":\"patrol\",\"password\":\"test-pass\"}}}";
+        "\"username\":\"patrol\",\"password\":\"test-pass\","
+        "\"tlsEnabled\":false,\"tlsProfileId\":0}}}";
     static const char bad_set_mqtt[] =
         "{\"version\":\"2.0\",\"data\":{\"requestId\":\"req-5\","
         "\"command\":\"internal_config\",\"params\":{\"action\":\"set_mqtt\","
         "\"vid\":\"bad/vid\",\"host\":\"36.153.162.171\",\"port\":0,"
         "\"username\":\"patrol\",\"password\":\"test-pass\"}}}";
+    static const char missing_tls[] =
+        "{\"version\":\"2.0\",\"data\":{\"requestId\":\"req-tls\","
+        "\"command\":\"internal_config\",\"params\":{\"action\":\"set_mqtt\","
+        "\"vid\":\"PATROL-001\",\"host\":\"broker.test\",\"port\":1883,"
+        "\"username\":\"u\",\"password\":\"p\",\"tlsProfileId\":0}}}";
+    static const char missing_profile[] =
+        "{\"version\":\"2.0\",\"data\":{\"requestId\":\"req-profile\","
+        "\"command\":\"internal_config\",\"params\":{\"action\":\"set_mqtt\","
+        "\"vid\":\"PATROL-001\",\"host\":\"broker.test\",\"port\":1883,"
+        "\"username\":\"u\",\"password\":\"p\",\"tlsEnabled\":false}}}";
     static const char power_on[] =
         "{\"version\":\"2.0\",\"data\":{\"requestId\":\"req-power-on\","
         "\"command\":\"internal_config\",\"params\":{\"action\":\"power_on\"}}}";
@@ -110,6 +121,8 @@ int main(void)
     if (!expect_status("ota", ota, 1U, CLOUD_PROTOCOL_OK, CLOUD_PROTOCOL_ACTION_OTA, "req-3")) return 1;
     if (!expect_status("set_mqtt", set_mqtt, 0U, CLOUD_PROTOCOL_OK, CLOUD_PROTOCOL_ACTION_SET_MQTT, "req-4")) return 1;
     if (!expect_status("bad_set_mqtt", bad_set_mqtt, 0U, CLOUD_PROTOCOL_INVALID, CLOUD_PROTOCOL_ACTION_NONE, "req-5")) return 1;
+    if (!expect_status("missing_tls", missing_tls, 0U, CLOUD_PROTOCOL_INVALID, CLOUD_PROTOCOL_ACTION_NONE, "req-tls")) return 1;
+    if (!expect_status("missing_profile", missing_profile, 0U, CLOUD_PROTOCOL_INVALID, CLOUD_PROTOCOL_ACTION_NONE, "req-profile")) return 1;
     if (!expect_status("power_on", power_on, 0U, CLOUD_PROTOCOL_OK,
                        CLOUD_PROTOCOL_ACTION_POWER_ON, "req-power-on")) return 1;
     if (!expect_status("power_off", power_off, 0U, CLOUD_PROTOCOL_OK,

@@ -1,8 +1,11 @@
 #include "mqtt_trial_manager.h"
+#include "mqtt_trial_persistent.h"
 #include <string.h>
 #include "mqtt_core.h"
 #include "mqtt_runtime.h"
 #include "app_log.h"
+#include "cloud_service.h"
+#include "mqtt_config_adapter.h"
 
 typedef struct {
     ABoxMqttTrial trial;
@@ -11,6 +14,8 @@ typedef struct {
     char candidate_host[64], candidate_username[32], candidate_password[64];
     uint32_t now, proof_sequence;
     uint8_t initialized, restore_waiting, cancel_pending;
+    uint8_t persistent, flash_restore_failed;
+    char candidate_vid[32];
 } PatrolMqttTrialManager;
 static PatrolMqttTrialManager g_trial;
 
@@ -36,7 +41,11 @@ static uint8_t copy_candidate(const ABoxMqttConfig *c)
     return 1;
 }
 static int prepare(void*u,uint64_t s,const ABoxMqttConfig*c)
-{(void)u;(void)s;(void)c;return MqttRuntime_ActivateStagedCandidate(g_trial.now);}
+{
+    (void)u;(void)s;(void)c;
+    if (!MqttRuntime_ActivateStagedCandidate(g_trial.now)) return 0;
+    return !g_trial.persistent || CloudService_ApplyMqttIdentity(g_trial.candidate_vid);
+}
 static int noop(void*u,uint64_t s,const ABoxMqttConfig*c)
 {(void)u;(void)s;(void)c;return 1;}
 static int restore(void*u,uint64_t s,const ABoxMqttConfig*c)
@@ -44,11 +53,17 @@ static int restore(void*u,uint64_t s,const ABoxMqttConfig*c)
     (void)u;(void)s;
     g_trial.restore_waiting=1;
     g_trial.proof_sequence=MQTT_Core_GetPubOkSeq();
+    if (g_trial.flash_restore_failed) {
+        if (g_trial.persistent) (void)CloudService_ApplyMqttIdentity(PatrolConfig_Get()->vid);
+        MqttRuntime_BlockForRestoreFailure();
+        return 0;
+    }
 #if PATROL_MQTT_TRIAL_FAULT_INJECTION && PATROL_MQTT_TRIAL_FAULT_KIND == 3
     MqttRuntime_BlockForRestoreFailure();
     return 0;
 #else
-    return MqttRuntime_RestoreRamActive(c,g_trial.now);
+    if (!MqttRuntime_RestoreRamActive(c,g_trial.now)) return 0;
+    return !g_trial.persistent || CloudService_ApplyMqttIdentity(PatrolConfig_Get()->vid);
 #endif
 }
 void MqttTrialManager_Init(void)
@@ -66,8 +81,21 @@ int MqttTrialManager_Stage(const ABoxMqttConfig*c,uint64_t proof,uint32_t now)
        (!g_trial.stable.host&&!copy_stable(MqttRuntime_ActiveConfig()))||
        !MqttRuntime_StageRamCandidate(c)||
        !copy_candidate(MqttRuntime_StagedConfig()))return 0;
-    g_trial.now=now;g_trial.cancel_pending=0U;
+    g_trial.now=now;g_trial.cancel_pending=0U;g_trial.persistent=0U;g_trial.flash_restore_failed=0U;
     return ABoxMqttTrial_Start(&g_trial.trial,&g_trial.stable,&g_trial.candidate,proof,now,120000U,90000U);
+}
+int MqttTrialManager_StagePersistent(const PatrolRemoteConfigV5_t *candidate, uint64_t proof, uint32_t now)
+{
+    ABoxMqttConfig runtime, stable_runtime;
+    const PatrolRemoteConfigV5_t *stable = PatrolConfig_Get();
+    if (!candidate || !stable || !PatrolConfig_IsCloudReady(candidate) ||
+        !PatrolMqttConfig_FromV5(candidate, &runtime) ||
+        !PatrolMqttConfig_FromV5(stable, &stable_runtime) ||
+        !MqttTrialManager_Stage(&runtime, proof, now)) return 0;
+    memcpy(g_trial.candidate_vid, candidate->vid, sizeof(g_trial.candidate_vid));
+    (void)copy_stable(&stable_runtime);
+    g_trial.persistent = 1U;
+    return 1;
 }
 void MqttTrialManager_Accepted(uint32_t now)
 {g_trial.now=now;ABoxMqttTrial_Event(&g_trial.trial,g_trial.trial.session,ABOX_MQTT_TRIAL_ACCEPTED,0,now);}
@@ -89,8 +117,26 @@ void MqttTrialManager_Poll(uint32_t now)
     s=g_trial.trial.state;
     if(s>=ABOX_MQTT_TRIAL_PREPARING&&s<=ABOX_MQTT_TRIAL_VERIFYING&&MqttRuntime_State()==MQTT_RUNTIME_FAILED){ABoxMqttTrial_Event(&g_trial.trial,g_trial.trial.session,ABOX_MQTT_TRIAL_ERROR,0,now);return;}
     if(g_trial.trial.state==ABOX_MQTT_TRIAL_COMMITTING){
-        if(copy_stable(MqttRuntime_ActiveConfig()))ABoxMqttTrial_Event(&g_trial.trial,g_trial.trial.session,ABOX_MQTT_TRIAL_SAVED,0,now);
-        else ABoxMqttTrial_Event(&g_trial.trial,g_trial.trial.session,ABOX_MQTT_TRIAL_ERROR,0,now);
+        uint8_t saved=1U;
+        if(g_trial.persistent) {
+            PatrolRemoteConfigV5_t next=*PatrolConfig_Get();
+            memcpy(next.vid,g_trial.candidate_vid,sizeof(next.vid));
+            strcpy(next.mqtt_host,g_trial.candidate.host);
+            next.mqtt_port=g_trial.candidate.port;
+            strcpy(next.mqtt_username,g_trial.candidate.username);
+            strcpy(next.mqtt_password,g_trial.candidate.password);
+            next.mqtt_tls_enabled=g_trial.candidate.tls_enabled;
+            next.mqtt_tls_profile_id=g_trial.candidate.tls_profile_id;
+            saved=PatrolConfig_Save(&next);
+        }
+        if(!saved) {
+            /* A failed readback may follow a partial write. Try to restore the old page. */
+            if (!PatrolConfig_Save(PatrolConfig_Get())) g_trial.flash_restore_failed=1U;
+            ABoxMqttTrial_Event(&g_trial.trial,g_trial.trial.session,ABOX_MQTT_TRIAL_ERROR,0,now);
+        } else {
+            ABoxMqttTrial_Event(&g_trial.trial,g_trial.trial.session,ABOX_MQTT_TRIAL_SAVED,0,now);
+            (void)copy_stable(MqttRuntime_ActiveConfig());
+        }
         APP_LOGI("MQTT_TRIAL","commit session=%lu trial=%u reason=%u",(unsigned long)(uint32_t)g_trial.trial.session,
                  (unsigned)g_trial.trial.state,(unsigned)g_trial.trial.reason);
     }

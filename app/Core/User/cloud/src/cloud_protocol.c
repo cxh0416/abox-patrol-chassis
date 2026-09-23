@@ -271,7 +271,7 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
             !config_string_valid(mqtt_host->valuestring, sizeof(request->mqtt_host), 0U) ||
             !config_string_valid(mqtt_username->valuestring, sizeof(request->mqtt_username), 0U) ||
             !config_string_valid(mqtt_password->valuestring, sizeof(request->mqtt_password), 0U) ||
-            mqtt_port->valuedouble < 1 || mqtt_port->valuedouble > 65535) goto done;
+            !json_integer_between(mqtt_port, 1, 65535)) goto done;
         strncpy(request->mqtt_host, mqtt_host->valuestring, sizeof(request->mqtt_host) - 1U);
         strncpy(request->mqtt_username, mqtt_username->valuestring, sizeof(request->mqtt_username) - 1U);
         strncpy(request->mqtt_password, mqtt_password->valuestring, sizeof(request->mqtt_password) - 1U);
@@ -291,18 +291,23 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
         mqtt_port = cJSON_GetObjectItemCaseSensitive(params, "port");
         mqtt_username = cJSON_GetObjectItemCaseSensitive(params, "username");
         mqtt_password = cJSON_GetObjectItemCaseSensitive(params, "password");
+        mqtt_tls_enabled = cJSON_GetObjectItemCaseSensitive(params, "tlsEnabled");
+        mqtt_tls_profile_id = cJSON_GetObjectItemCaseSensitive(params, "tlsProfileId");
         if (!cJSON_IsString(mqtt_vid) || !cJSON_IsString(mqtt_host) || !cJSON_IsNumber(mqtt_port) ||
             !cJSON_IsString(mqtt_username) || !cJSON_IsString(mqtt_password) ||
+            !cJSON_IsBool(mqtt_tls_enabled) || !json_integer_between(mqtt_tls_profile_id, 0, 255) ||
             !config_string_valid(mqtt_vid->valuestring, sizeof(request->mqtt_vid), 1U) ||
             !config_string_valid(mqtt_host->valuestring, sizeof(request->mqtt_host), 0U) ||
             !config_string_valid(mqtt_username->valuestring, sizeof(request->mqtt_username), 0U) ||
             !config_string_valid(mqtt_password->valuestring, sizeof(request->mqtt_password), 0U) ||
-            mqtt_port->valuedouble < 1 || mqtt_port->valuedouble > 65535) goto done;
+            !json_integer_between(mqtt_port, 1, 65535)) goto done;
         strncpy(request->mqtt_vid, mqtt_vid->valuestring, sizeof(request->mqtt_vid) - 1U);
         strncpy(request->mqtt_host, mqtt_host->valuestring, sizeof(request->mqtt_host) - 1U);
         strncpy(request->mqtt_username, mqtt_username->valuestring, sizeof(request->mqtt_username) - 1U);
         strncpy(request->mqtt_password, mqtt_password->valuestring, sizeof(request->mqtt_password) - 1U);
         request->mqtt_port = (uint16_t)mqtt_port->valuedouble;
+        request->mqtt_tls_enabled = cJSON_IsTrue(mqtt_tls_enabled) ? 1U : 0U;
+        request->mqtt_tls_profile_id = (uint8_t)mqtt_tls_profile_id->valueint;
         request->action = CLOUD_PROTOCOL_ACTION_SET_MQTT;
     }
     else { status = CLOUD_PROTOCOL_UNKNOWN_ACTION; goto done; }

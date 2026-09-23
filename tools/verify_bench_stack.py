@@ -22,6 +22,14 @@ source=(Path(__file__).resolve().parents[1]/'app/Core/User/system/src/patrol_rto
 capacity=int(re.search(r'#define PATROL_REMOTE_STACK_WORDS (\d+)U',source)[1])*4
 assert used+1024<=capacity, (used,capacity)
 print(f'PASS calibration stack: known frames {used} + 1024 byte reserve <= {capacity}')
+trial_chain=['Patrol_RemoteTask','CloudService_Task','MqttTrialManager_Poll',
+             'PatrolConfig_Save','OTA_Info_SaveRemoteConfig','ota_info_write_raw',
+             'ota_info_write_raw_unlocked']
+for name in trial_chain:
+    if name not in frames:raise SystemExit('Missing MQTT trial stack evidence: '+name)
+trial_used=sum(frames[n] for n in trial_chain)
+assert trial_used+1024<=capacity, (trial_used,capacity)
+print(f'PASS MQTT trial save stack: known frames {trial_used} + 1024 byte reserve <= {capacity}')
 fault_chain=['Patrol_CanopenTask','PatrolRuntime_Tick','PatrolRuntime_ApplyReset',
              'CenterCalibration_Fail','AppLog_Printf']
 for name in fault_chain:

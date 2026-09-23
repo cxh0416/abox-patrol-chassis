@@ -8,7 +8,8 @@
 |---|---|---|
 | 最新正式版 | `patrol-chassis-0.2.32` | `dist/release.manifest.json` |
 | 正式 App SHA256 | `5B9FE0E88D25ECFB34C278C6594974944257FA305CBD250F28539E048B2DFEE3` | 正式 manifest |
-| 当前开发版本 | `patrol-chassis-0.2.32`，WP7.2 checkpoint candidate，非正式发布 | 根目录 `VERSION` 与下方 checkpoint |
+| 当前开发版本 | `patrol-chassis-0.2.32`，WP7.3 已验收候选，非正式发布 | 根目录 `VERSION` 与 WP7.3 evidence |
+| WP7.3 clean ARM Release App SHA256 | `DE38325CE586CC1F703FAD78C6BC4D219450CDE110A5E56400897A237A6C7251` | [WP7.3 evidence](operations/evidence/2026-09-23-mqtt-wp73/index.json)；实测候选，非 `dist/` 正式版 |
 | WP7.2 最新实测 Debug App SHA256 | `5AE13A1367345515245F9D2C694710BA3140DD18F9DEC3FFF81BE3ABD471B5D4` | `out/logs/wp72-success-app.bin` 与 WP7.2 index；测试构建，非正式版 |
 | 仓库 Platform gitlink | `26a8ab3687336a39f30e578b713b43edbb3488b0` | 当前 checkpoint gitlink；未 push |
 | WP7.2 checkpoint App SHA256 | `6EE9E4188E001B8581CA4198F9A4B7D1D0D91F132273CA0955325C1295BB450E` | clean ARM Release candidate；非 `dist/` 正式版 |
@@ -21,7 +22,7 @@
 ```text
 WP7.1 CLOSED          A/B/C/D1 passed
 WP7.2 CLOSED
-WP7.3 NOT STARTED
+WP7.3 CLOSED
 D2 REAL VEHICLE NOT STARTED
 ```
 
@@ -35,7 +36,7 @@ App SHA256 = 6EE9E4188E001B8581CA4198F9A4B7D1D0D91F132273CA0955325C1295BB450E
 
 该 App 是可重复构建 checkpoint candidate，不是 `dist/` 正式 release，未执行 OTA 下发。
 
-进入 WP7.3 前已按 ABox Platform、产品仓通用能力和 Patrol 产品能力完成命名收口。当前产品 Flash Config 只接受 V5；V3/V4 仅属于开发历史，不进入正式运行路径。除此项明确的兼容策略收紧外，无功能、公共协议或 Flash 布局变化。公共 MQTT V4 与 Config V4 是不同版本概念，MQTT V4 未修改。WP7.2 仍为 CLOSED，WP7.3 仍未开始。
+进入 WP7.3 前已按 ABox Platform、产品仓通用能力和 Patrol 产品能力完成命名收口。当前产品 Flash Config 只接受 V5；V3/V4 仅属于开发历史，不进入正式运行路径。公共 MQTT V4 与 Config V4 是不同版本概念，MQTT V4 未修改。WP7.1、WP7.2、WP7.3 均为 CLOSED。正式 `set_mqtt` 已完成旧连接 202 发送门禁、VID/Topic RAM Trial、proof 后 Config V5 保存及回读、失败恢复与最终同 requestId 响应。实机 plain→TLS、TLS→plain、失败 candidate、VID 切换及失败恢复、重启与物理回读通过；主机、Platform CTest、bench、clean ARM Release 与静态 RAM/栈门禁通过。实测后原 App、Boot State A/B 与 Config 已物理回读确认逐字节恢复，`dist/` 未改变。详见 [WP7.3 evidence](operations/evidence/2026-09-23-mqtt-wp73/index.json)。
 
 WP7.2 最新实机状态：
 
@@ -46,7 +47,7 @@ WP7.2 最新实机状态：
 - restore failure：实机 `RESTORE_FAILED`，runtime `FAILED`，MQTT 安全门为 0；未见隐式 plain fallback
 - 成功矩阵之后重新物理读取 `0x0803F800`，`config-after-wp72.bin` SHA256 为 `A1E93C70B13B43FBF149402EE03FA8AC5A1B1FCF6A8004F2301C210DDD978835`，与基线一致；Boot 物理回读也与冻结产物一致
 
-2026-09-23 补采：COM3 为 FTDI USB Serial Port，按 UART5 `19200 8N1` 采集。原始串口记录包含 TLS trial 的 `QMTOPEN/QMTCONN`、PREPARED/CONNECTED/SUBSCRIBED、proof 和 commit；EMQX 原生 trace 包含同一 clientId 的 CONNECT/CONNACK 与 9 组 SUBSCRIBE/SUBACK。仅为取证复现一次 TLS trial，未重跑故障矩阵。最终产品/Platform/bench 全量回归通过；clean ARM Release 通过，故障注入与实验命令均关闭，RAM guard 为 4,104 B。WP7.2 关闭，WP7.3 尚未开始；本次验证不改变 `dist/` 的正式版身份。
+2026-09-23 WP7.2 补采：COM3 为 FTDI USB Serial Port，按 UART5 `19200 8N1` 采集。原始串口记录包含 TLS trial 的 `QMTOPEN/QMTCONN`、PREPARED/CONNECTED/SUBSCRIBED、proof 和 commit；EMQX 原生 trace 包含同一 clientId 的 CONNECT/CONNACK 与 9 组 SUBSCRIBE/SUBACK。该记录只归属 WP7.2；正式版身份仍以 `dist/` manifest 为准。
 
 ## Frozen MQTT Test Baseline
 

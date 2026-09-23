@@ -16,6 +16,28 @@ CloudContext g_cloud;
 
 uint32_t CloudPort_Now(void) { return HAL_GetTick(); }
 
+uint8_t CloudService_ApplyMqttIdentity(const char* vid)
+{
+    const char* subscriptions[3];
+    if (vid == 0 || vid[0] == '\0' || strlen(vid) >= sizeof(((PatrolRemoteConfigV5_t*)0)->vid)) return 0U;
+    if (!MQTT_Core_SetClientId(vid)) return 0U;
+    (void)snprintf(g_cloud.topic_heartbeat, sizeof(g_cloud.topic_heartbeat), "/zxwl/abox/%s/heartbeat", vid);
+    (void)snprintf(g_cloud.topic_manifest, sizeof(g_cloud.topic_manifest), "/zxwl/abox/%s/manifest", vid);
+    (void)snprintf(g_cloud.topic_status_report, sizeof(g_cloud.topic_status_report), "/zxwl/abox/%s/report", vid);
+    (void)snprintf(g_cloud.topic_config_cmd, sizeof(g_cloud.topic_config_cmd), "/zxwl/abox/%s/internal/config", vid);
+    (void)snprintf(g_cloud.topic_config_resp, sizeof(g_cloud.topic_config_resp), "/zxwl/abox/%s/internal/config/resp", vid);
+    (void)snprintf(g_cloud.topic_ota_cmd, sizeof(g_cloud.topic_ota_cmd), "/zxwl/abox/%s/internal/ota", vid);
+    (void)snprintf(g_cloud.topic_ota_resp, sizeof(g_cloud.topic_ota_resp), "/zxwl/abox/%s/internal/ota/resp", vid);
+    (void)snprintf(g_cloud.topic_log, sizeof(g_cloud.topic_log), "/zxwl/abox/%s/internal/log", vid);
+    (void)snprintf(g_cloud.topic_control_cmd, sizeof(g_cloud.topic_control_cmd), "/zxwl/abox/%s/request", vid);
+    (void)snprintf(g_cloud.topic_control_resp, sizeof(g_cloud.topic_control_resp), "/zxwl/abox/%s/response", vid);
+    subscriptions[0] = g_cloud.topic_config_cmd;
+    subscriptions[1] = g_cloud.topic_ota_cmd;
+    subscriptions[2] = g_cloud.topic_control_cmd;
+    MQTT_Core_SetTopics(subscriptions, 3U, g_cloud.topic_heartbeat);
+    return 1U;
+}
+
 static uint8_t read_reset_reason(void)
 {
     uint8_t reason = 0U;
@@ -69,6 +91,8 @@ void CloudService_Init(void)
     g_cloud.ota_begin_pending = 0U;
     g_cloud.last_request_id[0] = '\0';
     g_cloud.last_response_payload[0] = '\0';
+    g_cloud.mqtt_persistent_active = 0U;
+    g_cloud.mqtt_candidate_pending = 0U;
     g_cloud.reset_reason = read_reset_reason();
     g_cloud.config_ready = PatrolConfig_IsCloudReady(cfg);
 
@@ -166,6 +190,17 @@ void CloudService_Task(void)
     }
     MqttRuntime_Task(HAL_GetTick());
     MqttTrialManager_Poll(HAL_GetTick());
+    if (g_cloud.mqtt_persistent_active && !g_cloud.mqtt_candidate_pending &&
+        !g_cloud.response_pending) {
+        ABoxMqttTrialState trial_state = MqttTrialManager_State();
+        if (trial_state == ABOX_MQTT_TRIAL_COMMITTED || trial_state == ABOX_MQTT_TRIAL_FAILED) {
+            const uint8_t saved = trial_state == ABOX_MQTT_TRIAL_COMMITTED;
+            if (CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, g_cloud.mqtt_trial_request_id,
+                    saved ? 200U : 500U, saved ? "MQTT_CONFIG_SAVED" : "MQTT_CANDIDATE_RESTORED",
+                    saved ? "{\"committed\":true}" : "{\"committed\":false,\"restored\":true}", 0U))
+                g_cloud.mqtt_persistent_active = 0U;
+        }
+    }
     if (!MqttRuntime_IsReady()) { g_cloud.mqtt_was_ready = 0U; return; }
     MQTT_Core_Task();
     ready = MQTT_Core_IsReady();

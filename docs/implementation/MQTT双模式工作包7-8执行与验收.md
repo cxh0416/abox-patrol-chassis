@@ -57,13 +57,17 @@ failure -> RESTORING -> active
 
 本地覆盖 plain→TLS、TLS→plain、TLS→TLS、plain→plain。每类都验证 connect、全部订阅、business proof、失败恢复、stale session/proof、timeout/cancel 和 restore failure。7.2 不写 Config V5。
 
-2026-09-23 WP7.2 CLOSED。真实阶段事件、四类故障注入、四类成功复测与矩阵后 Config 物理回读已完成；COM3 原始串口记录及 EMQX CONNECT/SUBACK 原生 trace 已补齐。最终产品/Platform/bench 全量回归及 clean ARM Release 通过。证据以 `docs/operations/evidence/2026-09-22-mqtt-wp72/index.json` 为准。WP7.3 尚未开始。
+2026-09-23 WP7.2 CLOSED。真实阶段事件、四类故障注入、四类成功复测与矩阵后 Config 物理回读已完成；COM3 原始串口记录及 EMQX CONNECT/SUBACK 原生 trace 已补齐。最终产品/Platform/bench 全量回归及 clean ARM Release 通过。证据以 `docs/operations/evidence/2026-09-22-mqtt-wp72/index.json` 为准。
 
 ### 阶段三：7.3 set_mqtt 与 V5 commit
 
 `set_mqtt` 必须先在旧连接回复 accepted，再撤销控制状态并启动 trial；只有 candidate 已连接、完成订阅和 business proof 后才保存 Config V5。Flash readback 成功后发出 SAVED 并 commit。任何失败不保存 candidate，并恢复原 active。
 
 请求完整包含 vid、host、port、username、password、必填 `tlsEnabled` 和 `tlsProfileId`。`get_info` 返回 `mqttHost`、`mqttPort`、`mqttTls` 和 `mqttTlsProfileId`。
+
+2026-09-23 本地软件候选：产品层将完整请求映射到 Config V5 与 `ABoxMqttConfig`；旧连接的 QoS1 受理响应完成后才调用 Trial Accepted。Trial prepare 时更新产品 VID、ClientId 和当前三条订阅 Topic；restore 时恢复已持久化 VID 及 Topics。只有 candidate heartbeat proof 后的 COMMITTING 才通过 `PatrolConfig_Save()` 写入并回读 Config V5；该函数失败时尝试恢复旧配置页，恢复写入失败则保持网络安全门关闭。最终响应复用 requestId，发送完成后覆盖 202 幂等缓存。已持久化配置仍是 `get_info` 的来源。
+
+2026-09-23 WP7.3 CLOSED。本地测试、Platform CTest 14/14、bench、clean ARM Release 与 4 KiB RAM 门禁通过。实机 plain→TLS、TLS→plain 均先旧连接 202，后新连接 200；J-Link Config V5 回读和重启恢复相同模式通过。失败 candidate 与失败 VID candidate 均返回最终 500、恢复旧 ClientId/Topics，Config 物理哈希不变；成功 VID 切换的新 ClientId、三条订阅及 heartbeat/report Topic 已见 Broker 原生 trace。重复 requestId 重放最终 500 而非 202。OTA_Info 非 MQTT 字段、同页故障日志以及 Boot State A/B 在 `set_mqtt` 前后保持不变。实测完成后原 App、Boot State A/B 和 Config 已物理回读确认逐字节恢复。证据见 [WP7.3 index](../operations/evidence/2026-09-23-mqtt-wp73/index.json)；此结论不代表阶段五 D2 真实车辆验收或正式发布。
 
 ### 阶段四：本地持久化、掉电、OTA 和 CA 异常
 

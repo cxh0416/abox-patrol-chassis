@@ -267,6 +267,16 @@ void MQTT_Core_UpdateBroker(const char* host, uint16_t port, const char* usernam
     MQTT_Core_RequestReconnect();
 }
 
+uint8_t MQTT_Core_SetClientId(const char* client_id)
+{
+    size_t length;
+    if (client_id == 0 || client_id[0] == '\0') return 0U;
+    length = strlen(client_id);
+    if (length >= sizeof(g_mqtt_cfg.client_id)) return 0U;
+    memcpy(g_mqtt_cfg.client_id, client_id, length + 1U);
+    return 1U;
+}
+
 void MQTT_Core_RequestIccid(void)
 {
     if (g_mqtt_rt.state != MQTT_CORE_ST_READY) return;

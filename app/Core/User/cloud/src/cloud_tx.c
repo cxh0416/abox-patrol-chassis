@@ -44,7 +44,6 @@ static void tx_completed(void)
             OtaService_AcknowledgeRollback();
             g_cloud.response_ack_rollback = 0U;
         }
-#if PATROL_CHASSIS_MQTT_LAB_TEST
         if (g_cloud.mqtt_candidate_pending)
         {
             g_cloud.mqtt_candidate_pending = 0U;
@@ -55,7 +54,6 @@ static void tx_completed(void)
             g_cloud.mqtt_cancel_pending = 0U;
             MqttTrialManager_Cancel(CloudPort_Now());
         }
-#endif
     }
     else if (completed == CLOUD_TX_HEARTBEAT)
     {

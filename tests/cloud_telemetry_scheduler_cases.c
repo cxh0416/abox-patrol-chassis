@@ -51,5 +51,13 @@ int main(void)
     CloudTx_Service();
     assert(!g_cloud.response_pending && cached_responses == 1 && g_cloud.reboot_pending);
     assert(g_cloud.reboot_due == tick + CLOUD_REBOOT_DELAY_MS);
+    g_cloud.response_pending = 1;
+    g_cloud.response_reboots = 0;
+    g_cloud.mqtt_candidate_pending = 1;
+    CloudTx_Service();
+    assert(accepted_count == 0);
+    complete_publish();
+    CloudTx_Service();
+    assert(accepted_count == 1 && !g_cloud.mqtt_candidate_pending);
     return 0;
 }

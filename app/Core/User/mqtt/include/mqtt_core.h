@@ -119,6 +119,7 @@ void MQTT_Core_UpdateBroker(const char* host, uint16_t port, const char* usernam
 uint8_t MQTT_Core_ApplyRuntimeConfig(const ABoxMqttConfig* config);
 void MQTT_Core_RequestIccid(void);
 void MQTT_Core_SetTopics(const char* const* sub_topics, uint8_t sub_topic_count, const char* pub_topic);
+uint8_t MQTT_Core_SetClientId(const char* client_id);
 uint8_t MQTT_Core_IsReady(void);
 uint8_t MQTT_Core_CanRunBackgroundAt(void);
 MQTT_CoreState_t MQTT_Core_GetState(void);

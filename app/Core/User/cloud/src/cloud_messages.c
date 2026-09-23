@@ -218,6 +218,11 @@ void CloudMessages_BuildInfoResult(char* output, uint16_t size)
     json_string(&writer, ABoxBootV2App_StableSeedSource());
     json_append(&writer, ",\"otaBootstrapNeedsRevision\":false");
     json_append(&writer, ",\"vid\":"); json_string(&writer, PatrolConfig_Get()->vid);
+    json_append(&writer, ",\"mqttHost\":"); json_string(&writer, PatrolConfig_Get()->mqtt_host);
+    json_appendf(&writer, ",\"mqttPort\":%u,\"mqttTls\":%s,\"mqttTlsProfileId\":%u",
+                 (unsigned)PatrolConfig_Get()->mqtt_port,
+                 PatrolConfig_Get()->mqtt_tls_enabled ? "true" : "false",
+                 (unsigned)PatrolConfig_Get()->mqtt_tls_profile_id);
     json_appendf(&writer, ",\"uptimeMs\":%lu,\"mqttState\":", (unsigned long)CloudPort_Now());
     json_string(&writer, mqtt_state_name(MQTT_Core_GetState()));
     json_appendf(&writer, ",\"mqttStateCode\":%u,\"iccid\":", (unsigned int)MQTT_Core_GetState());
@@ -241,20 +246,13 @@ void CloudMessages_BuildInfoResult(char* output, uint16_t size)
     json_append(&writer, ",\"otaTargetVersion\":");
     json_string(&writer, OtaService_IsBusy() ? OtaService_TargetVersion() : (have_state ? state.image_version : ""));
     json_appendf(&writer, ",\"lastOtaError\":%lu,\"diagnostics\":{\"canRx\":%lu,"
-                 "\"steerHb\":%s,\"driveHb\":%s,\"steerRaw\":%ld,\"leftRpm\":%ld,"
-                 "\"rightRpm\":%ld,\"encoderRaw\":%lu,\"encoderOnline\":%s,"
-                 "\"sdoTimeouts\":%lu,\"encoderTimeouts\":%lu}}",
+                 "\"steerHb\":%s,\"driveHb\":%s,\"encoderOnline\":%s}}",
                  (unsigned long)(OtaService_LastError() ? OtaService_LastError() :
                                  (have_state ? state.last_error : 0U)),
                  (unsigned long)diagnostics.can_rx_count,
                  diagnostics.steering_online ? "true" : "false",
                  diagnostics.drive_online ? "true" : "false",
-                 (long)diagnostics.steering_position_count,
-                 (long)diagnostics.left_actual_rpm, (long)diagnostics.right_actual_rpm,
-                 (unsigned long)diagnostics.encoder_count,
-                 diagnostics.encoder_online ? "true" : "false",
-                 (unsigned long)diagnostics.sdo_timeout_count,
-                 (unsigned long)diagnostics.encoder_timeout_count);
+                 diagnostics.encoder_online ? "true" : "false");
     if (!writer.valid) CloudMessages_CopyString(output, size, "{}");
 }
 

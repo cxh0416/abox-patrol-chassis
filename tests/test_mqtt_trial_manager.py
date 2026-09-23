@@ -14,6 +14,8 @@ class MqttTrialManagerTests(unittest.TestCase):
             command = [shutil.which("gcc"), "-std=c11", "-Wall", "-Wextra", "-Werror",
                        "-I" + str(ROOT / "tests/mqtt_trial_stubs"),
                        "-I" + str(ROOT / "app/Core/User/mqtt/include"),
+                       "-I" + str(ROOT / "app/Core/User/system/include"),
+                       "-I" + str(ROOT / "shared/include"),
                        "-I" + str(ROOT / "platform/include"),
                        str(ROOT / "tests/mqtt_trial_manager_test.c"),
                        str(ROOT / "app/Core/User/mqtt/src/mqtt_trial_manager.c"),

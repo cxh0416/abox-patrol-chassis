@@ -1,0 +1,630 @@
+{
+  "archive": "hardware-raw-wp73.zip",
+  "archiveSha256": "9014E952C22C309BFA61AE4B95B2EBDBDBDBA26567EB8A8A19802E617AA9E5E8",
+  "items": [
+    {
+      "originalPath": "out/logs/wp73-a-config-after.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-a-config-after.bin",
+      "size": 2048,
+      "sha256": "4BC6CDCADBD327AB49175FEB6F254BAA6E93B84E5BC7A223BF07996F0FF328C7"
+    },
+    {
+      "originalPath": "out/logs/wp73-a-config-read.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-a-config-read.log",
+      "size": 3992,
+      "sha256": "DD5D8A0A607ADFE1FB170A1984BF57794D5C176FD8A0762E749DE54EB30D9069"
+    },
+    {
+      "originalPath": "out/logs/wp73-a-info-fixed-trace.zip",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-a-info-fixed-trace.zip",
+      "size": 31503,
+      "sha256": "D093E891DE8410683B32D4D090F8667D136698CAEA3604E577BCF29E5F57F0CA"
+    },
+    {
+      "originalPath": "out/logs/wp73-a-reboot.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-a-reboot.log",
+      "size": 2149,
+      "sha256": "B1211D865B73421DDB8CA6739DEC37253D8D926E042808D1D286DA421A1171E0"
+    },
+    {
+      "originalPath": "out/logs/wp73-a-state-a.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-a-state-a.bin",
+      "size": 2048,
+      "sha256": "BF714ED4DDB75E1D25B841F2C8696559A370838AD486BC4E89F7460B094B6453"
+    },
+    {
+      "originalPath": "out/logs/wp73-a-state-b.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-a-state-b.bin",
+      "size": 2048,
+      "sha256": "D0FF1B294B5288D1AE1421EADF5B2D38A8752B76D472FF30BED9028E25B1C5B8"
+    },
+    {
+      "originalPath": "out/logs/wp73-a-state-read.jlink",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-a-state-read.jlink",
+      "size": 249,
+      "sha256": "5F22684062DE1227A089610C3466AC4F0199195793C0C505B0A55FAD50BACD93"
+    },
+    {
+      "originalPath": "out/logs/wp73-a-state-read.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-a-state-read.log",
+      "size": 2991,
+      "sha256": "6A56F3A2C5CA60A612855F7DE82D2667AFDB8F3E5267F3D34D071442D899236D"
+    },
+    {
+      "originalPath": "out/logs/wp73-a-trace-after-reboot.zip",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-a-trace-after-reboot.zip",
+      "size": 8486,
+      "sha256": "F6515BBB77009CE99A12733C69554AB419AADB8390676BCC7B563807C744FCBF"
+    },
+    {
+      "originalPath": "out/logs/wp73-a-trace-retry.zip",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-a-trace-retry.zip",
+      "size": 14666,
+      "sha256": "02487D6D680C74EA3313E0BD1A25800A4F0C96652C8B1FDD6E52BFA894035EBE"
+    },
+    {
+      "originalPath": "out/logs/wp73-a-trace-start.json",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-a-trace-start.json",
+      "size": 286,
+      "sha256": "0B2641F65775E09AFFAB91AD51B29216C78577A419D611587AE8AACC5895B52A"
+    },
+    {
+      "originalPath": "out/logs/wp73-a-trace-stop.json",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-a-trace-stop.json",
+      "size": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "originalPath": "out/logs/wp73-a-trace.zip",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-a-trace.zip",
+      "size": 8126,
+      "sha256": "A4D32378AD90A4376105EAD8A1CC819EDC7448053E290458CA55429E8FF6002A"
+    },
+    {
+      "originalPath": "out/logs/wp73-b-config-after.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-b-config-after.bin",
+      "size": 2048,
+      "sha256": "A1E93C70B13B43FBF149402EE03FA8AC5A1B1FCF6A8004F2301C210DDD978835"
+    },
+    {
+      "originalPath": "out/logs/wp73-b-config-read.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-b-config-read.log",
+      "size": 3992,
+      "sha256": "619286AEB85AEE0035A3DBD3BE20CAB6DBCADEA85206AFE7D47F9A0CA94E7F9C"
+    },
+    {
+      "originalPath": "out/logs/wp73-b-reboot-trace.zip",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-b-reboot-trace.zip",
+      "size": 51724,
+      "sha256": "CC8C61A91AE181862C6DDD3B2AE9B7470DB8B61086235F51E05AE8EB19EA0198"
+    },
+    {
+      "originalPath": "out/logs/wp73-b-reboot.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-b-reboot.log",
+      "size": 2149,
+      "sha256": "4A6559F5CA62D6A3264D0C2F05BE11AB30F599327AB4796A2C5875508CB4F0FD"
+    },
+    {
+      "originalPath": "out/logs/wp73-b-trace.zip",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-b-trace.zip",
+      "size": 43133,
+      "sha256": "247222BCD0E9FE7DA622789F4117654569C4595131F181F0B617A0F8C7EF1482"
+    },
+    {
+      "originalPath": "out/logs/wp73-backup.jlink",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-backup.jlink",
+      "size": 348,
+      "sha256": "4316206BF235F1611BE9748D7D9AC1E40D32E0F9CC9D60AC34A7D43E7E0A5412"
+    },
+    {
+      "originalPath": "out/logs/wp73-backup.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-backup.log",
+      "size": 3262,
+      "sha256": "92E5C01FC5356811570891CBAC9B033A6164C3673AC074D3FBBCC1B0787C3620"
+    },
+    {
+      "originalPath": "out/logs/wp73-baseline-restored-com3-raw.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-baseline-restored-com3-raw.log",
+      "size": 1993,
+      "sha256": "4F6ECDE771AB5AFF3DA5AFC744C484A95E311C427F3DFC00C2E64A903E27E9AC"
+    },
+    {
+      "originalPath": "out/logs/wp73-build-info-fix.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-build-info-fix.log",
+      "size": 446,
+      "sha256": "1DAD512175851065068773329E383E818CA6F6D10EA39DBA24EFB48F44E228C2"
+    },
+    {
+      "originalPath": "out/logs/wp73-c-config-after-read.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-c-config-after-read.log",
+      "size": 3992,
+      "sha256": "3AE39FB8B9D49CE04E9A13BFE4ABCD74D1C9D05FD1BD6B562A983ED81141F26A"
+    },
+    {
+      "originalPath": "out/logs/wp73-c-config-after.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-c-config-after.bin",
+      "size": 2048,
+      "sha256": "A1E93C70B13B43FBF149402EE03FA8AC5A1B1FCF6A8004F2301C210DDD978835"
+    },
+    {
+      "originalPath": "out/logs/wp73-c-config-during-read.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-c-config-during-read.log",
+      "size": 3995,
+      "sha256": "B1F96C204FBCE25A6C3A06E456C37B968A7E5D153961CA2BF8E0AA0A1F964777"
+    },
+    {
+      "originalPath": "out/logs/wp73-c-config-during.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-c-config-during.bin",
+      "size": 2048,
+      "sha256": "A1E93C70B13B43FBF149402EE03FA8AC5A1B1FCF6A8004F2301C210DDD978835"
+    },
+    {
+      "originalPath": "out/logs/wp73-c-trace-early.zip",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-c-trace-early.zip",
+      "size": 930,
+      "sha256": "8F92C19120E5062CFEBC3786D1D018D3B99F2DE15AAE74F59A129F8CC6B249B0"
+    },
+    {
+      "originalPath": "out/logs/wp73-c-trace-mid.zip",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-c-trace-mid.zip",
+      "size": 3878,
+      "sha256": "4D37322260EADBB4F061B7791BDA44AA99BB8545F1273DBC5E118270A72F5A99"
+    },
+    {
+      "originalPath": "out/logs/wp73-c-trace-start.json",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-c-trace-start.json",
+      "size": 286,
+      "sha256": "4C7854E3B024D9B138FEDBC720A2FEFC42C91ECFC1DDF82472CF5BFB5A7B73EB"
+    },
+    {
+      "originalPath": "out/logs/wp73-c-trace-stop.json",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-c-trace-stop.json",
+      "size": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "originalPath": "out/logs/wp73-candidate-boot-com3-raw.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-candidate-boot-com3-raw.log",
+      "size": 427,
+      "sha256": "259B9C01C30A37170938DCAD1E87289BC0DDE983FC0722985B0E17CBDB021599"
+    },
+    {
+      "originalPath": "out/logs/wp73-candidate-config.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-candidate-config.bin",
+      "size": 2048,
+      "sha256": "A1E93C70B13B43FBF149402EE03FA8AC5A1B1FCF6A8004F2301C210DDD978835"
+    },
+    {
+      "originalPath": "out/logs/wp73-candidate-diagnose.jlink",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-candidate-diagnose.jlink",
+      "size": 373,
+      "sha256": "98E6F0C3763E0D3C2EB6302AD72BA59491DAC8F29386C2D83962AFF282A403CD"
+    },
+    {
+      "originalPath": "out/logs/wp73-candidate-diagnose.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-candidate-diagnose.log",
+      "size": 3825,
+      "sha256": "26FDC87FD614A618866D93FCAF2024FBCDDE2828F24492C41EEBCF457289DF93"
+    },
+    {
+      "originalPath": "out/logs/wp73-candidate-state-a.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-candidate-state-a.bin",
+      "size": 2048,
+      "sha256": "BF714ED4DDB75E1D25B841F2C8696559A370838AD486BC4E89F7460B094B6453"
+    },
+    {
+      "originalPath": "out/logs/wp73-candidate-state-b.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-candidate-state-b.bin",
+      "size": 2048,
+      "sha256": "D0FF1B294B5288D1AE1421EADF5B2D38A8752B76D472FF30BED9028E25B1C5B8"
+    },
+    {
+      "originalPath": "out/logs/wp73-clean-release-final.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-clean-release-final.log",
+      "size": 14240,
+      "sha256": "A1D87AD7D23F9D23E4F2D86FCADEDF12C614625E9F195601B2E5EDF93D49AA52"
+    },
+    {
+      "originalPath": "out/logs/wp73-clean-release-verified.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-clean-release-verified.log",
+      "size": 14243,
+      "sha256": "68BFF1CE5EAD779CA79A4ACFC7708DF69B0200676147F8998963263C84ABFE66"
+    },
+    {
+      "originalPath": "out/logs/wp73-clean-release.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-clean-release.log",
+      "size": 14234,
+      "sha256": "88C702670477B8E76A246C17BCF4123A4B51330DE61EC22102FAF861BDF797F2"
+    },
+    {
+      "originalPath": "out/logs/wp73-d-config-after.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-d-config-after.bin",
+      "size": 2048,
+      "sha256": "DECC2B205660793F9899593AFE0C20B5D1E74A775BA27F005A29B03D6B89DC34"
+    },
+    {
+      "originalPath": "out/logs/wp73-d-config-read.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-d-config-read.log",
+      "size": 3992,
+      "sha256": "D737D9EE7CB1B6D728CF31EE4967FA19A7FD678CB3E665E78F714D1747BDAFAE"
+    },
+    {
+      "originalPath": "out/logs/wp73-d-fail-config-after-read.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-d-fail-config-after-read.log",
+      "size": 4007,
+      "sha256": "325B22DC8B355C983C62FA2BCDBCAC1FF133BD8FD8331A23EF77A75437C9B74D"
+    },
+    {
+      "originalPath": "out/logs/wp73-d-fail-config-after.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-d-fail-config-after.bin",
+      "size": 2048,
+      "sha256": "DECC2B205660793F9899593AFE0C20B5D1E74A775BA27F005A29B03D6B89DC34"
+    },
+    {
+      "originalPath": "out/logs/wp73-d-fail-config-during-read.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-d-fail-config-during-read.log",
+      "size": 4010,
+      "sha256": "558D25094D4C79529E7AB8EA56A042DFF54C9F3DE52EC2BB5955978531C81856"
+    },
+    {
+      "originalPath": "out/logs/wp73-d-fail-config-during.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-d-fail-config-during.bin",
+      "size": 2048,
+      "sha256": "DECC2B205660793F9899593AFE0C20B5D1E74A775BA27F005A29B03D6B89DC34"
+    },
+    {
+      "originalPath": "out/logs/wp73-d-fail-trace.zip",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-d-fail-trace.zip",
+      "size": 24512,
+      "sha256": "F8D3E645AE08E79F4C35A3D7479E2315CE95BDA4C47543921FA0E04F9B052D43"
+    },
+    {
+      "originalPath": "out/logs/wp73-d-idempotence-trace.zip",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-d-idempotence-trace.zip",
+      "size": 25213,
+      "sha256": "5874150D2BE4FFEE0E9D436AEAB1495D333981FBCB63A956823BBA5FC95C448E"
+    },
+    {
+      "originalPath": "out/logs/wp73-d-new-trace.zip",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-d-new-trace.zip",
+      "size": 11414,
+      "sha256": "4A273D31D8F94CD9B4635C1D82289BF940CE3150CE865C9033111B9A99767D16"
+    },
+    {
+      "originalPath": "out/logs/wp73-d-newvid-trace-start.json",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-d-newvid-trace-start.json",
+      "size": 294,
+      "sha256": "6BF490E9171DABC258C7114776C7781C72378CB36A2466A29B1D80D3285C21E9"
+    },
+    {
+      "originalPath": "out/logs/wp73-d-old-trace.zip",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-d-old-trace.zip",
+      "size": 4742,
+      "sha256": "E4B14752ABFFDB76D7886CD7DA8B1F2CC3A28FDD5CD4FB1BD66CC86D08336C0C"
+    },
+    {
+      "originalPath": "out/logs/wp73-d-reboot-trace.zip",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-d-reboot-trace.zip",
+      "size": 18136,
+      "sha256": "0065C83AD37C6E19B6AD709504965669877437E36FC9058C2F788C4BB6FAA237"
+    },
+    {
+      "originalPath": "out/logs/wp73-d-reboot.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-d-reboot.log",
+      "size": 2149,
+      "sha256": "22DD93D44CAEB22E69B99797740F1225180FD514EA62F25D609A1A28E27A23CF"
+    },
+    {
+      "originalPath": "out/logs/wp73-d-trace-stop.json",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-d-trace-stop.json",
+      "size": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "originalPath": "out/logs/wp73-diff-check.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-diff-check.log",
+      "size": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "originalPath": "out/logs/wp73-final-physical-read.jlink",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-final-physical-read.jlink",
+      "size": 370,
+      "sha256": "AEED2C2466F47234A3BDF457C790FF08A309702E205C9ED0E2522ECB1F8CA533"
+    },
+    {
+      "originalPath": "out/logs/wp73-final-physical-read.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-final-physical-read.log",
+      "size": 3306,
+      "sha256": "F9FD91E6DD53ACD5676C3A05203D6EB6235C4A1FBE6764AEDB0D07BCA6A583F8"
+    },
+    {
+      "originalPath": "out/logs/wp73-final-test-config.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-final-test-config.bin",
+      "size": 2048,
+      "sha256": "DECC2B205660793F9899593AFE0C20B5D1E74A775BA27F005A29B03D6B89DC34"
+    },
+    {
+      "originalPath": "out/logs/wp73-final-test-state-a.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-final-test-state-a.bin",
+      "size": 2048,
+      "sha256": "83F95AD12056ECF191B4DBE5B7BBB4B675574247A6FBD84916A225D63D3BDC44"
+    },
+    {
+      "originalPath": "out/logs/wp73-final-test-state-b.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-final-test-state-b.bin",
+      "size": 2048,
+      "sha256": "D0FF1B294B5288D1AE1421EADF5B2D38A8752B76D472FF30BED9028E25B1C5B8"
+    },
+    {
+      "originalPath": "out/logs/wp73-flash-app.jlink",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-flash-app.jlink",
+      "size": 316,
+      "sha256": "F1A4720AA778E3B49BFC093CDC817D408848F1E10A17C49EED61D6EEC50B0BB9"
+    },
+    {
+      "originalPath": "out/logs/wp73-flash-app.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-flash-app.log",
+      "size": 4832,
+      "sha256": "C4120B3B45594C5EB9D3016DBFC14E7838C6791DA03FAA8B680BD3B8A8B700D0"
+    },
+    {
+      "originalPath": "out/logs/wp73-flash-candidate.jlink",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-flash-candidate.jlink",
+      "size": 684,
+      "sha256": "76B2A7EB7AC32197E9037EA4B53ACCEAF7564ADA6026BDBE36EDCAFF784FE23C"
+    },
+    {
+      "originalPath": "out/logs/wp73-flash-candidate.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-flash-candidate.log",
+      "size": 6589,
+      "sha256": "0F14569C1AE49A34C7456659F770570E475F25D49E9D542CAA0F1536F1101B9F"
+    },
+    {
+      "originalPath": "out/logs/wp73-flash-info-fix.jlink",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-flash-info-fix.jlink",
+      "size": 684,
+      "sha256": "952CBAA741469A35F178D6D154561819DD5FAC067C0F60CFE37661477A2B0BF2"
+    },
+    {
+      "originalPath": "out/logs/wp73-flash-info-fix.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-flash-info-fix.log",
+      "size": 6402,
+      "sha256": "1062CC19AB066026FEFDAA200AA6F04FBD46753ADD80655AA24BC37E0D231382"
+    },
+    {
+      "originalPath": "out/logs/wp73-host-tests-final.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-host-tests-final.log",
+      "size": 7973,
+      "sha256": "D38400BE016A9F82DC89AE84EC7C478571CC057219077C67CA5C9BDA3C263E3A"
+    },
+    {
+      "originalPath": "out/logs/wp73-host-tests-info-fix.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-host-tests-info-fix.log",
+      "size": 7973,
+      "sha256": "66BA2F3346E6810A4A4AD5CF865B565C59D8C7FA3CC1FED05EE331A293DFC719"
+    },
+    {
+      "originalPath": "out/logs/wp73-host-tests-verified.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-host-tests-verified.log",
+      "size": 7973,
+      "sha256": "60BF7B211556DEF2462B14314D8B502A5CC0D24E573149A4D516DDDAED2778EE"
+    },
+    {
+      "originalPath": "out/logs/wp73-host-tests.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-host-tests.log",
+      "size": 7973,
+      "sha256": "60274149654E61DE355D1A28712708278E290FDF46EEDCF1874F1C9D1232EB29"
+    },
+    {
+      "originalPath": "out/logs/wp73-info-state-a.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-info-state-a.bin",
+      "size": 2048,
+      "sha256": "83F95AD12056ECF191B4DBE5B7BBB4B675574247A6FBD84916A225D63D3BDC44"
+    },
+    {
+      "originalPath": "out/logs/wp73-info-state-b.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-info-state-b.bin",
+      "size": 2048,
+      "sha256": "D0FF1B294B5288D1AE1421EADF5B2D38A8752B76D472FF30BED9028E25B1C5B8"
+    },
+    {
+      "originalPath": "out/logs/wp73-post-flash-com3-raw.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-post-flash-com3-raw.log",
+      "size": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "originalPath": "out/logs/wp73-pre-app.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-pre-app.bin",
+      "size": 223232,
+      "sha256": "D13A497B4D492AC547E5EF2F9C21AF50659EE49CD1E0EFD608FA0A1746A9F9C2"
+    },
+    {
+      "originalPath": "out/logs/wp73-pre-com3-raw.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-pre-com3-raw.log",
+      "size": 282,
+      "sha256": "66B020FB8251DB5E650566CBEF3E0B43D71955D04BA0E264C40D145AEBBD879A"
+    },
+    {
+      "originalPath": "out/logs/wp73-pre-config-read.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-pre-config-read.log",
+      "size": 3980,
+      "sha256": "25804E9CABF9166BA4FDC1A31C4B14FF680DE202983265A83A12A0C9932F1FDF"
+    },
+    {
+      "originalPath": "out/logs/wp73-pre-config.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-pre-config.bin",
+      "size": 2048,
+      "sha256": "A1E93C70B13B43FBF149402EE03FA8AC5A1B1FCF6A8004F2301C210DDD978835"
+    },
+    {
+      "originalPath": "out/logs/wp73-pre-state-a.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-pre-state-a.bin",
+      "size": 2048,
+      "sha256": "4372C8EC5DF8F1BCB3F453F6C2111E872EB36429263ADA013FA46FE6EDEE2959"
+    },
+    {
+      "originalPath": "out/logs/wp73-pre-state-b.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-pre-state-b.bin",
+      "size": 2048,
+      "sha256": "389BDFFD457E2CB4216DFC3BB1133C9B5345D8FA66552CD5CF0B23A1C2D05536"
+    },
+    {
+      "originalPath": "out/logs/wp73-reset-com3-raw.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-reset-com3-raw.log",
+      "size": 11,
+      "sha256": "8DFE2C0A8F6A83868379256531FBBD6FD3439C4DC9026530FD7379EEE37C262B"
+    },
+    {
+      "originalPath": "out/logs/wp73-reset.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-reset.log",
+      "size": 2149,
+      "sha256": "282D9C8CC49A5208292D8B7F00144DD975BD62D34140FDDC2E2579B10EE43F17"
+    },
+    {
+      "originalPath": "out/logs/wp73-restore-baseline.jlink",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-restore-baseline.jlink",
+      "size": 792,
+      "sha256": "C71C198F9F7CB15EB7FC8F3262875A86969799D32913C49FF9AB726A4730C238"
+    },
+    {
+      "originalPath": "out/logs/wp73-restore-baseline.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-restore-baseline.log",
+      "size": 7314,
+      "sha256": "C0B06128E9846AD1AF0E1DA99D6EBDE2581A0940964774DED05A7C03084033AC"
+    },
+    {
+      "originalPath": "out/logs/wp73-restore-pre-app.jlink",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-restore-pre-app.jlink",
+      "size": 248,
+      "sha256": "C7B80D2157DDF7BFAA08D4148ADD63D3E2EF03A980A943C452A1758967428BBA"
+    },
+    {
+      "originalPath": "out/logs/wp73-restore-pre-app.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-restore-pre-app.log",
+      "size": 4696,
+      "sha256": "428FFE94CE1893162C406828747C81AF02A5DC6F337027EA64049AF0E64C9AEB"
+    },
+    {
+      "originalPath": "out/logs/wp73-restored-app.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-restored-app.bin",
+      "size": 223232,
+      "sha256": "D13A497B4D492AC547E5EF2F9C21AF50659EE49CD1E0EFD608FA0A1746A9F9C2"
+    },
+    {
+      "originalPath": "out/logs/wp73-restored-com3-raw.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-restored-com3-raw.log",
+      "size": 479,
+      "sha256": "696591B89A2A77C5DC29660BC862F67FD797C048DD2EB9CEFEB792A8284E974B"
+    },
+    {
+      "originalPath": "out/logs/wp73-restored-config.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-restored-config.bin",
+      "size": 2048,
+      "sha256": "A1E93C70B13B43FBF149402EE03FA8AC5A1B1FCF6A8004F2301C210DDD978835"
+    },
+    {
+      "originalPath": "out/logs/wp73-restored-read.jlink",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-restored-read.jlink",
+      "size": 464,
+      "sha256": "8F9A21C4DBD5AC6DA8A58913BE8617B0336AA0EEA621DAC7633B9C3A0C338900"
+    },
+    {
+      "originalPath": "out/logs/wp73-restored-read.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-restored-read.log",
+      "size": 3567,
+      "sha256": "37A0205ACE8DAC25F9970C556A0A6DA0A2083D69BFBE6246D1AD329ED3997FFD"
+    },
+    {
+      "originalPath": "out/logs/wp73-restored-ready-com3-raw.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-restored-ready-com3-raw.log",
+      "size": 564,
+      "sha256": "157A4380E5DB38692A08F0BD5FEB7FCE933DA5B79C7EE7A47F2CF5C34082539D"
+    },
+    {
+      "originalPath": "out/logs/wp73-restored-state-a.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-restored-state-a.bin",
+      "size": 2048,
+      "sha256": "4372C8EC5DF8F1BCB3F453F6C2111E872EB36429263ADA013FA46FE6EDEE2959"
+    },
+    {
+      "originalPath": "out/logs/wp73-restored-state-b.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-restored-state-b.bin",
+      "size": 2048,
+      "sha256": "389BDFFD457E2CB4216DFC3BB1133C9B5345D8FA66552CD5CF0B23A1C2D05536"
+    },
+    {
+      "originalPath": "out/logs/wp73-stack-guard-final.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-stack-guard-final.log",
+      "size": 298,
+      "sha256": "0EE32F1967C78E29D8C434918000AF9CD62FD5786C231D1F70F162E84EAAA9A6"
+    },
+    {
+      "originalPath": "out/logs/wp73-stack-guard-verified.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-stack-guard-verified.log",
+      "size": 298,
+      "sha256": "0EE32F1967C78E29D8C434918000AF9CD62FD5786C231D1F70F162E84EAAA9A6"
+    },
+    {
+      "originalPath": "out/logs/wp73-stack-guard.log",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-stack-guard.log",
+      "size": 298,
+      "sha256": "0EE32F1967C78E29D8C434918000AF9CD62FD5786C231D1F70F162E84EAAA9A6"
+    },
+    {
+      "originalPath": "out/logs/wp73-test-state-a.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-test-state-a.bin",
+      "size": 2048,
+      "sha256": "BF714ED4DDB75E1D25B841F2C8696559A370838AD486BC4E89F7460B094B6453"
+    },
+    {
+      "originalPath": "out/logs/wp73-test-state-b.bin",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73-test-state-b.bin",
+      "size": 2048,
+      "sha256": "D0FF1B294B5288D1AE1421EADF5B2D38A8752B76D472FF30BED9028E25B1C5B8"
+    },
+    {
+      "originalPath": "out/logs/wp73_archive_evidence.py",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73_archive_evidence.py",
+      "size": 1008,
+      "sha256": "2BACA86E52864AF25739604677B11321BAA1BD91EB99CC6C4BEE895529E2330C"
+    },
+    {
+      "originalPath": "out/logs/wp73_client_state.py",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73_client_state.py",
+      "size": 601,
+      "sha256": "1D492FD17B164159A72026188358769B2C98801049A6F014A2DEF804AD592004"
+    },
+    {
+      "originalPath": "out/logs/wp73_compare_config.py",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73_compare_config.py",
+      "size": 1768,
+      "sha256": "45F5307AF1325E8AC166D645AC705EF77D64A97C40D5C67B660920E66A754D91"
+    },
+    {
+      "originalPath": "out/logs/wp73_emqx_trace.py",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73_emqx_trace.py",
+      "size": 1358,
+      "sha256": "F05DE1E3A0BF8A739BAF1CD8F4C64C939661AD2924C3A9F02D42EEB1934D1997"
+    },
+    {
+      "originalPath": "out/logs/wp73_get_info.py",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73_get_info.py",
+      "size": 1493,
+      "sha256": "360C3F2E912C45CB6D3C3C4045753B36FA967A6159D83D80892240EDFD5A40DE"
+    },
+    {
+      "originalPath": "out/logs/wp73_publish_set_mqtt.py",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73_publish_set_mqtt.py",
+      "size": 1339,
+      "sha256": "AF5DCAC498DDFABA0BE6D5481D22EEFEE32D3B6FB03AEA829321DCFF6D45344A"
+    },
+    {
+      "originalPath": "out/logs/wp73_watch.py",
+      "archivePath": "hardware-raw-wp73.zip!/out/logs/wp73_watch.py",
+      "size": 678,
+      "sha256": "DCF1109857E7F7314C80482F716E62C8948D0EAEA15900CDE901BEA89BE131ED"
+    }
+  ]
+}

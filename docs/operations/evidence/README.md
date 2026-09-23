@@ -9,7 +9,8 @@
 | 2026-09-22 WP7.1 A/B | CLOSED / PASS | WP7.1 candidate | [index](2026-09-22-mqtt-wp71-a/index.json) | 历史关闭门禁 |
 | 2026-09-22 WP7.1 C/D1 | CLOSED / PASS | WP7.1 candidate | [README](2026-09-22-wp71-c-d1/README.md) | 历史关闭门禁 |
 | 2026-09-22 WP7.1 RTOS A/B | PASS | WP7.1 candidate | [README](2026-09-22-wp71-rtos-ab/README.md) | 历史关闭门禁 |
-| 2026-09-22 WP7.2 | IN PROGRESS / PARTIAL | App SHA `786B9279…0520` | [summary](2026-09-22-mqtt-wp72/test-summary.md) / [index](2026-09-22-mqtt-wp72/index.json) | 是 |
+| 2026-09-22 WP7.2 | CLOSED / PASS | App SHA `5AE13A13…B5D4` | [summary](2026-09-22-mqtt-wp72/test-summary.md) / [index](2026-09-22-mqtt-wp72/index.json) | 历史关闭门禁 |
+| 2026-09-23 WP7.3 | CLOSED / PASS | App SHA `DE38325C…7251` | [index](2026-09-23-mqtt-wp73/index.json) | 历史关闭门禁，非正式发布 |
 
 ## Steering / Calibration / CANopen
 
