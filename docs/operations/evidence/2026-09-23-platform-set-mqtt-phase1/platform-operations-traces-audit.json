@@ -1,0 +1,707 @@
+{
+  "captured_at": 1790146071.9762266,
+  "platform_release": "0.4.134",
+  "device": {
+    "product": "patrol_vehicle_chassis",
+    "vid": "PATROL-TLS-LAB-001",
+    "firmware": "patrol-chassis-0.2.33",
+    "online": true,
+    "last_seen": 1790146071.0867136
+  },
+  "whitelist": {
+    "PATROL_MQTT_CONFIG_FIRMWARES": "patrol-chassis-0.2.33",
+    "capability_visible": true
+  },
+  "operations": [
+    {
+      "id": "4538b076-8ec9-4bbd-854a-96b166a02a70",
+      "capability": "get_info",
+      "params": {},
+      "state": "succeeded",
+      "request_id": "0bdd759f-81f1-4def-96ef-a279b45ce2b1",
+      "created_at": 1790145605.2900956,
+      "completed_at": 1790145605.7146442,
+      "response_code": "200",
+      "response_message": "OK",
+      "result": {
+        "vid": "PATROL-TLS-LAB-001",
+        "mqttHost": "36.153.162.171",
+        "mqttPort": 19683,
+        "mqttTls": false,
+        "mqttTlsProfileId": 0,
+        "mqttState": "READY",
+        "uptimeMs": 3528670
+      },
+      "events": [
+        {
+          "id": 3352,
+          "state": "queued",
+          "message": "",
+          "created_at": 1790145605.2900956
+        },
+        {
+          "id": 3353,
+          "state": "sent",
+          "message": "published get_info",
+          "created_at": 1790145605.3651285
+        },
+        {
+          "id": 3354,
+          "state": "succeeded",
+          "message": "OK",
+          "created_at": 1790145605.7160645
+        }
+      ]
+    },
+    {
+      "id": "ea8e018c-4c48-442c-a33f-759e293d79e2",
+      "capability": "set_mqtt_config",
+      "params": {
+        "transport": "tls"
+      },
+      "state": "succeeded",
+      "request_id": "50d53063-b180-48ce-8d61-c5024ac5b3c3",
+      "created_at": 1790145626.6753774,
+      "completed_at": 1790145642.4493632,
+      "response_code": "200",
+      "response_message": "MQTT_CONFIG_SAVED",
+      "result": {
+        "phase": "committed"
+      },
+      "events": [
+        {
+          "id": 3355,
+          "state": "queued",
+          "message": "",
+          "created_at": 1790145626.6753774
+        },
+        {
+          "id": 3356,
+          "state": "sent",
+          "message": "published set_mqtt_config",
+          "created_at": 1790145626.8904102
+        },
+        {
+          "id": 3357,
+          "state": "verifying",
+          "message": "MQTT_CANDIDATE_TESTING",
+          "created_at": 1790145627.1598766
+        },
+        {
+          "id": 3358,
+          "state": "succeeded",
+          "message": "MQTT_CONFIG_SAVED",
+          "created_at": 1790145642.450818
+        }
+      ]
+    },
+    {
+      "id": "c86b6dec-09f2-47f2-ba3a-e66aa53ab898",
+      "capability": "get_info",
+      "params": {},
+      "state": "succeeded",
+      "request_id": "975c260c-dd7a-4e0d-a90b-0c164391ed85",
+      "created_at": 1790145666.6380486,
+      "completed_at": 1790145673.214695,
+      "response_code": "200",
+      "response_message": "OK",
+      "result": {
+        "vid": "PATROL-TLS-LAB-001",
+        "mqttHost": "zxwl.ntiov.com",
+        "mqttPort": 19688,
+        "mqttTls": true,
+        "mqttTlsProfileId": 0,
+        "mqttState": "READY",
+        "uptimeMs": 3596086
+      },
+      "events": [
+        {
+          "id": 3359,
+          "state": "queued",
+          "message": "",
+          "created_at": 1790145666.6380486
+        },
+        {
+          "id": 3360,
+          "state": "sent",
+          "message": "published get_info",
+          "created_at": 1790145672.836425
+        },
+        {
+          "id": 3361,
+          "state": "succeeded",
+          "message": "OK",
+          "created_at": 1790145673.2160826
+        }
+      ]
+    },
+    {
+      "id": "9cc4a7cc-75c3-41a0-a615-d6f7aa73587f",
+      "capability": "get_info",
+      "params": {},
+      "state": "timed_out",
+      "request_id": "00335db9-d96b-43b1-b949-a1f923a25b8f",
+      "created_at": 1790145707.7149947,
+      "completed_at": 1790145739.2720559,
+      "response_code": "",
+      "response_message": "设备信息请求 30 秒内未收到响应；在线仅表示最近收到心跳，设备可能正在 OTA 初始化或 MQTT 重连，请稍后重试",
+      "result": {},
+      "events": [
+        {
+          "id": 3362,
+          "state": "queued",
+          "message": "",
+          "created_at": 1790145707.7149947
+        },
+        {
+          "id": 3363,
+          "state": "sent",
+          "message": "published get_info",
+          "created_at": 1790145708.627354
+        },
+        {
+          "id": 3364,
+          "state": "timed_out",
+          "message": "设备信息请求 30 秒内未收到响应；在线仅表示最近收到心跳，设备可能正在 OTA 初始化或 MQTT 重连，请稍后重试",
+          "created_at": 1790145739.2745228
+        }
+      ]
+    },
+    {
+      "id": "331c2c86-d84a-41db-9d50-84c4a038b92b",
+      "capability": "get_info",
+      "params": {},
+      "state": "succeeded",
+      "request_id": "8080a84e-1125-45bb-b305-2231c512afbd",
+      "created_at": 1790145764.8477576,
+      "completed_at": 1790145766.3174863,
+      "response_code": "200",
+      "response_message": "OK",
+      "result": {
+        "vid": "PATROL-TLS-LAB-001",
+        "mqttHost": "zxwl.ntiov.com",
+        "mqttPort": 19688,
+        "mqttTls": true,
+        "mqttTlsProfileId": 0,
+        "mqttState": "READY",
+        "uptimeMs": 64131
+      },
+      "events": [
+        {
+          "id": 3365,
+          "state": "queued",
+          "message": "",
+          "created_at": 1790145764.8477576
+        },
+        {
+          "id": 3366,
+          "state": "sent",
+          "message": "published get_info",
+          "created_at": 1790145765.894613
+        },
+        {
+          "id": 3367,
+          "state": "succeeded",
+          "message": "OK",
+          "created_at": 1790145766.3188944
+        }
+      ]
+    },
+    {
+      "id": "ed96d326-b661-4963-b201-a4afd6947d95",
+      "capability": "set_mqtt_config",
+      "params": {
+        "transport": "plain"
+      },
+      "state": "succeeded",
+      "request_id": "fdaabfa4-f2ee-482a-9d7c-a6f64dfabec1",
+      "created_at": 1790145778.3686042,
+      "completed_at": 1790145787.0631785,
+      "response_code": "200",
+      "response_message": "MQTT_CONFIG_SAVED",
+      "result": {
+        "phase": "committed"
+      },
+      "events": [
+        {
+          "id": 3368,
+          "state": "queued",
+          "message": "",
+          "created_at": 1790145778.3686042
+        },
+        {
+          "id": 3369,
+          "state": "sent",
+          "message": "published set_mqtt_config",
+          "created_at": 1790145779.116679
+        },
+        {
+          "id": 3370,
+          "state": "verifying",
+          "message": "MQTT_CANDIDATE_TESTING",
+          "created_at": 1790145779.4027112
+        },
+        {
+          "id": 3371,
+          "state": "succeeded",
+          "message": "MQTT_CONFIG_SAVED",
+          "created_at": 1790145787.0645514
+        }
+      ]
+    },
+    {
+      "id": "ea5ef67c-f766-49bc-a4f1-f08b9a15c747",
+      "capability": "get_info",
+      "params": {},
+      "state": "succeeded",
+      "request_id": "ae332014-1cee-4cc9-859d-c4c8a7931a7f",
+      "created_at": 1790145801.0094247,
+      "completed_at": 1790145801.989673,
+      "response_code": "200",
+      "response_message": "OK",
+      "result": {
+        "vid": "PATROL-TLS-LAB-001",
+        "mqttHost": "zxwl.ntiov.com",
+        "mqttPort": 19683,
+        "mqttTls": false,
+        "mqttTlsProfileId": 0,
+        "mqttState": "READY",
+        "uptimeMs": 99752
+      },
+      "events": [
+        {
+          "id": 3372,
+          "state": "queued",
+          "message": "",
+          "created_at": 1790145801.0094247
+        },
+        {
+          "id": 3373,
+          "state": "sent",
+          "message": "published get_info",
+          "created_at": 1790145801.6325078
+        },
+        {
+          "id": 3374,
+          "state": "succeeded",
+          "message": "OK",
+          "created_at": 1790145801.9910927
+        }
+      ]
+    },
+    {
+      "id": "37cac69a-10f8-479c-9c94-79df6612308c",
+      "capability": "set_mqtt_config",
+      "params": {
+        "transport": "tls"
+      },
+      "state": "failed",
+      "request_id": "6ae60253-03ae-48af-8a2e-e0deb7ee2149",
+      "created_at": 1790145861.630537,
+      "completed_at": 1790145933.4761415,
+      "response_code": "500",
+      "response_message": "MQTT_CANDIDATE_RESTORED",
+      "result": {
+        "phase": "restored"
+      },
+      "events": [
+        {
+          "id": 3375,
+          "state": "queued",
+          "message": "",
+          "created_at": 1790145861.630537
+        },
+        {
+          "id": 3376,
+          "state": "sent",
+          "message": "published set_mqtt_config",
+          "created_at": 1790145865.3312345
+        },
+        {
+          "id": 3377,
+          "state": "verifying",
+          "message": "MQTT_CANDIDATE_TESTING",
+          "created_at": 1790145865.605933
+        },
+        {
+          "id": 3378,
+          "state": "failed",
+          "message": "MQTT_CANDIDATE_RESTORED",
+          "created_at": 1790145933.477528
+        }
+      ]
+    },
+    {
+      "id": "afd30a3d-9081-4e41-9289-d401a1164057",
+      "capability": "get_info",
+      "params": {},
+      "state": "succeeded",
+      "request_id": "5a25f0bf-1d08-4ab6-a1db-81eab5381167",
+      "created_at": 1790145989.765019,
+      "completed_at": 1790145990.7497308,
+      "response_code": "200",
+      "response_message": "OK",
+      "result": {
+        "vid": "PATROL-TLS-LAB-001",
+        "mqttHost": "zxwl.ntiov.com",
+        "mqttPort": 19683,
+        "mqttTls": false,
+        "mqttTlsProfileId": 0,
+        "mqttState": "READY",
+        "uptimeMs": 288464
+      },
+      "events": [
+        {
+          "id": 3379,
+          "state": "queued",
+          "message": "",
+          "created_at": 1790145989.765019
+        },
+        {
+          "id": 3380,
+          "state": "sent",
+          "message": "published get_info",
+          "created_at": 1790145990.3404987
+        },
+        {
+          "id": 3381,
+          "state": "succeeded",
+          "message": "OK",
+          "created_at": 1790145990.7525618
+        }
+      ]
+    }
+  ],
+  "protocol_traces": [
+    {
+      "id": 767369,
+      "direction": "request",
+      "command": "get_info",
+      "response_code": "",
+      "response_message": "",
+      "received_at": 1790145605.3365867,
+      "matched_request_id": 767372,
+      "operation_id": "4538b076-8ec9-4bbd-854a-96b166a02a70",
+      "outcome": "matched_response",
+      "correlation_id": "0bdd759f-81f1-4def-96ef-a279b45ce2b1",
+      "transport_state": "broker_puback",
+      "payload_sha256": "cee9abf5c3daac17dad35fb1843c9dbda77dc74333a15048324208ba0e39a53e"
+    },
+    {
+      "id": 767372,
+      "direction": "response",
+      "command": "",
+      "response_code": "200",
+      "response_message": "OK",
+      "received_at": 1790145605.6796186,
+      "matched_request_id": 767369,
+      "operation_id": "",
+      "outcome": "matched_response",
+      "correlation_id": "0bdd759f-81f1-4def-96ef-a279b45ce2b1",
+      "transport_state": "received",
+      "payload_sha256": "bcd9444bcc3f2eaf161165a013e21e2a9c0fc2a8ba7a160d5e1f7a377ed3b104"
+    },
+    {
+      "id": 767385,
+      "direction": "request",
+      "command": "set_mqtt_config",
+      "response_code": "",
+      "response_message": "",
+      "received_at": 1790145626.863618,
+      "matched_request_id": 767393,
+      "operation_id": "ea8e018c-4c48-442c-a33f-759e293d79e2",
+      "outcome": "duplicate_response",
+      "correlation_id": "50d53063-b180-48ce-8d61-c5024ac5b3c3",
+      "transport_state": "broker_puback",
+      "payload_sha256": "cdc8910b2aef2792ecf2399cd8dd5a6a354f5b19a70c8a6593e0f2918a4b6944"
+    },
+    {
+      "id": 767386,
+      "direction": "response",
+      "command": "",
+      "response_code": "202",
+      "response_message": "MQTT_CANDIDATE_TESTING",
+      "received_at": 1790145627.13952,
+      "matched_request_id": 767385,
+      "operation_id": "",
+      "outcome": "matched_response",
+      "correlation_id": "50d53063-b180-48ce-8d61-c5024ac5b3c3",
+      "transport_state": "received",
+      "payload_sha256": "6eb63e9d1249de4f30b319c55402d0e310482ef9cb2bd136442f276cfeee9e44"
+    },
+    {
+      "id": 767393,
+      "direction": "response",
+      "command": "",
+      "response_code": "200",
+      "response_message": "MQTT_CONFIG_SAVED",
+      "received_at": 1790145642.429828,
+      "matched_request_id": 767385,
+      "operation_id": "",
+      "outcome": "duplicate_response",
+      "correlation_id": "50d53063-b180-48ce-8d61-c5024ac5b3c3",
+      "transport_state": "received",
+      "payload_sha256": "d078a7468f934121f857db6769daa3c19a161570a608448b1c37b3e952b6de4f"
+    },
+    {
+      "id": 767406,
+      "direction": "request",
+      "command": "get_info",
+      "response_code": "",
+      "response_message": "",
+      "received_at": 1790145672.806395,
+      "matched_request_id": 767407,
+      "operation_id": "c86b6dec-09f2-47f2-ba3a-e66aa53ab898",
+      "outcome": "matched_response",
+      "correlation_id": "975c260c-dd7a-4e0d-a90b-0c164391ed85",
+      "transport_state": "broker_puback",
+      "payload_sha256": "99a852dcd86e72f82fa4400f16bd765a8f1db06879fdf94dab796a019624971e"
+    },
+    {
+      "id": 767407,
+      "direction": "response",
+      "command": "",
+      "response_code": "200",
+      "response_message": "OK",
+      "received_at": 1790145673.1812649,
+      "matched_request_id": 767406,
+      "operation_id": "",
+      "outcome": "matched_response",
+      "correlation_id": "975c260c-dd7a-4e0d-a90b-0c164391ed85",
+      "transport_state": "received",
+      "payload_sha256": "d1860ee52cb21f3aec5c17bbe32cc061625f43caa450e8a93ac4c863e661e536"
+    },
+    {
+      "id": 767423,
+      "direction": "request",
+      "command": "get_info",
+      "response_code": "",
+      "response_message": "",
+      "received_at": 1790145708.5994236,
+      "matched_request_id": null,
+      "operation_id": "9cc4a7cc-75c3-41a0-a615-d6f7aa73587f",
+      "outcome": "diagnostic_timeout",
+      "correlation_id": "00335db9-d96b-43b1-b949-a1f923a25b8f",
+      "transport_state": "broker_puback",
+      "payload_sha256": "d147cd8bc6f1b414efd88478941444ea6e0d7cab059f79e677b317d680915b48"
+    },
+    {
+      "id": 767460,
+      "direction": "request",
+      "command": "get_info",
+      "response_code": "",
+      "response_message": "",
+      "received_at": 1790145765.859328,
+      "matched_request_id": 767461,
+      "operation_id": "331c2c86-d84a-41db-9d50-84c4a038b92b",
+      "outcome": "matched_response",
+      "correlation_id": "8080a84e-1125-45bb-b305-2231c512afbd",
+      "transport_state": "broker_puback",
+      "payload_sha256": "7fc7c5358f7e59503fc2ffcb55d07cd1b90d9b4f096d8a1ae40524743c7a2431"
+    },
+    {
+      "id": 767461,
+      "direction": "response",
+      "command": "",
+      "response_code": "200",
+      "response_message": "OK",
+      "received_at": 1790145766.28582,
+      "matched_request_id": 767460,
+      "operation_id": "",
+      "outcome": "matched_response",
+      "correlation_id": "8080a84e-1125-45bb-b305-2231c512afbd",
+      "transport_state": "received",
+      "payload_sha256": "d0b4de2f8073739907307c7a51712157137fd1134afc7d24e13a756d2bdf91f7"
+    },
+    {
+      "id": 767474,
+      "direction": "request",
+      "command": "set_mqtt_config",
+      "response_code": "",
+      "response_message": "",
+      "received_at": 1790145779.0858157,
+      "matched_request_id": 767476,
+      "operation_id": "ed96d326-b661-4963-b201-a4afd6947d95",
+      "outcome": "duplicate_response",
+      "correlation_id": "fdaabfa4-f2ee-482a-9d7c-a6f64dfabec1",
+      "transport_state": "broker_puback",
+      "payload_sha256": "305162d997f5420c5b57511352d1617fa7f5f7a673d9798acaebdb7a36f387e7"
+    },
+    {
+      "id": 767475,
+      "direction": "response",
+      "command": "",
+      "response_code": "202",
+      "response_message": "MQTT_CANDIDATE_TESTING",
+      "received_at": 1790145779.3813903,
+      "matched_request_id": 767474,
+      "operation_id": "",
+      "outcome": "matched_response",
+      "correlation_id": "fdaabfa4-f2ee-482a-9d7c-a6f64dfabec1",
+      "transport_state": "received",
+      "payload_sha256": "3241c249961fd6d8732f1a663fecef74ab1345f11c372dce5a842fae1bd394b1"
+    },
+    {
+      "id": 767476,
+      "direction": "response",
+      "command": "",
+      "response_code": "200",
+      "response_message": "MQTT_CONFIG_SAVED",
+      "received_at": 1790145787.0457444,
+      "matched_request_id": 767474,
+      "operation_id": "",
+      "outcome": "duplicate_response",
+      "correlation_id": "fdaabfa4-f2ee-482a-9d7c-a6f64dfabec1",
+      "transport_state": "received",
+      "payload_sha256": "152cf7c7e4a063c0c22f8ebb4300959862740baf38dbcc367ad2995b3ab234f0"
+    },
+    {
+      "id": 767489,
+      "direction": "request",
+      "command": "get_info",
+      "response_code": "",
+      "response_message": "",
+      "received_at": 1790145801.6043887,
+      "matched_request_id": 767490,
+      "operation_id": "ea5ef67c-f766-49bc-a4f1-f08b9a15c747",
+      "outcome": "matched_response",
+      "correlation_id": "ae332014-1cee-4cc9-859d-c4c8a7931a7f",
+      "transport_state": "broker_puback",
+      "payload_sha256": "42087c825fcc3b61428340fc74f674e6ab6408a821f399ddaab85362604d9b27"
+    },
+    {
+      "id": 767490,
+      "direction": "response",
+      "command": "",
+      "response_code": "200",
+      "response_message": "OK",
+      "received_at": 1790145801.9559612,
+      "matched_request_id": 767489,
+      "operation_id": "",
+      "outcome": "matched_response",
+      "correlation_id": "ae332014-1cee-4cc9-859d-c4c8a7931a7f",
+      "transport_state": "received",
+      "payload_sha256": "284c403dff38215645103879ac11353e37b0552a270b1c936d12ab90d010bb84"
+    },
+    {
+      "id": 767528,
+      "direction": "request",
+      "command": "set_mqtt_config",
+      "response_code": "",
+      "response_message": "",
+      "received_at": 1790145865.3013003,
+      "matched_request_id": 767578,
+      "operation_id": "37cac69a-10f8-479c-9c94-79df6612308c",
+      "outcome": "duplicate_response",
+      "correlation_id": "6ae60253-03ae-48af-8a2e-e0deb7ee2149",
+      "transport_state": "broker_puback",
+      "payload_sha256": "719e0343a04705336465d4cc798cc30d4cfcaf3118c61572fb2373f43be8a845"
+    },
+    {
+      "id": 767529,
+      "direction": "response",
+      "command": "",
+      "response_code": "202",
+      "response_message": "MQTT_CANDIDATE_TESTING",
+      "received_at": 1790145865.5867786,
+      "matched_request_id": 767528,
+      "operation_id": "",
+      "outcome": "matched_response",
+      "correlation_id": "6ae60253-03ae-48af-8a2e-e0deb7ee2149",
+      "transport_state": "received",
+      "payload_sha256": "429f0162879ed969404522575f9d90d5e1b5d232b0ac5bfc7ae73e6aa8320e84"
+    },
+    {
+      "id": 767578,
+      "direction": "response",
+      "command": "",
+      "response_code": "500",
+      "response_message": "MQTT_CANDIDATE_RESTORED",
+      "received_at": 1790145933.4587634,
+      "matched_request_id": 767528,
+      "operation_id": "",
+      "outcome": "duplicate_response",
+      "correlation_id": "6ae60253-03ae-48af-8a2e-e0deb7ee2149",
+      "transport_state": "received",
+      "payload_sha256": "33e03ca331d85cc1e7281d96d2278864b937ec2d220843d4b0728da4b1e8ae02"
+    },
+    {
+      "id": 767595,
+      "direction": "request",
+      "command": "get_info",
+      "response_code": "",
+      "response_message": "",
+      "received_at": 1790145990.3148007,
+      "matched_request_id": 767597,
+      "operation_id": "afd30a3d-9081-4e41-9289-d401a1164057",
+      "outcome": "matched_response",
+      "correlation_id": "5a25f0bf-1d08-4ab6-a1db-81eab5381167",
+      "transport_state": "broker_puback",
+      "payload_sha256": "2c30c86aa4cf806e818a9947925db616330ffaa4251b3227ac5c2b0be1ade946"
+    },
+    {
+      "id": 767597,
+      "direction": "response",
+      "command": "",
+      "response_code": "200",
+      "response_message": "OK",
+      "received_at": 1790145990.711007,
+      "matched_request_id": 767595,
+      "operation_id": "",
+      "outcome": "matched_response",
+      "correlation_id": "5a25f0bf-1d08-4ab6-a1db-81eab5381167",
+      "transport_state": "received",
+      "payload_sha256": "72e38738210d87fd96ffd87a07504a1a06f3e06d2d39c5bca52ea3ad5cd6c1ad"
+    }
+  ],
+  "audits": [
+    {
+      "id": 77822,
+      "actor": "phase1-field-test",
+      "action": "device_operation_completed",
+      "created_at": 1790145642.4509196,
+      "details": {
+        "capability": "set_mqtt_config",
+        "error": "",
+        "operation_id": "ea8e018c-4c48-442c-a33f-759e293d79e2",
+        "product": "patrol_vehicle_chassis",
+        "response_code": "200",
+        "response_message": "MQTT_CONFIG_SAVED",
+        "state": "succeeded",
+        "vid": "PATROL-TLS-LAB-001"
+      }
+    },
+    {
+      "id": 77827,
+      "actor": "phase1-field-test",
+      "action": "device_operation_completed",
+      "created_at": 1790145787.064629,
+      "details": {
+        "capability": "set_mqtt_config",
+        "error": "",
+        "operation_id": "ed96d326-b661-4963-b201-a4afd6947d95",
+        "product": "patrol_vehicle_chassis",
+        "response_code": "200",
+        "response_message": "MQTT_CONFIG_SAVED",
+        "state": "succeeded",
+        "vid": "PATROL-TLS-LAB-001"
+      }
+    },
+    {
+      "id": 77833,
+      "actor": "phase1-field-test",
+      "action": "device_operation_completed",
+      "created_at": 1790145933.4776447,
+      "details": {
+        "capability": "set_mqtt_config",
+        "error": "MQTT_CANDIDATE_RESTORED",
+        "operation_id": "37cac69a-10f8-479c-9c94-79df6612308c",
+        "product": "patrol_vehicle_chassis",
+        "response_code": "500",
+        "response_message": "MQTT_CANDIDATE_RESTORED",
+        "state": "failed",
+        "vid": "PATROL-TLS-LAB-001"
+      }
+    }
+  ]
+}
