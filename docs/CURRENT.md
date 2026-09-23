@@ -6,16 +6,17 @@
 
 | 项目 | 当前值 | 权威来源 |
 |---|---|---|
-| 最新正式版 | `patrol-chassis-0.2.32` | `dist/release.manifest.json` |
-| 正式 App SHA256 | `5B9FE0E88D25ECFB34C278C6594974944257FA305CBD250F28539E048B2DFEE3` | 正式 manifest |
-| 当前开发版本 | `patrol-chassis-0.2.32`，WP7.3 已验收候选，非正式发布 | 根目录 `VERSION` 与 WP7.3 evidence |
+| 最新正式版 | `patrol-chassis-0.2.33` | `dist/release.manifest.json` |
+| 正式 App SHA256 | `EF5DEC2765790CF18D2DFC27B9A89377F4748A87AE4D65FA1A1D285568BFEC5C` | 正式 manifest |
+| 当前源码版本 | `patrol-chassis-0.2.33`；正式包已生成，尚未下发 OTA 或进行该包的现场验收 | 根目录 `VERSION` 与正式 manifest |
 | WP7.3 clean ARM Release App SHA256 | `DE38325CE586CC1F703FAD78C6BC4D219450CDE110A5E56400897A237A6C7251` | [WP7.3 evidence](operations/evidence/2026-09-23-mqtt-wp73/index.json)；实测候选，非 `dist/` 正式版 |
 | WP7.2 最新实测 Debug App SHA256 | `5AE13A1367345515245F9D2C694710BA3140DD18F9DEC3FFF81BE3ABD471B5D4` | `out/logs/wp72-success-app.bin` 与 WP7.2 index；测试构建，非正式版 |
 | 仓库 Platform gitlink | `26a8ab3687336a39f30e578b713b43edbb3488b0` | 当前 checkpoint gitlink；未 push |
 | WP7.2 checkpoint App SHA256 | `6EE9E4188E001B8581CA4198F9A4B7D1D0D91F132273CA0955325C1295BB450E` | clean ARM Release candidate；非 `dist/` 正式版 |
 | 冻结 Boot | `abox-boot-2.3.0`，SHA256 `981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63` | 正式 manifest；Boot `0x08000000` |
 
-候选与正式版版本字符串相同不表示候选已正式发布。正式状态只能由 `dist/release.manifest.json` 及其固件哈希确认。
+WP7.3 的 `0.2.32` 候选与旧正式版曾使用相同版本字符串，但哈希不同。当前正式状态只能由 `dist/release.manifest.json` 及其固件哈希确认；`0.2.33` 正式打包不等于设备已升级。
+本次正式打包的测试、源码提交与现场边界见[0.2.33 正式打包记录](operations/history/2026-09-23-0.2.33正式打包.md)。
 
 ## Current Phase
 
@@ -34,9 +35,9 @@ Platform commit = 26a8ab3687336a39f30e578b713b43edbb3488b0
 App SHA256 = 6EE9E4188E001B8581CA4198F9A4B7D1D0D91F132273CA0955325C1295BB450E
 ```
 
-该 App 是可重复构建 checkpoint candidate，不是 `dist/` 正式 release，未执行 OTA 下发。
+该 App 是可重复构建的旧 checkpoint candidate，不是当前 `dist/` 正式包。
 
-进入 WP7.3 前已按 ABox Platform、产品仓通用能力和 Patrol 产品能力完成命名收口。当前产品 Flash Config 只接受 V5；V3/V4 仅属于开发历史，不进入正式运行路径。公共 MQTT V4 与 Config V4 是不同版本概念，MQTT V4 未修改。WP7.1、WP7.2、WP7.3 均为 CLOSED。正式 `set_mqtt` 已完成旧连接 202 发送门禁、VID/Topic RAM Trial、proof 后 Config V5 保存及回读、失败恢复与最终同 requestId 响应。实机 plain→TLS、TLS→plain、失败 candidate、VID 切换及失败恢复、重启与物理回读通过；主机、Platform CTest、bench、clean ARM Release 与静态 RAM/栈门禁通过。实测后原 App、Boot State A/B 与 Config 已物理回读确认逐字节恢复，`dist/` 未改变。详见 [WP7.3 evidence](operations/evidence/2026-09-23-mqtt-wp73/index.json)。
+进入 WP7.3 前已按 ABox Platform、产品仓通用能力和 Patrol 产品能力完成命名收口。当前产品 Flash Config 只接受 V5；V3/V4 仅属于开发历史，不进入正式运行路径。公共 MQTT V4 与 Config V4 是不同版本概念，MQTT V4 未修改。WP7.1、WP7.2、WP7.3 均为 CLOSED。正式 `set_mqtt` 已完成旧连接 202 发送门禁、VID/Topic RAM Trial、proof 后 Config V5 保存及回读、失败恢复与最终同 requestId 响应。实机 plain→TLS、TLS→plain、失败 candidate、VID 切换及失败恢复、重启与物理回读通过；主机、Platform CTest、bench、clean ARM Release 与静态 RAM/栈门禁通过。实测后原 App、Boot State A/B 与 Config 已物理回读确认逐字节恢复；这是 WP7.3 验收时的设备状态。随后以 `0.2.33` 重新构建并正式打包，尚未对该正式包执行 OTA 或现场复验。详见 [WP7.3 evidence](operations/evidence/2026-09-23-mqtt-wp73/index.json)。
 
 WP7.2 最新实机状态：
 
