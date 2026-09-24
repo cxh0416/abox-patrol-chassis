@@ -59,5 +59,11 @@ int main(void)
     complete_publish();
     CloudTx_Service();
     assert(accepted_count == 1 && !g_cloud.mqtt_candidate_pending);
+    g_cloud.tx_kind = CLOUD_TX_HEARTBEAT;
+    g_cloud.tx_start_sequence = pub_sequence;
+    publish_active = 0;
+    connected = 1;
+    CloudTx_Service();
+    assert(reconnect_count == 1 && g_cloud.tx_kind == CLOUD_TX_NONE);
     return 0;
 }

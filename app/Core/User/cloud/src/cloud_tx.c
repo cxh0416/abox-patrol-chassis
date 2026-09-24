@@ -93,7 +93,13 @@ void CloudTx_Service(void)
     if (g_cloud.tx_kind != CLOUD_TX_NONE)
     {
         if (MQTT_Core_GetPubOkSeq() != g_cloud.tx_start_sequence) tx_completed();
-        else if (!MQTT_Core_IsReady() && !MQTT_Core_IsPublishActive()) g_cloud.tx_kind = CLOUD_TX_NONE;
+        else if (!MQTT_Core_IsPublishActive()) {
+            /* A failed modem publish has no completion sequence. Recover the
+             * link instead of leaving telemetry permanently queued. */
+            g_cloud.tx_kind = CLOUD_TX_NONE;
+            if (MQTT_Core_IsReady()) MQTT_Core_RequestReconnect();
+            return;
+        }
         else return;
     }
     if (!MQTT_Core_IsReady() || MQTT_Core_IsPublishActive()) return;

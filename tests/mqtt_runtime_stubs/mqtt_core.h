@@ -6,6 +6,7 @@ uint8_t MQTT_Core_ApplyRuntimeConfig(const ABoxMqttConfig *config);
 void MQTT_Core_SetPaused(uint8_t paused);
 void MQTT_Core_SetSecurityReady(uint8_t ready);
 void MQTT_Core_Task(void);
+void MQTT_Core_Reset(void);
 int MQTT_Core_Stop(uint32_t now_ms);
 uint8_t MQTT_Core_IsReady(void);
 uint8_t MQTT_Core_IsConnected(void);

@@ -16,6 +16,7 @@
 
 CloudContext g_cloud;
 static uint32_t g_enroll_provision_due;
+static uint32_t g_modem_recovery_due;
 static void mqtt_network_changed(void)
 {
     CloudTx_NetworkChanged();
@@ -110,6 +111,7 @@ void CloudService_Init(void)
     g_cloud.mqtt_candidate_pending = 0U;
     g_cloud.reset_reason = read_reset_reason();
     g_enroll_provision_due = HAL_GetTick();
+    g_modem_recovery_due = HAL_GetTick() + 60000U;
     g_cloud.config_ready = !CloudService_NeedsEnrollment();
 
     {
@@ -228,6 +230,21 @@ void CloudService_Task(void)
     }
     if (!MqttRuntime_IsReady()) { g_cloud.mqtt_was_ready = 0U; return; }
     MQTT_Core_Task();
+    if (MQTT_Core_GetState() == MQTT_CORE_ST_ERROR && !OtaService_IsBusy() &&
+        (MqttTrialManager_State() == ABOX_MQTT_TRIAL_IDLE ||
+         MqttTrialManager_State() == ABOX_MQTT_TRIAL_COMMITTED ||
+         MqttTrialManager_State() == ABOX_MQTT_TRIAL_FAILED) &&
+        (int32_t)(HAL_GetTick() - g_modem_recovery_due) >= 0) {
+        /* AT quarantine requires a fresh modem boot before reusing the UART.
+         * This restarts only the EC800 rail, never a vehicle output. */
+        APP_LOGW("CLOUD", "MQTT transport blocked; restart EC800");
+        g_modem_recovery_due = HAL_GetTick() + 120000U;
+        CloudTx_NetworkChanged();
+        RemoteService_RevokeForNetworkChange();
+        EC_Power_StartRestartSequence();
+        g_cloud.mqtt_was_ready = 0U;
+        return;
+    }
     ready = MQTT_Core_IsReady();
     if (ready && !g_cloud.mqtt_was_ready)
     {

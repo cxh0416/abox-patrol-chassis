@@ -141,7 +141,11 @@ void MqttTrialManager_Poll(uint32_t now)
             stopped > 0 ? ABOX_MQTT_TRIAL_RESTORED : ABOX_MQTT_TRIAL_ERROR,0,now);
         return;
     }
-    if(s>=ABOX_MQTT_TRIAL_PREPARING&&s<=ABOX_MQTT_TRIAL_VERIFYING&&MqttRuntime_State()==MQTT_RUNTIME_FAILED){ABoxMqttTrial_Event(&g_trial.trial,g_trial.trial.session,ABOX_MQTT_TRIAL_ERROR,0,now);return;}
+    if(s>=ABOX_MQTT_TRIAL_PREPARING&&s<=ABOX_MQTT_TRIAL_VERIFYING&&
+       (MqttRuntime_State()==MQTT_RUNTIME_FAILED || MqttRuntime_State()==ABOX_MQTT_RUNTIME_BLOCKED)){
+        ABoxMqttTrial_Event(&g_trial.trial,g_trial.trial.session,ABOX_MQTT_TRIAL_ERROR,0,now);
+        return;
+    }
     if(g_trial.trial.state==ABOX_MQTT_TRIAL_COMMITTING){
         uint8_t saved=1U;
         if(g_trial.persistent) {

@@ -12,7 +12,7 @@ static ChassisControl control;
 static uint8_t center_active, bench_active, connected = 1, publish_active;
 static const char* event;
 static int last_kind, last_qos, status_packets, heartbeat_packets, cached_responses;
-static int accepted_count;
+static int accepted_count, reconnect_count;
 
 uint32_t CloudPort_Now(void) { return tick; }
 const ChassisControl* RemoteService_State(void) { return &control; }
@@ -25,6 +25,7 @@ void MqttTrialManager_Accepted(uint32_t now) { (void)now; accepted_count++; }
 void MqttTrialManager_Cancel(uint32_t now) { (void)now; }
 uint8_t MQTT_Core_IsReady(void) { return connected; }
 uint8_t MQTT_Core_IsPublishActive(void) { return publish_active; }
+void MQTT_Core_RequestReconnect(void) { reconnect_count++; }
 uint8_t MQTT_Core_PublishEx(const char* topic, const char* payload, uint8_t qos, uint8_t retain)
 {
     (void)payload; (void)retain;

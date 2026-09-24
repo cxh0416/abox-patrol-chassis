@@ -27,6 +27,10 @@ static void mqtt_task(void *u) {
   (void)u;
   MQTT_Core_Task();
 }
+static void mqtt_modem_reset(void *u) {
+  (void)u;
+  MQTT_Core_Reset();
+}
 static int mqtt_stop(void *u, uint32_t now) {
   (void)u;
   return MQTT_Core_Stop(now);
@@ -78,6 +82,7 @@ int MqttRuntime_Init(ABoxEc800At *at, const ABoxMqttConfig *c, uint32_t now) {
   p.set_security_ready = set_security;
   p.apply_config = apply_config;
   p.mqtt_task = mqtt_task;
+  p.mqtt_modem_reset = mqtt_modem_reset;
   p.mqtt_stop = mqtt_stop;
   p.mqtt_ready = mqtt_ready;
   p.mqtt_connected = mqtt_connected;

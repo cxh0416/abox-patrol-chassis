@@ -12,6 +12,8 @@ static uint32_t pub_sequence;
 static unsigned activations, restores;
 static unsigned saves;
 static unsigned fail_save;
+static unsigned fail_restore;
+static MqttRuntimeState runtime_state = ABOX_MQTT_RUNTIME_READY;
 static int first_stop_result;
 static PatrolRemoteConfigV5_t persisted;
 static char identity[32];
@@ -36,9 +38,9 @@ int MqttRuntime_ActivateStagedCandidate(uint32_t now)
 { (void)now; activations++; return 1; }
 int MqttRuntime_StopFirst(void) { return first_stop_result; }
 int MqttRuntime_RestoreRamActive(const ABoxMqttConfig *c, uint32_t now)
-{ (void)now; active = *c; restores++; return 1; }
+{ (void)now; active = *c; restores++; return !fail_restore; }
 int MqttRuntime_IsReady(void) { return 1; }
-MqttRuntimeState MqttRuntime_State(void) { return ABOX_MQTT_RUNTIME_READY; }
+MqttRuntimeState MqttRuntime_State(void) { return runtime_state; }
 const ABoxMqttConfig *MqttRuntime_ActiveConfig(void) { return &active; }
 const ABoxMqttConfig *MqttRuntime_StagedConfig(void) { return &staged; }
 void MqttRuntime_BlockForRestoreFailure(void) { assert(0); }
@@ -143,6 +145,18 @@ int main(void)
     first_stop_result = 1;
     MqttTrialManager_Poll(602);
     assert(MqttTrialManager_State() == ABOX_MQTT_TRIAL_FAILED);
+    assert(strcmp(persisted.vid, "PATROL-NEW") == 0);
+    MqttTrialManager_Init();
+    active = plain;
+    candidate = persisted;
+    strcpy(candidate.mqtt_host, "broker.invalid");
+    candidate.mqtt_tls_enabled = 1U;
+    assert(MqttTrialManager_StagePersistent(&candidate, 32, 700));
+    fail_restore = 1U;
+    MqttTrialManager_Accepted(701);
+    runtime_state = ABOX_MQTT_RUNTIME_BLOCKED;
+    MqttTrialManager_Poll(702);
+    assert(MqttTrialManager_State() == ABOX_MQTT_TRIAL_RESTORE_FAILED);
     assert(strcmp(persisted.vid, "PATROL-NEW") == 0);
     puts("MQTT trial manager: real phases, candidate proof, cancel restore passed");
     return 0;
