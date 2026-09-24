@@ -142,7 +142,8 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
 abox_platform_attach_components(${CMAKE_PROJECT_NAME}
     SCHEDULER FREERTOS HARDWARE stm32f105_ec800_v1
     COMPONENTS core cjson ec_power ec800 ec800_ufs ec800_command_port ec800_tls
-               mqtt_tls mqtt_runtime mqtt_trial mqtt_v4 enrollment
+               mqtt_tls mqtt_runtime mqtt_trial mqtt_v4 mqtt_ec800_rx
+               mqtt_ec800 enrollment
                enrollment_ec800_http boot_v2_common https_ufs_downloader
                boot_v2_app)
 

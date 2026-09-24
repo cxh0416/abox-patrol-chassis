@@ -17,12 +17,9 @@ set(PATROL_PRODUCT_SOURCES
     Core/User/motion/src/chassis_control.c
     Core/User/motion/src/chassis_power.c
     Core/User/common/src/fixed_point.c
-    Core/User/mqtt/src/mqtt_core.c
-    Core/User/mqtt/src/mqtt_core_parser.c
-    Core/User/mqtt/src/mqtt_core_port.c
+    Core/User/mqtt/src/mqtt_core_adapter.c
     Core/User/mqtt/src/mqtt_runtime.c
     Core/User/mqtt/src/mqtt_trial_manager.c
-    Core/User/mqtt/src/mqtt_qmtrecv.c
     Core/User/ota/src/ota_info.c
     Core/User/ota/src/ota_service.c
     Core/User/motion/src/patrol_canopen.c

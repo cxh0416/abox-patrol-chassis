@@ -8,7 +8,7 @@
 
 static uint32_t now_ms;
 static uint8_t provisioned = 1U, time_valid, paused, security_ready, core_ready, core_auto_ready;
-static unsigned revoked;
+static unsigned revoked, stops;
 static ABoxMqttConfig applied;
 static char commands[32][160];
 static unsigned command_count;
@@ -21,7 +21,9 @@ uint8_t MQTT_Core_ApplyRuntimeConfig(const ABoxMqttConfig *config)
 void MQTT_Core_SetPaused(uint8_t value) { paused = value; if (value) core_ready = 0U; }
 void MQTT_Core_SetSecurityReady(uint8_t value) { security_ready = value; }
 void MQTT_Core_Task(void) { if (core_auto_ready) core_ready = 1U; }
+int MQTT_Core_Stop(uint32_t now) { (void)now; ++stops; return 1; }
 uint8_t MQTT_Core_IsReady(void) { return core_ready; }
+uint8_t MQTT_Core_IsConnected(void) { return !paused && security_ready; }
 MQTT_CoreState_t MQTT_Core_GetState(void) { return core_ready ? MQTT_CORE_ST_READY : MQTT_CORE_ST_SUB; }
 void MqttTrialManager_OnRuntimeState(ABoxMqttRuntimeState state, uint32_t now)
 { (void)now; if (observed_count < 32U) observed[observed_count++] = state; }
@@ -78,7 +80,7 @@ static void service(ABoxEc800At *at)
 static void reset_fakes(void)
 {
     now_ms = 1U; time_valid = paused = security_ready = core_ready = 0U; core_auto_ready = 1U; revoked = 0U;
-    command_count = 0U; fail_tls_command = 0; memset(&applied, 0, sizeof(applied));
+    command_count = stops = 0U; fail_tls_command = 0; memset(&applied, 0, sizeof(applied));
     observed_count = 0U;
     memset(commands, 0, sizeof(commands));
 }
@@ -114,7 +116,7 @@ int main(void)
     }
     assert(MqttRuntime_IsReady() && MqttRuntime_ActiveClient() == 1U);
     assert(MqttRuntime_ActiveContext() == 2U && applied.tls_enabled == 1U);
-    assert(has_command("QMTDISC=0") && has_command("QMTCLOSE=0"));
+    assert(stops > 0U && !has_command("QMTDISC") && !has_command("QMTCLOSE"));
     assert(has_command("QSSLCFG=\"seclevel\",2,1"));
     assert(has_command("QSSLCFG=\"ignorelocaltime\",2,0"));
     assert(has_command("QSSLCFG=\"cacert\",2,\"UFS:ota_ca.pem\""));

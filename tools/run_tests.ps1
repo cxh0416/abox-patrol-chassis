@@ -8,7 +8,7 @@ $productIncludes = @('system', 'motion', 'cloud', 'mqtt', 'ota', 'board', 'commo
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 $gcc = (Get-Command gcc -ErrorAction Stop).Source
-$hostBuild = "$PSScriptRoot\..\platform\build\host-tests-ninja"
+$hostBuild = "$PSScriptRoot\..\platform\build\host"
 & cmake -S "$PSScriptRoot\..\platform" -B $hostBuild -G Ninja -DBUILD_TESTING=ON "-DCMAKE_C_COMPILER=$gcc"
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & cmake --build $hostBuild
@@ -41,33 +41,19 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $cloudTest
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-$qmtRecvTest = Join-Path $hostBuild 'mqtt_qmtrecv_test.exe'
-& $gcc -std=c11 -Wall -Wextra `
-    @productIncludes `
-    "-I$PSScriptRoot\..\platform\components\cjson" `
-    "$PSScriptRoot\..\app\Core\User\mqtt\src\mqtt_qmtrecv.c" `
-    "$PSScriptRoot\..\app\Core\User\cloud\src\cloud_protocol.c" `
-    "$PSScriptRoot\..\platform\components\cjson\cJSON.c" `
-    "$PSScriptRoot\..\tests\mqtt_qmtrecv_test.c" `
-    -o $qmtRecvTest
-if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-& $qmtRecvTest
-if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-
-$mqttPipelineTest = Join-Path $hostBuild 'mqtt_receive_pipeline_test.exe'
-& $gcc -std=c11 -Wall -Wextra `
-    @productIncludes `
+$mqttAdapterTest = Join-Path $hostBuild 'mqtt_adapter_test.exe'
+& $gcc -std=c11 -Wall -Wextra -Werror `
+    "-I$PSScriptRoot\..\tests\mqtt_adapter_stubs" `
+    "-I$PSScriptRoot\..\app\Core\User\mqtt\include" `
     "-I$PSScriptRoot\..\platform\include" `
-    "-I$PSScriptRoot\..\platform\components\cjson" `
+    "$PSScriptRoot\..\tests\mqtt_adapter_test.c" `
+    "$PSScriptRoot\..\app\Core\User\mqtt\src\mqtt_core_adapter.c" `
+    "$PSScriptRoot\..\platform\components\mqtt\abox_mqtt_ec800.c" `
+    "$PSScriptRoot\..\platform\components\mqtt\abox_mqtt_ec800_rx.c" `
     "$PSScriptRoot\..\platform\components\ec800\abox_ec800_at.c" `
-    "$PSScriptRoot\..\platform\components\ec800\abox_ec800_rx.c" `
-    "$PSScriptRoot\..\app\Core\User\mqtt\src\mqtt_qmtrecv.c" `
-    "$PSScriptRoot\..\app\Core\User\cloud\src\cloud_protocol.c" `
-    "$PSScriptRoot\..\platform\components\cjson\cJSON.c" `
-    "$PSScriptRoot\..\tests\mqtt_receive_pipeline_test.c" `
-    -o $mqttPipelineTest
+    -o $mqttAdapterTest
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-& $mqttPipelineTest
+& $mqttAdapterTest
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 $chassisTest = Join-Path $hostBuild 'chassis_safety_test.exe'

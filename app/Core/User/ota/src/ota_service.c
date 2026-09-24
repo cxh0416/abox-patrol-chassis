@@ -96,6 +96,21 @@ static void adapter_register(void *context, ABoxBootV2AtEventFn callback, void *
 }
 
 static void adapter_mqtt_pause(void *context, uint8_t paused) { (void)context; MQTT_Core_SetPaused(paused); }
+static int adapter_mqtt_stop(void *context, uint32_t now)
+{
+    (void)context;
+    return MQTT_Core_Stop(now);
+}
+static int adapter_workspace_borrow(void *context)
+{
+    (void)context;
+    return MQTT_Core_BorrowWorkspace();
+}
+static void adapter_workspace_return(void *context)
+{
+    (void)context;
+    MQTT_Core_ReturnWorkspace();
+}
 
 static uint8_t adapter_mqtt_client_index(void *context)
 {
@@ -141,6 +156,9 @@ void OtaService_Init(Ec800AtCore_t *at)
     port.cancel = adapter_cancel;
     port.register_events = adapter_register;
     port.mqtt_pause = adapter_mqtt_pause;
+    port.mqtt_stop = adapter_mqtt_stop;
+    port.workspace_borrow = adapter_workspace_borrow;
+    port.workspace_return = adapter_workspace_return;
     port.mqtt_client_index = adapter_mqtt_client_index;
     port.log = adapter_log;
     port.transfer_buffer = MQTT_Core_OtaWorkspace(&port.transfer_buffer_size);

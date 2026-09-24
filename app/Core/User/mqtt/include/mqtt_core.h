@@ -60,35 +60,6 @@ typedef void (*MQTT_CoreMsgCallback_t)(const char* topic, const char* payload);
 
 typedef struct
 {
-    MQTT_CoreState_t state;
-    uint32_t state_tick;
-    uint32_t last_rx_tick;
-    uint32_t last_ready_tick;
-    uint32_t pub_tick;
-    uint8_t connected;
-    uint8_t subscribed;
-    uint8_t need_reconnect;
-    uint8_t need_resub;
-    uint8_t sub_index;
-    uint8_t retry_in_state;
-    uint8_t reconnect_count;
-    uint8_t flag_cfg_ok;
-    uint8_t flag_open_ok;
-    uint8_t flag_conn_ok;
-    uint8_t flag_sub_ok;
-    uint8_t flag_closed;
-    uint8_t flag_error;
-    uint8_t diag_index;
-    uint8_t network_registered;
-    uint8_t packet_attached;
-    uint8_t pdp_active;
-    uint8_t pub_busy;
-    uint8_t pub_wait_prompt;
-    uint8_t pub_wait_result;
-} MQTT_CoreRuntime_t;
-
-typedef struct
-{
     uint32_t qmtrecv_line_count;
     uint32_t decoded_message_count;
     uint32_t rejected_frame_count;
@@ -102,16 +73,14 @@ void MQTT_Core_Init(const MQTT_CoreConfig_t* cfg, MQTT_CoreMsgCallback_t cb);
 void MQTT_Core_SetAtCore(Ec800AtCore_t* at_core);
 void MQTT_Core_Reset(void);
 void MQTT_Core_Task(void);
-void MQTT_Core_OnUartRx(uint8_t* data, uint16_t len);
-void MQTT_Core_OnAtEvent(Ec800AtEvent_t event, const uint8_t* data, uint16_t len, void* user);
 void MQTT_Core_RequestReconnect(void);
 void MQTT_Core_ForceReconnect(void);
 void MQTT_Core_SetPaused(uint8_t paused);
 void MQTT_Core_SetSecurityReady(uint8_t ready);
-/* Register the existing shared RAM with OTA at startup. OTA may use it only
- * between SetPaused(1) and SetPaused(0); resume resets the MQTT receive parser.
- * The pointer remains owned by MQTT and must never be freed or retained by
- * another consumer. This does not allocate an additional transfer buffer. */
+void MQTT_Core_SetNetworkChangedCallback(void (*callback)(void));
+/* Register the existing shared RAM with OTA at startup. The App OTA callback
+ * must first stop MQTT and acquire the workspace lease; it returns the lease
+ * before resuming MQTT. */
 uint8_t* MQTT_Core_OtaWorkspace(uint32_t* capacity);
 void MQTT_Core_UpdateBroker(const char* host, uint16_t port, const char* username, const char* password);
 /* Copies the normalized Platform runtime view. Product Flash layouts must be
@@ -121,6 +90,10 @@ void MQTT_Core_RequestIccid(void);
 void MQTT_Core_SetTopics(const char* const* sub_topics, uint8_t sub_topic_count, const char* pub_topic);
 uint8_t MQTT_Core_SetClientId(const char* client_id);
 uint8_t MQTT_Core_IsReady(void);
+uint8_t MQTT_Core_IsConnected(void);
+int MQTT_Core_Stop(uint32_t now_ms);
+int MQTT_Core_BorrowWorkspace(void);
+void MQTT_Core_ReturnWorkspace(void);
 uint8_t MQTT_Core_CanRunBackgroundAt(void);
 MQTT_CoreState_t MQTT_Core_GetState(void);
 uint8_t MQTT_Core_IsPublishActive(void);

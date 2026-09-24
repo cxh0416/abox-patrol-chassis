@@ -12,9 +12,15 @@
 #include "usart.h"
 #include "patrol_config.h"
 #include "patrol_enrollment.h"
+#include "remote_service.h"
 
 CloudContext g_cloud;
 static uint32_t g_enroll_provision_due;
+static void mqtt_network_changed(void)
+{
+    CloudTx_NetworkChanged();
+    RemoteService_RevokeForNetworkChange();
+}
 
 uint8_t CloudService_NeedsEnrollment(void)
 {
@@ -137,6 +143,7 @@ void CloudService_Init(void)
         CloudMessages_CopyString(mqtt.pub_topic, sizeof(mqtt.pub_topic), g_cloud.topic_heartbeat);
     }
     MQTT_Core_Init(&mqtt, CloudCommands_OnMessage);
+    MQTT_Core_SetNetworkChangedCallback(mqtt_network_changed);
     MQTT_Core_SetAtCore(&g_cloud.at_core);
     if (!MqttRuntime_Init(&g_cloud.at_core, g_cloud.config_ready ? &runtime : 0, HAL_GetTick())) {
         g_cloud.config_ready = 0U;

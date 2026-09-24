@@ -27,16 +27,17 @@ static void mqtt_task(void *u) {
   (void)u;
   MQTT_Core_Task();
 }
+static int mqtt_stop(void *u, uint32_t now) {
+  (void)u;
+  return MQTT_Core_Stop(now);
+}
 static uint8_t mqtt_ready(void *u) {
   (void)u;
   return MQTT_Core_IsReady();
 }
 static uint8_t mqtt_connected(void *u) {
-  MQTT_CoreState_t s;
   (void)u;
-  s = MQTT_Core_GetState();
-  return s == MQTT_CORE_ST_SUB || s == MQTT_CORE_ST_WAIT_SUB ||
-         s == MQTT_CORE_ST_READY;
+  return MQTT_Core_IsConnected();
 }
 static uint8_t ca_ready(void *u) {
   (void)u;
@@ -77,6 +78,7 @@ int MqttRuntime_Init(ABoxEc800At *at, const ABoxMqttConfig *c, uint32_t now) {
   p.set_security_ready = set_security;
   p.apply_config = apply_config;
   p.mqtt_task = mqtt_task;
+  p.mqtt_stop = mqtt_stop;
   p.mqtt_ready = mqtt_ready;
   p.mqtt_connected = mqtt_connected;
   p.ca_ready = ca_ready;
