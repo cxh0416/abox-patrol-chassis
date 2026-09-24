@@ -11,7 +11,7 @@
 | 当前源码版本 | `patrol-chassis-0.2.34`；入网改造正式包已生成，尚未下发 OTA 或进行该包的现场验收 | 根目录 `VERSION` 与正式 manifest |
 | WP7.3 clean ARM Release App SHA256 | `DE38325CE586CC1F703FAD78C6BC4D219450CDE110A5E56400897A237A6C7251` | [WP7.3 evidence](operations/evidence/2026-09-23-mqtt-wp73/index.json)；实测候选，非 `dist/` 正式版 |
 | WP7.2 最新实测 Debug App SHA256 | `5AE13A1367345515245F9D2C694710BA3140DD18F9DEC3FFF81BE3ABD471B5D4` | `out/logs/wp72-success-app.bin` 与 WP7.2 index；测试构建，非正式版 |
-| 当前改造分支 Platform gitlink | `5a4fb2f7f2f6888e5a562f35e1385201e0b3bfad` | 当前源码；正式版仍以 `dist/release.manifest.json` 为准 |
+| 当前改造分支 Platform gitlink | `efeaf4ff205dffd32084f5add88774d866513871` | 当前源码；正式版仍以 `dist/release.manifest.json` 为准 |
 | WP7.2 checkpoint App SHA256 | `6EE9E4188E001B8581CA4198F9A4B7D1D0D91F132273CA0955325C1295BB450E` | clean ARM Release candidate；非 `dist/` 正式版 |
 | 冻结 Boot | `abox-boot-2.3.0`，SHA256 `981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63` | 正式 manifest；Boot `0x08000000` |
 
@@ -26,7 +26,7 @@ WP7.3 的 `0.2.32` 候选与旧正式版曾使用相同版本字符串，但哈�
 
 ## 公共通信接入改造状态（未完成）
 
-当前巡防底盘源码指向 Platform `5a4fb2f7f2f6888e5a562f35e1385201e0b3bfad`，已改用公共 EC800 MQTT transport，移除产品私有连接/收发状态机及接收解析器。唯一 UART/AT 分流、产品 Topic/身份薄适配、runtime 关闭委托、OTA 工作区借还与网络变化撤权已在源码接通。产品主机回归、Platform CTest 21/21 和 ARM Release 链接通过；RAM 61,432 B、Flash 125,808 B，静态栈门槛通过。这些是主机和构建证据，尚无该改造固件的模组、Broker、OTA 或车辆实测证据。
+当前巡防底盘源码指向 Platform `efeaf4ff205dffd32084f5add88774d866513871`，已改用公共 EC800 MQTT transport，移除产品私有连接/收发状态机及接收解析器。唯一 UART/AT 分流、产品 Topic/身份薄适配、runtime 关闭委托、OTA 工作区借还与网络变化撤权已在源码接通。产品主机回归、Platform CTest 21/21 和 ARM Release 链接通过；RAM 61,432 B、Flash 126,232 B，静态栈门槛通过。这些是主机和构建证据，尚无该改造固件的模组、Broker、OTA 或车辆实测证据。
 
 送餐车与清扫车仍待接入同一公共 transport。当前构建不是正式发布或现场验收。`dist/` 保持原正式包，版本与正式哈希不随本次源码提交改变；待三产品共享同一通信实现、完整回归及资源检查通过后再递增版本并整体替换正式包。
 

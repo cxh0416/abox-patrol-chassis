@@ -47,7 +47,8 @@ static void cycle(void)
 }
 static void answer(const char *expected, const char *reply)
 {
-    cycle();
+    unsigned i;
+    for (i = 0U; i < 4U && !command[0]; ++i) cycle();
     assert(!strncmp(command, expected, strlen(expected)));
     command[0] = 0;
     feed(reply);
