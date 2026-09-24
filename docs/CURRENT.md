@@ -6,9 +6,9 @@
 
 | 项目 | 当前值 | 权威来源 |
 |---|---|---|
-| 最新正式版 | `patrol-chassis-0.2.34` | `dist/release.manifest.json` |
-| 正式 App SHA256 | `AD87CE767197E3DFF5876376BF8CE3EE3B8751ABF3D5A24A7303E55FE12CE233` | 正式 manifest |
-| 当前源码版本 | `patrol-chassis-0.2.35`；公共 transport 改造待正式打包和现场验收 | 根目录 `VERSION` |
+| 最新正式版 | `patrol-chassis-0.2.35` | `dist/release.manifest.json` |
+| 正式 App SHA256 | `689776FCFF9F1A5DB064EC2DF053B3DD39DF72CBBA6F951D00114F9842B35FF2` | 正式 manifest |
+| 当前源码版本 | `patrol-chassis-0.2.35`；公共 transport 改造已正式打包，待现场验收 | 根目录 `VERSION` 与正式 manifest |
 | WP7.3 clean ARM Release App SHA256 | `DE38325CE586CC1F703FAD78C6BC4D219450CDE110A5E56400897A237A6C7251` | [WP7.3 evidence](operations/evidence/2026-09-23-mqtt-wp73/index.json)；实测候选，非 `dist/` 正式版 |
 | WP7.2 最新实测 Debug App SHA256 | `5AE13A1367345515245F9D2C694710BA3140DD18F9DEC3FFF81BE3ABD471B5D4` | `out/logs/wp72-success-app.bin` 与 WP7.2 index；测试构建，非正式版 |
 | 当前改造分支 Platform gitlink | `b212b33417879aa0667ff4bdba5ec586568492c0` | 当前源码；正式版仍以 `dist/release.manifest.json` 为准 |
@@ -24,11 +24,11 @@ WP7.3 的 `0.2.32` 候选与旧正式版曾使用相同版本字符串，但哈�
 
 入网改造发布时三个产品使用 Platform `b51bfb163bf84c1269091d71895c88b4e7a66b72`。底盘 `0.2.34` 已通过暂存校验并整体替换 `dist/`；服务端当时的 78 项测试与六个跨产品方向子测试通过。HTTPS 请求、审批、MQTT 业务 proof、掉电恢复、同产品及跨产品重刷尚无该正式包的设备验收证据；正式打包不能作为实车成功证据。服务端新合同与跨产品权限修正尚未部署。
 
-## 公共通信接入改造状态（未完成）
+## 公共通信接入改造状态（源码与正式包完成；现场待验）
 
 当前巡防底盘源码指向 Platform `b212b33417879aa0667ff4bdba5ec586568492c0`，已改用公共 EC800 MQTT transport，移除产品私有连接/收发状态机及接收解析器。唯一 UART/AT 分流、产品 Topic/身份薄适配、runtime 关闭委托、OTA 工作区借还与网络变化撤权已在源码接通。产品主机回归、Platform CTest 21/21 和 ARM Release 链接通过；RAM 61,432 B、Flash 126,312 B，静态栈门槛通过。这些是主机和构建证据，尚无该改造固件的模组、Broker、OTA 或车辆实测证据。
 
-送餐车与清扫车已接入同一公共 transport，三产品主机回归通过。当前构建不是正式发布或现场验收。`dist/` 保持原正式包，待统一平台 SHA 的 ARM 构建和资源检查通过后整体替换正式包。
+送餐车与清扫车已接入同一公共 transport；三产品同指向 Platform `b212b33417879aa0667ff4bdba5ec586568492c0`。三产品主机回归、ARM Release、资源及冻结 Boot 校验通过，正式包已各自整体替换 `dist/`。正式打包不代表设备已升级。现场仍须验证模组连接与 TLS context 2、Broker 收发与业务端解析、首次入网与四种明文/TLS 切换、掉线重连、OTA 互斥，以及底盘撤权和运动门禁；MQTT ACK 不能替代业务平台接收证明。
 
 维护场景：保留配置升级时先备份并校验逐车 Config V5，升级后应沿用现有凭据；同产品整片擦除前归档配置、标定、Boot State 和证据，重刷冻结 Boot、App、Boot State 及 CA/UFS 前置条件，审批后核对新凭据、保存回读及重启上线；跨产品整片擦除还须确认管理员审批目标产品合同、Broker Topic 权限、旧凭据和旧会话撤销，随后单独恢复目标产品所需标定。现场原始证据归入 `docs/operations/evidence/`，不得覆盖历史记录。
 
