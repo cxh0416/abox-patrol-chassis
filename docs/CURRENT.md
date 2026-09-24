@@ -6,12 +6,12 @@
 
 | 项目 | 当前值 | 权威来源 |
 |---|---|---|
-| 最新正式版 | `patrol-chassis-0.2.35` | `dist/release.manifest.json` |
-| 正式 App SHA256 | `689776FCFF9F1A5DB064EC2DF053B3DD39DF72CBBA6F951D00114F9842B35FF2` | 正式 manifest |
-| 当前源码版本 | `patrol-chassis-0.2.35`；公共 transport 改造已正式打包，待现场验收 | 根目录 `VERSION` 与正式 manifest |
+| 最新正式版 | `patrol-chassis-0.2.36` | `dist/release.manifest.json` |
+| 正式 App SHA256 | `B12298E9BE917FA63F6CFA8F3C510A51187EB1A20BE672B54CDEEAE60501D0B9` | 正式 manifest |
+| 当前源码版本 | `patrol-chassis-0.2.36`；入网、业务上线和恢复已现场复验 | 根目录 `VERSION`、正式 manifest 与 [现场证据](operations/evidence/2026-09-24-enrollment-0236/index.json) |
 | WP7.3 clean ARM Release App SHA256 | `DE38325CE586CC1F703FAD78C6BC4D219450CDE110A5E56400897A237A6C7251` | [WP7.3 evidence](operations/evidence/2026-09-23-mqtt-wp73/index.json)；实测候选，非 `dist/` 正式版 |
 | WP7.2 最新实测 Debug App SHA256 | `5AE13A1367345515245F9D2C694710BA3140DD18F9DEC3FFF81BE3ABD471B5D4` | `out/logs/wp72-success-app.bin` 与 WP7.2 index；测试构建，非正式版 |
-| 当前改造分支 Platform gitlink | `b212b33417879aa0667ff4bdba5ec586568492c0` | 当前源码；正式版仍以 `dist/release.manifest.json` 为准 |
+| 当前改造分支 Platform gitlink | `4f97ca9d155f4be5869ab6b2b911e9c2ae5b909c` | 当前源码及正式 manifest |
 | WP7.2 checkpoint App SHA256 | `6EE9E4188E001B8581CA4198F9A4B7D1D0D91F132273CA0955325C1295BB450E` | clean ARM Release candidate；非 `dist/` 正式版 |
 | 冻结 Boot | `abox-boot-2.3.0`，SHA256 `981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63` | 正式 manifest；Boot `0x08000000` |
 
@@ -20,15 +20,21 @@ WP7.3 的 `0.2.32` 候选与旧正式版曾使用相同版本字符串，但哈�
 
 ## 统一入网改造状态（2026-09-24）
 
-当前工作树接入 Platform `ABoxEnrollment`、EC800 HTTPS POST 与首次 MQTT Trial，出厂 Config V5 的 MQTT 字段为空。已保存且 MQTT 字段完整的逐车 V5 配置继续直接运行；新设备和整片擦除后的设备按芯片 UID 与当前固件的产品合同申请，底盘出厂临时 VID 为 `PATROL-` 加 UID。审批下发仅更新 VID、MQTT 字段及原有入网标记，不恢复被擦除的标定；未标定车辆仍禁止运动。
+当前正式版接入 Platform `ABoxEnrollment`、EC800 HTTPS POST 与首次 MQTT Trial，出厂 Config V5 的 MQTT 字段为空。已保存且 MQTT 字段完整的逐车 V5 配置继续直接运行；新设备和整片擦除后的设备按芯片 UID 与当前固件的产品合同申请，底盘出厂临时 VID 为 `PATROL-` 加 UID。审批下发仅更新 VID、MQTT 字段及原有入网标记，不恢复被擦除的标定；未标定车辆仍禁止运动。
 
-入网改造发布时三个产品使用 Platform `b51bfb163bf84c1269091d71895c88b4e7a66b72`。底盘 `0.2.34` 已通过暂存校验并整体替换 `dist/`；服务端当时的 78 项测试与六个跨产品方向子测试通过。HTTPS 请求、审批、MQTT 业务 proof、掉电恢复、同产品及跨产品重刷尚无该正式包的设备验收证据；正式打包不能作为实车成功证据。服务端新合同与跨产品权限修正尚未部署。
+入网改造初次发布时三个产品使用 Platform `b51bfb163bf84c1269091d71895c88b4e7a66b72`；底盘 `0.2.34` 当时只有主机和构建证据。此后底盘 `0.2.36` 的 UID 申请、管理员审批、第五代凭据领取、Broker 和业务在线、重启及单设备断线恢复已完成实机复验。跨产品重刷、断电注入和 OTA 仍未验收。
 
-## 公共通信接入改造状态（源码与正式包完成；现场待验）
+## 公共通信接入改造状态（底盘现场已验）
 
-当前巡防底盘源码指向 Platform `b212b33417879aa0667ff4bdba5ec586568492c0`，已改用公共 EC800 MQTT transport，移除产品私有连接/收发状态机及接收解析器。唯一 UART/AT 分流、产品 Topic/身份薄适配、runtime 关闭委托、OTA 工作区借还与网络变化撤权已在源码接通。产品主机回归、Platform CTest 21/21 和 ARM Release 链接通过；RAM 61,432 B、Flash 126,312 B，静态栈门槛通过。这些是主机和构建证据，尚无该改造固件的模组、Broker、OTA 或车辆实测证据。
+当前巡防底盘源码指向 Platform `4f97ca9d155f4be5869ab6b2b911e9c2ae5b909c`，已改用公共 EC800 MQTT transport，移除产品私有连接/收发状态机及接收解析器。唯一 UART/AT 分流、产品 Topic/身份薄适配、runtime 关闭委托、OTA 工作区借还与网络变化撤权已在源码接通。产品主机回归 38/38、Platform CTest 21/21 和 ARM Release 链接通过；正式 App RAM 61,432 B、Flash 126,896 B，静态栈门槛通过。模组、Broker、业务服务端、TLS 失败候选恢复、重启与单设备断线已复验；运动、电源和 OTA 未执行。
 
-送餐车与清扫车已接入同一公共 transport；三产品同指向 Platform `b212b33417879aa0667ff4bdba5ec586568492c0`。三产品主机回归、ARM Release、资源及冻结 Boot 校验通过，正式包已各自整体替换 `dist/`。正式打包不代表设备已升级。现场仍须验证模组连接与 TLS context 2、Broker 收发与业务端解析、首次入网与四种明文/TLS 切换、掉线重连、OTA 互斥，以及底盘撤权和运动门禁；MQTT ACK 不能替代业务平台接收证明。
+送餐车与清扫车此前接入同一公共 transport 时各自指向 Platform `b212b33417879aa0667ff4bdba5ec586568492c0`；本轮仅更新底盘 gitlink。其他产品的现场状态以各自仓库为准。底盘本轮验证包含真实 Broker 收包和业务服务端心跳，不以 MQTT ACK 代替业务在线证明。
+
+## 2026-09-24 底盘入网与恢复现场验收
+
+UID `05D3FF343733574E43043550` 的最新申请 `c165e71a-e8d4-4c7d-b41b-795e983bf4f9` 在服务端为 `verified`，凭据代次 5；设备使用正式 VID `PATROL-05D3FF343733574E43043550`。审批后新版固件领取凭据、订阅并发布完整 V4 心跳，业务设备记录更新为在线。服务端已部署 `0.4.146`，worker 按 Broker 收到的心跳确认入网；审批状态、Broker 连接和业务在线分别核对。
+
+首个失败环节是 TLS 失败候选的 `AT+QMTOPEN=1` 收到 `+QMTOPEN: 1,-1` 后，未打开 socket 却继续发送 `QMTDISC`/`QMTCLOSE`，两条 `ERROR` 导致 AT 隔离。公共 transport 现在仅对明确的 `-1` 未打开结果进入排空/重试；不确定失败仍保留隔离。正式 `0.2.36` App 已用 J-Link App-only 写入并回读校验；失败 TLS 候选先回 `202`，恢复原连接后同一 requestId 回 `500 MQTT_CANDIDATE_RESTORED`，Config V5 页实读 SHA256 前后一致。独立 MCU 复位及单设备 Broker 断开后均自动恢复业务在线。详情见[脱敏现场证据与受控原件索引](operations/evidence/2026-09-24-enrollment-0236/index.json)。
 
 维护场景：保留配置升级时先备份并校验逐车 Config V5，升级后应沿用现有凭据；同产品整片擦除前归档配置、标定、Boot State 和证据，重刷冻结 Boot、App、Boot State 及 CA/UFS 前置条件，审批后核对新凭据、保存回读及重启上线；跨产品整片擦除还须确认管理员审批目标产品合同、Broker Topic 权限、旧凭据和旧会话撤销，随后单独恢复目标产品所需标定。现场原始证据归入 `docs/operations/evidence/`，不得覆盖历史记录。
 

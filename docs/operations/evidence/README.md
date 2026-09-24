@@ -11,6 +11,7 @@
 | 2026-09-22 WP7.1 RTOS A/B | PASS | WP7.1 candidate | [README](2026-09-22-wp71-rtos-ab/README.md) | 历史关闭门禁 |
 | 2026-09-22 WP7.2 | CLOSED / PASS | App SHA `5AE13A13…B5D4` | [summary](2026-09-22-mqtt-wp72/test-summary.md) / [index](2026-09-22-mqtt-wp72/index.json) | 历史关闭门禁 |
 | 2026-09-23 WP7.3 | CLOSED / PASS | App SHA `DE38325C…7251` | [index](2026-09-23-mqtt-wp73/index.json) | 历史关闭门禁，非正式发布 |
+| 2026-09-24 入网与恢复 | PASS | 正式 `0.2.36`，App SHA `B12298E9…D0B9` | [index](2026-09-24-enrollment-0236/index.json) | 当前底盘现场验收；原始敏感记录受控保存 |
 
 ## Steering / Calibration / CANopen
 

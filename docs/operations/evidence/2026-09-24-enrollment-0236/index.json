@@ -1,0 +1,196 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "uid": "05D3FF343733574E43043550",
+  "vid": "PATROL-05D3FF343733574E43043550",
+  "enrollment_request": "c165e71a-e8d4-4c7d-b41b-795e983bf4f9",
+  "credential_generation": 5,
+  "enrollment_state": "verified",
+  "root_cause": {
+    "first_failed_at_command": "AT+QMTOPEN=1",
+    "owner": "MQTT=1",
+    "client_index": 1,
+    "raw_urc": "+QMTOPEN: 1,-1",
+    "command_pending": false,
+    "followup": [
+      "AT+QMTDISC=1 -> ERROR",
+      "AT+QMTCLOSE=1 -> ERROR"
+    ],
+    "prior_result": "AT quarantine without socket",
+    "repair": "Treat explicit QMTOPEN -1 as unopened; drain URCs and release trial lease without invalid close"
+  },
+  "candidate_trial": {
+    "request_id": "tlsfail-qmtopenfix-20260924",
+    "responses": [
+      {
+        "utc": "2026-09-24T10:25:46.818475+00:00",
+        "request_id": "tlsfail-qmtopenfix-20260924",
+        "code": 202,
+        "msg": "MQTT_CANDIDATE_TESTING"
+      },
+      {
+        "utc": "2026-09-24T10:26:51.137733+00:00",
+        "request_id": "tlsfail-qmtopenfix-20260924",
+        "code": 500,
+        "msg": "MQTT_CANDIDATE_RESTORED"
+      }
+    ],
+    "active_restored": true,
+    "tls_persisted": false,
+    "broker_trace_counts": {
+      "connect": 1,
+      "connack": 1,
+      "suback": 3,
+      "heartbeat_received": 12
+    }
+  },
+  "formal": {
+    "version": "patrol-chassis-0.2.36",
+    "product_commit": "b5493e560509a807349ca9e87b1e8547f448d603",
+    "platform_commit": "4f97ca9d155f4be5869ab6b2b911e9c2ae5b909c",
+    "app_sha256": "B12298E9BE917FA63F6CFA8F3C510A51187EB1A20BE672B54CDEEAE60501D0B9",
+    "app_load_address": "0x08008000",
+    "jlink_probe_sn": "69730334",
+    "app_verifybin": true,
+    "boot_state_a_verifybin": true,
+    "boot_state_sequence": 15,
+    "ram_bytes": 61432,
+    "flash_bytes": 126896,
+    "reset_reconnected_at_utc": "2026-09-24T10:35:39.229+00:00",
+    "broker_kick_http_status": 204,
+    "broker_kick_reconnected_at_utc": "2026-09-24T10:36:39.281+00:00",
+    "service_fw_version": "patrol-chassis-0.2.36",
+    "formal_trial": {
+      "request_id": "tlsfail-formal-0236-20260924",
+      "responses": [
+        {
+          "utc": "2026-09-24T10:37:23.174349+00:00",
+          "request_id": "tlsfail-formal-0236-20260924",
+          "code": 202,
+          "msg": "MQTT_CANDIDATE_TESTING"
+        },
+        {
+          "utc": "2026-09-24T10:38:27.483634+00:00",
+          "request_id": "tlsfail-formal-0236-20260924",
+          "code": 500,
+          "msg": "MQTT_CANDIDATE_RESTORED"
+        }
+      ],
+      "runtime_state": "READY",
+      "transport_state": "READY",
+      "active_tls": false,
+      "config_sha256_before_and_after": "9483b093a8936dc0740dc4d76d81d9865dfed3a1cb93472e5afdc3ef42f35af4",
+      "broker_trace_counts": {
+        "connect": 5,
+        "connack": 5,
+        "suback": 15,
+        "heartbeat_received": 42
+      }
+    },
+    "heartbeat_schema": {
+      "version": "4.0",
+      "top_level_keys": [
+        "version",
+        "timestamp",
+        "data"
+      ],
+      "data_keys": [
+        "firmware"
+      ]
+    }
+  },
+  "tests": {
+    "product_host": 38,
+    "platform_ctest": 21,
+    "bench_tests": "passed",
+    "service_tests": 306
+  },
+  "raw_evidence": [
+    {
+      "name": "at-failure-gdb.log",
+      "original_path": "C:\\Users\\cxh\\.codex\\private\\patrol-enrollment-20260924\\at-failure-gdb.log",
+      "sha256": "05bd797cd5da51e6671303768197140e0abc5ccbf9458ecec4cfe9e333241702",
+      "bytes": 1258,
+      "restricted": true
+    },
+    {
+      "name": "failclosed-gdb.log",
+      "original_path": "C:\\Users\\cxh\\.codex\\private\\patrol-enrollment-20260924\\failclosed-gdb.log",
+      "sha256": "287afac641a594d7631e55a84835784138823cc9157e2e253df1f90434fdedbd",
+      "bytes": 1364,
+      "restricted": true
+    },
+    {
+      "name": "qmtopenfix-trace.zip",
+      "original_path": "C:\\Users\\cxh\\.codex\\private\\patrol-enrollment-20260924\\qmtopenfix-trace.zip",
+      "sha256": "d859538c6dad79304400e377b8e8fbc1f21ec3807460cf263c8f155bb4d4376c",
+      "bytes": 5011,
+      "restricted": true
+    },
+    {
+      "name": "formal-0236-trace.zip",
+      "original_path": "C:\\Users\\cxh\\.codex\\private\\patrol-enrollment-20260924\\formal-0236-trace.zip",
+      "sha256": "038f2dc3ec44f8ef575e71226cd5d410ecda788621d4bc48239a36d48db19bd1",
+      "bytes": 26180,
+      "restricted": true
+    },
+    {
+      "name": "formal-0236-jlink-verify.log",
+      "original_path": "C:\\Users\\cxh\\.codex\\private\\patrol-enrollment-20260924\\formal-0236-jlink-verify.log",
+      "sha256": "eed7ca4c5d4fd69958f97bcd3a214c2b26c3d46b96e6f22d1cf22541d96094f9",
+      "bytes": 3047,
+      "restricted": false
+    },
+    {
+      "name": "config-v5-after-commit-readback.bin",
+      "original_path": "C:\\Users\\cxh\\.codex\\private\\patrol-enrollment-20260924\\config-v5-after-commit-readback.bin",
+      "sha256": "9483b093a8936dc0740dc4d76d81d9865dfed3a1cb93472e5afdc3ef42f35af4",
+      "bytes": 2048,
+      "restricted": true
+    },
+    {
+      "name": "config-v5-after-qmtopenfix-trial.bin",
+      "original_path": "C:\\Users\\cxh\\.codex\\private\\patrol-enrollment-20260924\\config-v5-after-qmtopenfix-trial.bin",
+      "sha256": "9483b093a8936dc0740dc4d76d81d9865dfed3a1cb93472e5afdc3ef42f35af4",
+      "bytes": 2048,
+      "restricted": true
+    },
+    {
+      "name": "config-v5-after-formal-trial.bin",
+      "original_path": "C:\\Users\\cxh\\.codex\\private\\patrol-enrollment-20260924\\config-v5-after-formal-trial.bin",
+      "sha256": "9483b093a8936dc0740dc4d76d81d9865dfed3a1cb93472e5afdc3ef42f35af4",
+      "bytes": 2048,
+      "restricted": true
+    },
+    {
+      "name": "boot-state-a-formal-0.2.36.bin",
+      "original_path": "C:\\Users\\cxh\\.codex\\private\\patrol-enrollment-20260924\\boot-state-a-formal-0.2.36.bin",
+      "sha256": "a42be62690f5eb8f9735a59f213d70a27526fe8cd44067aedc0e7d8aaf15c33c",
+      "bytes": 2048,
+      "restricted": true
+    }
+  ],
+  "service": {
+    "deployed_version": "0.4.146",
+    "source_commit": "4a97ce55bdfa6b6f342a978bf62081a55fc27ce2",
+    "device_record_online_after_formal_trial": true,
+    "device_record_firmware": "patrol-chassis-0.2.36",
+    "schema_migration": 25,
+    "api_service": "active",
+    "mqtt_worker_service": "active",
+    "management_page_data_source": {
+      "method": "device_ota.db.get_device(product, vid, online_timeout=180)",
+      "online": true,
+      "selectable": true,
+      "firmware": "patrol-chassis-0.2.36"
+    },
+    "management_page_visual_check": "not performed; independent browser requires operator credentials and TOTP"
+  },
+  "scope_excluded": [
+    "motion",
+    "steering",
+    "calibration",
+    "vehicle power",
+    "OTA install",
+    "power-failure injection"
+  ]
+}
