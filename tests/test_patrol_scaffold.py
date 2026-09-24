@@ -95,7 +95,7 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertNotRegex(cloud, r"%[-+0-9.#]*[fFeEgGaA]")
         self.assertNotRegex(remote, r"%[-+0-9.#]*[fFeEgGaA]")
         self.assertIn('\\\"code\\\":%u', remote)
-        transport = (ROOT / "platform/components/mqtt/abox_mqtt_ec800.c").read_text(encoding="utf-8")
+        transport = (ROOT / "platform/components/mqtt/src/abox_mqtt_ec800.c").read_text(encoding="utf-8")
         product_modules = (ROOT / "app/Core/User/modules.cmake").read_text(encoding="utf-8")
         self.assertIn("AT+QMTSUB=%u,%u", transport)
         self.assertIn("mqtt_core_adapter.c", product_modules)

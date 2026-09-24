@@ -16,11 +16,11 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 $profileTest = Join-Path $hostBuild 'patrol_mqtt_profile_test.exe'
 & $gcc -std=c11 -Wall -Wextra -Werror `
-    "-I$PSScriptRoot\..\platform\include" `
+    "-I$PSScriptRoot\..\platform\components\mqtt\include" `
     "-I$PSScriptRoot\..\platform\tests" `
     "-I$PSScriptRoot\..\app\Core\User\cloud\include" `
     "$PSScriptRoot\..\app\Core\User\cloud\src\patrol_mqtt_profile.c" `
-    "$PSScriptRoot\..\platform\components\mqtt\abox_mqtt_v4.c" `
+    "$PSScriptRoot\..\platform\components\mqtt\src\abox_mqtt_v4.c" `
     "$PSScriptRoot\..\tests\patrol_mqtt_profile_test.c" -o $profileTest
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $profileTest
@@ -45,12 +45,13 @@ $mqttAdapterTest = Join-Path $hostBuild 'mqtt_adapter_test.exe'
 & $gcc -std=c11 -Wall -Wextra -Werror `
     "-I$PSScriptRoot\..\tests\mqtt_adapter_stubs" `
     "-I$PSScriptRoot\..\app\Core\User\mqtt\include" `
-    "-I$PSScriptRoot\..\platform\include" `
+    "-I$PSScriptRoot\..\platform\components\ec800\include" `
+    "-I$PSScriptRoot\..\platform\components\mqtt\include" `
     "$PSScriptRoot\..\tests\mqtt_adapter_test.c" `
     "$PSScriptRoot\..\app\Core\User\mqtt\src\mqtt_core_adapter.c" `
-    "$PSScriptRoot\..\platform\components\mqtt\abox_mqtt_ec800.c" `
-    "$PSScriptRoot\..\platform\components\mqtt\abox_mqtt_ec800_rx.c" `
-    "$PSScriptRoot\..\platform\components\ec800\abox_ec800_at.c" `
+    "$PSScriptRoot\..\platform\components\mqtt\src\abox_mqtt_ec800.c" `
+    "$PSScriptRoot\..\platform\components\mqtt\src\abox_mqtt_ec800_rx.c" `
+    "$PSScriptRoot\..\platform\components\ec800\src\abox_ec800_at.c" `
     -o $mqttAdapterTest
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $mqttAdapterTest
@@ -93,7 +94,9 @@ $benchConfigTest = Join-Path $hostBuild 'bench_config_session_test.exe'
     "-I$PSScriptRoot\..\tests\bench_stubs" `
     @productIncludes `
     "-I$PSScriptRoot\..\shared\include" `
-    "-I$PSScriptRoot\..\platform\include" `
+    "-I$PSScriptRoot\..\platform\components\core\include" `
+    "-I$PSScriptRoot\..\platform\components\ec800\include" `
+    "-I$PSScriptRoot\..\platform\components\mqtt\include" `
     "-I$PSScriptRoot\..\platform\components\cjson" `
     "$PSScriptRoot\..\app\Core\User\system\src\patrol_config.c" `
     "$PSScriptRoot\..\app\Core\User\system\src\mqtt_config_adapter.c" `

@@ -16,7 +16,9 @@ class TelemetryTests(unittest.TestCase):
                             '-Werror', *include_args(),
                             '-I' + str(ROOT / 'tests/bench_stubs'),
                             '-I' + str(ROOT / 'app/Core/User/cloud/private'),
-                            '-I' + str(ROOT / 'platform/include'),
+                            '-I' + str(ROOT / 'platform/components/core/include'),
+                            '-I' + str(ROOT / 'platform/components/ec800/include'),
+                            '-I' + str(ROOT / 'platform/components/mqtt/include'),
                             str(ROOT / 'tests/cloud_telemetry_scheduler_cases.c'),
                             str(ROOT / 'app/Core/User/cloud/src/cloud_tx.c'),
                             '-o', str(binary)], check=True)

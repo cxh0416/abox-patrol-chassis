@@ -16,10 +16,11 @@ class MqttTrialManagerTests(unittest.TestCase):
                        "-I" + str(ROOT / "app/Core/User/mqtt/include"),
                        "-I" + str(ROOT / "app/Core/User/system/include"),
                        "-I" + str(ROOT / "shared/include"),
-                       "-I" + str(ROOT / "platform/include"),
+                       "-I" + str(ROOT / "platform/components/ec800/include"),
+                       "-I" + str(ROOT / "platform/components/mqtt/include"),
                        str(ROOT / "tests/mqtt_trial_manager_test.c"),
                        str(ROOT / "app/Core/User/mqtt/src/mqtt_trial_manager.c"),
-                       str(ROOT / "platform/components/mqtt/abox_mqtt_trial.c"),
+                       str(ROOT / "platform/components/mqtt/src/abox_mqtt_trial.c"),
                        "-o", str(exe)]
             built = subprocess.run(command, capture_output=True, text=True)
             self.assertEqual(built.returncode, 0, built.stdout + built.stderr)

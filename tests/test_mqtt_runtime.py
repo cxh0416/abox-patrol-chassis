@@ -14,17 +14,18 @@ class MqttRuntimeTests(unittest.TestCase):
             sources = [
                 ROOT / "tests/mqtt_runtime_test.c",
                 ROOT / "app/Core/User/mqtt/src/mqtt_runtime.c",
-                ROOT / "platform/components/mqtt/abox_mqtt_runtime.c",
-                ROOT / "platform/components/ec800/abox_ec800_at.c",
-                ROOT / "platform/components/ec800/abox_ec800_command_port.c",
-                ROOT / "platform/components/ec800/abox_ec800_ufs.c",
-                ROOT / "platform/components/ec800/abox_ec800_tls.c",
-                ROOT / "platform/components/mqtt/abox_mqtt_tls.c",
+                ROOT / "platform/components/mqtt/src/abox_mqtt_runtime.c",
+                ROOT / "platform/components/ec800/src/abox_ec800_at.c",
+                ROOT / "platform/components/ec800/src/abox_ec800_command_port.c",
+                ROOT / "platform/components/ec800/src/abox_ec800_ufs.c",
+                ROOT / "platform/components/ec800/src/abox_ec800_tls.c",
+                ROOT / "platform/components/mqtt/src/abox_mqtt_tls.c",
             ]
             command = [shutil.which("gcc"), "-std=c11", "-Wall", "-Wextra", "-Werror",
                        "-I" + str(ROOT / "tests/mqtt_runtime_stubs"),
                        "-I" + str(ROOT / "app/Core/User/mqtt/include"),
-                       "-I" + str(ROOT / "platform/include"),
+                       "-I" + str(ROOT / "platform/components/ec800/include"),
+                       "-I" + str(ROOT / "platform/components/mqtt/include"),
                        *map(str, sources), "-o", str(exe)]
             result = subprocess.run(command, capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
