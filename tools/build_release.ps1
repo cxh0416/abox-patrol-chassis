@@ -141,6 +141,7 @@ try {
             boot_version = 'abox-boot-2.3.0'; ota_scheme = 'boot_v2_ufs'; ota_downloader = 'app'
             app_range = '0x08008000..0x0803DFFF'; config_recovery_page = '0x0803E000'; boot_state_pages = @('0x0803E800', '0x0803F000'); config_page = '0x0803F800'
             product_commit = $productCommit; product_dirty = $false; platform_commit = $platformCommit; platform_dirty = $false
+            toolchain = (& arm-none-eabi-gcc --version | Select-Object -First 1).Trim(); build_options = $appDefinitions
             version_marker = "PATROL_VEHICLE_CHASSIS_FW_VERSION=$version"
             flash_ram = [ordered]@{ boot = $bootUsage; app = $appUsage; boot_limit_bytes = 32768; app_limit_bytes = 221184; ram_limit_bytes = 65536 }
             artifacts = @((Get-Artifact $appOut '0x08008000'), (Get-Artifact $bootOut '0x08000000'), (Get-Artifact $fullOut '0x08000000'))
