@@ -46,10 +46,16 @@ function Get-Crc32([string] $path) {
     return ('{0:X8}' -f [PatrolChassisReleaseCrc32]::Compute([System.IO.File]::ReadAllBytes($path)))
 }
 function Get-Usage([string] $elf) {
-    $line = (& arm-none-eabi-size $elf | Select-Object -Last 1)
-    $parts = $line -split '\s+' | Where-Object { $_ }
-    if ($parts.Count -lt 3) { throw "Unexpected size output for $elf" }
-    return [ordered]@{ flash_bytes = ([int]$parts[0] + [int]$parts[1]); ram_bytes = ([int]$parts[1] + [int]$parts[2]) }
+    $bin = [IO.Path]::ChangeExtension($elf, '.bin')
+    $ramEnd = [int64]0x20000000
+    foreach ($line in (& arm-none-eabi-objdump -h $elf)) {
+        if ($line -match '^\s*\d+\s+\S+\s+([0-9a-fA-F]+)\s+([0-9a-fA-F]+)\s+') {
+            $size = [Convert]::ToInt64($Matches[1], 16)
+            $vma = [Convert]::ToInt64($Matches[2], 16)
+            if ($vma -ge 0x20000000 -and $vma -lt 0x20010000) { $ramEnd = [Math]::Max($ramEnd, $vma + $size) }
+        }
+    }
+    return [ordered]@{ flash_bytes = (Get-Item -LiteralPath $bin).Length; ram_bytes = ($ramEnd - 0x20000000) }
 }
 function Get-Artifact([string] $path, [string] $address) {
     $item = Get-Item -LiteralPath $path
