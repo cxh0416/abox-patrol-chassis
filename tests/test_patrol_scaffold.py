@@ -20,6 +20,15 @@ def cloud_sources():
 
 
 class PatrolScaffoldTests(unittest.TestCase):
+    def test_uart5_contract_matches_hal_without_changing_hardware(self):
+        config = (ROOT / "platform_config/abox_product_config.h").read_text(encoding="utf-8")
+        usart = (ROOT / "app/Core/Src/usart.c").read_text(encoding="utf-8")
+        declared = re.search(r"0x08008000U,\s*0x0803F800U,\s*0x800U,\s*\d+U,\s*\d+U,\s*(\d+)U", config)
+        actual = re.search(r"void MX_UART5_Init\(void\).*?huart5\.Init\.BaudRate\s*=\s*(\d+);", usart, re.S)
+        self.assertIsNotNone(declared)
+        self.assertIsNotNone(actual)
+        self.assertEqual(int(declared.group(1)), int(actual.group(1)))
+
     def test_identity_and_safe_defaults(self):
         cmake = (ROOT / "app/CMakeLists.txt").read_text(encoding="utf-8")
         config = (ROOT / "platform_config/abox_product_config.h").read_text(encoding="utf-8")
