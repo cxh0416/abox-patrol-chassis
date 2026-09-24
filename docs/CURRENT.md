@@ -11,7 +11,7 @@
 | 当前源码版本 | `patrol-chassis-0.2.34`；入网改造正式包已生成，尚未下发 OTA 或进行该包的现场验收 | 根目录 `VERSION` 与正式 manifest |
 | WP7.3 clean ARM Release App SHA256 | `DE38325CE586CC1F703FAD78C6BC4D219450CDE110A5E56400897A237A6C7251` | [WP7.3 evidence](operations/evidence/2026-09-23-mqtt-wp73/index.json)；实测候选，非 `dist/` 正式版 |
 | WP7.2 最新实测 Debug App SHA256 | `5AE13A1367345515245F9D2C694710BA3140DD18F9DEC3FFF81BE3ABD471B5D4` | `out/logs/wp72-success-app.bin` 与 WP7.2 index；测试构建，非正式版 |
-| 仓库 Platform gitlink | `b51bfb163bf84c1269091d71895c88b4e7a66b72` | 当前源码与正式 manifest；未 push |
+| 当前改造分支 Platform gitlink | `312eb2893aca96d5e88840c4094a8a834deb40f2` | 当前源码；正式版仍以 `dist/release.manifest.json` 为准 |
 | WP7.2 checkpoint App SHA256 | `6EE9E4188E001B8581CA4198F9A4B7D1D0D91F132273CA0955325C1295BB450E` | clean ARM Release candidate；非 `dist/` 正式版 |
 | 冻结 Boot | `abox-boot-2.3.0`，SHA256 `981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63` | 正式 manifest；Boot `0x08000000` |
 
@@ -22,7 +22,13 @@ WP7.3 的 `0.2.32` 候选与旧正式版曾使用相同版本字符串，但哈�
 
 当前工作树接入 Platform `ABoxEnrollment`、EC800 HTTPS POST 与首次 MQTT Trial，出厂 Config V5 的 MQTT 字段为空。已保存且 MQTT 字段完整的逐车 V5 配置继续直接运行；新设备和整片擦除后的设备按芯片 UID 与当前固件的产品合同申请，底盘出厂临时 VID 为 `PATROL-` 加 UID。审批下发仅更新 VID、MQTT 字段及原有入网标记，不恢复被擦除的标定；未标定车辆仍禁止运动。
 
-三个产品工作树的 Platform 均固定到本地提交 `b51bfb163bf84c1269091d71895c88b4e7a66b72`。底盘源码已通过 ARM Release 编译、37 项产品测试、16 项 Platform CTest 及台架控制相关主机测试；服务端 78 项测试与六个跨产品方向子测试通过。底盘 `0.2.34` 已通过暂存校验并整体替换 `dist/`。HTTPS 请求、审批、MQTT 业务 proof、掉电恢复、同产品及跨产品重刷尚无本次设备验收证据；正式打包不能作为实车成功证据。服务端新合同与跨产品权限修正尚未部署。
+入网改造发布时三个产品使用 Platform `b51bfb163bf84c1269091d71895c88b4e7a66b72`。底盘 `0.2.34` 已通过暂存校验并整体替换 `dist/`；服务端当时的 78 项测试与六个跨产品方向子测试通过。HTTPS 请求、审批、MQTT 业务 proof、掉电恢复、同产品及跨产品重刷尚无该正式包的设备验收证据；正式打包不能作为实车成功证据。服务端新合同与跨产品权限修正尚未部署。
+
+## 公共通信接入改造状态（未完成）
+
+当前三个产品均指向本地 Platform `312eb2893aca96d5e88840c4094a8a834deb40f2`。产品 Profile 实现、Registry 数据和测试向量已从公共平台移至产品仓；JSON Registry 与编译后的 C 描述符逐项交叉校验通过。Platform 的 EC800 MQTT 接收解析器、AT 唯一分流和硬件 target 配置门槛已有独立测试，runtime 停止先撤权再等待 AT 排空。三个产品主机回归及 ARM Release App 构建通过。
+
+公共 MQTT 连接、订阅、发布 transport 尚未接入；三个 App 仍编译私有 MQTT Core。当前构建不是正式发布或现场验收。`dist/` 保持原正式包，版本与正式哈希不随本次源码提交改变；待三产品共享同一通信实现、完整回归及资源检查通过后再递增版本并整体替换正式包。
 
 维护场景：保留配置升级时先备份并校验逐车 Config V5，升级后应沿用现有凭据；同产品整片擦除前归档配置、标定、Boot State 和证据，重刷冻结 Boot、App、Boot State 及 CA/UFS 前置条件，审批后核对新凭据、保存回读及重启上线；跨产品整片擦除还须确认管理员审批目标产品合同、Broker Topic 权限、旧凭据和旧会话撤销，随后单独恢复目标产品所需标定。现场原始证据归入 `docs/operations/evidence/`，不得覆盖历史记录。
 
