@@ -11,8 +11,17 @@
 #include "ota_service.h"
 #include "usart.h"
 #include "patrol_config.h"
+#include "patrol_enrollment.h"
 
 CloudContext g_cloud;
+static uint32_t g_enroll_provision_due;
+
+uint8_t CloudService_NeedsEnrollment(void)
+{
+    const PatrolRemoteConfigV5_t *cfg = PatrolConfig_Get();
+    return cfg != 0 && (!PatrolConfig_IsCloudReady(cfg) ||
+           (cfg->reserved0 != 1U && strcmp(cfg->vid, PATROL_CONFIG_DEFAULT_VID) == 0));
+}
 
 uint32_t CloudPort_Now(void) { return HAL_GetTick(); }
 
@@ -94,7 +103,8 @@ void CloudService_Init(void)
     g_cloud.mqtt_persistent_active = 0U;
     g_cloud.mqtt_candidate_pending = 0U;
     g_cloud.reset_reason = read_reset_reason();
-    g_cloud.config_ready = PatrolConfig_IsCloudReady(cfg);
+    g_enroll_provision_due = HAL_GetTick();
+    g_cloud.config_ready = !CloudService_NeedsEnrollment();
 
     {
         const ABoxEc800AtPort at_port = {&huart1, ec800_tick, ec800_write, 0};
@@ -128,11 +138,12 @@ void CloudService_Init(void)
     }
     MQTT_Core_Init(&mqtt, CloudCommands_OnMessage);
     MQTT_Core_SetAtCore(&g_cloud.at_core);
-    if (!MqttRuntime_Init(&g_cloud.at_core, &runtime, HAL_GetTick())) {
+    if (!MqttRuntime_Init(&g_cloud.at_core, g_cloud.config_ready ? &runtime : 0, HAL_GetTick())) {
         g_cloud.config_ready = 0U;
         APP_LOGE("CLOUD", "invalid MQTT V5 runtime configuration");
     }
     MqttTrialManager_Init();
+    PatrolEnrollment_Init(&g_cloud.at_core);
 
     EC_Power_Init();
     EC_Power_StartOnSequence();
@@ -144,7 +155,7 @@ void CloudService_Init(void)
     g_cloud.iccid_due = HAL_GetTick() + 1000U;
     g_cloud.initialized = 1U;
     if (g_cloud.config_ready) APP_LOGI("CLOUD", "configured vid=%s broker=%s:%u", cfg->vid, cfg->mqtt_host, cfg->mqtt_port);
-    else APP_LOGW("CLOUD", "cloud disabled: provision config page");
+    else APP_LOGW("CLOUD", "awaiting HTTPS enrollment");
 }
 
 void CloudService_Task(void)
@@ -164,6 +175,14 @@ void CloudService_Task(void)
     }
     EC800_AT_Task(&g_cloud.at_core);
     OtaService_Task();
+    if (CloudService_NeedsEnrollment() && EC_Power_IsOnDone() &&
+        !OtaService_IsProvisioned() && !OtaService_IsBusy() &&
+        (int32_t)(HAL_GetTick() - g_enroll_provision_due) >= 0) {
+        if (OtaService_BeginProvisioning())
+            g_enroll_provision_due = HAL_GetTick() + 60000U;
+    }
+    PatrolEnrollment_Task();
+    MqttTrialManager_Poll(HAL_GetTick());
     if (g_cloud.ota_response_waiting && OtaService_TakeInstallReady())
     {
         char result[128];
@@ -189,7 +208,6 @@ void CloudService_Task(void)
         if (OtaService_BeginProvisioning()) g_cloud.tls_provision_started = 1U;
     }
     MqttRuntime_Task(HAL_GetTick());
-    MqttTrialManager_Poll(HAL_GetTick());
     if (g_cloud.mqtt_persistent_active && !g_cloud.mqtt_candidate_pending &&
         !g_cloud.response_pending) {
         ABoxMqttTrialState trial_state = MqttTrialManager_State();

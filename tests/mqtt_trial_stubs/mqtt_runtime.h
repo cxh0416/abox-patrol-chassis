@@ -5,6 +5,7 @@ typedef ABoxMqttRuntimeState MqttRuntimeState;
 #define MQTT_RUNTIME_FAILED ABOX_MQTT_RUNTIME_FAILED
 int MqttRuntime_StageRamCandidate(const ABoxMqttConfig *);
 int MqttRuntime_ActivateStagedCandidate(uint32_t);
+int MqttRuntime_StopFirst(void);
 int MqttRuntime_RestoreRamActive(const ABoxMqttConfig *, uint32_t);
 int MqttRuntime_IsReady(void);
 MqttRuntimeState MqttRuntime_State(void);

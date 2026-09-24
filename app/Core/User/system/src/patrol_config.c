@@ -109,7 +109,6 @@ uint8_t PatrolConfig_Save(const PatrolRemoteConfigV5_t* cfg)
                             next.steering_tolerance_mdeg == 0U || next.steering_tolerance_mdeg > 2000U))
         return 0U;
     if (next.diag_log_level > 3U) next.diag_log_level = PATROL_CONFIG_DEFAULT_DIAG_LEVEL;
-    if (next.mqtt_port == 0U) next.mqtt_port = PATROL_CONFIG_DEFAULT_MQTT_PORT;
     if (next.diag_log_port == 0U) next.diag_log_port = PATROL_CONFIG_DEFAULT_DIAG_PORT;
     next.checksum = config_checksum(&next);
     if (!OTA_Info_SaveRemoteConfig(&next)) return 0U;

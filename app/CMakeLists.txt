@@ -42,8 +42,6 @@ if(PATROL_CHASSIS_APP_VERSION_OVERRIDE)
 else()
     set(PATROL_CHASSIS_APP_VERSION "${PATROL_CHASSIS_DEFAULT_VERSION}")
 endif()
-set(PATROL_CHASSIS_MQTT_USERNAME "" CACHE STRING "Production MQTT username")
-set(PATROL_CHASSIS_MQTT_PASSWORD "" CACHE STRING "Production MQTT password")
 option(PATROL_CHASSIS_OTA_AUTO_SEED "Seed first stable OTA slot" ON)
 option(PATROL_CHASSIS_BENCH_DRIVE_ENABLED "Compile separately RAM-armed 200 rpm bench drive" OFF)
 option(PATROL_CHASSIS_BENCH_STEERING_ENABLED "Compile RAM-armed steering-only bench executor" OFF)
@@ -128,12 +126,6 @@ if(PATROL_CHASSIS_APP_FAULT_INJECTION_TEST)
         PATROL_CHASSIS_APP_TEST_FAULT_KIND=${PATROL_CHASSIS_APP_TEST_FAULT_KIND}
     )
 endif()
-if(PATROL_CHASSIS_MQTT_USERNAME)
-    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE PATROL_CONFIG_DEFAULT_MQTT_USER="${PATROL_CHASSIS_MQTT_USERNAME}")
-endif()
-if(PATROL_CHASSIS_MQTT_PASSWORD)
-    target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE PATROL_CONFIG_DEFAULT_MQTT_PASS="${PATROL_CHASSIS_MQTT_PASSWORD}")
-endif()
 if(PATROL_CHASSIS_APP_VERSION)
     target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE PATROL_APP_FW_VERSION="${PATROL_CHASSIS_APP_VERSION}")
 endif()
@@ -150,6 +142,8 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
     abox::mqtt_tls
     abox::mqtt_runtime
     abox::mqtt_trial
+    abox::enrollment
+    abox::enrollment_ec800_http
 
     # Add user defined libraries
 )

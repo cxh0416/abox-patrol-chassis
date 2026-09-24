@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the 2 KiB production Config page without exposing the MQTT secret."""
+"""Build a 2 KiB Config V5 page for enrollment or explicit per-device credentials."""
 
 from __future__ import annotations
 
@@ -20,9 +20,9 @@ CONFIG_VERSION = 5
 DEFAULT_TLS_PROFILE_ID = 0
 STEERING_COUNTS_MILLI = 2710800
 ABSOLUTE_COUNTS_MILLI = 55250
-DEFAULT_HOST = "36.153.162.171"
-DEFAULT_PORT = 19683
-DEFAULT_USERNAME = "patrol_vehicle_chassis_device"
+DEFAULT_HOST = ""
+DEFAULT_PORT = 0
+DEFAULT_USERNAME = ""
 DEFAULT_PASSWORD_ENV = "OTA_MQTT_PATROL_CHASSIS_DEVICE_PASSWORD"
 DEFAULT_OTA_ORIGIN = "https://ota.zxwl.ntiov.com:20443"
 VID_RE = re.compile(r"^[A-Za-z0-9._-]{1,31}$")
@@ -56,13 +56,13 @@ def config_checksum(config: bytes) -> int:
 def build_config_page(
     *,
     vid: str,
-    password: str,
+    password: str = "",
     host: str = DEFAULT_HOST,
     port: int = DEFAULT_PORT,
     username: str = DEFAULT_USERNAME,
     remote_enabled: bool = False,
     diag_enabled: bool = False,
-    diag_host: str = DEFAULT_HOST,
+    diag_host: str = "36.153.162.171",
     diag_port: int = 30080,
     diag_level: int = 2,
     ota_origin: str = DEFAULT_OTA_ORIGIN,
@@ -79,8 +79,10 @@ def build_config_page(
 ) -> bytes:
     if not VID_RE.fullmatch(vid):
         raise ValueError("VID must match [A-Za-z0-9._-]{1,31}")
-    if not 1 <= port <= 65535 or not 1 <= diag_port <= 65535:
-        raise ValueError("port must be in 1..65535")
+    if not 0 <= port <= 65535 or not 1 <= diag_port <= 65535:
+        raise ValueError("port is out of range")
+    if bool(host) != bool(port) or bool(host) != bool(username) or bool(host) != bool(password):
+        raise ValueError("MQTT host, port, username and password must be all empty or all set")
     if diag_level not in range(4):
         raise ValueError("diag level must be 0..3")
     if steering_direction not in (-1, 1) or absolute_direction not in (-1, 1):
@@ -105,9 +107,9 @@ def build_config_page(
         raise ValueError("MQTT TLS profile ID must fit uint8")
 
     vid_b = _ascii(vid, "VID", 32, topic_component=True)
-    host_b = _ascii(host, "MQTT host", 64)
-    username_b = _ascii(username, "MQTT username", 32)
-    password_b = _ascii(password, "MQTT password", 64)
+    host_b = _ascii(host, "MQTT host", 64) if host else b""
+    username_b = _ascii(username, "MQTT username", 32) if username else b""
+    password_b = _ascii(password, "MQTT password", 64) if password else b""
     diag_host_b = _ascii(diag_host, "diagnostic host", 64)
     origin_b = _ascii(ota_origin, "OTA origin", 96)
     if not ota_origin.startswith("https://"):
@@ -235,9 +237,9 @@ def main() -> int:
 
     if args.output.exists() and not args.force:
         parser.error(f"output already exists: {args.output}; use --force to replace it")
-    password = os.environ.get(args.password_env, "")
-    if not password:
-        parser.error(f"environment variable {args.password_env} is empty")
+    password = os.environ.get(args.password_env, "") if args.host else ""
+    if password and not (args.host and args.port and args.username):
+        parser.error("explicit MQTT host, port and username are required with a password")
     try:
         page = build_config_page(
             vid=args.vid, password=password, host=args.host, port=args.port,
@@ -269,7 +271,8 @@ def main() -> int:
     _atomic_write(manifest_path, (json.dumps(manifest, indent=2, ensure_ascii=False) + "\n").encode("utf-8"))
     print(f"Config written: {args.output}")
     print(f"Manifest: {manifest_path}")
-    print(f"VID={details['vid']} broker={details['mqttHost']}:{details['mqttPort']} credential=<redacted>")
+    print(f"VID={details['vid']} broker={details['mqttHost']}:{details['mqttPort']} "
+          f"credential={'<redacted>' if password else 'absent'}")
     return 0
 
 

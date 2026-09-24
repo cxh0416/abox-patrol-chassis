@@ -11,6 +11,20 @@
 #define MQTT_RUNTIME_CA_FILE "UFS:ota_ca.pem"
 static ABoxMqttRuntime g_runtime;
 static uint32_t g_runtime_now;
+static ABoxEc800At *g_runtime_at;
+static int8_t g_first_stop_state;
+static void first_stop_done(ABoxEc800Result result, void *user) {
+  (void)user;
+  g_first_stop_state = result == ABOX_EC800_RESULT_OK ? 2 : -1;
+  if (g_first_stop_state == 2) {
+    MQTT_Core_SetPaused(1U);
+    memset(&g_runtime.active, 0, sizeof(g_runtime.active));
+    memset(&g_runtime.requested, 0, sizeof(g_runtime.requested));
+    g_runtime.active_host[0] = '\0';
+    g_runtime.host[0] = '\0';
+    g_runtime.state = ABOX_MQTT_RUNTIME_FAILED;
+  }
+}
 static void set_paused(void *u, uint8_t v) {
   (void)u;
   MQTT_Core_SetPaused(v);
@@ -100,11 +114,33 @@ int MqttRuntime_Init(ABoxEc800At *at, const ABoxMqttConfig *c, uint32_t now) {
   o.tls_context = PATROL_MQTT_TLS_CONTEXT;
   o.tls_profile_id = PATROL_MQTT_TLS_PROFILE_DEFAULT;
   o.supported_tls_context_mask = (uint8_t)(1U << PATROL_MQTT_TLS_CONTEXT);
+  g_runtime_at = at;
+  g_first_stop_state = 0;
   return ABoxMqttRuntime_Init(&g_runtime, at, &p, &o, c, now);
+}
+int MqttRuntime_StopFirst(void) {
+  if (g_first_stop_state == 2) return 1;
+  if (g_first_stop_state < 0) return -1;
+  if (g_first_stop_state == 1) return 0;
+  if (!g_runtime_at) return -1;
+  MQTT_Core_SetPaused(1U);
+  ABoxEc800At_Cancel(g_runtime_at, MQTT_RUNTIME_OWNER);
+  g_runtime.state = ABOX_MQTT_RUNTIME_FAILED;
+  if (!ABoxEc800At_Submit(g_runtime_at,
+                          g_runtime.active_tls ? "AT+QMTCLOSE=1" : "AT+QMTCLOSE=0",
+                          ABOX_EC800_OWNER_PRODUCT_BASE + 5U,
+                          ABOX_EC800_PRIORITY_HIGH, 5000U, first_stop_done, 0)) {
+    g_first_stop_state = -1;
+    return -1;
+  }
+  g_first_stop_state = 1;
+  return 0;
 }
 void MqttRuntime_Task(uint32_t now) { g_runtime_now = now; ABoxMqttRuntime_Poll(&g_runtime, now); }
 int MqttRuntime_StageRamCandidate(const ABoxMqttConfig *c) {
-  return ABoxMqttRuntime_Stage(&g_runtime, c);
+  int staged = ABoxMqttRuntime_Stage(&g_runtime, c);
+  if (staged) g_first_stop_state = 0;
+  return staged;
 }
 int MqttRuntime_ActivateStagedCandidate(uint32_t now) {
   g_runtime_now = now;

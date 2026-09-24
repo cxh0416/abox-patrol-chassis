@@ -30,8 +30,9 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertIn("PATROL_CHASSIS_ACTUATION_ENABLED", cmake)
         self.assertIn("PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED", cmake)
         self.assertIn("PATROL_CHASSIS_POWER_OUTPUT_ENABLED", cmake)
-        self.assertNotIn('#define PATROL_CONFIG_DEFAULT_MQTT_USER ""', device_config)
-        self.assertNotIn('#define PATROL_CONFIG_DEFAULT_MQTT_PASS ""', device_config)
+        self.assertIn('#define PATROL_CONFIG_DEFAULT_MQTT_USER ""', device_config)
+        self.assertIn('#define PATROL_CONFIG_DEFAULT_MQTT_PASS ""', device_config)
+        self.assertIn('#define PATROL_CONFIG_DEFAULT_MQTT_HOST ""', device_config)
         self.assertIn("hardware_available=0", rtos)
         self.assertIn("HAL_CAN_AddTxMessage", rtos)
         self.assertIn("request.data[0] == 0x40U", rtos)
@@ -172,13 +173,14 @@ class PatrolScaffoldTests(unittest.TestCase):
         module = importlib.util.module_from_spec(spec)
         assert spec.loader
         spec.loader.exec_module(module)
-        page = module.build_config_page(vid="PATROL-001", password="local-test-secret")
+        page = module.build_config_page(vid="PATROL-001")
         details = module.inspect_config_page(page)
         self.assertEqual(len(page), 0x800)
         self.assertFalse(details["remoteEnabled"])
         self.assertFalse(details["mqttTlsEnabled"])
         self.assertEqual(details["mqttTlsProfileId"], 0)
         self.assertFalse(details["calibrated"])
+        self.assertEqual(details["mqttPort"], 0)
         self.assertEqual(details["steeringCountsPerDegreeMilli"], 2710800)
 
     def test_config_page_round_trips_wheel_angle_calibration(self):
@@ -189,7 +191,6 @@ class PatrolScaffoldTests(unittest.TestCase):
         spec.loader.exec_module(module)
         page = module.build_config_page(
             vid="PATROL-001",
-            password="local-test-secret",
             steering_center_count=-85123,
             absolute_center_count=3182,
             steering_counts_per_degree_milli=2710800,
@@ -209,7 +210,7 @@ class PatrolScaffoldTests(unittest.TestCase):
         module = importlib.util.module_from_spec(spec)
         assert spec.loader
         spec.loader.exec_module(module)
-        current = module.build_config_page(vid="PATROL-LEGACY", password="local-test-secret")
+        current = module.build_config_page(vid="PATROL-LEGACY")
         for version, size in ((3, 392), (4, 396)):
             page = bytearray(b"\xff" * module.PAGE_SIZE)
             config = bytearray(current[module.CONFIG_OFFSET:module.CONFIG_OFFSET + module.CONFIG_SIZE])

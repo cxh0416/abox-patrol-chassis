@@ -25,8 +25,6 @@ $bootVerifier = Join-Path $bootTarget 'tools/verify_boot_artifact.py'
 $stableVersion = 'patrol-chassis-0.1.0'
 $versions = if ($ReleasePair) { @($stableVersion) } else { @($AppVersion) }
 $credentialBuildRoot = Join-Path ([IO.Path]::GetTempPath()) ('patrol-chassis-release-' + [Guid]::NewGuid().ToString('N'))
-$mqttUsername = $env:OTA_MQTT_PATROL_CHASSIS_DEVICE_USERNAME
-$mqttPassword = $env:OTA_MQTT_PATROL_CHASSIS_DEVICE_PASSWORD
 
 function Get-GitValue([string] $repo, [string[]] $arguments) { return (& git -C $repo @arguments | Out-String).Trim() }
 function Get-Dirty([string] $repo) { return -not [string]::IsNullOrWhiteSpace((& git -C $repo status --porcelain | Out-String).Trim()) }
@@ -101,9 +99,6 @@ try {
     $platformCommit = Get-GitValue $platform @('rev-parse', 'HEAD')
     $productDirty = Get-Dirty $product; $platformDirty = Get-Dirty $platform
     if ($productDirty -or $platformDirty) { throw 'Release requires clean product and platform worktrees (manifest product_dirty=false).' }
-    if ([string]::IsNullOrWhiteSpace($mqttUsername) -xor [string]::IsNullOrWhiteSpace($mqttPassword)) {
-        throw 'Set both patrol chassis MQTT credential environment variables or neither.'
-    }
 
     foreach ($required in @($bootArtifact, $bootVerifier)) {
         if (-not (Test-Path -LiteralPath $required -PathType Leaf)) { throw "Missing frozen platform Boot input: $required" }
@@ -118,10 +113,6 @@ try {
         $appDefinitions += '-DPATROL_CHASSIS_ACTUATION_ENABLED=OFF'
         $appDefinitions += "-DPATROL_CHASSIS_BENCH_STEERING_ENABLED=$(if ($BenchSteering) { 'ON' } else { 'OFF' })"
         $appDefinitions += "-DPATROL_CHASSIS_BENCH_DRIVE_ENABLED=$(if ($BenchDrive) { 'ON' } else { 'OFF' })"
-        if (-not [string]::IsNullOrWhiteSpace($mqttUsername)) {
-            $appDefinitions += "-DPATROL_CHASSIS_MQTT_USERNAME=$mqttUsername"
-            $appDefinitions += "-DPATROL_CHASSIS_MQTT_PASSWORD=$mqttPassword"
-        }
         $app = Invoke-TargetBuild 'app' 'Patrol_Vehicle_Chassis_App' "ABoxUnified$Configuration-$version" $appDefinitions $credentialBuildRoot
         $appUsage = Get-Usage $app.elf
         if ($BenchSteering) {
@@ -163,7 +154,6 @@ try {
 
 }
 finally {
-    $mqttPassword = $null
     if (Test-Path -LiteralPath $credentialBuildRoot) {
         $resolvedTemporary = (Resolve-Path -LiteralPath $credentialBuildRoot).Path
         $systemTemporary = [IO.Path]::GetFullPath([IO.Path]::GetTempPath())

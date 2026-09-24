@@ -14,7 +14,7 @@ typedef struct {
     char candidate_host[64], candidate_username[32], candidate_password[64];
     uint32_t now, proof_sequence;
     uint8_t initialized, restore_waiting, cancel_pending;
-    uint8_t persistent, flash_restore_failed;
+    uint8_t persistent, first, flash_restore_failed;
     char candidate_vid[32];
 } PatrolMqttTrialManager;
 static PatrolMqttTrialManager g_trial;
@@ -58,6 +58,10 @@ static int restore(void*u,uint64_t s,const ABoxMqttConfig*c)
         MqttRuntime_BlockForRestoreFailure();
         return 0;
     }
+    if (g_trial.first) {
+        if (!CloudService_ApplyMqttIdentity(PatrolConfig_Get()->vid)) return 0;
+        return MqttRuntime_StopFirst() >= 0;
+    }
 #if PATROL_MQTT_TRIAL_FAULT_INJECTION && PATROL_MQTT_TRIAL_FAULT_KIND == 3
     MqttRuntime_BlockForRestoreFailure();
     return 0;
@@ -81,7 +85,7 @@ int MqttTrialManager_Stage(const ABoxMqttConfig*c,uint64_t proof,uint32_t now)
        (!g_trial.stable.host&&!copy_stable(MqttRuntime_ActiveConfig()))||
        !MqttRuntime_StageRamCandidate(c)||
        !copy_candidate(MqttRuntime_StagedConfig()))return 0;
-    g_trial.now=now;g_trial.cancel_pending=0U;g_trial.persistent=0U;g_trial.flash_restore_failed=0U;
+    g_trial.now=now;g_trial.cancel_pending=0U;g_trial.persistent=0U;g_trial.first=0U;g_trial.flash_restore_failed=0U;
     return ABoxMqttTrial_Start(&g_trial.trial,&g_trial.stable,&g_trial.candidate,proof,now,120000U,90000U);
 }
 int MqttTrialManager_StagePersistent(const PatrolRemoteConfigV5_t *candidate, uint64_t proof, uint32_t now)
@@ -96,6 +100,22 @@ int MqttTrialManager_StagePersistent(const PatrolRemoteConfigV5_t *candidate, ui
     (void)copy_stable(&stable_runtime);
     g_trial.persistent = 1U;
     return 1;
+}
+int MqttTrialManager_StartEnrollment(const ABoxMqttConfig *candidate, const char *vid, uint32_t now)
+{
+    if (!g_trial.initialized || !candidate || !vid || strlen(vid) >= sizeof(g_trial.candidate_vid) ||
+        g_trial.trial.state == ABOX_MQTT_TRIAL_RESTORE_FAILED ||
+        (g_trial.trial.state >= ABOX_MQTT_TRIAL_WAIT_ACCEPT &&
+         g_trial.trial.state <= ABOX_MQTT_TRIAL_RESTORING) ||
+        !MqttRuntime_StageRamCandidate(candidate) ||
+        !copy_candidate(MqttRuntime_StagedConfig())) return 0;
+    strcpy(g_trial.candidate_vid, vid);
+    g_trial.now = now;
+    g_trial.cancel_pending = 0U;
+    g_trial.persistent = 1U;
+    g_trial.first = 1U;
+    g_trial.flash_restore_failed = 0U;
+    return ABoxMqttTrial_StartFirst(&g_trial.trial, &g_trial.candidate, 1U, now);
 }
 void MqttTrialManager_Accepted(uint32_t now)
 {g_trial.now=now;ABoxMqttTrial_Event(&g_trial.trial,g_trial.trial.session,ABOX_MQTT_TRIAL_ACCEPTED,0,now);}
@@ -115,6 +135,12 @@ void MqttTrialManager_Poll(uint32_t now)
         APP_LOGI("MQTT_TRIAL","session=%lu state=%u reason=%u",(unsigned long)(uint32_t)g_trial.trial.session,
                  (unsigned)g_trial.trial.state,(unsigned)g_trial.trial.reason);
     s=g_trial.trial.state;
+    if (s == ABOX_MQTT_TRIAL_RESTORING && g_trial.first) {
+        int stopped = MqttRuntime_StopFirst();
+        if (stopped != 0) ABoxMqttTrial_Event(&g_trial.trial,g_trial.trial.session,
+            stopped > 0 ? ABOX_MQTT_TRIAL_RESTORED : ABOX_MQTT_TRIAL_ERROR,0,now);
+        return;
+    }
     if(s>=ABOX_MQTT_TRIAL_PREPARING&&s<=ABOX_MQTT_TRIAL_VERIFYING&&MqttRuntime_State()==MQTT_RUNTIME_FAILED){ABoxMqttTrial_Event(&g_trial.trial,g_trial.trial.session,ABOX_MQTT_TRIAL_ERROR,0,now);return;}
     if(g_trial.trial.state==ABOX_MQTT_TRIAL_COMMITTING){
         uint8_t saved=1U;
@@ -127,6 +153,7 @@ void MqttTrialManager_Poll(uint32_t now)
             strcpy(next.mqtt_password,g_trial.candidate.password);
             next.mqtt_tls_enabled=g_trial.candidate.tls_enabled;
             next.mqtt_tls_profile_id=g_trial.candidate.tls_profile_id;
+            if (g_trial.first) next.reserved0=1U;
             saved=PatrolConfig_Save(&next);
         }
         if(!saved) {
@@ -154,7 +181,7 @@ void MqttTrialManager_OnHeartbeatProof(uint32_t publish_sequence,uint32_t now)
         APP_LOGI("MQTT_TRIAL","heartbeat proof session=%lu trial=%u",(unsigned long)(uint32_t)g_trial.trial.session,
                  (unsigned)g_trial.trial.state);
 #endif
-    }else if(g_trial.trial.state==ABOX_MQTT_TRIAL_RESTORING&&g_trial.restore_waiting){
+    }else if(g_trial.trial.state==ABOX_MQTT_TRIAL_RESTORING&&g_trial.restore_waiting&&!g_trial.first){
         g_trial.restore_waiting=0;
         ABoxMqttTrial_Event(&g_trial.trial,g_trial.trial.session,ABOX_MQTT_TRIAL_RESTORED,0,now);
         APP_LOGI("MQTT_TRIAL","restore proof session=%lu trial=%u",(unsigned long)(uint32_t)g_trial.trial.session,
@@ -165,6 +192,7 @@ void MqttTrialManager_OnRuntimeState(ABoxMqttRuntimeState state,uint32_t now)
 {
     ABoxMqttTrialEvent event;
     if(!g_trial.initialized)return;
+    if (g_trial.first && g_trial.trial.state == ABOX_MQTT_TRIAL_RESTORING) return;
     if(state==ABOX_MQTT_RUNTIME_PREPARED)event=ABOX_MQTT_TRIAL_PREPARED;
     else if(state==ABOX_MQTT_RUNTIME_CONNECTED)event=ABOX_MQTT_TRIAL_CONNECTED;
     else if(state==ABOX_MQTT_RUNTIME_READY){

@@ -38,6 +38,8 @@ int main(void)
     assert(PatrolConfig_SingleTurnProfileReady());
     assert(PatrolConfig_SetCalibration(-85123,3182,2710800,55250,1,1,2000));
     PatrolConfig_Load(); assert(PatrolConfig_Get()->calibrated&&!PatrolConfig_Get()->remote_enabled);
+    assert(!PatrolMqttConfig_FromV5(PatrolConfig_Get(),&mqtt_runtime));
+    assert(PatrolConfig_SetMqtt("PATROL-001","broker.example",19683,"device","secret"));
     flash.mqtt_tls_enabled=1; flash.mqtt_tls_profile_id=0; PatrolConfig_Load();
     assert(PatrolMqttConfig_FromV5(PatrolConfig_Get(),&mqtt_runtime));
     assert(!strcmp(mqtt_runtime.host,flash.mqtt_host)&&mqtt_runtime.port==flash.mqtt_port&&

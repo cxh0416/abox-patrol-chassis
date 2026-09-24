@@ -30,6 +30,7 @@ void MqttRuntime_BlockForRestoreFailure(void);
 int MqttRuntime_StageRamCandidate(const ABoxMqttConfig *config);
 int MqttRuntime_ActivateStagedCandidate(uint32_t now);
 int MqttRuntime_IsReady(void);
+int MqttRuntime_StopFirst(void);
 MqttRuntimeState MqttRuntime_State(void);
 uint8_t MqttRuntime_ActiveClient(void);
 uint8_t MqttRuntime_ActiveTls(void);

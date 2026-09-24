@@ -8,7 +8,7 @@
 |---|---|---|
 | 最新正式版 | `patrol-chassis-0.2.33` | `dist/release.manifest.json` |
 | 正式 App SHA256 | `EF5DEC2765790CF18D2DFC27B9A89377F4748A87AE4D65FA1A1D285568BFEC5C` | 正式 manifest |
-| 当前源码版本 | `patrol-chassis-0.2.33`；正式包已生成，尚未下发 OTA 或进行该包的现场验收 | 根目录 `VERSION` 与正式 manifest |
+| 当前源码版本 | `patrol-chassis-0.2.34`；本次入网改造源码，尚未下发 OTA 或进行该包的现场验收 | 根目录 `VERSION` |
 | WP7.3 clean ARM Release App SHA256 | `DE38325CE586CC1F703FAD78C6BC4D219450CDE110A5E56400897A237A6C7251` | [WP7.3 evidence](operations/evidence/2026-09-23-mqtt-wp73/index.json)；实测候选，非 `dist/` 正式版 |
 | WP7.2 最新实测 Debug App SHA256 | `5AE13A1367345515245F9D2C694710BA3140DD18F9DEC3FFF81BE3ABD471B5D4` | `out/logs/wp72-success-app.bin` 与 WP7.2 index；测试构建，非正式版 |
 | 仓库 Platform gitlink | `26a8ab3687336a39f30e578b713b43edbb3488b0` | 当前 checkpoint gitlink；未 push |
@@ -17,6 +17,14 @@
 
 WP7.3 的 `0.2.32` 候选与旧正式版曾使用相同版本字符串，但哈希不同。当前正式状态只能由 `dist/release.manifest.json` 及其固件哈希确认；`0.2.33` 正式打包不等于设备已升级。
 本次正式打包的测试、源码提交与现场边界见[0.2.33 正式打包记录](operations/history/2026-09-23-0.2.33正式打包.md)。
+
+## 统一入网改造状态（2026-09-24）
+
+当前工作树接入 Platform `ABoxEnrollment`、EC800 HTTPS POST 与首次 MQTT Trial，出厂 Config V5 的 MQTT 字段为空。已保存且 MQTT 字段完整的逐车 V5 配置继续直接运行；新设备和整片擦除后的设备按芯片 UID 与当前固件的产品合同申请，底盘出厂临时 VID 为 `PATROL-` 加 UID。审批下发仅更新 VID、MQTT 字段及原有入网标记，不恢复被擦除的标定；未标定车辆仍禁止运动。
+
+三个产品工作树的 Platform 均固定到本地提交 `b51bfb163bf84c1269091d71895c88b4e7a66b72`。底盘源码已通过 ARM Release 编译、37 项产品测试、16 项 Platform CTest 及台架控制相关主机测试；服务端 78 项测试与六个跨产品方向子测试通过。HTTPS 请求、审批、MQTT 业务 proof、掉电恢复、同产品及跨产品重刷尚无本次设备验收证据。当前 `dist/release.manifest.json` 仍指向 `0.2.33`；工作树构建不能作为正式版或实车成功证据。服务端新合同与跨产品权限修正尚未部署。
+
+维护场景：保留配置升级时先备份并校验逐车 Config V5，升级后应沿用现有凭据；同产品整片擦除前归档配置、标定、Boot State 和证据，重刷冻结 Boot、App、Boot State 及 CA/UFS 前置条件，审批后核对新凭据、保存回读及重启上线；跨产品整片擦除还须确认管理员审批目标产品合同、Broker Topic 权限、旧凭据和旧会话撤销，随后单独恢复目标产品所需标定。现场原始证据归入 `docs/operations/evidence/`，不得覆盖历史记录。
 
 ## Current Phase
 

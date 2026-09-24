@@ -12,4 +12,5 @@ void MqttTrialManager_OnRuntimeState(ABoxMqttRuntimeState state, uint32_t now);
 void MqttTrialManager_OnHeartbeatProof(uint32_t publish_sequence, uint32_t now);
 ABoxMqttTrialState MqttTrialManager_State(void);
 uint64_t MqttTrialManager_Session(void);
+int MqttTrialManager_StartEnrollment(const ABoxMqttConfig *candidate, const char *vid, uint32_t now);
 #endif

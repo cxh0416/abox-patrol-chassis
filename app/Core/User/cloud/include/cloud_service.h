@@ -6,6 +6,7 @@
 #include "main.h"
 
 void CloudService_Init(void);
+uint8_t CloudService_NeedsEnrollment(void);
 void CloudService_Task(void);
 void CloudService_OnUartRxEvent(UART_HandleTypeDef* huart, uint16_t size);
 void CloudService_OnUartError(UART_HandleTypeDef* huart);

@@ -8,10 +8,6 @@ $ErrorActionPreference = 'Stop'
 $product = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 . (Join-Path $PSScriptRoot 'product_version.ps1')
 $AppVersion = Resolve-PatrolChassisAppVersion -ProductRoot $product -Override $AppVersion
-. (Join-Path $PSScriptRoot 'ota_credentials.ps1')
-$credential = Get-PatrolChassisOtaBuildCredential
-$username = $credential.UserName
-$password = $credential.GetNetworkCredential().Password
 
 $temporaryRoot = Join-Path ([IO.Path]::GetTempPath()) ("patrol-chassis-debug-" + [guid]::NewGuid().ToString('N'))
 $appBuild = Join-Path $temporaryRoot 'app'
@@ -42,8 +38,6 @@ try {
     $seed = if ($EnableAutoSeed) { 'ON' } else { 'OFF' }
     Invoke-ArmBuild (Join-Path $product 'app') $appBuild 'Debug' @(
         "-DPATROL_CHASSIS_APP_VERSION_OVERRIDE:STRING=$AppVersion",
-        "-DPATROL_CHASSIS_MQTT_USERNAME:STRING=$username",
-        "-DPATROL_CHASSIS_MQTT_PASSWORD:STRING=$password",
         "-DPATROL_CHASSIS_OTA_AUTO_SEED:BOOL=$seed"
     )
 
@@ -95,7 +89,6 @@ try {
     Write-Host ('SP=0x{0:X8} Reset=0x{1:X8} SHA256={2}' -f $sp, $reset, $manifest.full_sha256)
 }
 finally {
-    $password = $null
     if (Test-Path -LiteralPath $temporaryRoot) {
         $resolvedTemporary = (Resolve-Path -LiteralPath $temporaryRoot).Path
         $systemTemporary = [IO.Path]::GetFullPath([IO.Path]::GetTempPath())
