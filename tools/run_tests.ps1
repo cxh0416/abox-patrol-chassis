@@ -14,6 +14,21 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & cmake --build $hostBuild
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
+$profileTest = Join-Path $hostBuild 'patrol_mqtt_profile_test.exe'
+& $gcc -std=c11 -Wall -Wextra -Werror `
+    "-I$PSScriptRoot\..\platform\include" `
+    "-I$PSScriptRoot\..\platform\tests" `
+    "-I$PSScriptRoot\..\app\Core\User\cloud\include" `
+    "$PSScriptRoot\..\app\Core\User\cloud\src\patrol_mqtt_profile.c" `
+    "$PSScriptRoot\..\platform\components\mqtt\abox_mqtt_v4.c" `
+    "$PSScriptRoot\..\tests\patrol_mqtt_profile_test.c" -o $profileTest
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& $profileTest
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& python "$PSScriptRoot\..\platform\tools\verify_profile_descriptor.py" `
+    "$PSScriptRoot\..\docs\protocols\v4\profile-registry.json" $profileTest
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
 $cloudTest = Join-Path $hostBuild 'cloud_protocol_test.exe'
 & $gcc -std=c11 -Wall -Wextra `
     @productIncludes `

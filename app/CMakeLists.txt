@@ -136,21 +136,15 @@ list(REMOVE_ITEM CMAKE_C_IMPLICIT_LINK_LIBRARIES ob)
 # Add linked libraries
 target_link_libraries(${CMAKE_PROJECT_NAME}
     stm32cubemx
-    abox::ec800
-    abox::ec800_command_port
-    abox::ec800_tls
-    abox::mqtt_tls
-    abox::mqtt_runtime
-    abox::mqtt_trial
-    abox::enrollment
-    abox::enrollment_ec800_http
-
     # Add user defined libraries
 )
 
-abox_platform_attach(${CMAKE_PROJECT_NAME})
-abox_platform_attach_mqtt(${CMAKE_PROJECT_NAME} VERSION 4)
-abox_platform_attach_boot_v2_app(${CMAKE_PROJECT_NAME})
+abox_platform_attach_components(${CMAKE_PROJECT_NAME}
+    SCHEDULER FREERTOS HARDWARE stm32f105_ec800_v1
+    COMPONENTS core cjson ec_power ec800 ec800_ufs ec800_command_port ec800_tls
+               mqtt_tls mqtt_runtime mqtt_trial mqtt_v4 enrollment
+               enrollment_ec800_http boot_v2_common https_ufs_downloader
+               boot_v2_app)
 
 add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${CMAKE_PROJECT_NAME}> ${CMAKE_PROJECT_NAME}.bin

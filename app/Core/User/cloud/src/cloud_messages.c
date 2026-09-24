@@ -17,6 +17,7 @@
 #include "patrol_can_status.h"
 #include "vehicle_power_output.h"
 #include "abox_mqtt_v4.h"
+#include "patrol_mqtt_profile.h"
 
 void CloudMessages_CopyString(char* dst, uint16_t size, const char* src)
 {
@@ -270,7 +271,7 @@ uint8_t CloudMessages_BuildHeartbeat(char* output, uint16_t size)
 uint8_t CloudMessages_BuildManifest(char* output, uint16_t size)
 {
     JsonWriter_t writer;
-    const ABoxMqttProfileDescriptor* profile = ABoxMqttV4_VehicleChassisProfile();
+    const ABoxMqttProfileDescriptor* profile = PatrolMqttProfile_Get();
     json_init(&writer, output, size);
     json_append(&writer, "{\"version\":\"4.0\",\"timestamp\":");
     json_append_timestamp(&writer);
