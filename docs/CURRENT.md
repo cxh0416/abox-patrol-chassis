@@ -11,7 +11,7 @@
 | 当前源码版本 | `patrol-chassis-0.2.34`；入网改造正式包已生成，尚未下发 OTA 或进行该包的现场验收 | 根目录 `VERSION` 与正式 manifest |
 | WP7.3 clean ARM Release App SHA256 | `DE38325CE586CC1F703FAD78C6BC4D219450CDE110A5E56400897A237A6C7251` | [WP7.3 evidence](operations/evidence/2026-09-23-mqtt-wp73/index.json)；实测候选，非 `dist/` 正式版 |
 | WP7.2 最新实测 Debug App SHA256 | `5AE13A1367345515245F9D2C694710BA3140DD18F9DEC3FFF81BE3ABD471B5D4` | `out/logs/wp72-success-app.bin` 与 WP7.2 index；测试构建，非正式版 |
-| 仓库 Platform gitlink | `26a8ab3687336a39f30e578b713b43edbb3488b0` | 当前 checkpoint gitlink；未 push |
+| 仓库 Platform gitlink | `b51bfb163bf84c1269091d71895c88b4e7a66b72` | 当前源码与正式 manifest；未 push |
 | WP7.2 checkpoint App SHA256 | `6EE9E4188E001B8581CA4198F9A4B7D1D0D91F132273CA0955325C1295BB450E` | clean ARM Release candidate；非 `dist/` 正式版 |
 | 冻结 Boot | `abox-boot-2.3.0`，SHA256 `981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63` | 正式 manifest；Boot `0x08000000` |
 
