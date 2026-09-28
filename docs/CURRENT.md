@@ -4,9 +4,9 @@
 
 ## 标定与远控简化固件已单车 OTA
 
-当前新流程已完成源码、平台和主机改造：正常远控直接建立公共 V4 控制会话；在线标定只走独占中位会话；旧 bench 许可和持久 `remote_enabled` 授权已移除。Config V5 的原授权字节保留在原位置并作为保留字节。平台 `0.4.158` 已部署，平台远控总开关仍关闭。本车无独立接触器反馈输入，`powerOutputOn` 只表示 MCU 输出命令。
+当前新流程已完成源码、平台和主机改造：正常远控直接建立公共 V4 控制会话；在线标定只走独占中位会话；旧 bench 许可和持久 `remote_enabled` 授权已移除。Config V5 的原授权字节保留在原位置并作为保留字节。平台 `0.4.158` 已部署；2026-09-28 在目标车完成 `0.2.45` OTA 确认后，平台远控总开关已开启。本车无独立接触器反馈输入，`powerOutputOn` 只表示 MCU 输出命令。
 
-`dist/` 最新正式版为 `patrol-chassis-0.2.45`，App SHA256 `7A4E5FE56F15E588B0672DE06A7731447D376FB1008E9F019BC175CD768AF666`；转向和行走执行器已编译，`actuation_enabled=true`，正式 App 与运动候选逐字节一致。正式包包含现场分支的 CAN Bus-Off 恢复、±500 rpm 行走上限和 300/150/75 rpm 转向轮廓。既有 [0.2.12 行走换向实测](operations/evidence/2026-09-08-bench-drive-0212.json)和 [0.2.31 转向实测](operations/evidence/2026-09-15-031-steering-speed/adaptive-validation/summary.md)构成本轮已验证硬件的基础。产品主机测试、Platform CTest 21 项、ARM 候选与正式重建通过。目标车 `PATROL-05D3FF343733574E43043550` 已由 `0.2.44` OTA 到 `0.2.45`，独立 `get_info` 返回 Boot `CONFIRMED`、OTA 空闲；状态报告显示标定有效、停车、实测转速为零、输出命令关闭。当前版本的控制会话、CAN/编码器和实际停车运动回归尚未执行，OTA 与状态响应不能替代运动验收；平台远控入口继续保持关闭。当前步骤见[远控运维](operations/架空行走与平台远控实现.md)。
+`dist/` 最新正式版为 `patrol-chassis-0.2.45`，App SHA256 `7A4E5FE56F15E588B0672DE06A7731447D376FB1008E9F019BC175CD768AF666`；转向和行走执行器已编译，`actuation_enabled=true`，正式 App 与运动候选逐字节一致。正式包包含现场分支的 CAN Bus-Off 恢复、±500 rpm 行走上限和 300/150/75 rpm 转向轮廓。既有 [0.2.12 行走换向实测](operations/evidence/2026-09-08-bench-drive-0212.json)和 [0.2.31 转向实测](operations/evidence/2026-09-15-031-steering-speed/adaptive-validation/summary.md)构成本轮已验证硬件的基础。产品主机测试、Platform CTest 21 项、ARM 候选与正式重建通过。目标车 `PATROL-05D3FF343733574E43043550` 已由 `0.2.44` OTA 到 `0.2.45`，独立 `get_info` 返回 Boot `CONFIRMED`、OTA 空闲；状态报告显示标定有效、停车、实测转速为零、输出命令关闭。平台远控入口现已开启，但尚无活动控制会话。当前版本的控制会话、CAN/编码器和实际停车运动回归尚未执行，OTA 与状态响应不能替代运动验收。当前步骤见[远控运维](operations/架空行走与平台远控实现.md)。
 
 ## Current Release / Candidate
 
