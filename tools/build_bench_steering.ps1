@@ -25,15 +25,17 @@ $artifact = Join-Path $output 'Patrol_Vehicle_Chassis_App.bin'
 Copy-Item -LiteralPath $source -Destination $artifact -Force
 $bytes = [IO.File]::ReadAllBytes($artifact)
 if ($bytes.Length -gt 221184 -or [Text.Encoding]::ASCII.GetString($bytes).IndexOf("PATROL_VEHICLE_CHASSIS_FW_VERSION=$AppVersion") -lt 0) { throw 'Invalid bench image' }
-[ordered]@{
+$manifest = [ordered]@{
     product='patrol_vehicle_chassis'; version=$AppVersion; candidate=$true
     steering_only=(-not $Drive.IsPresent); startup_permit=$false; drive_actuation=$Drive.IsPresent
-    drive_limit_rpm=$(if ($Drive) {200} else {0})
+    drive_limit_rpm=$(if ($Drive) {500} else {0})
     commit=(& git -C $product rev-parse HEAD | Out-String).Trim()
     dirty=(-not [string]::IsNullOrWhiteSpace((& git -C $product status --porcelain | Out-String)))
     app_start='0x08008000'; app_end='0x0803DFFF'; config_recovery_page='0x0803E000'; config_page='0x0803F800'
     size=$bytes.Length; sha256=(Get-FileHash $artifact -Algorithm SHA256).Hash
-} | ConvertTo-Json | Set-Content (Join-Path $output 'candidate.manifest.json') -Encoding utf8
+} | ConvertTo-Json
+[IO.File]::WriteAllText((Join-Path $output 'candidate.manifest.json'),
+    ($manifest -replace "`r`n", "`n") + "`n", (New-Object Text.UTF8Encoding($false)))
 & python (Join-Path $PSScriptRoot 'artifact_store.py') --root $product --stage $output --destination $destination
 if ($LASTEXITCODE -ne 0) { throw 'Bench publication failed; inspect rollback/backup before retrying.' }
 Write-Host "Bench candidate: $(Join-Path $product $destination)"

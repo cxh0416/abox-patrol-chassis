@@ -85,19 +85,19 @@ int main(void)
     assert(b.phase==BENCH_IDLE); /* stop emitted no target position */
     assert(b.limits_aligned && b.minimum==-167802 && b.maximum==-2444);
 
-    /* 0x6080 is a fixed 200 rpm ceiling.  An active profile starts at creep
+    /* 0x6080 is a fixed 300 rpm ceiling.  An active profile starts at creep
        speed for a near target, then only receives a target after its selected
        0x6081 value has been read back. */
     BenchSteering_Init(&b); now=0;
     assert(BenchSteering_Start(&b,-83815,-85123,-85123,30000,now));
     for(int i=0;i<20;i++) advance(&b,&now);
-    assert(b.phase==BENCH_ACTIVE && b.applied_profile_rpm==50);
+    assert(b.phase==BENCH_ACTIVE && b.applied_profile_rpm==75);
     BenchSteering_Tick(&b,now,1,1,30000,0);
     assert(BenchSteering_Take(&b,now,&f) && b.index==0x6081);
     r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+1));
     assert(BenchSteering_Take(&b,now+2,&f) && b.index==0x6081 && b.read);
-    r=reply(&b,200); assert(BenchSteering_OnFrame(&b,&r,now+3));
-    assert(b.applied_profile_rpm==200);
+    r=reply(&b,300); assert(BenchSteering_OnFrame(&b,&r,now+3));
+    assert(b.applied_profile_rpm==300);
     assert(BenchSteering_Take(&b,now+4,&f) && b.index==0x607A);
     r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+5));
     assert(BenchSteering_Take(&b,now+6,&f) && b.index==0x6040 && f.data[4]==0x3F);
@@ -111,8 +111,8 @@ int main(void)
     assert(BenchSteering_Take(&b,now+10,&f) && b.index==0x6081);
     r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+11));
     assert(BenchSteering_Take(&b,now+12,&f) && b.index==0x6081 && b.read);
-    r=reply(&b,50); assert(BenchSteering_OnFrame(&b,&r,now+13));
-    assert(b.applied_profile_rpm==50 && b.step==16);
+    r=reply(&b,75); assert(BenchSteering_OnFrame(&b,&r,now+13));
+    assert(b.applied_profile_rpm==75 && b.step==16);
 
     BenchSteering_Init(&b);
     assert(BenchSteering_Start(&b,-83815,-72187,-85123,30000,0)); now=0;

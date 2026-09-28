@@ -23,7 +23,7 @@ static uint32_t g_last_request_hash;
 static uint16_t g_last_request_length;
 static uint8_t g_bench_permit, g_bench_started, g_drive_permit;
 static uint16_t g_bench_limit;
-static uint32_t g_arm_deadline, g_arm_serial;
+static uint32_t g_arm_deadline;
 static char g_bench_session[40];
 #if PATROL_CHASSIS_MQTT_LAB_TEST
 static uint8_t g_lab_hold_state;
@@ -118,14 +118,14 @@ void RemoteService_BenchFault(void)
 }
 uint16_t RemoteService_BenchLimit(void) { return g_bench_limit; }
 const char* RemoteService_BenchSession(void) { return g_bench_session; }
-uint8_t RemoteService_BenchArm(uint16_t limit_mdeg, uint32_t now)
+uint8_t RemoteService_BenchArm(uint16_t limit_mdeg, const char* request_id, uint32_t now)
 {
-    char stamp[21];
     uint8_t ready;
     if (!g_remote_initialized ||
         (limit_mdeg != 1000 && limit_mdeg != 3000 && limit_mdeg != 5000 &&
          limit_mdeg != 20000 && limit_mdeg != 30000) ||
-        !TimeBase_FormatUtcMs(stamp, sizeof(stamp))) return 0;
+        request_id == NULL || request_id[0] == '\0' ||
+        strlen(request_id) > sizeof(g_bench_session) - 3U) return 0;
     taskENTER_CRITICAL();
     if (g_bench_permit || g_control.session_active) { taskEXIT_CRITICAL(); return 0; }
     g_control.remote_enabled = 1;
@@ -133,7 +133,7 @@ uint8_t RemoteService_BenchArm(uint16_t limit_mdeg, uint32_t now)
     if (ready) {
         g_bench_permit = 1; g_bench_started = 0; g_bench_limit = limit_mdeg;
         g_arm_deadline = now + 15000U;
-        snprintf(g_bench_session, sizeof(g_bench_session), "b-%s-%lu", stamp, (unsigned long)++g_arm_serial);
+        snprintf(g_bench_session, sizeof(g_bench_session), "b-%s", request_id);
         g_last_request_id[0] = 0; g_last_response[0] = 0;
     } else g_control.remote_enabled = 0;
     taskEXIT_CRITICAL();
@@ -141,11 +141,11 @@ uint8_t RemoteService_BenchArm(uint16_t limit_mdeg, uint32_t now)
 }
 
 uint8_t RemoteService_BenchDrivePermitted(void) { return g_drive_permit && g_bench_permit; }
-uint8_t RemoteService_BenchDriveArm(uint16_t limit, uint32_t now)
+uint8_t RemoteService_BenchDriveArm(uint16_t limit, const char* request_id, uint32_t now)
 {
     uint8_t ready;
     taskENTER_CRITICAL();
-    ready = RemoteService_BenchArm(limit, now);
+    ready = RemoteService_BenchArm(limit, request_id, now);
     if (ready) g_drive_permit = 1;
     taskEXIT_CRITICAL();
     return ready;

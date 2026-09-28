@@ -72,10 +72,10 @@ Manifest Profile 条目固定为：
 | `sessionId` | String | 是 | 1～39 个字符 | 已授权会话标识；不得用 `requestId` 替代。 |
 | `seq` | Integer | 是 | `1..4294967295` | 会话内序号；`acquire/renew` 必须严格递增。 |
 | `leaseMs` | Integer | 是 | ms；`1..1000` | 目标最长保持时间；到期未续租时安全停止。`stop` 也须携带。 |
-| `driveRpm` | Integer | 是 | rpm；`-200..200` | 行走目标；正负方向由产品标定定义，`0` 为零速。 |
+| `driveRpm` | Integer | 是 | rpm；当前范围 `-500..500`，且不得超过设备返回的 `driveLimitRpm` | 行走目标；正负方向由产品标定定义，`0` 为零速。 |
 | `steeringDeg` | Number | 是 | °；`-30.000..30.000`，精度 `0.001°` | 轮胎转向角目标，`0` 为回中。 |
 
-协议上限不替代会话授权范围；未获行走许可时 `driveRpm` 必须为 `0`。本 Profile 不定义会话授权接口。
+协议上限不替代设备能力或会话授权范围；平台按设备返回的 `driveLimitRpm` 限制可选档位。未获行走许可时 `driveRpm` 必须为 `0`。本 Profile 不定义会话授权接口。
 
 #### 4.3.2 成功结果
 

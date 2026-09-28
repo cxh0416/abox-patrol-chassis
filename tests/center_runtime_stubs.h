@@ -29,6 +29,8 @@ uint8_t VehiclePowerOutput_IsOn(void) { return mock_power; }
 uint8_t VehiclePowerOutput_Set(uint8_t on) { mock_power = on; return 1; }
 uint8_t PatrolRuntimePort_CanBusOff(void) { return mock_bus_off; }
 uint8_t PatrolRuntimePort_CanBusOffActive(void) { return mock_bus_off; }
+void PatrolRtos_ObserveCanRecovery(uint32_t sample_ms, uint8_t healthy)
+{ (void)sample_ms; (void)healthy; }
 uint8_t PatrolRuntimePort_OtaBusy(void) { return mock_ota; }
 #ifndef CENTER_HOST_REAL_DIAGNOSTICS
 void PatrolDiagnostics_Snapshot(const PatrolDiagnostics* d, uint32_t now, PatrolDiagnosticsSnapshot* s)
@@ -58,8 +60,8 @@ void AppLog_Printf(AppLogLevel_t level, const char* tag, const char* format, ...
 { (void)level; (void)tag; (void)format; }
 uint8_t PatrolConfig_CalibrationCompatible(void) { return 1; }
 void RemoteService_UpdateFeedback(const ChassisFeedback* feedback) { mock_control.feedback = *feedback; }
-uint8_t RemoteService_BenchArm(uint16_t limit, uint32_t now) { (void)limit; (void)now; return 0; }
-uint8_t RemoteService_BenchDriveArm(uint16_t limit, uint32_t now) { (void)limit; (void)now; return 0; }
+uint8_t RemoteService_BenchArm(uint16_t limit, const char* request_id, uint32_t now) { (void)limit; (void)request_id; (void)now; return 0; }
+uint8_t RemoteService_BenchDriveArm(uint16_t limit, const char* request_id, uint32_t now) { (void)limit; (void)request_id; (void)now; return 0; }
 uint8_t RemoteService_BenchDrivePermitted(void) { return 0; }
 const char* RemoteService_BenchSession(void) { return ""; }
 uint16_t RemoteService_BenchLimit(void) { return 30000; }

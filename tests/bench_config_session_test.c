@@ -11,7 +11,7 @@ static uint8_t valid, save_ok=1;
 static uint32_t tick=1000;
 static uint8_t power_level;
 uint32_t HAL_GetTick(void) { return tick; }
-uint8_t TimeBase_FormatUtcMs(char* s,uint16_t n) { snprintf(s,n,"1788838333000"); return 1; }
+uint8_t TimeBase_FormatUtcMs(char* s,uint16_t n) { (void)s; (void)n; return 0; }
 uint8_t OTA_Info_LoadRemoteConfig(PatrolRemoteConfigV5_t* c) { if(valid)*c=flash; return valid; }
 uint8_t OTA_Info_SaveRemoteConfig(const PatrolRemoteConfigV5_t* c) { if(!save_ok)return 0; flash=*c;valid=1;return 1; }
 static uint8_t write_power(uint8_t on) { power_level=on; return 1; }
@@ -53,36 +53,39 @@ int main(void)
     ChassisFeedback f={.calibrated=1,.steering_online=1,.drive_online=1,.power_ready=1,
         .encoder_range_valid=1,.encoder_profile_ready=1,.feedback_ms=1000};
     RemoteService_UpdateFeedback(&f);
-    assert(RemoteService_BenchArm(1000,tick));
+    assert(!RemoteService_BenchArm(1000,"",tick));
+    assert(!RemoteService_BenchArm(1000,"12345678-1234-1234-1234-123456789012-extra",tick));
+    assert(RemoteService_BenchArm(1000,"12345678-1234-1234-1234-123456789012",tick));
     char session[40]; strcpy(session,RemoteService_BenchSession());
+    assert(!strcmp(session,"b-12345678-1234-1234-1234-123456789012"));
     command(session,1,0,"acquire",1); assert(!RemoteService_State()->session_active);
     command(session,0,2,"acquire",2); assert(!RemoteService_State()->session_active);
     command(session,0,1,"acquire",3); assert(RemoteService_State()->enable_request);
     tick=2001;f.feedback_ms=tick;RemoteService_UpdateFeedback(&f);RemoteService_SafetyTick(tick);
     assert(!RemoteService_BenchPermitted()&&!RemoteService_State()->enable_request);
     command(session,0,1,"renew",4);assert(!RemoteService_State()->enable_request);
-    assert(RemoteService_BenchArm(1000,tick));
+    assert(RemoteService_BenchArm(1000,"22345678-1234-1234-1234-123456789012",tick));
     command(session,0,1,"acquire",5);assert(!RemoteService_State()->enable_request);
     strcpy(session,RemoteService_BenchSession());
     command(session,0,1,"acquire",6);assert(RemoteService_State()->enable_request);
     command(session,0,0,"stop",7);assert(!RemoteService_BenchPermitted());
-    assert(RemoteService_BenchArm(1000,tick));
+    assert(RemoteService_BenchArm(1000,"32345678-1234-1234-1234-123456789012",tick));
     tick+=15001;f.feedback_ms=tick;RemoteService_UpdateFeedback(&f);RemoteService_SafetyTick(tick);
     assert(!RemoteService_BenchPermitted());
     RemoteService_BenchFault();
     RemoteService_SafetyTick(tick);
     assert(RemoteService_State()->fault_latched);
     assert(RemoteService_State()->stop_reason==CHASSIS_STOP_EXECUTION_FAULT);
-    assert(!RemoteService_BenchArm(1000,tick));
+    assert(!RemoteService_BenchArm(1000,"42345678-1234-1234-1234-123456789012",tick));
     command(session,0,0,"stop",8);
     assert(RemoteService_State()->stop_reason==CHASSIS_STOP_EXECUTION_FAULT);
     RemoteService_Init();assert(!RemoteService_State()->remote_enabled);
     RemoteService_UpdateFeedback(&f);
-    assert(RemoteService_BenchDriveArm(30000,tick));
+    assert(RemoteService_BenchDriveArm(30000,"52345678-1234-1234-1234-123456789012",tick));
     strcpy(session,RemoteService_BenchSession());
-    command(session,201,0,"acquire",20); assert(!RemoteService_State()->session_active);
-    command(session,200,30,"acquire",21); assert(RemoteService_State()->enable_request);
-    assert(RemoteService_State()->session_active && RemoteService_State()->target_rpm==200 &&
+    command(session,501,0,"acquire",20); assert(!RemoteService_State()->session_active);
+    command(session,500,30,"acquire",21); assert(RemoteService_State()->enable_request);
+    assert(RemoteService_State()->session_active && RemoteService_State()->target_rpm==500 &&
            RemoteService_State()->target_steering_mdeg==30000);
     RemoteService_RevokeForNetworkChange();
     assert(!RemoteService_BenchDrivePermitted() && !RemoteService_State()->session_active &&
@@ -90,7 +93,7 @@ int main(void)
            RemoteService_State()->target_steering_mdeg==0 && RemoteService_State()->session_id[0]=='\0' &&
            RemoteService_BenchSession()[0]=='\0');
     command(session,0,0,"renew",22); assert(!RemoteService_State()->session_active);
-    assert(RemoteService_BenchArm(1000,tick));
+    assert(RemoteService_BenchArm(1000,"62345678-1234-1234-1234-123456789012",tick));
     strcpy(session,RemoteService_BenchSession());
     command(session,30,0,"acquire",23); assert(!RemoteService_State()->session_active);
     {

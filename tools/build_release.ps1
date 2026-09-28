@@ -143,7 +143,7 @@ try {
         $manifest = [ordered]@{
             manifest_version = 3; product = 'patrol_vehicle_chassis'; version = $version; configuration = $Configuration
             bench_steering_available = [bool]$BenchSteering; startup_motion_permit = $false; drive_actuation = [bool]$BenchDrive
-            drive_limit_rpm = $(if ($BenchDrive) {200} else {0})
+            drive_limit_rpm = $(if ($BenchDrive) {500} else {0})
             boot_version = 'abox-boot-2.3.0'; ota_scheme = 'boot_v2_ufs'; ota_downloader = 'app'
             app_range = '0x08008000..0x0803DFFF'; config_recovery_page = '0x0803E000'; boot_state_pages = @('0x0803E800', '0x0803F000'); config_page = '0x0803F800'
             product_commit = $productCommit; product_dirty = $false; platform_commit = $platformCommit; platform_dirty = $false

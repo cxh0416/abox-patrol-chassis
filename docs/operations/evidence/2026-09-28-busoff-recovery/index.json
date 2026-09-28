@@ -1,0 +1,169 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "date": "2026-09-28",
+  "device_vid": "PATROL-05D3FF343733574E43043550",
+  "classification": "internal raw field evidence; get_info output includes device identifiers",
+  "raw_files": [
+    {
+      "original_path": "server47:/tmp/patrol-busoff-recovery-0241.log",
+      "archive_path": "powerup-0241.raw.log",
+      "sha256": "4a7d7e00d4041e28ac849ab14f398f72401834c8aa3f7ef73821e160f7b24a73",
+      "firmware": "patrol-chassis-0.2.41"
+    },
+    {
+      "original_path": "server47:/tmp/patrol-busoff-recovery-0242.log",
+      "archive_path": "powerup-0242.raw.log",
+      "sha256": "b8ffe41bcf17a7dd899312c5bdd7ede16ccf23b5ca0023bbb04777fdafe55e8b",
+      "firmware": "patrol-chassis-0.2.42"
+    },
+    {
+      "original_path": "server47:/tmp/patrol-busoff-no-wyse-term-0242.log",
+      "archive_path": "no-wyse-termination-12s.raw.log",
+      "sha256": "7f8fce10e16eacdce055bb22d59212926018214d7d4b3fb6d03ee8c19f751fa3",
+      "firmware": "patrol-chassis-0.2.42"
+    },
+    {
+      "original_path": "server47:/tmp/patrol-busoff-no-wyse-term-0242-long.log",
+      "archive_path": "no-wyse-termination-45s.raw.log",
+      "sha256": "c8a87252a332274b478185038bfe26eed6fe1de9ac0b0b6f172cb37728856a0c",
+      "firmware": "patrol-chassis-0.2.42"
+    },
+    {
+      "original_path": "server47:/tmp/patrol-busoff-two-terminators-0242.log",
+      "archive_path": "two-terminators-45s.raw.log",
+      "sha256": "7b50cf29ae3584743f2e73c5dbe396f2d32070fe328c3547651a2d9142ef65f6",
+      "firmware": "patrol-chassis-0.2.42"
+    },
+    {
+      "original_path": "wyse3040:/tmp/patrol-can-two-terminators-20260928.log",
+      "archive_path": "two-terminators-wyse-candump.raw.log",
+      "sha256": "d004a5a69776381147f7c431cc708a6176c473bdf80610517ace49af5e05e268",
+      "firmware": "patrol-chassis-0.2.42"
+    },
+    {
+      "original_path": "server47:/tmp/patrol-control-0242-bench-20260928.log",
+      "archive_path": "remote-preflight-failed.raw.log",
+      "sha256": "92ec76e171dcea0a38e93935ce2c9cdcca0eec8760880b557624afa7d4913d74",
+      "firmware": "patrol-chassis-0.2.42"
+    },
+    {
+      "original_path": "server47:/tmp/patrol-control-0242-bench-retry-20260928.log",
+      "archive_path": "remote-10rpm-platform.raw.log",
+      "sha256": "284dde294d73932c1afff99f30d68f7e6b487d9e6079ddc8f2708056073a97b9",
+      "firmware": "patrol-chassis-0.2.42"
+    },
+    {
+      "original_path": "wyse3040:/tmp/patrol-can-remote-0242-retry-20260928.log",
+      "archive_path": "remote-10rpm-wyse-candump.raw.log",
+      "sha256": "38cccd961f93dba16ac0bc71636a438d73786f02fc6d3aa3646efac2cbc3ef6f",
+      "firmware": "patrol-chassis-0.2.42"
+    },
+    {
+      "original_path": "server47:/tmp/patrol-power-on-hold-0242.log",
+      "archive_path": "remote-followup-powered-diagnostics.raw.log",
+      "sha256": "a917dccad7d1c20748535a7172f01d2e68358af0099ac2a772b2531e0352e089",
+      "firmware": "patrol-chassis-0.2.42"
+    },
+    {
+      "original_path": "server47:/tmp/patrol-steering-preflight-0242.log",
+      "archive_path": "steering-preflight.raw.log",
+      "sha256": "1713663f99516a6ab489855792971d4965a2f700fe381620c708d6956493a483",
+      "firmware": "patrol-chassis-0.2.42"
+    },
+    {
+      "original_path": "server47:/tmp/patrol-restart-get-info-20260928.log",
+      "archive_path": "restart-get-info.raw.log",
+      "sha256": "fa1d6cc4df126bef934a8c6805f1960f5819f2a52cf3e4d37bde7f93b72e9d3c",
+      "firmware": "patrol-chassis-0.2.42"
+    },
+    {
+      "original_path": "server47:/tmp/patrol-restart-heartbeats-20260928.log",
+      "archive_path": "restart-heartbeats.raw.log",
+      "sha256": "2e4fe46c309dcb7ef7bbf33ada40b5974baf274af1dfebc7f1acaeabc8765f91",
+      "firmware": "patrol-chassis-0.2.42"
+    }
+  ],
+  "candidate_0242": {
+    "app_sha256": "64130896302fc44d01d4bdf9f6c13fe211bf2bee809a6f5427f937013c380da8",
+    "ota_job_id": "2d27c074-66c5-4918-9632-92319b8d3bf6",
+    "ota_job_state": "completed; device reported CONFIRMED",
+    "power_on_operation": "22d7b2b2-29ba-46f1-874e-0d4ce4de6192",
+    "get_can_diag_operation": "8040b0d9-63c3-4731-beff-de2027cbd596",
+    "get_info_operation": "be0250db-9456-4097-8036-fe8b6e24ffd5",
+    "power_off_operation": "bc62c854-50ee-4b86-9183-0c07e57996d3"
+  },
+  "interpretation": [
+    "After power-on, drive fault cleared and nodes and measured feedback became online; left and right actual rpm stayed zero.",
+    "get_can_diag showed canBusOff=true as historical evidence and canBusOffActive=false at query time.",
+    "get_info reported uptimeMs=83490 and boDiag=[83234,3]. The latest A-Box CAN1 Bus-Off event was only about 256 ms before this query; the fault therefore recurred after power-on rather than remaining only as an old lockout.",
+    "Normal status canBusOff remained true and movement stayed blocked. No motion command was issued. Power output was turned off after the observation."
+  ],
+  "followup_after_wyse_termination_removed": {
+    "baseline_get_info_operation": "b92c7587-4151-4348-b679-05a7b817f5f6",
+    "baseline_bo_diag": [84414, 0],
+    "first_power_on_operation": "5db02afa-e7b5-42bd-9b16-8b1df5da1e37",
+    "first_get_info_operation": "213aa8ce-4142-4b61-8bbc-b9cf8a99ce59",
+    "first_power_off_operation": "7f1f16f0-3a97-4d4a-b4c6-36cb29356f13",
+    "second_get_info_operation": "3c6a1a0b-8b1e-4904-b08b-04335fe80a08",
+    "second_power_off_operation": "40a48aa7-5a1e-40a8-9cbe-2f84938c081f",
+    "final_bo_diag": [84414, 3],
+    "observations": [
+      "Across an approximately 12-second and a separate approximately 45-second zero-rpm power-on observation, A-Box's last Bus-Off timestamp remained 84414 ms since boot; no new Bus-Off was recorded.",
+      "The current canBusOff gate cleared, canBusOffActive was false, three nodes and measured feedback were online, powerReady became true, and both actual rpm stayed zero. The historical get_can_diag.canBusOff remained true by design.",
+      "wyse3040 PCAN received no frames during its attempted passive capture after the termination change; the A-Box reports and operation results, not that empty capture, support the no-new-Bus-Off finding.",
+      "Power output was turned off after each observation; no motion command was issued."
+    ]
+  },
+  "followup_with_can1_and_wyse_termination_enabled": {
+    "wiring_as_reported_by_user": "CAN1 and wyse3040 termination enabled; drive termination disabled",
+    "baseline_get_info_operation": "007044ee-9ffb-4aa3-a4f5-5485e403ebc0",
+    "baseline_bo_diag": [84414, 3],
+    "power_on_operation": "49e3a26b-3f44-4a5e-925d-f9ff7dd16d3f",
+    "get_can_diag_operation": "9a079908-0f64-4dd5-b188-6ea9a137bffa",
+    "get_info_operation": "721fe6c0-c32e-427f-9080-c5ffa74c7407",
+    "power_off_operation": "257cfe13-5c42-4c02-8d9b-011899c26373",
+    "final_bo_diag": [84414, 3],
+    "observations": [
+      "In about 45 seconds of zero-rpm power-on, A-Box's last Bus-Off timestamp stayed 84414 ms since boot and current canBusOff stayed false in all 89 power-on status samples; canBusOffActive was false at the final query.",
+      "A short driveFault indication appeared in 2 early samples and cleared; powerReady was true in 85 samples, all three nodes and measured feedback were online at the end, and both actual rpm remained zero.",
+      "wyse3040 PCAN passively captured 7865 CAN frames including Node 1 and Node 2 traffic; its CAN controller stayed ERROR-ACTIVE with bus-off, error-pass, error-warn and bus-errors counters at zero. Its RX packet count rose from 17320 to 25185.",
+      "Power output was turned off after the test; no motion command was issued. A 60-ohm physical termination measurement was not made and cannot be inferred from software diagnostics alone."
+    ]
+  },
+  "remote_control_10rpm_followup": {
+    "preflight_failure": "The first script invocation lacked the service's PATROL_CHASSIS_CONTROL_DB_PATH; it failed before power-on or motion and its cleanup power_off succeeded. The retry used the deployed database path and enabled flag.",
+    "session_id": "b-cc65a8ce-ac40-4b77-a69b-3a95aedf975e",
+    "permit_operation": "3c07d4dd-f1cc-4bc4-b251-da5d46e677af",
+    "power_off_operation": "8511d3b2-aae4-4639-98d5-d3ce31bc4465",
+    "post_reset_get_info_operation": "b430ddf3-ed79-4218-9c12-9cd1e8ce412a",
+    "followup_get_bench_steering_operation": "b2051f03-8c1c-4d9e-a792-6358ec4dc486",
+    "followup_get_can_diag_operation": "7ce1fab9-778d-441f-883b-b3d3e9b35874",
+    "followup_get_info_operation": "912a87bd-521f-46b2-9f38-afa328533614",
+    "observations": [
+      "After a valid platform permit, the production control session sent a 10-rpm target; device responses reported acceptance but status showed left/right measured 0/1 rpm and stopped, so actual wheel motion was not verified.",
+      "wyse3040 captured acknowledged Node 2 SDO writes 60FF=+10 and 68FF=-10. Its CAN controller had zero bus-off and error counters. Node 2 status word changed to 0x04BF with the fault bit set before CAN frames stopped at epoch 1790560694.504584.",
+      "Platform chassis status became stale and the session ended. Automatic power_off cleanup timed out; an older powerOutputOn=false status report was insufficient to prove current physical power state.",
+      "A subsequent get_info succeeded with uptimeMs=164125 versus 2381144 before the test, proving an A-Box restart; the reset reason field was 0 and did not identify the cause. Its reported output was false.",
+      "At the user's request, no further automatic power-off was used. One zero-speed power-on followup left output on; get_can_diag read driveObjects[1]=4, driveSw=0x20D8, canBusOffActive=false, and 0/0 rpm. Status driveFault stayed true, powerReady=false, and get_bench_steering feedbackGateMask=512 with coordinateValid=false.",
+      "No further motion target was sent after this fault. A-Box restart cause and physical wheel behavior remain unverified."
+    ]
+  },
+  "steering_preflight_followup": {
+    "get_bench_steering_operation": "816f64d4-4f9f-4327-9342-7bc2a90395d1",
+    "observations": [
+      "The latest status before the steering request reported output on, driveFault=true, powerReady=false, safetyReady=false and 0/0 measured rpm. The steering profile and range flags were true, but the full motion gate was not ready.",
+      "The read-only get_bench_steering operation was sent and timed out without a device response; at evidence capture its last chassis report was more than 100 seconds old. wyse3040 still passively received CAN frames and had no bus-off or controller errors.",
+      "No steering permit, steering target, drive target or power-off command was sent during this followup. Output was left on at the user's request."
+    ]
+  },
+  "subsequent_restart_check": {
+    "get_info_operation": "93f6a9b3-e320-4231-956c-7ab543e02719",
+    "observations": [
+      "At epoch 1790562369.1523318 the device reported uptimeMs=179523, implying a new A-Box boot around 2026-09-28 10:23:09 China time. This is later than the post-drive restart, so another restart occurred.",
+      "The platform worker saw V4 heartbeats about every five seconds through 10:23:02, then none until 10:23:27, a 25-second gap covering the inferred boot time. The worker's unattributed-product log entries are duplicate processing of the same device V4 heartbeat and serve only as timing evidence.",
+      "On a subsequent live check the device heartbeat age was 3.45 seconds and chassis status age was 0.02 seconds; the device was online and reporting powerOutputOn=true, three nodes online and 0/0 rpm.",
+      "get_info resetReason=0 did not identify the reset cause. No power or motion command was sent by this diagnostic check; administrator power_on operations were visible in the platform queue after the inferred boot time."
+    ]
+  },
+  "validation": "Two-terminator zero-rpm observation had no new Bus-Off, but the first 10-rpm control test failed with Node 2 drive fault and A-Box restart. Steering followup could not proceed because the motion gate was not ready and a read-only diagnostic timed out. Another A-Box restart occurred around 10:23:09 China time. Motion acceptance is blocked pending drive, power and command-response diagnosis. User requested avoiding repeated power-off. Formal dist remains 0.2.36."
+}

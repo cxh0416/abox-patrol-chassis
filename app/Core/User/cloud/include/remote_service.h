@@ -5,8 +5,8 @@
 
 #include "chassis_control.h"
 
-uint8_t RemoteService_BenchArm(uint16_t limit_mdeg, uint32_t now);
-uint8_t RemoteService_BenchDriveArm(uint16_t limit_mdeg, uint32_t now);
+uint8_t RemoteService_BenchArm(uint16_t limit_mdeg, const char* request_id, uint32_t now);
+uint8_t RemoteService_BenchDriveArm(uint16_t limit_mdeg, const char* request_id, uint32_t now);
 uint8_t RemoteService_BenchDrivePermitted(void);
 void RemoteService_BenchRevoke(void);
 /* Fail-closed network boundary. No authorization, session identity, enable

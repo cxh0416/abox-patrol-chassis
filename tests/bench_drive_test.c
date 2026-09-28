@@ -54,7 +54,10 @@ int main(void)
     transact(&b,&now); transact(&b,&now); transact(&b,&now); assert(b.phase==BENCH_IDLE);
     active(&b,&now); BenchDrive_Stop(&b,now,0);
     BenchDrive_Tick(&b,now+2000,0,1,0,50,50,now,now); assert(b.phase==BENCH_FAULT && b.cut_power);
-    active(&b,&now); BenchDrive_Tick(&b,now,1,1,201,0,0,now,now); assert(b.phase==BENCH_FAULT);
+    active(&b,&now); BenchDrive_Tick(&b,now,1,1,500,0,0,now,now);
+    transact(&b,&now); transact(&b,&now); assert(b.applied==500);
+    BenchDrive_Stop(&b,now,1);
+    active(&b,&now); BenchDrive_Tick(&b,now,1,1,501,0,0,now,now); assert(b.phase==BENCH_FAULT);
     active(&b,&now); BenchDrive_Tick(&b,now,1,0,0,0,0,now,now); assert(b.cut_power);
     BenchDrive_Init(&b); assert(BenchDrive_Start(&b,now)); transact(&b,&now);
     assert(BenchDrive_Take(&b,now,&f));

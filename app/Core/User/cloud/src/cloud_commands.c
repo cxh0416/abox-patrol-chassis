@@ -104,7 +104,7 @@ static __attribute__((noinline)) void handle_config_request(const CloudProtocolR
     {
         PatrolDiagnosticsSnapshot snapshot;
         PatrolRuntime_GetDiagnostics(&snapshot);
-        if (!PatrolDiagnostics_FormatCanJson(&snapshot, PatrolRtos_CanBusOff(),
+        if (!PatrolDiagnostics_FormatCanJson(&snapshot, PatrolRtos_CanBusOffSeen(),
                 PatrolRtos_CanBusOffActive(), PatrolRtos_CanRxOverflowCount(),
                 PatrolRtos_CanRawRxCount(0U), PatrolRtos_CanRawRxCount(1U), result, result_size))
             CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 500U, "DIAGNOSTIC_TOO_LARGE");
@@ -197,8 +197,8 @@ static __attribute__((noinline)) void handle_config_request(const CloudProtocolR
     else if (action == CLOUD_PROTOCOL_ACTION_BENCH_ARM || action == CLOUD_PROTOCOL_ACTION_BENCH_STOP ||
              action == CLOUD_PROTOCOL_ACTION_BENCH_GET)
     {
-        if (action == CLOUD_PROTOCOL_ACTION_BENCH_ARM && !(request->bench_drive ? PatrolRuntime_BenchDriveArm(request->bench_limit_mdeg) :
-                PatrolRuntime_BenchArm(request->bench_limit_mdeg)))
+        if (action == CLOUD_PROTOCOL_ACTION_BENCH_ARM && !(request->bench_drive ? PatrolRuntime_BenchDriveArm(request->bench_limit_mdeg, request_id) :
+                PatrolRuntime_BenchArm(request->bench_limit_mdeg, request_id)))
             CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "BENCH_NOT_READY");
         else {
             if (action == CLOUD_PROTOCOL_ACTION_BENCH_STOP) PatrolRuntime_BenchStop();

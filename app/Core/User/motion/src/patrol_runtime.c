@@ -7,6 +7,7 @@
 #include "patrol_config.h"
 #include "vehicle_power_output.h"
 #include "vehicle_steering_profile.h"
+#include "patrol_can_status.h"
 
 PatrolMotion g_motion;
 
@@ -71,7 +72,7 @@ void PatrolRuntime_GetDiagnostics(PatrolDiagnosticsSnapshot* snapshot)
     PatrolRuntimePort_Exit();
 }
 
-static uint8_t bench_arm(uint16_t limit_mdeg, uint8_t drive)
+static uint8_t bench_arm(uint16_t limit_mdeg, const char* request_id, uint8_t drive)
 {
     PatrolDiagnosticsSnapshot s;
     uint8_t result = 0;
@@ -88,14 +89,14 @@ static uint8_t bench_arm(uint16_t limit_mdeg, uint8_t drive)
         !PatrolRuntimePort_CanBusOff() && VehiclePowerOutput_IsOn() &&
         (s.steering_status_word & 0x6FU) != 0x27U && (s.drive_status_word & 4U) == 0 &&
         labs(s.left_actual_rpm) <= 20 && labs(s.right_actual_rpm) <= 20)
-        result = drive ? RemoteService_BenchDriveArm(limit_mdeg, PatrolRuntimePort_Now()) :
-            RemoteService_BenchArm(limit_mdeg, PatrolRuntimePort_Now());
+        result = drive ? RemoteService_BenchDriveArm(limit_mdeg, request_id, PatrolRuntimePort_Now()) :
+            RemoteService_BenchArm(limit_mdeg, request_id, PatrolRuntimePort_Now());
     PatrolRuntimePort_Exit();
     if (result) PatrolRuntime_BeginFaultEpisode();
     return result;
 }
-uint8_t PatrolRuntime_BenchArm(uint16_t limit) { return bench_arm(limit, 0); }
-uint8_t PatrolRuntime_BenchDriveArm(uint16_t limit) { return bench_arm(limit, 1); }
+uint8_t PatrolRuntime_BenchArm(uint16_t limit, const char* request_id) { return bench_arm(limit, request_id, 0); }
+uint8_t PatrolRuntime_BenchDriveArm(uint16_t limit, const char* request_id) { return bench_arm(limit, request_id, 1); }
 uint8_t PatrolRuntime_ResetFault(void)
 {
     PatrolRuntimePort_Enter();
@@ -124,7 +125,7 @@ void PatrolRuntime_FormatBench(char* out, uint16_t size)
     PatrolRuntimePort_Enter();
     snprintf(out, size, "{\"available\":%s,\"permitted\":%s,\"phase\":%u,\"step\":%u,"
         "\"fault\":%lu,\"feedbackGateMask\":%u,\"coordinateValid\":%s,\"runtimeCenterCount\":%ld,"
-        "\"limitMdeg\":%u,\"sessionId\":\"%s\",\"driveAvailable\":%s,\"drivePermitted\":%s,\"drivePhase\":%u,\"driveFault\":%lu,\"driveLimitRpm\":200,"
+        "\"limitMdeg\":%u,\"sessionId\":\"%s\",\"driveAvailable\":%s,\"drivePermitted\":%s,\"drivePhase\":%u,\"driveFault\":%lu,\"driveLimitRpm\":%u,"
         "\"safetyProfile\":\"single_turn_4096_center0_limit30_margin05_v3\",\"profileReady\":%s,\"rangeValid\":%s,\"contactorFeedbackAvailable\":false}",
         PATROL_CHASSIS_BENCH_STEERING_ENABLED ? "true" : "false",
         RemoteService_BenchPermitted() ? "true" : "false", (unsigned)g_motion.bench.phase,
@@ -134,6 +135,7 @@ void PatrolRuntime_FormatBench(char* out, uint16_t size)
         RemoteService_BenchLimit(), RemoteService_BenchSession(),
         PATROL_CHASSIS_BENCH_DRIVE_ENABLED ? "true" : "false",
         RemoteService_BenchDrivePermitted() ? "true" : "false", (unsigned)g_motion.drive.phase, (unsigned long)g_motion.drive.fault,
+        (unsigned)(PATROL_CHASSIS_BENCH_DRIVE_ENABLED ? BENCH_DRIVE_MAX_RPM : 0),
         PatrolConfig_SingleTurnProfileReady() ? "true" : "false",
         RemoteService_State()->feedback.encoder_range_valid ? "true" : "false");
     PatrolRuntimePort_Exit();
@@ -277,6 +279,16 @@ void PatrolRuntime_UpdateFeedback(uint32_t now)
     now = PatrolRuntimePort_Now();
     PatrolDiagnostics_Snapshot(&g_motion.diagnostics, now, &snapshot);
     PatrolRuntimePort_Exit();
+    /* Recovery clears only the Bus-Off gate. Existing sessions and motion
+     * faults remain revoked and require a new explicit arm/reset. */
+    PatrolRtos_ObserveCanRecovery(snapshot.coherent_feedback_ms,
+        VehiclePowerOutput_IsOn() && snapshot.steering_online && snapshot.drive_online &&
+        snapshot.steering_feedback_fresh && snapshot.drive_feedback_fresh &&
+        snapshot.encoder_online && snapshot.encoder_config_valid &&
+        /* Status-word freshness remains a separate motion-arm gate. Polling
+         * gaps must not keep a recovered bus locked for this whole boot. */
+        !snapshot.drive_fault && labs(snapshot.left_actual_rpm) <= 20L &&
+        labs(snapshot.right_actual_rpm) <= 20L);
     feedback.calibrated = cfg != NULL && cfg->calibrated && PatrolConfig_CalibrationCompatible();
     feedback.encoder_profile_ready = PatrolConfig_SingleTurnProfileReady();
     feedback.steering_online = snapshot.steering_online;
