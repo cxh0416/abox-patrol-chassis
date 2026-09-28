@@ -95,8 +95,8 @@ TLS profile: 0
 
 ## Authoritative Documents
 
-- 公共业务协议：[A-BOX 巡防车底盘业务协议 V4.0](protocols/A-BOX巡防车底盘业务协议-V4.0.md)；公共 MQTT V4 通用合同由该文档链接到 Platform 权威版本。
-- 内部运维协议：[A-BOX 内部运维协议 V2.2](protocols/A-BOX内部运维协议V2.2.md)。
+- 公共业务接口：[巡防车底盘业务 Profile 1.0](protocols/A-BOX巡防车底盘业务协议-V4.0.md)；公共 MQTT V4 通用合同由该文档链接到 Platform 权威版本。
+- 内部运维接口：[巡防车底盘内部运维接口 V2.2](protocols/A-BOX内部运维协议V2.2.md)，报文 `version` 为 `2.0`；产品 Flash Config V5 是独立版本。
 - 硬件与安全：[硬件与安全边界](hardware/硬件与安全边界.md)。
 - 当前实现架构：[源码模块与依赖](implementation/源码模块与依赖.md)。
 - 当前产品配置：[配置 V5 与掉电恢复](implementation/配置V5与掉电恢复.md)。

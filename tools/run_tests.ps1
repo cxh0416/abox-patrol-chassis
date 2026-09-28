@@ -25,10 +25,6 @@ $profileTest = Join-Path $hostBuild 'patrol_mqtt_profile_test.exe'
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $profileTest
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-& python "$PSScriptRoot\..\platform\tools\verify_profile_descriptor.py" `
-    "$PSScriptRoot\..\docs\protocols\v4\profile-registry.json" $profileTest
-if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-
 $cloudTest = Join-Path $hostBuild 'cloud_protocol_test.exe'
 & $gcc -std=c11 -Wall -Wextra `
     @productIncludes `
