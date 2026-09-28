@@ -10,7 +10,7 @@ Profile：`vehicle_chassis 1.0`
 
 本文定义巡防车底盘在 A-BOX MQTT V4 下的业务 Profile，包括车辆上下电、租约式底盘控制、完整底盘状态和业务安全语义。
 
-公共报文外层、Topic、QoS、请求响应、公共响应码、`requestId` 幂等、Manifest、心跳和 `sync_state` 通用规则统一遵循 [A-BOX 设备公共 MQTT 协议 V4](https://github.com/cxh0416/abox-platform-firmware/blob/master/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md)，本文不重复定义。
+公共报文外层、Topic、QoS、请求响应、公共响应码、`requestId` 幂等、Manifest、心跳和 `sync_state` 通用规则统一遵循 [A-BOX 设备公共 MQTT 协议 V4](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md)，本文不重复定义。
 
 `/internal/*` 的运维和标定接口由[内部运维协议 V2.3](A-BOX内部运维协议V2.3.md)定义。硬件映射、内部算法、标定操作和验收记录不属于本 Profile。
 

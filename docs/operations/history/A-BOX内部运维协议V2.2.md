@@ -1,6 +1,6 @@
 # 巡防车底盘内部运维接口 V2.2
 
-本文只定义 `patrol_vehicle_chassis` 当前内部运维接口。**V2.2 是本文档修订号，报文 `version` 固定为 `"2.0"`**。公共 MQTT V4 外层和通用规则见 [ABox Platform 协议](https://github.com/cxh0416/abox-platform-firmware/blob/master/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md)；车辆上下电、连续控制及状态上报见[底盘业务 Profile](../../protocols/A-BOX巡防车底盘业务协议-V4.0.md)。内部接口不承载公共底盘控制。
+本文只定义 `patrol_vehicle_chassis` 当前内部运维接口。**V2.2 是本文档修订号，报文 `version` 固定为 `"2.0"`**。公共 MQTT V4 外层和通用规则见 [ABox Platform 协议](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md)；车辆上下电、连续控制及状态上报见[底盘业务 Profile](../../protocols/A-BOX巡防车底盘业务协议-V4.0.md)。内部接口不承载公共底盘控制。
 
 ## 身份、Topic 与报文
 
