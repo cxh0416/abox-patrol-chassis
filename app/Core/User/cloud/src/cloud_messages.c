@@ -229,9 +229,11 @@ void CloudMessages_BuildInfoResult(char* output, uint16_t size)
     json_appendf(&writer, ",\"mqttStateCode\":%u,\"iccid\":", (unsigned int)MQTT_Core_GetState());
     json_string(&writer, iccid ? iccid : "");
     json_appendf(&writer,
-                 ",\"canInitialized\":%s,\"canBusOff\":%s,\"canRxOverflow\":%lu,\"otaState\":",
+                 ",\"canInitialized\":%s,\"canBusOff\":%s,\"canRxOverflow\":%lu,"
+                 "\"boDiag\":[%lu,%u],\"otaState\":",
                  PatrolRtos_CanStarted() ? "true" : "false", PatrolRtos_CanBusOff() ? "true" : "false",
-                 (unsigned long)PatrolRtos_CanRxOverflowCount());
+                 (unsigned long)PatrolRtos_CanRxOverflowCount(),
+                 (unsigned long)PatrolRtos_CanLastBusOffMs(), (unsigned)PatrolRtos_CanRecoverySamples());
     json_string(&writer, (have_state && state.rollback_report_pending) ? "ROLLBACK" :
                 boot_state_name(have_state ? state.state : BOOT_STATE_NORMAL));
     json_appendf(&writer, ",\"powerOutputAvailable\":%s,\"powerOutputOn\":%s",

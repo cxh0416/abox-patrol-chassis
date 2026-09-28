@@ -2,6 +2,7 @@
 #include "patrol_runtime.h"
 #include "center_calibration.h"
 #include "patrol_runtime_port.h"
+#include "patrol_can_recovery.h"
 
 #include <string.h>
 
@@ -21,6 +22,7 @@
 #include "task.h"
 #include "usart.h"
 #include "vehicle_steering_profile.h"
+#include "vehicle_power_output.h"
 
 #ifndef PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED
 #define PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED 0
@@ -76,6 +78,9 @@ static volatile uint32_t g_can_rx_overflow_count;
 static volatile uint32_t g_can_raw_rx_count[2];
 static volatile uint8_t g_can_started;
 static volatile uint8_t g_can_bus_off_mask;
+static volatile uint8_t g_can_bus_off_seen_mask;
+static volatile uint32_t g_can_bus_off_at_ms;
+static PatrolCanRecovery g_can_recovery;
 static uint8_t g_boot_confirmed;
 static void Patrol_SafetyControlTask(void *argument);
 static void Patrol_CanRxTask(void *argument);
@@ -197,6 +202,29 @@ uint8_t PatrolRtos_CanBusOffActive(void)
     return (hcan1.Instance->ESR & CAN_ESR_BOFF) != 0U ? 1U : 0U;
 }
 
+uint8_t PatrolRtos_CanBusOffSeen(void)
+{
+    return (g_can_bus_off_seen_mask & 0x01U) ? 1U : 0U;
+}
+
+uint32_t PatrolRtos_CanLastBusOffMs(void) { return g_can_bus_off_at_ms; }
+uint8_t PatrolRtos_CanRecoverySamples(void) { return g_can_recovery.samples; }
+
+void PatrolRtos_ObserveCanRecovery(uint32_t sample_ms, uint8_t healthy)
+{
+    uint32_t now = HAL_GetTick();
+    taskENTER_CRITICAL();
+    if ((g_can_bus_off_mask & 0x01U) != 0U)
+    {
+        if (!VehiclePowerOutput_IsOn() || PatrolRtos_CanBusOffActive())
+            PatrolCanRecovery_Reset(&g_can_recovery);
+        else if (PatrolCanRecovery_Observe(&g_can_recovery, now, sample_ms,
+                g_can_bus_off_at_ms, healthy))
+            g_can_bus_off_mask &= (uint8_t)~0x01U;
+    }
+    taskEXIT_CRITICAL();
+}
+
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
@@ -208,11 +236,19 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan)
 {
     BaseType_t higher_priority_task_woken = pdFALSE;
-    if (g_health_events != NULL && hcan != NULL && (HAL_CAN_GetError(hcan) & HAL_CAN_ERROR_BOF) != 0U)
+    /* HAL ErrorCode accumulates earlier errors. Read the hardware flag so a
+     * later unrelated error cannot re-latch an already recovered Bus-Off. */
+    if (g_health_events != NULL && hcan != NULL && (hcan->Instance->ESR & CAN_ESR_BOFF) != 0U)
     {
-        g_can_bus_off_mask |= hcan->Instance == CAN1 ? 0x01U : 0x02U;
+        uint8_t bit = hcan->Instance == CAN1 ? 0x01U : 0x02U;
+        g_can_bus_off_mask |= bit;
+        g_can_bus_off_seen_mask |= bit;
         if (hcan->Instance == CAN1)
+        {
+            g_can_bus_off_at_ms = HAL_GetTick();
+            PatrolCanRecovery_Reset(&g_can_recovery);
             xEventGroupSetBitsFromISR(g_health_events, PATROL_EVENT_CAN_ERROR, &higher_priority_task_woken);
+        }
     }
     portYIELD_FROM_ISR(higher_priority_task_woken);
 }

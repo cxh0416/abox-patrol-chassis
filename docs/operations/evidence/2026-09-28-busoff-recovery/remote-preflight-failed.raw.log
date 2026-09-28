@@ -1,0 +1,18 @@
+operation get_info fdf21a8e-baa8-419c-8a1e-d2fcfbff73db succeeded {'boDiag': [84414, 3], 'bootApiVersion': 1, 'bootDescriptorValid': True, 'bootFeatures': 15, 'bootVersion': 'abox-boot-2.3.0', 'canBusOff': False, 'canInitialized': True, 'canRxOverflow': 0, 'candidateSlot': 0, 'diagnostics': {'canRx': 11557, 'driveHb': False, 'encoderOnline': False, 'steerHb': False}, 'fwVersion': 'patrol-chassis-0.2.42', 'iccid': '89860868102540109153', 'lastOtaError': 0, 'mqttHost': 'zxwl.ntiov.com', 'mqttPort': 19683, 'mqttState': 'READY', 'mqttStateCode': 29, 'mqttTls': False, 'mqttTlsProfileId': 0, 'otaBootstrapNeedsRevision': False, 'otaBusy': False, 'otaDownloader': 'app', 'otaPhase': 'IDLE', 'otaProvisioned': True, 'otaReady': True, 'otaScheme': 'boot_v2_ufs', 'otaState': 'CONFIRMED', 'otaTargetVersion': 'patrol-chassis-0.2.42', 'powerOutputAvailable': True, 'powerOutputOn': False, 'resetReason': 0, 'stableSeedSource': 'local_flash', 'stableSlot': 0, 'trialFailCount': 0, 'uptimeMs': 2331052, 'vid': 'PATROL-05D3FF343733574E43043550'} 
+operation power_off 3d11b26b-6907-4352-9ae7-37118503239a succeeded {'powerOutputOn': False} 
+Traceback (most recent call last):
+  File "/tmp/patrol_control_0242_bench.py", line 144, in <module>
+    run()
+  File "/tmp/patrol_control_0242_bench.py", line 66, in run
+    before = state()
+             ^^^^^^^
+  File "/tmp/patrol_control_0242_bench.py", line 35, in state
+    value, received = _chassis_state(VID)
+                      ^^^^^^^^^^^^^^^^^^^
+  File "/opt/device-ota-service/current/device_ota/api/chassis_control.py", line 41, in _chassis_state
+    saved = db.get_chassis_control_status(vid) or db.get_product_state("patrol_vehicle_chassis", vid)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/device-ota-service/current/device_ota/repositories/chassis_control.py", line 61, in get_status
+    row = conn.execute("SELECT payload_json,received_at FROM chassis_status_snapshots WHERE vid=?", (vid,)).fetchone()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+sqlite3.OperationalError: no such table: chassis_status_snapshots

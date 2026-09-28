@@ -1,8 +1,8 @@
 #ifndef BENCH_DRIVE_H
 #define BENCH_DRIVE_H
 #include "bench_steering.h"
-/* Separate, RAM-armed low speed bench capability. */
-#define BENCH_DRIVE_MAX_RPM 200
+/* Drive actuator limit shared by normal control. */
+#define BENCH_DRIVE_MAX_RPM 500
 typedef struct {
     BenchPhase phase;
     uint8_t step, pending, read, width, cut_power, confirmations, reversing;

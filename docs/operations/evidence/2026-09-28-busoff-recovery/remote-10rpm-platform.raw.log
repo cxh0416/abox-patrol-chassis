@@ -1,0 +1,37 @@
+operation get_info 671cab94-b5be-4d3b-8bbd-13652abe8341 succeeded {'boDiag': [84414, 3], 'bootApiVersion': 1, 'bootDescriptorValid': True, 'bootFeatures': 15, 'bootVersion': 'abox-boot-2.3.0', 'canBusOff': False, 'canInitialized': True, 'canRxOverflow': 0, 'candidateSlot': 0, 'diagnostics': {'canRx': 11557, 'driveHb': False, 'encoderOnline': False, 'steerHb': False}, 'fwVersion': 'patrol-chassis-0.2.42', 'iccid': '89860868102540109153', 'lastOtaError': 0, 'mqttHost': 'zxwl.ntiov.com', 'mqttPort': 19683, 'mqttState': 'READY', 'mqttStateCode': 29, 'mqttTls': False, 'mqttTlsProfileId': 0, 'otaBootstrapNeedsRevision': False, 'otaBusy': False, 'otaDownloader': 'app', 'otaPhase': 'IDLE', 'otaProvisioned': True, 'otaReady': True, 'otaScheme': 'boot_v2_ufs', 'otaState': 'CONFIRMED', 'otaTargetVersion': 'patrol-chassis-0.2.42', 'powerOutputAvailable': True, 'powerOutputOn': False, 'resetReason': 0, 'stableSeedSource': 'local_flash', 'stableSlot': 0, 'trialFailCount': 0, 'uptimeMs': 2381144, 'vid': 'PATROL-05D3FF343733574E43043550'} 
+operation power_on 36fccc56-8633-498d-b30a-319e373a65ff succeeded {'powerOutputOn': True} 
+operation get_bench_steering c5e4c9fd-7c67-4ab8-b642-22e5ca0346b8 succeeded {'available': True, 'contactorFeedbackAvailable': False, 'coordinateValid': True, 'driveAvailable': True, 'driveFault': 0, 'driveLimitRpm': 200, 'drivePermitted': False, 'drivePhase': 0, 'fault': 0, 'feedbackGateMask': 0, 'limitMdeg': 0, 'permitted': False, 'phase': 0, 'profileReady': True, 'rangeValid': True, 'runtimeCenterCount': -84011, 'safetyProfile': 'single_turn_4096_center0_limit30_margin05_v3', 'sessionId': '', 'step': 0} 
+operation arm_bench_drive 3c07d4dd-f1cc-4bc4-b251-da5d46e677af succeeded {'available': True, 'contactorFeedbackAvailable': False, 'coordinateValid': True, 'driveAvailable': True, 'driveFault': 0, 'driveLimitRpm': 200, 'drivePermitted': True, 'drivePhase': 0, 'fault': 0, 'feedbackGateMask': 0, 'limitMdeg': 30000, 'permitted': True, 'phase': 0, 'profileReady': True, 'rangeValid': True, 'runtimeCenterCount': -84011, 'safetyProfile': 'single_turn_4096_center0_limit30_margin05_v3', 'sessionId': 'b-cc65a8ce-ac40-4b77-a69b-3a95aedf975e', 'step': 0} 
+session b-cc65a8ce-ac40-4b77-a69b-3a95aedf975e steering_hold_mdeg 72
+sample 1790560691.76 0 0 0 stopped False None None
+sample 1790560691.98 0 0 0 stopped False None None
+sample 1790560692.19 0 0 0 stopped False True {'targetDriveRpm': 0, 'targetSteeringDeg': 0.072, 'stopReason': 0}
+sample 1790560692.41 0 0 0 stopped False True {'targetDriveRpm': 0, 'targetSteeringDeg': 0.072, 'stopReason': 0}
+sample 1790560692.63 0 0 0 stopped False True {'targetDriveRpm': 0, 'targetSteeringDeg': 0.072, 'stopReason': 0}
+sample 1790560692.84 0 0 0 stopped False True {'targetDriveRpm': 0, 'targetSteeringDeg': 0.072, 'stopReason': 0}
+sample 1790560693.06 0 0 0 stopped False True {'targetDriveRpm': 0, 'targetSteeringDeg': 0.072, 'stopReason': 0}
+sample 1790560693.28 10 0 0 stopped False True {'targetDriveRpm': 0, 'targetSteeringDeg': 0.072, 'stopReason': 0}
+sample 1790560693.49 10 0 0 stopped False True {'targetDriveRpm': 0, 'targetSteeringDeg': 0.072, 'stopReason': 0}
+sample 1790560693.71 10 0 0 stopped False True {'targetDriveRpm': 10, 'targetSteeringDeg': 0.072, 'stopReason': 0}
+sample 1790560693.92 10 0 1 stopped False True {'targetDriveRpm': 10, 'targetSteeringDeg': 0.072, 'stopReason': 0}
+sample 1790560694.14 10 0 1 stopped False True {'targetDriveRpm': 10, 'targetSteeringDeg': 0.072, 'stopReason': 0}
+sample 1790560694.37 10 0 1 stopped False True {'targetDriveRpm': 10, 'targetSteeringDeg': 0.072, 'stopReason': 0}
+sample 1790560694.59 10 0 1 stopped False True {'targetDriveRpm': 10, 'targetSteeringDeg': 0.072, 'stopReason': 0}
+sample 1790560694.8 10 0 1 stopped False True {'targetDriveRpm': 10, 'targetSteeringDeg': 0.072, 'stopReason': 0}
+sample 1790560695.02 10 0 1 stopped False True {'targetDriveRpm': 10, 'targetSteeringDeg': 0.072, 'stopReason': 0}
+sample 1790560695.24 10 0 1 stopped False True {'targetDriveRpm': 10, 'targetSteeringDeg': 0.072, 'stopReason': 0}
+sample 1790560695.45 10 0 1 stopped False True {'targetDriveRpm': 10, 'targetSteeringDeg': 0.072, 'stopReason': 0}
+sample 1790560695.67 10 0 1 stopped False True {'targetDriveRpm': 10, 'targetSteeringDeg': 0.072, 'stopReason': 0}
+sample 1790560695.89 10 0 1 stopped False True {'targetDriveRpm': 10, 'targetSteeringDeg': 0.072, 'stopReason': 0}
+sample 1790560696.1 10 0 1 stopped False True {'targetDriveRpm': 10, 'targetSteeringDeg': 0.072, 'stopReason': 0}
+sample 1790560696.32 0 0 1 stopped False True {'targetDriveRpm': 10, 'targetSteeringDeg': 0.072, 'stopReason': 0}
+stop_requested b-cc65a8ce-ac40-4b77-a69b-3a95aedf975e
+power_off_cleanup_failed power_off timed out: 8511d3b2-aae4-4639-98d5-d3ce31bc4465
+Traceback (most recent call last):
+  File "/tmp/patrol_control_0242_bench.py", line 144, in <module>
+    run()
+  File "/tmp/patrol_control_0242_bench.py", line 119, in run
+    gate(acquiring=True)
+  File "/tmp/patrol_control_0242_bench.py", line 44, in gate
+    raise RuntimeError(f"platform safety gate rejected: {error[0].get_json()}")
+RuntimeError: platform safety gate rejected: {'message': 'device chassis status report is missing or stale', 'status': 'error'}

@@ -1,0 +1,31 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "date": "2026-09-27",
+  "observer": "wyse3040 can0 PCAN USB, passive candump at 500000 bit/s, 11-bit CAN",
+  "device_vid": "PATROL-05D3FF343733574E43043550",
+  "candidate_on_device": "patrol-chassis-0.2.38",
+  "raw_files": [
+    {
+      "original_path": "wyse3040:/tmp/patrol-can-20260927-1953.log",
+      "archive_path": "first-power-on.can.log",
+      "sha256": "983160c62bebe91766d5512950a22d4e608a27ec3e66fc0094dc6e23b0b2e760"
+    },
+    {
+      "original_path": "wyse3040:/tmp/patrol-can-drive-20260927.log",
+      "archive_path": "latched-bus-off.can.log",
+      "sha256": "7662711c14ce3de6afef52a9c2204edf6596923963ab596db13c85231f9ffa3c"
+    },
+    {
+      "original_path": "wyse3040:/tmp/patrol-can-restart-20260927.log",
+      "archive_path": "reboot-power-on.can.log",
+      "sha256": "b988405bd7080c97e9f9ec03a4ed6502cbfbab0d27c76037641720e7a2b4563d"
+    }
+  ],
+  "observations": [
+    "First power-on at epoch 1790509911.552: node 2 EMCY 082#1000010001000000, status 0x20D8, left fault object 0x2000=1, right fault object 0x2001=0. EMCY cleared about 0.9 s later.",
+    "After A-Box reboot, second power-on at epoch 1790510146.413 repeated the same node 2 EMCY, status and left/right fault values; EMCY cleared about 0.9 s later.",
+    "Platform telemetry latched canBusOff=true after each power-on, while canBusOffActive later returned false. Motion remained blocked; no movement command was sent during these captures.",
+    "wyse3040 PCAN remained ERROR-ACTIVE with tx/rx error counters zero and transmitted no frames. This does not identify the electrical cause of the A-Box CAN1 Bus-Off."
+  ],
+  "final_state": "Vehicle power output off, motion stopped; bench-drive validation not passed; formal dist remains 0.2.36"
+}

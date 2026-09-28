@@ -6,4 +6,8 @@ uint32_t PatrolRtos_CanRawRxCount(uint8_t bus);
 uint8_t PatrolRtos_CanStarted(void);
 uint8_t PatrolRtos_CanBusOff(void);
 uint8_t PatrolRtos_CanBusOffActive(void);
+uint8_t PatrolRtos_CanBusOffSeen(void);
+void PatrolRtos_ObserveCanRecovery(uint32_t sample_ms, uint8_t healthy);
+uint32_t PatrolRtos_CanLastBusOffMs(void);
+uint8_t PatrolRtos_CanRecoverySamples(void);
 #endif

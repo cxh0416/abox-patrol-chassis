@@ -32,6 +32,8 @@ uint8_t VehiclePowerOutput_IsOn(void) { return mock_power; }
 uint8_t VehiclePowerOutput_Set(uint8_t on) { mock_power = on; return 1; }
 uint8_t PatrolRuntimePort_CanBusOff(void) { return mock_bus_off; }
 uint8_t PatrolRuntimePort_CanBusOffActive(void) { return mock_bus_off; }
+void PatrolRtos_ObserveCanRecovery(uint32_t sample_ms, uint8_t healthy)
+{ (void)sample_ms; (void)healthy; }
 uint8_t PatrolRuntimePort_OtaBusy(void) { return mock_ota; }
 #ifndef CENTER_HOST_REAL_DIAGNOSTICS
 void PatrolDiagnostics_Snapshot(const PatrolDiagnostics* d, uint32_t now, PatrolDiagnosticsSnapshot* s)

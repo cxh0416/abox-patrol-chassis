@@ -5,6 +5,7 @@
 #include "app_log.h"
 #include "remote_service.h"
 #include "patrol_config.h"
+#include "patrol_can_status.h"
 #include "vehicle_power_output.h"
 #include "vehicle_steering_profile.h"
 
@@ -228,6 +229,12 @@ void PatrolRuntime_UpdateFeedback(uint32_t now)
     now = PatrolRuntimePort_Now();
     PatrolDiagnostics_Snapshot(&g_motion.diagnostics, now, &snapshot);
     PatrolRuntimePort_Exit();
+    /* Clear only the recovered CAN gate. Sessions remain revoked. */
+    PatrolRtos_ObserveCanRecovery(snapshot.coherent_feedback_ms,
+        VehiclePowerOutput_IsOn() && snapshot.steering_online && snapshot.drive_online &&
+        snapshot.steering_feedback_fresh && snapshot.drive_feedback_fresh &&
+        snapshot.encoder_online && snapshot.encoder_config_valid && !snapshot.drive_fault &&
+        labs(snapshot.left_actual_rpm) <= 20L && labs(snapshot.right_actual_rpm) <= 20L);
     feedback.calibrated = cfg != NULL && cfg->calibrated && PatrolConfig_CalibrationCompatible();
     feedback.encoder_profile_ready = PatrolConfig_SingleTurnProfileReady();
     feedback.steering_online = snapshot.steering_online;

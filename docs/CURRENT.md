@@ -6,7 +6,7 @@
 
 当前工作树中的新流程已完成源码、平台和主机改造：正常远控直接建立公共 V4 控制会话；在线标定只走独占中位会话；旧 bench 许可和持久 `remote_enabled` 授权已移除。Config V5 的原授权字节保留在原位置并作为保留字节。平台本地测试已通过，现场平台尚未部署。本车无独立接触器反馈输入，`powerOutputOn` 只表示 MCU 输出命令。
 
-`out/candidates/bench-drive/` 中的最新 App 候选 SHA256 为 `2C664B602C6D592D879EA21AB28208365907877E96A99B7C9BCEE70ACA8F0200`，源工作树标记为 dirty；转向和行走执行器已编译，`actuation_enabled=true`。这是尚未经过本轮会话、安全和停车回归验收的运动候选，不能视为正式包或 OTA 依据。既有 [0.2.12 行走换向实测](operations/evidence/2026-09-08-bench-drive-0212.json)和 [0.2.31 转向实测](operations/evidence/2026-09-15-031-steering-speed/adaptive-validation/summary.md)构成本轮已验证硬件的基础；本轮按简化软件的回归复测处理。产品主机 38 项、Platform CTest 21 项、平台 Python 311 项与页面 20 项测试及 ARM 候选构建通过。当前版本的真实停车与 CAN/编码器反馈、现场 OTA `CONFIRMED` 和运动回归尚未完成；因此 `dist/` 及现场设备未切换，新远控入口应保持关闭。2026-09-28 只读查询显示目标车 `PATROL-05D3FF343733574E43043550` 在线并上报 `patrol-chassis-0.2.44`，高于本工作树候选的 `0.2.37`；线上平台为 `0.4.157`，旧远控总开关为 1。升级前须核对并合入当前车上版本以来的源码变更。当前切换步骤见[远控运维](operations/架空行走与平台远控实现.md)。
+`out/candidates/bench-drive/` 中的最新 App 候选为 `patrol-chassis-0.2.45`，SHA256 `7A4E5FE56F15E588B0672DE06A7731447D376FB1008E9F019BC175CD768AF666`；转向和行走执行器已编译，`actuation_enabled=true`。候选包含现场分支的 CAN Bus-Off 恢复、±500 rpm 行走上限和 300/150/75 rpm 转向轮廓，尚未经过本轮会话、安全和停车实车回归验收，不能视为正式包或 OTA 依据。既有 [0.2.12 行走换向实测](operations/evidence/2026-09-08-bench-drive-0212.json)和 [0.2.31 转向实测](operations/evidence/2026-09-15-031-steering-speed/adaptive-validation/summary.md)构成本轮已验证硬件的基础。产品主机 39 项、Platform CTest 21 项和 ARM 候选构建通过；当前版本的真实停车与 CAN/编码器反馈、现场 OTA `CONFIRMED` 和运动回归尚未完成。`dist/` 正式版仍为 `0.2.37`，目标车最近一次已确认版本为 `0.2.44`；新平台代码尚未部署，新远控入口应保持关闭。当前切换步骤见[远控运维](operations/架空行走与平台远控实现.md)。
 
 ## Current Release / Candidate
 
@@ -14,7 +14,7 @@
 |---|---|---|
 | 最新正式版 | `patrol-chassis-0.2.37` | `dist/release.manifest.json` |
 | 正式 App SHA256 | `67F033BCB392D79347015B9A39F101838CA25F30A07A7F9FCA7B1B17719D7D69` | 正式 manifest |
-| 当前源码版本 | `patrol-chassis-0.2.37`；主机测试与 ARM Release 构建通过，尚未现场验收 | 根目录 `VERSION`、正式 manifest |
+| 当前源码版本 | `patrol-chassis-0.2.45`；主机测试与 ARM 候选构建通过，尚未现场验收 | 根目录 `VERSION`、候选 manifest |
 | WP7.3 clean ARM Release App SHA256 | `DE38325CE586CC1F703FAD78C6BC4D219450CDE110A5E56400897A237A6C7251` | [WP7.3 evidence](operations/evidence/2026-09-23-mqtt-wp73/index.json)；实测候选，非 `dist/` 正式版 |
 | WP7.2 最新实测 Debug App SHA256 | `5AE13A1367345515245F9D2C694710BA3140DD18F9DEC3FFF81BE3ABD471B5D4` | `out/logs/wp72-success-app.bin` 与 WP7.2 index；测试构建，非正式版 |
 | 当前改造分支 Platform gitlink | `4f97ca9d155f4be5869ab6b2b911e9c2ae5b909c` | 当前源码及正式 manifest |
@@ -47,6 +47,8 @@ UID `05D3FF343733574E43043550` 的最新申请 `c165e71a-e8d4-4c7d-b41b-795e983b
 维护场景：保留配置升级时先备份并校验逐车 Config V5，升级后应沿用现有凭据；同产品整片擦除前归档配置、标定、Boot State 和证据，重刷冻结 Boot、App、Boot State 及 CA/UFS 前置条件，审批后核对新凭据、保存回读及重启上线；跨产品整片擦除还须确认管理员审批目标产品合同、Broker Topic 权限、旧凭据和旧会话撤销，随后单独恢复目标产品所需标定。现场原始证据归入 `docs/operations/evidence/`，不得覆盖历史记录。
 
 ## Current Phase
+
+现场 0.2.38 至 0.2.44 的 CAN、驱动故障、OTA 与速度试验过程见[历史现场记录](operations/history/2026-09-27-28-底盘现场跟进.md)和[原始证据](operations/evidence/2026-09-28-busoff-recovery/index.json)。当前软件回归仍需验证实际反馈、停止和换向。
 
 ```text
 WP7.1 CLOSED          A/B/C/D1 passed
