@@ -62,10 +62,6 @@
 
 全部参数构成一次不可拆分的候选配置。`port` 范围为 1～65535，`tlsProfileId` 范围为 0～255。设备先在旧连接返回 `202 MQTT_CANDIDATE_TESTING`；候选连接和业务证明成功、配置保存及回读完成后，使用**同一 `requestId`**返回 `200 MQTT_CONFIG_SAVED`；失败并恢复原连接后返回 `500 MQTT_CANDIDATE_RESTORED`。试连中的重试不另起事务。只有最终 `200` 表示新配置成为 active；`get_info` 只报告已提交配置。TLS 失败不会自行改用明文。
 
-### 旧平台兼容
-
-固件仍识别内部 `power_on`、`power_off`，仅用于已部署旧平台的兼容。当前平台必须使用公共 `vehicle_chassis 1.0` Profile 的上下电命令。实验性 MQTT runtime 动作不属于当前平台接口。
-
 ## OTA
 
 OTA 使用 `/internal/ota`，请求 `data.command="ota_upgrade"`，`params` 必须携带 HTTPS `url`、目标固件 `version`、正整数 `size` 和八位十六进制 `crc32`。版本须符合 `patrol-chassis-` 格式；文件不得超过产品 App 区 `0x36000` 字节；URL 须通过产品来源、目录、版本和制品名校验。响应仍按 `product` 和 `requestId` 关联。

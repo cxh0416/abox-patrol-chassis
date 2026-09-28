@@ -228,21 +228,6 @@ static __attribute__((noinline)) void handle_config_request(const CloudProtocolR
         else
             (void)CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 200U, "REBOOTING", "{}", 1U);
     }
-    else if (action == CLOUD_PROTOCOL_ACTION_POWER_ON || action == CLOUD_PROTOCOL_ACTION_POWER_OFF)
-    {
-        uint8_t target_on = action == CLOUD_PROTOCOL_ACTION_POWER_ON ? 1U : 0U;
-        if (!VehiclePowerOutput_IsAvailable())
-            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 503U, "POWER_OUTPUT_UNAVAILABLE");
-        else if (!VehiclePowerOutput_Set(target_on))
-            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 500U, "POWER_OUTPUT_WRITE_FAILED");
-        else
-        {
-            (void)snprintf(result, result_size, "{\"powerOutputOn\":%s}",
-                           target_on ? "true" : "false");
-            (void)CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 200U,
-                                    target_on ? "POWER_ON" : "POWER_OFF", result, 0U);
-        }
-    }
     else if (action == CLOUD_PROTOCOL_ACTION_SET_MQTT)
     {
         PatrolRemoteConfigV5_t candidate = *PatrolConfig_Get();

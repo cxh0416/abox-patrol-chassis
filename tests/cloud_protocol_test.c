@@ -123,10 +123,10 @@ int main(void)
     if (!expect_status("bad_set_mqtt", bad_set_mqtt, 0U, CLOUD_PROTOCOL_INVALID, CLOUD_PROTOCOL_ACTION_NONE, "req-5")) return 1;
     if (!expect_status("missing_tls", missing_tls, 0U, CLOUD_PROTOCOL_INVALID, CLOUD_PROTOCOL_ACTION_NONE, "req-tls")) return 1;
     if (!expect_status("missing_profile", missing_profile, 0U, CLOUD_PROTOCOL_INVALID, CLOUD_PROTOCOL_ACTION_NONE, "req-profile")) return 1;
-    if (!expect_status("power_on", power_on, 0U, CLOUD_PROTOCOL_OK,
-                       CLOUD_PROTOCOL_ACTION_POWER_ON, "req-power-on")) return 1;
-    if (!expect_status("power_off", power_off, 0U, CLOUD_PROTOCOL_OK,
-                       CLOUD_PROTOCOL_ACTION_POWER_OFF, "req-power-off")) return 1;
+    if (!expect_status("power_on", power_on, 0U, CLOUD_PROTOCOL_UNKNOWN_ACTION,
+                       CLOUD_PROTOCOL_ACTION_NONE, "req-power-on")) return 1;
+    if (!expect_status("power_off", power_off, 0U, CLOUD_PROTOCOL_UNKNOWN_ACTION,
+                       CLOUD_PROTOCOL_ACTION_NONE, "req-power-off")) return 1;
     if (!expect_status("arm_drive", arm_drive, 0U, CLOUD_PROTOCOL_OK,
                        CLOUD_PROTOCOL_ACTION_BENCH_ARM, "req-arm-drive")) return 1;
     if (!expect_status("bad_arm_drive", bad_arm_drive, 0U, CLOUD_PROTOCOL_INVALID,

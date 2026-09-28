@@ -251,8 +251,6 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
     }
     else if (strcmp(action->valuestring, "get_log") == 0) request->action = CLOUD_PROTOCOL_ACTION_GET_LOG;
     else if (strcmp(action->valuestring, "reboot") == 0) request->action = CLOUD_PROTOCOL_ACTION_REBOOT;
-    else if (strcmp(action->valuestring, "power_on") == 0) request->action = CLOUD_PROTOCOL_ACTION_POWER_ON;
-    else if (strcmp(action->valuestring, "power_off") == 0) request->action = CLOUD_PROTOCOL_ACTION_POWER_OFF;
     else if (strcmp(action->valuestring, "mqtt_runtime_get") == 0)
         request->action = CLOUD_PROTOCOL_ACTION_MQTT_RUNTIME_GET;
     else if (strcmp(action->valuestring, "mqtt_lab_seed_control") == 0)
