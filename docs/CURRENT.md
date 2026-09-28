@@ -2,19 +2,19 @@
 
 本文件是 `patrol_vehicle_chassis` 的唯一当前状态入口。发布事实以正式 manifest 为准；候选状态以对应构建物和 evidence 为准。历史过程不在此重复。
 
-## 待切换的标定与远控简化候选
+## 标定与远控简化固件已单车 OTA
 
-当前工作树中的新流程已完成源码、平台和主机改造：正常远控直接建立公共 V4 控制会话；在线标定只走独占中位会话；旧 bench 许可和持久 `remote_enabled` 授权已移除。Config V5 的原授权字节保留在原位置并作为保留字节。平台本地测试已通过，现场平台尚未部署。本车无独立接触器反馈输入，`powerOutputOn` 只表示 MCU 输出命令。
+当前新流程已完成源码、平台和主机改造：正常远控直接建立公共 V4 控制会话；在线标定只走独占中位会话；旧 bench 许可和持久 `remote_enabled` 授权已移除。Config V5 的原授权字节保留在原位置并作为保留字节。平台 `0.4.158` 已部署，平台远控总开关仍关闭。本车无独立接触器反馈输入，`powerOutputOn` 只表示 MCU 输出命令。
 
-`out/candidates/bench-drive/` 中的最新 App 候选为 `patrol-chassis-0.2.45`，SHA256 `7A4E5FE56F15E588B0672DE06A7731447D376FB1008E9F019BC175CD768AF666`；转向和行走执行器已编译，`actuation_enabled=true`。候选包含现场分支的 CAN Bus-Off 恢复、±500 rpm 行走上限和 300/150/75 rpm 转向轮廓，尚未经过本轮会话、安全和停车实车回归验收，不能视为正式包或 OTA 依据。既有 [0.2.12 行走换向实测](operations/evidence/2026-09-08-bench-drive-0212.json)和 [0.2.31 转向实测](operations/evidence/2026-09-15-031-steering-speed/adaptive-validation/summary.md)构成本轮已验证硬件的基础。产品主机 39 项、Platform CTest 21 项和 ARM 候选构建通过；当前版本的真实停车与 CAN/编码器反馈、现场 OTA `CONFIRMED` 和运动回归尚未完成。`dist/` 正式版仍为 `0.2.37`，目标车最近一次已确认版本为 `0.2.44`；新平台代码尚未部署，新远控入口应保持关闭。当前切换步骤见[远控运维](operations/架空行走与平台远控实现.md)。
+`dist/` 最新正式版为 `patrol-chassis-0.2.45`，App SHA256 `7A4E5FE56F15E588B0672DE06A7731447D376FB1008E9F019BC175CD768AF666`；转向和行走执行器已编译，`actuation_enabled=true`，正式 App 与运动候选逐字节一致。正式包包含现场分支的 CAN Bus-Off 恢复、±500 rpm 行走上限和 300/150/75 rpm 转向轮廓。既有 [0.2.12 行走换向实测](operations/evidence/2026-09-08-bench-drive-0212.json)和 [0.2.31 转向实测](operations/evidence/2026-09-15-031-steering-speed/adaptive-validation/summary.md)构成本轮已验证硬件的基础。产品主机测试、Platform CTest 21 项、ARM 候选与正式重建通过。目标车 `PATROL-05D3FF343733574E43043550` 已由 `0.2.44` OTA 到 `0.2.45`，独立 `get_info` 返回 Boot `CONFIRMED`、OTA 空闲；状态报告显示标定有效、停车、实测转速为零、输出命令关闭。当前版本的控制会话、CAN/编码器和实际停车运动回归尚未执行，OTA 与状态响应不能替代运动验收；平台远控入口继续保持关闭。当前步骤见[远控运维](operations/架空行走与平台远控实现.md)。
 
 ## Current Release / Candidate
 
 | 项目 | 当前值 | 权威来源 |
 |---|---|---|
-| 最新正式版 | `patrol-chassis-0.2.37` | `dist/release.manifest.json` |
-| 正式 App SHA256 | `67F033BCB392D79347015B9A39F101838CA25F30A07A7F9FCA7B1B17719D7D69` | 正式 manifest |
-| 当前源码版本 | `patrol-chassis-0.2.45`；主机测试与 ARM 候选构建通过，尚未现场验收 | 根目录 `VERSION`、候选 manifest |
+| 最新正式版 | `patrol-chassis-0.2.45`，运动输出 ON | `dist/release.manifest.json` |
+| 正式 App SHA256 | `7A4E5FE56F15E588B0672DE06A7731447D376FB1008E9F019BC175CD768AF666` | 正式 manifest |
+| 当前源码版本 | `patrol-chassis-0.2.45`；主机测试、ARM 构建及单车 OTA 确认通过，运动回归待执行 | 根目录 `VERSION`、正式 manifest |
 | WP7.3 clean ARM Release App SHA256 | `DE38325CE586CC1F703FAD78C6BC4D219450CDE110A5E56400897A237A6C7251` | [WP7.3 evidence](operations/evidence/2026-09-23-mqtt-wp73/index.json)；实测候选，非 `dist/` 正式版 |
 | WP7.2 最新实测 Debug App SHA256 | `5AE13A1367345515245F9D2C694710BA3140DD18F9DEC3FFF81BE3ABD471B5D4` | `out/logs/wp72-success-app.bin` 与 WP7.2 index；测试构建，非正式版 |
 | 当前改造分支 Platform gitlink | `4f97ca9d155f4be5869ab6b2b911e9c2ae5b909c` | 当前源码及正式 manifest |
@@ -106,7 +106,7 @@ TLS profile: 0
 ## Authoritative Documents
 
 - 公共业务接口：[巡防车底盘业务 Profile 1.0](protocols/A-BOX巡防车底盘业务协议-V4.0.md)；公共 MQTT V4 通用合同由该文档链接到 Platform 权威版本。
-- 目标内部运维接口：[巡防车底盘内部运维协议 V2.3](protocols/A-BOX内部运维协议V2.3.md)，报文 `version` 仍为 `2.0`；产品 Flash Config V5 是独立版本。该合同适用于本工作树的新固件与新平台；当前 `dist/` 和现场设备尚未切换，不得将其作为现场现版操作依据。旧接口修订留在[历史目录](operations/history/A-BOX内部运维协议V2.2.md)。
+- 目标内部运维接口：[巡防车底盘内部运维协议 V2.3](protocols/A-BOX内部运维协议V2.3.md)，报文 `version` 仍为 `2.0`；产品 Flash Config V5 是独立版本。该合同适用于当前正式固件与新平台；现场单车已切换，远控运动回归仍待执行。旧接口修订留在[历史目录](operations/history/A-BOX内部运维协议V2.2.md)。
 - 硬件与安全：[硬件与安全边界](hardware/硬件与安全边界.md)。
 - 当前实现架构：[源码模块与依赖](implementation/源码模块与依赖.md)。
 - 当前产品配置：[配置 V5 与掉电恢复](implementation/配置V5与掉电恢复.md)。

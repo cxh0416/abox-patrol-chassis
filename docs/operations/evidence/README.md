@@ -26,6 +26,7 @@
 
 ## Release / OTA / Archived Raw Data
 
+- 2026-09-28 `0.2.45` 正式打包与单车 OTA：[记录](2026-09-28-0245-ota/index.md)；Boot `CONFIRMED`，运动回归待执行。
 - 2026-09-08 正式发布核验：[0.2.5 release verification](2026-09-08-0.2.5-release-verification.json)，仅代表当时版本。
 - 旧 `out/` 现场材料：[raw archive index](raw/2026-09-09-out.index.json)；压缩包正文保持不变。
 
