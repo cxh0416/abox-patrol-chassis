@@ -85,7 +85,7 @@ void CloudTx_Service(void)
     uint32_t now = CloudPort_Now();
     const ChassisControl* control = RemoteService_State();
     if (CloudTelemetry_Update(&g_cloud.telemetry, now,
-            control->session_active || RemoteService_BenchPermitted() ||
+            control->session_active || CenterCalibration_IsActive() ||
             CenterCalibration_IsActive())) {
         g_cloud.status_report_due = now;
         g_cloud.heartbeat_due = now;

@@ -51,7 +51,7 @@ static uint32_t checksum(const void* value,size_t size) {
 static void base(PatrolRemoteConfigV5_t* c) {
  memset(c,0,sizeof(*c));
  c->magic=PATROL_CONFIG_MAGIC;c->version=PATROL_CONFIG_VERSION;c->length=sizeof(*c);
- c->remote_enabled=1;c->diag_log_enabled=1;c->diag_log_level=2;
+ c->reserved_remote=1;c->diag_log_enabled=1;c->diag_log_level=2;
  strcpy(c->vid,"PATROL-V5-TEST");strcpy(c->mqtt_host,"broker.test");c->mqtt_port=19683;
  strcpy(c->mqtt_username,"account");strcpy(c->mqtt_password,"secret");
  strcpy(c->diag_log_host,"diag.test");c->diag_log_port=30080;strcpy(c->ota_origin,"https://ota.test");

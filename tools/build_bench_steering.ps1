@@ -1,6 +1,7 @@
 [CmdletBinding()]
-param([string]$AppVersion = '', [switch]$Drive)
+param([string]$AppVersion = '', [switch]$Drive, [switch]$EnableActuation)
 $ErrorActionPreference = 'Stop'
+if ($EnableActuation -and -not $Drive) { throw 'Motion-enabled candidate requires -Drive.' }
 $product = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 . (Join-Path $PSScriptRoot 'product_version.ps1')
 $AppVersion = Resolve-PatrolChassisAppVersion -ProductRoot $product -Override $AppVersion
@@ -11,8 +12,8 @@ try {
 & cmake -S (Join-Path $product 'app') -B $build -G Ninja `
     "-DCMAKE_TOOLCHAIN_FILE=$product/app/cmake/gcc-arm-none-eabi.cmake" `
     '-DCMAKE_BUILD_TYPE=Release' "-DPATROL_CHASSIS_APP_VERSION_OVERRIDE=$AppVersion" `
-    '-DPATROL_CHASSIS_ACTUATION_ENABLED=OFF' '-DPATROL_CHASSIS_BENCH_STEERING_ENABLED=ON' `
-    "-DPATROL_CHASSIS_BENCH_DRIVE_ENABLED=$($Drive.IsPresent)" `
+    "-DPATROL_CHASSIS_ACTUATION_ENABLED=$(if ($EnableActuation) { 'ON' } else { 'OFF' })" '-DPATROL_STEERING_EXECUTOR_ENABLED=ON' `
+    "-DPATROL_DRIVE_EXECUTOR_ENABLED=$($Drive.IsPresent)" `
     '-DPATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED=ON' '-DPATROL_CHASSIS_APP_FAULT_INJECTION_TEST=OFF'
 if ($LASTEXITCODE -ne 0) { throw 'Bench configure failed' }
 & cmake --build $build --parallel 4
@@ -25,15 +26,17 @@ $artifact = Join-Path $output 'Patrol_Vehicle_Chassis_App.bin'
 Copy-Item -LiteralPath $source -Destination $artifact -Force
 $bytes = [IO.File]::ReadAllBytes($artifact)
 if ($bytes.Length -gt 221184 -or [Text.Encoding]::ASCII.GetString($bytes).IndexOf("PATROL_VEHICLE_CHASSIS_FW_VERSION=$AppVersion") -lt 0) { throw 'Invalid bench image' }
-[ordered]@{
+$candidateManifest = [ordered]@{
     product='patrol_vehicle_chassis'; version=$AppVersion; candidate=$true
-    steering_only=(-not $Drive.IsPresent); startup_permit=$false; drive_actuation=$Drive.IsPresent
-    drive_limit_rpm=$(if ($Drive) {200} else {0})
+    steering_executor_compiled=$true; drive_executor_compiled=$Drive.IsPresent
+    startup_permit=$false; actuation_enabled=$EnableActuation.IsPresent
     commit=(& git -C $product rev-parse HEAD | Out-String).Trim()
     dirty=(-not [string]::IsNullOrWhiteSpace((& git -C $product status --porcelain | Out-String)))
     app_start='0x08008000'; app_end='0x0803DFFF'; config_recovery_page='0x0803E000'; config_page='0x0803F800'
     size=$bytes.Length; sha256=(Get-FileHash $artifact -Algorithm SHA256).Hash
-} | ConvertTo-Json | Set-Content (Join-Path $output 'candidate.manifest.json') -Encoding utf8
+}
+$manifestJson = ($candidateManifest | ConvertTo-Json).Replace("`r`n", "`n") + "`n"
+[IO.File]::WriteAllText((Join-Path $output 'candidate.manifest.json'), $manifestJson, [Text.UTF8Encoding]::new($false))
 & python (Join-Path $PSScriptRoot 'artifact_store.py') --root $product --stage $output --destination $destination
 if ($LASTEXITCODE -ne 0) { throw 'Bench publication failed; inspect rollback/backup before retrying.' }
 Write-Host "Bench candidate: $(Join-Path $product $destination)"

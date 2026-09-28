@@ -11,7 +11,6 @@
 #include "app_log.h"
 #include "app_test.h"
 #include "absolute_encoder.h"
-#include "chassis_power.h"
 #include "cloud_service.h"
 #include "fault_mailbox.h"
 #include "iwdg.h"
@@ -37,7 +36,6 @@
 #define PATROL_CAN_RX_STACK_WORDS 256U
 #define PATROL_CANOPEN_STACK_WORDS 256U
 #define PATROL_ENCODER_STACK_WORDS 192U
-#define PATROL_POWER_STACK_WORDS 192U
 #define PATROL_REMOTE_STACK_WORDS 1024U
 #define PATROL_DIAG_STACK_WORDS 256U
 /*
@@ -57,7 +55,6 @@ static StaticTask_t g_safety_tcb;
 static StaticTask_t g_can_rx_tcb;
 static StaticTask_t g_canopen_tcb;
 static StaticTask_t g_encoder_tcb;
-static StaticTask_t g_power_tcb;
 static StaticTask_t g_remote_tcb;
 static StaticTask_t g_diag_tcb;
 static StaticTask_t g_watchdog_tcb;
@@ -65,7 +62,6 @@ static StackType_t g_safety_stack[PATROL_SAFETY_STACK_WORDS];
 static StackType_t g_can_rx_stack[PATROL_CAN_RX_STACK_WORDS];
 static StackType_t g_canopen_stack[PATROL_CANOPEN_STACK_WORDS];
 static StackType_t g_encoder_stack[PATROL_ENCODER_STACK_WORDS];
-static StackType_t g_power_stack[PATROL_POWER_STACK_WORDS];
 static StackType_t g_remote_stack[PATROL_REMOTE_STACK_WORDS];
 static StackType_t g_diag_stack[PATROL_DIAG_STACK_WORDS];
 static StackType_t g_watchdog_stack[PATROL_WATCHDOG_STACK_WORDS];
@@ -73,7 +69,6 @@ static TaskHandle_t g_safety_task;
 static TaskHandle_t g_can_rx_task;
 static TaskHandle_t g_canopen_task;
 static TaskHandle_t g_encoder_task;
-static TaskHandle_t g_power_task;
 static TaskHandle_t g_remote_task;
 static TaskHandle_t g_diag_task;
 static TaskHandle_t g_watchdog_task;
@@ -86,7 +81,6 @@ static void Patrol_SafetyControlTask(void *argument);
 static void Patrol_CanRxTask(void *argument);
 static void Patrol_CanopenTask(void *argument);
 static void Patrol_EncoderTask(void *argument);
-static void Patrol_PowerTask(void *argument);
 static void Patrol_RemoteTask(void *argument);
 static void Patrol_DiagTask(void *argument);
 static void Patrol_WatchdogTask(void *argument);
@@ -131,9 +125,6 @@ void PatrolRtos_Init(void)
     g_encoder_task = xTaskCreateStatic(Patrol_EncoderTask, "EncoderUart5",
                                        PATROL_ENCODER_STACK_WORDS, NULL, 4U,
                                        g_encoder_stack, &g_encoder_tcb);
-    g_power_task = xTaskCreateStatic(Patrol_PowerTask, "ChassisPower",
-                                     PATROL_POWER_STACK_WORDS, NULL, 4U,
-                                     g_power_stack, &g_power_tcb);
     g_watchdog_task = xTaskCreateStatic(Patrol_WatchdogTask, "Watchdog",
                                         PATROL_WATCHDOG_STACK_WORDS, NULL, 3U,
                                         g_watchdog_stack, &g_watchdog_tcb);
@@ -147,7 +138,7 @@ void PatrolRtos_Init(void)
     configASSERT(g_can_rx_queue != NULL);
     configASSERT(g_health_events != NULL);
     configASSERT(g_safety_task != NULL && g_can_rx_task != NULL && g_canopen_task != NULL);
-    configASSERT(g_encoder_task != NULL && g_power_task != NULL);
+    configASSERT(g_encoder_task != NULL);
     configASSERT(g_watchdog_task != NULL && g_remote_task != NULL && g_diag_task != NULL);
 
 #if defined(DEBUG)
@@ -358,19 +349,6 @@ static void Patrol_EncoderTask(void *argument)
     }
 }
 
-static void Patrol_PowerTask(void *argument)
-{
-    ChassisPower power;
-    (void)argument;
-    ChassisPower_Init(&power, 0U, HAL_GetTick());
-    for (;;)
-    {
-        /* hardware_available=0 prevents relay and enable requests on unknown pins. */
-        ChassisPower_Tick(&power, HAL_GetTick(), 0U, 1U);
-        vTaskDelay(pdMS_TO_TICKS(10U));
-    }
-}
-
 static void Patrol_RemoteTask(void *argument)
 {
     (void)argument;
@@ -454,6 +432,10 @@ uint8_t PatrolRuntimePort_SendCan(const PatrolCanFrame* frame)
 {
     CAN_TxHeaderTypeDef header = {0};
     uint32_t mailbox;
+    /* The final CAN port rejects every motion frame in a non-actuating image. */
+    if (!PATROL_CHASSIS_ACTUATION_ENABLED &&
+        !(frame->id >= 0x601U && frame->id <= 0x602U && frame->data[0] == 0x40U))
+        return 0U;
     header.StdId = frame->id;
     header.IDE = CAN_ID_STD;
     header.RTR = CAN_RTR_DATA;

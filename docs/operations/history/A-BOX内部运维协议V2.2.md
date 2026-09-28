@@ -1,6 +1,6 @@
 # 巡防车底盘内部运维接口 V2.2
 
-本文只定义 `patrol_vehicle_chassis` 当前内部运维接口。**V2.2 是本文档修订号，报文 `version` 固定为 `"2.0"`**。公共 MQTT V4 外层和通用规则见 [ABox Platform 协议](https://github.com/cxh0416/abox-platform-firmware/blob/master/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md)；车辆上下电、连续控制及状态上报见[底盘业务 Profile](A-BOX巡防车底盘业务协议-V4.0.md)。内部接口不承载公共底盘控制。
+本文只定义 `patrol_vehicle_chassis` 当前内部运维接口。**V2.2 是本文档修订号，报文 `version` 固定为 `"2.0"`**。公共 MQTT V4 外层和通用规则见 [ABox Platform 协议](https://github.com/cxh0416/abox-platform-firmware/blob/master/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md)；车辆上下电、连续控制及状态上报见[底盘业务 Profile](../../protocols/A-BOX巡防车底盘业务协议-V4.0.md)。内部接口不承载公共底盘控制。
 
 ## 身份、Topic 与报文
 
@@ -70,4 +70,4 @@ OTA 使用 `/internal/ota`，请求 `data.command="ota_upgrade"`，`params` 必�
 
 ## 边界
 
-内部接口不承载公共 `chassis_control` 或 `chassis_status`。查询、命令 ACK、构建成功和候选安装都不能证明真实运动、供电、转角或 OTA 现场验收。标定、台架许可、复位、重启和 OTA 不绕过设备安全门禁；当前操作步骤见 [逐车标定](../operations/巡防车底盘逐车标定与参数记录.md)和[故障复位](../operations/故障记录与复位.md)。
+内部接口不承载公共 `chassis_control` 或 `chassis_status`。查询、命令 ACK、构建成功和候选安装都不能证明真实运动、供电、转角或 OTA 现场验收。标定、台架许可、复位、重启和 OTA 不绕过设备安全门禁；当前操作步骤见 [逐车标定](../巡防车底盘逐车标定与参数记录.md)和[故障复位](../故障记录与复位.md)。

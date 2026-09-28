@@ -33,9 +33,9 @@ int main(void)
     drain(); assert(g_cloud.telemetry.fast);
     /* Both ordinary control and preparatory bench permits hold high rate. */
     tick = 300000; control.session_active = 1; drain(); assert(g_cloud.telemetry.fast);
-    control.session_active = 0; bench_active = 1;
+    control.session_active = 0; center_active = 1;
     tick = 340000; drain(); assert(g_cloud.telemetry.fast);
-    bench_active = 0; tick = 370000; drain(); assert(!g_cloud.telemetry.fast);
+    center_active = 0; tick = 370000; drain(); assert(!g_cloud.telemetry.fast);
     connected = 0; event = "safety_stop";
     int before = status_packets; drain(); assert(status_packets == before);
     connected = 1; CloudTx_Service(); assert(last_qos == 1 && status_packets == before + 1);

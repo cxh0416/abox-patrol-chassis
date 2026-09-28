@@ -20,13 +20,9 @@ typedef enum {
     CLOUD_PROTOCOL_ACTION_OTA,
     CLOUD_PROTOCOL_ACTION_GET_CAN_DIAG,
     CLOUD_PROTOCOL_ACTION_GET_CALIBRATION,
-    CLOUD_PROTOCOL_ACTION_SET_CALIBRATION,
-    CLOUD_PROTOCOL_ACTION_CLEAR_CALIBRATION,
-    CLOUD_PROTOCOL_ACTION_BENCH_ARM,
-    CLOUD_PROTOCOL_ACTION_BENCH_STOP,
-    CLOUD_PROTOCOL_ACTION_BENCH_GET,
     CLOUD_PROTOCOL_ACTION_CENTER_CAL_START,
     CLOUD_PROTOCOL_ACTION_CENTER_CAL_GET,
+    CLOUD_PROTOCOL_ACTION_CENTER_CAL_DIAGNOSTICS,
     CLOUD_PROTOCOL_ACTION_CENTER_CAL_JOG,
     CLOUD_PROTOCOL_ACTION_CENTER_CAL_COMMIT,
     CLOUD_PROTOCOL_ACTION_CENTER_CAL_CANCEL,
@@ -58,15 +54,6 @@ typedef struct {
     char mqtt_password[CLOUD_PROTOCOL_MQTT_PASSWORD_SIZE];
     uint8_t mqtt_tls_enabled;
     uint8_t mqtt_tls_profile_id;
-    uint16_t bench_limit_mdeg;
-    uint8_t bench_drive;
-    int32_t steering_center_count;
-    uint32_t absolute_center_count;
-    uint32_t steering_counts_per_degree_milli;
-    uint32_t absolute_counts_per_degree_milli;
-    uint16_t steering_tolerance_mdeg;
-    int8_t steering_direction;
-    int8_t absolute_direction;
     char center_session_id[40];
     int16_t center_delta_mdeg;
 } CloudProtocolRequest_t;

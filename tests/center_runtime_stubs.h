@@ -22,9 +22,12 @@ PatrolRemoteConfigV5_t mock_config;
 PatrolDiagnosticsSnapshot mock_snapshot;
 uint32_t PatrolRuntimePort_Now(void) { return mock_now; }
 const ChassisControl* RemoteService_State(void) { return &mock_control; }
-uint8_t RemoteService_BenchPermitted(void) { return mock_permit; }
-void RemoteService_BenchRevoke(void) { mock_permit = 0; }
-void RemoteService_BenchFault(void) { mock_control.fault_latched = 1; }
+void RemoteService_Revoke(void) { mock_control.session_active = 0; mock_control.enable_request = 0; }
+void RemoteService_ExecutionFault(void) { mock_control.fault_latched = 1; }
+uint8_t ChassisControl_SafetyReady(const ChassisControl* c, uint32_t now)
+{ (void)now; return !c->fault_latched && c->feedback.calibrated && c->feedback.power_ready; }
+ChassisStopReason ChassisControl_RuntimeSafetyReason(const ChassisControl* c, uint32_t now)
+{ (void)now; return c->fault_latched ? CHASSIS_STOP_EXECUTION_FAULT : CHASSIS_STOP_NONE; }
 uint8_t VehiclePowerOutput_IsOn(void) { return mock_power; }
 uint8_t VehiclePowerOutput_Set(uint8_t on) { mock_power = on; return 1; }
 uint8_t PatrolRuntimePort_CanBusOff(void) { return mock_bus_off; }
@@ -58,16 +61,11 @@ void AppLog_Printf(AppLogLevel_t level, const char* tag, const char* format, ...
 { (void)level; (void)tag; (void)format; }
 uint8_t PatrolConfig_CalibrationCompatible(void) { return 1; }
 void RemoteService_UpdateFeedback(const ChassisFeedback* feedback) { mock_control.feedback = *feedback; }
-uint8_t RemoteService_BenchArm(uint16_t limit, uint32_t now) { (void)limit; (void)now; return 0; }
-uint8_t RemoteService_BenchDriveArm(uint16_t limit, uint32_t now) { (void)limit; (void)now; return 0; }
-uint8_t RemoteService_BenchDrivePermitted(void) { return 0; }
-const char* RemoteService_BenchSession(void) { return ""; }
-uint16_t RemoteService_BenchLimit(void) { return 30000; }
 void PatrolRuntimePort_AbortCanTx(void) {}
 uint8_t PatrolRuntimePort_CanTxReady(void)
 {
     /* Model the higher priority safety task revoking a selected command. */
-    if (mock_revoke_before_send) mock_permit = 0;
+    if (mock_revoke_before_send) RemoteService_Revoke();
     return mock_can_ready;
 }
 uint8_t PatrolRuntimePort_SendCan(const PatrolCanFrame* frame)

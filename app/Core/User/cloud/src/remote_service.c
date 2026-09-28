@@ -4,7 +4,6 @@
 #include <string.h>
 
 #include "app_log.h"
-#include "bench_drive.h"
 #include "chassis_cloud_protocol.h"
 #include "fixed_point.h"
 #include "main.h"
@@ -21,10 +20,6 @@ static char g_last_request_id[64];
 static char g_last_response[512];
 static uint32_t g_last_request_hash;
 static uint16_t g_last_request_length;
-static uint8_t g_bench_permit, g_bench_started, g_drive_permit;
-static uint16_t g_bench_limit;
-static uint32_t g_arm_deadline, g_arm_serial;
-static char g_bench_session[40];
 #if PATROL_CHASSIS_MQTT_LAB_TEST
 static uint8_t g_lab_hold_state;
 #endif
@@ -47,19 +42,17 @@ static uint32_t request_hash(const ChassisCloudCommand* command)
     return hash;
 }
 
-void RemoteService_BenchRevoke(void)
+void RemoteService_Revoke(void)
 {
     taskENTER_CRITICAL();
-    g_bench_permit = 0; g_drive_permit = 0; g_control.remote_enabled = 0;
     g_control.enable_request = 0; g_control.session_active = 0;
     g_control.target_rpm = 0; g_control.requested_rpm = 0;
     g_control.target_steering_mdeg = 0; g_control.session_id[0] = '\0';
-    g_bench_session[0] = '\0';
     taskEXIT_CRITICAL();
 }
 void RemoteService_RevokeForNetworkChange(void)
 {
-    RemoteService_BenchRevoke();
+    RemoteService_Revoke();
     g_last_request_id[0] = '\0';
     g_last_response[0] = '\0';
     g_last_request_hash = 0U;
@@ -74,10 +67,9 @@ uint8_t RemoteService_FormatNetworkState(char *output, uint16_t size)
     int written;
     if (output == 0 || size == 0U) return 0U;
     written = snprintf(output, size,
-        "{\"remotePermit\":%s,\"sessionActive\":%s,\"sessionId\":\"%s\","
+        "{\"sessionActive\":%s,\"sessionId\":\"%s\","
         "\"enableRequest\":%s,\"targetRpm\":%d,\"requestedRpm\":%d,"
         "\"steeringTargetMdeg\":%ld,\"replayCached\":%s}",
-        g_control.remote_enabled ? "true" : "false",
         g_control.session_active ? "true" : "false", g_control.session_id,
         g_control.enable_request ? "true" : "false", (int)g_control.target_rpm,
         (int)g_control.requested_rpm, (long)g_control.target_steering_mdeg,
@@ -89,7 +81,6 @@ uint8_t RemoteService_FormatNetworkState(char *output, uint16_t size)
 void RemoteService_LabSeedNetworkState(void)
 {
     taskENTER_CRITICAL();
-    g_control.remote_enabled = 1U;
     g_control.session_active = 1U;
     g_control.enable_request = 1U;
     g_control.target_rpm = 37;
@@ -105,58 +96,21 @@ void RemoteService_LabSeedNetworkState(void)
     APP_LOGW("REMOTE", "lab-only non-actuating network state seeded");
 }
 #endif
-uint8_t RemoteService_BenchPermitted(void) { return g_bench_permit; }
-void RemoteService_BenchFault(void)
+void RemoteService_ExecutionFault(void)
 {
     taskENTER_CRITICAL();
-    RemoteService_BenchRevoke();
+    RemoteService_Revoke();
     if (!g_control.fault_latched) {
         g_control.stop_reason = CHASSIS_STOP_EXECUTION_FAULT;
     }
     g_control.fault_latched = 1;
     taskEXIT_CRITICAL();
 }
-uint16_t RemoteService_BenchLimit(void) { return g_bench_limit; }
-const char* RemoteService_BenchSession(void) { return g_bench_session; }
-uint8_t RemoteService_BenchArm(uint16_t limit_mdeg, uint32_t now)
-{
-    char stamp[21];
-    uint8_t ready;
-    if (!g_remote_initialized ||
-        (limit_mdeg != 1000 && limit_mdeg != 3000 && limit_mdeg != 5000 &&
-         limit_mdeg != 20000 && limit_mdeg != 30000) ||
-        !TimeBase_FormatUtcMs(stamp, sizeof(stamp))) return 0;
-    taskENTER_CRITICAL();
-    if (g_bench_permit || g_control.session_active) { taskEXIT_CRITICAL(); return 0; }
-    g_control.remote_enabled = 1;
-    ready = ChassisControl_SafetyReady(&g_control, now);
-    if (ready) {
-        g_bench_permit = 1; g_bench_started = 0; g_bench_limit = limit_mdeg;
-        g_arm_deadline = now + 15000U;
-        snprintf(g_bench_session, sizeof(g_bench_session), "b-%s-%lu", stamp, (unsigned long)++g_arm_serial);
-        g_last_request_id[0] = 0; g_last_response[0] = 0;
-    } else g_control.remote_enabled = 0;
-    taskEXIT_CRITICAL();
-    return ready;
-}
-
-uint8_t RemoteService_BenchDrivePermitted(void) { return g_drive_permit && g_bench_permit; }
-uint8_t RemoteService_BenchDriveArm(uint16_t limit, uint32_t now)
-{
-    uint8_t ready;
-    taskENTER_CRITICAL();
-    ready = RemoteService_BenchArm(limit, now);
-    if (ready) g_drive_permit = 1;
-    taskEXIT_CRITICAL();
-    return ready;
-}
-
 void RemoteService_Init(void)
 {
     const PatrolRemoteConfigV5_t* cfg = PatrolConfig_Get();
     ChassisFeedback feedback = {0};
-    g_bench_permit = 0; g_bench_started = 0; g_drive_permit = 0;
-    ChassisControl_Init(&g_control, 0U); /* A persisted flag never arms the bench. */
+    ChassisControl_Init(&g_control);
     feedback.calibrated = cfg != 0 && cfg->calibrated && PatrolConfig_CalibrationCompatible();
     feedback.feedback_ms = HAL_GetTick();
     ChassisControl_SetFeedback(&g_control, &feedback);
@@ -165,8 +119,8 @@ void RemoteService_Init(void)
     g_last_request_hash = 0U;
     g_last_request_length = 0U;
     g_remote_initialized = 1U;
-    APP_LOGI("REMOTE", "initialized enabled=%u calibrated=%u; outputs gated",
-             (unsigned int)g_control.remote_enabled, (unsigned int)feedback.calibrated);
+    APP_LOGI("REMOTE", "initialized calibrated=%u; outputs gated",
+             (unsigned int)feedback.calibrated);
 }
 
 void RemoteService_Task(void)
@@ -185,9 +139,6 @@ void RemoteService_SafetyTick(uint32_t now_ms)
     if (!g_remote_initialized) return;
     taskENTER_CRITICAL();
     ChassisControl_Tick(&g_control, now_ms);
-    if (g_bench_permit && (!ChassisControl_SafetyReady(&g_control, now_ms) ||
-        (g_bench_started && (!g_control.session_active || !g_control.enable_request)) ||
-        (!g_bench_started && (int32_t)(now_ms - g_arm_deadline) >= 0))) RemoteService_BenchRevoke();
     taskEXIT_CRITICAL();
 }
 
@@ -208,9 +159,19 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
     int written;
     uint32_t payload_hash;
     uint8_t request_conflict = 0U;
+    uint8_t stop_applied = 0U;
     if (!g_remote_initialized || payload == 0 || response == 0 || size == 0U) return 0U;
     parse_status = ChassisCloud_Parse(payload, length, &command);
     if (command.request_id[0] == '\0') return 0U;
+    /* A valid safety stop takes effect even on replay or requestId conflict. */
+    if (parse_status == CHASSIS_CLOUD_OK && command.type == CHASSIS_CLOUD_COMMAND_MOTION &&
+        strcmp(command.action, "stop") == 0) {
+        taskENTER_CRITICAL();
+        stop_applied = ChassisControl_Apply(&g_control, command.action, command.session_id,
+            command.seq, command.lease_ms, command.drive_rpm,
+            command.steering_mdeg, HAL_GetTick());
+        taskEXIT_CRITICAL();
+    }
     payload_hash = request_hash(&command);
     if (strcmp(command.request_id, g_last_request_id) == 0 && g_last_response[0] != '\0')
     {
@@ -234,7 +195,7 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
             command.type == CHASSIS_CLOUD_COMMAND_POWER_OFF)
         {
             uint8_t target_on = command.type == CHASSIS_CLOUD_COMMAND_POWER_ON ? 1U : 0U;
-            if (!target_on) RemoteService_BenchRevoke();
+            if (!target_on) RemoteService_Revoke();
             if (!VehiclePowerOutput_IsAvailable()) {
                 code = 5001U;
                 message = "power output unavailable";
@@ -248,17 +209,11 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
             }
             goto format_response;
         }
-        if (strcmp(command.action, "stop") != 0 &&
-            (!g_bench_permit || strcmp(command.session_id, g_bench_session) != 0 ||
-             abs(command.drive_rpm) > (g_drive_permit ? BENCH_DRIVE_MAX_RPM : 0) ||
-             labs(command.steering_mdeg) > g_bench_limit)) {
-            code = 400U; message = "bench permit or motion limit rejected";
-            goto format_response;
-        }
         if (strcmp(command.action, "renew") == 0)
             session_conflict = (uint8_t)(!g_control.session_active ||
                 strcmp(g_control.session_id, command.session_id) != 0);
-        else if (g_control.session_active && strcmp(g_control.session_id, command.session_id) != 0)
+        else if (strcmp(command.action, "stop") != 0 && g_control.session_active &&
+                 strcmp(g_control.session_id, command.session_id) != 0)
             session_conflict = 1U;
         if (session_conflict)
         {
@@ -280,13 +235,9 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
         else
         {
             taskENTER_CRITICAL();
-            accepted = ChassisControl_Apply(&g_control, command.action, command.session_id,
+            accepted = stop_applied ? 1U : ChassisControl_Apply(&g_control, command.action, command.session_id,
                                             command.seq, command.lease_ms, command.drive_rpm,
                                             command.steering_mdeg, HAL_GetTick());
-            if (accepted) {
-                if (strcmp(command.action, "stop") == 0) RemoteService_BenchRevoke();
-                else g_bench_started = 1;
-            }
             taskEXIT_CRITICAL();
             code = accepted ? 200U : 5001U;
             message = accepted ? "operation accepted" : "internal control error";

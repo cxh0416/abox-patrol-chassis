@@ -6,15 +6,13 @@
 
 Profile：`vehicle_chassis 1.0`
 
-修订日期：2026-09-18
-
 ## 1. 协议范围
 
 本文定义巡防车底盘在 A-BOX MQTT V4 下的业务 Profile，包括车辆上下电、租约式底盘控制、完整底盘状态和业务安全语义。
 
 公共报文外层、Topic、QoS、请求响应、公共响应码、`requestId` 幂等、Manifest、心跳和 `sync_state` 通用规则统一遵循 [A-BOX 设备公共 MQTT 协议 V4](https://github.com/cxh0416/abox-platform-firmware/blob/master/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md)，本文不重复定义。
 
-本协议迁移不改变底盘运动控制、安全仲裁、CAN/CANopen、电机和执行器逻辑，也不改变 `/internal/*` 内部运维协议。硬件映射、内部算法、标定操作和验收记录不属于本 Profile。
+`/internal/*` 的运维和标定接口由[内部运维协议 V2.3](A-BOX内部运维协议V2.3.md)定义。硬件映射、内部算法、标定操作和验收记录不属于本 Profile。
 
 ## 2. 设备类型和能力描述
 
@@ -53,7 +51,7 @@ Manifest Profile 条目固定为：
 - `params` 固定为 `null`；
 - `expiresAt` 必填，最大有效期 5 秒；
 - `code=200` 表示 MCU 电源输出命令已锁存；`result.powerOutputOn` 表示当前命令锁存状态；
-- 成功不表示继电器、接触器、负载端或整车已经真实上电，也不授予运动许可。
+- 成功不表示负载端或整车已经真实上电；运动目标仍由 MCU 实时安全条件决定。
 
 ### 4.2 `power_off`
 
@@ -69,13 +67,15 @@ Manifest Profile 条目固定为：
 | 字段 | 类型 | 必填 | 单位/范围 | 含义 |
 |---|---|---:|---|---|
 | `action` | String | 是 | `acquire` / `renew` / `stop` | 建立租约、更新目标并续租，或请求零速并释放会话。 |
-| `sessionId` | String | 是 | 1～39 个字符 | 已授权会话标识；不得用 `requestId` 替代。 |
-| `seq` | Integer | 是 | `1..4294967295` | 会话内序号；`acquire/renew` 必须严格递增。 |
+| `sessionId` | String | 是 | 1～39 个字符 | 控制会话标识；不得用 `requestId` 替代。 |
+| `seq` | Integer | 是 | `1..4294967295` | 会话内序号；`acquire/renew` 必须严格递增；`stop` 不依赖序号递增。 |
 | `leaseMs` | Integer | 是 | ms；`1..1000` | 目标最长保持时间；到期未续租时安全停止。`stop` 也须携带。 |
 | `driveRpm` | Integer | 是 | rpm；`-200..200` | 行走目标；正负方向由产品标定定义，`0` 为零速。 |
 | `steeringDeg` | Number | 是 | °；`-30.000..30.000`，精度 `0.001°` | 轮胎转向角目标，`0` 为回中。 |
 
-协议上限不替代会话授权范围；未获行走许可时 `driveRpm` 必须为 `0`。本 Profile 不定义会话授权接口。
+非零 `driveRpm` 只有在兼容标定、有效控制会话及 MCU 当前运行安全条件满足时才接受；MCU 对目标是否继续执行作实时安全裁决。无需额外行走许可。
+
+`stop` 先将本地目标归零并请求安全停车，不因有效格式的 `sessionId` 不匹配或 `seq` 未递增而保留非零目标。会话匹配时同时释放会话；不匹配时保留原会话归属，不让请求方抢占控制权。重复 `stop` 安全且幂等。`code=200` 仅表示本地停车请求已受理，不证明车轮已静止。
 
 #### 4.3.2 成功结果
 
@@ -112,7 +112,7 @@ Manifest Profile 条目固定为：
 | `powerReady` | Boolean | 是否满足接受运动目标的电源条件；不是外部供电反馈。 |
 | `powerOutputOn` | Boolean | MCU 电源输出命令锁存状态；不是触点或负载反馈。 |
 | `otaBusy` | Boolean | OTA 是否处于禁止运动阶段。 |
-| `safetyReady` | Boolean | 是否通过接受非零目标的全部安全门禁；不表示车辆已运动或环境安全。 |
+| `safetyReady` | Boolean | 设备当前计算的运动就绪观测值；不表示车辆已运动或环境安全。 |
 | `stopReason` | Integer | 安全停止原因，见第 7.2 节。 |
 | `faultLatched` | Boolean | 是否存在必须明确复位的锁存故障。 |
 | `steeringBoundary` | Integer | `-1` 负向、`0` 无、`1` 正向边界；非零时禁止行走，只允许转向回退。 |
@@ -121,6 +121,8 @@ Manifest Profile 条目固定为：
 | `transportDiagnostics` | Object | 可选通信诊断计数，仅用于观测，不参与运动许可。 |
 
 `lastFault` 与 `transportDiagnostics` 至多出现一个。目标值、节点在线或公共心跳均不能替代新鲜的实测反馈。
+
+`safetyReady` 及其组成字段用于状态展示、诊断和操作提示，不构成平台侧 `acquire/renew` 的额外授权门禁。平台可提示设备未就绪，但不得复制 MCU 的安全条件组合来决定是否发送控制请求；设备对请求的实时响应及持续安全裁决为准。
 
 ## 6. `sync_state` 对接说明
 
@@ -136,14 +138,14 @@ Manifest Profile 条目固定为：
 
 ### 7.1 业务失败语义
 
-公共错误码遵循公共 V4。电源输出不可用或写入校验失败时不得报告成功；底盘请求未获授权、超过授权范围、安全条件不满足、会话不匹配或流程繁忙时不得更新为非零目标或抢占有效会话；内部异常不得通过成功响应掩盖。
+公共错误码遵循公共 V4。电源输出不可用或写入失败时不得报告成功；目标超出范围、安全条件不满足、`acquire/renew` 会话不匹配或流程繁忙时不得更新为非零目标或抢占有效会话；内部异常不得通过成功响应掩盖。
 
 ### 7.2 `stopReason`
 
 | 值 | 名称 | 含义 |
 |---:|---|---|
 | `0` | `none` | 无停止原因。 |
-| `1` | `remote_disabled` | 未获远程运动许可。 |
+| `1` | `reserved` | 历史 `remote_disabled` 编号；生产路径不产生，后续编号保持不变。 |
 | `2` | `uncalibrated` | 无可用转向标定。 |
 | `3` | `feedback_stale` | 运动反馈过期。 |
 | `4` | `angle_mismatch` | 双转角反馈偏差超限。 |
@@ -161,7 +163,7 @@ Manifest Profile 条目固定为：
 
 ### 7.3 安全语义
 
-- `safetyReady=false` 时禁止接受非零运动目标；
+- MCU 当前安全条件不满足时拒绝控制目标，并在持续执行中请求安全停止；
 - 未标定、反馈过期、双转角偏差超限、节点离线、CAN Bus-Off、驱动故障、OTA 忙或转向配置无效时禁止运动；
 - 改变前进/后退方向前先发送零速，并连续三次确认左右实测转速绝对值不超过 `20 rpm`；2 秒超时撤销会话并锁存故障；
 - 租约超时、连接中断或安全条件失效时进入安全停止；

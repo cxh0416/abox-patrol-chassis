@@ -95,6 +95,9 @@ int main(void)
         "{\"version\":\"2.0\",\"data\":{\"requestId\":\"center-get\","
         "\"command\":\"internal_config\",\"params\":{\"action\":\"get_center_calibration\","
         "\"sessionId\":\"c-1-1\"}}}";
+    static const char center_diagnostics[] =
+        "{\"version\":\"2.0\",\"data\":{\"requestId\":\"center-diag\","
+        "\"command\":\"internal_config\",\"params\":{\"action\":\"get_center_calibration_diagnostics\"}}}";
     static const char center_bad_get[] =
         "{\"version\":\"2.0\",\"data\":{\"requestId\":\"center-get-bad\","
         "\"command\":\"internal_config\",\"params\":{\"action\":\"get_center_calibration\"}}}";
@@ -109,11 +112,11 @@ int main(void)
     if (!expect_status("get_can_diag", can_diag, 0U, CLOUD_PROTOCOL_OK, CLOUD_PROTOCOL_ACTION_GET_CAN_DIAG, "req-can")) return 1;
     if (!expect_status("get_calibration", get_calibration, 0U, CLOUD_PROTOCOL_OK,
                        CLOUD_PROTOCOL_ACTION_GET_CALIBRATION, "req-cal-get")) return 1;
-    if (!expect_status("clear_calibration", clear_calibration, 0U, CLOUD_PROTOCOL_OK,
-                       CLOUD_PROTOCOL_ACTION_CLEAR_CALIBRATION, "req-cal-clear")) return 1;
-    if (!expect_status("set_calibration", set_calibration, 0U, CLOUD_PROTOCOL_OK,
-                       CLOUD_PROTOCOL_ACTION_SET_CALIBRATION, "req-cal-set")) return 1;
-    if (!expect_status("bad_calibration", bad_calibration, 0U, CLOUD_PROTOCOL_INVALID,
+    if (!expect_status("clear_calibration", clear_calibration, 0U, CLOUD_PROTOCOL_UNKNOWN_ACTION,
+                       CLOUD_PROTOCOL_ACTION_NONE, "req-cal-clear")) return 1;
+    if (!expect_status("set_calibration", set_calibration, 0U, CLOUD_PROTOCOL_UNKNOWN_ACTION,
+                       CLOUD_PROTOCOL_ACTION_NONE, "req-cal-set")) return 1;
+    if (!expect_status("bad_calibration", bad_calibration, 0U, CLOUD_PROTOCOL_UNKNOWN_ACTION,
                        CLOUD_PROTOCOL_ACTION_NONE, "req-cal-bad")) return 1;
     if (!expect_status("unknown", unknown, 0U, CLOUD_PROTOCOL_UNKNOWN_ACTION, CLOUD_PROTOCOL_ACTION_NONE, "req-2")) return 1;
     if (!expect_status("wrong_product", wrong_product, 0U, CLOUD_PROTOCOL_INVALID,
@@ -127,23 +130,20 @@ int main(void)
                        CLOUD_PROTOCOL_ACTION_NONE, "req-power-on")) return 1;
     if (!expect_status("power_off", power_off, 0U, CLOUD_PROTOCOL_UNKNOWN_ACTION,
                        CLOUD_PROTOCOL_ACTION_NONE, "req-power-off")) return 1;
-    if (!expect_status("arm_drive", arm_drive, 0U, CLOUD_PROTOCOL_OK,
-                       CLOUD_PROTOCOL_ACTION_BENCH_ARM, "req-arm-drive")) return 1;
-    if (!expect_status("bad_arm_drive", bad_arm_drive, 0U, CLOUD_PROTOCOL_INVALID,
+    if (!expect_status("arm_drive", arm_drive, 0U, CLOUD_PROTOCOL_UNKNOWN_ACTION,
+                       CLOUD_PROTOCOL_ACTION_NONE, "req-arm-drive")) return 1;
+    if (!expect_status("bad_arm_drive", bad_arm_drive, 0U, CLOUD_PROTOCOL_UNKNOWN_ACTION,
                        CLOUD_PROTOCOL_ACTION_NONE, "req-arm-bad")) return 1;
     if (!expect_status("center_jog", center_jog, 0U, CLOUD_PROTOCOL_OK,
                        CLOUD_PROTOCOL_ACTION_CENTER_CAL_JOG, "center-jog")) return 1;
     if (!expect_status("center_get", center_get, 0U, CLOUD_PROTOCOL_OK,
                        CLOUD_PROTOCOL_ACTION_CENTER_CAL_GET, "center-get")) return 1;
+    if (!expect_status("center_diagnostics", center_diagnostics, 0U, CLOUD_PROTOCOL_OK,
+                       CLOUD_PROTOCOL_ACTION_CENTER_CAL_DIAGNOSTICS, "center-diag")) return 1;
     if (!expect_status("center_bad_get", center_bad_get, 0U, CLOUD_PROTOCOL_INVALID,
                        CLOUD_PROTOCOL_ACTION_NONE, "center-get-bad")) return 1;
     if (!expect_status("center_bad_jog", center_bad_jog, 0U, CLOUD_PROTOCOL_INVALID,
                        CLOUD_PROTOCOL_ACTION_NONE, "center-bad")) return 1;
-    {
-        CloudProtocolRequest_t request;
-        if (CloudProtocol_Parse(arm_drive, (uint16_t)strlen(arm_drive), 0U, &request) != CLOUD_PROTOCOL_OK ||
-            request.bench_limit_mdeg != 30000U || !request.bench_drive) return 1;
-    }
     {
         CloudProtocolRequest_t request;
         if (CloudProtocol_Parse(center_jog, (uint16_t)strlen(center_jog), 0U, &request) != CLOUD_PROTOCOL_OK ||
@@ -169,14 +169,17 @@ int main(void)
             request.ota_size != 12345U || request.ota_crc32 != 0x89ABCDEFU) return 1;
     }
     {
+        char fractional[sizeof(ota) + 2U];
+        char* size;
         CloudProtocolRequest_t request;
-        if (CloudProtocol_Parse(set_calibration, (uint16_t)strlen(set_calibration), 0U, &request) !=
-                CLOUD_PROTOCOL_OK || request.steering_center_count != -85123 ||
-            request.absolute_center_count != 3182U ||
-            request.steering_counts_per_degree_milli != 2710800U ||
-            request.absolute_counts_per_degree_milli != 55250U ||
-            request.steering_direction != 1 || request.absolute_direction != 1 ||
-            request.steering_tolerance_mdeg != 2000U) return 1;
+        memcpy(fractional, ota, sizeof(ota));
+        size = strstr(fractional, "\"size\":12345");
+        if (size == NULL) return 1;
+        size += strlen("\"size\":12345");
+        memmove(size + 2U, size, strlen(size) + 1U);
+        memcpy(size, ".5", 2U);
+        if (CloudProtocol_Parse(fractional, (uint16_t)strlen(fractional), 1U, &request) != CLOUD_PROTOCOL_INVALID)
+            return 1;
     }
     {
         CloudProtocolRequest_t request;

@@ -18,7 +18,8 @@ class CenterRuntimeTests(unittest.TestCase):
                        "bench_drive.c", "steering_angle.c", "patrol_canopen.c"]
             command = [gcc, "-std=c11", "-Wall", "-Wextra", "-Werror", "-Wno-format",
                        "-ffunction-sections", "-fdata-sections", "-Wl,--gc-sections",
-                       "-DPATROL_CHASSIS_BENCH_STEERING_ENABLED=1",
+                       "-DPATROL_STEERING_EXECUTOR_ENABLED=1",
+                       "-DPATROL_CHASSIS_ACTUATION_ENABLED=1",
                        *include_args(private=("motion",)),
                        "-I" + str(ROOT / "shared/include"),
                        str(ROOT / "tests/center_runtime_cases.c"),

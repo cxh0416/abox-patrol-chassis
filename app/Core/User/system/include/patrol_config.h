@@ -26,7 +26,6 @@ void PatrolConfig_ResetDefault(PatrolRemoteConfigV5_t* cfg);
 void PatrolConfig_Load(void);
 const PatrolRemoteConfigV5_t* PatrolConfig_Get(void);
 uint8_t PatrolConfig_Save(const PatrolRemoteConfigV5_t* cfg);
-uint8_t PatrolConfig_SetRemoteEnabled(uint8_t enabled);
 uint8_t PatrolConfig_SetMqtt(const char* vid, const char* host, uint16_t port, const char* username,
                           const char* password);
 uint8_t PatrolConfig_SetDiagLog(uint8_t enabled, const char* host, uint16_t port, uint8_t level);

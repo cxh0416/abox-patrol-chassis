@@ -4,6 +4,7 @@ param(
     [string] $AppVersion = '',
     [switch] $BenchSteering,
     [switch] $BenchDrive,
+    [switch] $EnableActuation,
     [string] $VerifiedCandidate,
     [switch] $ReleasePair
 )
@@ -11,6 +12,9 @@ param(
 $ErrorActionPreference = 'Stop'
 if ($Configuration -ne 'Release') { throw 'Formal dist accepts Release only; use build_online_debug.ps1 for Debug.' }
 if ($BenchDrive) { $BenchSteering = $true }
+if ($EnableActuation -and (-not $BenchDrive -or $ReleasePair)) {
+    throw 'Motion-enabled release requires -BenchDrive and a single verified App candidate.'
+}
 if ($BenchSteering -and ($Configuration -ne 'Release' -or $ReleasePair -or
     [string]::IsNullOrWhiteSpace($VerifiedCandidate) -or !(Test-Path -LiteralPath $VerifiedCandidate -PathType Leaf))) {
     throw 'Steering publication requires Release and the exact verified candidate image.'
@@ -116,9 +120,9 @@ try {
 
     foreach ($version in $versions) {
         $appDefinitions = @("-DPATROL_CHASSIS_APP_VERSION_OVERRIDE=$version")
-        $appDefinitions += '-DPATROL_CHASSIS_ACTUATION_ENABLED=OFF'
-        $appDefinitions += "-DPATROL_CHASSIS_BENCH_STEERING_ENABLED=$(if ($BenchSteering) { 'ON' } else { 'OFF' })"
-        $appDefinitions += "-DPATROL_CHASSIS_BENCH_DRIVE_ENABLED=$(if ($BenchDrive) { 'ON' } else { 'OFF' })"
+        $appDefinitions += "-DPATROL_CHASSIS_ACTUATION_ENABLED=$(if ($EnableActuation) { 'ON' } else { 'OFF' })"
+        $appDefinitions += "-DPATROL_STEERING_EXECUTOR_ENABLED=$(if ($BenchSteering) { 'ON' } else { 'OFF' })"
+        $appDefinitions += "-DPATROL_DRIVE_EXECUTOR_ENABLED=$(if ($BenchDrive) { 'ON' } else { 'OFF' })"
         $app = Invoke-TargetBuild 'app' 'Patrol_Vehicle_Chassis_App' "ABoxUnified$Configuration-$version" $appDefinitions $credentialBuildRoot
         $appUsage = Get-Usage $app.elf
         if ($BenchSteering) {
@@ -142,8 +146,8 @@ try {
         if ($appText.IndexOf("PATROL_VEHICLE_CHASSIS_FW_VERSION=$version", [StringComparison]::Ordinal) -lt 0) { throw "Version marker missing from $version app image" }
         $manifest = [ordered]@{
             manifest_version = 3; product = 'patrol_vehicle_chassis'; version = $version; configuration = $Configuration
-            bench_steering_available = [bool]$BenchSteering; startup_motion_permit = $false; drive_actuation = [bool]$BenchDrive
-            drive_limit_rpm = $(if ($BenchDrive) {200} else {0})
+            steering_executor_compiled = [bool]$BenchSteering; drive_executor_compiled = [bool]$BenchDrive
+            startup_motion_permit = $false; actuation_enabled = $EnableActuation.IsPresent
             boot_version = 'abox-boot-2.3.0'; ota_scheme = 'boot_v2_ufs'; ota_downloader = 'app'
             app_range = '0x08008000..0x0803DFFF'; config_recovery_page = '0x0803E000'; boot_state_pages = @('0x0803E800', '0x0803F000'); config_page = '0x0803F800'
             product_commit = $productCommit; product_dirty = $false; platform_commit = $platformCommit; platform_dirty = $false

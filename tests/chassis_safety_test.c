@@ -4,7 +4,6 @@
 #include "absolute_encoder.h"
 #include "chassis_cloud_protocol.h"
 #include "chassis_control.h"
-#include "chassis_power.h"
 #include "fixed_point.h"
 #include "patrol_canopen.h"
 #include "patrol_diagnostics.h"
@@ -177,7 +176,6 @@ int main(void)
     ChassisControl control;
     ChassisFeedback feedback = {0};
     PatrolCanFrame frame;
-    ChassisPower power;
     uint8_t request[8];
     uint8_t write_response[8];
     uint8_t response[9] = {1, 3, 4, 0x12, 0x34, 0x56, 0x78, 0, 0};
@@ -311,7 +309,7 @@ int main(void)
     CHECK(PatrolDiagnostics_TakeSdoRead(&diagnostics, 260U, &frame));
     CHECK(frame.data[0] == 0x40U);
 
-    ChassisControl_Init(&control, 1);
+    ChassisControl_Init(&control);
     feedback.calibrated = 1; feedback.encoder_range_valid = 1; feedback.encoder_profile_ready = 1;
     feedback.steering_online = 1; feedback.drive_online = 1;
     feedback.power_ready = 1; feedback.feedback_ms = 100;
@@ -330,7 +328,7 @@ int main(void)
     ChassisControl_Tick(&control, 1300);
     CHECK(control.target_rpm == 0 && control.stop_reason == CHASSIS_STOP_LEASE_EXPIRED);
 
-    ChassisControl_Init(&control, 1);
+    ChassisControl_Init(&control);
     feedback.feedback_ms = 0; feedback.left_actual_rpm = 50; feedback.right_actual_rpm = 50;
     ChassisControl_SetFeedback(&control, &feedback);
     CHECK(ChassisControl_Apply(&control, "acquire", "reverse", 1, 1000, 50, 0, 0));
@@ -344,7 +342,7 @@ int main(void)
     CHECK(control.fault_latched && control.stop_reason == CHASSIS_STOP_DIRECTION_TIMEOUT);
     CHECK(!ChassisControl_Apply(&control, "acquire", "again", 1, 1000, 50, 0, 2010));
 
-    ChassisControl_Init(&control, 1);
+    ChassisControl_Init(&control);
     memset(&feedback, 0, sizeof(feedback));
     feedback.calibrated = 1; feedback.encoder_range_valid = 1; feedback.encoder_profile_ready = 1;
     feedback.steering_online = 1; feedback.drive_online = 1; feedback.power_ready = 1;
@@ -357,22 +355,11 @@ int main(void)
     CHECK(control.fault_latched && control.stop_reason == CHASSIS_STOP_ENCODER_RANGE);
     CHECK(control.target_rpm == 0 && control.target_steering_mdeg == 0 && !control.enable_request);
 
-    ChassisControl_Init(&control, 0);
+    ChassisControl_Init(&control);
     ChassisControl_SetFeedback(&control, &feedback);
     CHECK(!ChassisControl_Apply(&control, "acquire", "blocked", 1, 1000, 50, 0, 0));
     CHECK(control.target_rpm == 0);
 
-    ChassisPower_Init(&power, 0, 0);
-    CHECK(!ChassisPower_RequestOn(&power, 0) && power.relay_request == 0);
-    ChassisPower_Init(&power, 1, 0);
-    CHECK(ChassisPower_RequestOn(&power, 0));
-    ChassisPower_Tick(&power, 10, 1, 1);
-    CHECK(power.state == CHASSIS_POWER_READY && power.enable_request);
-    ChassisPower_RequestOff(&power, 20);
-    CHECK(!power.enable_request && power.state == CHASSIS_POWER_STOPPING);
-    ChassisPower_Tick(&power, 30, 1, 1);
-    ChassisPower_Tick(&power, 40, 0, 1);
-    CHECK(power.state == CHASSIS_POWER_OFF && !power.relay_request);
 
     g_power_level = 1U;
     VehiclePowerOutput_Init(test_power_write);
@@ -396,7 +383,7 @@ int main(void)
           CHASSIS_CLOUD_INVALID);
     /* Both signs: small overshoot remains controllable inward, not a fault. */
     for (int sign=-1; sign<=1; sign+=2) {
-        ChassisControl_Init(&control,1); memset(&feedback,0,sizeof(feedback));
+        ChassisControl_Init(&control); memset(&feedback,0,sizeof(feedback));
         feedback.calibrated=feedback.encoder_profile_ready=feedback.encoder_range_valid=1;
         feedback.steering_online=feedback.drive_online=feedback.power_ready=1;
         feedback.feedback_ms=100; feedback.steering_actual_mdeg=sign*29963;
@@ -416,7 +403,7 @@ int main(void)
         ChassisControl_SetFeedback(&control,&feedback); ChassisControl_Tick(&control,140);
         CHECK(control.fault_latched && !control.enable_request && control.stop_reason==CHASSIS_STOP_ENCODER_RANGE);
         CHECK(!ChassisControl_Apply(&control,"renew","edge",4,1000,0,0,150));
-        ChassisControl_Init(&control,1);feedback.steering_actual_mdeg=sign*30045;feedback.encoder_actual_mdeg=sign*30045;
+        ChassisControl_Init(&control);feedback.steering_actual_mdeg=sign*30045;feedback.encoder_actual_mdeg=sign*30045;
         feedback.feedback_ms=0;ChassisControl_SetFeedback(&control,&feedback);
         CHECK(!ChassisControl_Apply(&control,"acquire","stale",1,1000,0,0,500));
         feedback.feedback_ms=500;feedback.drive_fault=1;ChassisControl_SetFeedback(&control,&feedback);

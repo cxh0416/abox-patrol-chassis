@@ -10,5 +10,6 @@ uint8_t CenterCalibration_Jog(const char* session_id, int16_t delta_mdeg);
 uint8_t CenterCalibration_Commit(const char* session_id);
 uint8_t CenterCalibration_Cancel(const char* session_id);
 uint8_t CenterCalibration_Format(char* out, uint16_t size);
+uint8_t CenterCalibration_FormatDiagnostics(char* out, uint16_t size);
 void CenterCalibration_Tick(uint32_t now);
 #endif

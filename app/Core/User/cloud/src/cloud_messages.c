@@ -502,13 +502,12 @@ void CloudMessages_BuildCalibrationResult(char* output, uint16_t size)
     const PatrolRemoteConfigV5_t* cfg = PatrolConfig_Get();
     if (output == 0 || size == 0U || cfg == 0) return;
     (void)snprintf(output, size,
-        "{\"profileCompatible\":%s,\"configVersion\":%u,\"calibrated\":%s,\"remoteEnabled\":%s,\"steeringCenterCount\":%ld,"
+        "{\"profileCompatible\":%s,\"configVersion\":%u,\"calibrated\":%s,\"steeringCenterCount\":%ld,"
         "\"absoluteCenterCount\":%lu,\"steeringCountsPerDegreeMilli\":%lu,"
         "\"absoluteCountsPerDegreeMilli\":%lu,\"steeringDirection\":%d,"
         "\"absoluteDirection\":%d,\"steeringToleranceMdeg\":%u}",
         PatrolConfig_CalibrationCompatible() ? "true" : "false",
         (unsigned int)cfg->version, cfg->calibrated ? "true" : "false",
-        cfg->remote_enabled ? "true" : "false",
         (long)cfg->steering_center_count, (unsigned long)cfg->absolute_center_count,
         (unsigned long)cfg->steering_counts_per_degree_milli,
         (unsigned long)cfg->absolute_counts_per_degree_milli,

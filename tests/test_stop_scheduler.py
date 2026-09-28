@@ -16,7 +16,8 @@ class StopSchedulerTests(unittest.TestCase):
             sources = ['bench_steering.c', 'bench_drive.c', 'steering_angle.c',
                        'patrol_canopen.c', 'patrol_diagnostics.c', 'patrol_runtime.c', 'center_calibration.c']
             result = subprocess.run([shutil.which('gcc') or 'gcc', '-std=c11', '-Wall',
-                '-Wextra', '-Werror', '-Wno-format', '-ffunction-sections', '-fdata-sections', '-Wl,--gc-sections', '-I' + str(ROOT / 'app/Core/User/motion/private'), '-I' + str(ROOT / 'shared/include'), *include_args(), str(path),
+                '-Wextra', '-Werror', '-Wno-format', '-ffunction-sections', '-fdata-sections', '-Wl,--gc-sections',
+                '-DPATROL_CHASSIS_ACTUATION_ENABLED=1', '-I' + str(ROOT / 'app/Core/User/motion/private'), '-I' + str(ROOT / 'shared/include'), *include_args(), str(path),
                 *[str(ROOT / 'app/Core/User/motion/src' / s) for s in sources], '-o', str(binary)],
                 capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)

@@ -10,11 +10,14 @@
 
 PatrolMotion g_motion;
 
-#ifndef PATROL_CHASSIS_BENCH_STEERING_ENABLED
-#define PATROL_CHASSIS_BENCH_STEERING_ENABLED 0
+#ifndef PATROL_STEERING_EXECUTOR_ENABLED
+#define PATROL_STEERING_EXECUTOR_ENABLED 0
 #endif
-#ifndef PATROL_CHASSIS_BENCH_DRIVE_ENABLED
-#define PATROL_CHASSIS_BENCH_DRIVE_ENABLED 0
+#ifndef PATROL_DRIVE_EXECUTOR_ENABLED
+#define PATROL_DRIVE_EXECUTOR_ENABLED 0
+#endif
+#ifndef PATROL_CHASSIS_ACTUATION_ENABLED
+#define PATROL_CHASSIS_ACTUATION_ENABLED 0
 #endif
 
 static MotionFaultRecord last_fault;
@@ -71,37 +74,12 @@ void PatrolRuntime_GetDiagnostics(PatrolDiagnosticsSnapshot* snapshot)
     PatrolRuntimePort_Exit();
 }
 
-static uint8_t bench_arm(uint16_t limit_mdeg, uint8_t drive)
-{
-    PatrolDiagnosticsSnapshot s;
-    uint8_t result = 0;
-    PatrolRuntimePort_Enter();
-    PatrolDiagnostics_Snapshot(&g_motion.diagnostics, PatrolRuntimePort_Now(), &s);
-    if (PATROL_CHASSIS_BENCH_STEERING_ENABLED && (!drive || PATROL_CHASSIS_BENCH_DRIVE_ENABLED) &&
-        g_motion.bench.phase == BENCH_IDLE && g_motion.drive.phase == BENCH_IDLE &&
-        g_motion.coordinate.valid &&
-        PatrolConfig_Get()->calibrated && PatrolConfig_CalibrationCompatible() &&
-        PatrolConfig_SingleTurnProfileReady() && RemoteService_State()->feedback.encoder_range_valid &&
-        s.steering_feedback_fresh && s.drive_feedback_fresh && s.encoder_online &&
-        s.steering_status_fresh && s.drive_status_fresh &&
-        s.encoder_config_valid && !s.drive_fault && !PatrolRuntimePort_OtaBusy() &&
-        !PatrolRuntimePort_CanBusOff() && VehiclePowerOutput_IsOn() &&
-        (s.steering_status_word & 0x6FU) != 0x27U && (s.drive_status_word & 4U) == 0 &&
-        labs(s.left_actual_rpm) <= 20 && labs(s.right_actual_rpm) <= 20)
-        result = drive ? RemoteService_BenchDriveArm(limit_mdeg, PatrolRuntimePort_Now()) :
-            RemoteService_BenchArm(limit_mdeg, PatrolRuntimePort_Now());
-    PatrolRuntimePort_Exit();
-    if (result) PatrolRuntime_BeginFaultEpisode();
-    return result;
-}
-uint8_t PatrolRuntime_BenchArm(uint16_t limit) { return bench_arm(limit, 0); }
-uint8_t PatrolRuntime_BenchDriveArm(uint16_t limit) { return bench_arm(limit, 1); }
 uint8_t PatrolRuntime_ResetFault(void)
 {
     PatrolRuntimePort_Enter();
     if (VehiclePowerOutput_IsOn() || PatrolRuntimePort_OtaBusy() || fault_dirty ||
         g_motion.center_cal.encoder_write_state==4U) { PatrolRuntimePort_Exit(); return 0; }
-    RemoteService_BenchRevoke(); PatrolRuntimePort_AbortCanTx();
+    RemoteService_Revoke(); PatrolRuntimePort_AbortCanTx();
     BenchSteering_Init(&g_motion.bench); BenchDrive_Init(&g_motion.drive);
     g_motion.diagnostics.pending_valid=0; g_motion.bench_transport_stopped=0;
     SteeringCoordinate_Reset(&g_motion.coordinate); g_motion.coordinate_reset_requested=0;
@@ -110,33 +88,6 @@ uint8_t PatrolRuntime_ResetFault(void)
     RemoteService_Init(); /* No permit, enable, target or previous session survives. */
     fault_captured=0;
     PatrolRuntimePort_Exit(); return 1;
-}
-void PatrolRuntime_BenchStop(void)
-{
-    PatrolRuntimePort_Enter();
-    RemoteService_BenchRevoke();
-    BenchSteering_Stop(&g_motion.bench, PatrolRuntimePort_Now(), 0);
-    BenchDrive_Stop(&g_motion.drive, PatrolRuntimePort_Now(), 0);
-    PatrolRuntimePort_Exit();
-}
-void PatrolRuntime_FormatBench(char* out, uint16_t size)
-{
-    PatrolRuntimePort_Enter();
-    snprintf(out, size, "{\"available\":%s,\"permitted\":%s,\"phase\":%u,\"step\":%u,"
-        "\"fault\":%lu,\"feedbackGateMask\":%u,\"coordinateValid\":%s,\"runtimeCenterCount\":%ld,"
-        "\"limitMdeg\":%u,\"sessionId\":\"%s\",\"driveAvailable\":%s,\"drivePermitted\":%s,\"drivePhase\":%u,\"driveFault\":%lu,\"driveLimitRpm\":200,"
-        "\"safetyProfile\":\"single_turn_4096_center0_limit30_margin05_v3\",\"profileReady\":%s,\"rangeValid\":%s,\"contactorFeedbackAvailable\":false}",
-        PATROL_CHASSIS_BENCH_STEERING_ENABLED ? "true" : "false",
-        RemoteService_BenchPermitted() ? "true" : "false", (unsigned)g_motion.bench.phase,
-        (unsigned)g_motion.bench.step, (unsigned long)g_motion.bench.fault,
-        g_motion.bench.phase == BENCH_FAULT ? g_motion.bench_fault_gate_mask : g_motion.feedback_gate_mask,
-        g_motion.coordinate.valid ? "true" : "false", (long)g_motion.coordinate.runtime_center,
-        RemoteService_BenchLimit(), RemoteService_BenchSession(),
-        PATROL_CHASSIS_BENCH_DRIVE_ENABLED ? "true" : "false",
-        RemoteService_BenchDrivePermitted() ? "true" : "false", (unsigned)g_motion.drive.phase, (unsigned long)g_motion.drive.fault,
-        PatrolConfig_SingleTurnProfileReady() ? "true" : "false",
-        RemoteService_State()->feedback.encoder_range_valid ? "true" : "false");
-    PatrolRuntimePort_Exit();
 }
 
 void PatrolRuntime_OnCanFrame(const PatrolCanFrame* frame, uint32_t now)
@@ -212,7 +163,7 @@ uint32_t PatrolRuntime_ApplyCut(uint32_t now)
         BenchDrive_Stop(&g_motion.drive, now, 1);
         BenchSteering_Stop(&g_motion.bench, now, 1);
         g_motion.bench_fault_gate_mask = g_motion.feedback_gate_mask;
-        RemoteService_BenchFault();
+        RemoteService_ExecutionFault();
         (void)VehiclePowerOutput_Set(0);
         g_motion.bench.cut_power = 0; g_motion.drive.cut_power = 0;
         PatrolRuntimePort_Exit();
@@ -284,7 +235,7 @@ void PatrolRuntime_UpdateFeedback(uint32_t now)
     feedback.can_bus_off = PatrolRuntimePort_CanBusOff();
     feedback.drive_fault = snapshot.drive_fault;
     feedback.ota_busy = PatrolRuntimePort_OtaBusy();
-    /* Bench readiness is not physical contactor feedback. No unconfirmed pin is read. */
+    /* Readiness uses driver and encoder evidence, never a nonexistent contactor input. */
     g_motion.feedback_gate_mask = (!snapshot.steering_feedback_fresh ? 1U : 0U) |
         (!snapshot.drive_feedback_fresh ? 2U : 0U) | (!snapshot.encoder_online ? 4U : 0U) |
         (!snapshot.steering_status_fresh ? 8U : 0U) | (!snapshot.drive_status_fresh ? 16U : 0U) |
@@ -292,15 +243,15 @@ void PatrolRuntime_UpdateFeedback(uint32_t now)
         ((snapshot.drive_status_word & 4U) != 0 ? 64U : 0U) |
         ((labs(snapshot.left_actual_rpm) > 20 || labs(snapshot.right_actual_rpm) > 20) ? 128U : 0U) |
         (!VehiclePowerOutput_IsOn() ? 256U : 0U);
-    /* Only an executing drive session may pass moving/Operation Enabled gates.
-     * Keep this allowance during bounded stopping after RAM permission is revoked. */
+    /* An executing drive session may pass moving/Operation Enabled gates
+     * while its bounded stop sequence is in progress. */
     if (g_motion.drive.phase != BENCH_IDLE && g_motion.drive.phase != BENCH_FAULT)
         g_motion.feedback_gate_mask &= (uint16_t)~(64U | 128U);
     feedback.encoder_range_valid = SteeringAngle_AbsoluteWithinLimit(
         snapshot.encoder_count, cfg->absolute_center_count,
         cfg->absolute_counts_per_degree_milli, cfg->absolute_direction,
         VEHICLE_STEERING_TRIP_MDEG, &feedback.encoder_actual_mdeg);
-    if (PATROL_CHASSIS_BENCH_STEERING_ENABLED) {
+    if (PATROL_STEERING_EXECUTOR_ENABLED) {
         uint8_t was_valid = g_motion.coordinate.valid;
         if (!VehiclePowerOutput_IsOn() || CenterCalibration_IsActive()) SteeringCoordinate_Reset(&g_motion.coordinate);
         else if (g_motion.coordinate.valid && SteeringCoordinate_EpochLost(
@@ -327,7 +278,8 @@ void PatrolRuntime_UpdateFeedback(uint32_t now)
         }
         if (!g_motion.coordinate.valid) g_motion.feedback_gate_mask |= 512U;
     }
-    feedback.power_ready = PATROL_CHASSIS_BENCH_STEERING_ENABLED && g_motion.feedback_gate_mask == 0;
+    feedback.power_ready = PATROL_CHASSIS_ACTUATION_ENABLED &&
+        PATROL_STEERING_EXECUTOR_ENABLED && g_motion.feedback_gate_mask == 0;
     feedback.left_actual_rpm = snapshot.left_actual_rpm > 32767 ? 32767 :
         (snapshot.left_actual_rpm < -32768 ? -32768 : (int16_t)snapshot.left_actual_rpm);
     /* Normalize mirror-mounted right-wheel feedback to vehicle coordinates.
@@ -338,7 +290,7 @@ void PatrolRuntime_UpdateFeedback(uint32_t now)
     {
         feedback.steering_actual_mdeg = SteeringAngle_FromControllerCount(
             snapshot.steering_position_count,
-            PATROL_CHASSIS_BENCH_STEERING_ENABLED && g_motion.coordinate.valid ?
+            PATROL_STEERING_EXECUTOR_ENABLED && g_motion.coordinate.valid ?
                 g_motion.coordinate.runtime_center : cfg->steering_center_count,
             cfg->steering_counts_per_degree_milli, cfg->steering_direction);
         if (!feedback.encoder_range_valid)
@@ -380,23 +332,27 @@ void PatrolRuntime_Tick(void)
         const ChassisControl* c = RemoteService_State();
         const PatrolRemoteConfigV5_t* cfg = PatrolConfig_Get();
         PatrolRuntime_ApplyReset(now);
-        uint8_t normal_safe = g_motion.coordinate.valid && VehiclePowerOutput_IsOn() && !PatrolRuntimePort_CanBusOffActive() &&
-            c->feedback.power_ready && c->feedback.calibrated &&
-            c->feedback.steering_online && c->feedback.drive_online &&
-            !c->feedback.drive_fault && !c->feedback.can_bus_off && !PatrolRuntimePort_OtaBusy() &&
-            now - c->feedback.feedback_ms <= CHASSIS_FEEDBACK_TIMEOUT_MS &&
-            llabs((int64_t)c->feedback.steering_actual_mdeg - c->feedback.encoder_actual_mdeg) <= 2000;
-        uint8_t remote_requested = RemoteService_BenchPermitted() && c->session_active && c->enable_request;
+        uint8_t normal_safe = g_motion.coordinate.valid && VehiclePowerOutput_IsOn() &&
+            !PatrolRuntimePort_CanBusOffActive() && ChassisControl_SafetyReady(c, now);
+        uint8_t remote_requested = c->session_active && c->enable_request &&
+            (int32_t)(now - c->lease_deadline_ms) < 0;
         uint8_t center_requested = g_motion.center_cal.phase == CENTER_CAL_JOGGING;
         uint8_t center_executor_active = center_requested ||
             g_motion.center_cal.phase == CENTER_CAL_STOPPING;
         uint8_t center_safe = VehiclePowerOutput_IsOn() && !PatrolRuntimePort_CanBusOffActive() &&
-            c->feedback.steering_online && c->feedback.drive_online && !c->feedback.drive_fault &&
-            !c->feedback.can_bus_off && !PatrolRuntimePort_OtaBusy() && !c->fault_latched &&
-            now - c->feedback.feedback_ms <= CHASSIS_FEEDBACK_TIMEOUT_MS &&
+            ChassisControl_RuntimeSafetyReason(c, now) == CHASSIS_STOP_NONE &&
             (g_motion.feedback_gate_mask & (uint16_t)~512U) == 0U && g_motion.center_cal.relative_valid &&
             llabs((int64_t)g_motion.center_cal.driver_relative_mdeg -
                   g_motion.center_cal.encoder_relative_mdeg) <= VEHICLE_STEERING_TOLERANCE_MDEG;
+        uint8_t stop_transport_safe = VehiclePowerOutput_IsOn() &&
+            !PatrolRuntimePort_CanBusOffActive() && !PatrolRuntimePort_OtaBusy();
+        if (center_requested && !center_safe && stop_transport_safe) {
+            CenterCalibration_RequestStopForFault(
+                g_motion.center_cal.relative_valid ? CENTER_CAL_REASON_GATE_NOT_READY :
+                CENTER_CAL_REASON_RELATIVE_MISMATCH, g_motion.feedback_gate_mask, now);
+            center_requested = 0U;
+            center_executor_active = 1U;
+        }
         /* STOPPING still belongs to the commissioning executor.  Falling
          * back to normal_safe here rejects an intentionally uncalibrated
          * vehicle while the executor is sending its bounded stop sequence,
@@ -404,29 +360,32 @@ void PatrolRuntime_Tick(void)
         uint8_t safe = center_executor_active ? center_safe : normal_safe;
         uint8_t requested = remote_requested || center_requested;
         int32_t requested_angle = center_requested ? g_motion.center_cal.target_mdeg : c->target_steering_mdeg;
-        if (PATROL_CHASSIS_BENCH_STEERING_ENABLED && requested && safe && g_motion.bench.phase == BENCH_IDLE) {
+        if (PATROL_CHASSIS_ACTUATION_ENABLED && PATROL_STEERING_EXECUTOR_ENABLED &&
+            requested && safe && g_motion.bench.phase == BENCH_IDLE) {
             if (center_requested)
                 BenchSteering_StartCommissioning(&g_motion.bench, g_motion.diagnostics.steering_position_count,
                     g_motion.center_cal.start_driver_count, VEHICLE_CENTER_COMMISSIONING_LIMIT_MDEG, now);
             else
                 BenchSteering_Start(&g_motion.bench, g_motion.diagnostics.steering_position_count,
                     g_motion.coordinate.runtime_center, cfg->steering_center_count,
-                    RemoteService_BenchLimit(), now);
+                    CHASSIS_MAX_STEERING_MDEG, now);
         }
         safe = safe && !c->fault_latched;
-        if (PATROL_CHASSIS_BENCH_DRIVE_ENABLED && remote_requested && safe &&
-            RemoteService_BenchDrivePermitted() && g_motion.bench.phase == BENCH_ACTIVE && g_motion.drive.phase == BENCH_IDLE)
+        if (PATROL_CHASSIS_ACTUATION_ENABLED && PATROL_DRIVE_EXECUTOR_ENABLED && remote_requested && safe &&
+            g_motion.bench.phase == BENCH_ACTIVE && g_motion.drive.phase == BENCH_IDLE)
             BenchDrive_Start(&g_motion.drive, now);
-        BenchDrive_Tick(&g_motion.drive, now, remote_requested && RemoteService_BenchDrivePermitted(), safe,
+        BenchDrive_Tick(&g_motion.drive, now, remote_requested, safe,
             c->target_rpm, g_motion.diagnostics.left_actual_rpm, g_motion.diagnostics.right_actual_rpm,
             g_motion.diagnostics.left_rpm_ms, g_motion.diagnostics.right_rpm_ms);
-        BenchSteering_Tick(&g_motion.bench, now, requested && g_motion.drive.phase != BENCH_FAULT, safe,
+        BenchSteering_Tick(&g_motion.bench, now, requested && g_motion.drive.phase != BENCH_FAULT,
+            center_executor_active && g_motion.center_cal.phase == CENTER_CAL_STOPPING ?
+                stop_transport_safe : safe,
             requested_angle, c->feedback.steering_actual_mdeg);
         g_motion.diagnostics.motion_priority = CenterCalibration_IsActive() ||
             (g_motion.bench.phase != BENCH_IDLE && g_motion.bench.phase != BENCH_FAULT) ||
             (g_motion.drive.phase != BENCH_IDLE && g_motion.drive.phase != BENCH_FAULT);
         if (g_motion.bench.phase == BENCH_STOPPING || g_motion.bench.phase == BENCH_FAULT) {
-            RemoteService_BenchRevoke();
+            if (!CenterCalibration_IsActive()) RemoteService_Revoke();
             if (!g_motion.bench_transport_stopped) {
                 g_motion.diagnostics.pending_valid = 0;
                 PatrolRuntimePort_AbortCanTx();
@@ -458,16 +417,16 @@ void PatrolRuntime_Tick(void)
             g_motion.center_cal.phase != CENTER_CAL_STOPPING && (bench_frame == 1 ?
             (g_motion.bench.phase != BENCH_STOPPING && g_motion.bench.phase != BENCH_IDLE) :
             (g_motion.drive.phase != BENCH_STOPPING && g_motion.drive.phase != BENCH_IDLE)) &&
-            (!RemoteService_BenchPermitted() || !RemoteService_State()->enable_request ||
-             (int32_t)(PatrolRuntimePort_Now() - RemoteService_State()->lease_deadline_ms) >= 0)) {
+             (!RemoteService_State()->session_active || !RemoteService_State()->enable_request ||
+              (int32_t)(PatrolRuntimePort_Now() - RemoteService_State()->lease_deadline_ms) >= 0)) {
             BenchSteering_Stop(&g_motion.bench, PatrolRuntimePort_Now(), 0);
             BenchDrive_Stop(&g_motion.drive, PatrolRuntimePort_Now(), 0);
             have_request = 0;
         }
         /* Each compiled executor is restricted to its own node. */
-        if (have_request && ((bench_frame == 1 && PATROL_CHASSIS_BENCH_STEERING_ENABLED &&
+        if (have_request && ((bench_frame == 1 && PATROL_STEERING_EXECUTOR_ENABLED &&
                 (request.id == 0x601U || (request.id == 0 && request.data[1] == 1))) ||
-             (bench_frame == 2 && PATROL_CHASSIS_BENCH_DRIVE_ENABLED &&
+              (bench_frame == 2 && PATROL_DRIVE_EXECUTOR_ENABLED &&
                 (request.id == 0x602U || (request.id == 0 && request.data[1] == 2))) ||
              (!bench_frame && (request.id == 0x601U || request.id == 0x602U) && request.data[0] == 0x40U)) &&
             !PatrolRuntimePort_SendCan(&request))

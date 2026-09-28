@@ -54,7 +54,7 @@ void PatrolConfig_ResetDefault(PatrolRemoteConfigV5_t* cfg)
     cfg->magic = PATROL_CONFIG_MAGIC;
     cfg->version = PATROL_CONFIG_VERSION;
     cfg->length = sizeof(*cfg);
-    cfg->remote_enabled = 0U;
+    cfg->reserved_remote = 0U;
     cfg->mqtt_tls_enabled = 0U;
     cfg->mqtt_tls_profile_id = PATROL_CONFIG_TLS_PROFILE_DEFAULT;
     copy_string(cfg->vid, sizeof(cfg->vid), PATROL_CONFIG_DEFAULT_VID);
@@ -80,12 +80,11 @@ void PatrolConfig_Load(void)
     if (!OTA_Info_LoadRemoteConfig(&g_patrol_config))
     {
         PatrolConfig_ResetDefault(&g_patrol_config);
-        APP_LOGW("CFG", "default VCU config; remote disabled");
+        APP_LOGW("CFG", "default chassis config; calibration required");
     }
     else
     {
-        APP_LOGI("CFG", "loaded vid=%s enabled=%u", g_patrol_config.vid,
-                 (unsigned int)g_patrol_config.remote_enabled);
+        APP_LOGI("CFG", "loaded vid=%s", g_patrol_config.vid);
     }
 }
 
@@ -99,7 +98,7 @@ uint8_t PatrolConfig_Save(const PatrolRemoteConfigV5_t* cfg)
     next.magic = PATROL_CONFIG_MAGIC;
     next.version = PATROL_CONFIG_VERSION;
     next.length = sizeof(next);
-    next.remote_enabled = next.remote_enabled ? 1U : 0U;
+    next.reserved_remote = 0U;
     next.mqtt_tls_enabled = next.mqtt_tls_enabled ? 1U : 0U;
     next.calibrated = next.calibrated ? 1U : 0U;
     if (next.calibrated && (next.steering_counts_per_degree_milli == 0U ||
@@ -113,15 +112,8 @@ uint8_t PatrolConfig_Save(const PatrolRemoteConfigV5_t* cfg)
     next.checksum = config_checksum(&next);
     if (!OTA_Info_SaveRemoteConfig(&next)) return 0U;
     g_patrol_config = next;
-    APP_LOGI("CFG", "saved enabled=%u vid=%s", (unsigned int)next.remote_enabled, next.vid);
+    APP_LOGI("CFG", "saved vid=%s", next.vid);
     return 1U;
-}
-
-uint8_t PatrolConfig_SetRemoteEnabled(uint8_t enabled)
-{
-    PatrolRemoteConfigV5_t next = g_patrol_config;
-    next.remote_enabled = enabled ? 1U : 0U;
-    return PatrolConfig_Save(&next);
 }
 
 uint8_t PatrolConfig_SetMqtt(const char* vid, const char* host, uint16_t port, const char* username,
@@ -200,8 +192,7 @@ uint8_t PatrolConfig_SetCalibration(int32_t steering_center_count, uint32_t abso
     next.steering_direction = steering_direction;
     next.absolute_direction = absolute_direction;
     next.steering_tolerance_mdeg = tolerance_mdeg;
-    /* A calibration write never arms remote motion. */
-    next.remote_enabled = 0U;
+    next.reserved_remote = 0U;
     next.calibrated = 1U;
     return PatrolConfig_Save(&next);
 }
@@ -209,7 +200,7 @@ uint8_t PatrolConfig_SetCalibration(int32_t steering_center_count, uint32_t abso
 uint8_t PatrolConfig_ClearCalibration(void)
 {
     PatrolRemoteConfigV5_t next = g_patrol_config;
-    next.remote_enabled = 0U;
+    next.reserved_remote = 0U;
     next.calibrated = 0U;
     return PatrolConfig_Save(&next);
 }

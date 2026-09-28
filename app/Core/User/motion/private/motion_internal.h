@@ -20,7 +20,8 @@ typedef enum {
     CENTER_CAL_ENCODER_VERIFY,
     CENTER_CAL_COMPLETE,
     CENTER_CAL_FAILED,
-    CENTER_CAL_START_STABLE
+    CENTER_CAL_START_STABLE,
+    CENTER_CAL_EXPIRED
 } CenterCalibrationPhase;
 
 typedef enum {
@@ -60,7 +61,6 @@ typedef enum {
 #define CENTER_GATE_ENCODER_CONFIG_INVALID     (1UL << 11)
 #define CENTER_GATE_DRIVE_FAULT                (1UL << 12)
 #define CENTER_GATE_WHEELS_MOVING              (1UL << 13)
-#define CENTER_GATE_BENCH_PERMISSION_ACTIVE    (1UL << 14)
 #define CENTER_GATE_CONTROL_SESSION_ACTIVE     (1UL << 15)
 #define CENTER_GATE_CONTROL_ENABLE_ACTIVE      (1UL << 16)
 #define CENTER_GATE_DRIVE_OPERATION_ENABLED    (1UL << 17)
@@ -69,6 +69,8 @@ typedef enum {
 #define CENTER_GATE_ENCODER_OUT_OF_RANGE       (1UL << 20)
 #define CENTER_GATE_BENCH_EXECUTOR_BUSY        (1UL << 21)
 #define CENTER_GATE_DRIVE_EXECUTOR_BUSY        (1UL << 22)
+#define CENTER_GATE_RUNTIME_UNSAFE             (1UL << 23)
+#define CENTER_GATE_ACTUATION_DISABLED         (1UL << 24)
 
 typedef struct {
     uint32_t at_ms;
@@ -111,6 +113,10 @@ typedef struct {
     uint32_t last_encoder_sample_ms;
     uint8_t stable_samples;
     uint8_t relative_valid;
+    uint8_t cancel_requested;
+    uint8_t stop_fault_pending;
+    uint8_t stop_fault_reason;
+    uint32_t stop_gate_mask;
     volatile uint8_t encoder_write_state; /* 0 idle, 1 requested, 2 echoed, 3 not sent, 4 executing, 5 uncertain. */
     CenterCalibrationFailure failure;
     uint32_t last_reject_ms;
@@ -143,6 +149,8 @@ void CenterCalibration_UpdateRelative(const PatrolDiagnosticsSnapshot* s);
 void CenterCalibration_CaptureFailureLocked(CenterCalibrationReason reason, uint32_t gate_mask,
                                           uint32_t now,
                                           const PatrolDiagnosticsSnapshot* snapshot);
+void CenterCalibration_RequestStopForFault(CenterCalibrationReason reason, uint32_t gate_mask,
+                                          uint32_t now);
 void CenterCalibration_Fail(uint32_t fault, CenterCalibrationReason reason,
                                     const PatrolDiagnosticsSnapshot* snapshot,
                                     uint32_t gate_mask);

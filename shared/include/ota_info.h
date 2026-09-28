@@ -15,7 +15,7 @@ typedef struct
     uint16_t version;
     uint16_t length;
     uint32_t checksum;
-    uint8_t remote_enabled;
+    uint8_t reserved_remote; /* Former remote_enabled byte: preserve Config V5 layout. */
     uint8_t diag_log_enabled;
     uint8_t diag_log_level;
     uint8_t reserved0;

@@ -2,6 +2,12 @@
 
 本文件是 `patrol_vehicle_chassis` 的唯一当前状态入口。发布事实以正式 manifest 为准；候选状态以对应构建物和 evidence 为准。历史过程不在此重复。
 
+## 待切换的标定与远控简化候选
+
+当前工作树中的新流程已完成源码、平台和主机改造：正常远控直接建立公共 V4 控制会话；在线标定只走独占中位会话；旧 bench 许可和持久 `remote_enabled` 授权已移除。Config V5 的原授权字节保留在原位置并作为保留字节。平台本地测试已通过，现场平台尚未部署。本车无独立接触器反馈输入，`powerOutputOn` 只表示 MCU 输出命令。
+
+`out/candidates/bench-drive/` 中的最新 App 候选 SHA256 为 `2C664B602C6D592D879EA21AB28208365907877E96A99B7C9BCEE70ACA8F0200`，源工作树标记为 dirty；转向和行走执行器已编译，`actuation_enabled=true`。这是尚未经过本轮会话、安全和停车回归验收的运动候选，不能视为正式包或 OTA 依据。既有 [0.2.12 行走换向实测](operations/evidence/2026-09-08-bench-drive-0212.json)和 [0.2.31 转向实测](operations/evidence/2026-09-15-031-steering-speed/adaptive-validation/summary.md)构成本轮已验证硬件的基础；本轮按简化软件的回归复测处理。产品主机 38 项、Platform CTest 21 项、平台 Python 311 项与页面 20 项测试及 ARM 候选构建通过。当前版本的真实停车与 CAN/编码器反馈、现场 OTA `CONFIRMED` 和运动回归尚未完成；因此 `dist/` 及现场设备未切换，新远控入口应保持关闭。2026-09-28 只读查询显示目标车 `PATROL-05D3FF343733574E43043550` 在线并上报 `patrol-chassis-0.2.44`，高于本工作树候选的 `0.2.37`；线上平台为 `0.4.157`，旧远控总开关为 1。升级前须核对并合入当前车上版本以来的源码变更。当前切换步骤见[远控运维](operations/架空行走与平台远控实现.md)。
+
 ## Current Release / Candidate
 
 | 项目 | 当前值 | 权威来源 |
@@ -98,7 +104,7 @@ TLS profile: 0
 ## Authoritative Documents
 
 - 公共业务接口：[巡防车底盘业务 Profile 1.0](protocols/A-BOX巡防车底盘业务协议-V4.0.md)；公共 MQTT V4 通用合同由该文档链接到 Platform 权威版本。
-- 内部运维接口：[巡防车底盘内部运维接口 V2.2](protocols/A-BOX内部运维协议V2.2.md)，报文 `version` 为 `2.0`；产品 Flash Config V5 是独立版本。
+- 目标内部运维接口：[巡防车底盘内部运维协议 V2.3](protocols/A-BOX内部运维协议V2.3.md)，报文 `version` 仍为 `2.0`；产品 Flash Config V5 是独立版本。该合同适用于本工作树的新固件与新平台；当前 `dist/` 和现场设备尚未切换，不得将其作为现场现版操作依据。旧接口修订留在[历史目录](operations/history/A-BOX内部运维协议V2.2.md)。
 - 硬件与安全：[硬件与安全边界](hardware/硬件与安全边界.md)。
 - 当前实现架构：[源码模块与依赖](implementation/源码模块与依赖.md)。
 - 当前产品配置：[配置 V5 与掉电恢复](implementation/配置V5与掉电恢复.md)。

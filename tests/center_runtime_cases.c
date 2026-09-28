@@ -64,14 +64,53 @@ int main(void)
     assert(CenterCalibration_KeepAlive(g_motion.center_cal.session_id));
     assert(g_motion.center_cal.last_reject_reason == CENTER_CAL_REASON_GATE_NOT_READY);
     assert(CenterCalibration_Format(json, sizeof(json)));
-    assert(strstr(json, "\"reason\":\"gate_not_ready\""));
+    assert(strstr(json, "\"reason\":\"SAFETY_BLOCKED\""));
     mock_snapshot.steering_feedback_fresh = mock_snapshot.drive_feedback_fresh = mock_snapshot.drive_status_fresh = 1;
     assert(CenterCalibration_Jog(g_motion.center_cal.session_id, 5000));
     assert(g_motion.center_cal.target_mdeg == 5000 && g_motion.center_cal.phase == CENTER_CAL_JOGGING);
     mock_snapshot.steering_feedback_fresh = 0;
     CenterCalibration_Tick(mock_now);
+    assert(g_motion.center_cal.phase == CENTER_CAL_STOPPING && mock_power &&
+           !mock_control.fault_latched);
+    CenterCalibration_Tick(mock_now + 1);
     assert(g_motion.center_cal.phase == CENTER_CAL_FAILED && !mock_power && mock_control.fault_latched);
     assert(g_motion.center_cal.failure.reason == CENTER_CAL_REASON_GATE_NOT_READY);
+    {
+        char diagnostics[1100];
+        assert(CenterCalibration_FormatDiagnostics(diagnostics, sizeof(diagnostics)));
+        assert(strstr(diagnostics, "\"detailReason\":\"gate_not_ready\""));
+    }
+
+    reset_fixture(); start_ready();
+    assert(CenterCalibration_Jog(g_motion.center_cal.session_id, 1000));
+    g_motion.bench.phase = BENCH_ACTIVE; g_motion.bench.step = 17;
+    mock_snapshot.steering_feedback_fresh = 0;
+    CenterCalibration_Tick(mock_now);
+    assert(g_motion.center_cal.phase == CENTER_CAL_STOPPING && g_motion.bench.phase == BENCH_STOPPING);
+    assert(mock_power && !mock_control.fault_latched);
+    g_motion.bench.phase = BENCH_IDLE;
+    CenterCalibration_Tick(mock_now + 1);
+    assert(g_motion.center_cal.phase == CENTER_CAL_FAILED && mock_control.fault_latched && !mock_power);
+
+    reset_fixture(); start_ready();
+    assert(CenterCalibration_Jog(g_motion.center_cal.session_id, 1000));
+    g_motion.bench.phase = BENCH_ACTIVE; g_motion.bench.step = 17;
+    assert(CenterCalibration_Cancel(g_motion.center_cal.session_id));
+    assert(g_motion.center_cal.phase == CENTER_CAL_STOPPING && mock_power && !mock_control.fault_latched);
+    g_motion.bench.phase = BENCH_IDLE;
+    CenterCalibration_Tick(mock_now + 1);
+    assert(g_motion.center_cal.phase == CENTER_CAL_IDLE && !mock_power && !mock_control.fault_latched);
+
+    reset_fixture(); start_ready();
+    uint32_t ready_deadline = g_motion.center_cal.deadline_ms;
+    mock_now += 1000;
+    assert(CenterCalibration_KeepAlive(g_motion.center_cal.session_id));
+    assert(g_motion.center_cal.deadline_ms == ready_deadline);
+    mock_now = g_motion.center_cal.deadline_ms;
+    CenterCalibration_Tick(mock_now);
+    assert(g_motion.center_cal.phase == CENTER_CAL_EXPIRED && !mock_power && !mock_control.fault_latched);
+    assert(CenterCalibration_Format(json, sizeof(json)) && strstr(json, "\"reason\":\"EXPIRED\""));
+    assert(strstr(json, "\"state\":\"IDLE\"") && g_motion.center_cal.session_id[0] == '\0');
 
     reset_fixture(); start_ready();
     g_motion.bench.phase = BENCH_ACTIVE; g_motion.bench.step = 17;
@@ -144,7 +183,7 @@ int main(void)
      * selection and CAN submission must discard the motion frame. */
     reset_fixture();
     mock_now = 2000;
-    mock_permit = mock_can_ready = mock_revoke_before_send = 1;
+    mock_can_ready = mock_revoke_before_send = 1;
     mock_control.session_active = mock_control.enable_request = 1;
     mock_control.lease_deadline_ms = mock_now + 1000;
     mock_control.feedback.power_ready = mock_control.feedback.calibrated = 1;
@@ -159,7 +198,7 @@ int main(void)
     g_motion.bench.maximum = 100000;
     g_motion.bench_turn = 1;
     PatrolRuntime_Tick();
-    assert(!mock_sent && !mock_permit && g_motion.bench.phase == BENCH_STOPPING);
+    assert(!mock_sent && !mock_control.session_active && g_motion.bench.phase == BENCH_STOPPING);
     assert(!g_motion.bench.pending);
     /* Full commit: clear, write, and three fresh samples straddling zero. */
     reset_fixture(); start_ready();
@@ -180,6 +219,10 @@ int main(void)
         if(i<2) assert(g_motion.center_cal.phase==CENTER_CAL_ENCODER_VERIFY);
     }
     assert(g_motion.center_cal.phase==CENTER_CAL_COMPLETE && !mock_power);
+    assert(CenterCalibration_Format(json, sizeof(json)) && strstr(json, "\"state\":\"DONE\""));
+    mock_now = g_motion.center_cal.deadline_ms;
+    CenterCalibration_Tick(mock_now);
+    assert(g_motion.center_cal.phase == CENTER_CAL_IDLE && mock_config.calibrated);
     reset_fixture(); start_ready();
     g_motion.center_cal.phase=CENTER_CAL_ENCODER_VERIFY;
     mock_snapshot.encoder_count=4096;

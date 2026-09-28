@@ -42,7 +42,7 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertIn('#define PATROL_CONFIG_DEFAULT_MQTT_USER ""', device_config)
         self.assertIn('#define PATROL_CONFIG_DEFAULT_MQTT_PASS ""', device_config)
         self.assertIn('#define PATROL_CONFIG_DEFAULT_MQTT_HOST ""', device_config)
-        self.assertIn("hardware_available=0", rtos)
+        self.assertNotIn("contactor_feedback", rtos)
         self.assertIn("HAL_CAN_AddTxMessage", rtos)
         self.assertIn("request.data[0] == 0x40U", rtos)
         self.assertNotIn("PatrolCanopen_SdoWrite", rtos)
@@ -122,17 +122,18 @@ class PatrolScaffoldTests(unittest.TestCase):
 
     def test_idle_center_calibration_lease_tolerates_platform_delay_without_latching_motion_fault(self):
         rtos = motion_sources()
-        lease = re.search(r"#define\s+CENTER_CAL_READY_LEASE_MS\s+(\d+)U", rtos)
+        lease = re.search(r"#define\s+CENTER_CAL_READY_IDLE_MS\s+(\d+)U", rtos)
         self.assertIsNotNone(lease)
-        self.assertGreaterEqual(int(lease.group(1)), 15000)
+        self.assertGreaterEqual(int(lease.group(1)), 300000)
         helper = rtos[rtos.index("static uint8_t center_calibration_expire_idle"):
                       rtos.index("uint8_t CenterCalibration_Start")]
-        self.assertIn("RemoteService_BenchRevoke()", helper)
+        self.assertIn("RemoteService_Revoke()", helper)
         self.assertIn("VehiclePowerOutput_Set(0U)", helper)
         self.assertIn("g_motion.bench.phase == BENCH_IDLE", helper)
-        self.assertNotIn("RemoteService_BenchFault()", helper)
+        self.assertNotIn("RemoteService_ExecutionFault()", helper)
         self.assertNotIn("BenchSteering_Stop", helper)
-        self.assertGreaterEqual(rtos.count("deadline_ms = now + CENTER_CAL_READY_LEASE_MS"), 2)
+        self.assertGreaterEqual(rtos.count("deadline_ms = now + CENTER_CAL_READY_IDLE_MS"), 2)
+        self.assertIn("Reading status never extends the READY idle deadline", rtos)
 
     def test_center_calibration_freezes_structured_failure_and_rejection_evidence(self):
         rtos = motion_sources()

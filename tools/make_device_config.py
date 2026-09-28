@@ -60,7 +60,6 @@ def build_config_page(
     host: str = DEFAULT_HOST,
     port: int = DEFAULT_PORT,
     username: str = DEFAULT_USERNAME,
-    remote_enabled: bool = False,
     diag_enabled: bool = False,
     diag_host: str = "36.153.162.171",
     diag_port: int = 30080,
@@ -124,7 +123,7 @@ def build_config_page(
         CONFIG_VERSION,
         CONFIG_SIZE,
         0,
-        int(remote_enabled),
+        0,  # Reserved former remote_enabled byte in Config V5.
         int(diag_enabled),
         diag_level,
         0,

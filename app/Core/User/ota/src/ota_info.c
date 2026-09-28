@@ -50,7 +50,7 @@ static uint8_t config_valid(const PatrolRemoteConfigV5_t* cfg)
 {
     if (cfg == 0) return 0U;
     if ((cfg->magic != PATROL_CONFIG_MAGIC) || (cfg->version != PATROL_CONFIG_VERSION) ||
-        (cfg->length != sizeof(*cfg)) || (cfg->remote_enabled > 1U) ||
+        (cfg->length != sizeof(*cfg)) || (cfg->reserved_remote > 1U) ||
         (cfg->mqtt_tls_enabled > 1U) || (cfg->diag_log_level > 3U)) return 0U;
     return (cfg->checksum == config_checksum(cfg)) ? 1U : 0U;
 }

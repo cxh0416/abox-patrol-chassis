@@ -105,13 +105,6 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
     cJSON* mqtt_password;
     cJSON* mqtt_tls_enabled;
     cJSON* mqtt_tls_profile_id;
-    cJSON* steering_center;
-    cJSON* absolute_center;
-    cJSON* steering_counts_per_degree;
-    cJSON* absolute_counts_per_degree;
-    cJSON* steering_direction;
-    cJSON* absolute_direction;
-    cJSON* steering_tolerance;
     cJSON* center_session;
     cJSON* center_delta;
     CloudProtocolStatus_t status = CLOUD_PROTOCOL_INVALID;
@@ -147,7 +140,9 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
         crc32 = cJSON_GetObjectItemCaseSensitive(params, "crc32");
         if (!cJSON_IsString(url) || !cJSON_IsString(ota_version) || !cJSON_IsNumber(size) || !cJSON_IsString(crc32) ||
             strlen(url->valuestring) >= sizeof(request->ota_url) || !version_valid(ota_version->valuestring) ||
-            size->valuedouble < 1 || size->valuedouble > 0x36000 || strlen(crc32->valuestring) != 8U) goto done;
+            size->valuedouble < 1 || size->valuedouble > 0x36000 ||
+            size->valuedouble != (double)(uint32_t)size->valuedouble ||
+            strlen(crc32->valuestring) != 8U) goto done;
         for (uint8_t i = 0U; i < 8U; i++) {
             char ch = crc32->valuestring[i];
             if (!((ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f') || (ch >= 'A' && ch <= 'F'))) goto done;
@@ -171,37 +166,7 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
     else if (strcmp(action->valuestring, "get_can_diag") == 0) request->action = CLOUD_PROTOCOL_ACTION_GET_CAN_DIAG;
     else if (strcmp(action->valuestring, "get_calibration") == 0)
         request->action = CLOUD_PROTOCOL_ACTION_GET_CALIBRATION;
-    else if (strcmp(action->valuestring, "clear_calibration") == 0)
-        request->action = CLOUD_PROTOCOL_ACTION_CLEAR_CALIBRATION;
-    else if (strcmp(action->valuestring, "set_calibration") == 0)
-    {
-        steering_center = cJSON_GetObjectItemCaseSensitive(params, "steeringCenterCount");
-        absolute_center = cJSON_GetObjectItemCaseSensitive(params, "absoluteCenterCount");
-        steering_counts_per_degree = cJSON_GetObjectItemCaseSensitive(params, "steeringCountsPerDegreeMilli");
-        absolute_counts_per_degree = cJSON_GetObjectItemCaseSensitive(params, "absoluteCountsPerDegreeMilli");
-        steering_direction = cJSON_GetObjectItemCaseSensitive(params, "steeringDirection");
-        absolute_direction = cJSON_GetObjectItemCaseSensitive(params, "absoluteDirection");
-        steering_tolerance = cJSON_GetObjectItemCaseSensitive(params, "steeringToleranceMdeg");
-        if (!json_integer_between(steering_center, -2147483648.0, 2147483647.0) ||
-            !json_integer_between(absolute_center, 0.0, 4294967295.0)) goto done;
-        /* Missing profile fields select the product profile. Supplied fields must match it. */
-        if ((steering_counts_per_degree && !json_integer_between(steering_counts_per_degree, VEHICLE_STEERING_COUNTS_MILLI, VEHICLE_STEERING_COUNTS_MILLI)) ||
-            (absolute_counts_per_degree && !json_integer_between(absolute_counts_per_degree, VEHICLE_ABSOLUTE_COUNTS_MILLI, VEHICLE_ABSOLUTE_COUNTS_MILLI)) ||
-            (steering_direction && !json_integer_between(steering_direction, 1, 1)) ||
-            (absolute_direction && !json_integer_between(absolute_direction, 1, 1)) ||
-            (steering_tolerance && !json_integer_between(steering_tolerance, VEHICLE_STEERING_TOLERANCE_MDEG, VEHICLE_STEERING_TOLERANCE_MDEG))) goto done;
-        request->steering_center_count = (int32_t)steering_center->valuedouble;
-        request->absolute_center_count = (uint32_t)absolute_center->valuedouble;
-        request->steering_counts_per_degree_milli = VEHICLE_STEERING_COUNTS_MILLI;
-        request->absolute_counts_per_degree_milli = VEHICLE_ABSOLUTE_COUNTS_MILLI;
-        request->steering_direction = VEHICLE_STEERING_DIRECTION;
-        request->absolute_direction = VEHICLE_ABSOLUTE_DIRECTION;
-        request->steering_tolerance_mdeg = VEHICLE_STEERING_TOLERANCE_MDEG;
-        request->action = CLOUD_PROTOCOL_ACTION_SET_CALIBRATION;
-    }
     else if (strcmp(action->valuestring, "reset_motion_fault") == 0) request->action = CLOUD_PROTOCOL_ACTION_RESET_MOTION_FAULT;
-    else if (strcmp(action->valuestring, "get_bench_steering") == 0)
-        request->action = CLOUD_PROTOCOL_ACTION_BENCH_GET;
     else if (strcmp(action->valuestring, "start_center_calibration") == 0)
         request->action = CLOUD_PROTOCOL_ACTION_CENTER_CAL_START;
     else if (strcmp(action->valuestring, "get_center_calibration") == 0)
@@ -212,6 +177,8 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
         strcpy(request->center_session_id, center_session->valuestring);
         request->action = CLOUD_PROTOCOL_ACTION_CENTER_CAL_GET;
     }
+    else if (strcmp(action->valuestring, "get_center_calibration_diagnostics") == 0)
+        request->action = CLOUD_PROTOCOL_ACTION_CENTER_CAL_DIAGNOSTICS;
     else if (strcmp(action->valuestring, "jog_center_calibration") == 0)
     {
         center_session = cJSON_GetObjectItemCaseSensitive(params, "sessionId");
@@ -236,23 +203,11 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
         request->action = strcmp(action->valuestring, "commit_center_calibration") == 0 ?
             CLOUD_PROTOCOL_ACTION_CENTER_CAL_COMMIT : CLOUD_PROTOCOL_ACTION_CENTER_CAL_CANCEL;
     }
-    else if (strcmp(action->valuestring, "stop_bench_steering") == 0)
-        request->action = CLOUD_PROTOCOL_ACTION_BENCH_STOP;
-    else if (strcmp(action->valuestring, "arm_bench_steering") == 0 ||
-             strcmp(action->valuestring, "arm_bench_drive") == 0)
-    {
-        cJSON* limit = cJSON_GetObjectItemCaseSensitive(params, "limitMdeg");
-        if (!json_integer_between(limit, 1000, VEHICLE_MAX_STEERING_MDEG) ||
-            (limit->valueint != 1000 && limit->valueint != 3000 && limit->valueint != 5000 &&
-             limit->valueint != 20000 && limit->valueint != 30000)) goto done;
-        request->bench_limit_mdeg = (uint16_t)limit->valueint;
-        request->bench_drive = strcmp(action->valuestring, "arm_bench_drive") == 0;
-        request->action = CLOUD_PROTOCOL_ACTION_BENCH_ARM;
-    }
     else if (strcmp(action->valuestring, "get_log") == 0) request->action = CLOUD_PROTOCOL_ACTION_GET_LOG;
     else if (strcmp(action->valuestring, "reboot") == 0) request->action = CLOUD_PROTOCOL_ACTION_REBOOT;
     else if (strcmp(action->valuestring, "mqtt_runtime_get") == 0)
         request->action = CLOUD_PROTOCOL_ACTION_MQTT_RUNTIME_GET;
+#if PATROL_CHASSIS_MQTT_LAB_TEST
     else if (strcmp(action->valuestring, "mqtt_lab_seed_control") == 0)
         request->action = CLOUD_PROTOCOL_ACTION_MQTT_LAB_SEED_CONTROL;
     else if (strcmp(action->valuestring, "mqtt_runtime_candidate") == 0)
@@ -278,7 +233,6 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
         request->mqtt_tls_profile_id = (uint8_t)mqtt_tls_profile_id->valueint;
         request->action = CLOUD_PROTOCOL_ACTION_MQTT_RUNTIME_CANDIDATE;
     }
-#if PATROL_CHASSIS_MQTT_LAB_TEST
     else if (strcmp(action->valuestring, "mqtt_runtime_cancel") == 0)
         request->action = CLOUD_PROTOCOL_ACTION_MQTT_RUNTIME_CANCEL;
 #endif

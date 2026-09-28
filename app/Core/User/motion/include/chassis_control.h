@@ -10,7 +10,7 @@
 
 typedef enum {
     CHASSIS_STOP_NONE = 0,
-    CHASSIS_STOP_REMOTE_DISABLED,
+    CHASSIS_STOP_RESERVED_1 = 1,
     CHASSIS_STOP_UNCALIBRATED,
     CHASSIS_STOP_FEEDBACK_STALE,
     CHASSIS_STOP_ANGLE_MISMATCH,
@@ -55,7 +55,6 @@ typedef struct {
     int32_t target_steering_mdeg;
     int8_t active_direction;
     int8_t steering_boundary; /* -1/+1 inward-only; clear only after operator backs off. */
-    uint8_t remote_enabled;
     uint8_t session_active;
     uint8_t reversal_pending;
     uint8_t zero_confirmations;
@@ -65,7 +64,9 @@ typedef struct {
     ChassisFeedback feedback;
 } ChassisControl;
 
-void ChassisControl_Init(ChassisControl* control, uint8_t remote_enabled);
+void ChassisControl_Init(ChassisControl* control);
+ChassisStopReason ChassisControl_SafetyReason(const ChassisControl* control, uint32_t now_ms);
+ChassisStopReason ChassisControl_RuntimeSafetyReason(const ChassisControl* control, uint32_t now_ms);
 void ChassisControl_SetFeedback(ChassisControl* control, const ChassisFeedback* feedback);
 uint8_t ChassisControl_Apply(ChassisControl* control, const char* action, const char* session_id,
                              uint32_t seq, uint32_t lease_ms, int16_t drive_rpm,

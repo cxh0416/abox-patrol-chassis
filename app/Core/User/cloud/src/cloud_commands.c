@@ -39,41 +39,6 @@ static void mqtt_trial_session_decimal(uint64_t value, char output[21])
     output[count] = '\0';
 }
 
-static uint32_t signed_delta_mdeg(int64_t delta, uint32_t counts_per_degree_milli)
-{
-    uint64_t magnitude;
-    uint64_t result;
-    if (counts_per_degree_milli == 0U) return UINT32_MAX;
-    magnitude = (uint64_t)(delta < 0 ? -delta : delta);
-    result = magnitude * 1000000ULL / counts_per_degree_milli;
-    return result > UINT32_MAX ? UINT32_MAX : (uint32_t)result;
-}
-
-static uint8_t calibration_feedback_ready(const CloudProtocolRequest_t* request,
-                                          const PatrolDiagnosticsSnapshot* snapshot)
-{
-    uint32_t steering_offset;
-    uint32_t encoder_offset;
-    const ChassisControl* control = RemoteService_State();
-    if (request == 0 || snapshot == 0 || control == 0) return 0U;
-    if (!VehiclePowerOutput_IsOn() || PatrolRtos_CanBusOff() || PatrolRtos_CanBusOffActive() ||
-        !snapshot->steering_online || !snapshot->drive_online ||
-        !snapshot->steering_feedback_fresh || !snapshot->drive_feedback_fresh ||
-        !snapshot->encoder_online || !snapshot->encoder_config_valid || snapshot->drive_fault ||
-        labs(snapshot->left_actual_rpm) > 20L || labs(snapshot->right_actual_rpm) > 20L ||
-        control->remote_enabled || control->session_active || control->enable_request ||
-        (snapshot->steering_status_word & 0x006FU) == 0x0027U ||
-        (snapshot->drive_status_word & 0x006FU) == 0x0027U) return 0U;
-    steering_offset = signed_delta_mdeg(
-        (int64_t)snapshot->steering_position_count - (int64_t)request->steering_center_count,
-        request->steering_counts_per_degree_milli);
-    encoder_offset = signed_delta_mdeg(
-        (int64_t)snapshot->encoder_count - (int64_t)request->absolute_center_count,
-        request->absolute_counts_per_degree_milli);
-    return (uint8_t)(steering_offset <= request->steering_tolerance_mdeg &&
-                     encoder_offset <= request->steering_tolerance_mdeg);
-}
-
 static __attribute__((noinline)) void handle_config_request(const CloudProtocolRequest_t* request)
 {
     /* The Remote task serializes command handling and TX. A response is copied
@@ -117,41 +82,12 @@ static __attribute__((noinline)) void handle_config_request(const CloudProtocolR
         if (!CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 200U, "OK", result, 0U))
             CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "DEVICE_BUSY");
     }
-    else if (action == CLOUD_PROTOCOL_ACTION_CLEAR_CALIBRATION)
+    else if (action == CLOUD_PROTOCOL_ACTION_CENTER_CAL_DIAGNOSTICS)
     {
-        if (OtaService_IsBusy())
-            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "OTA_BUSY");
-        else if (RemoteService_BenchPermitted())
-            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "BENCH_ACTIVE");
-        else if (!PatrolConfig_ClearCalibration())
-            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 500U, "CONFIG_WRITE_FAILED");
-        else
-        {
-            CloudMessages_BuildCalibrationResult(result, result_size);
-            (void)CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 200U,
-                                    "CALIBRATION_CLEARED", result, 0U);
-        }
-    }
-    else if (action == CLOUD_PROTOCOL_ACTION_SET_CALIBRATION)
-    {
-        PatrolDiagnosticsSnapshot snapshot;
-        PatrolRuntime_GetDiagnostics(&snapshot);
-        if (OtaService_IsBusy())
-            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "OTA_BUSY");
-        else if (RemoteService_BenchPermitted() || !calibration_feedback_ready(request, &snapshot))
-            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U,
-                                  "CALIBRATION_FEEDBACK_NOT_READY");
-        else if (!PatrolConfig_SetCalibration(request->steering_center_count,
-                    request->absolute_center_count, request->steering_counts_per_degree_milli,
-                    request->absolute_counts_per_degree_milli, request->steering_direction,
-                    request->absolute_direction, request->steering_tolerance_mdeg))
-            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 500U, "CONFIG_WRITE_FAILED");
-        else
-        {
-            CloudMessages_BuildCalibrationResult(result, result_size);
-            (void)CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 200U,
-                                    "CALIBRATION_SAVED_REMOTE_DISABLED", result, 0U);
-        }
+        if (!CenterCalibration_FormatDiagnostics(result, result_size))
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 500U, "DIAGNOSTIC_TOO_LARGE");
+        else if (!CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 200U, "OK", result, 0U))
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "DEVICE_BUSY");
     }
     else if (action == CLOUD_PROTOCOL_ACTION_CENTER_CAL_START ||
              action == CLOUD_PROTOCOL_ACTION_CENTER_CAL_GET ||
@@ -193,18 +129,6 @@ static __attribute__((noinline)) void handle_config_request(const CloudProtocolR
             CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "POWER_OFF_AND_OTA_IDLE_REQUIRED");
         else (void)CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 200U,
             "FAULT_RESET_REARM_REQUIRED", "{\"powerOutputOn\":false,\"faultRecordPreserved\":true}", 0U);
-    }
-    else if (action == CLOUD_PROTOCOL_ACTION_BENCH_ARM || action == CLOUD_PROTOCOL_ACTION_BENCH_STOP ||
-             action == CLOUD_PROTOCOL_ACTION_BENCH_GET)
-    {
-        if (action == CLOUD_PROTOCOL_ACTION_BENCH_ARM && !(request->bench_drive ? PatrolRuntime_BenchDriveArm(request->bench_limit_mdeg) :
-                PatrolRuntime_BenchArm(request->bench_limit_mdeg)))
-            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "BENCH_NOT_READY");
-        else {
-            if (action == CLOUD_PROTOCOL_ACTION_BENCH_STOP) PatrolRuntime_BenchStop();
-            PatrolRuntime_FormatBench(result, result_size);
-            (void)CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 200U, "OK", result, 0U);
-        }
     }
     else if (action == CLOUD_PROTOCOL_ACTION_GET_LOG)
     {

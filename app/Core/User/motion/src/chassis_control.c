@@ -28,11 +28,10 @@ static void force_stop(ChassisControl* control, ChassisStopReason reason, uint8_
     }
 }
 
-void ChassisControl_Init(ChassisControl* control, uint8_t remote_enabled)
+void ChassisControl_Init(ChassisControl* control)
 {
     memset(control, 0, sizeof(*control));
-    control->remote_enabled = remote_enabled ? 1U : 0U;
-    control->stop_reason = remote_enabled ? CHASSIS_STOP_UNCALIBRATED : CHASSIS_STOP_REMOTE_DISABLED;
+    control->stop_reason = CHASSIS_STOP_UNCALIBRATED;
 }
 
 void ChassisControl_SetFeedback(ChassisControl* control, const ChassisFeedback* feedback)
@@ -66,29 +65,30 @@ static void steering_boundary(ChassisControl* c, int32_t requested, uint8_t allo
 
 uint8_t ChassisControl_SafetyReady(const ChassisControl* control, uint32_t now_ms)
 {
-    const ChassisFeedback* f = &control->feedback;
-    if (control->fault_latched || !control->remote_enabled || !f->calibrated ||
-        !f->encoder_profile_ready || !f->encoder_range_valid || !steering_hard_range(f) || !f->steering_online || !f->drive_online ||
-        f->can_bus_off || f->drive_fault || f->ota_busy || !f->power_ready) return 0U;
-    if ((now_ms - f->feedback_ms) > CHASSIS_FEEDBACK_TIMEOUT_MS) return 0U;
-    if (llabs((int64_t)f->steering_actual_mdeg - f->encoder_actual_mdeg) > 2000L) return 0U;
-    return 1U;
+    return ChassisControl_SafetyReason(control, now_ms) == CHASSIS_STOP_NONE;
 }
 
-static ChassisStopReason safety_reason(const ChassisControl* control, uint32_t now_ms)
+ChassisStopReason ChassisControl_RuntimeSafetyReason(const ChassisControl* control, uint32_t now_ms)
 {
     const ChassisFeedback* f = &control->feedback;
     if (control->fault_latched) return control->stop_reason;
-    if (!control->remote_enabled) return CHASSIS_STOP_REMOTE_DISABLED;
-    if (!f->calibrated) return CHASSIS_STOP_UNCALIBRATED;
-    if (!f->encoder_profile_ready) return CHASSIS_STOP_ENCODER_PROFILE;
-    if (!f->encoder_range_valid || !steering_hard_range(f)) return CHASSIS_STOP_ENCODER_RANGE;
     if (!f->steering_online || !f->drive_online) return CHASSIS_STOP_NODE_OFFLINE;
     if (f->can_bus_off) return CHASSIS_STOP_CAN_BUS_OFF;
     if (f->drive_fault) return CHASSIS_STOP_DRIVE_FAULT;
     if (f->ota_busy) return CHASSIS_STOP_OTA_BUSY;
-    if (!f->power_ready) return CHASSIS_STOP_POWER_NOT_READY;
     if ((now_ms - f->feedback_ms) > CHASSIS_FEEDBACK_TIMEOUT_MS) return CHASSIS_STOP_FEEDBACK_STALE;
+    return CHASSIS_STOP_NONE;
+}
+
+ChassisStopReason ChassisControl_SafetyReason(const ChassisControl* control, uint32_t now_ms)
+{
+    const ChassisFeedback* f = &control->feedback;
+    ChassisStopReason reason = ChassisControl_RuntimeSafetyReason(control, now_ms);
+    if (reason != CHASSIS_STOP_NONE) return reason;
+    if (!f->calibrated) return CHASSIS_STOP_UNCALIBRATED;
+    if (!f->encoder_profile_ready) return CHASSIS_STOP_ENCODER_PROFILE;
+    if (!f->encoder_range_valid || !steering_hard_range(f)) return CHASSIS_STOP_ENCODER_RANGE;
+    if (!f->power_ready) return CHASSIS_STOP_POWER_NOT_READY;
     if (llabs((int64_t)f->steering_actual_mdeg - f->encoder_actual_mdeg) > 2000L) return CHASSIS_STOP_ANGLE_MISMATCH;
     return CHASSIS_STOP_NONE;
 }
@@ -100,8 +100,9 @@ uint8_t ChassisControl_Apply(ChassisControl* control, const char* action, const 
     int8_t requested_direction;
     if (action == 0 || session_id == 0 || session_id[0] == '\0') return 0U;
     if (strcmp(action, "stop") == 0) {
-        if (control->session_active && strcmp(control->session_id, session_id) != 0) return 0U;
-        force_stop(control, CHASSIS_STOP_EXPLICIT, 1U);
+        uint8_t release = (uint8_t)(!control->session_active ||
+            strcmp(control->session_id, session_id) == 0);
+        force_stop(control, CHASSIS_STOP_EXPLICIT, release);
         return 1U;
     }
     if (strcmp(action, "acquire") != 0 && strcmp(action, "renew") != 0) return 0U;
@@ -114,8 +115,8 @@ uint8_t ChassisControl_Apply(ChassisControl* control, const char* action, const 
         control->session_active = 1U;
         control->last_seq = 0U;
     } else if (!control->session_active || strcmp(control->session_id, session_id) != 0) return 0U;
-    if (seq <= control->last_seq || safety_reason(control, now_ms) != CHASSIS_STOP_NONE) {
-        force_stop(control, safety_reason(control, now_ms), 0U);
+    if (seq <= control->last_seq || ChassisControl_SafetyReason(control, now_ms) != CHASSIS_STOP_NONE) {
+        force_stop(control, ChassisControl_SafetyReason(control, now_ms), 0U);
         return 0U;
     }
     control->last_seq = seq;
@@ -144,7 +145,7 @@ uint8_t ChassisControl_Apply(ChassisControl* control, const char* action, const 
 
 void ChassisControl_Tick(ChassisControl* control, uint32_t now_ms)
 {
-    ChassisStopReason reason = safety_reason(control, now_ms);
+    ChassisStopReason reason = ChassisControl_SafetyReason(control, now_ms);
     if (reason != CHASSIS_STOP_NONE) { force_stop(control, reason, 0U); return; }
     if (control->session_active && (int32_t)(now_ms - control->lease_deadline_ms) >= 0) {
         force_stop(control, CHASSIS_STOP_LEASE_EXPIRED, 1U);

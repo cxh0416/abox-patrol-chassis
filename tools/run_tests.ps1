@@ -55,12 +55,12 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 $chassisTest = Join-Path $hostBuild 'chassis_safety_test.exe'
 & $gcc -std=c11 -Wall -Wextra `
+    '-DPATROL_CHASSIS_ACTUATION_ENABLED=1' `
     @productIncludes `
     "-I$PSScriptRoot\..\platform\components\cjson" `
     "$PSScriptRoot\..\app\Core\User\motion\src\absolute_encoder.c" `
     "$PSScriptRoot\..\app\Core\User\cloud\src\chassis_cloud_protocol.c" `
     "$PSScriptRoot\..\app\Core\User\motion\src\chassis_control.c" `
-    "$PSScriptRoot\..\app\Core\User\motion\src\chassis_power.c" `
     "$PSScriptRoot\..\app\Core\User\common\src\fixed_point.c" `
     "$PSScriptRoot\..\app\Core\User\motion\src\patrol_canopen.c" `
     "$PSScriptRoot\..\app\Core\User\motion\src\patrol_diagnostics.c" `
@@ -71,6 +71,15 @@ $chassisTest = Join-Path $hostBuild 'chassis_safety_test.exe'
     -o $chassisTest
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $chassisTest
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+$powerOffTest = Join-Path $hostBuild 'power_output_off_test.exe'
+& $gcc -std=c11 -Wall -Wextra -Werror `
+    "-I$PSScriptRoot\..\app\Core\User\board\include" `
+    "$PSScriptRoot\..\app\Core\User\board\src\vehicle_power_output.c" `
+    "$PSScriptRoot\..\tests\power_output_off_test.c" -o $powerOffTest
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& $powerOffTest
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 & ctest --test-dir $hostBuild --output-on-failure
@@ -85,8 +94,9 @@ $benchTest = Join-Path $hostBuild 'bench_steering_test.exe'
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $benchTest
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-$benchConfigTest = Join-Path $hostBuild 'bench_config_session_test.exe'
+$benchConfigTest = Join-Path $hostBuild 'control_config_session_test.exe'
 & $gcc -std=c11 -Wall -Wextra -Werror `
+    '-DPATROL_CHASSIS_ACTUATION_ENABLED=1' `
     "-I$PSScriptRoot\..\tests\bench_stubs" `
     @productIncludes `
     "-I$PSScriptRoot\..\shared\include" `
@@ -103,7 +113,7 @@ $benchConfigTest = Join-Path $hostBuild 'bench_config_session_test.exe'
     "$PSScriptRoot\..\app\Core\User\common\src\fixed_point.c" `
     "$PSScriptRoot\..\app\Core\User\board\src\vehicle_power_output.c" `
     "$PSScriptRoot\..\platform\components\cjson\cJSON.c" `
-    "$PSScriptRoot\..\tests\bench_config_session_test.c" -o $benchConfigTest
+    "$PSScriptRoot\..\tests\control_config_session_test.c" -o $benchConfigTest
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $benchConfigTest
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

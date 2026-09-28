@@ -9,10 +9,6 @@ uint8_t PatrolRuntime_GetFault(MotionFaultRecord* record);
 uint8_t PatrolRuntime_FaultStorage(void);
 #include "patrol_diagnostics.h"
 
-uint8_t PatrolRuntime_BenchArm(uint16_t limit_mdeg);
-uint8_t PatrolRuntime_BenchDriveArm(uint16_t limit_mdeg);
-void PatrolRuntime_BenchStop(void);
-void PatrolRuntime_FormatBench(char* out, uint16_t size);
 void PatrolRuntime_GetDiagnostics(PatrolDiagnosticsSnapshot* snapshot);
 void PatrolRuntime_Init(void);
 void PatrolRuntime_Tick(void);
