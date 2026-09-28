@@ -1,74 +1,74 @@
 {
-    "manifest_version":  3,
-    "product":  "patrol_vehicle_chassis",
-    "version":  "patrol-chassis-0.2.36",
-    "configuration":  "Release",
-    "bench_steering_available":  false,
-    "startup_motion_permit":  false,
-    "drive_actuation":  false,
-    "drive_limit_rpm":  0,
-    "boot_version":  "abox-boot-2.3.0",
-    "ota_scheme":  "boot_v2_ufs",
-    "ota_downloader":  "app",
-    "app_range":  "0x08008000..0x0803DFFF",
-    "config_recovery_page":  "0x0803E000",
-    "boot_state_pages":  [
-                             "0x0803E800",
-                             "0x0803F000"
-                         ],
-    "config_page":  "0x0803F800",
-    "product_commit":  "b5493e560509a807349ca9e87b1e8547f448d603",
-    "product_dirty":  false,
-    "platform_commit":  "4f97ca9d155f4be5869ab6b2b911e9c2ae5b909c",
-    "platform_dirty":  false,
-    "toolchain":  "arm-none-eabi-gcc.exe (Arm GNU Toolchain 14.2.Rel1 (Build arm-14.52)) 14.2.1 20241119",
-    "build_options":  [
-                          "-DPATROL_CHASSIS_APP_VERSION_OVERRIDE=patrol-chassis-0.2.36",
-                          "-DPATROL_CHASSIS_ACTUATION_ENABLED=OFF",
-                          "-DPATROL_CHASSIS_BENCH_STEERING_ENABLED=OFF",
-                          "-DPATROL_CHASSIS_BENCH_DRIVE_ENABLED=OFF"
-                      ],
-    "version_marker":  "PATROL_VEHICLE_CHASSIS_FW_VERSION=patrol-chassis-0.2.36",
-    "flash_ram":  {
-                      "boot":  {
-                                   "image_bytes":  32768,
-                                   "source":  "platform/targets/stm32f105_abox_boot"
-                               },
-                      "app":  {
-                                  "flash_bytes":  126896,
-                                  "ram_bytes":  61432
-                              },
-                      "boot_limit_bytes":  32768,
-                      "app_limit_bytes":  221184,
-                      "ram_limit_bytes":  65536
-                  },
-    "artifacts":  [
-                      {
-                          "name":  "Patrol_Vehicle_Chassis_App.bin",
-                          "length":  126896,
-                          "load_address":  "0x08008000",
-                          "crc32":  "BDD1FF67",
-                          "sha256":  "B12298E9BE917FA63F6CFA8F3C510A51187EB1A20BE672B54CDEEAE60501D0B9",
-                          "includes_device_config":  false,
-                          "includes_boot_state":  false
-                      },
-                      {
-                          "name":  "ABox_Boot.bin",
-                          "length":  32768,
-                          "load_address":  "0x08000000",
-                          "crc32":  "F36320C9",
-                          "sha256":  "981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63",
-                          "includes_device_config":  false,
-                          "includes_boot_state":  false
-                      },
-                      {
-                          "name":  "Patrol_Vehicle_Chassis_Full.bin",
-                          "length":  159664,
-                          "load_address":  "0x08000000",
-                          "crc32":  "1C2CC5FC",
-                          "sha256":  "F47A325583291A7A0155A788831377B40E050F6C5785F0006C5B9A7498A580AF",
-                          "includes_device_config":  false,
-                          "includes_boot_state":  false
-                      }
-                  ]
+  "manifest_version": 3,
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.37",
+  "configuration": "Release",
+  "bench_steering_available": false,
+  "startup_motion_permit": false,
+  "drive_actuation": false,
+  "drive_limit_rpm": 0,
+  "boot_version": "abox-boot-2.3.0",
+  "ota_scheme": "boot_v2_ufs",
+  "ota_downloader": "app",
+  "app_range": "0x08008000..0x0803DFFF",
+  "config_recovery_page": "0x0803E000",
+  "boot_state_pages": [
+    "0x0803E800",
+    "0x0803F000"
+  ],
+  "config_page": "0x0803F800",
+  "product_commit": "7e157a0eef60fa6a04baf3cf91789d53dde8b675",
+  "product_dirty": false,
+  "platform_commit": "4f97ca9d155f4be5869ab6b2b911e9c2ae5b909c",
+  "platform_dirty": false,
+  "toolchain": "arm-none-eabi-gcc.exe (Arm GNU Toolchain 14.2.Rel1 (Build arm-14.52)) 14.2.1 20241119",
+  "build_options": [
+    "-DPATROL_CHASSIS_APP_VERSION_OVERRIDE=patrol-chassis-0.2.37",
+    "-DPATROL_CHASSIS_ACTUATION_ENABLED=OFF",
+    "-DPATROL_CHASSIS_BENCH_STEERING_ENABLED=OFF",
+    "-DPATROL_CHASSIS_BENCH_DRIVE_ENABLED=OFF"
+  ],
+  "version_marker": "PATROL_VEHICLE_CHASSIS_FW_VERSION=patrol-chassis-0.2.37",
+  "flash_ram": {
+    "boot": {
+      "image_bytes": 32768,
+      "source": "platform/targets/stm32f105_abox_boot"
+    },
+    "app": {
+      "flash_bytes": 126632,
+      "ram_bytes": 61432
+    },
+    "boot_limit_bytes": 32768,
+    "app_limit_bytes": 221184,
+    "ram_limit_bytes": 65536
+  },
+  "artifacts": [
+    {
+      "name": "Patrol_Vehicle_Chassis_App.bin",
+      "length": 126632,
+      "load_address": "0x08008000",
+      "crc32": "B5F1EC8C",
+      "sha256": "67F033BCB392D79347015B9A39F101838CA25F30A07A7F9FCA7B1B17719D7D69",
+      "includes_device_config": false,
+      "includes_boot_state": false
+    },
+    {
+      "name": "ABox_Boot.bin",
+      "length": 32768,
+      "load_address": "0x08000000",
+      "crc32": "F36320C9",
+      "sha256": "981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63",
+      "includes_device_config": false,
+      "includes_boot_state": false
+    },
+    {
+      "name": "Patrol_Vehicle_Chassis_Full.bin",
+      "length": 159400,
+      "load_address": "0x08000000",
+      "crc32": "BACEAAFB",
+      "sha256": "B4255AD228D1DD09D60C0927F5FCE8063C136AD257D4F08367F7B6DA9F2CD76A",
+      "includes_device_config": false,
+      "includes_boot_state": false
+    }
+  ]
 }

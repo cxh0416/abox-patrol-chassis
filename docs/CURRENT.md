@@ -6,14 +6,16 @@
 
 | 项目 | 当前值 | 权威来源 |
 |---|---|---|
-| 最新正式版 | `patrol-chassis-0.2.36` | `dist/release.manifest.json` |
-| 正式 App SHA256 | `B12298E9BE917FA63F6CFA8F3C510A51187EB1A20BE672B54CDEEAE60501D0B9` | 正式 manifest |
-| 当前源码版本 | `patrol-chassis-0.2.36`；入网、业务上线和恢复已现场复验 | 根目录 `VERSION`、正式 manifest 与 [现场证据](operations/evidence/2026-09-24-enrollment-0236/index.json) |
+| 最新正式版 | `patrol-chassis-0.2.37` | `dist/release.manifest.json` |
+| 正式 App SHA256 | `67F033BCB392D79347015B9A39F101838CA25F30A07A7F9FCA7B1B17719D7D69` | 正式 manifest |
+| 当前源码版本 | `patrol-chassis-0.2.37`；主机测试与 ARM Release 构建通过，尚未现场验收 | 根目录 `VERSION`、正式 manifest |
 | WP7.3 clean ARM Release App SHA256 | `DE38325CE586CC1F703FAD78C6BC4D219450CDE110A5E56400897A237A6C7251` | [WP7.3 evidence](operations/evidence/2026-09-23-mqtt-wp73/index.json)；实测候选，非 `dist/` 正式版 |
 | WP7.2 最新实测 Debug App SHA256 | `5AE13A1367345515245F9D2C694710BA3140DD18F9DEC3FFF81BE3ABD471B5D4` | `out/logs/wp72-success-app.bin` 与 WP7.2 index；测试构建，非正式版 |
 | 当前改造分支 Platform gitlink | `4f97ca9d155f4be5869ab6b2b911e9c2ae5b909c` | 当前源码及正式 manifest |
 | WP7.2 checkpoint App SHA256 | `6EE9E4188E001B8581CA4198F9A4B7D1D0D91F132273CA0955325C1295BB450E` | clean ARM Release candidate；非 `dist/` 正式版 |
 | 冻结 Boot | `abox-boot-2.3.0`，SHA256 `981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63` | 正式 manifest；Boot `0x08000000` |
+
+`0.2.37` 已移除内部 `/internal/config` 的上下电动作；平台继续使用公共 V4 `vehicle_chassis 1.0` 上下电命令。产品 38 项主机测试、Platform 21 项 CTest、底盘相关 C 测试和 ARM Release 构建通过。正式包未下发 OTA，继电器触点与整车上下电尚未现场验收。此前 `0.2.36` 的入网、业务上线和恢复实机证据见[现场记录](operations/evidence/2026-09-24-enrollment-0236/index.json)。
 
 WP7.3 的 `0.2.32` 候选与旧正式版曾使用相同版本字符串，但哈希不同。当前正式状态只能由 `dist/release.manifest.json` 及其固件哈希确认；`0.2.34` 正式打包不等于设备已升级。
 此前 `0.2.33` 的测试、源码提交与现场边界见[正式打包记录](operations/history/2026-09-23-0.2.33正式打包.md)。
