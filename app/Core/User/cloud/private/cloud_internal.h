@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include "abox_ec800_at_legacy.h"
 #include "abox_ec800_rx.h"
+#include "abox_cloud_service.h"
 #include "app_log.h"
 #include "cloud_protocol.h"
 #include "cloud_telemetry.h"
@@ -68,7 +69,8 @@ typedef struct {
     char topic_log[CLOUD_TOPIC_SIZE];
     char topic_control_cmd[CLOUD_TOPIC_SIZE];
     char topic_control_resp[CLOUD_TOPIC_SIZE];
-    uint8_t v4_bootstrap_stage;
+    ABoxCloudBootstrap cloud_bootstrap;
+    uint32_t cloud_publish_generation;
 
     uint8_t initialized;
     uint8_t config_ready;

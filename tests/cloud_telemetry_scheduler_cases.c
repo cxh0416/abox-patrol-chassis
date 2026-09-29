@@ -91,5 +91,34 @@ int main(void)
     CloudTx_Service();
     assert(g_cloud.response_pending && cached_responses == cached_before_stale);
     assert(reconnect_count == 2 && g_cloud.tx_kind == CLOUD_TX_NONE);
+    /* Product bootstrap uses the bounded Platform cursor; a late receipt
+     * from an old connection cannot advance the new Manifest stage. */
+    memset(&g_cloud, 0, sizeof(g_cloud));
+    assert(ABoxCloudBootstrap_Init(&g_cloud.cloud_bootstrap));
+    tick = 0U;
+    connected = 1U;
+    g_cloud.heartbeat_due = 10000U;
+    g_cloud.status_report_due = 10000U;
+    ABoxCloudBootstrap_SetReady(&g_cloud.cloud_bootstrap, 1);
+    CloudTx_Service();
+    assert(last_kind == CLOUD_TX_MANIFEST && g_cloud.tx_kind == CLOUD_TX_MANIFEST);
+    uint32_t old_generation = g_cloud.cloud_publish_generation;
+    uint64_t old_operation = g_cloud.tx_operation;
+    CloudTx_NetworkChanged();
+    assert(ABoxCloudBootstrap_Receipt(&g_cloud.cloud_bootstrap, old_generation,
+                                      old_operation, 1) == ABOX_CLOUD_JOB_NONE);
+    ABoxCloudBootstrap_SetReady(&g_cloud.cloud_bootstrap, 1);
+    publish_active = 0U;
+    CloudTx_Service();
+    assert(last_kind == CLOUD_TX_MANIFEST);
+    complete_publish();
+    CloudTx_Service();
+    assert(last_kind == CLOUD_TX_HEARTBEAT);
+    complete_publish();
+    CloudTx_Service();
+    assert(last_kind == CLOUD_TX_STATUS_REPORT);
+    complete_publish();
+    CloudTx_Service();
+    assert(!ABoxCloudBootstrap_Active(&g_cloud.cloud_bootstrap));
     return 0;
 }

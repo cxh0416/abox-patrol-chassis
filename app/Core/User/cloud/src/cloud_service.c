@@ -111,6 +111,8 @@ void CloudService_Init(void)
     (void)ABoxEc800Rx_Init(&g_cloud.ec800_rx, g_cloud.uart_dma, sizeof(g_cloud.uart_dma),
                            g_cloud.rx_ring, sizeof(g_cloud.rx_ring));
     g_cloud.tx_kind = CLOUD_TX_NONE;
+    (void)ABoxCloudBootstrap_Init(&g_cloud.cloud_bootstrap);
+    g_cloud.cloud_publish_generation = 0U;
     g_cloud.response_pending = 0U;
     g_cloud.log_active = 0U;
     g_cloud.alert_pending = 0U;
@@ -238,7 +240,11 @@ void CloudService_Task(void)
                 g_cloud.mqtt_persistent_active = 0U;
         }
     }
-    if (!MqttRuntime_IsReady()) { g_cloud.mqtt_was_ready = 0U; return; }
+    if (!MqttRuntime_IsReady()) {
+        ABoxCloudBootstrap_SetReady(&g_cloud.cloud_bootstrap, 0);
+        g_cloud.mqtt_was_ready = 0U;
+        return;
+    }
     MQTT_Core_Task();
     if (MQTT_Core_GetState() == MQTT_CORE_ST_ERROR && !OtaService_IsBusy() &&
         (MqttTrialManager_State() == ABOX_MQTT_TRIAL_IDLE ||
@@ -258,14 +264,17 @@ void CloudService_Task(void)
     ready = MQTT_Core_IsReady();
     if (ready && !g_cloud.mqtt_was_ready)
     {
-        g_cloud.v4_bootstrap_stage = 1U;
+        ABoxCloudBootstrap_SetReady(&g_cloud.cloud_bootstrap, 1);
         g_cloud.heartbeat_due = HAL_GetTick();
         g_cloud.status_report_due = HAL_GetTick();
         g_cloud.ota_begin_due = HAL_GetTick() + 1000U;
         g_cloud.ota_begin_pending = 1U;
         APP_LOGI("CLOUD", "mqtt ready");
     }
-    else if (!ready && g_cloud.mqtt_was_ready) APP_LOGW("CLOUD", "mqtt disconnected");
+    else if (!ready && g_cloud.mqtt_was_ready) {
+        ABoxCloudBootstrap_SetReady(&g_cloud.cloud_bootstrap, 0);
+        APP_LOGW("CLOUD", "mqtt disconnected");
+    }
     g_cloud.mqtt_was_ready = ready;
     CloudTx_Service();
 #if PATROL_CHASSIS_MQTT_LAB_TEST

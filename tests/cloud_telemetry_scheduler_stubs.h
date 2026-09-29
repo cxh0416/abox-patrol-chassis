@@ -31,7 +31,8 @@ uint8_t MQTT_Core_PublishExTracked(const char* topic, const char* payload,
                                    uint8_t qos, uint8_t retain, uint64_t* operation)
 {
     (void)payload; (void)retain;
-    last_kind = topic == g_cloud.topic_status_report ? CLOUD_TX_STATUS_REPORT :
+    last_kind = topic == g_cloud.topic_manifest ? CLOUD_TX_MANIFEST :
+        topic == g_cloud.topic_status_report ? CLOUD_TX_STATUS_REPORT :
         topic == g_cloud.topic_heartbeat ? CLOUD_TX_HEARTBEAT : CLOUD_TX_RESPONSE;
     last_qos = qos;
     status_packets += last_kind == CLOUD_TX_STATUS_REPORT;

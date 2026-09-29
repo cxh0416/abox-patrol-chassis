@@ -19,8 +19,10 @@ class TelemetryTests(unittest.TestCase):
                             '-I' + str(ROOT / 'platform/components/core/include'),
                             '-I' + str(ROOT / 'platform/components/ec800/include'),
                             '-I' + str(ROOT / 'platform/components/mqtt/include'),
+                            '-I' + str(ROOT / 'platform/components/cloud/include'),
                             str(ROOT / 'tests/cloud_telemetry_scheduler_cases.c'),
                             str(ROOT / 'app/Core/User/cloud/src/cloud_tx.c'),
+                            str(ROOT / 'platform/components/cloud/src/abox_cloud_service.c'),
                             '-o', str(binary)], check=True)
             subprocess.run([str(binary)], check=True)
 

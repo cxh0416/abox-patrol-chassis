@@ -1,0 +1,604 @@
+T1AE0 000:000.758   SEGGER J-Link V7.94j Log File
+T1AE0 000:000.895   DLL Compiled: Feb 14 2024 15:36:06
+T1AE0 000:000.909   Logging started @ 2026-09-29 14:56
+T1AE0 000:000.921   Process: D:\Program Files\SEGGER\JLink\JLink.exe
+T1AE0 000:000.934 - 0.931ms
+T1AE0 000:001.045 JLINK_SetWarnOutHandler(...)
+T1AE0 000:001.059 - 0.014ms
+T1AE0 000:001.075 JLINK_OpenEx(...)
+T1AE0 000:008.071   Firmware: J-Link V9 compiled Dec 13 2022 11:14:50
+T1AE0 000:008.816   Firmware: J-Link V9 compiled Dec 13 2022 11:14:50
+T1AE0 000:008.942   Decompressing FW timestamp took 96 us
+T1AE0 000:014.400   Hardware: V9.70
+T1AE0 000:014.427   S/N: 69730334
+T1AE0 000:014.440   OEM: SEGGER
+T1AE0 000:014.453   Feature(s): RDI, GDB, FlashDL, FlashBP, JFlash
+T1AE0 000:015.182   Bootloader: (Could not read)
+T1AE0 000:015.941   TELNET listener socket opened on port 19021
+T1AE0 000:016.068   WEBSRV WEBSRV_Init(): Starting webserver thread(s)
+T1AE0 000:016.334   WEBSRV Webserver running on local port 19080
+T1AE0 000:016.485   Looking for J-Link GUI Server exe at: D:\Program Files\SEGGER\JLink\JLinkGUIServer.exe
+T1AE0 000:016.512   Forking J-Link GUI Server: D:\Program Files\SEGGER\JLink\JLinkGUIServer.exe
+T1AE0 000:222.172   J-Link GUI Server info: "J-Link GUI server V7.94j "
+T1AE0 000:228.640 - 227.555ms returns "O.K."
+T1AE0 000:228.761 JLINK_GetFirmwareString(...)
+T1AE0 000:228.770 - 0.011ms
+T1AE0 000:228.781 JLINK_GetHardwareVersion()
+T1AE0 000:228.787 - 0.006ms returns 97000
+T1AE0 000:228.797 JLINK_GetHWInfo(...)
+T1AE0 000:229.025 - 0.228ms returns 0
+T1AE0 000:229.040 JLINK_GetSN()
+T1AE0 000:229.047 - 0.008ms returns 69730334
+T1AE0 000:229.055 JLINK_GetOEMString(...)
+T1AE0 000:229.068 JLINK_EMU_GetCurrConnectionInfo()
+T1AE0 000:229.249 - 0.182ms returns 0
+T1AE0 000:229.263 JLINK_EMU_HasCapEx(0x00000026)
+T1AE0 000:229.270 - 0.006ms returns 0
+T1AE0 000:229.277 JLINK_GetEmuCaps()
+T1AE0 000:229.282 - 0.005ms returns 0xB9FF7BBF
+T1AE0 000:229.289 JLINK_GetEmuCaps()
+T1AE0 000:229.294 - 0.005ms returns 0xB9FF7BBF
+T1AE0 000:229.301 JLINK_GetHWStatus(...)
+T1AE0 000:229.461 - 0.159ms returns 0
+T1AE0 000:229.471 JLINK_EMU_HasCapEx(0x00000044)
+T1AE0 000:229.477 - 0.006ms returns 0
+T1AE0 000:229.498 JLINK_TIF_GetAvailable(...)
+T1AE0 000:229.658 - 0.159ms
+T1AE0 000:229.711 JLINK_ExecCommand("device=STM32F105RC", ...). 
+T1AE0 000:246.071   Device "STM32F105RC" selected.
+T1AE0 000:247.601 - 17.881ms returns 0x00
+T1AE0 000:247.623 JLINK_EnableLog(...)
+T1AE0 000:247.628 - 0.005ms
+T1AE0 000:247.637 JLINK_GetEmuCaps()
+T1AE0 000:247.643 - 0.006ms returns 0xB9FF7BBF
+T1AE0 000:247.650 JLINK_TIF_GetAvailable(...)
+T1AE0 000:248.014 - 0.364ms
+T1AE0 000:248.064 JLINK_TIF_Select(JLINKARM_TIF_SWD)
+T1AE0 000:249.069 - 1.003ms returns 0x00
+T1AE0 000:249.092 JLINK_IsConnected()
+T1AE0 000:249.103 - 0.010ms returns FALSE
+T1AE0 000:249.112 JLINK_SetSpeed(4000)
+T1AE0 000:249.280 - 0.167ms
+T1AE0 000:249.303 JLINK_Connect()
+T1AE0 000:249.552   InitTarget() start
+T1AE0 000:249.573    J-Link Script File: Executing InitTarget()
+T1AE0 000:249.850   SWD selected. Executing JTAG -> SWD switching sequence.
+T1AE0 000:252.065   DAP initialized successfully.
+T1AE0 000:257.111   InitTarget() end - Took 7.53ms
+T1AE0 000:257.729   Found SW-DP with ID 0x1BA01477
+T1AE0 000:259.198   Old FW that does not support reading DPIDR via DAP jobs
+T1AE0 000:260.127   DPv0 detected
+T1AE0 000:260.137   CoreSight SoC-400 or earlier
+T1AE0 000:260.146   Scanning AP map to find all available APs
+T1AE0 000:260.727   AP[1]: Stopped AP scan as end of AP map has been reached
+T1AE0 000:260.738   AP[0]: AHB-AP (IDR: 0x14770011)
+T1AE0 000:260.748   Iterating through AP map to find AHB-AP to use
+T1AE0 000:261.826   AP[0]: Core found
+T1AE0 000:261.835   AP[0]: AHB-AP ROM base: 0xE00FF000
+T1AE0 000:262.324   CPUID register: 0x411FC231. Implementer code: 0x41 (ARM)
+T1AE0 000:262.335   Found Cortex-M3 r1p1, Little endian.
+T1AE0 000:262.609   -- Max. mem block: 0x00010A10
+T1AE0 000:263.086   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T1AE0 000:263.450   CPU_ReadMem(4 bytes @ 0xE0002000)
+T1AE0 000:263.964   FPUnit: 6 code (BP) slots and 2 literal slots
+T1AE0 000:263.984   CPU_ReadMem(4 bytes @ 0xE000EDFC)
+T1AE0 000:264.361   CPU_WriteMem(4 bytes @ 0xE000EDFC)
+T1AE0 000:264.793   CPU_ReadMem(4 bytes @ 0xE0001000)
+T1AE0 000:265.171   CPU_WriteMem(4 bytes @ 0xE0001000)
+T1AE0 000:265.525   CPU_ReadMem(4 bytes @ 0xE000ED88)
+T1AE0 000:265.936   CPU_WriteMem(4 bytes @ 0xE000ED88)
+T1AE0 000:266.400   CPU_ReadMem(4 bytes @ 0xE000ED88)
+T1AE0 000:266.794   CPU_WriteMem(4 bytes @ 0xE000ED88)
+T1AE0 000:267.185   CoreSight components:
+T1AE0 000:267.198   ROMTbl[0] @ E00FF000
+T1AE0 000:267.207   CPU_ReadMem(64 bytes @ 0xE00FF000)
+T1AE0 000:268.083   CPU_ReadMem(32 bytes @ 0xE000EFE0)
+T1AE0 000:268.655   [0][0]: E000E000 CID B105E00D PID 001BB000 SCS
+T1AE0 000:268.671   CPU_ReadMem(32 bytes @ 0xE0001FE0)
+T1AE0 000:269.235   [0][1]: E0001000 CID B105E00D PID 001BB002 DWT
+T1AE0 000:269.256   CPU_ReadMem(32 bytes @ 0xE0002FE0)
+T1AE0 000:269.852   [0][2]: E0002000 CID B105E00D PID 000BB003 FPB
+T1AE0 000:269.873   CPU_ReadMem(32 bytes @ 0xE0000FE0)
+T1AE0 000:270.441   [0][3]: E0000000 CID B105E00D PID 001BB001 ITM
+T1AE0 000:270.473   CPU_ReadMem(32 bytes @ 0xE0040FE0)
+T1AE0 000:271.055   [0][4]: E0040000 CID B105900D PID 001BB923 TPIU-Lite
+T1AE0 000:271.100   CPU_ReadMem(32 bytes @ 0xE0041FE0)
+T1AE0 000:271.939   [0][5]: E0041000 CID B105900D PID 101BB924 ETM-M3
+T1AE0 000:272.015 - 22.712ms returns 0x00
+T1AE0 000:272.082 JLINK_GetIdData(pIdData)
+T1AE0 000:272.361   pIdData->ScanLen=4
+T1AE0 000:272.375   pIdData->NumDevices=1
+T1AE0 000:272.384   pIdData->aId[0]=0x1BA01477
+T1AE0 000:272.392   pIdData->aIrRead[0]=0
+T1AE0 000:272.401   pIdData->aScanLen[0]=0
+T1AE0 000:272.409   pIdData->aScanRead[0]=0
+T1AE0 000:272.418 - 0.335ms
+T1AE0 000:272.435 JLINK_GetMemZones(...)
+T1AE0 000:272.442 - 0.006ms returns 1
+T1AE0 000:272.450 JLINK_HasError()
+T1AE0 000:272.458 JLINK_CORE_GetFound()
+T1AE0 000:272.464 - 0.006ms returns 0x30000FF
+T1AE0 000:272.478 JLINK_SetResetType(JLINKARM_CM3_RESET_TYPE_CONNECT_UNDER_RESET)
+T1AE0 000:272.484 - 0.006ms returns JLINKARM_CM3_RESET_TYPE_NORMAL
+T1AE0 000:272.490 JLINK_GetResetTypeDesc
+T1AE0 000:272.498 - 0.008ms
+T1AE0 000:272.512 JLINK_ExecCommand("device=STM32F105RC", ...). 
+T1AE0 000:272.799   Device "STM32F105RC" selected.
+T1AE0 000:273.362 - 0.841ms returns 0x00
+T1AE0 000:273.376 JLINK_EnableLog(...)
+T1AE0 000:273.382 - 0.006ms
+T1AE0 000:273.391 JLINK_GetEmuCaps()
+T1AE0 000:273.398 - 0.006ms returns 0xB9FF7BBF
+T1AE0 000:273.405 JLINK_TIF_GetAvailable(...)
+T1AE0 000:273.566 - 0.160ms
+T1AE0 000:273.586 JLINK_TIF_Select(JLINKARM_TIF_SWD)
+T1AE0 000:273.593 - 0.006ms returns 0x00
+T1AE0 000:273.601 JLINK_IsConnected()
+T1AE0 000:273.612 - 0.011ms returns TRUE
+T1AE0 000:273.619 JLINK_SetSpeed(4000)
+T1AE0 000:273.710 - 0.090ms
+T1AE0 000:273.718 JLINK_Connect()
+T1AE0 000:273.893   InitTarget() start
+T1AE0 000:273.911    J-Link Script File: Executing InitTarget()
+T1AE0 000:274.077   SWD selected. Executing JTAG -> SWD switching sequence.
+T1AE0 000:276.069   DAP initialized successfully.
+T1AE0 000:280.502   InitTarget() end - Took 6.58ms
+T1AE0 000:281.109   Found SW-DP with ID 0x1BA01477
+T1AE0 000:282.578   Old FW that does not support reading DPIDR via DAP jobs
+T1AE0 000:283.402   DPv0 detected
+T1AE0 000:283.423   CoreSight SoC-400 or earlier
+T1AE0 000:283.433   AP map detection skipped. Manually configured AP map found.
+T1AE0 000:283.442   AP[0]: AHB-AP (IDR: Not set)
+T1AE0 000:284.416   AP[0]: Core found
+T1AE0 000:284.428   AP[0]: AHB-AP ROM base: 0xE00FF000
+T1AE0 000:284.902   CPUID register: 0x411FC231. Implementer code: 0x41 (ARM)
+T1AE0 000:284.916   Found Cortex-M3 r1p1, Little endian.
+T1AE0 000:285.123   -- Max. mem block: 0x00010768
+T1AE0 000:285.139   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T1AE0 000:285.492   CPU_ReadMem(4 bytes @ 0xE0002000)
+T1AE0 000:285.877   FPUnit: 6 code (BP) slots and 2 literal slots
+T1AE0 000:285.902   CPU_ReadMem(4 bytes @ 0xE000EDFC)
+T1AE0 000:286.362   CPU_ReadMem(4 bytes @ 0xE0001000)
+T1AE0 000:286.773   CPU_WriteMem(4 bytes @ 0xE0001000)
+T1AE0 000:287.233   CPU_ReadMem(4 bytes @ 0xE000ED88)
+T1AE0 000:287.644   CPU_WriteMem(4 bytes @ 0xE000ED88)
+T1AE0 000:288.063   CPU_ReadMem(4 bytes @ 0xE000ED88)
+T1AE0 000:288.468   CPU_WriteMem(4 bytes @ 0xE000ED88)
+T1AE0 000:288.872   CoreSight components:
+T1AE0 000:288.883   ROMTbl[0] @ E00FF000
+T1AE0 000:288.894   CPU_ReadMem(64 bytes @ 0xE00FF000)
+T1AE0 000:289.733   CPU_ReadMem(32 bytes @ 0xE000EFE0)
+T1AE0 000:290.434   [0][0]: E000E000 CID B105E00D PID 001BB000 SCS
+T1AE0 000:290.454   CPU_ReadMem(32 bytes @ 0xE0001FE0)
+T1AE0 000:291.080   [0][1]: E0001000 CID B105E00D PID 001BB002 DWT
+T1AE0 000:291.098   CPU_ReadMem(32 bytes @ 0xE0002FE0)
+T1AE0 000:291.675   [0][2]: E0002000 CID B105E00D PID 000BB003 FPB
+T1AE0 000:291.687   CPU_ReadMem(32 bytes @ 0xE0000FE0)
+T1AE0 000:292.279   [0][3]: E0000000 CID B105E00D PID 001BB001 ITM
+T1AE0 000:292.294   CPU_ReadMem(32 bytes @ 0xE0040FE0)
+T1AE0 000:292.878   [0][4]: E0040000 CID B105900D PID 001BB923 TPIU-Lite
+T1AE0 000:292.889   CPU_ReadMem(32 bytes @ 0xE0041FE0)
+T1AE0 000:293.545   [0][5]: E0041000 CID B105900D PID 101BB924 ETM-M3
+T1AE0 000:293.564 - 19.846ms returns 0x00
+T1AE0 000:293.574 JLINK_GetIdData(pIdData)
+T1AE0 000:293.820   pIdData->ScanLen=4
+T1AE0 000:293.829   pIdData->NumDevices=1
+T1AE0 000:293.838   pIdData->aId[0]=0x1BA01477
+T1AE0 000:293.847   pIdData->aIrRead[0]=0
+T1AE0 000:293.856   pIdData->aScanLen[0]=0
+T1AE0 000:293.864   pIdData->aScanRead[0]=0
+T1AE0 000:293.873 - 0.298ms
+T1AE0 000:293.880 JLINK_GetMemZones(...)
+T1AE0 000:293.886 - 0.005ms returns 1
+T1AE0 000:293.894 JLINK_HasError()
+T1AE0 000:293.901 JLINK_CORE_GetFound()
+T1AE0 000:293.907 - 0.005ms returns 0x30000FF
+T1AE0 000:293.922 JLINK_Halt()
+T1AE0 000:297.586 - 3.663ms returns 0x00
+T1AE0 000:297.656 JLINK_GetDeviceFamily
+T1AE0 000:297.663 - 0.007ms returns 3
+T1AE0 000:297.670 JLINK_CORE_GetFound()
+T1AE0 000:297.676 - 0.006ms returns 0x30000FF
+T1AE0 000:297.688 JLINK_GetDebugInfo(0x01 = Unknown)
+T1AE0 000:297.695   Value=0x00000000
+T1AE0 000:297.704 - 0.018ms returns 0
+T1AE0 000:297.714 JLINK_ReadRegs(NumRegs = 28, Indexes: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 17, 18, 14, 15, 16, 21, 22, 23, 20, 27, 26, 25, 24, 65)
+T1AE0 000:297.734   CPU_ReadMem(4 bytes @ 0xE0001004)
+T1AE0 000:298.134    -- R0=0x00, R1=0xA5A5A5A5, R2=0xA5A5A5A5, R3=0x01, R4=0x200002C4, R5=0x200002AC, R6=0xA5A5A5A5, R7=0x200002C8, R8=0xA5A5A5A5, R9=0xA5A5A5A5, R10=0xA5A5A5A5, R11=0xA5A5A5A5, R12=0xA5A5A5A5, R13 (SP)=0x20000F00, MSP=0x2000FFE0, PSP=0x20000F00, R14=0x800C6C1, R15 (PC)=0x800B760, XPSR=0x61000000, APSR=0x60000000, EPSR=0x1000000, IPSR=0x00, CFBP=0x2000000, CONTROL=0x2000000, FAULTMASK=0x00, BASEPRI=0x00, PRIMASK=0x00, CycleCnt=0x32A5B2
+T1AE0 000:298.161 - 0.447ms returns 0x00
+T1AE0 000:298.208 JLINK_Reset()
+T1AE0 000:298.236   CPU_WriteMem(4 bytes @ 0xE000EDF0)
+T1AE0 000:298.668   CPU_WriteMem(4 bytes @ 0xE000EDFC)
+T1AE0 000:299.055   Reset: Halt core after reset via DEMCR.VC_CORERESET.
+T1AE0 000:299.485   Reset: Reset device via AIRCR.SYSRESETREQ.
+T1AE0 000:299.501   CPU_WriteMem(4 bytes @ 0xE000ED0C)
+T1AE0 000:352.274   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T1AE0 000:352.718   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T1AE0 000:353.171   CPU_WriteMem(4 bytes @ 0xE000EDFC)
+T1AE0 000:359.273   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T1AE0 000:363.391   CPU_WriteMem(4 bytes @ 0xE0002000)
+T1AE0 000:363.836   CPU_ReadMem(4 bytes @ 0xE000EDFC)
+T1AE0 000:364.302   CPU_ReadMem(4 bytes @ 0xE0001000)
+T1AE0 000:364.710 - 66.501ms
+T1AE0 000:364.734 JLINK_Halt()
+T1AE0 000:364.740 - 0.005ms returns 0x00
+T1AE0 000:364.750 JLINK_ExecCommand("SetVerifyRAMDownload = 1", ...). 
+T1AE0 000:364.758 - 0.001ms returns 0x00
+T1AE0 000:364.768 JLINK_DownloadFile()
+T1AE0 000:365.095   Data:  00 00 01 20 AD D1 00 08 99 CF 00 08 9B CF 00 08 ...
+T1AE0 000:365.341   completely In flash
+T1AE0 000:365.538   CPU_ReadMem(4 bytes @ 0xE000ED90)
+T1AE0 000:365.960    -- --------------------------------------
+T1AE0 000:365.975    -- Flash bank @ 0x08000000: Default: L2 verify disabled because algorithm performs L1 verify
+T1AE0 000:365.990    -- Start of determining dirty areas in flash cache
+T1AE0 000:366.005    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08008000 if necessary
+T1AE0 000:366.014    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08008800 if necessary
+T1AE0 000:366.022    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08009000 if necessary
+T1AE0 000:366.030    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08009800 if necessary
+T1AE0 000:366.037    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0800A000 if necessary
+T1AE0 000:366.045    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0800A800 if necessary
+T1AE0 000:366.053    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0800B000 if necessary
+T1AE0 000:366.061    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0800B800 if necessary
+T1AE0 000:366.069    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0800C000 if necessary
+T1AE0 000:366.077    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0800C800 if necessary
+T1AE0 000:366.085    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0800D000 if necessary
+T1AE0 000:366.093    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0800D800 if necessary
+T1AE0 000:366.100    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0800E000 if necessary
+T1AE0 000:366.108    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0800E800 if necessary
+T1AE0 000:366.116    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0800F000 if necessary
+T1AE0 000:366.124    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0800F800 if necessary
+T1AE0 000:366.131    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08010000 if necessary
+T1AE0 000:366.140    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08010800 if necessary
+T1AE0 000:366.147    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08011000 if necessary
+T1AE0 000:366.155    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08011800 if necessary
+T1AE0 000:366.163    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08012000 if necessary
+T1AE0 000:366.171    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08012800 if necessary
+T1AE0 000:366.179    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08013000 if necessary
+T1AE0 000:366.186    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08013800 if necessary
+T1AE0 000:366.194    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08014000 if necessary
+T1AE0 000:366.202    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08014800 if necessary
+T1AE0 000:366.210    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08015000 if necessary
+T1AE0 000:366.218    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08015800 if necessary
+T1AE0 000:366.226    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08016000 if necessary
+T1AE0 000:366.234    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08016800 if necessary
+T1AE0 000:366.242    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08017000 if necessary
+T1AE0 000:366.250    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08017800 if necessary
+T1AE0 000:366.257    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08018000 if necessary
+T1AE0 000:366.265    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08018800 if necessary
+T1AE0 000:366.310    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08019000 if necessary
+T1AE0 000:366.318    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08019800 if necessary
+T1AE0 000:366.327    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0801A000 if necessary
+T1AE0 000:366.335    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0801A800 if necessary
+T1AE0 000:366.343    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0801B000 if necessary
+T1AE0 000:366.350    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0801B800 if necessary
+T1AE0 000:366.358    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0801C000 if necessary
+T1AE0 000:366.367    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0801C800 if necessary
+T1AE0 000:366.375    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0801D000 if necessary
+T1AE0 000:366.383    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0801D800 if necessary
+T1AE0 000:366.391    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0801E000 if necessary
+T1AE0 000:366.399    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0801E800 if necessary
+T1AE0 000:366.407    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0801F000 if necessary
+T1AE0 000:366.414    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0801F800 if necessary
+T1AE0 000:366.423    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08020000 if necessary
+T1AE0 000:366.430    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08020800 if necessary
+T1AE0 000:366.438    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08021000 if necessary
+T1AE0 000:366.446    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08021800 if necessary
+T1AE0 000:366.454    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08022000 if necessary
+T1AE0 000:366.462    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08022800 if necessary
+T1AE0 000:366.470    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08023000 if necessary
+T1AE0 000:366.477    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08023800 if necessary
+T1AE0 000:366.485    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08024000 if necessary
+T1AE0 000:366.493    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08024800 if necessary
+T1AE0 000:366.501    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08025000 if necessary
+T1AE0 000:366.526    -- End of determining dirty areas
+T1AE0 000:366.534    -- Start of preparing flash programming
+T1AE0 000:366.545    -- Calculating RAM usage
+T1AE0 000:366.578    -- RAM usage = 6068 Bytes
+T1AE0 000:366.587    -- Preserving CPU registers
+T1AE0 000:366.604    -- Preparing target
+T1AE0 000:366.612    -- Preserving target RAM temporarily used for programming
+T1AE0 000:412.910    -- Downloading RAMCode
+T1AE0 000:436.447    -- Preparing RAMCode
+T1AE0 000:443.010    -- End of preparing flash programming
+T1AE0 000:464.111    -- CPU speed could not be measured.
+T1AE0 000:464.147    -- Start of comparing flash
+T1AE0 000:464.156    -- CRC check was estimated as fastest method
+T1AE0 000:508.726    -- Comparing range 0x8008000 - 0x80257FF (59 Sectors, 118 KB), using multi-block CRC calculation
+T1AE0 000:542.302    -- CRC does not match for sectors 0-58
+T1AE0 000:542.343    -- End of comparing flash
+T1AE0 000:542.352    -- Start of erasing sectors
+T1AE0 000:542.362    -- Erasing range 0x08008000 - 0x080257FF ( 59 Sectors, 118 KB)
+T1AE0 001:870.955    -- End of erasing sectors
+T1AE0 001:870.990    -- Start of flash programming
+T1AE0 001:871.000    -- Programming range 0x08008000 - 0x0800FFFF ( 16 Sectors, 32 KB)
+T1AE0 002:730.141    -- Programming range 0x08010000 - 0x08017FFF ( 16 Sectors, 32 KB)
+T1AE0 003:701.286    -- Programming range 0x08018000 - 0x0801FFFF ( 16 Sectors, 32 KB)
+T1AE0 004:660.450    -- Programming range 0x08020000 - 0x080257FF ( 11 Sectors, 22 KB)
+T1AE0 005:320.247    -- End of flash programming
+T1AE0 005:320.323    -- 0x8008000 - 0x80257FF ( 59 Sectors, 118 KB)
+T1AE0 005:320.355    -- Start of restoring
+T1AE0 005:320.387    -- Restoring RAMCode
+T1AE0 005:443.953    -- Restoring target memory
+T1AE0 005:488.394    -- Restore target
+T1AE0 005:488.466    -- Restoring CPU registers
+T1AE0 005:488.517    -- End of restoring
+T1AE0 005:488.555    -- Bank 0 @ 0x08000000: 1 range affected (120832 bytes)
+T1AE0 005:488.589    -- Total: 5.122s (Prepare: 0.097s, Compare: 0.078s, Erase: 1.328s, Program & Verify: 3.567s, Restore: 0.049s)
+T1AE0 005:488.621    -- Program & Verify speed: 32 KB/s
+T1AE0 005:492.595 - 5127.825ms returns 0x00
+T1AE0 005:492.716 JLINK_ExecCommand("SetVerifyRAMDownload = 0", ...). 
+T1AE0 005:492.759 - 0.003ms returns 0x01
+T1AE0 005:494.086 JLINK_IsHalted()
+T1AE0 005:494.758 - 0.671ms returns TRUE
+T1AE0 005:494.824 JLINK_ReadMemEx_64(0x08008000, 0x1D4C4 Bytes, ...)
+T1AE0 005:495.123    -- Read from flash cache (120004 bytes @ 0x08008000)
+T1AE0 005:495.151   Data:  00 00 01 20 AD D1 00 08 99 CF 00 08 9B CF 00 08 ...
+T1AE0 005:495.183 - 0.359ms returns 120004 (0x1D4C4)
+T1AE0 005:495.329 JLINK_Reset()
+T1AE0 005:495.377   CPU_WriteMem(4 bytes @ 0xE000EDF0)
+T1AE0 005:496.042   CPU_WriteMem(4 bytes @ 0xE000EDFC)
+T1AE0 005:496.721   Reset: Halt core after reset via DEMCR.VC_CORERESET.
+T1AE0 005:497.527   Reset: Reset device via AIRCR.SYSRESETREQ.
+T1AE0 005:497.610   CPU_WriteMem(4 bytes @ 0xE000ED0C)
+T1AE0 005:551.841   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T1AE0 005:552.488   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T1AE0 005:553.041   CPU_WriteMem(4 bytes @ 0xE000EDFC)
+T1AE0 005:559.465   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T1AE0 005:563.853   CPU_WriteMem(4 bytes @ 0xE0002000)
+T1AE0 005:564.476   CPU_ReadMem(4 bytes @ 0xE000EDFC)
+T1AE0 005:565.071   CPU_ReadMem(4 bytes @ 0xE0001000)
+T1AE0 005:565.581 - 70.250ms
+T1AE0 005:565.633 JLINK_Halt()
+T1AE0 005:565.645 - 0.012ms returns 0x00
+T1AE0 005:565.662 JLINK_ExecCommand("SetVerifyRAMDownload = 1", ...). 
+T1AE0 005:565.681 - 0.002ms returns 0x00
+T1AE0 005:565.695 JLINK_DownloadFile()
+T1AE0 005:565.902   Data:  32 56 53 42 03 00 70 00 01 00 00 00 04 00 00 00 ...
+T1AE0 005:565.929   completely In flash
+T1AE0 005:566.194   CPU_ReadMem(4 bytes @ 0xE000ED90)
+T1AE0 005:566.691    -- --------------------------------------
+T1AE0 005:566.723    -- Flash bank @ 0x08000000: Default: L2 verify disabled because algorithm performs L1 verify
+T1AE0 005:566.748    -- Start of determining dirty areas in flash cache
+T1AE0 005:566.823    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0803E800 if necessary
+T1AE0 005:566.849    -- End of determining dirty areas
+T1AE0 005:566.868    -- Start of preparing flash programming
+T1AE0 005:566.887    -- Calculating RAM usage
+T1AE0 005:566.911    -- RAM usage = 2996 Bytes
+T1AE0 005:566.929    -- Preserving CPU registers
+T1AE0 005:566.958    -- Preparing target
+T1AE0 005:566.977    -- Preserving target RAM temporarily used for programming
+T1AE0 005:590.000    -- Downloading RAMCode
+T1AE0 005:613.490    -- Preparing RAMCode
+T1AE0 005:620.229    -- End of preparing flash programming
+T1AE0 005:622.867    -- CPU speed could not be measured.
+T1AE0 005:622.933    -- Start of comparing flash
+T1AE0 005:622.953    -- CRC check was estimated as fastest method
+T1AE0 005:640.541    -- Comparing range 0x803E800 - 0x803EFFF (1 Sector, 2 KB), using multi-block CRC calculation
+T1AE0 005:652.601    -- All CRCs match
+T1AE0 005:652.944    -- Comparing range 0x803E800 - 0x803EFFF (1 Sector, 2 KB), using alternative multi-block CRC calculation
+T1AE0 005:661.937    -- CRC does not match for sector 0
+T1AE0 005:661.968    -- End of comparing flash
+T1AE0 005:661.984    -- Start of erasing sectors
+T1AE0 005:661.993    -- Erasing range 0x0803E800 - 0x0803EFFF (  1 Sector, 2 KB)
+T1AE0 005:686.516    -- End of erasing sectors
+T1AE0 005:686.549    -- Start of flash programming
+T1AE0 005:686.560    -- Programming range 0x0803E800 - 0x0803EFFF (  1 Sector, 2 KB)
+T1AE0 005:687.901    -- End of flash programming
+T1AE0 005:687.933    -- 0x803E800 - 0x803EFFF (  1 Sector, 2 KB)
+T1AE0 005:687.956    -- Start of restoring
+T1AE0 005:687.965    -- Restoring RAMCode
+T1AE0 005:717.238    -- Restoring target memory
+T1AE0 005:739.502    -- Restore target
+T1AE0 005:739.540    -- Restoring CPU registers
+T1AE0 005:739.564    -- End of restoring
+T1AE0 005:739.583    -- Bank 0 @ 0x08000000: 1 range affected (2048 bytes)
+T1AE0 005:739.597    -- Total: 0.172s (Prepare: 0.056s, Compare: 0.039s, Erase: 0.024s, Program & Verify: 0.023s, Restore: 0.029s)
+T1AE0 005:739.610    -- Program & Verify speed: 87 KB/s
+T1AE0 005:742.489 - 176.793ms returns 0x00
+T1AE0 005:742.537 JLINK_ExecCommand("SetVerifyRAMDownload = 0", ...). 
+T1AE0 005:742.677 - 0.002ms returns 0x01
+T1AE0 005:742.850 JLINK_IsHalted()
+T1AE0 005:742.873 - 0.023ms returns TRUE
+T1AE0 005:742.889 JLINK_ReadMemEx_64(0x0803E800, 0x800 Bytes, ...)
+T1AE0 005:742.906    -- Read from flash cache (2048 bytes @ 0x0803E800)
+T1AE0 005:742.924   Data:  32 56 53 42 03 00 70 00 01 00 00 00 04 00 00 00 ...
+T1AE0 005:742.940 - 0.050ms returns 2048 (0x800)
+T1AE0 005:742.994 JLINK_Reset()
+T1AE0 005:743.019   CPU_WriteMem(4 bytes @ 0xE000EDF0)
+T1AE0 005:743.567   CPU_WriteMem(4 bytes @ 0xE000EDFC)
+T1AE0 005:744.182   Reset: Halt core after reset via DEMCR.VC_CORERESET.
+T1AE0 005:744.717   Reset: Reset device via AIRCR.SYSRESETREQ.
+T1AE0 005:744.751   CPU_WriteMem(4 bytes @ 0xE000ED0C)
+T1AE0 005:798.205   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T1AE0 005:798.638   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T1AE0 005:799.132   CPU_WriteMem(4 bytes @ 0xE000EDFC)
+T1AE0 005:805.289   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T1AE0 005:809.448   CPU_WriteMem(4 bytes @ 0xE0002000)
+T1AE0 005:810.442   CPU_ReadMem(4 bytes @ 0xE000EDFC)
+T1AE0 005:810.877   CPU_ReadMem(4 bytes @ 0xE0001000)
+T1AE0 005:811.271 - 68.276ms
+T1AE0 005:811.302 JLINK_Halt()
+T1AE0 005:811.311 - 0.008ms returns 0x00
+T1AE0 005:811.325 JLINK_ExecCommand("SetVerifyRAMDownload = 1", ...). 
+T1AE0 005:811.337 - 0.002ms returns 0x00
+T1AE0 005:811.346 JLINK_DownloadFile()
+T1AE0 005:811.557   Data:  FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF ...
+T1AE0 005:811.581   completely In flash
+T1AE0 005:811.782   CPU_ReadMem(4 bytes @ 0xE000ED90)
+T1AE0 005:812.207    -- --------------------------------------
+T1AE0 005:812.232    -- Flash bank @ 0x08000000: Default: L2 verify disabled because algorithm performs L1 verify
+T1AE0 005:812.245    -- Start of determining dirty areas in flash cache
+T1AE0 005:812.294    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0803F000 if necessary
+T1AE0 005:812.309    -- End of determining dirty areas
+T1AE0 005:812.321    -- Start of preparing flash programming
+T1AE0 005:812.333    -- Calculating RAM usage
+T1AE0 005:812.348    -- RAM usage = 2996 Bytes
+T1AE0 005:812.359    -- Preserving CPU registers
+T1AE0 005:812.383    -- Preparing target
+T1AE0 005:812.394    -- Preserving target RAM temporarily used for programming
+T1AE0 005:835.563    -- Downloading RAMCode
+T1AE0 005:858.914    -- Preparing RAMCode
+T1AE0 005:865.587    -- End of preparing flash programming
+T1AE0 005:868.922    -- CPU speed could not be measured.
+T1AE0 005:868.973    -- Start of comparing flash
+T1AE0 005:868.991    -- CRC check was estimated as fastest method
+T1AE0 005:884.002    -- Comparing range 0x803F000 - 0x803F7FF (1 Sector, 2 KB), using multi-block CRC calculation
+T1AE0 005:889.317    -- All CRCs match
+T1AE0 005:889.645    -- Comparing range 0x803F000 - 0x803F7FF (1 Sector, 2 KB), using alternative multi-block CRC calculation
+T1AE0 005:893.913    -- All CRCs match
+T1AE0 005:893.964    -- End of comparing flash
+T1AE0 005:893.988    -- Start of erasing sectors
+T1AE0 005:893.999    -- End of erasing sectors
+T1AE0 005:894.010    -- Start of flash programming
+T1AE0 005:894.022    -- End of flash programming
+T1AE0 005:894.033    -- Start of restoring
+T1AE0 005:894.044    -- Restoring RAMCode
+T1AE0 005:899.493    -- Restoring target memory
+T1AE0 005:921.751    -- Restore target
+T1AE0 005:921.817    -- Restoring CPU registers
+T1AE0 005:921.867    -- End of restoring
+T1AE0 005:921.905    -- Bank 0 @ 0x08000000: Skipped. Contents already match
+T1AE0 005:921.935    -- Bank 0 @ 0x08000000: Skipped. Contents already match
+T1AE0 005:924.653 - 113.306ms returns 0x00
+T1AE0 005:924.707 JLINK_ExecCommand("SetVerifyRAMDownload = 0", ...). 
+T1AE0 005:924.716 - 0.001ms returns 0x01
+T1AE0 005:924.858 JLINK_IsHalted()
+T1AE0 005:924.868 - 0.010ms returns TRUE
+T1AE0 005:924.875 JLINK_ReadMemEx_64(0x0803F000, 0x800 Bytes, ...)
+T1AE0 005:924.886    -- Read from flash cache (2048 bytes @ 0x0803F000)
+T1AE0 005:924.896   Data:  FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF ...
+T1AE0 005:924.905 - 0.030ms returns 2048 (0x800)
+T1AE0 005:924.938 JLINK_DEVICE_GetIndex(sDeviceName = <NULL>)
+T1AE0 005:924.945 - 0.007ms returns 7900
+T1AE0 005:924.967 JLINK_Reset()
+T1AE0 005:924.985   CPU_WriteMem(4 bytes @ 0xE000EDF0)
+T1AE0 005:925.461   CPU_WriteMem(4 bytes @ 0xE000EDFC)
+T1AE0 005:925.981   Reset: Halt core after reset via DEMCR.VC_CORERESET.
+T1AE0 005:926.494   Reset: Reset device via AIRCR.SYSRESETREQ.
+T1AE0 005:926.535   CPU_WriteMem(4 bytes @ 0xE000ED0C)
+T1AE0 005:981.205   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T1AE0 005:981.632   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T1AE0 005:982.073   CPU_WriteMem(4 bytes @ 0xE000EDFC)
+T1AE0 005:988.603   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T1AE0 005:992.769   CPU_WriteMem(4 bytes @ 0xE0002000)
+T1AE0 005:993.287   CPU_ReadMem(4 bytes @ 0xE000EDFC)
+T1AE0 005:993.759   CPU_ReadMem(4 bytes @ 0xE0001000)
+T1AE0 005:994.221 - 69.252ms
+T1AE0 005:994.314 JLINK_Halt()
+T1AE0 005:994.327 - 0.013ms returns 0x00
+T1AE0 005:994.349 JLINK_Erase()
+T1AE0 005:994.574   CPU_ReadMem(4 bytes @ 0xE000ED90)
+T1AE0 005:995.010    -- --------------------------------------
+T1AE0 005:995.040    -- Start of determining dirty areas
+T1AE0 005:995.062    -- End of determining dirty areas
+T1AE0 005:995.079    -- Start of preparing flash programming
+T1AE0 005:995.095    -- Calculating RAM usage
+T1AE0 005:995.114    -- RAM usage = 2996 Bytes
+T1AE0 005:995.130    -- Preserving CPU registers
+T1AE0 005:995.157    -- Preparing target
+T1AE0 005:995.175    -- Preserving target RAM temporarily used for programming
+T1AE0 006:018.365    -- Downloading RAMCode
+T1AE0 006:042.096    -- Preparing RAMCode
+T1AE0 006:049.089    -- End of preparing flash programming
+T1AE0 006:051.174    -- CPU speed could not be measured.
+T1AE0 006:051.213    -- Start of erasing sectors
+T1AE0 006:051.233    -- Erasing range 0x0803E000 - 0x0803E7FF (  1 Sector, 2 KB)
+T1AE0 006:092.319    -- End of erasing sectors
+T1AE0 006:092.373    -- Start of restoring
+T1AE0 006:092.394    -- Restoring RAMCode
+T1AE0 006:098.103    -- Restoring target memory
+T1AE0 006:120.225    -- Restore target
+T1AE0 006:120.307    -- Restoring CPU registers
+T1AE0 006:120.361    -- End of restoring
+T1AE0 006:120.402    -- Total time needed: 0.125s (Prepare: 0.056s, Compare: 0.000s, Erase: 0.041s, Program: 0.000s, Verify: 0.000s, Restore: 0.028s)
+T1AE0 006:123.600    -- 
+Flash sectors within Range [0x0803E000 - 0x0803E7FF] deleted.
+T1AE0 006:123.859 - 129.510ms returns 0
+T1AE0 006:123.963 JLINK_DEVICE_GetIndex(sDeviceName = <NULL>)
+T1AE0 006:124.015 - 0.052ms returns 7900
+T1AE0 006:124.030 JLINK_Reset()
+T1AE0 006:124.055   CPU_WriteMem(4 bytes @ 0xE000EDF0)
+T1AE0 006:124.499   CPU_WriteMem(4 bytes @ 0xE000EDFC)
+T1AE0 006:125.001   Reset: Halt core after reset via DEMCR.VC_CORERESET.
+T1AE0 006:125.669   Reset: Reset device via AIRCR.SYSRESETREQ.
+T1AE0 006:125.725   CPU_WriteMem(4 bytes @ 0xE000ED0C)
+T1AE0 006:179.619   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T1AE0 006:180.135   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T1AE0 006:180.562   CPU_WriteMem(4 bytes @ 0xE000EDFC)
+T1AE0 006:186.497   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T1AE0 006:190.728   CPU_WriteMem(4 bytes @ 0xE0002000)
+T1AE0 006:191.281   CPU_ReadMem(4 bytes @ 0xE000EDFC)
+T1AE0 006:191.850   CPU_ReadMem(4 bytes @ 0xE0001000)
+T1AE0 006:192.358 - 68.328ms
+T1AE0 006:192.395 JLINK_Halt()
+T1AE0 006:192.408 - 0.013ms returns 0x00
+T1AE0 006:192.426 JLINK_Erase()
+T1AE0 006:192.651   CPU_ReadMem(4 bytes @ 0xE000ED90)
+T1AE0 006:193.110    -- --------------------------------------
+T1AE0 006:193.174    -- Start of determining dirty areas
+T1AE0 006:193.197    -- End of determining dirty areas
+T1AE0 006:193.216    -- Start of preparing flash programming
+T1AE0 006:193.234    -- Calculating RAM usage
+T1AE0 006:193.256    -- RAM usage = 2996 Bytes
+T1AE0 006:193.274    -- Preserving CPU registers
+T1AE0 006:193.304    -- Preparing target
+T1AE0 006:193.324    -- Preserving target RAM temporarily used for programming
+T1AE0 006:216.511    -- Downloading RAMCode
+T1AE0 006:240.025    -- Preparing RAMCode
+T1AE0 006:247.185    -- End of preparing flash programming
+T1AE0 006:249.205    -- CPU speed could not be measured.
+T1AE0 006:249.268    -- Start of erasing sectors
+T1AE0 006:249.281    -- Erasing range 0x0803F800 - 0x0803FFFF (  1 Sector, 2 KB)
+T1AE0 006:292.980    -- End of erasing sectors
+T1AE0 006:293.013    -- Start of restoring
+T1AE0 006:293.023    -- Restoring RAMCode
+T1AE0 006:298.277    -- Restoring target memory
+T1AE0 006:320.507    -- Restore target
+T1AE0 006:320.605    -- Restoring CPU registers
+T1AE0 006:320.675    -- End of restoring
+T1AE0 006:320.726    -- Total time needed: 0.127s (Prepare: 0.056s, Compare: 0.000s, Erase: 0.043s, Program: 0.000s, Verify: 0.000s, Restore: 0.027s)
+T1AE0 006:325.168    -- 
+Flash sectors within Range [0x0803F800 - 0x0803FFFF] deleted.
+T1AE0 006:325.428 - 133.000ms returns 0
+T1AE0 006:325.741 JLINK_IsHalted()
+T1AE0 006:325.784 - 0.043ms returns TRUE
+T1AE0 006:325.807 JLINK_ReadMemEx_64(0x08000000, 0x8000 Bytes, ...)
+T1AE0 006:325.851   CPU_ReadMem(32768 bytes @ 0x08000000)
+T1AE0 006:574.816    -- Updating C cache (32768 bytes @ 0x08000000)
+T1AE0 006:574.865    -- Read from C cache (32768 bytes @ 0x08000000)
+T1AE0 006:574.925   Data:  00 00 01 20 F1 1D 00 08 21 1D 00 08 23 1D 00 08 ...
+T1AE0 006:574.938 - 249.130ms returns 32768 (0x8000)
+T1AE0 006:575.025 JLINK_GetResetTypeDesc
+T1AE0 006:575.037 - 0.012ms
+T1AE0 006:575.056 JLINK_SetResetDelay(0)
+T1AE0 006:575.065 - 0.008ms
+T1AE0 006:575.073 JLINK_Reset()
+T1AE0 006:575.105   CPU_WriteMem(4 bytes @ 0xE000EDF0)
+T1AE0 006:575.621   CPU_WriteMem(4 bytes @ 0xE000EDFC)
+T1AE0 006:576.294   Reset: Halt core after reset via DEMCR.VC_CORERESET.
+T1AE0 006:576.959   Reset: Reset device via AIRCR.SYSRESETREQ.
+T1AE0 006:577.022   CPU_WriteMem(4 bytes @ 0xE000ED0C)
+T1AE0 006:630.727   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T1AE0 006:631.353   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T1AE0 006:631.836   CPU_WriteMem(4 bytes @ 0xE000EDFC)
+T1AE0 006:637.709   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T1AE0 006:641.949   CPU_WriteMem(4 bytes @ 0xE0002000)
+T1AE0 006:642.460   CPU_ReadMem(4 bytes @ 0xE000EDFC)
+T1AE0 006:642.976   CPU_ReadMem(4 bytes @ 0xE0001000)
+T1AE0 006:643.483 - 68.409ms
+T1AE0 006:643.555 JLINK_GoEx(MaxEmulInsts = 0, Flags = 0x01)
+T1AE0 006:643.588   CPU_ReadMem(4 bytes @ 0xE0001000)
+T1AE0 006:644.141   CPU_WriteMem(4 bytes @ 0xE0001004)
+T1AE0 006:645.486   Memory map 'after startup completion point' is active
+T1AE0 006:645.527 - 1.972ms
+T1AE0 006:645.629 JLINK_IsOpen()
+T1AE0 006:645.648 - 0.018ms returns 0x01
+T1AE0 006:646.867 JLINK_Close()
+T1AE0 006:651.053   OnDisconnectTarget() start
+T1AE0 006:651.105    J-Link Script File: Executing OnDisconnectTarget()
+T1AE0 006:651.134   CPU_WriteMem(4 bytes @ 0xE0042004)
+T1AE0 006:651.680   OnDisconnectTarget() end - Took 569us
+T1AE0 006:651.791   CPU_ReadMem(4 bytes @ 0xE0001000)
+T1AE0 006:669.599 - 22.730ms
+T1AE0 006:669.643   
+T1AE0 006:669.649   Closed

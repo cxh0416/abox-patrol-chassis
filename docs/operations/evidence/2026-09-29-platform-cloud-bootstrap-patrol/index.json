@@ -1,0 +1,125 @@
+{
+  "scope": "patrol_standard_test_board_compact_cloud_bootstrap",
+  "date": "2026-09-29",
+  "uid": "05DAFF383734525243054363",
+  "jlink_serial": "69730334",
+  "candidate_version": "patrol-chassis-0.2.48-cp2",
+  "app_sha256": "4DEC1349F3782EFA19577F7507E0FF7CDD679C1E448152CC9E3A95A552C4EB71",
+  "frozen_boot_sha256": "981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63",
+  "actuation_enabled": false,
+  "power_output_enabled": false,
+  "readonly_can_diagnostics_enabled": false,
+  "config_and_recovery_pages_erased_for_test_enrollment": true,
+  "enrollment_request_id": "6657aade-9f42-4649-be24-6290220a6e96",
+  "enrollment_state": "verified",
+  "get_info_operation_id": "289a43e0-b9e1-416a-904e-3ac9a126c299",
+  "get_info_code": "200",
+  "get_info_mqtt": "READY",
+  "get_info_ota_ready": true,
+  "bootstrap_order_after_broker_kick": [
+    "manifest",
+    "heartbeat",
+    "report"
+  ],
+  "bootstrap_times_after_broker_kick": [
+    1790693934.675,
+    1790693934.884,
+    1790693935.14
+  ],
+  "sync_state_response_before_correlated_report": true,
+  "config_v5_header": "magic 0x56435543, version 5, length 400 at offset 148",
+  "ram_bytes": 61432,
+  "limits": "Shared standard board without real CAN, actuator or mechanical feedback. Broker kick is not complete cellular outage. Real late PUBACK and sustained OTA resource occupancy were not injected. No formal dist update or vehicle actuation was performed.",
+  "files": [
+    {
+      "original_path": "out/logs/platform-cloud-bootstrap/flash-patrol-cloud.jlink",
+      "archive_path": "flash-patrol-cloud.jlink",
+      "bytes": 957,
+      "sha256": "DA6807163B48A126B2296DCE84E9484AA2DB725D52B9AB62D0D3F50CEBD96B38"
+    },
+    {
+      "original_path": "out/logs/platform-cloud-bootstrap/flash-patrol-cloud.log",
+      "archive_path": "flash-patrol-cloud.log",
+      "bytes": 36872,
+      "sha256": "CE165CA1D956AB0EBF588093D9508D7989807E8052BAD43168667770CDA501FE"
+    },
+    {
+      "original_path": "out/logs/platform-cloud-bootstrap/flash-patrol-cloud.stdout.log",
+      "archive_path": "flash-patrol-cloud.stdout.log",
+      "bytes": 7847,
+      "sha256": "E79C78CEB7E46862FE135E3760A85DA7903E3BC12010D86B0B35B8BC61EB4FE5"
+    },
+    {
+      "original_path": "out/logs/platform-cloud-bootstrap/enrollment-approved.json",
+      "archive_path": "enrollment-approved.json",
+      "bytes": 140,
+      "sha256": "06991C720E4D9CCF18F997F5F476C9FF62071E47CE282762F0817690F7067D1B"
+    },
+    {
+      "original_path": "out/logs/platform-cloud-bootstrap/enrollment-verified.json",
+      "archive_path": "enrollment-verified.json",
+      "bytes": 267,
+      "sha256": "FD143C2A8001146C8DBE9305FF74CBEC52B11D3FC2018417AA5ABE14736E58CB"
+    },
+    {
+      "original_path": "out/logs/platform-cloud-bootstrap/get-info.json",
+      "archive_path": "get-info.json",
+      "bytes": 301,
+      "sha256": "C3C4592232434E148AD7F94E5047BCA33A2176B247035676E5755938EAD331EF"
+    },
+    {
+      "original_path": "out/logs/platform-cloud-bootstrap/patrol-bootstrap-observer.py",
+      "archive_path": "patrol-bootstrap-observer.py",
+      "bytes": 1799,
+      "sha256": "C5409F1A59D0A4AEF45F21F522EA605FFF10412499C1452CAAE4CCBA42373AFF"
+    },
+    {
+      "original_path": "out/logs/platform-cloud-bootstrap/bootstrap-observed.json",
+      "archive_path": "bootstrap-observed.json",
+      "bytes": 3297,
+      "sha256": "2428C07DDD17BC93B7D28DBA40B018A6C13E200E86EE787F88775A6999FB45E6"
+    },
+    {
+      "original_path": "out/logs/platform-cloud-bootstrap/patrol-cloud-state.py",
+      "archive_path": "patrol-cloud-state.py",
+      "bytes": 905,
+      "sha256": "9E0EC9BE9FFBA849FF5AE2F3921CFFD95C124D9837990601E799E10EA6D76FF2"
+    },
+    {
+      "original_path": "out/logs/platform-cloud-bootstrap/server-state-during-observer.json",
+      "archive_path": "server-state-during-observer.json",
+      "bytes": 282,
+      "sha256": "696CA0524F552E50B63BC7D274D13EF2BC1BBA1167FDB802F32534E506B97B8C"
+    },
+    {
+      "original_path": "out/logs/platform-cloud-bootstrap/patrol-sync-state.py",
+      "archive_path": "patrol-sync-state.py",
+      "bytes": 2819,
+      "sha256": "757A4A8C5F6AE6D9F445A968F5F5A204AB5243650BC050FB55A66A458905092C"
+    },
+    {
+      "original_path": "out/logs/platform-cloud-bootstrap/sync-state.json",
+      "archive_path": "sync-state.json",
+      "bytes": 234,
+      "sha256": "25A8E8A20D45175F993684661AEE56DC211CC98A9D787A08772AA584731307AD"
+    },
+    {
+      "original_path": "out/logs/platform-cloud-bootstrap/read-config-v5-header.jlink",
+      "archive_path": "read-config-v5-header.jlink",
+      "bytes": 80,
+      "sha256": "5D191AC323D0E395926FD6CEDABEC3A2751FA408BE380650027A320FEF0E1A06"
+    },
+    {
+      "original_path": "out/logs/platform-cloud-bootstrap/read-config-v5-header.log",
+      "archive_path": "read-config-v5-header.log",
+      "bytes": 8266,
+      "sha256": "439EB76F48E0E23F7D9FF65571D08C4BBBEB2D3156732572B0927E649D33F7AF"
+    },
+    {
+      "original_path": "out/logs/platform-cloud-bootstrap/read-config-v5-header.stdout.log",
+      "archive_path": "read-config-v5-header.stdout.log",
+      "bytes": 2524,
+      "sha256": "D00259FF6D527F73028F61C54CC5AA16099A60FED1071FFE7983209875722C14"
+    }
+  ]
+}

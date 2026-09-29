@@ -18,6 +18,8 @@ static uint8_t start_publish(CloudTxKind_t kind, const char* topic, const char* 
 }
 void CloudTx_NetworkChanged(void)
 {
+    ABoxCloudBootstrap_NetworkChanged(&g_cloud.cloud_bootstrap);
+    g_cloud.cloud_publish_generation = 0U;
     g_cloud.tx_kind = CLOUD_TX_NONE;
     g_cloud.tx_operation = 0U;
     g_cloud.mqtt_was_ready = 0U;
@@ -28,6 +30,12 @@ static void tx_completed(void)
 {
     char result[128];
     CloudTxKind_t completed = g_cloud.tx_kind;
+    if (g_cloud.cloud_publish_generation != 0U) {
+        (void)ABoxCloudBootstrap_Receipt(&g_cloud.cloud_bootstrap,
+                                         g_cloud.cloud_publish_generation,
+                                         g_cloud.tx_operation, 1);
+        g_cloud.cloud_publish_generation = 0U;
+    }
     g_cloud.tx_kind = CLOUD_TX_NONE;
     if (completed == CLOUD_TX_RESPONSE)
     {
@@ -57,15 +65,12 @@ static void tx_completed(void)
     }
     else if (completed == CLOUD_TX_HEARTBEAT)
     {
-        if (g_cloud.v4_bootstrap_stage == 2U) g_cloud.v4_bootstrap_stage = 3U;
         MqttTrialManager_OnHeartbeatProof(MQTT_Core_GetPubOkSeq(), CloudPort_Now());
     }
     else if (completed == CLOUD_TX_STATUS_REPORT)
     {
         g_cloud.status_report_request_id[0] = '\0';
-        if (g_cloud.v4_bootstrap_stage == 3U) g_cloud.v4_bootstrap_stage = 0U;
     }
-    else if (completed == CLOUD_TX_MANIFEST) g_cloud.v4_bootstrap_stage = 2U;
     else if (completed == CLOUD_TX_LOG_CHUNK)
     {
         g_cloud.log_chunk_index++;
@@ -95,6 +100,12 @@ void CloudTx_Service(void)
         ABoxMqttReceiptStatus result = MQTT_Core_PublishResult(g_cloud.tx_operation);
         if (result == ABOX_MQTT_RECEIPT_CONFIRMED) tx_completed();
         else if (result != ABOX_MQTT_RECEIPT_PENDING || !MQTT_Core_IsPublishActive()) {
+            if (g_cloud.cloud_publish_generation != 0U) {
+                (void)ABoxCloudBootstrap_Receipt(&g_cloud.cloud_bootstrap,
+                                                 g_cloud.cloud_publish_generation,
+                                                 g_cloud.tx_operation, 0);
+                g_cloud.cloud_publish_generation = 0U;
+            }
             /* A failed modem publish has no completion sequence. Recover the
              * link instead of leaving telemetry permanently queued. */
             g_cloud.tx_kind = CLOUD_TX_NONE;
@@ -106,23 +117,32 @@ void CloudTx_Service(void)
     if (!MQTT_Core_IsReady() || MQTT_Core_IsPublishActive()) return;
 
     /* V4 reconnect order is Manifest -> Heartbeat -> complete State. */
-    if (g_cloud.v4_bootstrap_stage == 1U)
+    if (ABoxCloudBootstrap_Active(&g_cloud.cloud_bootstrap))
     {
-        if (CloudMessages_BuildManifest(g_cloud.tx_payload, sizeof(g_cloud.tx_payload)))
-            (void)start_publish(CLOUD_TX_MANIFEST, g_cloud.topic_manifest, g_cloud.tx_payload, 1U, 1U);
-        return;
-    }
-    if (g_cloud.v4_bootstrap_stage == 2U)
-    {
-        if (CloudMessages_BuildHeartbeat(g_cloud.tx_payload, sizeof(g_cloud.tx_payload)))
-            (void)start_publish(CLOUD_TX_HEARTBEAT, g_cloud.topic_heartbeat, g_cloud.tx_payload, 0U, 0U);
-        return;
-    }
-    if (g_cloud.v4_bootstrap_stage == 3U)
-    {
-        if (CloudMessages_BuildStatusReport(g_cloud.tx_payload, sizeof(g_cloud.tx_payload), "reconnect") &&
-            start_publish(CLOUD_TX_STATUS_REPORT, g_cloud.topic_status_report, g_cloud.tx_payload, 1U, 0U))
-            CloudMessages_RememberStatusSnapshot(now);
+        ABoxCloudJob job;
+        uint8_t published = 0U;
+        if (!ABoxCloudBootstrap_Next(&g_cloud.cloud_bootstrap, &job)) return;
+        if (job.kind == ABOX_CLOUD_JOB_MANIFEST &&
+            CloudMessages_BuildManifest(g_cloud.tx_payload, sizeof(g_cloud.tx_payload)))
+            published = start_publish(CLOUD_TX_MANIFEST, g_cloud.topic_manifest,
+                                      g_cloud.tx_payload, 1U, 1U);
+        else if (job.kind == ABOX_CLOUD_JOB_HEARTBEAT &&
+                 CloudMessages_BuildHeartbeat(g_cloud.tx_payload, sizeof(g_cloud.tx_payload)))
+            published = start_publish(CLOUD_TX_HEARTBEAT, g_cloud.topic_heartbeat,
+                                      g_cloud.tx_payload, 0U, 0U);
+        else if (job.kind == ABOX_CLOUD_JOB_STATE &&
+                 CloudMessages_BuildStatusReport(g_cloud.tx_payload,
+                                                 sizeof(g_cloud.tx_payload), "reconnect")) {
+            published = start_publish(CLOUD_TX_STATUS_REPORT,
+                                      g_cloud.topic_status_report, g_cloud.tx_payload, 1U, 0U);
+            if (published) CloudMessages_RememberStatusSnapshot(now);
+        }
+        if (published) {
+            g_cloud.cloud_publish_generation = job.generation;
+            if (!ABoxCloudBootstrap_Begin(&g_cloud.cloud_bootstrap,
+                                          &job, g_cloud.tx_operation))
+                MQTT_Core_RequestReconnect();
+        }
         return;
     }
 

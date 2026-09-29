@@ -1,0 +1,8 @@
+device STM32F105RC
+if SWD
+speed 4000
+connect
+h
+mem32 0x0803F894, 2
+g
+qc
