@@ -139,14 +139,8 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
     # Add user defined libraries
 )
 
-abox_platform_attach_components(${CMAKE_PROJECT_NAME}
-    SCHEDULER FREERTOS HARDWARE stm32f105_ec800_v1
-    COMPONENTS core board_io cjson ec_power ec800 ec800_ufs ec800_command_port ec800_tls
-               mqtt_tls mqtt_runtime mqtt_trial mqtt_v4 mqtt_ec800_rx
-               mqtt_ec800 enrollment
-               enrollment_ec800_http boot_v2_common https_ufs_downloader
-               boot_v2_app)
-abox_platform_attach_standard_port(${CMAKE_PROJECT_NAME} HARDWARE stm32f105_ec800_v1)
+abox_platform_attach_standard_app(${CMAKE_PROJECT_NAME}
+    PRODUCT_CONFIG_DIR "${ABOX_PRODUCT_CONFIG_DIR}" SCHEDULER FREERTOS)
 
 add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${CMAKE_PROJECT_NAME}> ${CMAKE_PROJECT_NAME}.bin
