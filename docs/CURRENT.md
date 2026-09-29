@@ -20,6 +20,8 @@
 
 本次还修复了 get_info 发布确认未完成时 sync_state 响应丢失的竞态：同步请求等待发送槽，响应与关联状态报告均可到达平台。公共 Platform 增加 plain 连接的时钟读取、HTTPS 入网 PDP 准备及会话开始前失败重试。产品信息响应预算为 1536 字节。
 
+源码候选已把底盘入网预期 TLS profile 显式声明为 `0`；公共 Enrollment 仍默认 `1` 以兼容其他产品，TLS 凭据 profile 不符时拒绝进入试连。现行底盘服务端入网合同为明文，此改动的 TLS 凭据路径仅通过主机测试与 ARM 构建，未作为当前实板入网结果。
+
 ## 验证证据与现场边界
 
 当前源码候选已接入 Platform 标准 STM32F105/EC800 App Port，Cloud TX 按 MQTT transport operation 精确关联发布完成，App OTA 的 EC800 AT/owner 接线改用 Platform 公共适配器。39 项产品主机测试、25 项 Platform CTest 与 ARM Release/Debug 构建通过。测试板 UID `05DAFF383734525243054363` 上的禁用执行器候选 `patrol-chassis-0.2.47-cp1` 已验证启动、MQTT READY、Manifest 与状态落库、`get_info`、`sync_state`、MCU 重启后重连。另用输出和执行器全部禁用的 Debug 构建 `patrol-chassis-0.2.47-fi2` 实测 RAM-only 候选在证明被丢弃后超时恢复原 plain 链路；模组供电重启和只针对该测试 VID 的 Broker 会话断开后均重新 READY，Config V5 页 SHA256 全程未变。新公共 OTA 接线的禁用运动候选 `patrol-chassis-0.2.47-cp2` 在同一测试板完成启动、Manifest 确认、MQTT READY，独立 `get_info` 返回 `otaReady=true`、`otaProvisioned=true`、Boot V2 描述符有效；配置页哈希未变。未捕获字面 `RDY`，真实迟到 PUBACK、OTA 下载/安装与占用及完整蜂窝断网仍未实板覆盖，因此候选未替换 `dist/`，也未下发 OTA。测试板已恢复到刷写前的 `0.2.46` App/State，重连上线，记录见[正常路径证据](operations/evidence/2026-09-29-cloud-port-stage1/index.json)、[异常路径证据](operations/evidence/2026-09-29-cloud-port-stage1/negative/index.json)和[公共 OTA 接线证据](operations/evidence/2026-09-29-cloud-port-stage1/ota-adapter/index.json)。

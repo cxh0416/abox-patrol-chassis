@@ -12,6 +12,7 @@
 #include "ec_power.h"
 #include "main.h"
 #include "mqtt_core.h"
+#include "mqtt_runtime.h"
 #include "mqtt_trial_manager.h"
 #include "ota_service.h"
 #include "patrol_config.h"
@@ -95,7 +96,9 @@ void PatrolEnrollment_Init(ABoxEc800At *at)
     buffers.request_id = g_request_id; buffers.request_id_size = sizeof(g_request_id);
     buffers.poll_token = g_poll_token; buffers.poll_token_size = sizeof(g_poll_token);
     (void)ABoxEnrollmentEc800Http_Init(&g_http, at, ENROLL_OWNER, "UFS:ota_ca.pem", http_done, 0);
-    (void)ABoxEnrollment_Init(&g_enrollment, &port, &buffers, PatrolConfig_Get()->ota_origin);
+    if (ABoxEnrollment_Init(&g_enrollment, &port, &buffers, PatrolConfig_Get()->ota_origin))
+        (void)ABoxEnrollment_SetExpectedTlsProfile(&g_enrollment,
+                                                    PATROL_MQTT_TLS_PROFILE_DEFAULT);
     if (CloudService_NeedsEnrollment()) MQTT_Core_SetPaused(1U);
 }
 
