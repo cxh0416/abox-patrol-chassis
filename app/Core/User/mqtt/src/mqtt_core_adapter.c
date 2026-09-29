@@ -1,6 +1,7 @@
 #include "mqtt_core.h"
 
 #include "abox_mqtt_ec800.h"
+#include "abox_mqtt_receipt.h"
 #include "app_log.h"
 #include "main.h"
 #include <stdio.h>
@@ -11,6 +12,7 @@
 enum { TOPIC_CAPACITY = 128U, PAYLOAD_CAPACITY = 1152U };
 static MQTT_CoreConfig_t g_config;
 static ABoxMqttEc800 g_transport;
+static ABoxMqttReceipt g_receipt;
 static ABoxMqttEc800Config g_transport_config;
 static const char *g_subscriptions[4];
 static Ec800AtCore_t *g_at;
@@ -41,7 +43,7 @@ static void publish_event(void *user, uint64_t operation,
                           ABoxMqttEc800PublishEvent event)
 {
     (void)user;
-    (void)operation;
+    ABoxMqttReceipt_OnEvent(&g_receipt, operation, event);
     if (event == ABOX_MQTT_EC800_PUBLISH_CONFIRMED) ++g_publish_ok;
 }
 static void state_changed(void *user, ABoxMqttEc800State state)
@@ -109,6 +111,7 @@ void MQTT_Core_Init(const MQTT_CoreConfig_t *config, MQTT_CoreMsgCallback_t call
     g_iccid[0] = 0;
     g_iccid_valid = g_iccid_pending = 0U;
     g_publish_ok = 0U;
+    ABoxMqttReceipt_Init(&g_receipt);
     g_security_ready = g_paused = g_initialized = 0U;
     g_last_state = ABOX_MQTT_EC800_IDLE;
     build_config();
@@ -143,6 +146,7 @@ void MQTT_Core_SetAtCore(Ec800AtCore_t *at)
 void MQTT_Core_Reset(void)
 {
     if (!g_initialized) return;
+    ABoxMqttReceipt_Invalidate(&g_receipt);
     ABoxMqttEc800_OnModemReset(&g_transport, HAL_GetTick());
     g_iccid_pending = g_iccid_valid = 0U;
 }
@@ -305,10 +309,21 @@ uint8_t MQTT_Core_PublishEx(const char *topic, const char *payload,
                            uint8_t qos, uint8_t retain)
 {
     uint64_t operation;
-    return g_initialized && topic && payload &&
-           ABoxMqttEc800_Publish(&g_transport, topic,
-                                 (const uint8_t *)payload, strlen(payload),
-                                 qos, retain, &operation);
+    return MQTT_Core_PublishExTracked(topic, payload, qos, retain, &operation);
+}
+uint8_t MQTT_Core_PublishExTracked(const char *topic, const char *payload,
+                                  uint8_t qos, uint8_t retain, uint64_t *operation)
+{
+    if (!g_initialized || !topic || !payload || !operation ||
+        g_receipt.status == ABOX_MQTT_RECEIPT_PENDING ||
+        !ABoxMqttEc800_Publish(&g_transport, topic,
+                               (const uint8_t *)payload, strlen(payload),
+                               qos, retain, operation)) return 0U;
+    return (uint8_t)ABoxMqttReceipt_Begin(&g_receipt, *operation);
+}
+ABoxMqttReceiptStatus MQTT_Core_PublishResult(uint64_t operation)
+{
+    return ABoxMqttReceipt_Get(&g_receipt, operation);
 }
 void MQTT_Core_CancelPendingPublish(void)
 {

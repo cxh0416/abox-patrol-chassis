@@ -11,15 +11,15 @@ static uint8_t start_publish(CloudTxKind_t kind, const char* topic, const char* 
                              uint8_t qos, uint8_t retain)
 {
     if ((g_cloud.tx_kind != CLOUD_TX_NONE) || !MQTT_Core_IsReady() || MQTT_Core_IsPublishActive()) return 0U;
-    if (!MQTT_Core_PublishEx(topic, payload, qos, retain)) return 0U;
+    if (!MQTT_Core_PublishExTracked(topic, payload, qos, retain,
+                                    &g_cloud.tx_operation)) return 0U;
     g_cloud.tx_kind = kind;
-    g_cloud.tx_start_sequence = MQTT_Core_GetPubOkSeq();
     return 1U;
 }
 void CloudTx_NetworkChanged(void)
 {
     g_cloud.tx_kind = CLOUD_TX_NONE;
-    g_cloud.tx_start_sequence = 0U;
+    g_cloud.tx_operation = 0U;
     g_cloud.mqtt_was_ready = 0U;
     g_cloud.mqtt_cancel_pending = 0U;
 }
@@ -92,8 +92,9 @@ void CloudTx_Service(void)
     }
     if (g_cloud.tx_kind != CLOUD_TX_NONE)
     {
-        if (MQTT_Core_GetPubOkSeq() != g_cloud.tx_start_sequence) tx_completed();
-        else if (!MQTT_Core_IsPublishActive()) {
+        ABoxMqttReceiptStatus result = MQTT_Core_PublishResult(g_cloud.tx_operation);
+        if (result == ABOX_MQTT_RECEIPT_CONFIRMED) tx_completed();
+        else if (result != ABOX_MQTT_RECEIPT_PENDING || !MQTT_Core_IsPublishActive()) {
             /* A failed modem publish has no completion sequence. Recover the
              * link instead of leaving telemetry permanently queued. */
             g_cloud.tx_kind = CLOUD_TX_NONE;

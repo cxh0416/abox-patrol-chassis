@@ -8,6 +8,8 @@
 
 CloudContext g_cloud;
 static uint32_t tick, pub_sequence;
+static uint64_t next_operation, pub_operation;
+static ABoxMqttReceiptStatus pub_result = ABOX_MQTT_RECEIPT_UNKNOWN;
 static ChassisControl control;
 static uint8_t center_active, connected = 1, publish_active;
 static const char* event;
@@ -25,7 +27,8 @@ void MqttTrialManager_Cancel(uint32_t now) { (void)now; }
 uint8_t MQTT_Core_IsReady(void) { return connected; }
 uint8_t MQTT_Core_IsPublishActive(void) { return publish_active; }
 void MQTT_Core_RequestReconnect(void) { reconnect_count++; }
-uint8_t MQTT_Core_PublishEx(const char* topic, const char* payload, uint8_t qos, uint8_t retain)
+uint8_t MQTT_Core_PublishExTracked(const char* topic, const char* payload,
+                                   uint8_t qos, uint8_t retain, uint64_t* operation)
 {
     (void)payload; (void)retain;
     last_kind = topic == g_cloud.topic_status_report ? CLOUD_TX_STATUS_REPORT :
@@ -33,9 +36,14 @@ uint8_t MQTT_Core_PublishEx(const char* topic, const char* payload, uint8_t qos,
     last_qos = qos;
     status_packets += last_kind == CLOUD_TX_STATUS_REPORT;
     heartbeat_packets += last_kind == CLOUD_TX_HEARTBEAT;
+    pub_operation = ++next_operation;
+    *operation = pub_operation;
+    pub_result = ABOX_MQTT_RECEIPT_PENDING;
     publish_active = 1;
     return 1;
 }
+ABoxMqttReceiptStatus MQTT_Core_PublishResult(uint64_t operation)
+{ return operation == pub_operation ? pub_result : ABOX_MQTT_RECEIPT_UNKNOWN; }
 const char* CloudMessages_StatusChangeReason(uint32_t now) { (void)now; return event; }
 void CloudMessages_RememberStatusSnapshot(uint32_t now) { (void)now; event = 0; }
 uint8_t CloudMessages_BuildStatusReport(char* out, uint16_t size, const char* reason)
@@ -72,5 +80,6 @@ static void complete_publish(void)
     if (publish_active) {
         publish_active = 0;
         pub_sequence++;
+        pub_result = ABOX_MQTT_RECEIPT_CONFIRMED;
     }
 }

@@ -146,6 +146,7 @@ abox_platform_attach_components(${CMAKE_PROJECT_NAME}
                mqtt_ec800 enrollment
                enrollment_ec800_http boot_v2_common https_ufs_downloader
                boot_v2_app)
+abox_platform_attach_standard_port(${CMAKE_PROJECT_NAME} HARDWARE stm32f105_ec800_v1)
 
 add_custom_command(TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
     COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${CMAKE_PROJECT_NAME}> ${CMAKE_PROJECT_NAME}.bin

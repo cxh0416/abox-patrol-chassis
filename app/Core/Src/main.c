@@ -20,7 +20,7 @@
 #include <stdio.h>
 
 #include "app_log.h"
-#include "abox_product_port.h"
+#include "abox_stm32f105_ec800_port.h"
 #include "app_version.h"
 #include "boot_cfg.h"
 #include "cloud_service.h"
@@ -102,7 +102,7 @@ int main(void)
   MX_UART5_Init();
   MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
-  ABox_ProductPlatform_Init();
+  ABoxStm32F105Ec800Port_Init();
   AppLog_Init();
   AppLog_FieldStartup(Patrol_AppFwVersion());
   TimeBase_Init();

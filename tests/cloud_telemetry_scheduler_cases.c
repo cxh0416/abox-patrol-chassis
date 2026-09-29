@@ -74,10 +74,22 @@ int main(void)
     assert(last_kind == CLOUD_TX_RESPONSE);
     drain();
     g_cloud.tx_kind = CLOUD_TX_HEARTBEAT;
-    g_cloud.tx_start_sequence = pub_sequence;
+    g_cloud.tx_operation = pub_operation;
+    pub_result = ABOX_MQTT_RECEIPT_FAILED;
     publish_active = 0;
     connected = 1;
     CloudTx_Service();
     assert(reconnect_count == 1 && g_cloud.tx_kind == CLOUD_TX_NONE);
+    /* A receipt from a different operation must not complete a response. */
+    g_cloud.response_pending = 1;
+    CloudTx_Service();
+    assert(g_cloud.tx_kind == CLOUD_TX_RESPONSE);
+    int cached_before_stale = cached_responses;
+    pub_operation++;
+    pub_result = ABOX_MQTT_RECEIPT_CONFIRMED;
+    publish_active = 0;
+    CloudTx_Service();
+    assert(g_cloud.response_pending && cached_responses == cached_before_stale);
+    assert(reconnect_count == 2 && g_cloud.tx_kind == CLOUD_TX_NONE);
     return 0;
 }

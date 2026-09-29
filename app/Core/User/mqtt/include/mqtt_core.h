@@ -5,6 +5,7 @@
 
 #include "abox_ec800_at_legacy.h"
 #include "abox_mqtt_trial.h"
+#include "abox_mqtt_receipt.h"
 
 typedef enum
 {
@@ -100,6 +101,9 @@ uint8_t MQTT_Core_IsPublishActive(void);
 uint32_t MQTT_Core_GetPubOkSeq(void);
 uint8_t MQTT_Core_Publish(const char* topic, const char* payload, uint8_t qos);
 uint8_t MQTT_Core_PublishEx(const char* topic, const char* payload, uint8_t qos, uint8_t retain);
+uint8_t MQTT_Core_PublishExTracked(const char* topic, const char* payload,
+                                  uint8_t qos, uint8_t retain, uint64_t* operation);
+ABoxMqttReceiptStatus MQTT_Core_PublishResult(uint64_t operation);
 void MQTT_Core_CancelPendingPublish(void);
 uint8_t MQTT_Core_IsIccidValid(void);
 const char* MQTT_Core_GetIccid(void);

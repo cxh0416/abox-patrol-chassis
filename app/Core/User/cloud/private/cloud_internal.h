@@ -89,7 +89,7 @@ typedef struct {
     uint32_t ota_begin_due;
 
     CloudTxKind_t tx_kind;
-    uint32_t tx_start_sequence;
+    uint64_t tx_operation;
     char tx_payload[CLOUD_PAYLOAD_SIZE];
 
     uint8_t response_pending;

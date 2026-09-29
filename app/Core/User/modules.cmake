@@ -1,6 +1,5 @@
 # Product modules. Keep source order stable to avoid unnecessary link-layout changes.
 set(PATROL_PRODUCT_SOURCES
-    Core/User/board/src/abox_product_port.c
     Core/User/motion/src/absolute_encoder.c
     Core/User/common/src/app_log.c
     Core/User/system/src/patrol_config.c
