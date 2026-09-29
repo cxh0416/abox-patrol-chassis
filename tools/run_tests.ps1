@@ -81,6 +81,23 @@ $powerOffTest = Join-Path $hostBuild 'power_output_off_test.exe'
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $powerOffTest
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+foreach ($enabled in @(0, 1)) {
+    $boardPowerTest = Join-Path $hostBuild "vehicle_power_port_$enabled.exe"
+    & $gcc -std=c11 -Wall -Wextra -Werror `
+        "-DPATROL_CHASSIS_POWER_OUTPUT_ENABLED=$enabled" `
+        '-DPATROL_CHASSIS_ACTUATION_ENABLED=1' `
+        "-I$PSScriptRoot\..\app\Core\User\board\include" `
+        "-I$PSScriptRoot\..\app\Core\User\common\include" `
+        "-I$PSScriptRoot\..\platform\components\board_io\include" `
+        "-I$PSScriptRoot\..\platform\targets\stm32f105_ec800_v1\include" `
+        "$PSScriptRoot\..\app\Core\User\board\src\vehicle_power_port.c" `
+        "$PSScriptRoot\..\app\Core\User\board\src\vehicle_power_output.c" `
+        "$PSScriptRoot\..\platform\components\board_io\src\abox_board_io.c" `
+        "$PSScriptRoot\..\tests\vehicle_power_port_test.c" -o $boardPowerTest
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+    & $boardPowerTest
+    if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+}
 
 & ctest --test-dir $hostBuild --output-on-failure
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

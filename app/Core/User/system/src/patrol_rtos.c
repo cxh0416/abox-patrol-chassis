@@ -23,6 +23,7 @@
 #include "usart.h"
 #include "vehicle_steering_profile.h"
 #include "vehicle_power_output.h"
+#include "vehicle_power_port.h"
 
 #ifndef PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED
 #define PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED 0
@@ -259,6 +260,7 @@ static void Patrol_SafetyControlTask(void *argument)
     (void)argument;
     for (;;)
     {
+        VehiclePowerPort_Poll(HAL_GetTick());
         taskENTER_CRITICAL();
         RemoteService_SafetyTick(HAL_GetTick());
         taskEXIT_CRITICAL();

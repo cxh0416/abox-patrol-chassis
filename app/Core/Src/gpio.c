@@ -22,8 +22,9 @@
 #include "gpio.h"
 
 /* USER CODE BEGIN 0 */
-
+#include "abox_board_io_stm32f105.h"
 /* USER CODE END 0 */
+
 
 /*----------------------------------------------------------------------------*/
 /* Configure GPIO                                                             */
@@ -51,41 +52,29 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, PVIN_OUT1_Pin|PVIN_OUT2_Pin|PVIN_OUT3_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, EN_3_8V_Pin|EC_PWR_Pin|EC_DTR_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, RELAY_CTL_Pin|EN_3_8V_Pin|EC_PWR_Pin|EC_DTR_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, CAN2_STB_Pin|CAN1_STB_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, LED_1_Pin|LED_2_Pin|LED_3_Pin|CAN2_STB_Pin
-                          |CAN1_STB_Pin, GPIO_PIN_RESET);
+  /* Board-owned outputs are written low before their output modes are set. */
+  ABoxBoardIoStm32_SafeInit();
 
-  /*Configure GPIO pins : PVIN_OUT1_Pin PVIN_OUT2_Pin PVIN_OUT3_Pin */
-  GPIO_InitStruct.Pin = PVIN_OUT1_Pin|PVIN_OUT2_Pin|PVIN_OUT3_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : IO_IN1_Pin IO_IN2_Pin IO_IN3_Pin IO_IN4_Pin
-                           EC_MAIN_RI_Pin */
-  GPIO_InitStruct.Pin = IO_IN1_Pin|IO_IN2_Pin|IO_IN3_Pin|IO_IN4_Pin
-                          |EC_MAIN_RI_Pin;
+  /*Configure GPIO pin : EC_MAIN_RI_Pin */
+  GPIO_InitStruct.Pin = EC_MAIN_RI_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : RELAY_CTL_Pin EN_3_8V_Pin EC_PWR_Pin EC_DTR_Pin */
-  GPIO_InitStruct.Pin = RELAY_CTL_Pin|EN_3_8V_Pin|EC_PWR_Pin|EC_DTR_Pin;
+  /*Configure GPIO pins : EN_3_8V_Pin EC_PWR_Pin EC_DTR_Pin */
+  GPIO_InitStruct.Pin = EN_3_8V_Pin|EC_PWR_Pin|EC_DTR_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LED_1_Pin LED_2_Pin LED_3_Pin CAN2_STB_Pin
-                           CAN1_STB_Pin */
-  GPIO_InitStruct.Pin = LED_1_Pin|LED_2_Pin|LED_3_Pin|CAN2_STB_Pin
-                          |CAN1_STB_Pin;
+  /*Configure GPIO pins : CAN2_STB_Pin CAN1_STB_Pin */
+  GPIO_InitStruct.Pin = CAN2_STB_Pin|CAN1_STB_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

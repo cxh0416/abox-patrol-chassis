@@ -66,10 +66,11 @@ class PatrolScaffoldTests(unittest.TestCase):
 
     def test_confirmed_vehicle_power_output_is_isolated_to_pvin_out1(self):
         port = (ROOT / "app/Core/User/board/src/vehicle_power_port.c").read_text(encoding="utf-8")
-        self.assertIn("PVIN_OUT1_GPIO_Port", port)
-        self.assertIn("PVIN_OUT1_Pin", port)
-        self.assertNotIn("PVIN_OUT2", port)
-        self.assertNotIn("PVIN_OUT3", port)
+        self.assertIn("ABoxBoardIo_OutputSet(&g_board_io, ABOX_BOARD_IO_OUT1, on)", port)
+        self.assertIn("allowed_outputs = (uint8_t)(1U << ABOX_BOARD_IO_OUT1)", port)
+        self.assertNotIn("ABOX_BOARD_IO_OUT2", port)
+        self.assertNotIn("ABOX_BOARD_IO_OUT3", port)
+        self.assertNotIn("ABOX_BOARD_IO_RELAY", port)
         self.assertIn("VehiclePowerOutput_Init(write_power_output)", port)
 
     def test_public_profile_references_v4_and_documents_business_limits(self):
