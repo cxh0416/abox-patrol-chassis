@@ -17,9 +17,9 @@
     "0x0803F000"
   ],
   "config_page": "0x0803F800",
-  "product_commit": "40c9f019cc0896ed29c532d71b26f9534619512f",
+  "product_commit": "24f3604f9f585080be6038c4af109bedc1959764",
   "product_dirty": false,
-  "platform_commit": "4f97ca9d155f4be5869ab6b2b911e9c2ae5b909c",
+  "platform_commit": "48fea7f972f642053a20806a7f90792d66cb676f",
   "platform_dirty": false,
   "toolchain": "arm-none-eabi-gcc.exe (Arm GNU Toolchain 14.2.Rel1 (Build arm-14.52)) 14.2.1 20241119",
   "build_options": [
@@ -35,7 +35,7 @@
       "source": "platform/targets/stm32f105_abox_boot"
     },
     "app": {
-      "flash_bytes": 125448,
+      "flash_bytes": 125536,
       "ram_bytes": 61432
     },
     "boot_limit_bytes": 32768,
@@ -45,10 +45,10 @@
   "artifacts": [
     {
       "name": "Patrol_Vehicle_Chassis_App.bin",
-      "length": 125448,
+      "length": 125536,
       "load_address": "0x08008000",
-      "crc32": "7D50717A",
-      "sha256": "0B3EF11CE83CC3357AAECB8EE21B243507001659207B7DAC2A33A9BA5571F0A7",
+      "crc32": "E9278B18",
+      "sha256": "4DBA91F69F57998D40C8548BA92D84821A2E41EC3DF559FA677691952585EAED",
       "includes_device_config": false,
       "includes_boot_state": false
     },
@@ -63,10 +63,10 @@
     },
     {
       "name": "Patrol_Vehicle_Chassis_Full.bin",
-      "length": 158216,
+      "length": 158304,
       "load_address": "0x08000000",
-      "crc32": "6D54E3E1",
-      "sha256": "5E52E4EBEB679895295B89BC224557C89CC021C3136D6B8E821898525855282D",
+      "crc32": "45DE997C",
+      "sha256": "E7DE9D9D9A97AF82FF3308870036F37CA846C284FCBA20DBCE0F62FA7CF2ED8B",
       "includes_device_config": false,
       "includes_boot_state": false
     }

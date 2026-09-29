@@ -4,24 +4,24 @@
 
 ## 维护事务能力声明（2026-09-29，源码与主机验证）
 
-源码 `0.2.46` 在内部 `get_info` 增加 `maintenanceProtocols`，分别声明 MQTT 配置与 VID 事务语义，应用版本不再作为平台能力白名单。响应及 MQTT 发送缓冲区扩大到 1536 字节，公共 MQTT V4、Config V5 和冻结 Boot 不变。39 项主机测试、ARM 运动候选和静态栈检查通过；正式打包及本机测试板通信验收进行中，尚未构成现场运动或电源验收。测试板 UID `05DAFF383734525243054363` 与现场车辆不同，不对现场车辆下发本轮操作。
+源码 `0.2.46` 在内部 `get_info` 增加 `maintenanceProtocols`，分别声明 MQTT 配置与 VID 事务语义，应用版本不再作为平台能力白名单。响应及 MQTT 发送缓冲区扩大到 1536 字节，公共 MQTT V4、Config V5 和冻结 Boot 不变。39 项主机测试、ARM 运动候选、静态栈检查及正式打包通过；本机测试板通信验收进行中，尚未构成现场运动或电源验收。测试板 UID `05DAFF383734525243054363` 与现场车辆不同，不对现场车辆下发本轮操作。
 
 ## 标定与远控简化固件已单车 OTA
 
 当前新流程已完成源码、平台和主机改造：正常远控直接建立公共 V4 控制会话；在线标定只走独占中位会话；旧 bench 许可和持久 `remote_enabled` 授权已移除。Config V5 的原授权字节保留在原位置并作为保留字节。平台 `0.4.158` 已部署；2026-09-28 在目标车完成 `0.2.45` OTA 确认后，平台远控总开关已开启。本车无独立接触器反馈输入，`powerOutputOn` 只表示 MCU 输出命令。
 
-`dist/` 最新正式版为 `patrol-chassis-0.2.45`，App SHA256 `7A4E5FE56F15E588B0672DE06A7731447D376FB1008E9F019BC175CD768AF666`；转向和行走执行器已编译，`actuation_enabled=true`，正式 App 与运动候选逐字节一致。正式包包含现场分支的 CAN Bus-Off 恢复、±500 rpm 行走上限和 300/150/75 rpm 转向轮廓。既有 [0.2.12 行走换向实测](operations/evidence/2026-09-08-bench-drive-0212.json)和 [0.2.31 转向实测](operations/evidence/2026-09-15-031-steering-speed/adaptive-validation/summary.md)构成本轮已验证硬件的基础。产品主机测试、Platform CTest 21 项、ARM 候选与正式重建通过。目标车 `PATROL-05D3FF343733574E43043550` 已由 `0.2.44` OTA 到 `0.2.45`，独立 `get_info` 返回 Boot `CONFIRMED`、OTA 空闲；状态报告显示标定有效、停车、实测转速为零、输出命令关闭。平台远控入口现已开启，但尚无活动控制会话。当前版本的控制会话、CAN/编码器和实际停车运动回归尚未执行，OTA 与状态响应不能替代运动验收。当前步骤见[远控运维](operations/架空行走与平台远控实现.md)。
+`dist/` 最新正式版为 `patrol-chassis-0.2.46`，App SHA256 `4DBA91F69F57998D40C8548BA92D84821A2E41EC3DF559FA677691952585EAED`；转向和行走执行器已编译，`actuation_enabled=true`，正式 App 与运动候选逐字节一致。正式包包含现场分支的 CAN Bus-Off 恢复、±500 rpm 行走上限和 300/150/75 rpm 转向轮廓。既有 [0.2.12 行走换向实测](operations/evidence/2026-09-08-bench-drive-0212.json)和 [0.2.31 转向实测](operations/evidence/2026-09-15-031-steering-speed/adaptive-validation/summary.md)构成本轮已验证硬件的基础。产品主机测试、Platform CTest 21 项、ARM 候选与正式重建通过。目标车 `PATROL-05D3FF343733574E43043550` 已由 `0.2.44` OTA 到 `0.2.45`，独立 `get_info` 返回 Boot `CONFIRMED`、OTA 空闲；状态报告显示标定有效、停车、实测转速为零、输出命令关闭。平台远控入口现已开启，但尚无活动控制会话。当前版本的控制会话、CAN/编码器和实际停车运动回归尚未执行，OTA 与状态响应不能替代运动验收。当前步骤见[远控运维](operations/架空行走与平台远控实现.md)。
 
 ## Current Release / Candidate
 
 | 项目 | 当前值 | 权威来源 |
 |---|---|---|
-| 最新正式版 | `patrol-chassis-0.2.45`，运动输出 ON | `dist/release.manifest.json` |
-| 正式 App SHA256 | `7A4E5FE56F15E588B0672DE06A7731447D376FB1008E9F019BC175CD768AF666` | 正式 manifest |
-| 当前源码版本 | `patrol-chassis-0.2.45`；主机测试、ARM 构建及单车 OTA 确认通过，运动回归待执行 | 根目录 `VERSION`、正式 manifest |
+| 最新正式版 | `patrol-chassis-0.2.46`，运动输出 ON | `dist/release.manifest.json` |
+| 正式 App SHA256 | `4DBA91F69F57998D40C8548BA92D84821A2E41EC3DF559FA677691952585EAED` | 正式 manifest |
+| 当前源码版本 | `patrol-chassis-0.2.46`；主机测试、ARM 构建和正式打包通过，测试板通信验证进行中 | 根目录 `VERSION`、正式 manifest |
 | WP7.3 clean ARM Release App SHA256 | `DE38325CE586CC1F703FAD78C6BC4D219450CDE110A5E56400897A237A6C7251` | [WP7.3 evidence](operations/evidence/2026-09-23-mqtt-wp73/index.json)；实测候选，非 `dist/` 正式版 |
 | WP7.2 最新实测 Debug App SHA256 | `5AE13A1367345515245F9D2C694710BA3140DD18F9DEC3FFF81BE3ABD471B5D4` | `out/logs/wp72-success-app.bin` 与 WP7.2 index；测试构建，非正式版 |
-| 当前改造分支 Platform gitlink | `4f97ca9d155f4be5869ab6b2b911e9c2ae5b909c` | 当前源码及正式 manifest |
+| 当前改造分支 Platform gitlink | `48fea7f972f642053a20806a7f90792d66cb676f` | 当前源码及正式 manifest |
 | WP7.2 checkpoint App SHA256 | `6EE9E4188E001B8581CA4198F9A4B7D1D0D91F132273CA0955325C1295BB450E` | clean ARM Release candidate；非 `dist/` 正式版 |
 | 冻结 Boot | `abox-boot-2.3.0`，SHA256 `981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63` | 正式 manifest；Boot `0x08000000` |
 

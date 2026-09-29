@@ -6,12 +6,12 @@
   "drive_executor_compiled": true,
   "startup_permit": false,
   "actuation_enabled": true,
-  "commit": "40c9f019cc0896ed29c532d71b26f9534619512f",
+  "commit": "24f3604f9f585080be6038c4af109bedc1959764",
   "dirty": true,
   "app_start": "0x08008000",
   "app_end": "0x0803DFFF",
   "config_recovery_page": "0x0803E000",
   "config_page": "0x0803F800",
-  "size": 125536,
-  "sha256": "4DBA91F69F57998D40C8548BA92D84821A2E41EC3DF559FA677691952585EAED"
+  "size": 125712,
+  "sha256": "12F44593A3EB7A93B816655661AA632DD3DBCBB20EB9E7929495CD89A2148E4D"
 }
