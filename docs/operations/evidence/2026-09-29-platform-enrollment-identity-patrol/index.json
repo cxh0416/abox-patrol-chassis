@@ -1,0 +1,51 @@
+{
+  "scope": "patrol_standard_board_enrollment_identity",
+  "date": "2026-09-29",
+  "uid": "05DAFF383734525243054363",
+  "jlink_serial": "69730334",
+  "platform_commit": "e494720",
+  "candidate_version": "patrol-chassis-0.2.48-cp4",
+  "app_sha256": "9AA244F4AAC4BEBEED19A70EC4D80028E4446E61AC7B84F67E7BEF86B253B6B4",
+  "frozen_boot_sha256": "981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63",
+  "actuation_enabled": false,
+  "power_output_enabled": false,
+  "readonly_can_diagnostics_enabled": false,
+  "test_config_and_recovery_erased": true,
+  "enrollment_request_id": "b3b80f75-864a-4189-996d-b9f6a27188ef",
+  "hardware_contract": "patrol_vehicle_chassis_stm32f105_ec800_v1",
+  "enrollment_state": "verified",
+  "get_info": "200 READY OTA ready",
+  "limits": "No real CAN, actuator or mechanical feedback. This validates fresh enrollment on the standard board, not TLS negative cases or product motion.",
+  "files": [
+    {
+      "path": "flash.jlink",
+      "bytes": 921,
+      "sha256": "7D4F55311D51B0C39BF21F2BA1397E94991C3ABD5EEEB4BA4DC77D3825CF8E42"
+    },
+    {
+      "path": "flash.stdout.log",
+      "bytes": 7775,
+      "sha256": "0AB3B4759E5217A1B62B6D6E98E85F767EFA60930DD082A99359FC3203EAD959"
+    },
+    {
+      "path": "enrollment-inspect.json",
+      "bytes": 266,
+      "sha256": "D19B6FBDABEA67112504F6E4876010272CBE7C498DCEAEDD4B76A464C02E1C2A"
+    },
+    {
+      "path": "enrollment-approved.json",
+      "bytes": 140,
+      "sha256": "E28DF7E29215E0C2A0EF2238B5229711E11752989829B1190B38DF71E8821E58"
+    },
+    {
+      "path": "enrollment-result.json",
+      "bytes": 267,
+      "sha256": "CD00A11DA9B98EA083B2E5B7D273CCE8BFDE885610BA446A38FBE5EC1CAC72BB"
+    },
+    {
+      "path": "get-info.json",
+      "bytes": 301,
+      "sha256": "32E715E514899F5E1440407446BD4E02B9DB0FFAEA82CBFB4FD32A659A97D958"
+    }
+  ]
+}

@@ -3,10 +3,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "abox_boot_v2.h"
 #include "abox_enrollment.h"
-#include "abox_enrollment_identity.h"
 #include "abox_enrollment_service.h"
+#include "abox_stm32f105_ec800_identity.h"
 #include "app_version.h"
 #include "cloud_internal.h"
 #include "cloud_service.h"
@@ -39,18 +38,14 @@ static void mqtt_pause(void *user, uint8_t pause)
 
 static int identity(void *user, ABoxEnrollmentIdentity *out)
 {
-    static ABoxBootV2Descriptor descriptor;
     const PatrolRemoteConfigV5_t *cfg = PatrolConfig_Get();
-    const char *boot = "";
     (void)user;
     if (!cfg || !out) return 0;
-    if (ABoxBootV2_DescriptorRead(&descriptor) && ABoxBootV2_DescriptorValid(&descriptor))
-        boot = descriptor.build_version;
-    return ABoxEnrollmentIdentity_Build(out, &g_identity_storage,
-        HAL_GetUIDw0(), HAL_GetUIDw1(), HAL_GetUIDw2(), "", cfg->vid,
+    return ABoxStm32F105Ec800Identity_Build(out, &g_identity_storage,
+        "", cfg->vid,
         (uint8_t)(strcmp(cfg->vid, PATROL_CONFIG_DEFAULT_VID) != 0 ||
                   cfg->reserved0 == 1U), "PATROL-",
-        "patrol_vehicle_chassis_stm32f105_ec800_v1", boot,
+        "patrol_vehicle_chassis_stm32f105_ec800_v1",
         Patrol_AppFwVersion());
 }
 
