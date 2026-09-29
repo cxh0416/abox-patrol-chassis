@@ -1,0 +1,41 @@
+{
+  "scope": "patrol_standard_test_board_public_trial_executor_enrollment",
+  "date": "2026-09-29",
+  "uid": "05DAFF383734525243054363",
+  "jlink_serial": "69730334",
+  "candidate_version": "patrol-chassis-0.2.48-cp1",
+  "candidate_app_sha256": "3C7559B4F2F739833E5E30B31760C351ACB37A5D54744B6CAF60E3F784123460",
+  "actuation_enabled": false,
+  "frozen_boot_sha256": "981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63",
+  "enrollment_request_id": "431ae85b-8c70-4041-9df5-95ff98103bb7",
+  "enrollment_result": "verified",
+  "independent_get_info_operation_id": "7159e7fa-3e4c-440e-bb06-019119615d11",
+  "independent_get_info_code": "200",
+  "independent_get_info_mqtt": "READY",
+  "independent_get_info_ota_ready": true,
+  "config_page_sha256": "E4EE2719287D4394DFEDCB67A6F81761F0B2274DB7D652323FEA59B4EB861F12",
+  "config_v5_magic_offset": 148,
+  "config_v5_version": 5,
+  "config_v5_length": 400,
+  "observations": [
+    "J-Link verified candidate App, generated State A/B and frozen Boot",
+    "Factory-erased test-board Config V5 initiated HTTPS enrollment",
+    "Server-side enrollment reached verified after public trial executor proof and Config V5 persistence",
+    "Independent get_info returned 200, MQTT READY, ICCID present and OTA ready"
+  ],
+  "limits": "Standard test board only; no vehicle CAN, actuator, mechanical or OTA install/rollback acceptance. A real late PUBACK and full cellular outage were not injected in this run.",
+  "files": [
+    {
+      "original_path": "out/logs/onboarding-bench/flash-cp1-executor.log",
+      "archive_path": "flash-cp1-executor.log",
+      "bytes": 35040,
+      "sha256": "FDB70A5EEAF5B4A36117CAF59805DCE7688F339A30A02A793A54BC8203CCBE0A"
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/read-cp1-executor-config.log",
+      "archive_path": "read-cp1-executor-config.log",
+      "bytes": 8466,
+      "sha256": "DBEA46FC0BF4EDEE9E228232557B4295C7E68BEECA7DB934755865FCCBB4801C"
+    }
+  ]
+}

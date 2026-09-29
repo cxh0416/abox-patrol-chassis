@@ -1,0 +1,566 @@
+T9F28 000:001.005   SEGGER J-Link V7.94j Log File
+T9F28 000:001.180   DLL Compiled: Feb 14 2024 15:36:06
+T9F28 000:001.192   Logging started @ 2026-09-29 12:37
+T9F28 000:001.202   Process: D:\Program Files\SEGGER\JLink\JLink.exe
+T9F28 000:001.215 - 1.213ms
+T9F28 000:001.332 JLINK_SetWarnOutHandler(...)
+T9F28 000:001.346 - 0.015ms
+T9F28 000:001.586 JLINK_ExecCommand("SuppressGUI", ...). 
+T9F28 000:001.626 - 0.038ms returns 0x00
+T9F28 000:001.657 JLINK_OpenEx(...)
+T9F28 000:010.614   Firmware: J-Link V9 compiled Dec 13 2022 11:14:50
+T9F28 000:011.440   Firmware: J-Link V9 compiled Dec 13 2022 11:14:50
+T9F28 000:011.602   Decompressing FW timestamp took 113 us
+T9F28 000:017.558   Hardware: V9.70
+T9F28 000:030.073   S/N: 69730334
+T9F28 000:030.094   OEM: SEGGER
+T9F28 000:030.111   Feature(s): RDI, GDB, FlashDL, FlashBP, JFlash
+T9F28 000:030.937   Bootloader: (Could not read)
+T9F28 000:032.051   TELNET listener socket opened on port 19021
+T9F28 000:032.334   WEBSRV WEBSRV_Init(): Starting webserver thread(s)
+T9F28 000:032.802   WEBSRV Webserver running on local port 19080
+T9F28 000:033.156   Looking for J-Link GUI Server exe at: D:\Program Files\SEGGER\JLink\JLinkGUIServer.exe
+T9F28 000:033.253   Forking J-Link GUI Server: D:\Program Files\SEGGER\JLink\JLinkGUIServer.exe
+T9F28 000:068.748   J-Link GUI Server info: "J-Link GUI server V7.94j "
+T9F28 000:074.913 - 73.245ms returns "O.K."
+T9F28 000:075.088 JLINK_SetFlashProgProgressCallback(...)
+T9F28 000:075.108 - 0.020ms
+T9F28 000:075.133 JLINK_GetFirmwareString(...)
+T9F28 000:075.147 - 0.017ms
+T9F28 000:075.165 JLINK_GetHardwareVersion()
+T9F28 000:075.179 - 0.013ms returns 97000
+T9F28 000:075.200 JLINK_GetHWInfo(...)
+T9F28 000:075.474 - 0.275ms returns 0
+T9F28 000:075.524 JLINK_GetSN()
+T9F28 000:075.539 - 0.020ms returns 69730334
+T9F28 000:075.556 JLINK_GetOEMString(...)
+T9F28 000:075.576 JLINK_EMU_GetCurrConnectionInfo()
+T9F28 000:075.797 - 0.220ms returns 0
+T9F28 000:075.838 JLINK_EMU_HasCapEx(0x00000026)
+T9F28 000:075.852 - 0.014ms returns 0
+T9F28 000:075.866 JLINK_GetEmuCaps()
+T9F28 000:075.879 - 0.012ms returns 0xB9FF7BBF
+T9F28 000:075.891 JLINK_GetEmuCaps()
+T9F28 000:075.904 - 0.012ms returns 0xB9FF7BBF
+T9F28 000:075.917 JLINK_GetHWStatus(...)
+T9F28 000:076.252 - 0.333ms returns 0
+T9F28 000:076.289 JLINK_EMU_HasCapEx(0x00000044)
+T9F28 000:076.302 - 0.013ms returns 0
+T9F28 000:076.343 JLINK_TIF_GetAvailable(...)
+T9F28 000:076.616 - 0.272ms
+T9F28 000:076.662 JLINK_ExecCommand("device=STM32F105RC", ...). 
+T9F28 000:095.493   Device "STM32F105RC" selected.
+T9F28 000:097.021 - 20.350ms returns 0x00
+T9F28 000:097.044 JLINK_EnableLog(...)
+T9F28 000:097.050 - 0.006ms
+T9F28 000:097.062 JLINK_GetEmuCaps()
+T9F28 000:097.068 - 0.006ms returns 0xB9FF7BBF
+T9F28 000:097.075 JLINK_TIF_GetAvailable(...)
+T9F28 000:097.387 - 0.312ms
+T9F28 000:097.403 JLINK_TIF_Select(JLINKARM_TIF_SWD)
+T9F28 000:098.097 - 0.694ms returns 0x00
+T9F28 000:098.107 JLINK_IsConnected()
+T9F28 000:098.114 - 0.007ms returns FALSE
+T9F28 000:098.122 JLINK_SetSpeed(4000)
+T9F28 000:098.274 - 0.152ms
+T9F28 000:098.282 JLINK_Connect()
+T9F28 000:098.495   InitTarget() start
+T9F28 000:098.507    J-Link Script File: Executing InitTarget()
+T9F28 000:098.697   SWD selected. Executing JTAG -> SWD switching sequence.
+T9F28 000:100.756   DAP initialized successfully.
+T9F28 000:105.294   InitTarget() end - Took 6.78ms
+T9F28 000:105.987   Found SW-DP with ID 0x1BA01477
+T9F28 000:107.404   Old FW that does not support reading DPIDR via DAP jobs
+T9F28 000:108.147   DPv0 detected
+T9F28 000:108.168   CoreSight SoC-400 or earlier
+T9F28 000:108.176   Scanning AP map to find all available APs
+T9F28 000:108.859   AP[1]: Stopped AP scan as end of AP map has been reached
+T9F28 000:108.874   AP[0]: AHB-AP (IDR: 0x14770011)
+T9F28 000:108.884   Iterating through AP map to find AHB-AP to use
+T9F28 000:109.858   AP[0]: Core found
+T9F28 000:109.882   AP[0]: AHB-AP ROM base: 0xE00FF000
+T9F28 000:110.376   CPUID register: 0x411FC231. Implementer code: 0x41 (ARM)
+T9F28 000:110.393   Found Cortex-M3 r1p1, Little endian.
+T9F28 000:110.784   -- Max. mem block: 0x00010A10
+T9F28 000:111.261   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T9F28 000:111.647   CPU_ReadMem(4 bytes @ 0xE0002000)
+T9F28 000:112.094   FPUnit: 6 code (BP) slots and 2 literal slots
+T9F28 000:112.104   CPU_ReadMem(4 bytes @ 0xE000EDFC)
+T9F28 000:112.556   CPU_WriteMem(4 bytes @ 0xE000EDFC)
+T9F28 000:113.005   CPU_ReadMem(4 bytes @ 0xE0001000)
+T9F28 000:113.390   CPU_WriteMem(4 bytes @ 0xE0001000)
+T9F28 000:113.803   CPU_ReadMem(4 bytes @ 0xE000ED88)
+T9F28 000:114.213   CPU_WriteMem(4 bytes @ 0xE000ED88)
+T9F28 000:114.727   CPU_ReadMem(4 bytes @ 0xE000ED88)
+T9F28 000:115.098   CPU_WriteMem(4 bytes @ 0xE000ED88)
+T9F28 000:115.590   CoreSight components:
+T9F28 000:115.608   ROMTbl[0] @ E00FF000
+T9F28 000:115.617   CPU_ReadMem(64 bytes @ 0xE00FF000)
+T9F28 000:116.542   CPU_ReadMem(32 bytes @ 0xE000EFE0)
+T9F28 000:117.292   [0][0]: E000E000 CID B105E00D PID 001BB000 SCS
+T9F28 000:117.342   CPU_ReadMem(32 bytes @ 0xE0001FE0)
+T9F28 000:118.058   [0][1]: E0001000 CID B105E00D PID 001BB002 DWT
+T9F28 000:118.117   CPU_ReadMem(32 bytes @ 0xE0002FE0)
+T9F28 000:118.809   [0][2]: E0002000 CID B105E00D PID 000BB003 FPB
+T9F28 000:118.863   CPU_ReadMem(32 bytes @ 0xE0000FE0)
+T9F28 000:119.558   [0][3]: E0000000 CID B105E00D PID 001BB001 ITM
+T9F28 000:119.614   CPU_ReadMem(32 bytes @ 0xE0040FE0)
+T9F28 000:120.314   [0][4]: E0040000 CID B105900D PID 001BB923 TPIU-Lite
+T9F28 000:120.367   CPU_ReadMem(32 bytes @ 0xE0041FE0)
+T9F28 000:121.052   [0][5]: E0041000 CID B105900D PID 101BB924 ETM-M3
+T9F28 000:121.143 - 22.860ms returns 0x00
+T9F28 000:121.163 JLINK_GetIdData(pIdData)
+T9F28 000:121.415   pIdData->ScanLen=4
+T9F28 000:121.424   pIdData->NumDevices=1
+T9F28 000:121.432   pIdData->aId[0]=0x1BA01477
+T9F28 000:121.440   pIdData->aIrRead[0]=0
+T9F28 000:121.448   pIdData->aScanLen[0]=0
+T9F28 000:121.456   pIdData->aScanRead[0]=0
+T9F28 000:121.464 - 0.300ms
+T9F28 000:121.517 JLINK_GetMemZones(...)
+T9F28 000:121.524 - 0.007ms returns 1
+T9F28 000:121.532 JLINK_HasError()
+T9F28 000:121.539 JLINK_CORE_GetFound()
+T9F28 000:121.545 - 0.005ms returns 0x30000FF
+T9F28 000:121.558 JLINK_SetResetType(JLINKARM_CM3_RESET_TYPE_CONNECT_UNDER_RESET)
+T9F28 000:121.564 - 0.006ms returns JLINKARM_CM3_RESET_TYPE_NORMAL
+T9F28 000:121.570 JLINK_GetResetTypeDesc
+T9F28 000:121.577 - 0.007ms
+T9F28 000:121.590 JLINK_ExecCommand("device=STM32F105RC", ...). 
+T9F28 000:121.869   Device "STM32F105RC" selected.
+T9F28 000:122.504 - 0.906ms returns 0x00
+T9F28 000:122.521 JLINK_EnableLog(...)
+T9F28 000:122.527 - 0.006ms
+T9F28 000:122.535 JLINK_GetEmuCaps()
+T9F28 000:122.541 - 0.006ms returns 0xB9FF7BBF
+T9F28 000:122.548 JLINK_TIF_GetAvailable(...)
+T9F28 000:122.716 - 0.167ms
+T9F28 000:122.729 JLINK_TIF_Select(JLINKARM_TIF_SWD)
+T9F28 000:122.735 - 0.005ms returns 0x00
+T9F28 000:122.743 JLINK_IsConnected()
+T9F28 000:122.752 - 0.009ms returns TRUE
+T9F28 000:122.759 JLINK_SetSpeed(4000)
+T9F28 000:122.854 - 0.094ms
+T9F28 000:122.861 JLINK_Connect()
+T9F28 000:123.025   InitTarget() start
+T9F28 000:123.035    J-Link Script File: Executing InitTarget()
+T9F28 000:123.187   SWD selected. Executing JTAG -> SWD switching sequence.
+T9F28 000:125.029   DAP initialized successfully.
+T9F28 000:129.276   InitTarget() end - Took 6.23ms
+T9F28 000:129.982   Found SW-DP with ID 0x1BA01477
+T9F28 000:131.559   Old FW that does not support reading DPIDR via DAP jobs
+T9F28 000:132.344   DPv0 detected
+T9F28 000:132.354   CoreSight SoC-400 or earlier
+T9F28 000:132.364   AP map detection skipped. Manually configured AP map found.
+T9F28 000:132.373   AP[0]: AHB-AP (IDR: Not set)
+T9F28 000:133.466   AP[0]: Core found
+T9F28 000:133.530   AP[0]: AHB-AP ROM base: 0xE00FF000
+T9F28 000:134.069   CPUID register: 0x411FC231. Implementer code: 0x41 (ARM)
+T9F28 000:134.080   Found Cortex-M3 r1p1, Little endian.
+T9F28 000:134.262   -- Max. mem block: 0x00010768
+T9F28 000:134.277   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T9F28 000:134.697   CPU_ReadMem(4 bytes @ 0xE0002000)
+T9F28 000:135.194   FPUnit: 6 code (BP) slots and 2 literal slots
+T9F28 000:135.205   CPU_ReadMem(4 bytes @ 0xE000EDFC)
+T9F28 000:135.688   CPU_ReadMem(4 bytes @ 0xE0001000)
+T9F28 000:136.151   CPU_WriteMem(4 bytes @ 0xE0001000)
+T9F28 000:136.680   CPU_ReadMem(4 bytes @ 0xE000ED88)
+T9F28 000:137.227   CPU_WriteMem(4 bytes @ 0xE000ED88)
+T9F28 000:137.734   CPU_ReadMem(4 bytes @ 0xE000ED88)
+T9F28 000:138.207   CPU_WriteMem(4 bytes @ 0xE000ED88)
+T9F28 000:138.697   CoreSight components:
+T9F28 000:138.713   ROMTbl[0] @ E00FF000
+T9F28 000:138.722   CPU_ReadMem(64 bytes @ 0xE00FF000)
+T9F28 000:139.628   CPU_ReadMem(32 bytes @ 0xE000EFE0)
+T9F28 000:140.229   [0][0]: E000E000 CID B105E00D PID 001BB000 SCS
+T9F28 000:140.240   CPU_ReadMem(32 bytes @ 0xE0001FE0)
+T9F28 000:140.845   [0][1]: E0001000 CID B105E00D PID 001BB002 DWT
+T9F28 000:140.857   CPU_ReadMem(32 bytes @ 0xE0002FE0)
+T9F28 000:141.465   [0][2]: E0002000 CID B105E00D PID 000BB003 FPB
+T9F28 000:141.507   CPU_ReadMem(32 bytes @ 0xE0000FE0)
+T9F28 000:142.104   [0][3]: E0000000 CID B105E00D PID 001BB001 ITM
+T9F28 000:142.116   CPU_ReadMem(32 bytes @ 0xE0040FE0)
+T9F28 000:142.713   [0][4]: E0040000 CID B105900D PID 001BB923 TPIU-Lite
+T9F28 000:142.734   CPU_ReadMem(32 bytes @ 0xE0041FE0)
+T9F28 000:143.340   [0][5]: E0041000 CID B105900D PID 101BB924 ETM-M3
+T9F28 000:143.369 - 20.507ms returns 0x00
+T9F28 000:143.379 JLINK_GetIdData(pIdData)
+T9F28 000:143.659   pIdData->ScanLen=4
+T9F28 000:143.669   pIdData->NumDevices=1
+T9F28 000:143.677   pIdData->aId[0]=0x1BA01477
+T9F28 000:143.685   pIdData->aIrRead[0]=0
+T9F28 000:143.693   pIdData->aScanLen[0]=0
+T9F28 000:143.700   pIdData->aScanRead[0]=0
+T9F28 000:143.709 - 0.329ms
+T9F28 000:143.716 JLINK_GetMemZones(...)
+T9F28 000:143.722 - 0.005ms returns 1
+T9F28 000:143.729 JLINK_HasError()
+T9F28 000:143.737 JLINK_CORE_GetFound()
+T9F28 000:143.742 - 0.005ms returns 0x30000FF
+T9F28 000:143.756 JLINK_Halt()
+T9F28 000:147.388 - 3.631ms returns 0x00
+T9F28 000:147.418 JLINK_GetDeviceFamily
+T9F28 000:147.424 - 0.006ms returns 3
+T9F28 000:147.433 JLINK_CORE_GetFound()
+T9F28 000:147.439 - 0.005ms returns 0x30000FF
+T9F28 000:147.486 JLINK_GetDebugInfo(0x01 = Unknown)
+T9F28 000:147.501   Value=0x00000000
+T9F28 000:147.510 - 0.029ms returns 0
+T9F28 000:147.521 JLINK_ReadRegs(NumRegs = 28, Indexes: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 17, 18, 14, 15, 16, 21, 22, 23, 20, 27, 26, 25, 24, 65)
+T9F28 000:147.541   CPU_ReadMem(4 bytes @ 0xE0001004)
+T9F28 000:147.927    -- R0=0x2000FE90, R1=0x2000FDF1, R2=0x2000FE10, R3=0x2000FEDF, R4=0x79, R5=0x01, R6=0x665AD, R7=0x2000027C, R8=0x665AD, R9=0x00, R10=0xA5A5A5A5, R11=0xA5A5A5A5, R12=0x200086A8, R13 (SP)=0x2000FD98, MSP=0x2000FD98, PSP=0x20000F00, R14=0x8018FF9, R15 (PC)=0x801D76A, XPSR=0x81000000, APSR=0x80000000, EPSR=0x1000000, IPSR=0x00, CFBP=0x00, CONTROL=0x00, FAULTMASK=0x00, BASEPRI=0x00, PRIMASK=0x00, CycleCnt=0x3C21E4
+T9F28 000:147.936 - 0.415ms returns 0x00
+T9F28 000:147.956 JLINK_Reset()
+T9F28 000:147.973   CPU_WriteMem(4 bytes @ 0xE000EDF0)
+T9F28 000:148.415   CPU_WriteMem(4 bytes @ 0xE000EDFC)
+T9F28 000:148.883   Reset: Halt core after reset via DEMCR.VC_CORERESET.
+T9F28 000:149.285   Reset: Reset device via AIRCR.SYSRESETREQ.
+T9F28 000:149.294   CPU_WriteMem(4 bytes @ 0xE000ED0C)
+T9F28 000:203.755   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T9F28 000:204.148   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T9F28 000:204.522   CPU_WriteMem(4 bytes @ 0xE000EDFC)
+T9F28 000:210.151   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T9F28 000:214.437   CPU_WriteMem(4 bytes @ 0xE0002000)
+T9F28 000:214.982   CPU_ReadMem(4 bytes @ 0xE000EDFC)
+T9F28 000:215.467   CPU_ReadMem(4 bytes @ 0xE0001000)
+T9F28 000:215.991 - 68.035ms
+T9F28 000:216.005 JLINK_Halt()
+T9F28 000:216.011 - 0.006ms returns 0x00
+T9F28 000:216.021 JLINK_ExecCommand("SetVerifyRAMDownload = 1", ...). 
+T9F28 000:216.029 - 0.001ms returns 0x00
+T9F28 000:216.038 JLINK_DownloadFile()
+T9F28 000:216.360   Data:  00 00 01 20 0D D4 00 08 F9 D1 00 08 FB D1 00 08 ...
+T9F28 000:216.537   completely In flash
+T9F28 000:216.827   CPU_ReadMem(4 bytes @ 0xE000ED90)
+T9F28 000:217.372    -- --------------------------------------
+T9F28 000:217.386    -- Flash bank @ 0x08000000: Default: L2 verify disabled because algorithm performs L1 verify
+T9F28 000:217.394    -- Start of determining dirty areas in flash cache
+T9F28 000:217.409    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08008000 if necessary
+T9F28 000:217.417    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08008800 if necessary
+T9F28 000:217.425    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08009000 if necessary
+T9F28 000:217.433    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08009800 if necessary
+T9F28 000:217.441    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0800A000 if necessary
+T9F28 000:217.449    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0800A800 if necessary
+T9F28 000:217.456    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0800B000 if necessary
+T9F28 000:217.464    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0800B800 if necessary
+T9F28 000:217.472    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0800C000 if necessary
+T9F28 000:217.480    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0800C800 if necessary
+T9F28 000:217.488    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0800D000 if necessary
+T9F28 000:217.496    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0800D800 if necessary
+T9F28 000:217.504    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0800E000 if necessary
+T9F28 000:217.511    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0800E800 if necessary
+T9F28 000:217.519    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0800F000 if necessary
+T9F28 000:217.527    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0800F800 if necessary
+T9F28 000:217.535    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08010000 if necessary
+T9F28 000:217.543    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08010800 if necessary
+T9F28 000:217.550    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08011000 if necessary
+T9F28 000:217.558    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08011800 if necessary
+T9F28 000:217.566    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08012000 if necessary
+T9F28 000:217.574    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08012800 if necessary
+T9F28 000:217.581    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08013000 if necessary
+T9F28 000:217.589    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08013800 if necessary
+T9F28 000:217.597    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08014000 if necessary
+T9F28 000:217.605    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08014800 if necessary
+T9F28 000:217.613    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08015000 if necessary
+T9F28 000:217.620    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08015800 if necessary
+T9F28 000:217.628    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08016000 if necessary
+T9F28 000:217.636    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08016800 if necessary
+T9F28 000:217.644    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08017000 if necessary
+T9F28 000:217.651    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08017800 if necessary
+T9F28 000:217.659    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08018000 if necessary
+T9F28 000:217.699    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08018800 if necessary
+T9F28 000:217.707    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08019000 if necessary
+T9F28 000:217.715    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08019800 if necessary
+T9F28 000:217.724    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0801A000 if necessary
+T9F28 000:217.732    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0801A800 if necessary
+T9F28 000:217.740    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0801B000 if necessary
+T9F28 000:217.748    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0801B800 if necessary
+T9F28 000:217.755    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0801C000 if necessary
+T9F28 000:217.763    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0801C800 if necessary
+T9F28 000:217.771    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0801D000 if necessary
+T9F28 000:217.779    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0801D800 if necessary
+T9F28 000:217.787    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0801E000 if necessary
+T9F28 000:217.795    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0801E800 if necessary
+T9F28 000:217.802    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0801F000 if necessary
+T9F28 000:217.810    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0801F800 if necessary
+T9F28 000:217.818    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08020000 if necessary
+T9F28 000:217.826    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08020800 if necessary
+T9F28 000:217.834    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08021000 if necessary
+T9F28 000:217.841    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08021800 if necessary
+T9F28 000:217.849    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08022000 if necessary
+T9F28 000:217.857    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08022800 if necessary
+T9F28 000:217.865    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08023000 if necessary
+T9F28 000:217.873    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08023800 if necessary
+T9F28 000:217.880    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08024000 if necessary
+T9F28 000:217.888    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08024800 if necessary
+T9F28 000:217.896    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08025000 if necessary
+T9F28 000:217.904    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08025800 if necessary
+T9F28 000:217.912    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08026000 if necessary
+T9F28 000:217.919    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08026800 if necessary
+T9F28 000:217.927    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x08027000 if necessary
+T9F28 000:217.950    -- End of determining dirty areas
+T9F28 000:217.958    -- Start of preparing flash programming
+T9F28 000:217.968    -- Calculating RAM usage
+T9F28 000:218.000    -- RAM usage = 6068 Bytes
+T9F28 000:218.008    -- Preserving CPU registers
+T9F28 000:218.025    -- Preparing target
+T9F28 000:218.033    -- Preserving target RAM temporarily used for programming
+T9F28 000:264.420    -- Downloading RAMCode
+T9F28 000:292.270    -- Preparing RAMCode
+T9F28 000:300.096    -- End of preparing flash programming
+T9F28 000:300.158    -- CPU speed could not be measured.
+T9F28 000:300.190    -- Start of comparing flash
+T9F28 000:300.210    -- CRC check was estimated as fastest method
+T9F28 000:300.235    -- Comparing range 0x8008000 - 0x80277FF (63 Sectors, 126 KB), using multi-block CRC calculation
+T9F28 000:317.048    -- CRC does not match for sectors 0-62
+T9F28 000:317.086    -- End of comparing flash
+T9F28 000:317.096    -- Start of erasing sectors
+T9F28 000:317.107    -- Erasing range 0x08008000 - 0x080277FF ( 63 Sectors, 126 KB)
+T9F28 001:705.713    -- End of erasing sectors
+T9F28 001:705.772    -- Start of flash programming
+T9F28 001:705.795    -- Programming range 0x08008000 - 0x0800FFFF ( 16 Sectors, 32 KB)
+T9F28 002:561.527    -- Programming range 0x08010000 - 0x08017FFF ( 16 Sectors, 32 KB)
+T9F28 003:520.477    -- Programming range 0x08018000 - 0x0801FFFF ( 16 Sectors, 32 KB)
+T9F28 004:479.388    -- Programming range 0x08020000 - 0x080277FF ( 15 Sectors, 30 KB)
+T9F28 005:378.229    -- End of flash programming
+T9F28 005:378.293    -- 0x8008000 - 0x80277FF ( 63 Sectors, 126 KB)
+T9F28 005:378.313    -- Start of restoring
+T9F28 005:378.331    -- Restoring RAMCode
+T9F28 005:503.133    -- Restoring target memory
+T9F28 005:547.377    -- Restore target
+T9F28 005:547.425    -- Restoring CPU registers
+T9F28 005:547.453    -- End of restoring
+T9F28 005:547.472    -- Bank 0 @ 0x08000000: 1 range affected (129024 bytes)
+T9F28 005:547.487    -- Total: 5.329s (Prepare: 0.082s, Compare: 0.016s, Erase: 1.388s, Program & Verify: 3.792s, Restore: 0.048s)
+T9F28 005:547.501    -- Program & Verify speed: 33 KB/s
+T9F28 005:547.849 - 5331.809ms returns 0x00
+T9F28 005:547.878 JLINK_ExecCommand("SetVerifyRAMDownload = 0", ...). 
+T9F28 005:547.891 - 0.001ms returns 0x01
+T9F28 005:548.809 JLINK_IsHalted()
+T9F28 005:549.281 - 0.471ms returns TRUE
+T9F28 005:549.313 JLINK_ReadMemEx_64(0x08008000, 0x1F2B4 Bytes, ...)
+T9F28 005:549.453    -- Read from flash cache (127668 bytes @ 0x08008000)
+T9F28 005:549.464   Data:  00 00 01 20 0D D4 00 08 F9 D1 00 08 FB D1 00 08 ...
+T9F28 005:549.474 - 0.161ms returns 127668 (0x1F2B4)
+T9F28 005:549.537 JLINK_Reset()
+T9F28 005:549.560   CPU_WriteMem(4 bytes @ 0xE000EDF0)
+T9F28 005:550.061   CPU_WriteMem(4 bytes @ 0xE000EDFC)
+T9F28 005:550.585   Reset: Halt core after reset via DEMCR.VC_CORERESET.
+T9F28 005:551.067   Reset: Reset device via AIRCR.SYSRESETREQ.
+T9F28 005:551.088   CPU_WriteMem(4 bytes @ 0xE000ED0C)
+T9F28 005:604.825   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T9F28 005:605.318   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T9F28 005:605.778   CPU_WriteMem(4 bytes @ 0xE000EDFC)
+T9F28 005:611.745   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T9F28 005:616.001   CPU_WriteMem(4 bytes @ 0xE0002000)
+T9F28 005:616.607   CPU_ReadMem(4 bytes @ 0xE000EDFC)
+T9F28 005:617.024   CPU_ReadMem(4 bytes @ 0xE0001000)
+T9F28 005:617.517 - 67.979ms
+T9F28 005:617.543 JLINK_Halt()
+T9F28 005:617.553 - 0.009ms returns 0x00
+T9F28 005:617.615 JLINK_ExecCommand("SetVerifyRAMDownload = 1", ...). 
+T9F28 005:617.629 - 0.001ms returns 0x00
+T9F28 005:617.639 JLINK_DownloadFile()
+T9F28 005:617.839   Data:  32 56 53 42 03 00 70 00 01 00 00 00 04 00 00 00 ...
+T9F28 005:617.859   completely In flash
+T9F28 005:618.100   CPU_ReadMem(4 bytes @ 0xE000ED90)
+T9F28 005:618.632    -- --------------------------------------
+T9F28 005:618.651    -- Flash bank @ 0x08000000: Default: L2 verify disabled because algorithm performs L1 verify
+T9F28 005:618.665    -- Start of determining dirty areas in flash cache
+T9F28 005:618.731    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0803E800 if necessary
+T9F28 005:618.750    -- End of determining dirty areas
+T9F28 005:618.763    -- Start of preparing flash programming
+T9F28 005:618.776    -- Calculating RAM usage
+T9F28 005:618.793    -- RAM usage = 2996 Bytes
+T9F28 005:618.805    -- Preserving CPU registers
+T9F28 005:618.828    -- Preparing target
+T9F28 005:618.840    -- Preserving target RAM temporarily used for programming
+T9F28 005:641.990    -- Downloading RAMCode
+T9F28 005:665.497    -- Preparing RAMCode
+T9F28 005:672.464    -- End of preparing flash programming
+T9F28 005:672.503    -- CPU speed could not be measured.
+T9F28 005:672.523    -- Start of comparing flash
+T9F28 005:672.542    -- CRC check was estimated as fastest method
+T9F28 005:672.562    -- Comparing range 0x803E800 - 0x803EFFF (1 Sector, 2 KB), using multi-block CRC calculation
+T9F28 005:680.407    -- All CRCs match
+T9F28 005:680.467    -- Comparing range 0x803E800 - 0x803EFFF (1 Sector, 2 KB), using alternative multi-block CRC calculation
+T9F28 005:687.761    -- CRC does not match for sector 0
+T9F28 005:687.809    -- End of comparing flash
+T9F28 005:687.822    -- Start of erasing sectors
+T9F28 005:687.837    -- Erasing range 0x0803E800 - 0x0803EFFF (  1 Sector, 2 KB)
+T9F28 005:710.873    -- End of erasing sectors
+T9F28 005:724.281    -- Start of flash programming
+T9F28 005:724.308    -- Programming range 0x0803E800 - 0x0803EFFF (  1 Sector, 2 KB)
+T9F28 005:724.369    -- End of flash programming
+T9F28 005:724.392    -- 0x803E800 - 0x803EFFF (  1 Sector, 2 KB)
+T9F28 005:724.441    -- Start of restoring
+T9F28 005:724.464    -- Restoring RAMCode
+T9F28 005:749.245    -- Restoring target memory
+T9F28 005:771.716    -- Restore target
+T9F28 005:771.800    -- Restoring CPU registers
+T9F28 005:771.851    -- End of restoring
+T9F28 005:771.887    -- Bank 0 @ 0x08000000: 1 range affected (2048 bytes)
+T9F28 005:771.916    -- Total: 0.153s (Prepare: 0.053s, Compare: 0.015s, Erase: 0.036s, Program & Verify: 0.020s, Restore: 0.026s)
+T9F28 005:771.942    -- Program & Verify speed: 100 KB/s
+T9F28 005:772.306 - 154.666ms returns 0x00
+T9F28 005:772.353 JLINK_ExecCommand("SetVerifyRAMDownload = 0", ...). 
+T9F28 005:772.370 - 0.002ms returns 0x01
+T9F28 005:772.566 JLINK_IsHalted()
+T9F28 005:772.581 - 0.015ms returns TRUE
+T9F28 005:772.599 JLINK_ReadMemEx_64(0x0803E800, 0x800 Bytes, ...)
+T9F28 005:772.625    -- Read from flash cache (2048 bytes @ 0x0803E800)
+T9F28 005:772.650   Data:  32 56 53 42 03 00 70 00 01 00 00 00 04 00 00 00 ...
+T9F28 005:772.673 - 0.074ms returns 2048 (0x800)
+T9F28 005:772.771 JLINK_Reset()
+T9F28 005:772.805   CPU_WriteMem(4 bytes @ 0xE000EDF0)
+T9F28 005:773.467   CPU_WriteMem(4 bytes @ 0xE000EDFC)
+T9F28 005:774.107   Reset: Halt core after reset via DEMCR.VC_CORERESET.
+T9F28 005:775.002   Reset: Reset device via AIRCR.SYSRESETREQ.
+T9F28 005:775.052   CPU_WriteMem(4 bytes @ 0xE000ED0C)
+T9F28 005:829.027   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T9F28 005:829.485   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T9F28 005:829.961   CPU_WriteMem(4 bytes @ 0xE000EDFC)
+T9F28 005:836.782   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T9F28 005:841.167   CPU_WriteMem(4 bytes @ 0xE0002000)
+T9F28 005:841.654   CPU_ReadMem(4 bytes @ 0xE000EDFC)
+T9F28 005:842.141   CPU_ReadMem(4 bytes @ 0xE0001000)
+T9F28 005:842.642 - 69.870ms
+T9F28 005:842.657 JLINK_Halt()
+T9F28 005:842.663 - 0.006ms returns 0x00
+T9F28 005:842.675 JLINK_ExecCommand("SetVerifyRAMDownload = 1", ...). 
+T9F28 005:842.684 - 0.001ms returns 0x00
+T9F28 005:842.690 JLINK_DownloadFile()
+T9F28 005:842.841   Data:  FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF ...
+T9F28 005:842.857   completely In flash
+T9F28 005:843.058   CPU_ReadMem(4 bytes @ 0xE000ED90)
+T9F28 005:843.679    -- --------------------------------------
+T9F28 005:843.699    -- Flash bank @ 0x08000000: Default: L2 verify disabled because algorithm performs L1 verify
+T9F28 005:843.709    -- Start of determining dirty areas in flash cache
+T9F28 005:843.752    -- Filling invalid ranges in sector buffer (flash cache) for sector @ 0x0803F000 if necessary
+T9F28 005:843.765    -- End of determining dirty areas
+T9F28 005:843.773    -- Start of preparing flash programming
+T9F28 005:843.783    -- Calculating RAM usage
+T9F28 005:843.794    -- RAM usage = 2996 Bytes
+T9F28 005:843.802    -- Preserving CPU registers
+T9F28 005:843.821    -- Preparing target
+T9F28 005:843.829    -- Preserving target RAM temporarily used for programming
+T9F28 005:866.945    -- Downloading RAMCode
+T9F28 005:890.711    -- Preparing RAMCode
+T9F28 005:897.851    -- End of preparing flash programming
+T9F28 005:897.912    -- CPU speed could not be measured.
+T9F28 005:897.938    -- Start of comparing flash
+T9F28 005:897.961    -- CRC check was estimated as fastest method
+T9F28 005:897.989    -- Comparing range 0x803F000 - 0x803F7FF (1 Sector, 2 KB), using multi-block CRC calculation
+T9F28 005:900.916    -- All CRCs match
+T9F28 005:900.948    -- Comparing range 0x803F000 - 0x803F7FF (1 Sector, 2 KB), using alternative multi-block CRC calculation
+T9F28 005:903.719    -- All CRCs match
+T9F28 005:903.749    -- End of comparing flash
+T9F28 005:903.758    -- Start of erasing sectors
+T9F28 005:903.766    -- End of erasing sectors
+T9F28 005:903.775    -- Start of flash programming
+T9F28 005:903.782    -- End of flash programming
+T9F28 005:903.790    -- Start of restoring
+T9F28 005:903.799    -- Restoring RAMCode
+T9F28 005:909.181    -- Restoring target memory
+T9F28 005:931.486    -- Restore target
+T9F28 005:931.531    -- Restoring CPU registers
+T9F28 005:931.559    -- End of restoring
+T9F28 005:931.578    -- Bank 0 @ 0x08000000: Skipped. Contents already match
+T9F28 005:931.591    -- Bank 0 @ 0x08000000: Skipped. Contents already match
+T9F28 005:931.961 - 89.270ms returns 0x00
+T9F28 005:932.006 JLINK_ExecCommand("SetVerifyRAMDownload = 0", ...). 
+T9F28 005:932.020 - 0.002ms returns 0x01
+T9F28 005:932.151 JLINK_IsHalted()
+T9F28 005:932.163 - 0.011ms returns TRUE
+T9F28 005:932.173 JLINK_ReadMemEx_64(0x0803F000, 0x800 Bytes, ...)
+T9F28 005:932.186    -- Read from flash cache (2048 bytes @ 0x0803F000)
+T9F28 005:932.200   Data:  FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF ...
+T9F28 005:932.213 - 0.040ms returns 2048 (0x800)
+T9F28 005:932.249 JLINK_DEVICE_GetIndex(sDeviceName = <NULL>)
+T9F28 005:932.257 - 0.009ms returns 7900
+T9F28 005:932.277 JLINK_Reset()
+T9F28 005:932.295   CPU_WriteMem(4 bytes @ 0xE000EDF0)
+T9F28 005:932.918   CPU_WriteMem(4 bytes @ 0xE000EDFC)
+T9F28 005:933.499   Reset: Halt core after reset via DEMCR.VC_CORERESET.
+T9F28 005:934.071   Reset: Reset device via AIRCR.SYSRESETREQ.
+T9F28 005:934.106   CPU_WriteMem(4 bytes @ 0xE000ED0C)
+T9F28 005:988.597   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T9F28 005:989.129   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T9F28 005:989.644   CPU_WriteMem(4 bytes @ 0xE000EDFC)
+T9F28 005:996.277   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T9F28 006:000.443   CPU_WriteMem(4 bytes @ 0xE0002000)
+T9F28 006:000.939   CPU_ReadMem(4 bytes @ 0xE000EDFC)
+T9F28 006:001.383   CPU_ReadMem(4 bytes @ 0xE0001000)
+T9F28 006:001.783 - 69.505ms
+T9F28 006:001.797 JLINK_Halt()
+T9F28 006:001.803 - 0.006ms returns 0x00
+T9F28 006:001.813 JLINK_Erase()
+T9F28 006:001.989   CPU_ReadMem(4 bytes @ 0xE000ED90)
+T9F28 006:002.390    -- --------------------------------------
+T9F28 006:002.400    -- Start of determining dirty areas
+T9F28 006:002.411    -- End of determining dirty areas
+T9F28 006:002.420    -- Start of preparing flash programming
+T9F28 006:002.429    -- Calculating RAM usage
+T9F28 006:002.440    -- RAM usage = 2996 Bytes
+T9F28 006:002.449    -- Preserving CPU registers
+T9F28 006:002.463    -- Preparing target
+T9F28 006:002.477    -- Preserving target RAM temporarily used for programming
+T9F28 006:025.492    -- Downloading RAMCode
+T9F28 006:048.917    -- Preparing RAMCode
+T9F28 006:055.684    -- End of preparing flash programming
+T9F28 006:055.712    -- CPU speed could not be measured.
+T9F28 006:055.721    -- Start of erasing sectors
+T9F28 006:055.731    -- Erasing range 0x0803F800 - 0x0803FFFF (  1 Sector, 2 KB)
+T9F28 006:079.050    -- End of erasing sectors
+T9F28 006:079.084    -- Start of restoring
+T9F28 006:079.093    -- Restoring RAMCode
+T9F28 006:084.064    -- Restoring target memory
+T9F28 006:106.327    -- Restore target
+T9F28 006:106.357    -- Restoring CPU registers
+T9F28 006:106.379    -- End of restoring
+T9F28 006:106.393    -- Total time needed: 0.103s (Prepare: 0.053s, Compare: 0.000s, Erase: 0.023s, Program: 0.000s, Verify: 0.000s, Restore: 0.027s)
+T9F28 006:107.287    -- 
+Flash sectors within Range [0x0803F800 - 0x0803FFFF] deleted.
+T9F28 006:107.698 - 105.884ms returns 0
+T9F28 006:107.845 JLINK_IsHalted()
+T9F28 006:107.857 - 0.011ms returns TRUE
+T9F28 006:107.865 JLINK_ReadMemEx_64(0x08000000, 0x8000 Bytes, ...)
+T9F28 006:107.884   CPU_ReadMem(32768 bytes @ 0x08000000)
+T9F28 006:357.295    -- Updating C cache (32768 bytes @ 0x08000000)
+T9F28 006:357.363    -- Read from C cache (32768 bytes @ 0x08000000)
+T9F28 006:357.459   Data:  00 00 01 20 F1 1D 00 08 21 1D 00 08 23 1D 00 08 ...
+T9F28 006:357.479 - 249.613ms returns 32768 (0x8000)
+T9F28 006:357.645 JLINK_GetResetTypeDesc
+T9F28 006:357.664 - 0.019ms
+T9F28 006:357.686 JLINK_SetResetDelay(0)
+T9F28 006:357.698 - 0.012ms
+T9F28 006:357.712 JLINK_Reset()
+T9F28 006:357.760   CPU_WriteMem(4 bytes @ 0xE000EDF0)
+T9F28 006:358.399   CPU_WriteMem(4 bytes @ 0xE000EDFC)
+T9F28 006:359.014   Reset: Halt core after reset via DEMCR.VC_CORERESET.
+T9F28 006:359.598   Reset: Reset device via AIRCR.SYSRESETREQ.
+T9F28 006:359.623   CPU_WriteMem(4 bytes @ 0xE000ED0C)
+T9F28 006:412.909   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T9F28 006:413.454   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T9F28 006:413.929   CPU_WriteMem(4 bytes @ 0xE000EDFC)
+T9F28 006:420.869   CPU_ReadMem(4 bytes @ 0xE000EDF0)
+T9F28 006:425.374   CPU_WriteMem(4 bytes @ 0xE0002000)
+T9F28 006:425.851   CPU_ReadMem(4 bytes @ 0xE000EDFC)
+T9F28 006:426.324   CPU_ReadMem(4 bytes @ 0xE0001000)
+T9F28 006:426.761 - 69.049ms
+T9F28 006:426.798 JLINK_GoEx(MaxEmulInsts = 0, Flags = 0x01)
+T9F28 006:426.812   CPU_ReadMem(4 bytes @ 0xE0001000)
+T9F28 006:427.175   CPU_WriteMem(4 bytes @ 0xE0001004)
+T9F28 006:428.175   Memory map 'after startup completion point' is active
+T9F28 006:428.187 - 1.388ms
+T9F28 006:428.208 JLINK_IsOpen()
+T9F28 006:428.214 - 0.005ms returns 0x01
+T9F28 006:434.374 JLINK_Close()
+T9F28 006:438.553   OnDisconnectTarget() start
+T9F28 006:438.597    J-Link Script File: Executing OnDisconnectTarget()
+T9F28 006:438.625   CPU_WriteMem(4 bytes @ 0xE0042004)
+T9F28 006:439.105   OnDisconnectTarget() end - Took 505us
+T9F28 006:439.136   CPU_ReadMem(4 bytes @ 0xE0001000)
+T9F28 006:457.003 - 22.627ms
+T9F28 006:457.078   
+T9F28 006:457.089   Closed
