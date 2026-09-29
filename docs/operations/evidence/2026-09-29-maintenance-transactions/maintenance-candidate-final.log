@@ -1,0 +1,18 @@
+Build type: Release
+-- Configuring done (0.3s)
+-- Generating done (0.2s)
+-- Build files have been written to: F:/work/A-Box/Patrol_Vehicle_Chassis/app/build/BenchSteering
+[1/6] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/patrol_enrollment.c.obj
+[2/6] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_commands.c.obj
+[3/6] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_service.c.obj
+[4/6] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_messages.c.obj
+[5/6] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_tx.c.obj
+[6/6] Linking C executable Patrol_Vehicle_Chassis_App.elf
+Memory region         Used Size  Region Size  %age Used
+             RAM:       61432 B        64 KB     93.74%
+           FLASH:      125792 B       216 KB     56.87%
+PASS calibration stack: known frames 2328 + 1024 byte reserve <= 4096
+PASS MQTT trial save stack: known frames 2512 + 1024 byte reserve <= 4096
+PASS CANopen fault stack: known frames 432 + 512 byte library reserve <= 1024
+PASS center commit stack: known frames 1632 + 1024 byte reserve <= 4096
+Bench candidate: F:\work\A-Box\Patrol_Vehicle_Chassis\out\candidates\bench-drive

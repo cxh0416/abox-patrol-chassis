@@ -1,0 +1,183 @@
+{
+  "scope": "patrol",
+  "date": "2026-09-29",
+  "test_uid": "05DAFF383734525243054363",
+  "boundary": "Communication bench only; no vehicle motion or power actions; no real CAN feedback. No whole-vehicle acceptance.",
+  "evidence": [
+    {
+      "original_path": "C:\\Users\\cxh\\AppData\\Local\\Temp\\patrol-info-final.json",
+      "archive_path": "patrol-info-final.json",
+      "sha256": "289de79e70ed32f901a83ca9a12e154f2ad23045bbafce3193c5862e610ee728",
+      "bytes": 1826
+    },
+    {
+      "original_path": "C:\\Users\\cxh\\AppData\\Local\\Temp\\patrol-gate-final.json",
+      "archive_path": "patrol-gate-final.json",
+      "sha256": "90b96ecf01a0df41f841055987ee20bd0c3c08c4542c38a44fc6508567121d93",
+      "bytes": 1767
+    },
+    {
+      "original_path": "C:\\Users\\cxh\\AppData\\Local\\Temp\\patrol-ui-gate-final.json",
+      "archive_path": "patrol-ui-gate-final.json",
+      "sha256": "c810b069dcc2458f48bcc6de023bbefcf5292a0fce04df9cb1bfdcf75418ba6c",
+      "bytes": 1764
+    },
+    {
+      "original_path": "C:\\Users\\cxh\\AppData\\Local\\Temp\\patrol-device-logs.json",
+      "archive_path": "patrol-device-logs.json",
+      "sha256": "530aa8ca8219527804a84b27b073f53c66f5a75a1fa3190ddb46a732ee8194dc",
+      "bytes": 5507
+    },
+    {
+      "original_path": "C:\\Users\\cxh\\AppData\\Local\\Temp\\patrol-tls-unpaced-rejected.jsonl",
+      "archive_path": "patrol-tls-unpaced-rejected.jsonl",
+      "sha256": "aaa6a6ca4c70252347a950a4d3d625a330a5de75c3e7882ed80bc83c8a4d3c14",
+      "bytes": 1479
+    },
+    {
+      "original_path": "C:\\Users\\cxh\\AppData\\Local\\Temp\\patrol-tls-final.jsonl",
+      "archive_path": "patrol-tls-final.jsonl",
+      "sha256": "599ee366c239403f6ccc243ce6dc92e311268036ddca8042f68ed3e66c28b128",
+      "bytes": 3702
+    },
+    {
+      "original_path": "C:\\Users\\cxh\\AppData\\Local\\Temp\\patrol-rename-final.jsonl",
+      "archive_path": "patrol-rename-final.jsonl",
+      "sha256": "784754cb4400526eb38bd9d99cfc7b6348f7d0ae0986e4e55ec66e062f187a0b",
+      "bytes": 7508
+    },
+    {
+      "original_path": "C:\\Users\\cxh\\AppData\\Local\\Temp\\patrol-invalid-final.jsonl",
+      "archive_path": "patrol-invalid-final.jsonl",
+      "sha256": "a776b243b10d019618a5d5a5b83819895ac4843ba1f558db72ca7070e73b8d67",
+      "bytes": 2188
+    },
+    {
+      "original_path": "C:\\Users\\cxh\\AppData\\Local\\Temp\\patrol-invalid-readback-final.jsonl",
+      "archive_path": "patrol-invalid-readback-final.jsonl",
+      "sha256": "2f14732e72833408cd0ebaf31f4b6a720c9f39bb080bc8dcac3b5193fadef747",
+      "bytes": 1598
+    },
+    {
+      "original_path": "C:\\Users\\cxh\\AppData\\Local\\Temp\\patrol-plain-final.jsonl",
+      "archive_path": "patrol-plain-final.jsonl",
+      "sha256": "7b3eec897f65a74ded1daa138bd2cadc095ce7162ce81b9b6e82c911917ee88a",
+      "bytes": 3699
+    },
+    {
+      "original_path": "C:\\Users\\cxh\\AppData\\Local\\Temp\\patrol-reboot-unpaced.json",
+      "archive_path": "patrol-reboot-unpaced.json",
+      "sha256": "883ec0932eb956a8bf337cfe2633464e6b0e3a98fc0e5a963a93c442144d5564",
+      "bytes": 5204
+    },
+    {
+      "original_path": "C:\\Users\\cxh\\AppData\\Local\\Temp\\patrol-sync-wire.jsonl",
+      "archive_path": "patrol-sync-wire.jsonl",
+      "sha256": "eec0e7d445da3f92695fd79e20c9c1138e89f8a6393b8ed30ef190992c4f7c93",
+      "bytes": 3166
+    },
+    {
+      "original_path": "C:\\Users\\cxh\\AppData\\Local\\Temp\\patrol-enroll-final.json",
+      "archive_path": "patrol-enroll-final.json",
+      "sha256": "631940cdfbbad7abf075570ab498add4c910d55bdcfd4082de5d5d796208b8ef",
+      "bytes": 197
+    },
+    {
+      "original_path": "F:\\work\\A-Box\\Patrol_Vehicle_Chassis\\dist\\release.manifest.json",
+      "archive_path": "formal-release.manifest.json",
+      "sha256": "6dd3c19f76f4466ac8fff0d18ccad6de609df737626821b994a19f515e67aa03",
+      "bytes": 2344
+    },
+    {
+      "original_path": "F:\\work\\A-Box\\Patrol_Vehicle_Chassis\\out\\logs\\maintenance-host-final.log",
+      "archive_path": "host-tests-before-close.log",
+      "sha256": "694070d8c9ea66d6709bcfb498753854d4a1a73a6262d38cda09e82202c61469",
+      "bytes": 6120
+    },
+    {
+      "original_path": "F:\\work\\A-Box\\Patrol_Vehicle_Chassis\\out\\logs\\maintenance-patrol-final-flash.log",
+      "archive_path": "maintenance-patrol-final-flash.log",
+      "sha256": "1d8c879f188cb309f04008e9d9ae1455eb52b19c49421cc06816b7ab2c654a03",
+      "bytes": 8922
+    },
+    {
+      "original_path": "F:\\work\\A-Box\\Patrol_Vehicle_Chassis\\out\\logs\\maintenance-ui-gate-0167.png",
+      "archive_path": "maintenance-ui-gate-0167.png",
+      "sha256": "300e63d2ac76cb882d111e57960e3984f48bee9acd61568be6141fdd018802b6",
+      "bytes": 60524
+    },
+    {
+      "original_path": "F:\\work\\A-Box\\Patrol_Vehicle_Chassis\\out\\logs\\maintenance-candidate-final.log",
+      "archive_path": "maintenance-candidate-final.log",
+      "sha256": "e3929f9a96e14c4e17fbd372bb074fe976351978e88110e120d7401d4566ccd4",
+      "bytes": 1321
+    },
+    {
+      "original_path": "C:\\Users\\cxh\\AppData\\Local\\Temp\\patrol-reboot-final.json",
+      "archive_path": "patrol-reboot-final.json",
+      "sha256": "84a91206ea9a955c27defab69fa140747842741b55b4c7e1a35dc3a1e66f9509",
+      "bytes": 3165
+    },
+    {
+      "original_path": "F:\\work\\A-Box\\Patrol_Vehicle_Chassis\\out\\logs\\maintenance-host-close-fixed.log",
+      "archive_path": "host-tests-final.log",
+      "sha256": "06141da337bae1ca91ef5a5a6b23ca7ab6b209b91dcd6c8292c77d877cfa312a",
+      "bytes": 9855
+    },
+    {
+      "original_path": "F:\\work\\A-Box\\Patrol_Vehicle_Chassis\\out\\logs\\maintenance-ui-gate-0168.png",
+      "archive_path": "maintenance-ui-gate-0168.png",
+      "sha256": "b5e5487e2261fd04e4776070f143fef785e7022b3dc07f1a571ee6bc9d787d9d",
+      "bytes": 60534
+    },
+    {
+      "original_path": "C:\\Users\\cxh\\AppData\\Local\\Temp\\patrol-disconnect-final.jsonl",
+      "archive_path": "patrol-disconnect-final.jsonl",
+      "sha256": "8f5305e938866e56ef92dff839e9db7e620038a10d1f2ec748674a253c467b01",
+      "bytes": 217
+    },
+    {
+      "original_path": "C:\\Users\\cxh\\AppData\\Local\\Temp\\patrol-final-identity-acl-verified.json",
+      "archive_path": "patrol-final-identity-acl-verified.json",
+      "sha256": "340fa029f384fbd46b3b27c69ebe82fd4b3ddb811c3755d5fa63cbc84babdbc4",
+      "bytes": 893
+    },
+    {
+      "original_path": "C:\\Users\\cxh\\AppData\\Local\\Temp\\patrol-info-closed.json",
+      "archive_path": "patrol-info-closed.json",
+      "sha256": "e032eaf6852fe12b8c84d05d55f22c60efd881da71f6695b9d226ba1c933f0cc",
+      "bytes": 1827
+    },
+    {
+      "original_path": "F:\\work\\A-Box\\Patrol_Vehicle_Chassis\\out\\logs\\maintenance-docs-close.log",
+      "archive_path": "documentation-links-final.log",
+      "sha256": "4a44dc34d20268982503c8998cc504092a52330104c45bbdd1a25f013a622992",
+      "bytes": 115
+    }
+  ],
+  "history_snapshot": {
+    "source": "git:2214d91:docs/CURRENT.md",
+    "path": "../../history/2026-09-29-current-before-maintenance-close.txt",
+    "sha256": "30bdfa9100516d336ab3e7aad2d334accf05cc96fdb2fff543e5d91431d6d152",
+    "note": "Original bytes, including original relative links; interpret paths relative to docs/."
+  },
+  "build_qualification": {
+    "final_app_sha256": "FF75B2747F482BB77E60E4921AB73A8C3DCA578E0CC52B73BB8D8F10AF636E84",
+    "final_matrix": [
+      "patrol-ui-gate-final.json",
+      "patrol-tls-final.jsonl",
+      "patrol-rename-final.jsonl",
+      "patrol-invalid-final.jsonl",
+      "patrol-invalid-readback-final.jsonl",
+      "patrol-plain-final.jsonl",
+      "patrol-reboot-final.json",
+      "patrol-disconnect-final.jsonl",
+      "patrol-info-closed.json"
+    ],
+    "earlier_observations": [
+      "patrol-info-final.json",
+      "patrol-gate-final.json"
+    ],
+    "failure_qualification": "unpaced TLS write was not accepted (busy); invalid candidate terminal was received, follow-up independent readback completed separately; old reboot task timed out, a new task after platform fix proved reboot."
+  }
+}

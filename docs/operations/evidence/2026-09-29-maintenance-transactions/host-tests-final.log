@@ -1,0 +1,109 @@
+test_recovery_needs_new_stable_feedback (test_can_recovery.CanRecoveryTests.test_recovery_needs_new_stable_feedback) ... ok
+test_production_center_runtime (test_center_runtime.CenterRuntimeTests.test_production_center_runtime) ... ok
+test_activity_expiry_and_tick_wrap (test_cloud_telemetry.TelemetryTests.test_activity_expiry_and_tick_wrap) ... ok
+test_production_transmit_scheduler (test_cloud_telemetry.TelemetryTests.test_production_transmit_scheduler) ... ok
+test_v5_only_load_save_and_storage (test_config_v5.ConfigV5Tests.test_v5_only_load_save_and_storage) ... ok
+test_torn_write_full_journal_and_config_preservation (test_fault_journal.FaultJournalTests.test_torn_write_full_journal_and_config_preservation) ... ok
+MQTT runtime: plain client0, TLS client1/context2/CA, RAM switch revoke, no fallback passed
+test_runtime_security_chain (test_mqtt_runtime.MqttRuntimeTests.test_runtime_security_chain) ... ok
+MQTT trial manager: real phases, candidate proof, cancel restore passed
+test_real_phase_and_restore (test_mqtt_trial_manager.MqttTrialManagerTests.test_real_phase_and_restore) ... ok
+test_archive_hashes (test_patrol_scaffold.PatrolScaffoldTests.test_archive_hashes) ... ok
+test_boot_trial_confirmation_has_flash_write_stack_margin (test_patrol_scaffold.PatrolScaffoldTests.test_boot_trial_confirmation_has_flash_write_stack_margin) ... ok
+test_center_calibration_freezes_structured_failure_and_rejection_evidence (test_patrol_scaffold.PatrolScaffoldTests.test_center_calibration_freezes_structured_failure_and_rejection_evidence) ... ok
+test_center_calibration_stop_keeps_commissioning_safety_context (test_patrol_scaffold.PatrolScaffoldTests.test_center_calibration_stop_keeps_commissioning_safety_context) ... ok
+test_config_page_is_v5_and_unarmed_by_default (test_patrol_scaffold.PatrolScaffoldTests.test_config_page_is_v5_and_unarmed_by_default) ... ok
+test_config_page_round_trips_wheel_angle_calibration (test_patrol_scaffold.PatrolScaffoldTests.test_config_page_round_trips_wheel_angle_calibration) ... ok
+test_config_tool_rejects_non_v5_layouts (test_patrol_scaffold.PatrolScaffoldTests.test_config_tool_rejects_non_v5_layouts) ... ok
+test_confirmed_vehicle_power_output_is_isolated_to_pvin_out1 (test_patrol_scaffold.PatrolScaffoldTests.test_confirmed_vehicle_power_output_is_isolated_to_pvin_out1) ... ok
+test_identity_and_safe_defaults (test_patrol_scaffold.PatrolScaffoldTests.test_identity_and_safe_defaults) ... ok
+test_idle_center_calibration_lease_tolerates_platform_delay_without_latching_motion_fault (test_patrol_scaffold.PatrolScaffoldTests.test_idle_center_calibration_lease_tolerates_platform_delay_without_latching_motion_fault) ... ok
+test_idle_coordinate_watchdog_ignores_non_position_motion_gates (test_patrol_scaffold.PatrolScaffoldTests.test_idle_coordinate_watchdog_ignores_non_position_motion_gates) ... ok
+test_intentional_power_off_consumes_late_coordinate_reset_without_idle_fault (test_patrol_scaffold.PatrolScaffoldTests.test_intentional_power_off_consumes_late_coordinate_reset_without_idle_fault) ... ok
+test_ota_port_tracks_active_mqtt_client (test_patrol_scaffold.PatrolScaffoldTests.test_ota_port_tracks_active_mqtt_client) ... ok
+test_product_version_has_one_external_default_and_optional_script_override (test_patrol_scaffold.PatrolScaffoldTests.test_product_version_has_one_external_default_and_optional_script_override) ... ok
+test_public_and_internal_mqtt_contracts_are_separated (test_patrol_scaffold.PatrolScaffoldTests.test_public_and_internal_mqtt_contracts_are_separated) ... ok
+test_public_profile_references_v4_and_documents_business_limits (test_patrol_scaffold.PatrolScaffoldTests.test_public_profile_references_v4_and_documents_business_limits) ... ok
+test_uart5_contract_matches_hal_without_changing_hardware (test_patrol_scaffold.PatrolScaffoldTests.test_uart5_contract_matches_hal_without_changing_hardware) ... ok
+test_app_keeps_mailbox_and_runtime_guard (test_ram_layout.RamLayoutContractTests.test_app_keeps_mailbox_and_runtime_guard) ... ok
+test_boot_uses_same_mailbox (test_ram_layout.RamLayoutContractTests.test_boot_uses_same_mailbox) ... ok
+test_production_stop_arbitration (test_stop_scheduler.StopSchedulerTests.test_production_stop_arbitration) ... ok
+test_archive_failure_preserves_originals (test_workspace_maintenance.WorkspaceMaintenanceTests.test_archive_failure_preserves_originals) ... ok
+test_boundary_and_windows_junction_are_rejected (test_workspace_maintenance.WorkspaceMaintenanceTests.test_boundary_and_windows_junction_are_rejected) ... ok
+test_candidate_replaces_whole_set_and_rejects_invalid_stage (test_workspace_maintenance.WorkspaceMaintenanceTests.test_candidate_replaces_whole_set_and_rejects_invalid_stage) ... ok
+test_copy_corruption_leaves_previous_output (test_workspace_maintenance.WorkspaceMaintenanceTests.test_copy_corruption_leaves_previous_output) ... ok
+test_debug_output_stays_outside_formal_directory (test_workspace_maintenance.WorkspaceMaintenanceTests.test_debug_output_stays_outside_formal_directory) ... ok
+test_document_links_and_archived_evidence_references (test_workspace_maintenance.WorkspaceMaintenanceTests.test_document_links_and_archived_evidence_references) ... ok
+test_evidence_in_logs_is_not_disposable (test_workspace_maintenance.WorkspaceMaintenanceTests.test_evidence_in_logs_is_not_disposable) ... ok
+test_failed_swap_restores_previous_set_and_unlocks (test_workspace_maintenance.WorkspaceMaintenanceTests.test_failed_swap_restores_previous_set_and_unlocks) ... ok
+test_formal_package_layout_hash_and_dirty_gates (test_workspace_maintenance.WorkspaceMaintenanceTests.test_formal_package_layout_hash_and_dirty_gates) ... ok
+test_preview_archive_then_cleanup_is_repeatable (test_workspace_maintenance.WorkspaceMaintenanceTests.test_preview_archive_then_cleanup_is_repeatable) ... ok
+test_snapshot_change_and_protected_path_abort (test_workspace_maintenance.WorkspaceMaintenanceTests.test_snapshot_change_and_protected_path_abort) ... ok
+
+----------------------------------------------------------------------
+Ran 39 tests in 8.500s
+
+OK
+-- Configuring done (0.7s)
+-- Generating done (0.2s)
+-- Build files have been written to: F:/work/A-Box/Patrol_Vehicle_Chassis/platform/build/host
+[1/9] Building C object components/enrollment/CMakeFiles/abox_enrollment_ec800_http.dir/src/abox_enrollment_ec800_http.c.obj
+[2/9] Building C object tests/CMakeFiles/abox_enrollment_ec800_http_test.dir/abox_enrollment_ec800_http_test.c.obj
+[3/9] Building C object components/mqtt/CMakeFiles/abox_mqtt_runtime.dir/src/abox_mqtt_runtime.c.obj
+[4/9] Building C object tests/CMakeFiles/abox_mqtt_runtime_test.dir/abox_mqtt_runtime_test.c.obj
+[5/9] Linking C static library components\enrollment\libabox_enrollment_ec800_http.a
+[6/9] Linking C static library components\mqtt\libabox_mqtt_runtime.a
+[7/9] Linking C executable tests\abox_enrollment_ec800_http_test.exe
+[8/9] Linking C executable tests\abox_mqtt_trial_test.exe
+[9/9] Linking C executable tests\abox_mqtt_runtime_test.exe
+mqtt_adapter_test passed
+Test project F:/work/A-Box/Patrol_Vehicle_Chassis/platform/build/host
+      Start  1: abox_component_contract_test
+ 1/21 Test  #1: abox_component_contract_test ......   Passed   11.67 sec
+      Start  2: abox_enrollment_test
+ 2/21 Test  #2: abox_enrollment_test ..............   Passed    0.15 sec
+      Start  3: abox_enrollment_ec800_http_test
+ 3/21 Test  #3: abox_enrollment_ec800_http_test ...   Passed    0.01 sec
+      Start  4: abox_ec800_ufs_test
+ 4/21 Test  #4: abox_ec800_ufs_test ...............   Passed    0.13 sec
+      Start  5: abox_ec800_tls_test
+ 5/21 Test  #5: abox_ec800_tls_test ...............   Passed    0.12 sec
+      Start  6: abox_mqtt_tls_test
+ 6/21 Test  #6: abox_mqtt_tls_test ................   Passed    0.11 sec
+      Start  7: abox_mqtt_trial_test
+ 7/21 Test  #7: abox_mqtt_trial_test ..............   Passed    0.01 sec
+      Start  8: abox_ec800_command_port_test
+ 8/21 Test  #8: abox_ec800_command_port_test ......   Passed    0.12 sec
+      Start  9: abox_platform_config_test
+ 9/21 Test  #9: abox_platform_config_test .........   Passed    0.11 sec
+      Start 10: abox_ota_flash_test
+10/21 Test #10: abox_ota_flash_test ...............   Passed    0.12 sec
+      Start 11: abox_ota_ec_at_test
+11/21 Test #11: abox_ota_ec_at_test ...............   Passed    0.13 sec
+      Start 12: abox_ec800_test
+12/21 Test #12: abox_ec800_test ...................   Passed    0.14 sec
+      Start 13: abox_mqtt_v4_contract_test
+13/21 Test #13: abox_mqtt_v4_contract_test ........   Passed    0.13 sec
+      Start 14: abox_mqtt_runtime_test
+14/21 Test #14: abox_mqtt_runtime_test ............   Passed    0.02 sec
+      Start 15: abox_mqtt_ec800_rx_test
+15/21 Test #15: abox_mqtt_ec800_rx_test ...........   Passed    0.12 sec
+      Start 16: abox_mqtt_ec800_test
+16/21 Test #16: abox_mqtt_ec800_test ..............   Passed    0.14 sec
+      Start 17: abox_https_ufs_downloader_test
+17/21 Test #17: abox_https_ufs_downloader_test ....   Passed    0.13 sec
+      Start 18: abox_ec_power_test
+18/21 Test #18: abox_ec_power_test ................   Passed    0.11 sec
+      Start 19: abox_boot_v2_test
+19/21 Test #19: abox_boot_v2_test .................   Passed    0.14 sec
+      Start 20: abox_boot_v2_app_test
+20/21 Test #20: abox_boot_v2_app_test .............   Passed    0.16 sec
+      Start 21: abox_ec800_mqtt_rx_route_test
+21/21 Test #21: abox_ec800_mqtt_rx_route_test .....   Passed    0.12 sec
+
+100% tests passed, 0 tests failed out of 21
+
+Total Test time (real) =  14.11 sec
+PASS bench handshake, target conversion, limits, stop, malformed replies, faults and timeout
+PASS Config V5 layout, uncalibrated gate, direct control session, reconnect and lease revoke
+bench drive tests passed

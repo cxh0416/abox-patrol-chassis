@@ -1,0 +1,4 @@
+# Preserve original evidence bytes and SHA256; navigation remains LF text.
+* -text -diff
+index.json text eol=lf diff
+.gitattributes text eol=lf diff
