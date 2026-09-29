@@ -1,0 +1,3 @@
+# Preserve J-Link's raw CRLF logs byte for byte; structured records use LF.
+*.log -text -diff
+*.json text eol=lf
