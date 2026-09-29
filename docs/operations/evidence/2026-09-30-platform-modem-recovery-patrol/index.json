@@ -1,0 +1,109 @@
+{
+  "scope": "patrol_test_board_modem_rail_restart_cloud_recovery",
+  "date": "2026-09-30",
+  "uid": "05DAFF383734525243054363",
+  "jlink_serial": "69730334",
+  "candidate_version": "patrol-chassis-0.2.48-cp9-lab",
+  "source_commit": "2c98dd1",
+  "platform_commit": "dbb738d",
+  "app_sha256": "B2C22ED7128300BF11237DF6F11C1821C69ABD811BD403EF8689FAA6776A2ACD",
+  "frozen_boot_sha256": "981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63",
+  "config_reinitialized_for_product": true,
+  "actuation_enabled": false,
+  "power_output_enabled": false,
+  "lab_modem_restart_enabled": true,
+  "enrollment_request_id": "8e7e629b-6b48-4d8d-8fee-bd9b283b65db",
+  "enrollment_state": "verified",
+  "restart_response_code": 202,
+  "restart_response": "LAB_MODEM_RESTART_ACCEPTED",
+  "cloud_online_after_restart": true,
+  "manifest_after_restart": true,
+  "chassis_status_after_restart": true,
+  "get_info_after_code": 200,
+  "get_info_after_mqtt": "READY",
+  "get_info_after_ota_ready": true,
+  "serial_rdy_marker_count": 0,
+  "limits": "The 120-second sanitized UART capture saw no literal RDY marker. This verifies recovery after a test-only modem rail restart, not the exact RDY ISR trace, full cellular outage, injected late PUBACK, real CAN/actuator feedback or OTA installation. No formal dist replacement.",
+  "files": [
+    {
+      "bytes": 17056,
+      "sha256": "9D115992801DB2D02E6A081E45028F85E7255AE6F59151E2305F01316AE1F257",
+      "path": "arm-build.log"
+    },
+    {
+      "bytes": 1107,
+      "sha256": "0DD1156E5769C595D28D3EB4A10144B27C88583FEC33831DB854724879FD939B",
+      "path": "capture_uart_markers.py"
+    },
+    {
+      "bytes": 284,
+      "sha256": "5CB76E17F8B5B905AF3E8D35C31F803ED8F026F8FB866FF46140290A81C0D566",
+      "path": "cloud-after-restart.json"
+    },
+    {
+      "bytes": 138,
+      "sha256": "4B41E937084C38EF4277107D5B44D6A4F916BEF9BE6DF15B033A7D8C0FE17A94",
+      "path": "enrollment-approved.json"
+    },
+    {
+      "bytes": 264,
+      "sha256": "0E8B33EA6F8931A3D68E82861A5371BBCB597DD0604E677B99DFAC75FE9F2D09",
+      "path": "enrollment-inspect.json"
+    },
+    {
+      "bytes": 265,
+      "sha256": "EC9BDF4DA19031C57DB45C161F2A8FA32371742D1186D59A27D62EB2FED309FC",
+      "path": "enrollment-result.json"
+    },
+    {
+      "bytes": 845,
+      "sha256": "65268CBB34D7E2C02DBC2471DC2A180731C62F23C9804804D6B30391F69594DD",
+      "path": "flash.jlink"
+    },
+    {
+      "bytes": 7659,
+      "sha256": "54C44039A364D4E6451006961E2E5D8BCC98D274031A09FA91196ADA63258498",
+      "path": "flash.stdout.log"
+    },
+    {
+      "bytes": 36,
+      "sha256": "A6C4CF77B5B9F825BE584CD0C3B45C22D8774E44163DF320E842C0B5005DB454",
+      "path": "get-info-after-id.txt"
+    },
+    {
+      "bytes": 303,
+      "sha256": "F3CCD32567E6BF110D21579F6341566BBDC51DE9519F8186D3C481EE74247D29",
+      "path": "get-info-after.json"
+    },
+    {
+      "bytes": 36,
+      "sha256": "910509B77A6906F333B78E63361CC0BB05B03F31BAD93CDA949496BC1DFB304F",
+      "path": "get-info-before-id.txt"
+    },
+    {
+      "bytes": 303,
+      "sha256": "E8B2DFA83B2D88C209FF27B3B5E58BA595164FCBCD09C9AA7CBEACF9B969DE6D",
+      "path": "get-info-before.json"
+    },
+    {
+      "bytes": 191,
+      "sha256": "18D3F314CD079E324AACAC553AAE706C14B72F425B6659821AD6531413AA8536",
+      "path": "restart-response.jsonl"
+    },
+    {
+      "bytes": 2048,
+      "sha256": "E35346F1A797177E162F73796A87ACD93056C219B8C79FDC2CF0232594AF518B",
+      "path": "state-a.bin"
+    },
+    {
+      "bytes": 2048,
+      "sha256": "D0FF1B294B5288D1AE1421EADF5B2D38A8752B76D472FF30BED9028E25B1C5B8",
+      "path": "state-b.bin"
+    },
+    {
+      "bytes": 126,
+      "sha256": "27A77AED86D8005CC91AE5371D27EA10D38FA811F00D1FFF86CA6E1FD2D4ADAE",
+      "path": "uart-markers.json"
+    }
+  ]
+}
