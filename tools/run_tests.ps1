@@ -28,8 +28,10 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 $cloudTest = Join-Path $hostBuild 'cloud_protocol_test.exe'
 & $gcc -std=c11 -Wall -Wextra `
     @productIncludes `
+    "-I$PSScriptRoot\..\platform\components\cloud\include" `
     "-I$PSScriptRoot\..\platform\components\cjson" `
     "$PSScriptRoot\..\app\Core\User\cloud\src\cloud_protocol.c" `
+    "$PSScriptRoot\..\platform\components\cloud\src\abox_cloud_internal_v2.c" `
     "$PSScriptRoot\..\platform\components\cjson\cJSON.c" `
     "$PSScriptRoot\..\tests\cloud_protocol_test.c" `
     -o $cloudTest
@@ -122,12 +124,14 @@ $benchConfigTest = Join-Path $hostBuild 'control_config_session_test.exe'
     "-I$PSScriptRoot\..\platform\components\core\include" `
     "-I$PSScriptRoot\..\platform\components\ec800\include" `
     "-I$PSScriptRoot\..\platform\components\mqtt\include" `
+    "-I$PSScriptRoot\..\platform\components\cloud\include" `
     "-I$PSScriptRoot\..\platform\components\cjson" `
     "$PSScriptRoot\..\app\Core\User\system\src\patrol_config.c" `
     "$PSScriptRoot\..\app\Core\User\system\src\mqtt_config_adapter.c" `
     "$PSScriptRoot\..\app\Core\User\cloud\src\remote_service.c" `
     "$PSScriptRoot\..\app\Core\User\motion\src\chassis_control.c" `
     "$PSScriptRoot\..\app\Core\User\cloud\src\cloud_protocol.c" `
+    "$PSScriptRoot\..\platform\components\cloud\src\abox_cloud_internal_v2.c" `
     "$PSScriptRoot\..\app\Core\User\cloud\src\chassis_cloud_protocol.c" `
     "$PSScriptRoot\..\app\Core\User\common\src\fixed_point.c" `
     "$PSScriptRoot\..\app\Core\User\board\src\vehicle_power_output.c" `

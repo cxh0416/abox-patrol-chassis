@@ -5,19 +5,7 @@
 #include <string.h>
 
 #include "cJSON.h"
-
-static uint8_t request_id_valid(const char* value)
-{
-    uint16_t i;
-    if ((value == 0) || (value[0] == '\0')) return 0U;
-    for (i = 0U; i < CLOUD_PROTOCOL_REQUEST_ID_SIZE; i++)
-    {
-        uint8_t ch = (uint8_t)value[i];
-        if (ch == '\0') return 1U;
-        if ((ch < 0x21U) || (ch > 0x7EU)) return 0U;
-    }
-    return 0U;
-}
+#include "abox_cloud_internal_v2.h"
 
 static uint8_t version_valid(const char* value)
 {
@@ -57,40 +45,10 @@ static uint8_t json_integer_between(const cJSON* item, double minimum, double ma
     return value == (double)integer ? 1U : 0U;
 }
 
-static void extract_request_id(const char* payload, uint16_t length, char* output)
-{
-    static const char key[] = "\"requestId\"";
-    uint16_t i;
-    output[0] = '\0';
-    if ((payload == 0) || (length < sizeof(key))) return;
-    for (i = 0U; (uint32_t)i + sizeof(key) - 1U < length; i++)
-    {
-        uint16_t pos;
-        uint16_t used = 0U;
-        if (memcmp(payload + i, key, sizeof(key) - 1U) != 0) continue;
-        pos = (uint16_t)(i + sizeof(key) - 1U);
-        while ((pos < length) && ((payload[pos] == ' ') || (payload[pos] == '\t') || (payload[pos] == '\r') ||
-                                  (payload[pos] == '\n') || (payload[pos] == ':'))) pos++;
-        if ((pos >= length) || (payload[pos++] != '"')) return;
-        while ((pos < length) && (payload[pos] != '"') && (used < CLOUD_PROTOCOL_REQUEST_ID_SIZE - 1U))
-        {
-            if (payload[pos] == '\\') return;
-            output[used++] = payload[pos++];
-        }
-        output[used] = '\0';
-        if (!request_id_valid(output)) output[0] = '\0';
-        return;
-    }
-}
-
 CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, uint8_t ota_topic,
                                           CloudProtocolRequest_t* request)
 {
-    cJSON* root;
-    cJSON* version;
-    cJSON* data;
-    cJSON* product;
-    cJSON* request_id;
+    ABoxCloudInternalV2Envelope envelope;
     cJSON* command;
     cJSON* params;
     cJSON* action;
@@ -112,23 +70,15 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
     if (request == 0) return CLOUD_PROTOCOL_INVALID;
     memset(request, 0, sizeof(*request));
     if (payload == 0) return CLOUD_PROTOCOL_INVALID;
-    extract_request_id(payload, length, request->request_id);
+    ABoxCloudRequestId_ExtractRaw(payload, length, request->request_id,
+                                   sizeof(request->request_id));
     if (length > CLOUD_PROTOCOL_MAX_PAYLOAD) return CLOUD_PROTOCOL_TOO_LARGE;
 
-    root = cJSON_ParseWithLength(payload, length);
-    if (root == 0) return CLOUD_PROTOCOL_INVALID;
-    version = cJSON_GetObjectItemCaseSensitive(root, "version");
-    data = cJSON_GetObjectItemCaseSensitive(root, "data");
-    product = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "product") : 0;
-    request_id = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "requestId") : 0;
-    command = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "command") : 0;
-    params = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "params") : 0;
-    if (!cJSON_IsString(version) || strcmp(version->valuestring, "2.0") != 0 || !cJSON_IsObject(data) ||
-        !cJSON_IsString(request_id) || !request_id_valid(request_id->valuestring) || !cJSON_IsString(command) ||
-        !cJSON_IsObject(params)) goto done;
-    if (product != 0 && (!cJSON_IsString(product) ||
-        strcmp(product->valuestring, "patrol_vehicle_chassis") != 0)) goto done;
-    strncpy(request->request_id, request_id->valuestring, sizeof(request->request_id) - 1U);
+    if (!ABoxCloudInternalV2_Open(payload, length, "patrol_vehicle_chassis",
+                                  sizeof(request->request_id), &envelope)) return CLOUD_PROTOCOL_INVALID;
+    command = envelope.command;
+    params = envelope.params;
+    strncpy(request->request_id, envelope.request_id, sizeof(request->request_id) - 1U);
     request->request_id[sizeof(request->request_id) - 1U] = '\0';
 
     if (ota_topic)
@@ -268,7 +218,7 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
     status = CLOUD_PROTOCOL_OK;
 
 done:
-    cJSON_Delete(root);
+    ABoxCloudInternalV2_Close(&envelope);
     return status;
 }
 

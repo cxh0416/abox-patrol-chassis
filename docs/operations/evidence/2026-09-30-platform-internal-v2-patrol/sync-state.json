@@ -1,0 +1,1 @@
+{"request_id": "a827f58b-eab2-48bf-b672-74f771a3fce7", "events": [{"type": "response", "code": "200", "expectedStates": [{"reportName": "chassis_status"}]}, {"type": "report", "reportName": "chassis_status", "reportType": "state"}]}

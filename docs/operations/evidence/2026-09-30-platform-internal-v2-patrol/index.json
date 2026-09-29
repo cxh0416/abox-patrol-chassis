@@ -1,0 +1,91 @@
+{
+  "scope": "patrol_shared_internal_v2_envelope_standard_board",
+  "date": "2026-09-30",
+  "uid": "05DAFF383734525243054363",
+  "jlink_serial": "69730334",
+  "candidate_version": "patrol-chassis-0.2.48-cp8",
+  "app_sha256": "8D229B88A22E9B5F196360368E166D9DE179B8B76293C65C62D21BF464572CCB",
+  "platform_commit": "dbb738d",
+  "frozen_boot_sha256": "981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63",
+  "config_reinitialized_for_product": true,
+  "actuation_enabled": false,
+  "power_output_enabled": false,
+  "enrollment_request_id": "2c38d807-2d5b-413f-bff3-1f88d0b8245c",
+  "enrollment_state": "verified",
+  "get_info_code": "200",
+  "get_info_mqtt": "READY",
+  "sync_state_response_before_correlated_report": true,
+  "bootstrap_order_after_broker_kick": [
+    "manifest",
+    "heartbeat",
+    "report"
+  ],
+  "limits": "Broker kick is not full cellular outage or injected late PUBACK. No real CAN, actuator, mechanical feedback, OTA install or production release validation.",
+  "files": [
+    {
+      "path": "flash.jlink",
+      "bytes": 839,
+      "sha256": "B186E382A7C36B5E8CA8067CC39A87236527D9FE6503E4121F7B4EA703EF0327"
+    },
+    {
+      "path": "flash.stdout.log",
+      "bytes": 7647,
+      "sha256": "3FC882BC462B79B94FA5FBA5836352A0BC8DEC8C1BA473DDFA4A0601DDDAA38D"
+    },
+    {
+      "path": "state-a.bin",
+      "bytes": 2048,
+      "sha256": "6DD8BF4CB220E8FE009046EE622F1413D1458929163DD717BB76F04E9A16A60E"
+    },
+    {
+      "path": "state-b.bin",
+      "bytes": 2048,
+      "sha256": "D0FF1B294B5288D1AE1421EADF5B2D38A8752B76D472FF30BED9028E25B1C5B8"
+    },
+    {
+      "path": "enrollment-inspect.json",
+      "bytes": 263,
+      "sha256": "D2393E46D3F04CDD75E4145D08A00ED9B8DF1ACD45F10F1092B3F944D68C0085"
+    },
+    {
+      "path": "enrollment-approved.json",
+      "bytes": 138,
+      "sha256": "32D32164A11FFBD4C9DFA2667569203E803A93765564A5190B32BFC8E958FF0F"
+    },
+    {
+      "path": "enrollment-result.json",
+      "bytes": 264,
+      "sha256": "A3E9BEEB03A5ACF7DFC24BF1931BF2A898817F272202496B9B67493024A3EB70"
+    },
+    {
+      "path": "get-info-id.txt",
+      "bytes": 36,
+      "sha256": "4040411697617BFDDCAF4B6C611608B09F4FC0F74392CEAC94024DCCF1442D8A"
+    },
+    {
+      "path": "get-info.json",
+      "bytes": 299,
+      "sha256": "02F0F3E5981143DEFE2BC548CA67F30BE7EEA511DD425C3AD6712484DEFAEFF6"
+    },
+    {
+      "path": "sync-state.json",
+      "bytes": 232,
+      "sha256": "2A0DFC6DF4D99EFBC1525E8F26805A4EA3ECA7CCC33FA09FEA1B2C5A691F947B"
+    },
+    {
+      "path": "bootstrap-observed.json",
+      "bytes": 2148,
+      "sha256": "44B1E59A9C62A4A2C2A3B392AE32289B8681504C7C1778010599C57C2EB3CB72"
+    },
+    {
+      "path": "host-tests.log",
+      "bytes": 11391,
+      "sha256": "CFB9CAEF77CB5AB489347CE03B1688AF033137246C38CBDCE3F61B1CEE69E09C"
+    },
+    {
+      "path": "arm-build.log",
+      "bytes": 6297,
+      "sha256": "289857EBEB71F375740E6C29D13CE848D78429AEB83FDD1124A0E88D10751E73"
+    }
+  ]
+}

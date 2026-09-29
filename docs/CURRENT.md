@@ -42,6 +42,8 @@
 
 `patrol-chassis-0.2.48-cp7` 将 32 条有界日志缓存、筛选、读取游标和丢弃计数改用 Platform `ABoxLogRing`；产品保留北京时间格式、临界区和 UART 适配。39 项产品主机测试、Platform 35 项 CTest、ARM Release 和静态栈门禁通过，RAM 仍为 61,432 字节，BSS 终点 `0x2000BC04` 未越过冻结故障邮箱。共享测试板刷入匹配 App/State 并保留 Config V5，冻结 Boot 校验成功；首次 `get_info` 在重连窗口超时，重试取得 200/READY/OTA ready；`get_log` 返回 200、16 条日志和零丢弃，`sync_state` 先响应再上报。Broker 踢线后再次观察到 Manifest → Heartbeat → `chassis_status`。原始刷写、响应与哈希见[公共日志环实板证据](operations/evidence/2026-09-30-platform-log-ring-patrol/index.json)。执行器及车辆电源输出仍禁用，真实车辆 CAN/机械反馈、完整蜂窝断网、指定迟到 PUBACK 和 OTA 安装未由本轮验证；正式 `dist/` 未变。
 
+`patrol-chassis-0.2.48-cp8` 将内部 V2 请求的公共包络、requestId 校验与畸形报文中的有界 ID 提取移入 Platform；产品仍校验命令参数、Config V5、运动业务和响应码。39 项产品主机测试、Platform 36 项 CTest、ARM Release 与静态栈门禁通过，RAM 61,432 字节、BSS 终点 `0x2000BC04` 不变。共享测试板刷入匹配 App/State，擦除旧送餐车测试配置后按底盘合同重新入网 verified；独立 `get_info` 为 200/READY/OTA ready，`sync_state` 先响应再上报同 requestId 状态。Broker 踢线后再次观察到 Manifest → Heartbeat → `chassis_status` 和持续心跳。原始记录与哈希见[公共内部请求包络实板证据](operations/evidence/2026-09-30-platform-internal-v2-patrol/index.json)。执行器和车辆电源输出禁用；真实车辆 CAN/机械反馈、完整蜂窝断网、指定迟到 PUBACK 和 OTA 安装未由本轮验证；正式 `dist/` 不变。
+
 先前正式包的 39 项产品主机测试、23 项 Platform CTest、ARM 构建和静态栈门禁已通过；本轮候选仍需后续阶段回归，不能以源码或测试板结果替代正式包证据。
 
 前一轮 0.2.46 通信专项只操作测试板 UID `05DAFF383734525243054363`，J-Link `69730334`，执行时确认 COM11；按用户指示未做刷前备份。当次测试结束时曾换回巡防底盘正式 App，按底盘硬件合同重新入网并撤销旧清扫车凭据；此后测试板又切换为上文所述 cp2 候选。无真实 CAN 节点，因此平台 VID 任务收到同一 requestId 的响应与落库报告后，明确拒绝轮速反馈不新鲜，未派发改名命令；登录后的页面也显示具体原因。该版直接通信专项完成 plain/TLS 切换、VID 往返、无效候选恢复、重启持久化；重启由平台任务验证 200 REBOOTING、uptime 1307681→17591 ms、业务上线及独立身份查询。底盘单设备 Broker 断线后约 45.5 秒恢复，新业务心跳与独立查询成功；最终 ACL 精确匹配旧身份的 11 条规则，仅底盘当前身份会话在线。通信专项结果和不可变记录见[本轮证据](operations/evidence/2026-09-29-maintenance-transactions/index.json)。平台停车正向路径由隔离主机夹具覆盖，不伪造生产快照。

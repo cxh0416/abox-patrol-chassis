@@ -1,0 +1,61 @@
+Build type: Release
+-- Configuring done (0.3s)
+-- Generating done (0.1s)
+-- Build files have been written to: F:/work/A-Box/Patrol_Vehicle_Chassis/app/build/BenchSteering
+[1/54] Building C object abox_platform_build/components/cloud/CMakeFiles/abox_cloud_service.dir/src/abox_cloud_internal_v2.c.obj
+[2/54] Building C object abox_platform_build/components/cloud/CMakeFiles/abox_cloud_service.dir/src/abox_cloud_service.c.obj
+[3/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/gpio.c.obj
+[4/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/iwdg.c.obj
+[5/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/dma.c.obj
+[6/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/freertos.c.obj
+[7/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/main.c.obj
+[8/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/can.c.obj
+[9/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/usart.c.obj
+[10/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/stm32f1xx_it.c.obj
+[11/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/stm32f1xx_hal_msp.c.obj
+[12/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/stm32f1xx_hal_timebase_tim.c.obj
+[13/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/sysmem.c.obj
+[14/54] Building ASM object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/startup_stm32f105xc.s.obj
+[15/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/syscalls.c.obj
+[16/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/absolute_encoder.c.obj
+[17/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/common/src/app_log.c.obj
+[18/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/system/src/app_version.c.obj
+[19/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/system/src/mqtt_config_adapter.c.obj
+[20/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/system/src/patrol_config.c.obj
+[21/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/patrol_enrollment.c.obj
+[22/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/patrol_mqtt_profile.c.obj
+[23/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_service.c.obj
+[24/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_commands.c.obj
+[25/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_tx.c.obj
+[26/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/chassis_cloud_protocol.c.obj
+[27/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_protocol.c.obj
+[28/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/common/src/fixed_point.c.obj
+[29/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_messages.c.obj
+[30/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/chassis_control.c.obj
+[31/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/mqtt/src/mqtt_runtime.c.obj
+[32/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/mqtt/src/mqtt_core_adapter.c.obj
+[33/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_canopen.c.obj
+[34/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/mqtt/src/mqtt_trial_manager.c.obj
+[35/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/ota/src/ota_service.c.obj
+[36/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/ota/src/ota_info.c.obj
+[37/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_diagnostics.c.obj
+[38/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/remote_service.c.obj
+[39/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/steering_angle.c.obj
+[40/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/board/src/vehicle_power_output.c.obj
+[41/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/bench_steering.c.obj
+[42/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/bench_drive.c.obj
+[43/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/board/src/vehicle_power_port.c.obj
+[44/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/common/src/time_base.c.obj
+[45/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/F_/work/A-Box/Patrol_Vehicle_Chassis/shared/boot_state_compat.c.obj
+[46/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/F_/work/A-Box/Patrol_Vehicle_Chassis/shared/fault_mailbox_compat.c.obj
+[47/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_runtime.c.obj
+[48/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/F_/work/A-Box/Patrol_Vehicle_Chassis/platform/targets/stm32f105_ec800_v1/board_io_stm32f105.c.obj
+[49/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/center_calibration.c.obj
+[50/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/F_/work/A-Box/Patrol_Vehicle_Chassis/platform/targets/stm32f105_ec800_v1/enrollment_identity_stm32f105.c.obj
+[51/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/system/src/patrol_rtos.c.obj
+[52/54] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/F_/work/A-Box/Patrol_Vehicle_Chassis/platform/targets/stm32f105_ec800_v1/platform_port_stm32f105.c.obj
+[53/54] Linking C static library abox_platform_build\components\cloud\libabox_cloud_service.a
+[54/54] Linking C executable Patrol_Vehicle_Chassis_App.elf
+Memory region         Used Size  Region Size  %age Used
+             RAM:       61432 B        64 KB     93.74%
+           FLASH:      129004 B       216 KB     58.32%
