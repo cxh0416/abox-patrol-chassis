@@ -5,6 +5,7 @@
 
 #include "abox_boot_v2.h"
 #include "abox_boot_v2_app.h"
+#include "abox_boot_v2_ec800_port.h"
 #include "abox_boot_v2_ca_pem.h"
 #include "app_log.h"
 #include "app_version.h"
@@ -14,86 +15,9 @@
 #include "main.h"
 #include "patrol_config.h"
 
-typedef struct {
-    Ec800AtCore_t *at;
-    ABoxBootV2AtDoneFn done;
-    void *done_user;
-    ABoxBootV2AtEventFn events;
-    void *events_user;
-} OtaAdapter_t;
-
-static OtaAdapter_t g_adapter;
+static ABoxBootV2Ec800Adapter g_adapter;
 
 static uint32_t adapter_tick(void *context) { (void)context; return HAL_GetTick(); }
-
-static void adapter_done(Ec800AtCmdResult_t result, void *user)
-{
-    OtaAdapter_t *adapter = (OtaAdapter_t *)user;
-    ABoxBootV2AtDoneFn done = adapter->done;
-    void *done_user = adapter->done_user;
-    adapter->done = 0;
-    adapter->done_user = 0;
-    if (done) done((ABoxBootV2AtResult)result, done_user);
-}
-
-static int adapter_submit(void *context, const char *command, uint32_t timeout_ms,
-                          ABoxBootV2AtDoneFn done, void *user)
-{
-    OtaAdapter_t *adapter = (OtaAdapter_t *)context;
-    adapter->done = done;
-    adapter->done_user = user;
-    if (!EC800_AT_Submit(adapter->at, command, EC800_AT_OWNER_OTA, EC800_AT_PRIORITY_HIGH,
-                         timeout_ms, adapter_done, adapter)) {
-        adapter->done = 0;
-        adapter->done_user = 0;
-        return 0;
-    }
-    return 1;
-}
-
-static int adapter_send_payload(void *context, const uint8_t *data, uint16_t length)
-{
-    OtaAdapter_t *adapter = (OtaAdapter_t *)context;
-    return EC800_AT_SendPayloadForOwner(adapter->at, EC800_AT_OWNER_OTA, data, length) ? 1 : 0;
-}
-
-static int adapter_begin_raw(void *context, uint32_t length)
-{
-    OtaAdapter_t *adapter = (OtaAdapter_t *)context;
-    return EC800_AT_BeginRawRead(adapter->at, EC800_AT_OWNER_OTA, length) ? 1 : 0;
-}
-
-static int adapter_has_pending(void *context)
-{
-    OtaAdapter_t *adapter = (OtaAdapter_t *)context;
-    return EC800_AT_HasPending(adapter->at, EC800_AT_OWNER_OTA) ? 1 : 0;
-}
-
-static int adapter_is_active(void *context)
-{
-    OtaAdapter_t *adapter = (OtaAdapter_t *)context;
-    return EC800_AT_IsActiveOwner(adapter->at, EC800_AT_OWNER_OTA) ? 1 : 0;
-}
-
-static void adapter_cancel(void *context)
-{
-    OtaAdapter_t *adapter = (OtaAdapter_t *)context;
-    EC800_AT_CancelOwner(adapter->at, EC800_AT_OWNER_OTA);
-}
-
-static void adapter_event(Ec800AtEvent_t event, const uint8_t *data, uint16_t length, void *user)
-{
-    OtaAdapter_t *adapter = (OtaAdapter_t *)user;
-    if (adapter->events) adapter->events((ABoxBootV2AtEvent)event, data, length, adapter->events_user);
-}
-
-static void adapter_register(void *context, ABoxBootV2AtEventFn callback, void *user)
-{
-    OtaAdapter_t *adapter = (OtaAdapter_t *)context;
-    adapter->events = callback;
-    adapter->events_user = user;
-    EC800_AT_RegisterUrcHandler(adapter->at, EC800_AT_OWNER_OTA, adapter_event, adapter);
-}
 
 static void adapter_mqtt_pause(void *context, uint8_t paused) { (void)context; MQTT_Core_SetPaused(paused); }
 static int adapter_mqtt_stop(void *context, uint32_t now)
@@ -126,12 +50,6 @@ static void adapter_log(void *context, uint8_t level, const char *message)
     else APP_LOGI("OTA", "%s", message);
 }
 
-static uint32_t adapter_rx_overflow(void *context)
-{
-    OtaAdapter_t *adapter = (OtaAdapter_t *)context;
-    return EC800_AT_RxOverflowCount(adapter->at);
-}
-
 void OtaService_Init(Ec800AtCore_t *at)
 {
     static ABoxBootV2AppPort port;
@@ -143,18 +61,9 @@ void OtaService_Init(Ec800AtCore_t *at)
     const PatrolRemoteConfigV5_t *runtime = PatrolConfig_Get();
     extern uint8_t __app_image_end;
 
-    memset(&g_adapter, 0, sizeof(g_adapter));
-    g_adapter.at = at;
     memset(&port, 0, sizeof(port));
-    port.context = &g_adapter;
+    (void)ABoxBootV2Ec800Adapter_Bind(&g_adapter, at, &port);
     port.tick_ms = adapter_tick;
-    port.submit = adapter_submit;
-    port.send_payload = adapter_send_payload;
-    port.begin_raw_read = adapter_begin_raw;
-    port.has_pending = adapter_has_pending;
-    port.is_active = adapter_is_active;
-    port.cancel = adapter_cancel;
-    port.register_events = adapter_register;
     port.mqtt_pause = adapter_mqtt_pause;
     port.mqtt_stop = adapter_mqtt_stop;
     port.workspace_borrow = adapter_workspace_borrow;
@@ -162,7 +71,6 @@ void OtaService_Init(Ec800AtCore_t *at)
     port.mqtt_client_index = adapter_mqtt_client_index;
     port.log = adapter_log;
     port.transfer_buffer = MQTT_Core_OtaWorkspace(&port.transfer_buffer_size);
-    port.rx_overflow_count = adapter_rx_overflow;
 
     memset(&config, 0, sizeof(config));
     config.ota_origin = runtime->ota_origin;

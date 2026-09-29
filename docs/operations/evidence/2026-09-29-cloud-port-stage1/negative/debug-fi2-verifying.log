@@ -1,0 +1,4 @@
+/tmp/abox-cp1-publish-lab.py:68: DeprecationWarning: Callback API version 1 is deprecated, update to latest version
+  client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1,
+{"requestId": "cp1-get-1790676182", "published": true}
+{"product":"patrol_vehicle_chassis","requestId":"cp1-get-1790676182","code":200,"msg":"OK","result":{"runtimeState":10,"ready":true,"tls":false,"client":0,"context":0,"trialState":5,"trialSession":1,"remote":{"sessionActive":false,"sessionId":"","enableRequest":false,"targetRpm":0,"requestedRpm":0,"steeringTargetMdeg":0,"replayCached":false}}}

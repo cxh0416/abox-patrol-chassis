@@ -1,0 +1,4 @@
+/tmp/abox-cp1-publish-lab.py:71: DeprecationWarning: Callback API version 1 is deprecated, update to latest version
+  client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1,
+{"requestId": "cp1-restart-1790676510", "published": true}
+{"product":"patrol_vehicle_chassis","requestId":"cp1-restart-1790676510","code":202,"msg":"LAB_MODEM_RESTART_ACCEPTED","result":{}}

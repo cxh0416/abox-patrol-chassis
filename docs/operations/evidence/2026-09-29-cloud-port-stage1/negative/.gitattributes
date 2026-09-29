@@ -1,0 +1,4 @@
+*.log -text -diff
+*.bin -text -diff
+*.csv -text -diff
+*.json text eol=lf

@@ -99,6 +99,9 @@ typedef struct {
     uint8_t mqtt_persistent_active;
     char mqtt_trial_request_id[CLOUD_REQUEST_ID_SIZE];
     uint8_t mqtt_cancel_pending;
+#if PATROL_CHASSIS_MQTT_LAB_TEST
+    uint8_t modem_restart_pending;
+#endif
     char response_request_id[CLOUD_REQUEST_ID_SIZE];
     char response_topic[CLOUD_TOPIC_SIZE];
     char response_payload[CLOUD_PAYLOAD_SIZE];

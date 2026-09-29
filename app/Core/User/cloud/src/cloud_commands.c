@@ -192,6 +192,17 @@ static __attribute__((noinline)) void handle_config_request(const CloudProtocolR
                                             "LAB_CONTROL_STATE_SEEDED", result, 0U))
             CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 500U, "LAB_STATE_ERROR");
     }
+    else if (action == CLOUD_PROTOCOL_ACTION_MQTT_LAB_MODEM_RESTART)
+    {
+        ABoxMqttTrialState trial_state = MqttTrialManager_State();
+        if (g_cloud.modem_restart_pending || OtaService_IsBusy() ||
+            (trial_state != ABOX_MQTT_TRIAL_IDLE && trial_state != ABOX_MQTT_TRIAL_COMMITTED &&
+             trial_state != ABOX_MQTT_TRIAL_FAILED))
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "DEVICE_BUSY");
+        else if (CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 202U,
+                                                "LAB_MODEM_RESTART_ACCEPTED", "{}", 0U))
+            g_cloud.modem_restart_pending = 1U;
+    }
 #endif
     else if (action == CLOUD_PROTOCOL_ACTION_MQTT_RUNTIME_GET)
     {

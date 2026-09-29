@@ -1,0 +1,50 @@
+{
+  "scope": "patrol_shared_boot_v2_ec800_adapter_bench",
+  "date": "2026-09-29",
+  "product": "patrol_vehicle_chassis",
+  "test_uid": "05DAFF383734525243054363",
+  "jlink_serial": "69730334",
+  "candidate_version": "patrol-chassis-0.2.47-cp2",
+  "candidate_app_sha256": "50DA58A35C0AF1C1E38193EB0D58E90C8F253304D94B3FD047995FC1D2A81464",
+  "candidate_actuation_enabled": false,
+  "candidate_startup_permit": false,
+  "observations": [
+    "J-Link verified candidate App, Boot State A/B and frozen Boot; device reported candidate version, Manifest confirmed, MQTT READY",
+    "Independent get_info returned 200 with otaReady=true, otaProvisioned=true, Boot descriptor valid and App OTA phase IDLE",
+    "Config V5 page SHA256 was 9D7834342633FD2DE46CE1C3DD660EED779FC271118EF720FD410C4CE94B7EAE before and after candidate",
+    "J-Link verified original 0.2.46 App, Boot State A/B and frozen Boot after restore; server reported 0.2.46 online"
+  ],
+  "limits": "OTA readiness and common adapter initialization were checked; no HTTPS/UFS download, install, rollback or field OTA was performed.",
+  "files": [
+    {
+      "original_path": "out/logs/onboarding-bench/flash-cp2.log",
+      "archive_path": "flash-cp2.log",
+      "sha256": "50881cf24882faa3fb3fd9fd4af2dc04898d4fce5d058724dbda4ce783f55ad5",
+      "bytes": 6737
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/cp2-get-info-result.log",
+      "archive_path": "cp2-get-info-result.log",
+      "sha256": "d74d86421ef1a82d85fa1e8e7797aba6708c97947508fde3f168a96a5d6b51d9",
+      "bytes": 1320
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/cp2-read-config.log",
+      "archive_path": "cp2-read-config.log",
+      "sha256": "99b79f221bef18c7a485f6e68a5bb8ae680a8c625c5fe9d8655c67b7de888d31",
+      "bytes": 2766
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/restore-after-cp2.log",
+      "archive_path": "restore-after-cp2.log",
+      "sha256": "140b5a40f32091cc076eb5b61673ac7d19fd40eef1710c64833e914fa53ff0c6",
+      "bytes": 6721
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/cp2-restored-device.log",
+      "archive_path": "cp2-restored-device.log",
+      "sha256": "79ea20d1d0bea1fddfbcb6e6e63de26e88ede54ee5390e503064a54e49d6a76a",
+      "bytes": 141
+    }
+  ]
+}

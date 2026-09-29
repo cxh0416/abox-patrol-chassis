@@ -1,0 +1,103 @@
+{
+  "scope": "patrol_cloud_port_stage1_negative_bench",
+  "date": "2026-09-29",
+  "test_uid": "05DAFF383734525243054363",
+  "jlink_serial": "69730334",
+  "debug_version": "patrol-chassis-0.2.47-fi2",
+  "debug_app_sha256": "106EB2437F73FC6A1DF8447797E3A036E1BDD639DD6CA72B6B1DC08A00D3F703",
+  "build_flags": {
+    "actuation": false,
+    "power_output": false,
+    "steering_executor": false,
+    "drive_executor": false,
+    "mqtt_lab_test": true,
+    "trial_fault_kind": "DROP_PROOF"
+  },
+  "observations": [
+    "RAM-only candidate accepted at 1790676145; trial VERIFYING=5 at 1790676182; after proof timeout, FAILED=9 and original plain READY at 1790676274",
+    "EC800 rail restart was requested after a correlated 202 response; UART diagnostic recorded runtime plain-prepared, connected, READY at 18:08:41..18:08:47 Asia/Shanghai; literal RDY was not captured",
+    "EMQX session for exact test VID was disconnected; diagnostic recorded blocked transport, EC800 restart and READY at 18:12:13..18:12:30 Asia/Shanghai; independent get returned 200",
+    "Config page SHA256 remained 9D7834342633FD2DE46CE1C3DD660EED779FC271118EF720FD410C4CE94B7EAE; J-Link verified prior App, State A/B and frozen Boot after restore; server again reported 0.2.46 online"
+  ],
+  "limits": "No literal modem RDY, real late PUBACK, OTA occupancy, full cellular outage, CAN/actuation or field OTA success evidence. Debug lab commands are compile-gated and are absent from Release.",
+  "files": [
+    {
+      "original_path": "out/logs/onboarding-bench/broker-kick-response.log",
+      "archive_path": "broker-kick-response.log",
+      "sha256": "908a63c26ecbcd34244b6722cafa049963ee938ad2fd25cfd6b7e22674a08a36",
+      "bytes": 59
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/broker-kick-uart-raw.bin",
+      "archive_path": "broker-kick-uart-raw.bin",
+      "sha256": "ca0a9205b77fc40fe47601942af79aa71c9bffdfc84f1dd0008a5e869c9cc81a",
+      "bytes": 924
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/debug-fi2-after-modem-reset-get.log",
+      "archive_path": "debug-fi2-after-modem-reset-get.log",
+      "sha256": "e5a6e5ad8544f288d1ae7a3cb97389ad807db655159006f751e83898ea7e4dd3",
+      "bytes": 578
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/debug-fi2-candidate-response.log",
+      "archive_path": "debug-fi2-candidate-response.log",
+      "sha256": "3fc581a7552316d53ae9840ac3c043c7fc5a375ccc2eb9828a3f1bb5210a673b",
+      "bytes": 438
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/debug-fi2-modem-restart-captured-response.log",
+      "archive_path": "debug-fi2-modem-restart-captured-response.log",
+      "sha256": "2532de9f29a1fb1025173692b6434f9d1520175828e0f73e1750220b0b589ff2",
+      "bytes": 368
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/debug-fi2-modem-restart-traces.csv",
+      "archive_path": "debug-fi2-modem-restart-traces.csv",
+      "sha256": "ad22545ef59f0d1787ce889cdbabc9f01b12e9a37b3b4a836890e76f0ca3c6b9",
+      "bytes": 126
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/debug-fi2-restored.log",
+      "archive_path": "debug-fi2-restored.log",
+      "sha256": "7ed454869f8f3ea2a4229abd3f970309eef97a57dc1bff93a8080c05b0384abc",
+      "bytes": 578
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/debug-fi2-verifying.log",
+      "archive_path": "debug-fi2-verifying.log",
+      "sha256": "b1c43394703e92037c6143d59b44f030850605eb790d5b73c0af5794dc382ec5",
+      "bytes": 578
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/flash-debug-fi2-restart-hook.log",
+      "archive_path": "flash-debug-fi2-restart-hook.log",
+      "sha256": "81615f7ae79f63fa19d1f855445ac365fe623d93a423353034bf3f33acca8eef",
+      "bytes": 6754
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/modem-restart-uart-raw.bin",
+      "archive_path": "modem-restart-uart-raw.bin",
+      "sha256": "00783a19de952a3470e411994c3412bc2f70be122c559774c53aa7ce4b52324e",
+      "bytes": 855
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/read-config-after-all-negative.log",
+      "archive_path": "read-config-after-all-negative.log",
+      "sha256": "69680a11a561fc443b8e448b2a9914bbacc0944c01ec1f95dbfac807daa695e3",
+      "bytes": 2784
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/read-config-after-fi2.log",
+      "archive_path": "read-config-after-fi2.log",
+      "sha256": "f911e25e75b83c041f3ac55ff38a5a309d8b0d4268612954c576305bfd7b6b38",
+      "bytes": 2766
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/restore-after-negative.log",
+      "archive_path": "restore-after-negative.log",
+      "sha256": "3ec589eaacf9ddcb136d557a8759551ad36512623af8559c01d6da1e50ef1f30",
+      "bytes": 6721
+    }
+  ]
+}

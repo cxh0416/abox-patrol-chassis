@@ -109,6 +109,9 @@ void CloudService_Init(void)
     g_cloud.last_response_payload[0] = '\0';
     g_cloud.mqtt_persistent_active = 0U;
     g_cloud.mqtt_candidate_pending = 0U;
+#if PATROL_CHASSIS_MQTT_LAB_TEST
+    g_cloud.modem_restart_pending = 0U;
+#endif
     g_cloud.reset_reason = read_reset_reason();
     g_enroll_provision_due = HAL_GetTick();
     g_modem_recovery_due = HAL_GetTick() + 60000U;
@@ -258,6 +261,18 @@ void CloudService_Task(void)
     else if (!ready && g_cloud.mqtt_was_ready) APP_LOGW("CLOUD", "mqtt disconnected");
     g_cloud.mqtt_was_ready = ready;
     CloudTx_Service();
+#if PATROL_CHASSIS_MQTT_LAB_TEST
+    if (g_cloud.modem_restart_pending && !g_cloud.response_pending &&
+        g_cloud.tx_kind != CLOUD_TX_RESPONSE) {
+        g_cloud.modem_restart_pending = 0U;
+        g_modem_recovery_due = HAL_GetTick() + 120000U;
+        CloudTx_NetworkChanged();
+        RemoteService_RevokeForNetworkChange();
+        EC_Power_StartRestartSequence();
+        g_cloud.mqtt_was_ready = 0U;
+        return;
+    }
+#endif
     if (ready && g_cloud.ota_begin_pending && (int32_t)(HAL_GetTick() - g_cloud.ota_begin_due) >= 0 &&
         !EC800_AT_IsBusy(&g_cloud.at_core))
     {

@@ -22,7 +22,7 @@
 
 ## 验证证据与现场边界
 
-当前源码候选已接入 Platform 标准 STM32F105/EC800 App Port，并使 Cloud TX 按 MQTT transport operation 精确关联发布完成。39 项产品主机测试及 ARM Release 构建通过。测试板 UID `05DAFF383734525243054363` 上的禁用执行器候选 `patrol-chassis-0.2.47-cp1` 已验证启动、MQTT READY、Manifest 与状态落库、`get_info`、`sync_state`、MCU 重启后重连；配置页未变化。独立模组 RDY、断网、迟到 PUBACK、候选失败和 OTA 占用尚未实板覆盖，因此候选未替换 `dist/`，也未下发 OTA。测试板已恢复到刷写前的 `0.2.46` App/State，重连上线，记录见[本次台架证据](operations/evidence/2026-09-29-cloud-port-stage1/index.json)。
+当前源码候选已接入 Platform 标准 STM32F105/EC800 App Port，Cloud TX 按 MQTT transport operation 精确关联发布完成，App OTA 的 EC800 AT/owner 接线改用 Platform 公共适配器。39 项产品主机测试、25 项 Platform CTest 与 ARM Release/Debug 构建通过。测试板 UID `05DAFF383734525243054363` 上的禁用执行器候选 `patrol-chassis-0.2.47-cp1` 已验证启动、MQTT READY、Manifest 与状态落库、`get_info`、`sync_state`、MCU 重启后重连。另用输出和执行器全部禁用的 Debug 构建 `patrol-chassis-0.2.47-fi2` 实测 RAM-only 候选在证明被丢弃后超时恢复原 plain 链路；模组供电重启和只针对该测试 VID 的 Broker 会话断开后均重新 READY，Config V5 页 SHA256 全程未变。新公共 OTA 接线的禁用运动候选 `patrol-chassis-0.2.47-cp2` 在同一测试板完成启动、Manifest 确认、MQTT READY，独立 `get_info` 返回 `otaReady=true`、`otaProvisioned=true`、Boot V2 描述符有效；配置页哈希未变。未捕获字面 `RDY`，真实迟到 PUBACK、OTA 下载/安装与占用及完整蜂窝断网仍未实板覆盖，因此候选未替换 `dist/`，也未下发 OTA。测试板已恢复到刷写前的 `0.2.46` App/State，重连上线，记录见[正常路径证据](operations/evidence/2026-09-29-cloud-port-stage1/index.json)、[异常路径证据](operations/evidence/2026-09-29-cloud-port-stage1/negative/index.json)和[公共 OTA 接线证据](operations/evidence/2026-09-29-cloud-port-stage1/ota-adapter/index.json)。
 
 39 项产品主机测试、23 项 Platform CTest、ARM 候选与正式构建、静态栈门禁通过。正式包由暂存目录验证后整体替换 dist，候选与正式 App 哈希一致。
 

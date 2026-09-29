@@ -210,6 +210,8 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
 #if PATROL_CHASSIS_MQTT_LAB_TEST
     else if (strcmp(action->valuestring, "mqtt_lab_seed_control") == 0)
         request->action = CLOUD_PROTOCOL_ACTION_MQTT_LAB_SEED_CONTROL;
+    else if (strcmp(action->valuestring, "mqtt_lab_modem_restart") == 0)
+        request->action = CLOUD_PROTOCOL_ACTION_MQTT_LAB_MODEM_RESTART;
     else if (strcmp(action->valuestring, "mqtt_runtime_candidate") == 0)
     {
         mqtt_host = cJSON_GetObjectItemCaseSensitive(params, "host");
