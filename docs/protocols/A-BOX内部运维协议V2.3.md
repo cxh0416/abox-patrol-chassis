@@ -138,6 +138,7 @@ OTA 沿用内部 `ota_upgrade` 请求及 Boot V2 状态。`INSTALL_PENDING` 仅�
 | `bootDescriptorValid`、`otaBootstrapNeedsRevision` | Boolean | Boot 描述符有效性和引导修订提示。 |
 | `bootApiVersion`、`bootFeatures`、`resetReason`、`uptimeMs` | Integer | Boot 描述符、重启原因和启动后毫秒数。 |
 | `otaScheme`、`otaDownloader`、`stableSeedSource` | String | OTA 与稳定镜像元数据。 |
+| `maintenanceProtocols` | Object | `mqttConfigTransaction: 1`、`vidChangeTransaction: 1` 分别声明 MQTT 配置与 VID 的候选试连、保存回读及失败恢复事务语义。协议版本独立于应用固件版本；声明不代表当前允许执行。缺失或未知版本不能推断支持。 |
 | `mqttHost`、`mqttState` | String | 已提交的 MQTT 主机和当前连接状态。 |
 | `mqttPort`、`mqttTlsProfileId`、`mqttStateCode` | Integer | 已提交的端口、TLS profile 和状态码。 |
 | `mqttTls`、`canInitialized`、`canBusOff` | Boolean | 已提交 TLS 选择及 CAN 当前摘要。 |

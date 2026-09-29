@@ -218,6 +218,7 @@ void CloudMessages_BuildInfoResult(char* output, uint16_t size)
     json_append(&writer, ",\"stableSeedSource\":");
     json_string(&writer, ABoxBootV2App_StableSeedSource());
     json_append(&writer, ",\"otaBootstrapNeedsRevision\":false");
+    json_append(&writer, ",\"maintenanceProtocols\":{\"mqttConfigTransaction\":1,\"vidChangeTransaction\":1}");
     json_append(&writer, ",\"vid\":"); json_string(&writer, PatrolConfig_Get()->vid);
     json_append(&writer, ",\"mqttHost\":"); json_string(&writer, PatrolConfig_Get()->mqtt_host);
     json_appendf(&writer, ",\"mqttPort\":%u,\"mqttTls\":%s,\"mqttTlsProfileId\":%u",

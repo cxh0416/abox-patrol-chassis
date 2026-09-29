@@ -16,7 +16,7 @@ static const char *g_subscriptions[4];
 static Ec800AtCore_t *g_at;
 static MQTT_CoreMsgCallback_t g_message;
 static uint8_t g_header[192], g_topic[TOPIC_CAPACITY];
-static uint8_t g_payload[PAYLOAD_CAPACITY], g_outgoing[PAYLOAD_CAPACITY];
+static uint8_t g_payload[PAYLOAD_CAPACITY], g_outgoing[1536U];
 static char g_iccid[32];
 static uint8_t g_iccid_valid, g_iccid_pending;
 static uint32_t g_iccid_started, g_publish_ok;
