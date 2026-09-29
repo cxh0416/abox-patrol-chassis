@@ -1,0 +1,90 @@
+{
+  "scope": "patrol_cloud_port_stage1",
+  "date": "2026-09-29",
+  "product": "patrol_vehicle_chassis",
+  "test_uid": "05DAFF383734525243054363",
+  "jlink_serial": "69730334",
+  "candidate_version": "patrol-chassis-0.2.47-cp1",
+  "result": "candidate booted; MQTT READY; manifest and state accepted; get_info and sync_state completed; MCU reset reconnect verified; config unchanged; board restored to prior 0.2.46",
+  "limits": "candidate-failure recovery, late modem PUBACK, OTA occupancy and real vehicle safety not tested",
+  "files": [
+    {
+      "original_path": "out/logs/onboarding-bench/read-before.log",
+      "archive_path": "read-before.log",
+      "sha256": "1c574a52082a359227f5edb75727174c6ad0f22a96b16a8df73b00a66036f546",
+      "bytes": 3994
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/flash-candidate.log",
+      "archive_path": "flash-candidate.log",
+      "sha256": "0be4995190360f55ad6d0315c876d8feff82e8f964ab4bdcc26525a742cc9d7d",
+      "bytes": 5080
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/read-after.log",
+      "archive_path": "read-after.log",
+      "sha256": "6c356858fad3273e908d14f8f9bc88633e51239fbf04752b81455e46453256ac",
+      "bytes": 3344
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/flash-candidate-state.log",
+      "archive_path": "flash-candidate-state.log",
+      "sha256": "a80274ee52b84d8a47d1af3aaa97949c6307e88edc3e53e3ac1fca5bf692fca1",
+      "bytes": 6786
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/reset-reconnect.log",
+      "archive_path": "reset-reconnect.log",
+      "sha256": "f0e873751e5deb127d82f607750f402dca0d79fdbe0d5f55b6a27597181fcca5",
+      "bytes": 2149
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/restore-before.log",
+      "archive_path": "restore-before.log",
+      "sha256": "aaf39cbdb4f7f012999c5cedc7c76eced6e2a2bc1e93972e04ee01165b147571",
+      "bytes": 6721
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/server-device.json",
+      "archive_path": "server-device.json",
+      "sha256": "a027f0da292dda1c90df6a152a51927c5ad318062ecb047431040b711d3db157",
+      "bytes": 147
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/server-manifest.json",
+      "archive_path": "server-manifest.json",
+      "sha256": "fb14b5cd0be58312a00585f74f79248cba3cd1c0d6d10396ba0e640bf4db9f77",
+      "bytes": 111
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/server-operations.json",
+      "archive_path": "server-operations.json",
+      "sha256": "f46ff006caf169d68d6447462c72b8dd836f20ecdb3bb112f9ec345561635119",
+      "bytes": 915
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/server-sync-traces.json",
+      "archive_path": "server-sync-traces.json",
+      "sha256": "d848ccc4cbfe80764eb83f21a036b1853499325d74e8141f662aa78e2d875f43",
+      "bytes": 1371
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/server-restored.json",
+      "archive_path": "server-restored.json",
+      "sha256": "9ffe70ed76a085344bf891334be1b12b55a2f408a49c27bcd90ba5185cd1e359",
+      "bytes": 143
+    },
+    {
+      "original_path": "out/logs/onboarding-bench/checks.json",
+      "archive_path": "checks.json",
+      "sha256": "3868d33073651aa1721d1d4033474373bb50fb0b8aab62561701d412e7419817",
+      "bytes": 770
+    },
+    {
+      "original_path": "out/candidates/bench-steering/candidate.manifest.json",
+      "archive_path": "candidate.manifest.json",
+      "sha256": "b72d27c25bc48779fd3c6ff250212ef515923890fc28467b52135053fd7da47f",
+      "bytes": 579
+    }
+  ]
+}

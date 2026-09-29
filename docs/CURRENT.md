@@ -22,7 +22,7 @@
 
 ## 验证证据与现场边界
 
-当前源码候选已接入 Platform 标准 STM32F105/EC800 App Port，并使 Cloud TX 按 MQTT transport operation 精确关联发布完成。39 项产品主机测试及 ARM Release 构建通过；断网、模组复位、迟到 PUBACK、候选试连和 OTA 占用仍需测试板验证，因此此候选未替换 `dist/`，不是当前正式固件，也未下发 OTA。
+当前源码候选已接入 Platform 标准 STM32F105/EC800 App Port，并使 Cloud TX 按 MQTT transport operation 精确关联发布完成。39 项产品主机测试及 ARM Release 构建通过。测试板 UID `05DAFF383734525243054363` 上的禁用执行器候选 `patrol-chassis-0.2.47-cp1` 已验证启动、MQTT READY、Manifest 与状态落库、`get_info`、`sync_state`、MCU 重启后重连；配置页未变化。独立模组 RDY、断网、迟到 PUBACK、候选失败和 OTA 占用尚未实板覆盖，因此候选未替换 `dist/`，也未下发 OTA。测试板已恢复到刷写前的 `0.2.46` App/State，重连上线，记录见[本次台架证据](operations/evidence/2026-09-29-cloud-port-stage1/index.json)。
 
 39 项产品主机测试、23 项 Platform CTest、ARM 候选与正式构建、静态栈门禁通过。正式包由暂存目录验证后整体替换 dist，候选与正式 App 哈希一致。
 

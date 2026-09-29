@@ -1,0 +1,15 @@
+{
+  "test_uid": "05DAFF383734525243054363",
+  "jlink_serial": "69730334",
+  "prior_app_version": "patrol-chassis-0.2.46",
+  "candidate_version": "patrol-chassis-0.2.47-cp1",
+  "candidate_sha256": "F8F4B080455A3E801637906612341966E2E686D7AF51B0E7EB7B1A0807781432",
+  "candidate_actuation_enabled": false,
+  "candidate_drive_executor_compiled": false,
+  "candidate_startup_permit": false,
+  "config_sha256_before": "9d7834342633fd2de46ce1c3dd660eed779fc271118ef720fd410c4ce94b7eae",
+  "config_sha256_after_candidate": "9d7834342633fd2de46ce1c3dd660eed779fc271118ef720fd410c4ce94b7eae",
+  "config_sha256_after_restore": "9d7834342633fd2de46ce1c3dd660eed779fc271118ef720fd410c4ce94b7eae",
+  "config_unchanged": true,
+  "board_restored_fw_version": "patrol-chassis-0.2.46"
+}
