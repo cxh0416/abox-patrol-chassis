@@ -1,0 +1,88 @@
+{
+  "scope": "patrol_config_store_standard_board",
+  "date": "2026-09-30",
+  "uid": "05DAFF383734525243054363",
+  "jlink_serial": "69730334",
+  "candidate_version": "patrol-chassis-0.2.48-cp11",
+  "platform_commit": "2db44fc",
+  "app_sha256": "25FB8C5B0D510C82129F5E54BFB53BB77493536FFC5E79E852655B36C7DC0C7C",
+  "frozen_boot_sha256": "981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63",
+  "actuation_enabled": false,
+  "power_output_enabled": false,
+  "readonly_can_diagnostics_enabled": false,
+  "enrollment_request_id": "790ba3d4-c389-4e6e-87e2-cd118c4071e7",
+  "enrollment_state": "verified",
+  "get_info_code": "200",
+  "mqtt_state": "READY",
+  "config_header_address": "0x0803F894",
+  "config_magic": "0x56435543",
+  "config_version": 5,
+  "config_length": 400,
+  "tls_tail_address": "0x0803FA20",
+  "trial_operation_id": "73b61f39-bbcc-46b1-b947-969c1b022d98",
+  "trial_result": "rejected before candidate write",
+  "blocking_condition": "Service preflight requires fresh real wheel-speed feedback; standard board has no vehicle CAN feedback.",
+  "limits": "No candidate commit, rollback, post-commit reboot, physical actuation, or formal release validation.",
+  "files": [
+    {
+      "sha256": "41942E3F72AE16C0A893A3CE561FBDA701A965AB79808A830D5C68C7FDC1AEC6",
+      "bytes": 875,
+      "path": "flash.jlink"
+    },
+    {
+      "sha256": "7B6623CB525893736E4AFAE301992CCF346B89C74D104B322C2AB93226C64600",
+      "bytes": 10597,
+      "path": "flash.stdout.log"
+    },
+    {
+      "sha256": "0F0DA6197624FD36EC3F63EC955A2C9A51F5E8C1FE728D1C7FD3393C796D77D4",
+      "bytes": 2048,
+      "path": "state-a.bin"
+    },
+    {
+      "sha256": "D0FF1B294B5288D1AE1421EADF5B2D38A8752B76D472FF30BED9028E25B1C5B8",
+      "bytes": 2048,
+      "path": "state-b.bin"
+    },
+    {
+      "sha256": "382E485B836903980B0804883A0B06EE71EF0DC11B36AD50BE2E40429835E650",
+      "bytes": 266,
+      "path": "enrollment-inspect.json"
+    },
+    {
+      "sha256": "11E9F0474E9BDBD01DB12197F7BB8AE84EC48A1E791135D7221AD43278C64B65",
+      "bytes": 140,
+      "path": "enrollment-approved.json"
+    },
+    {
+      "sha256": "1A6EC3AB83843961063FCCB73E56522D8BAC207315CBB09DC6101EEBBBFE2311",
+      "bytes": 551,
+      "path": "enrollment-and-cloud.jsonl"
+    },
+    {
+      "sha256": "BDCFCDBDB3FE6A865FD9D4671861A7D83D205C4D2911E709117ED648E99B6040",
+      "bytes": 38,
+      "path": "trial-operation-id.txt"
+    },
+    {
+      "sha256": "164AF7F81FFD2B1EDA08F6BFBE1880257F0E386E51D3D4972B6942A9655CF8E4",
+      "bytes": 346,
+      "path": "trial-status-initial.json"
+    },
+    {
+      "sha256": "61E8775E36B92AD2705381B5690462B1248A2D72A1FD73C12EFC282656F707DB",
+      "bytes": 302,
+      "path": "get-info.json"
+    },
+    {
+      "sha256": "7CA41450AD098A36666C77A15C40CDD5F57FF2691601D1AC335796B8F6A2C3A6",
+      "bytes": 90,
+      "path": "read-config-v5.jlink"
+    },
+    {
+      "sha256": "D00106547D8E4996C1EAF6914687C71AACC1524DC1730CC4CF1F77B83229EC61",
+      "bytes": 2631,
+      "path": "read-config-v5.stdout.log"
+    }
+  ]
+}

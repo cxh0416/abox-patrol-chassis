@@ -48,6 +48,8 @@
 
 `patrol-chassis-0.2.48-cp10` 将 MQTT transport、精确发布回执、ICCID 与工作区的重复 App 接线改用 Platform `ABoxMqttEc800Bridge`，产品 `MQTT_Core` 只保留兼容 API、身份/Topic、容量及运行配置。39 项产品主机测试、Platform 37 项 CTest 和 ARM Release 构建通过，RAM 仍为 61,432 字节。测试板保留既有 Config V5，匹配 App/State 与冻结 Boot 验证成功；启动窗口首次 `get_info` 超时，重试及 Broker 踢线后再次查询均为 200/READY/OTA ready，`sync_state` 响应先于关联状态，重连后观察到 Manifest → Heartbeat → `chassis_status` 和持续心跳。证据与哈希见[公共 MQTT bridge 实板记录](operations/evidence/2026-09-30-platform-mqtt-bridge-patrol/index.json)。台架禁用执行器、车辆电源与只读 CAN 诊断；正式 `dist/` 未替换。
 
+`patrol-chassis-0.2.48-cp11` 把 Config V5 候选提交失败后的旧快照恢复顺序接入 Platform `ABoxConfigStore_Commit`；`PatrolConfig_Save()` 原有 Config V5 codec、恢复页和 Flash 回读实现未改。39 项产品主机测试、Platform 38 项 CTest 与 ARM Release 构建通过，RAM 61,432 字节。标准测试板明确关闭执行器、供电输出和只读 CAN 诊断，清除前一产品测试配置后按底盘合同重新 Enrollment verified；独立 `get_info` 为 200/READY/OTA ready、ICCID 存在，配置页 `0x0803F894` 回读 V5 magic、版本 5、400 字节，TLS 字段仍在结构偏移 396/397。服务端正式 `set_mqtt_config` 事务在只读安全预检阶段被拒绝：底盘要求新鲜的真实轮速反馈，而标准板没有车辆 CAN。候选写入、恢复与重启后的落盘行为因此没有实板验证，不能绕过安全门禁推断成功。原始记录与 SHA256 见[公共配置提交台架证据](operations/evidence/2026-09-30-platform-config-store-patrol/index.json)。正式 `dist/` 不变。
+
 先前正式包的 39 项产品主机测试、23 项 Platform CTest、ARM 构建和静态栈门禁已通过；本轮候选仍需后续阶段回归，不能以源码或测试板结果替代正式包证据。
 
 前一轮 0.2.46 通信专项只操作测试板 UID `05DAFF383734525243054363`，J-Link `69730334`，执行时确认 COM11；按用户指示未做刷前备份。当次测试结束时曾换回巡防底盘正式 App，按底盘硬件合同重新入网并撤销旧清扫车凭据；此后测试板又切换为上文所述 cp2 候选。无真实 CAN 节点，因此平台 VID 任务收到同一 requestId 的响应与落库报告后，明确拒绝轮速反馈不新鲜，未派发改名命令；登录后的页面也显示具体原因。该版直接通信专项完成 plain/TLS 切换、VID 往返、无效候选恢复、重启持久化；重启由平台任务验证 200 REBOOTING、uptime 1307681→17591 ms、业务上线及独立身份查询。底盘单设备 Broker 断线后约 45.5 秒恢复，新业务心跳与独立查询成功；最终 ACL 精确匹配旧身份的 11 条规则，仅底盘当前身份会话在线。通信专项结果和不可变记录见[本轮证据](operations/evidence/2026-09-29-maintenance-transactions/index.json)。平台停车正向路径由隔离主机夹具覆盖，不伪造生产快照。
