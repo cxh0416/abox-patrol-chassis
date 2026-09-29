@@ -86,10 +86,10 @@ class PatrolScaffoldTests(unittest.TestCase):
     def test_public_and_internal_mqtt_contracts_are_separated(self):
         cloud = cloud_sources()
         remote = (ROOT / "app/Core/User/cloud/src/remote_service.c").read_text(encoding="utf-8")
-        self.assertIn('"/zxwl/abox/%s/request"', cloud)
-        self.assertIn('"/zxwl/abox/%s/response"', cloud)
-        self.assertIn('"/zxwl/abox/%s/report"', cloud)
-        self.assertIn('"/zxwl/abox/%s/manifest"', cloud)
+        self.assertIn("ABoxMqttV4_BuildTopic", cloud)
+        for kind in ("REQUEST", "RESPONSE", "REPORT", "MANIFEST", "HEARTBEAT"):
+            self.assertIn(f"ABOX_MQTT_V4_TOPIC_{kind}", cloud)
+        self.assertIn('"/zxwl/abox/%s/internal/config"', cloud)
         self.assertIn('\\"reportName\\":\\"chassis_status', cloud)
         self.assertIn('\\"product\\":\\"patrol_vehicle_chassis', cloud)
         self.assertNotIn("commandAccepted", remote)

@@ -8,6 +8,7 @@
 #include "mqtt_runtime.h"
 #include "mqtt_trial_manager.h"
 #include "mqtt_config_adapter.h"
+#include "abox_mqtt_v4.h"
 #include "ota_service.h"
 #include "usart.h"
 #include "patrol_config.h"
@@ -21,6 +22,20 @@ static void mqtt_network_changed(void)
 {
     CloudTx_NetworkChanged();
     RemoteService_RevokeForNetworkChange();
+}
+
+static uint8_t build_public_topics(const char* vid)
+{
+    return ABoxMqttV4_BuildTopic(g_cloud.topic_heartbeat, sizeof(g_cloud.topic_heartbeat),
+                                 vid, ABOX_MQTT_V4_TOPIC_HEARTBEAT) &&
+           ABoxMqttV4_BuildTopic(g_cloud.topic_manifest, sizeof(g_cloud.topic_manifest),
+                                 vid, ABOX_MQTT_V4_TOPIC_MANIFEST) &&
+           ABoxMqttV4_BuildTopic(g_cloud.topic_status_report, sizeof(g_cloud.topic_status_report),
+                                 vid, ABOX_MQTT_V4_TOPIC_REPORT) &&
+           ABoxMqttV4_BuildTopic(g_cloud.topic_control_cmd, sizeof(g_cloud.topic_control_cmd),
+                                 vid, ABOX_MQTT_V4_TOPIC_REQUEST) &&
+           ABoxMqttV4_BuildTopic(g_cloud.topic_control_resp, sizeof(g_cloud.topic_control_resp),
+                                 vid, ABOX_MQTT_V4_TOPIC_RESPONSE);
 }
 
 uint8_t CloudService_NeedsEnrollment(void)
@@ -37,16 +52,12 @@ uint8_t CloudService_ApplyMqttIdentity(const char* vid)
     const char* subscriptions[3];
     if (vid == 0 || vid[0] == '\0' || strlen(vid) >= sizeof(((PatrolRemoteConfigV5_t*)0)->vid)) return 0U;
     if (!MQTT_Core_SetClientId(vid)) return 0U;
-    (void)snprintf(g_cloud.topic_heartbeat, sizeof(g_cloud.topic_heartbeat), "/zxwl/abox/%s/heartbeat", vid);
-    (void)snprintf(g_cloud.topic_manifest, sizeof(g_cloud.topic_manifest), "/zxwl/abox/%s/manifest", vid);
-    (void)snprintf(g_cloud.topic_status_report, sizeof(g_cloud.topic_status_report), "/zxwl/abox/%s/report", vid);
+    if (!build_public_topics(vid)) return 0U;
     (void)snprintf(g_cloud.topic_config_cmd, sizeof(g_cloud.topic_config_cmd), "/zxwl/abox/%s/internal/config", vid);
     (void)snprintf(g_cloud.topic_config_resp, sizeof(g_cloud.topic_config_resp), "/zxwl/abox/%s/internal/config/resp", vid);
     (void)snprintf(g_cloud.topic_ota_cmd, sizeof(g_cloud.topic_ota_cmd), "/zxwl/abox/%s/internal/ota", vid);
     (void)snprintf(g_cloud.topic_ota_resp, sizeof(g_cloud.topic_ota_resp), "/zxwl/abox/%s/internal/ota/resp", vid);
     (void)snprintf(g_cloud.topic_log, sizeof(g_cloud.topic_log), "/zxwl/abox/%s/internal/log", vid);
-    (void)snprintf(g_cloud.topic_control_cmd, sizeof(g_cloud.topic_control_cmd), "/zxwl/abox/%s/request", vid);
-    (void)snprintf(g_cloud.topic_control_resp, sizeof(g_cloud.topic_control_resp), "/zxwl/abox/%s/response", vid);
     subscriptions[0] = g_cloud.topic_config_cmd;
     subscriptions[1] = g_cloud.topic_ota_cmd;
     subscriptions[2] = g_cloud.topic_control_cmd;
@@ -131,16 +142,12 @@ void CloudService_Init(void)
         CloudMessages_CopyString(mqtt.password, sizeof(mqtt.password), cfg->mqtt_password);
         CloudMessages_CopyString(mqtt.client_id, sizeof(mqtt.client_id), cfg->vid);
         if (!PatrolMqttConfig_FromV5(cfg, &runtime)) g_cloud.config_ready = 0U;
-        (void)snprintf(g_cloud.topic_heartbeat, sizeof(g_cloud.topic_heartbeat), "/zxwl/abox/%s/heartbeat", cfg->vid);
-        (void)snprintf(g_cloud.topic_manifest, sizeof(g_cloud.topic_manifest), "/zxwl/abox/%s/manifest", cfg->vid);
-        (void)snprintf(g_cloud.topic_status_report, sizeof(g_cloud.topic_status_report), "/zxwl/abox/%s/report", cfg->vid);
+        if (!build_public_topics(cfg->vid)) g_cloud.config_ready = 0U;
         (void)snprintf(g_cloud.topic_config_cmd, sizeof(g_cloud.topic_config_cmd), "/zxwl/abox/%s/internal/config", cfg->vid);
         (void)snprintf(g_cloud.topic_config_resp, sizeof(g_cloud.topic_config_resp), "/zxwl/abox/%s/internal/config/resp", cfg->vid);
         (void)snprintf(g_cloud.topic_ota_cmd, sizeof(g_cloud.topic_ota_cmd), "/zxwl/abox/%s/internal/ota", cfg->vid);
         (void)snprintf(g_cloud.topic_ota_resp, sizeof(g_cloud.topic_ota_resp), "/zxwl/abox/%s/internal/ota/resp", cfg->vid);
         (void)snprintf(g_cloud.topic_log, sizeof(g_cloud.topic_log), "/zxwl/abox/%s/internal/log", cfg->vid);
-        (void)snprintf(g_cloud.topic_control_cmd, sizeof(g_cloud.topic_control_cmd), "/zxwl/abox/%s/request", cfg->vid);
-        (void)snprintf(g_cloud.topic_control_resp, sizeof(g_cloud.topic_control_resp), "/zxwl/abox/%s/response", cfg->vid);
         CloudMessages_CopyString(mqtt.sub_topics[0], sizeof(mqtt.sub_topics[0]), g_cloud.topic_config_cmd);
         CloudMessages_CopyString(mqtt.sub_topics[1], sizeof(mqtt.sub_topics[1]), g_cloud.topic_ota_cmd);
         CloudMessages_CopyString(mqtt.sub_topics[2], sizeof(mqtt.sub_topics[2]), g_cloud.topic_control_cmd);

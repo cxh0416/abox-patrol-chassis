@@ -28,6 +28,8 @@
 
 正式发布脚本现先运行产品 `artifact_store.py` 的专属校验，再使用 Platform 公共发布器按 `tools/release_contract.json` 检查冻结 Boot、App 向量和上界、版本标记、Manifest/哈希与 Full 精确拼接，并在暂存复核后整体替换 `dist/`。三个产品现有正式包均只读通过该合同校验；公共发布器的失败保留及回滚测试通过，尚未用本候选执行正式发布。最新 Platform 32 项 CTest 和本产品 39 项主机测试通过，ARM Release 构建保持 RAM 61,432/65,536 字节。
 
+当前源码进一步改用 `abox_platform_attach_standard_app` 统一标准板组件接入，并由 `ABoxMqttV4_BuildTopic()` 构造五个公共 Topic；产品 `/internal/*` 合同、Config V5 和运动准入未变。39 项产品主机测试、32 项 Platform CTest 与 ARM Release 构建通过，RAM 仍为 61,432/65,536 字节；这一步未在测试板重刷底盘候选。
+
 先前正式包的 39 项产品主机测试、23 项 Platform CTest、ARM 构建和静态栈门禁已通过；本轮候选仍需后续阶段回归，不能以源码或测试板结果替代正式包证据。
 
 前一轮 0.2.46 通信专项只操作测试板 UID `05DAFF383734525243054363`，J-Link `69730334`，执行时确认 COM11；按用户指示未做刷前备份。测试板已换回当前巡防底盘正式 App，按底盘硬件合同重新入网，旧清扫车凭据已撤销。无真实 CAN 节点，因此平台 VID 任务收到同一 requestId 的响应与落库报告后，明确拒绝轮速反馈不新鲜，未派发改名命令；登录后的页面也显示具体原因。该版直接通信专项完成 plain/TLS 切换、VID 往返、无效候选恢复、重启持久化；重启由平台任务验证 200 REBOOTING、uptime 1307681→17591 ms、业务上线及独立身份查询。底盘单设备 Broker 断线后约 45.5 秒恢复，新业务心跳与独立查询成功；最终 ACL 精确匹配旧身份的 11 条规则，仅底盘当前身份会话在线。通信专项结果和不可变记录见[本轮证据](operations/evidence/2026-09-29-maintenance-transactions/index.json)。平台停车正向路径由隔离主机夹具覆盖，不伪造生产快照。
