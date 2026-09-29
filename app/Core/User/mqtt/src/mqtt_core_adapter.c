@@ -66,17 +66,17 @@ void MQTT_Core_Init(const MQTT_CoreConfig_t *config, MQTT_CoreMsgCallback_t call
 void MQTT_Core_SetAtCore(Ec800AtCore_t *at)
 {
     ABoxMqttEc800Buffers buffers;
-    ABoxMqttEc800BridgeHooks hooks;
+    static const ABoxMqttEc800BridgeHooks hooks = {
+        .message = message,
+        .network_changed = network_changed
+    };
     if (!at) return;
     memset(&buffers, 0, sizeof(buffers));
-    memset(&hooks, 0, sizeof(hooks));
     buffers.header = g_header; buffers.header_capacity = sizeof(g_header);
     buffers.topic = g_topic; buffers.topic_capacity = sizeof(g_topic);
     buffers.payload = g_payload; buffers.payload_capacity = sizeof(g_payload);
     buffers.publish_payload = g_outgoing;
     buffers.publish_capacity = sizeof(g_outgoing);
-    hooks.message = message;
-    hooks.network_changed = network_changed;
     if (!ABoxMqttEc800Bridge_Init(&g_bridge, at, &g_transport_config,
                                    &buffers, &hooks,
                                    ABOX_EC800_OWNER_PRODUCT_BASE + 5U,
