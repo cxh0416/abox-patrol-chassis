@@ -241,6 +241,7 @@ void CloudService_Task(void)
     }
     if (!MqttRuntime_IsReady()) {
         ABoxCloudBootstrap_SetReady(&g_cloud.cloud_bootstrap, 0);
+        ABoxCloudTxTracker_SetReady(&g_cloud.tx, 0);
         g_cloud.mqtt_was_ready = 0U;
         return;
     }
@@ -261,6 +262,7 @@ void CloudService_Task(void)
         return;
     }
     ready = MQTT_Core_IsReady();
+    ABoxCloudTxTracker_SetReady(&g_cloud.tx, ready);
     if (ready && !g_cloud.mqtt_was_ready)
     {
         ABoxCloudBootstrap_SetReady(&g_cloud.cloud_bootstrap, 1);

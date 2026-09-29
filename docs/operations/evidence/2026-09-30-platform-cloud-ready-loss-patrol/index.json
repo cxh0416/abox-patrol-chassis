@@ -1,0 +1,85 @@
+{
+  "scope": "patrol_cloud_publish_ready_loss_standard_board",
+  "date": "2026-09-30",
+  "uid": "05DAFF383734525243054363",
+  "jlink_serial": "69730334",
+  "candidate_version": "patrol-chassis-0.2.48-cp6",
+  "app_sha256": "E1AE260E9D02D1DB5571B17B2CE245110B8273D968C4F7119501A0143BAD3CB1",
+  "platform_commit": "9201741",
+  "frozen_boot_sha256": "981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63",
+  "actuation_enabled": false,
+  "power_output_enabled": false,
+  "enrollment_request_id": "da65fa7f-9379-4ed9-bf17-1e3c799595f1",
+  "enrollment_state": "verified",
+  "get_info_code": "200",
+  "get_info_mqtt": "READY",
+  "sync_state_response_before_correlated_report": true,
+  "bootstrap_order_after_broker_kick": [
+    "manifest",
+    "heartbeat",
+    "report"
+  ],
+  "limits": "Broker kick is not full cellular outage or injected late PUBACK. No real CAN, actuator, mechanical feedback, OTA install or production release validation.",
+  "files": [
+    {
+      "path": "flash.jlink",
+      "bytes": 859,
+      "sha256": "31DF7DAE59D1AE51C89448F72E45101C5A60AECD7AD83A331E836C23BD05D7B5"
+    },
+    {
+      "path": "flash.stdout.log",
+      "bytes": 7687,
+      "sha256": "2B3F9AF164A8A45AF49EA68AA0E86FCC5707D778E3BD2BD8338A0D7577715738"
+    },
+    {
+      "path": "state-a.bin",
+      "bytes": 2048,
+      "sha256": "66872FFE23E03E9303FD91B4284F8D64D0AFE43AB5296C1C199126003B2077D9"
+    },
+    {
+      "path": "state-b.bin",
+      "bytes": 2048,
+      "sha256": "D0FF1B294B5288D1AE1421EADF5B2D38A8752B76D472FF30BED9028E25B1C5B8"
+    },
+    {
+      "path": "enrollment-inspect.json",
+      "bytes": 266,
+      "sha256": "CBCF4050C0D3C34576FFAC77A35512487C784DF7A29CBF787557AB0B76FE36E8"
+    },
+    {
+      "path": "enrollment-approved.json",
+      "bytes": 140,
+      "sha256": "150F339C33C1D098C6A082EC8463D166A76067745AD2B5B1C187D1A485523B32"
+    },
+    {
+      "path": "enrollment-result.json",
+      "bytes": 267,
+      "sha256": "14FFA545F637B229F6651CC014D23B8DFE37FBF7A85EAB0329A92330FD95FF6A"
+    },
+    {
+      "path": "get-info-id.txt",
+      "bytes": 38,
+      "sha256": "0BAADE563157EC4789B499057E9880DBB93882AABF4CCA09B6E4AE4BF77EDF3F"
+    },
+    {
+      "path": "get-info.json",
+      "bytes": 301,
+      "sha256": "AA09D650C1F14C2B345C11A0DF1E11BEF96E647308F67EC17927DF88E1331392"
+    },
+    {
+      "path": "sync-state.json",
+      "bytes": 234,
+      "sha256": "471BA4FB6CDBC46A9184106BDC973EED0683A0F95C7BC190349F3267823FF2E6"
+    },
+    {
+      "path": "bootstrap-observed.json",
+      "bytes": 2915,
+      "sha256": "1B79C19045447CFEB6D112E32C475CD8627DD7F61AF005884A96B41F952AC4AD"
+    },
+    {
+      "path": "host-tests-cp6.log",
+      "bytes": 11076,
+      "sha256": "C5C133965F48082D06C89A375558D9B55751E6F1BABA5C9404BE2B541A0A4386"
+    }
+  ]
+}
