@@ -70,7 +70,7 @@ typedef struct {
     char topic_control_cmd[CLOUD_TOPIC_SIZE];
     char topic_control_resp[CLOUD_TOPIC_SIZE];
     ABoxCloudBootstrap cloud_bootstrap;
-    uint32_t cloud_publish_generation;
+    ABoxCloudTxTracker tx;
 
     uint8_t initialized;
     uint8_t config_ready;
@@ -90,8 +90,6 @@ typedef struct {
     uint32_t iccid_due;
     uint32_t ota_begin_due;
 
-    CloudTxKind_t tx_kind;
-    uint64_t tx_operation;
     char tx_payload[CLOUD_PAYLOAD_SIZE];
 
     uint8_t response_pending;

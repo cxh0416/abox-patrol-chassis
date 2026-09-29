@@ -6,6 +6,7 @@ static void drain(void)
 }
 int main(void)
 {
+    assert(ABoxCloudTxTracker_Init(&g_cloud.tx));
     drain();
     assert(status_packets == 1 && heartbeat_packets == 1);
     tick = 4999; drain();
@@ -73,38 +74,41 @@ int main(void)
     CloudTx_Service();
     assert(last_kind == CLOUD_TX_RESPONSE);
     drain();
-    g_cloud.tx_kind = CLOUD_TX_HEARTBEAT;
-    g_cloud.tx_operation = pub_operation;
+    assert(ABoxCloudTxTracker_Begin(&g_cloud.tx, CLOUD_TX_HEARTBEAT,
+                                    pub_operation));
     pub_result = ABOX_MQTT_RECEIPT_FAILED;
     publish_active = 0;
     connected = 1;
     CloudTx_Service();
-    assert(reconnect_count == 1 && g_cloud.tx_kind == CLOUD_TX_NONE);
+    assert(reconnect_count == 1 && !g_cloud.tx.kind);
     /* A receipt from a different operation must not complete a response. */
     g_cloud.response_pending = 1;
     CloudTx_Service();
-    assert(g_cloud.tx_kind == CLOUD_TX_RESPONSE);
+    assert(g_cloud.tx.kind == CLOUD_TX_RESPONSE);
     int cached_before_stale = cached_responses;
     pub_operation++;
     pub_result = ABOX_MQTT_RECEIPT_CONFIRMED;
     publish_active = 0;
     CloudTx_Service();
     assert(g_cloud.response_pending && cached_responses == cached_before_stale);
-    assert(reconnect_count == 2 && g_cloud.tx_kind == CLOUD_TX_NONE);
+    assert(reconnect_count == 2 && !g_cloud.tx.kind);
     /* Product bootstrap uses the bounded Platform cursor; a late receipt
      * from an old connection cannot advance the new Manifest stage. */
     memset(&g_cloud, 0, sizeof(g_cloud));
     assert(ABoxCloudBootstrap_Init(&g_cloud.cloud_bootstrap));
+    assert(ABoxCloudTxTracker_Init(&g_cloud.tx));
     tick = 0U;
     connected = 1U;
     g_cloud.heartbeat_due = 10000U;
     g_cloud.status_report_due = 10000U;
     ABoxCloudBootstrap_SetReady(&g_cloud.cloud_bootstrap, 1);
     CloudTx_Service();
-    assert(last_kind == CLOUD_TX_MANIFEST && g_cloud.tx_kind == CLOUD_TX_MANIFEST);
-    uint32_t old_generation = g_cloud.cloud_publish_generation;
-    uint64_t old_operation = g_cloud.tx_operation;
+    assert(last_kind == CLOUD_TX_MANIFEST && g_cloud.tx.kind == CLOUD_TX_MANIFEST);
+    uint32_t old_generation = g_cloud.cloud_bootstrap.generation;
+    uint64_t old_operation = g_cloud.tx.operation;
     CloudTx_NetworkChanged();
+    assert(ABoxCloudTxTracker_Receipt(&g_cloud.tx, old_generation,
+                                      old_operation, 1, 0) == ABOX_CLOUD_TX_IGNORED);
     assert(ABoxCloudBootstrap_Receipt(&g_cloud.cloud_bootstrap, old_generation,
                                       old_operation, 1) == ABOX_CLOUD_JOB_NONE);
     ABoxCloudBootstrap_SetReady(&g_cloud.cloud_bootstrap, 1);

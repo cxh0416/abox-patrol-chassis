@@ -36,6 +36,8 @@
 
 `patrol-chassis-0.2.48-cp4` 又将标准板 STM32 UID 与冻结 Boot 描述符读取交给 Platform Hardware Port，产品仍提供 VID 判据、fallback 前缀、专属 hardwareContract、App 版本与 Config V5 codec。39 项产品主机测试、Platform 34 项 CTest 和 ARM Release 构建通过，RAM 仍为 61,432 字节。共享测试板在执行器、车辆电源及只读 CAN 诊断均关闭的构建下刷入匹配 App/State，擦除测试 Config V5 与恢复页后重新入网；底盘专属请求达到 verified，独立 `get_info` 返回 200、MQTT READY、OTA ready。原始证据见[标准硬件身份实板记录](operations/evidence/2026-09-29-platform-enrollment-identity-patrol/index.json)。测试板当时运行 cp4；正式 `dist/`、Config V5 ABI 和冻结 Boot 未变。
 
+`patrol-chassis-0.2.48-cp5` 将产品 TX 的发布类型、operation 和连接代次交给 Platform 紧凑跟踪器；产品仍决定动态遥测、响应、心跳证明、日志和运动安全语义。39 项产品主机测试、Platform 34 项 CTest、ARM Release 与静态栈门禁通过，RAM 61,432/65,536 字节。标准测试板刷入匹配 App/State，擦除测试 Config V5 与恢复页后按底盘合同重新入网并达到 verified；独立 `get_info` 为 200/READY/OTA ready。`sync_state` 先响应再上报同 requestId 状态；Broker 踢线后观察到 Manifest → Heartbeat → `chassis_status`，随后心跳继续。App、冻结 Boot 哈希和原始记录见[紧凑 TX 跟踪实板证据](operations/evidence/2026-09-30-platform-cloud-tx-tracker-patrol/index.json)。本构建禁用执行器与车辆电源输出；Broker 踢线不等于完整蜂窝断网或真实迟到 PUBACK 注入，未验证车辆 CAN、机械反馈与 OTA 安装；正式 `dist/` 未替换。
+
 先前正式包的 39 项产品主机测试、23 项 Platform CTest、ARM 构建和静态栈门禁已通过；本轮候选仍需后续阶段回归，不能以源码或测试板结果替代正式包证据。
 
 前一轮 0.2.46 通信专项只操作测试板 UID `05DAFF383734525243054363`，J-Link `69730334`，执行时确认 COM11；按用户指示未做刷前备份。当次测试结束时曾换回巡防底盘正式 App，按底盘硬件合同重新入网并撤销旧清扫车凭据；此后测试板又切换为上文所述 cp2 候选。无真实 CAN 节点，因此平台 VID 任务收到同一 requestId 的响应与落库报告后，明确拒绝轮速反馈不新鲜，未派发改名命令；登录后的页面也显示具体原因。该版直接通信专项完成 plain/TLS 切换、VID 往返、无效候选恢复、重启持久化；重启由平台任务验证 200 REBOOTING、uptime 1307681→17591 ms、业务上线及独立身份查询。底盘单设备 Broker 断线后约 45.5 秒恢复，新业务心跳与独立查询成功；最终 ACL 精确匹配旧身份的 11 条规则，仅底盘当前身份会话在线。通信专项结果和不可变记录见[本轮证据](operations/evidence/2026-09-29-maintenance-transactions/index.json)。平台停车正向路径由隔离主机夹具覆盖，不伪造生产快照。

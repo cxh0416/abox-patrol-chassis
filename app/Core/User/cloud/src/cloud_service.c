@@ -110,9 +110,8 @@ void CloudService_Init(void)
     memset(&mqtt, 0, sizeof(mqtt));
     (void)ABoxEc800Rx_Init(&g_cloud.ec800_rx, g_cloud.uart_dma, sizeof(g_cloud.uart_dma),
                            g_cloud.rx_ring, sizeof(g_cloud.rx_ring));
-    g_cloud.tx_kind = CLOUD_TX_NONE;
+    (void)ABoxCloudTxTracker_Init(&g_cloud.tx);
     (void)ABoxCloudBootstrap_Init(&g_cloud.cloud_bootstrap);
-    g_cloud.cloud_publish_generation = 0U;
     g_cloud.response_pending = 0U;
     g_cloud.log_active = 0U;
     g_cloud.alert_pending = 0U;
@@ -279,7 +278,7 @@ void CloudService_Task(void)
     CloudTx_Service();
 #if PATROL_CHASSIS_MQTT_LAB_TEST
     if (g_cloud.modem_restart_pending && !g_cloud.response_pending &&
-        g_cloud.tx_kind != CLOUD_TX_RESPONSE) {
+        g_cloud.tx.kind != CLOUD_TX_RESPONSE) {
         g_cloud.modem_restart_pending = 0U;
         g_modem_recovery_due = HAL_GetTick() + 120000U;
         CloudTx_NetworkChanged();

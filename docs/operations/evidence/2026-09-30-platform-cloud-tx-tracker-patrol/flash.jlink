@@ -1,0 +1,18 @@
+device STM32F105RC
+if SWD
+speed 4000
+RSetType 3
+connect
+h
+loadbin "F:\work\A-Box\Patrol_Vehicle_Chassis\app\build\BenchSteering\Patrol_Vehicle_Chassis_App.bin", 0x08008000
+verifybin "F:\work\A-Box\Patrol_Vehicle_Chassis\app\build\BenchSteering\Patrol_Vehicle_Chassis_App.bin", 0x08008000
+loadbin "F:\work\A-Box\Patrol_Vehicle_Chassis\out\logs\platform-cloud-tx-tracker\state-a.bin", 0x0803E800
+verifybin "F:\work\A-Box\Patrol_Vehicle_Chassis\out\logs\platform-cloud-tx-tracker\state-a.bin", 0x0803E800
+loadbin "F:\work\A-Box\Patrol_Vehicle_Chassis\out\logs\platform-cloud-tx-tracker\state-b.bin", 0x0803F000
+verifybin "F:\work\A-Box\Patrol_Vehicle_Chassis\out\logs\platform-cloud-tx-tracker\state-b.bin", 0x0803F000
+erase 0x0803E000 0x0803E7FF
+erase 0x0803F800 0x0803FFFF
+verifybin "F:\work\A-Box\Patrol_Vehicle_Chassis\dist\ABox_Boot.bin", 0x08000000
+r
+g
+qc
