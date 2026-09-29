@@ -1,58 +1,32 @@
 #include "mqtt_core.h"
 
-#include "abox_mqtt_ec800.h"
-#include "abox_ec800_iccid.h"
-#include "abox_mqtt_receipt.h"
+#include "abox_mqtt_ec800_bridge.h"
 #include "app_log.h"
 #include "main.h"
-#include <stdio.h>
 #include <string.h>
 
-/* Product identity and Topic storage stay here. Connection, AT command
- * progression and RX framing are owned by ABoxMqttEc800. */
+/* Legacy MQTT_Core API for the product. The standard EC800 session, receipt,
+ * ICCID and workspace lifecycle are owned by Platform. */
 enum { TOPIC_CAPACITY = 128U, PAYLOAD_CAPACITY = 1152U };
 static MQTT_CoreConfig_t g_config;
-static ABoxMqttEc800 g_transport;
-static ABoxMqttReceipt g_receipt;
+static ABoxMqttEc800Bridge g_bridge;
 static ABoxMqttEc800Config g_transport_config;
 static const char *g_subscriptions[4];
-static Ec800AtCore_t *g_at;
 static MQTT_CoreMsgCallback_t g_message;
+static void (*g_network_changed)(void);
 static uint8_t g_header[192], g_topic[TOPIC_CAPACITY];
 static uint8_t g_payload[PAYLOAD_CAPACITY], g_outgoing[1536U];
-static ABoxEc800Iccid g_iccid;
-static uint32_t g_publish_ok;
-static uint8_t g_initialized, g_security_ready, g_paused;
-static void (*g_network_changed)(void);
-static ABoxMqttEc800State g_last_state;
 
-static void message(void *user, const uint8_t *topic, size_t topic_length,
-                    const uint8_t *payload, size_t payload_length)
+static void message(void *context, const char *topic, const char *payload)
 {
-    (void)user;
-    if (!g_message || topic_length >= sizeof(g_topic) ||
-        payload_length >= sizeof(g_payload) ||
-        memchr(topic, 0, topic_length) || memchr(payload, 0, payload_length))
-        return;
-    g_topic[topic_length] = 0;
-    g_payload[payload_length] = 0;
-    g_message((const char *)topic, (const char *)payload);
+    (void)context;
+    if (g_message) g_message(topic, payload);
 }
 
-static void publish_event(void *user, uint64_t operation,
-                          ABoxMqttEc800PublishEvent event)
+static void network_changed(void *context)
 {
-    (void)user;
-    ABoxMqttReceipt_OnEvent(&g_receipt, operation, event);
-    if (event == ABOX_MQTT_EC800_PUBLISH_CONFIRMED) ++g_publish_ok;
-}
-static void state_changed(void *user, ABoxMqttEc800State state)
-{
-    (void)user;
-    if (g_last_state == ABOX_MQTT_EC800_READY &&
-        state != ABOX_MQTT_EC800_READY && g_network_changed)
-        g_network_changed();
-    g_last_state = state;
+    (void)context;
+    if (g_network_changed) g_network_changed();
 }
 
 static void build_config(void)
@@ -84,80 +58,56 @@ void MQTT_Core_Init(const MQTT_CoreConfig_t *config, MQTT_CoreMsgCallback_t call
     memset(&g_config, 0, sizeof(g_config));
     if (config) g_config = *config;
     g_message = callback;
-    memset(&g_iccid, 0, sizeof(g_iccid));
-    g_publish_ok = 0U;
-    ABoxMqttReceipt_Init(&g_receipt);
-    g_security_ready = g_paused = g_initialized = 0U;
-    g_last_state = ABOX_MQTT_EC800_IDLE;
+    g_network_changed = 0;
+    memset(&g_bridge, 0, sizeof(g_bridge));
     build_config();
 }
 
 void MQTT_Core_SetAtCore(Ec800AtCore_t *at)
 {
     ABoxMqttEc800Buffers buffers;
-    ABoxMqttEc800Callbacks callbacks;
+    ABoxMqttEc800BridgeHooks hooks;
     if (!at) return;
-    g_at = at;
     memset(&buffers, 0, sizeof(buffers));
-    memset(&callbacks, 0, sizeof(callbacks));
+    memset(&hooks, 0, sizeof(hooks));
     buffers.header = g_header; buffers.header_capacity = sizeof(g_header);
     buffers.topic = g_topic; buffers.topic_capacity = sizeof(g_topic);
     buffers.payload = g_payload; buffers.payload_capacity = sizeof(g_payload);
     buffers.publish_payload = g_outgoing;
     buffers.publish_capacity = sizeof(g_outgoing);
-    callbacks.message = message;
-    callbacks.publish_event = publish_event;
-    callbacks.state_changed = state_changed;
-    if (!ABoxMqttEc800_Init(&g_transport, at, &g_transport_config,
-                            &buffers, &callbacks, HAL_GetTick()) ||
-        !ABoxEc800Iccid_Init(&g_iccid, at,
-                             ABOX_EC800_OWNER_PRODUCT_BASE + 5U)) {
+    hooks.message = message;
+    hooks.network_changed = network_changed;
+    if (!ABoxMqttEc800Bridge_Init(&g_bridge, at, &g_transport_config,
+                                   &buffers, &hooks,
+                                   ABOX_EC800_OWNER_PRODUCT_BASE + 5U,
+                                   HAL_GetTick()))
         APP_LOGE("MQTT", "public transport init failed");
-        return;
-    }
-    g_initialized = 1U;
 }
 
 void MQTT_Core_Reset(void)
 {
-    if (!g_initialized) return;
-    ABoxMqttReceipt_Invalidate(&g_receipt);
-    ABoxMqttEc800_OnModemReset(&g_transport, HAL_GetTick());
-    ABoxEc800Iccid_OnModemReset(&g_iccid);
+    ABoxMqttEc800Bridge_OnModemReset(&g_bridge, HAL_GetTick());
 }
 
 void MQTT_Core_Task(void)
 {
-    if (!g_initialized) return;
-    ABoxMqttEc800_Poll(&g_transport, HAL_GetTick());
-    ABoxEc800Iccid_Poll(&g_iccid, HAL_GetTick());
+    ABoxMqttEc800Bridge_Poll(&g_bridge, HAL_GetTick());
 }
 
 void MQTT_Core_RequestReconnect(void)
 {
-    if (g_initialized)
-        ABoxMqttEc800_RequestReconnect(&g_transport, HAL_GetTick());
+    if (g_bridge.initialized)
+        ABoxMqttEc800_RequestReconnect(&g_bridge.transport, HAL_GetTick());
 }
 void MQTT_Core_ForceReconnect(void) { MQTT_Core_RequestReconnect(); }
 
 void MQTT_Core_SetPaused(uint8_t paused)
 {
-    g_paused = paused ? 1U : 0U;
-    if (!g_initialized) return;
-    ABoxMqttEc800_SetPausedSoft(&g_transport, g_paused);
-    if (!g_paused && g_security_ready) {
-        ABoxMqttEc800State state = ABoxMqttEc800_GetState(&g_transport);
-        if (state == ABOX_MQTT_EC800_PAUSED)
-            (void)ABoxMqttEc800_Resume(&g_transport, HAL_GetTick());
-        else if (state == ABOX_MQTT_EC800_IDLE)
-            (void)ABoxMqttEc800_Start(&g_transport, HAL_GetTick());
-    }
+    ABoxMqttEc800Bridge_SetPaused(&g_bridge, paused, HAL_GetTick());
 }
 void MQTT_Core_SetSecurityReady(uint8_t ready)
 {
-    g_security_ready = ready ? 1U : 0U;
-    if (g_initialized)
-        ABoxMqttEc800_SetSecurityReady(&g_transport, g_security_ready);
+    ABoxMqttEc800Bridge_SetSecurityReady(&g_bridge, ready);
 }
 void MQTT_Core_SetNetworkChangedCallback(void (*callback)(void))
 {
@@ -166,18 +116,16 @@ void MQTT_Core_SetNetworkChangedCallback(void (*callback)(void))
 
 int MQTT_Core_Stop(uint32_t now_ms)
 {
-    return g_initialized ? ABoxMqttEc800_Stop(&g_transport, now_ms) : -1;
+    return g_bridge.initialized ?
+        ABoxMqttEc800_Stop(&g_bridge.transport, now_ms) : -1;
 }
 int MQTT_Core_BorrowWorkspace(void)
 {
-    size_t capacity = 0U;
-    return g_initialized &&
-           ABoxMqttEc800_BorrowWorkspace(&g_transport, &capacity) == g_payload &&
-           capacity >= 1024U;
+    return ABoxMqttEc800Bridge_BorrowWorkspace(&g_bridge, 1024U);
 }
 void MQTT_Core_ReturnWorkspace(void)
 {
-    if (g_initialized) (void)ABoxMqttEc800_ReturnWorkspace(&g_transport);
+    ABoxMqttEc800Bridge_ReturnWorkspace(&g_bridge);
 }
 uint8_t *MQTT_Core_OtaWorkspace(uint32_t *capacity)
 {
@@ -205,21 +153,21 @@ void MQTT_Core_UpdateBroker(const char *host, uint16_t port,
 }
 uint8_t MQTT_Core_ApplyRuntimeConfig(const ABoxMqttConfig *config)
 {
-    ABoxMqttEc800State state;
     if (!config || !config->host || !config->username ||
-        !config->password || !config->port || !g_initialized ||
+        !config->password || !config->port || !g_bridge.initialized ||
         strlen(config->host) >= sizeof(g_config.server_host) ||
         strlen(config->username) >= sizeof(g_config.username) ||
         strlen(config->password) >= sizeof(g_config.password))
         return 0U;
-    state = ABoxMqttEc800_GetState(&g_transport);
-    if (state != ABOX_MQTT_EC800_IDLE &&
-        state != ABOX_MQTT_EC800_PAUSED) return 0U;
+    if (ABoxMqttEc800_GetState(&g_bridge.transport) != ABOX_MQTT_EC800_IDLE &&
+        ABoxMqttEc800_GetState(&g_bridge.transport) != ABOX_MQTT_EC800_PAUSED)
+        return 0U;
     MQTT_Core_UpdateBroker(config->host, config->port,
                            config->username, config->password);
     g_config.client_idx = config->tls_enabled ? 1U : 0U;
     build_config();
-    return ABoxMqttEc800_Configure(&g_transport, &g_transport_config);
+    return (uint8_t)ABoxMqttEc800Bridge_Configure(&g_bridge,
+                                                    &g_transport_config);
 }
 uint8_t MQTT_Core_SetClientId(const char *client_id)
 {
@@ -244,21 +192,19 @@ void MQTT_Core_SetTopics(const char *const *topics, uint8_t count,
 }
 uint8_t MQTT_Core_IsReady(void)
 {
-    return g_initialized && ABoxMqttEc800_IsReady(&g_transport);
+    return g_bridge.initialized && ABoxMqttEc800_IsReady(&g_bridge.transport);
 }
 uint8_t MQTT_Core_IsConnected(void)
 {
-    return g_initialized && ABoxMqttEc800_IsConnected(&g_transport);
+    return g_bridge.initialized && ABoxMqttEc800_IsConnected(&g_bridge.transport);
 }
 uint8_t MQTT_Core_CanRunBackgroundAt(void)
 {
-    return MQTT_Core_IsReady() && !g_transport.publish_active &&
-           !ABoxEc800At_IsBusy(g_at) &&
-           !ABoxMqttEc800Rx_IsCollecting(&g_transport.rx);
+    return (uint8_t)ABoxMqttEc800Bridge_CanRunBackgroundAt(&g_bridge);
 }
 MQTT_CoreState_t MQTT_Core_GetState(void)
 {
-    switch (ABoxMqttEc800_GetState(&g_transport)) {
+    switch (ABoxMqttEc800_GetState(&g_bridge.transport)) {
     case ABOX_MQTT_EC800_READY: return MQTT_CORE_ST_READY;
     case ABOX_MQTT_EC800_SUBSCRIBING: return MQTT_CORE_ST_WAIT_SUB;
     case ABOX_MQTT_EC800_CONNECTING: return MQTT_CORE_ST_WAIT_CONN;
@@ -272,9 +218,9 @@ MQTT_CoreState_t MQTT_Core_GetState(void)
 }
 uint8_t MQTT_Core_IsPublishActive(void)
 {
-    return g_initialized && g_transport.publish_active;
+    return g_bridge.initialized && g_bridge.transport.publish_active;
 }
-uint32_t MQTT_Core_GetPubOkSeq(void) { return g_publish_ok; }
+uint32_t MQTT_Core_GetPubOkSeq(void) { return g_bridge.publish_ok; }
 uint8_t MQTT_Core_Publish(const char *topic, const char *payload, uint8_t qos)
 {
     return MQTT_Core_PublishEx(topic, payload, qos, 0U);
@@ -286,42 +232,42 @@ uint8_t MQTT_Core_PublishEx(const char *topic, const char *payload,
     return MQTT_Core_PublishExTracked(topic, payload, qos, retain, &operation);
 }
 uint8_t MQTT_Core_PublishExTracked(const char *topic, const char *payload,
-                                  uint8_t qos, uint8_t retain, uint64_t *operation)
+                                  uint8_t qos, uint8_t retain,
+                                  uint64_t *operation)
 {
-    if (!g_initialized || !topic || !payload || !operation ||
-        g_receipt.status == ABOX_MQTT_RECEIPT_PENDING ||
-        !ABoxMqttEc800_Publish(&g_transport, topic,
-                               (const uint8_t *)payload, strlen(payload),
-                               qos, retain, operation)) return 0U;
-    return (uint8_t)ABoxMqttReceipt_Begin(&g_receipt, *operation);
+    return (uint8_t)ABoxMqttEc800Bridge_Publish(&g_bridge, topic, payload,
+                                                 qos, retain, operation);
 }
 ABoxMqttReceiptStatus MQTT_Core_PublishResult(uint64_t operation)
 {
-    return ABoxMqttReceipt_Get(&g_receipt, operation);
+    return ABoxMqttReceipt_Get(&g_bridge.receipt, operation);
 }
 void MQTT_Core_CancelPendingPublish(void)
 {
-    if (g_initialized) ABoxMqttEc800_CancelPublish(&g_transport);
+    ABoxMqttEc800Bridge_CancelPublish(&g_bridge);
 }
 void MQTT_Core_RequestIccid(void)
 {
-    if (MQTT_Core_CanRunBackgroundAt())
-        (void)ABoxEc800Iccid_Request(&g_iccid, HAL_GetTick());
+    (void)ABoxMqttEc800Bridge_RequestIccid(&g_bridge, HAL_GetTick());
 }
-uint8_t MQTT_Core_IsIccidValid(void) { return g_iccid.valid; }
-const char *MQTT_Core_GetIccid(void) { return ABoxEc800Iccid_Value(&g_iccid); }
-uint8_t MQTT_Core_IsIccidPending(void) { return g_iccid.pending; }
+uint8_t MQTT_Core_IsIccidValid(void) { return g_bridge.iccid.valid; }
+const char *MQTT_Core_GetIccid(void)
+{
+    return ABoxEc800Iccid_Value(&g_bridge.iccid);
+}
+uint8_t MQTT_Core_IsIccidPending(void) { return g_bridge.iccid.pending; }
 uint8_t MQTT_Core_IsRxCollecting(void)
 {
-    return g_initialized && ABoxMqttEc800Rx_IsCollecting(&g_transport.rx);
+    return g_bridge.initialized &&
+           ABoxMqttEc800Rx_IsCollecting(&g_bridge.transport.rx);
 }
 void MQTT_Core_GetRxDiagnostics(MQTT_CoreRxDiagnostics_t *diagnostics)
 {
     ABoxMqttEc800Counters counters;
     if (!diagnostics) return;
     memset(diagnostics, 0, sizeof(*diagnostics));
-    if (!g_initialized) return;
-    ABoxMqttEc800_GetCounters(&g_transport, &counters);
+    if (!g_bridge.initialized) return;
+    ABoxMqttEc800_GetCounters(&g_bridge.transport, &counters);
     diagnostics->decoded_message_count = counters.receive.completed;
     diagnostics->rejected_frame_count = counters.receive.rejected;
     diagnostics->multiline_timeout_count = counters.receive.expired;
