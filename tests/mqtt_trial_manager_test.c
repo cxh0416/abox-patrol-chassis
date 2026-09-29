@@ -51,6 +51,7 @@ static void to_verifying(uint32_t now)
 {
     MqttTrialManager_Accepted(now);
     assert(MqttTrialManager_State() == ABOX_MQTT_TRIAL_PREPARING);
+    MqttTrialManager_Poll(now);
     MqttTrialManager_OnRuntimeState(ABOX_MQTT_RUNTIME_PREPARED, now+1);
     assert(MqttTrialManager_State() == ABOX_MQTT_TRIAL_CONNECTING);
     MqttTrialManager_OnRuntimeState(ABOX_MQTT_RUNTIME_CONNECTED, now+2);
@@ -78,6 +79,7 @@ int main(void)
     assert(MqttTrialManager_Stage(&plain, 13, 200));
     to_verifying(200);
     MqttTrialManager_Cancel(204);
+    MqttTrialManager_Poll(204);
     assert(MqttTrialManager_State() == ABOX_MQTT_TRIAL_RESTORING && restores == 1);
     MqttTrialManager_OnRuntimeState(ABOX_MQTT_RUNTIME_READY, 205);
     MqttTrialManager_OnHeartbeatProof(pub_sequence, 206);
@@ -126,11 +128,13 @@ int main(void)
     fail_save = 1;
     MqttTrialManager_Poll(405);
     assert(MqttTrialManager_State() == ABOX_MQTT_TRIAL_RESTORING);
+    MqttTrialManager_Poll(406);
     assert(strcmp(identity, "NEW") == 0 && strcmp(persisted.vid, "NEW") == 0);
     MqttTrialManager_Init();
     first_stop_result = 0;
     assert(MqttTrialManager_StartEnrollment(&plain, "PATROL-NEW", 500));
     assert(MqttTrialManager_State() == ABOX_MQTT_TRIAL_PREPARING);
+    MqttTrialManager_Poll(500);
     MqttTrialManager_OnRuntimeState(ABOX_MQTT_RUNTIME_PREPARED, 501);
     MqttTrialManager_OnRuntimeState(ABOX_MQTT_RUNTIME_CONNECTED, 502);
     MqttTrialManager_OnRuntimeState(ABOX_MQTT_RUNTIME_READY, 503);
@@ -156,6 +160,7 @@ int main(void)
     MqttTrialManager_Accepted(701);
     runtime_state = ABOX_MQTT_RUNTIME_BLOCKED;
     MqttTrialManager_Poll(702);
+    MqttTrialManager_Poll(703);
     assert(MqttTrialManager_State() == ABOX_MQTT_TRIAL_RESTORE_FAILED);
     assert(strcmp(persisted.vid, "PATROL-NEW") == 0);
     puts("MQTT trial manager: real phases, candidate proof, cancel restore passed");
