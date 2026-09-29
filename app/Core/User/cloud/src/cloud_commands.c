@@ -305,17 +305,13 @@ static __attribute__((noinline)) void handle_public_control(const char* payload)
         cJSON_IsString(command) && strcmp(command->valuestring, "sync_state") == 0 &&
         cJSON_IsString(request_id) && request_id->valuestring[0] != '\0' && cJSON_IsNull(params))
     {
-        char timestamp[21];
-        if (!TimeBase_FormatUtcMs(timestamp, sizeof(timestamp))) strcpy(timestamp, "0");
-        (void)snprintf(response, sizeof(response),
-            "{\"version\":\"4.0\",\"timestamp\":%s,\"data\":{\"requestId\":\"%s\","
-            "\"code\":200,\"msg\":\"state synchronization scheduled\","
-            "\"result\":{\"expectedStates\":[{\"reportName\":\"chassis_status\"}]}}}",
-            timestamp, request_id->valuestring);
-        CloudMessages_CopyString(g_cloud.status_report_request_id,
-                                 sizeof(g_cloud.status_report_request_id), request_id->valuestring);
-        g_cloud.status_report_due = CloudPort_Now();
-        (void)CloudMessages_ScheduleRawResponse(g_cloud.topic_control_resp, response);
+        /* get_info may already have reached the broker while its modem publish
+         * acknowledgement is still pending. Keep the correlated refresh until
+         * both the response slot and the previous status publish are free. */
+        if (g_cloud.sync_state_request_id[0] == '\0' &&
+            strlen(request_id->valuestring) < sizeof(g_cloud.sync_state_request_id))
+            CloudMessages_CopyString(g_cloud.sync_state_request_id,
+                                     sizeof(g_cloud.sync_state_request_id), request_id->valuestring);
         cJSON_Delete(root);
         return;
     }

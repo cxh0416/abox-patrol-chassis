@@ -130,6 +130,16 @@ void CloudTx_Service(void)
         (void)start_publish(CLOUD_TX_RESPONSE, g_cloud.response_topic, g_cloud.response_payload, 1U, 0U);
         return;
     }
+    if (g_cloud.sync_state_request_id[0] != '\0' && g_cloud.status_report_request_id[0] == '\0')
+    {
+        if (CloudMessages_ScheduleSyncResponse(g_cloud.sync_state_request_id)) {
+            CloudMessages_CopyString(g_cloud.status_report_request_id,
+                                     sizeof(g_cloud.status_report_request_id), g_cloud.sync_state_request_id);
+            g_cloud.sync_state_request_id[0] = '\0';
+            g_cloud.status_report_due = now;
+        }
+        return;
+    }
     {
         const char* event_reason = CloudMessages_StatusChangeReason(now);
         if (event_reason != 0)

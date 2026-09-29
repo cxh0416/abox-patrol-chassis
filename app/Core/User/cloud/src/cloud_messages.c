@@ -197,6 +197,18 @@ uint8_t CloudMessages_ScheduleRawResponse(const char* topic, const char* payload
     return 1U;
 }
 
+uint8_t CloudMessages_ScheduleSyncResponse(const char* request_id)
+{
+    char response[320], timestamp[21];
+    if (!TimeBase_FormatUtcMs(timestamp, sizeof(timestamp))) strcpy(timestamp, "0");
+    (void)snprintf(response, sizeof(response),
+        "{\"version\":\"4.0\",\"timestamp\":%s,\"data\":{\"requestId\":\"%s\","
+        "\"code\":200,\"msg\":\"state synchronization scheduled\","
+        "\"result\":{\"expectedStates\":[{\"reportName\":\"chassis_status\"}]}}}",
+        timestamp, request_id);
+    return CloudMessages_ScheduleRawResponse(g_cloud.topic_control_resp, response);
+}
+
 void CloudMessages_BuildInfoResult(char* output, uint16_t size)
 {
     JsonWriter_t writer;

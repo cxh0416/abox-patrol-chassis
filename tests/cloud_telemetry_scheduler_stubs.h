@@ -62,6 +62,10 @@ void CloudMessages_CacheResponse(const char* id, const char* topic, const char* 
 uint8_t CloudMessages_ScheduleResponse(const char* topic, const char* id, uint16_t code,
                                const char* msg, const char* result, uint8_t reboot)
 { (void)topic; (void)id; (void)code; (void)msg; (void)result; (void)reboot; return 1; }
+uint8_t CloudMessages_ScheduleSyncResponse(const char* id)
+{ assert(!g_cloud.response_pending && id[0]); g_cloud.response_pending = 1; return 1; }
+void CloudMessages_CopyString(char* out, uint16_t size, const char* value)
+{ assert(strlen(value) < size); strcpy(out, value); }
 
 static void complete_publish(void)
 {

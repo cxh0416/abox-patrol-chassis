@@ -59,6 +59,20 @@ int main(void)
     complete_publish();
     CloudTx_Service();
     assert(accepted_count == 1 && !g_cloud.mqtt_candidate_pending);
+    drain();
+    /* A sync immediately following get_info survives the previous PUBACK. */
+    g_cloud.response_pending = 1;
+    CloudTx_Service();
+    strcpy(g_cloud.sync_state_request_id, "sync-after-info");
+    CloudTx_Service();
+    assert(g_cloud.sync_state_request_id[0] && !g_cloud.status_report_request_id[0]);
+    complete_publish();
+    CloudTx_Service();
+    assert(!g_cloud.sync_state_request_id[0] && g_cloud.response_pending);
+    assert(!strcmp(g_cloud.status_report_request_id, "sync-after-info"));
+    CloudTx_Service();
+    assert(last_kind == CLOUD_TX_RESPONSE);
+    drain();
     g_cloud.tx_kind = CLOUD_TX_HEARTBEAT;
     g_cloud.tx_start_sequence = pub_sequence;
     publish_active = 0;

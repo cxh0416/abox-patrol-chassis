@@ -82,6 +82,7 @@ typedef struct {
     uint32_t status_report_due;
     uint32_t status_report_sequence;
     char status_report_request_id[CLOUD_REQUEST_ID_SIZE];
+    char sync_state_request_id[CLOUD_REQUEST_ID_SIZE];
     CloudTelemetry telemetry;
     ChassisStatusSnapshot_t status_snapshot;
     uint32_t iccid_due;
@@ -132,6 +133,7 @@ uint8_t CloudMessages_ScheduleResponse(const char* topic, const char* request_id
                                  const char* result_json, uint8_t reboot);
 void CloudMessages_ScheduleSimpleError(const char* topic, const char* request_id, uint16_t code, const char* message);
 uint8_t CloudMessages_ScheduleRawResponse(const char* topic, const char* payload);
+uint8_t CloudMessages_ScheduleSyncResponse(const char* request_id);
 void CloudMessages_BuildInfoResult(char* output, uint16_t size);
 uint8_t CloudMessages_BuildHeartbeat(char* output, uint16_t size);
 uint8_t CloudMessages_BuildManifest(char* output, uint16_t size);
