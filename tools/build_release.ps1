@@ -158,8 +158,12 @@ try {
         }
         $manifestJson = ($manifest | ConvertTo-Json -Depth 6).Replace("`r`n", "`n") + "`n"
         [System.IO.File]::WriteAllText((Join-Path $release 'release.manifest.json'), $manifestJson, [System.Text.UTF8Encoding]::new($false))
-        & python (Join-Path $PSScriptRoot 'artifact_store.py') --root $product --stage $release --destination dist
-        if ($LASTEXITCODE -ne 0) { throw 'Release publication failed; inspect rollback/backup before retrying.' }
+        & python (Join-Path $PSScriptRoot 'artifact_store.py') --root $product --stage $release --destination dist --validate-only
+        if ($LASTEXITCODE -ne 0) { throw 'Patrol release policy validation failed; dist was not replaced.' }
+        & python (Join-Path $platform 'tools/publish_release.py') `
+            --contract (Join-Path $product 'tools/release_contract.json') `
+            --stage $release --product-root $product
+        if ($LASTEXITCODE -ne 0) { throw 'Release publication failed; previous dist was preserved or restored.' }
         Write-Host "Release $version written to $(Join-Path $product 'dist')"
     }
 

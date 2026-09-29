@@ -1,0 +1,21 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "app_name": "Patrol_Vehicle_Chassis_App.bin",
+  "boot_name": "ABox_Boot.bin",
+  "full_name": "Patrol_Vehicle_Chassis_Full.bin",
+  "app_max_size": 221184,
+  "frozen_boot_sha256": "981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63",
+  "version_marker_prefix": "PATROL_VEHICLE_CHASSIS_FW_VERSION=",
+  "manifest_files": ["release.manifest.json"],
+  "manifest_constraints": {
+    "manifest_version": 3,
+    "configuration": "Release",
+    "product_dirty": false,
+    "platform_dirty": false,
+    "startup_motion_permit": false,
+    "app_range": "0x08008000..0x0803DFFF",
+    "config_recovery_page": "0x0803E000",
+    "boot_state_pages": ["0x0803E800", "0x0803F000"],
+    "config_page": "0x0803F800"
+  }
+}

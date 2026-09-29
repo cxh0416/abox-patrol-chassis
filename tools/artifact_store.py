@@ -163,8 +163,12 @@ def main() -> None:
     parser.add_argument("--root", type=Path, required=True)
     parser.add_argument("--stage", type=Path, required=True)
     parser.add_argument("--destination", choices=DESTINATIONS, required=True)
+    parser.add_argument("--validate-only", action="store_true")
     args = parser.parse_args()
-    publish(args.root, args.stage, args.destination)
+    if args.validate_only:
+        validate(args.stage, DESTINATIONS[args.destination])
+    else:
+        publish(args.root, args.stage, args.destination)
 
 
 if __name__ == "__main__":
