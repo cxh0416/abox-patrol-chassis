@@ -1,6 +1,7 @@
 #include "mqtt_trial_manager.h"
 #include "mqtt_trial_persistent.h"
 #include "abox_mqtt_trial_executor.h"
+#include "abox_config_store.h"
 #include <string.h>
 #include "mqtt_core.h"
 #include "mqtt_runtime.h"
@@ -41,6 +42,11 @@ static uint8_t copy_candidate(const ABoxMqttConfig *c)
     g_trial.candidate.username=g_trial.candidate_username;
     g_trial.candidate.password=g_trial.candidate_password;
     return 1;
+}
+static int write_config_snapshot(void *context, const void *snapshot)
+{
+    (void)context;
+    return PatrolConfig_Save((const PatrolRemoteConfigV5_t *)snapshot);
 }
 static int prepare(void*u,uint64_t s,const ABoxMqttConfig*c)
 {
@@ -157,7 +163,8 @@ void MqttTrialManager_Poll(uint32_t now)
         return;
     }
     if(g_trial.trial.state==ABOX_MQTT_TRIAL_COMMITTING){
-        uint8_t saved=1U;
+        static const ABoxConfigStorePort store = {0, write_config_snapshot};
+        ABoxConfigStoreResult result = ABOX_CONFIG_STORE_SAVED;
         if(g_trial.persistent) {
             PatrolRemoteConfigV5_t next=*PatrolConfig_Get();
             memcpy(next.vid,g_trial.candidate_vid,sizeof(next.vid));
@@ -168,11 +175,10 @@ void MqttTrialManager_Poll(uint32_t now)
             next.mqtt_tls_enabled=g_trial.candidate.tls_enabled;
             next.mqtt_tls_profile_id=g_trial.candidate.tls_profile_id;
             if (g_trial.first) next.reserved0=1U;
-            saved=PatrolConfig_Save(&next);
+            result=ABoxConfigStore_Commit(&store,&next,PatrolConfig_Get());
         }
-        if(!saved) {
-            /* A failed readback may follow a partial write. Try to restore the old page. */
-            if (!PatrolConfig_Save(PatrolConfig_Get())) g_trial.flash_restore_failed=1U;
+        if(result!=ABOX_CONFIG_STORE_SAVED) {
+            if(result==ABOX_CONFIG_STORE_RECOVERY_FAILED) g_trial.flash_restore_failed=1U;
             ABoxMqttTrial_Event(&g_trial.trial,g_trial.trial.session,ABOX_MQTT_TRIAL_ERROR,0,now);
         } else {
             ABoxMqttTrial_Event(&g_trial.trial,g_trial.trial.session,ABOX_MQTT_TRIAL_SAVED,0,now);
