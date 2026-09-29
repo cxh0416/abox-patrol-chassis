@@ -8,7 +8,6 @@
 #include "time_base.h"
 #include <string.h>
 #define MQTT_RUNTIME_OWNER (ABOX_EC800_OWNER_PRODUCT_BASE + 4U)
-#define MQTT_RUNTIME_CA_FILE "UFS:ota_ca.pem"
 static ABoxMqttRuntime g_runtime;
 static uint32_t g_runtime_now;
 static void set_paused(void *u, uint8_t v) {
@@ -77,7 +76,8 @@ int MqttRuntime_Init(ABoxEc800At *at, const ABoxMqttConfig *c, uint32_t now) {
   ABoxMqttRuntimePort p;
   ABoxMqttRuntimeOptions o;
   memset(&p, 0, sizeof(p));
-  memset(&o, 0, sizeof(o));
+  ABoxMqttRuntimeOptions_StandardEc800(&o, MQTT_RUNTIME_OWNER,
+                                        PATROL_MQTT_TLS_PROFILE_DEFAULT);
   p.set_paused = set_paused;
   p.set_security_ready = set_security;
   p.apply_config = apply_config;
@@ -91,22 +91,9 @@ int MqttRuntime_Init(ABoxEc800At *at, const ABoxMqttConfig *c, uint32_t now) {
   p.observe_modem_line = observe_line;
   p.before_network_change = revoke;
   p.state_changed = changed;
-  o.owner = MQTT_RUNTIME_OWNER;
-  o.command_timeout_ms = 5000;
-  o.tls_timeout_ms = 30000;
-  o.connect_timeout_ms = 60000;
 #if PATROL_MQTT_TRIAL_FAULT_INJECTION && PATROL_MQTT_TRIAL_FAULT_KIND == 1
   o.subscribe_timeout_ms = 180000;
-#else
-  o.subscribe_timeout_ms = 60000;
 #endif
-  o.ca_file = MQTT_RUNTIME_CA_FILE;
-  o.ca_revision = 1;
-  o.plain_client = 0;
-  o.tls_client = 1;
-  o.tls_context = PATROL_MQTT_TLS_CONTEXT;
-  o.tls_profile_id = PATROL_MQTT_TLS_PROFILE_DEFAULT;
-  o.supported_tls_context_mask = (uint8_t)(1U << PATROL_MQTT_TLS_CONTEXT);
   return ABoxMqttRuntime_Init(&g_runtime, at, &p, &o, c, now);
 }
 int MqttRuntime_StopFirst(void) {

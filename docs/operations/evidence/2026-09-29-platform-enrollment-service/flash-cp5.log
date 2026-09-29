@@ -1,0 +1,147 @@
+SEGGER J-Link Commander V7.94j (Compiled Feb 14 2024 15:37:25)
+DLL version V7.94j, compiled Feb 14 2024 15:36:06
+
+
+J-Link Command File read successfully.
+Processing script file...
+J-Link>device STM32F105RC
+J-Link connection not established yet but required for command.
+Connecting to J-Link via USB...O.K.
+Firmware: J-Link V9 compiled Dec 13 2022 11:14:50
+Hardware version: V9.70
+J-Link uptime (since boot): N/A (Not supported by this model)
+S/N: 69730334
+License(s): RDI, GDB, FlashDL, FlashBP, JFlash
+VTref=3.295V
+J-Link>if SWD
+Selecting SWD as current target interface.
+J-Link>speed 4000
+Selecting 4000 kHz as target interface speed
+J-Link>RSetType 3
+Target connection not established yet but required for command.
+Device "STM32F105RC" selected.
+
+
+Connecting to target via SWD
+InitTarget() start
+SWD selected. Executing JTAG -> SWD switching sequence.
+DAP initialized successfully.
+InitTarget() end - Took 7.10ms
+Found SW-DP with ID 0x1BA01477
+DPv0 detected
+CoreSight SoC-400 or earlier
+Scanning AP map to find all available APs
+AP[1]: Stopped AP scan as end of AP map has been reached
+AP[0]: AHB-AP (IDR: 0x14770011)
+Iterating through AP map to find AHB-AP to use
+AP[0]: Core found
+AP[0]: AHB-AP ROM base: 0xE00FF000
+CPUID register: 0x411FC231. Implementer code: 0x41 (ARM)
+Found Cortex-M3 r1p1, Little endian.
+FPUnit: 6 code (BP) slots and 2 literal slots
+CoreSight components:
+ROMTbl[0] @ E00FF000
+[0][0]: E000E000 CID B105E00D PID 001BB000 SCS
+[0][1]: E0001000 CID B105E00D PID 001BB002 DWT
+[0][2]: E0002000 CID B105E00D PID 000BB003 FPB
+[0][3]: E0000000 CID B105E00D PID 001BB001 ITM
+[0][4]: E0040000 CID B105900D PID 001BB923 TPIU-Lite
+[0][5]: E0041000 CID B105900D PID 101BB924 ETM-M3
+Memory zones:
+  Zone: "Default" Description: Default access mode
+Cortex-M3 identified.
+Reset type CONNECT UNDER RESET: Halts RESET Pin low when connecting to core
+J-Link>connect
+Device "STM32F105RC" selected.
+
+
+Connecting to target via SWD
+InitTarget() start
+SWD selected. Executing JTAG -> SWD switching sequence.
+DAP initialized successfully.
+InitTarget() end - Took 6.54ms
+Found SW-DP with ID 0x1BA01477
+DPv0 detected
+CoreSight SoC-400 or earlier
+AP map detection skipped. Manually configured AP map found.
+AP[0]: AHB-AP (IDR: Not set)
+AP[0]: Core found
+AP[0]: AHB-AP ROM base: 0xE00FF000
+CPUID register: 0x411FC231. Implementer code: 0x41 (ARM)
+Found Cortex-M3 r1p1, Little endian.
+FPUnit: 6 code (BP) slots and 2 literal slots
+CoreSight components:
+ROMTbl[0] @ E00FF000
+[0][0]: E000E000 CID B105E00D PID 001BB000 SCS
+[0][1]: E0001000 CID B105E00D PID 001BB002 DWT
+[0][2]: E0002000 CID B105E00D PID 000BB003 FPB
+[0][3]: E0000000 CID B105E00D PID 001BB001 ITM
+[0][4]: E0040000 CID B105900D PID 001BB923 TPIU-Lite
+[0][5]: E0041000 CID B105900D PID 101BB924 ETM-M3
+Memory zones:
+  Zone: "Default" Description: Default access mode
+Cortex-M3 identified.
+J-Link>h
+PC = 0800B948, CycleCnt = 002536B5
+R0 = 00000000, R1 = A5A5A5A5, R2 = A5A5A5A5, R3 = 00000001
+R4 = 200002C4, R5 = 200002AC, R6 = A5A5A5A5, R7 = 200002C8
+R8 = A5A5A5A5, R9 = A5A5A5A5, R10= A5A5A5A5, R11= A5A5A5A5
+R12= A5A5A5A5
+SP(R13)= 20000F00, MSP= 2000FFE0, PSP= 20000F00, R14(LR) = 0800C8A1
+XPSR = 61000000: APSR = nZCvq, EPSR = 01000000, IPSR = 000 (NoException)
+CFBP = 02000000, CONTROL = 02, FAULTMASK = 00, BASEPRI = 00, PRIMASK = 00
+FPU regs: FPU not enabled / not implemented on connected CPU.
+J-Link>loadbin "F:\work\A-Box\Patrol_Vehicle_Chassis\out\candidates\bench-steering\Patrol_Vehicle_Chassis_App.bin", 0x08008000
+'loadbin': Performing implicit reset & halt of MCU.
+Reset: Halt core after reset via DEMCR.VC_CORERESET.
+Reset: Reset device via AIRCR.SYSRESETREQ.
+Downloading file [F:\work\A-Box\Patrol_Vehicle_Chassis\out\candidates\bench-steering\Patrol_Vehicle_Chassis_App.bin]...
+J-Link: Flash download: Bank 0 @ 0x08000000: 2 ranges affected (124928 bytes)
+J-Link: Flash download: Total: 5.409s (Prepare: 0.082s, Compare: 0.275s, Erase: 1.325s, Program & Verify: 3.675s, Restore: 0.050s)
+J-Link: Flash download: Program & Verify speed: 32 KB/s
+O.K.
+J-Link>verifybin "F:\work\A-Box\Patrol_Vehicle_Chassis\out\candidates\bench-steering\Patrol_Vehicle_Chassis_App.bin", 0x08008000
+Loading binary file F:\work\A-Box\Patrol_Vehicle_Chassis\out\candidates\bench-steering\Patrol_Vehicle_Chassis_App.bin
+Reading 127188 bytes data from target memory @ 0x08008000.
+Verify successful.
+J-Link>loadbin "F:\work\A-Box\Patrol_Vehicle_Chassis\out\logs\onboarding-bench\cp5-state-a.bin", 0x0803E800
+'loadbin': Performing implicit reset & halt of MCU.
+Reset: Halt core after reset via DEMCR.VC_CORERESET.
+Reset: Reset device via AIRCR.SYSRESETREQ.
+Downloading file [F:\work\A-Box\Patrol_Vehicle_Chassis\out\logs\onboarding-bench\cp5-state-a.bin]...
+J-Link: Flash download: Bank 0 @ 0x08000000: 1 range affected (2048 bytes)
+J-Link: Flash download: Total: 0.184s (Prepare: 0.054s, Compare: 0.053s, Erase: 0.025s, Program & Verify: 0.023s, Restore: 0.028s)
+J-Link: Flash download: Program & Verify speed: 87 KB/s
+O.K.
+J-Link>verifybin "F:\work\A-Box\Patrol_Vehicle_Chassis\out\logs\onboarding-bench\cp5-state-a.bin", 0x0803E800
+Loading binary file F:\work\A-Box\Patrol_Vehicle_Chassis\out\logs\onboarding-bench\cp5-state-a.bin
+Reading 2048 bytes data from target memory @ 0x0803E800.
+Verify successful.
+J-Link>loadbin "F:\work\A-Box\Patrol_Vehicle_Chassis\out\logs\onboarding-bench\cp5-state-b.bin", 0x0803F000
+'loadbin': Performing implicit reset & halt of MCU.
+Reset: Halt core after reset via DEMCR.VC_CORERESET.
+Reset: Reset device via AIRCR.SYSRESETREQ.
+Downloading file [F:\work\A-Box\Patrol_Vehicle_Chassis\out\logs\onboarding-bench\cp5-state-b.bin]...
+J-Link: Flash download: Bank 0 @ 0x08000000: Skipped. Contents already match
+O.K.
+J-Link>verifybin "F:\work\A-Box\Patrol_Vehicle_Chassis\out\logs\onboarding-bench\cp5-state-b.bin", 0x0803F000
+Loading binary file F:\work\A-Box\Patrol_Vehicle_Chassis\out\logs\onboarding-bench\cp5-state-b.bin
+Reading 2048 bytes data from target memory @ 0x0803F000.
+Verify successful.
+J-Link>verifybin "F:\work\A-Box\Patrol_Vehicle_Chassis\dist\ABox_Boot.bin", 0x08000000
+Loading binary file F:\work\A-Box\Patrol_Vehicle_Chassis\dist\ABox_Boot.bin
+Reading 32768 bytes data from target memory @ 0x08000000.
+Verify successful.
+J-Link>r
+Reset delay: 0 ms
+Reset type CONNECT UNDER RESET: Halts RESET Pin low when connecting to core
+Reset: Halt core after reset via DEMCR.VC_CORERESET.
+Reset: Reset device via AIRCR.SYSRESETREQ.
+J-Link>g
+Memory map 'after startup completion point' is active
+J-Link>qc
+
+Script processing completed.
+
+OnDisconnectTarget() start
+OnDisconnectTarget() end - Took 456us

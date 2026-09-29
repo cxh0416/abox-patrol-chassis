@@ -1,0 +1,50 @@
+{
+  "scope": "patrol_platform_enrollment_service_test_board",
+  "date": "2026-09-29",
+  "uid": "05DAFF383734525243054363",
+  "jlink_serial": "69730334",
+  "candidate_version": "patrol-chassis-0.2.47-cp5",
+  "candidate_app_sha256": "EA19A6EEB1894D627472E92BD685527C20B83242041766D2099AC48E2AFB6350",
+  "actuation_enabled": false,
+  "enrollment_request_id": "5afa06aa-2da3-4381-a952-783a1299402b",
+  "enrollment_result": "verified",
+  "config_v5_before_sha256": "9d7834342633fd2de46ce1c3dd660eed779fc271118ef720fd410c4ce94b7eae",
+  "config_v5_after_sha256": "cb1dbbd62de6adffa26f65c45c8d9aecff8f9b14fa01f93021d17baa9b4e9f07",
+  "config_v5_magic_offset": 148,
+  "config_v5_version": 5,
+  "config_v5_length": 400,
+  "config_enrolled_flag": 1,
+  "observations": [
+    "J-Link verified candidate App, State A/B and frozen Boot",
+    "Factory-erased test-board Config V5 initiated HTTPS enrollment with explicit Patrol hardware contract",
+    "Approved test-board request reached verified after MQTT candidate proof and Config V5 persistence",
+    "Independent get_info returned 200, READY, ICCID present and OTA ready"
+  ],
+  "limits": "Standard test board only; no vehicle CAN, actuator, mechanical or real OTA install/rollback acceptance.",
+  "files": [
+    {
+      "archive_path": "flash-cp5.log",
+      "original_path": "out/logs/onboarding-bench/flash-cp5.log",
+      "bytes": 6738,
+      "sha256": "617992aa56cf26262ce20b57748ca3a46a825c07522c7268870e16c9bfe0f8c9"
+    },
+    {
+      "archive_path": "cp5-factory-config.log",
+      "original_path": "out/logs/onboarding-bench/cp5-factory-config.log",
+      "bytes": 3138,
+      "sha256": "6fc4238b023d68775b559542512588d3e15cf1edbc2ee9e39ec04843233a53f6"
+    },
+    {
+      "archive_path": "cp5-read-config-after.log",
+      "original_path": "out/logs/onboarding-bench/cp5-read-config-after.log",
+      "bytes": 2780,
+      "sha256": "2c8f47ef42027f5a7cb4d7f101285e768972e25483030b868a0eb2d4c99aa21a"
+    },
+    {
+      "archive_path": "cp5-enrollment-result.json",
+      "original_path": "out/logs/onboarding-bench/cp5-enrollment-result.json",
+      "bytes": 395,
+      "sha256": "60ddda18a747e06eb70de4f3454f2bcac05caa1c252053babc039c452bcbb3a6"
+    }
+  ]
+}

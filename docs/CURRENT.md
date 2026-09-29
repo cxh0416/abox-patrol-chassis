@@ -20,13 +20,13 @@
 
 本次还修复了 get_info 发布确认未完成时 sync_state 响应丢失的竞态：同步请求等待发送槽，响应与关联状态报告均可到达平台。公共 Platform 增加 plain 连接的时钟读取、HTTPS 入网 PDP 准备及会话开始前失败重试。产品信息响应预算为 1536 字节。
 
-源码候选已把底盘入网预期 TLS profile 显式声明为 `0`；公共 Enrollment 仍默认 `1` 以兼容其他产品，TLS 凭据 profile 不符时拒绝进入试连。现行底盘服务端入网合同为明文，此改动的 TLS 凭据路径仅通过主机测试与 ARM 构建，未作为当前实板入网结果。
+源码候选把底盘入网预期 TLS profile 显式声明为 `0`；公共 Enrollment 默认 `1` 兼容其他产品，profile 不符时拒绝试连。现行底盘服务端入网合同为明文；TLS 凭据 profile `0` 路径仍仅有主机与 ARM 证据。
 
 ## 验证证据与现场边界
 
-当前源码候选已接入 Platform 标准 STM32F105/EC800 App Port，Cloud TX 按 MQTT transport operation 精确关联发布完成，App OTA 的 EC800 AT/owner 接线改用 Platform 公共适配器。39 项产品主机测试、25 项 Platform CTest 与 ARM Release/Debug 构建通过。测试板 UID `05DAFF383734525243054363` 上的禁用执行器候选 `patrol-chassis-0.2.47-cp1` 已验证启动、MQTT READY、Manifest 与状态落库、`get_info`、`sync_state`、MCU 重启后重连。另用输出和执行器全部禁用的 Debug 构建 `patrol-chassis-0.2.47-fi2` 实测 RAM-only 候选在证明被丢弃后超时恢复原 plain 链路；模组供电重启和只针对该测试 VID 的 Broker 会话断开后均重新 READY，Config V5 页 SHA256 全程未变。新公共 OTA 接线的禁用运动候选 `patrol-chassis-0.2.47-cp2` 在同一测试板完成启动、Manifest 确认、MQTT READY，独立 `get_info` 返回 `otaReady=true`、`otaProvisioned=true`、Boot V2 描述符有效；配置页哈希未变。未捕获字面 `RDY`，真实迟到 PUBACK、OTA 下载/安装与占用及完整蜂窝断网仍未实板覆盖，因此候选未替换 `dist/`，也未下发 OTA。测试板已恢复到刷写前的 `0.2.46` App/State，重连上线，记录见[正常路径证据](operations/evidence/2026-09-29-cloud-port-stage1/index.json)、[异常路径证据](operations/evidence/2026-09-29-cloud-port-stage1/negative/index.json)和[公共 OTA 接线证据](operations/evidence/2026-09-29-cloud-port-stage1/ota-adapter/index.json)。
+当前源码候选已接入 Platform 标准 STM32F105/EC800 App Port，Cloud TX 按 MQTT transport operation 精确关联发布完成，App OTA 的 EC800 AT/owner 接线改用 Platform 公共适配器。EC800 ICCID、标准 MQTT runtime 参数、Enrollment 身份格式化与 HTTPS/试连编排继续上收。39 项产品主机测试、28 项 Platform CTest 和 ARM 构建通过。测试板 UID `05DAFF383734525243054363` 上的禁用执行器候选 `patrol-chassis-0.2.47-cp1` 验证了启动、MQTT READY、Manifest、`get_info`、`sync_state` 及 MCU 重启；禁用输出的 `fi2` 见证候选证明超时后恢复旧 plain 链路及配置页不变；`cp2` 验证公共 OTA 接线的就绪态。当前 `cp5` 通过擦除测试板配置页重新 HTTPS 入网，服务端请求从 pending 经批准到 verified，候选试连和 Config V5 400 字节持久化完成，独立 `get_info` 返回 READY、ICCID 与 OTA ready。测试板现运行 `cp5`，凭据已由这次测试入网轮换。未捕获字面 `RDY`，真实迟到 PUBACK、OTA 下载/安装与占用及完整蜂窝断网仍未实板覆盖；候选未替换 `dist/`，未下发 OTA。记录见[正常路径](operations/evidence/2026-09-29-cloud-port-stage1/index.json)、[异常路径](operations/evidence/2026-09-29-cloud-port-stage1/negative/index.json)、[OTA 接线](operations/evidence/2026-09-29-cloud-port-stage1/ota-adapter/index.json)和[公共 Enrollment 实板证据](operations/evidence/2026-09-29-platform-enrollment-service/index.json)。
 
-39 项产品主机测试、23 项 Platform CTest、ARM 候选与正式构建、静态栈门禁通过。正式包由暂存目录验证后整体替换 dist，候选与正式 App 哈希一致。
+先前正式包的 39 项产品主机测试、23 项 Platform CTest、ARM 构建和静态栈门禁已通过；本轮候选仍需后续阶段回归，不能以源码或 cp5 测试结果替代正式包证据。
 
 前一轮 0.2.46 通信专项只操作测试板 UID `05DAFF383734525243054363`，J-Link `69730334`，执行时确认 COM11；按用户指示未做刷前备份。测试板已换回当前巡防底盘正式 App，按底盘硬件合同重新入网，旧清扫车凭据已撤销。无真实 CAN 节点，因此平台 VID 任务收到同一 requestId 的响应与落库报告后，明确拒绝轮速反馈不新鲜，未派发改名命令；登录后的页面也显示具体原因。该版直接通信专项完成 plain/TLS 切换、VID 往返、无效候选恢复、重启持久化；重启由平台任务验证 200 REBOOTING、uptime 1307681→17591 ms、业务上线及独立身份查询。底盘单设备 Broker 断线后约 45.5 秒恢复，新业务心跳与独立查询成功；最终 ACL 精确匹配旧身份的 11 条规则，仅底盘当前身份会话在线。通信专项结果和不可变记录见[本轮证据](operations/evidence/2026-09-29-maintenance-transactions/index.json)。平台停车正向路径由隔离主机夹具覆盖，不伪造生产快照。
 

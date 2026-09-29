@@ -1,6 +1,7 @@
 #include "mqtt_core.h"
 
 #include "abox_mqtt_ec800.h"
+#include "abox_ec800_iccid.h"
 #include "abox_mqtt_receipt.h"
 #include "app_log.h"
 #include "main.h"
@@ -19,9 +20,8 @@ static Ec800AtCore_t *g_at;
 static MQTT_CoreMsgCallback_t g_message;
 static uint8_t g_header[192], g_topic[TOPIC_CAPACITY];
 static uint8_t g_payload[PAYLOAD_CAPACITY], g_outgoing[1536U];
-static char g_iccid[32];
-static uint8_t g_iccid_valid, g_iccid_pending;
-static uint32_t g_iccid_started, g_publish_ok;
+static ABoxEc800Iccid g_iccid;
+static uint32_t g_publish_ok;
 static uint8_t g_initialized, g_security_ready, g_paused;
 static void (*g_network_changed)(void);
 static ABoxMqttEc800State g_last_state;
@@ -55,30 +55,6 @@ static void state_changed(void *user, ABoxMqttEc800State state)
     g_last_state = state;
 }
 
-static void iccid_event(ABoxEc800Event kind, const uint8_t *data,
-                        uint16_t length, void *user)
-{
-    const char *prefix = "+QCCID:";
-    size_t i = 0U;
-    (void)user;
-    if (kind != ABOX_EC800_EVENT_LINE || length < 8U ||
-        memcmp(data, prefix, 7U)) return;
-    while (i + 7U < length && (data[i + 7U] == ' ' ||
-           data[i + 7U] == '\t')) ++i;
-    length = (uint16_t)(length - 7U - i);
-    if (!length || length >= sizeof(g_iccid)) return;
-    memcpy(g_iccid, data + 7U + i, length);
-    g_iccid[length] = 0;
-    g_iccid_valid = 1U;
-    g_iccid_pending = 0U;
-}
-
-static void iccid_done(ABoxEc800Result result, void *user)
-{
-    (void)user;
-    if (result != ABOX_EC800_RESULT_OK) g_iccid_pending = 0U;
-}
-
 static void build_config(void)
 {
     uint8_t i;
@@ -108,8 +84,7 @@ void MQTT_Core_Init(const MQTT_CoreConfig_t *config, MQTT_CoreMsgCallback_t call
     memset(&g_config, 0, sizeof(g_config));
     if (config) g_config = *config;
     g_message = callback;
-    g_iccid[0] = 0;
-    g_iccid_valid = g_iccid_pending = 0U;
+    memset(&g_iccid, 0, sizeof(g_iccid));
     g_publish_ok = 0U;
     ABoxMqttReceipt_Init(&g_receipt);
     g_security_ready = g_paused = g_initialized = 0U;
@@ -135,8 +110,8 @@ void MQTT_Core_SetAtCore(Ec800AtCore_t *at)
     callbacks.state_changed = state_changed;
     if (!ABoxMqttEc800_Init(&g_transport, at, &g_transport_config,
                             &buffers, &callbacks, HAL_GetTick()) ||
-        !ABoxEc800At_Register(at, ABOX_EC800_OWNER_PRODUCT_BASE + 5U,
-                             iccid_event, 0)) {
+        !ABoxEc800Iccid_Init(&g_iccid, at,
+                             ABOX_EC800_OWNER_PRODUCT_BASE + 5U)) {
         APP_LOGE("MQTT", "public transport init failed");
         return;
     }
@@ -148,15 +123,14 @@ void MQTT_Core_Reset(void)
     if (!g_initialized) return;
     ABoxMqttReceipt_Invalidate(&g_receipt);
     ABoxMqttEc800_OnModemReset(&g_transport, HAL_GetTick());
-    g_iccid_pending = g_iccid_valid = 0U;
+    ABoxEc800Iccid_OnModemReset(&g_iccid);
 }
 
 void MQTT_Core_Task(void)
 {
     if (!g_initialized) return;
     ABoxMqttEc800_Poll(&g_transport, HAL_GetTick());
-    if (g_iccid_pending && (uint32_t)(HAL_GetTick() - g_iccid_started) > 5000U)
-        g_iccid_pending = 0U;
+    ABoxEc800Iccid_Poll(&g_iccid, HAL_GetTick());
 }
 
 void MQTT_Core_RequestReconnect(void)
@@ -331,17 +305,12 @@ void MQTT_Core_CancelPendingPublish(void)
 }
 void MQTT_Core_RequestIccid(void)
 {
-    if (!MQTT_Core_CanRunBackgroundAt() || g_iccid_pending) return;
-    if (!ABoxEc800At_Submit(g_at, "AT+QCCID",
-                            ABOX_EC800_OWNER_PRODUCT_BASE + 5U,
-                            ABOX_EC800_PRIORITY_NORMAL, 5000U,
-                            iccid_done, 0)) return;
-    g_iccid_pending = 1U;
-    g_iccid_started = HAL_GetTick();
+    if (MQTT_Core_CanRunBackgroundAt())
+        (void)ABoxEc800Iccid_Request(&g_iccid, HAL_GetTick());
 }
-uint8_t MQTT_Core_IsIccidValid(void) { return g_iccid_valid; }
-const char *MQTT_Core_GetIccid(void) { return g_iccid_valid ? g_iccid : 0; }
-uint8_t MQTT_Core_IsIccidPending(void) { return g_iccid_pending; }
+uint8_t MQTT_Core_IsIccidValid(void) { return g_iccid.valid; }
+const char *MQTT_Core_GetIccid(void) { return ABoxEc800Iccid_Value(&g_iccid); }
+uint8_t MQTT_Core_IsIccidPending(void) { return g_iccid.pending; }
 uint8_t MQTT_Core_IsRxCollecting(void)
 {
     return g_initialized && ABoxMqttEc800Rx_IsCollecting(&g_transport.rx);

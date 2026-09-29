@@ -49,6 +49,7 @@ $mqttAdapterTest = Join-Path $hostBuild 'mqtt_adapter_test.exe'
     "$PSScriptRoot\..\platform\components\mqtt\src\abox_mqtt_ec800_rx.c" `
     "$PSScriptRoot\..\platform\components\mqtt\src\abox_mqtt_receipt.c" `
     "$PSScriptRoot\..\platform\components\ec800\src\abox_ec800_at.c" `
+    "$PSScriptRoot\..\platform\components\ec800\src\abox_ec800_iccid.c" `
     -o $mqttAdapterTest
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $mqttAdapterTest
