@@ -10,38 +10,11 @@
 #define MQTT_RUNTIME_OWNER (ABOX_EC800_OWNER_PRODUCT_BASE + 4U)
 static ABoxMqttRuntime g_runtime;
 static uint32_t g_runtime_now;
-static void set_paused(void *u, uint8_t v) {
-  (void)u;
-  MQTT_Core_SetPaused(v);
-}
-static void set_security(void *u, uint8_t v) {
-  (void)u;
-  MQTT_Core_SetSecurityReady(v);
-}
-static int apply_config(void *u, const ABoxMqttConfig *c) {
-  (void)u;
-  return MQTT_Core_ApplyRuntimeConfig(c);
-}
-static void mqtt_task(void *u) {
-  (void)u;
-  MQTT_Core_Task();
-}
-static void mqtt_modem_reset(void *u) {
-  (void)u;
-  MQTT_Core_Reset();
-}
-static int mqtt_stop(void *u, uint32_t now) {
-  (void)u;
-  return MQTT_Core_Stop(now);
-}
-static uint8_t mqtt_ready(void *u) {
-  (void)u;
-  return MQTT_Core_IsReady();
-}
-static uint8_t mqtt_connected(void *u) {
-  (void)u;
-  return MQTT_Core_IsConnected();
-}
+static const ABoxMqttRuntimeCoreApi g_core_api = {
+  MQTT_Core_SetPaused, MQTT_Core_SetSecurityReady,
+  MQTT_Core_ApplyRuntimeConfig, MQTT_Core_Task, MQTT_Core_Reset,
+  MQTT_Core_Stop, MQTT_Core_IsReady, MQTT_Core_IsConnected
+};
 static uint8_t ca_ready(void *u) {
   (void)u;
   return OtaService_IsProvisioned() && !OtaService_IsBusy();
@@ -76,16 +49,9 @@ int MqttRuntime_Init(ABoxEc800At *at, const ABoxMqttConfig *c, uint32_t now) {
   ABoxMqttRuntimePort p;
   ABoxMqttRuntimeOptions o;
   memset(&p, 0, sizeof(p));
+  if (!ABoxMqttRuntimePort_BindCore(&p, &g_core_api)) return 0;
   ABoxMqttRuntimeOptions_StandardEc800(&o, MQTT_RUNTIME_OWNER,
                                         PATROL_MQTT_TLS_PROFILE_DEFAULT);
-  p.set_paused = set_paused;
-  p.set_security_ready = set_security;
-  p.apply_config = apply_config;
-  p.mqtt_task = mqtt_task;
-  p.mqtt_modem_reset = mqtt_modem_reset;
-  p.mqtt_stop = mqtt_stop;
-  p.mqtt_ready = mqtt_ready;
-  p.mqtt_connected = mqtt_connected;
   p.ca_ready = ca_ready;
   p.time_valid = time_valid;
   p.observe_modem_line = observe_line;

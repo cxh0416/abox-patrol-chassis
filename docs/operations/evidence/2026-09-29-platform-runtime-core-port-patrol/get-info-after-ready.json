@@ -1,0 +1,1 @@
+{"error": "", "events": ["", "published get_info", "OK"], "fw_version": "patrol-chassis-0.2.48-cp3", "iccid_present": true, "iccid_valid": null, "id": "dca87e4a-4100-4946-9023-fe56ffbdec7a", "mqtt_state": "READY", "ota_phase": "IDLE", "ota_ready": true, "response_code": "200", "state": "succeeded"}

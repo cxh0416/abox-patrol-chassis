@@ -1,0 +1,55 @@
+{
+  "scope": "patrol_test_board_mqtt_runtime_core_port",
+  "date": "2026-09-29",
+  "uid": "05DAFF383734525243054363",
+  "jlink_serial": "69730334",
+  "platform_commit": "cbb1844",
+  "candidate_version": "patrol-chassis-0.2.48-cp3",
+  "app_sha256": "81E086E7ED54869B85CB4BC7314B104206C4C5F936F71A79487B3F66005C5F3D",
+  "frozen_boot_sha256": "981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63",
+  "actuation_enabled": false,
+  "power_output_enabled": false,
+  "readonly_can_diagnostics_enabled": false,
+  "config_erased": false,
+  "get_info_first": "sent then timed_out during reconnect",
+  "get_info_after_ready": "200 READY OTA ready",
+  "bootstrap_order": [
+    "manifest",
+    "heartbeat",
+    "chassis_status"
+  ],
+  "sync_state": "200 response before correlated chassis_status",
+  "limits": "Broker kick is not complete cellular outage; late PUBACK, sustained OTA occupancy and real vehicle behavior not covered by this record.",
+  "files": [
+    {
+      "path": "flash.jlink",
+      "bytes": 855,
+      "sha256": "EFA4F2BDA2DC9E1499B6D6A0786A283A74DA4BBDE76A7986500FD01EC6788DA1"
+    },
+    {
+      "path": "flash.stdout.log",
+      "bytes": 6826,
+      "sha256": "C47F1420DF264B0872AA251BBFADB87AD7810940A8B3839294E07FEF78237156"
+    },
+    {
+      "path": "get-info-result.json",
+      "bytes": 827,
+      "sha256": "91FCC7FD1F745EEEF11BE3EDA4279FDFDDF41E8D7393AC3213AFAAE7BDE665DD"
+    },
+    {
+      "path": "get-info-after-ready.json",
+      "bytes": 301,
+      "sha256": "12686C3A2839739A36A226040F9D3B625FCC5372015462F5E5FFE9483F64CA1B"
+    },
+    {
+      "path": "bootstrap-observed.json",
+      "bytes": 3449,
+      "sha256": "97FB1BF10D5A40EA659016DD5F12A362F358EF3B83C83949C41EF74ED2277F2C"
+    },
+    {
+      "path": "sync-state.json",
+      "bytes": 234,
+      "sha256": "0FA46E8BBD82A796E99597C44FFF8EA83DCFABD341C58ACE70F75FB5B824629B"
+    }
+  ]
+}
