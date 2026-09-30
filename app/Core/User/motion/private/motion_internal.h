@@ -9,6 +9,7 @@
 #include "bench_steering.h"
 #include "bench_drive.h"
 #include "steering_angle.h"
+#include "patrol_auto_center.h"
 
 typedef enum {
     CENTER_CAL_IDLE = 0,
@@ -136,6 +137,7 @@ typedef struct {
     uint8_t coordinate_reset_requested;
     int32_t coordinate_calibration_center;
     uint32_t coordinate_absolute_center;
+    PatrolAutoCenter auto_center;
 
     CenterCalibration center_cal;
     uint32_t center_cal_serial;

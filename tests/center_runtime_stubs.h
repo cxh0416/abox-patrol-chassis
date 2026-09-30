@@ -15,8 +15,10 @@
 #include "vehicle_steering_profile.h"
 
 uint32_t mock_now;
-uint8_t mock_power, mock_bus_off, mock_ota, mock_permit;
+uint8_t mock_power, mock_bus_off, mock_ota, mock_permit, mock_profile_ready;
 uint8_t mock_can_ready, mock_revoke_before_send, mock_sent;
+uint8_t mock_inhibit_before_send;
+PatrolCanFrame mock_last_frame;
 ChassisControl mock_control;
 PatrolRemoteConfigV5_t mock_config;
 PatrolDiagnosticsSnapshot mock_snapshot;
@@ -24,10 +26,12 @@ uint32_t PatrolRuntimePort_Now(void) { return mock_now; }
 const ChassisControl* RemoteService_State(void) { return &mock_control; }
 void RemoteService_Revoke(void) { mock_control.session_active = 0; mock_control.enable_request = 0; }
 void RemoteService_ExecutionFault(void) { mock_control.fault_latched = 1; }
+#ifndef CENTER_HOST_REAL_CONTROL
 uint8_t ChassisControl_SafetyReady(const ChassisControl* c, uint32_t now)
 { (void)now; return !c->fault_latched && c->feedback.calibrated && c->feedback.power_ready; }
 ChassisStopReason ChassisControl_RuntimeSafetyReason(const ChassisControl* c, uint32_t now)
 { (void)now; return c->fault_latched ? CHASSIS_STOP_EXECUTION_FAULT : CHASSIS_STOP_NONE; }
+#endif
 uint8_t VehiclePowerOutput_IsOn(void) { return mock_power; }
 uint8_t VehiclePowerOutput_Set(uint8_t on) { mock_power = on; return 1; }
 uint8_t PatrolRuntimePort_CanBusOff(void) { return mock_bus_off; }
@@ -51,7 +55,7 @@ void PatrolDiagnostics_OnEncoderCount(PatrolDiagnostics* d, uint32_t c, uint32_t
 void PatrolDiagnostics_OnEncoderError(PatrolDiagnostics* d, PatrolEncoderError e) { (void)d; (void)e; }
 #endif
 const PatrolRemoteConfigV5_t* PatrolConfig_Get(void) { return &mock_config; }
-uint8_t PatrolConfig_SingleTurnProfileReady(void) { return 0; }
+uint8_t PatrolConfig_SingleTurnProfileReady(void) { return mock_profile_ready; }
 uint8_t PatrolConfig_ClearCalibration(void) { return 1; }
 uint8_t PatrolConfig_SetCalibration(int32_t driver, uint32_t encoder, uint32_t dc, uint32_t ec,
     int8_t dd, int8_t ed, uint16_t tolerance)
@@ -68,10 +72,11 @@ uint8_t PatrolRuntimePort_CanTxReady(void)
 {
     /* Model the higher priority safety task revoking a selected command. */
     if (mock_revoke_before_send) RemoteService_Revoke();
+    if (mock_inhibit_before_send) mock_control.auto_center_inhibited = 1U;
     return mock_can_ready;
 }
 uint8_t PatrolRuntimePort_SendCan(const PatrolCanFrame* frame)
-{ (void)frame; mock_sent++; return 1; }
+{ mock_last_frame = *frame; mock_sent++; return 1; }
 
 uint8_t OTA_Info_LoadMotionFault(MotionFaultRecord* r) { (void)r; return 0; }
 uint8_t OTA_Info_SaveMotionFault(const MotionFaultRecord* r) { (void)r; return 1; }

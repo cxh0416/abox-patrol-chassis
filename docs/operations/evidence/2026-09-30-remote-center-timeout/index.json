@@ -1,0 +1,26 @@
+{
+  "kind": "EVIDENCE",
+  "collected_date": "2026-09-30",
+  "timezone": "Asia/Shanghai",
+  "product": "patrol_vehicle_chassis",
+  "vid": "PATROL-05D3FF343733574E43043550",
+  "source_paths": [
+    "server47:/var/lib/device-ota-service/ota.sqlite3",
+    "server47:/var/lib/device-ota-service/chassis-control.sqlite3"
+  ],
+  "files": [
+    {
+      "sha256": "0B28EDEEE8F5582E025950D0BE6E20EAFAF5A22CDD5DFF77C45029AF4EE3D77D",
+      "path": "platform-readonly.jsonl"
+    }
+  ],
+  "scope": "Read-only selected database rows; control publish/response history is not recorded in mqtt_protocol_traces; auth-session hashes excluded.",
+  "observations": [
+    "Device heartbeat reports patrol-chassis-0.2.45; current local dist is 0.2.49 and was not installed by this investigation.",
+    "16:21:36 target zero; 16:21:50 stopReason 10, measured angles -11.392/-11.619 deg.",
+    "16:22:21 session immediately rejected while nodes/feedback were still initializing.",
+    "16:23:14 target zero; 16:23:22 stopReason 10, measured angles 21.451/21.755 deg.",
+    "New fault snapshot sequence 4 preserves reason 10, steering phase/step/fault 4/22/3; subsequent report has output off and reportReason reconnect.",
+    "Receive gaps precede both lease-expiration reports. Exact blocking component is unproven; do not infer browser timeout or hardware success from server acceptance."
+  ]
+}

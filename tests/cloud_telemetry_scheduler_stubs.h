@@ -11,7 +11,7 @@ static uint32_t tick, pub_sequence;
 static uint64_t next_operation, pub_operation;
 static ABoxMqttReceiptStatus pub_result = ABOX_MQTT_RECEIPT_UNKNOWN;
 static ChassisControl control;
-static uint8_t center_active, connected = 1, publish_active;
+static uint8_t center_active, auto_center_active, connected = 1, publish_active;
 static const char* event;
 static int last_kind, last_qos, status_packets, heartbeat_packets, cached_responses;
 static int accepted_count, reconnect_count;
@@ -19,6 +19,7 @@ static int accepted_count, reconnect_count;
 uint32_t CloudPort_Now(void) { return tick; }
 const ChassisControl* RemoteService_State(void) { return &control; }
 uint8_t CenterCalibration_IsActive(void) { return center_active; }
+uint8_t PatrolRuntime_AutoCenterActive(void) { return auto_center_active; }
 uint32_t MQTT_Core_GetPubOkSeq(void) { return pub_sequence; }
 void MqttTrialManager_OnHeartbeatProof(uint32_t publish_sequence, uint32_t now)
 { (void)publish_sequence; (void)now; }

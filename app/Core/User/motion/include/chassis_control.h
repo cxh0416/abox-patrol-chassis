@@ -60,6 +60,7 @@ typedef struct {
     uint8_t zero_confirmations;
     uint8_t enable_request;
     uint8_t fault_latched;
+    uint8_t auto_center_inhibited; /* SAFETY_STOP parks until a new accepted command/power cycle. */
     ChassisStopReason stop_reason;
     ChassisFeedback feedback;
 } ChassisControl;

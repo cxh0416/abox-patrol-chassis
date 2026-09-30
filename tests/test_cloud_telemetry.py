@@ -15,6 +15,7 @@ class TelemetryTests(unittest.TestCase):
             subprocess.run([shutil.which('gcc') or 'gcc', '-std=c11', '-Wall', '-Wextra',
                             '-Werror', *include_args(),
                             '-I' + str(ROOT / 'tests/bench_stubs'),
+                            '-I' + str(ROOT / 'shared/include'),
                             '-I' + str(ROOT / 'app/Core/User/cloud/private'),
                             '-I' + str(ROOT / 'platform/components/core/include'),
                             '-I' + str(ROOT / 'platform/components/ec800/include'),

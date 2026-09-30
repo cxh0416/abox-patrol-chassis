@@ -103,6 +103,7 @@ uint8_t ChassisControl_Apply(ChassisControl* control, const char* action, const 
         uint8_t release = (uint8_t)(!control->session_active ||
             strcmp(control->session_id, session_id) == 0);
         force_stop(control, CHASSIS_STOP_EXPLICIT, release);
+        control->auto_center_inhibited = 1U;
         return 1U;
     }
     if (strcmp(action, "acquire") != 0 && strcmp(action, "renew") != 0) return 0U;
@@ -139,6 +140,7 @@ uint8_t ChassisControl_Apply(ChassisControl* control, const char* action, const 
     }
     steering_boundary(control, steering_mdeg, 1U);
     control->enable_request = 1U;
+    control->auto_center_inhibited = 0U;
     control->stop_reason = CHASSIS_STOP_NONE;
     return 1U;
 }

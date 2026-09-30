@@ -62,6 +62,7 @@ void PatrolRuntime_CaptureFault(uint32_t source, uint32_t reason, uint32_t gates
 void PatrolRuntime_Init(void)
 {
     PatrolDiagnostics_Init(&g_motion.diagnostics);
+    PatrolAutoCenter_Cancel(&g_motion.auto_center);
     memset(&last_fault,0,sizeof(last_fault));
     fault_captured=0; fault_dirty=0;
     fault_storage=OTA_Info_LoadMotionFault(&last_fault) ? 1U : 0U;
@@ -84,6 +85,7 @@ uint8_t PatrolRuntime_ResetFault(void)
     BenchSteering_Init(&g_motion.bench); BenchDrive_Init(&g_motion.drive);
     g_motion.diagnostics.pending_valid=0; g_motion.bench_transport_stopped=0;
     SteeringCoordinate_Reset(&g_motion.coordinate); g_motion.coordinate_reset_requested=0;
+    PatrolAutoCenter_Cancel(&g_motion.auto_center);
     g_motion.center_cal.phase=CENTER_CAL_IDLE; g_motion.center_cal.session_id[0]=0;
     g_motion.center_cal.encoder_write_state=0; g_motion.center_cal.fault=0;
     RemoteService_Init(); /* No permit, enable, target or previous session survives. */
@@ -123,6 +125,7 @@ void PatrolRuntime_OnCanFrame(const PatrolCanFrame* frame, uint32_t now)
 void PatrolRuntime_ApplyReset(uint32_t now)
 {
     if (!VehiclePowerOutput_IsOn()) {
+        PatrolAutoCenter_Cancel(&g_motion.auto_center);
         SteeringCoordinate_Reset(&g_motion.coordinate);
         g_motion.bench.limits_aligned = 0;
     }
@@ -216,6 +219,22 @@ uint8_t PatrolRuntime_Take(uint32_t now, PatrolCanFrame* request, uint8_t* owner
 }
 
 static uint32_t feedback_due;
+
+uint8_t PatrolRuntime_AutoCenterActive(void)
+{
+    uint8_t active;
+    PatrolRuntimePort_Enter(); active = g_motion.auto_center.requested; PatrolRuntimePort_Exit();
+    return active;
+}
+
+static uint8_t auto_center_safe(const ChassisControl* control, uint32_t now)
+{
+    return PATROL_CHASSIS_ACTUATION_ENABLED && PATROL_STEERING_EXECUTOR_ENABLED &&
+        !control->auto_center_inhibited &&
+        !CenterCalibration_IsActive() && g_motion.coordinate.valid && VehiclePowerOutput_IsOn() &&
+        !PatrolRuntimePort_CanBusOffActive() && !PatrolRuntimePort_OtaBusy() &&
+        ChassisControl_SafetyReady(control, now);
+}
 
 void PatrolRuntime_UpdateFeedback(uint32_t now)
 {
@@ -365,10 +384,31 @@ void PatrolRuntime_Tick(void)
          * vehicle while the executor is sending its bounded stop sequence,
          * which turns a successful jog into BENCH_FAULT and cuts power. */
         uint8_t safe = center_executor_active ? center_safe : normal_safe;
-        uint8_t requested = remote_requested || center_requested;
-        int32_t requested_angle = center_requested ? g_motion.center_cal.target_mdeg : c->target_steering_mdeg;
+        uint8_t local_safe = auto_center_safe(c, now);
+        uint8_t local_moving = 0U;
+        if (remote_requested || CenterCalibration_IsActive())
+            PatrolAutoCenter_Cancel(&g_motion.auto_center);
+        else {
+            /* A lost lease revokes remote targets. Local centering owns only
+             * the steering axis and first waits for the drive's verified
+             * zero-speed/disable sequence to finish. SAFETY_STOP stays parked. */
+            if (!g_motion.auto_center.requested && !g_motion.auto_center.failed && local_safe &&
+                (labs(c->feedback.steering_actual_mdeg) > PATROL_AUTO_CENTER_TOLERANCE_MDEG ||
+                 labs(c->feedback.encoder_actual_mdeg) > PATROL_AUTO_CENTER_TOLERANCE_MDEG))
+                PatrolAutoCenter_Request(&g_motion.auto_center, now, c->feedback.steering_actual_mdeg);
+            local_moving = PatrolAutoCenter_Tick(&g_motion.auto_center, now, local_safe,
+                g_motion.drive.phase == BENCH_IDLE, &c->feedback);
+            if (g_motion.auto_center.failed) {
+                RemoteService_ExecutionFault();
+                BenchSteering_Stop(&g_motion.bench, now, 1U);
+            }
+        }
+        uint8_t local_requested = g_motion.auto_center.requested && local_safe;
+        uint8_t requested = remote_requested || center_requested || local_requested;
+        int32_t requested_angle = center_requested ? g_motion.center_cal.target_mdeg :
+            local_requested ? (local_moving ? 0 : g_motion.auto_center.hold_mdeg) : c->target_steering_mdeg;
         if (PATROL_CHASSIS_ACTUATION_ENABLED && PATROL_STEERING_EXECUTOR_ENABLED &&
-            requested && safe && g_motion.bench.phase == BENCH_IDLE) {
+            requested && safe && (!local_requested || local_moving) && g_motion.bench.phase == BENCH_IDLE) {
             if (center_requested)
                 BenchSteering_StartCommissioning(&g_motion.bench, g_motion.diagnostics.steering_position_count,
                     g_motion.center_cal.start_driver_count, VEHICLE_CENTER_COMMISSIONING_LIMIT_MDEG, now);
@@ -392,7 +432,8 @@ void PatrolRuntime_Tick(void)
             (g_motion.bench.phase != BENCH_IDLE && g_motion.bench.phase != BENCH_FAULT) ||
             (g_motion.drive.phase != BENCH_IDLE && g_motion.drive.phase != BENCH_FAULT);
         if (g_motion.bench.phase == BENCH_STOPPING || g_motion.bench.phase == BENCH_FAULT) {
-            if (!CenterCalibration_IsActive()) RemoteService_Revoke();
+            if (!CenterCalibration_IsActive() &&
+                (!remote_requested || !safe || g_motion.bench.phase == BENCH_FAULT)) RemoteService_Revoke();
             if (!g_motion.bench_transport_stopped) {
                 g_motion.diagnostics.pending_valid = 0;
                 PatrolRuntimePort_AbortCanTx();
@@ -425,7 +466,9 @@ void PatrolRuntime_Tick(void)
             (g_motion.bench.phase != BENCH_STOPPING && g_motion.bench.phase != BENCH_IDLE) :
             (g_motion.drive.phase != BENCH_STOPPING && g_motion.drive.phase != BENCH_IDLE)) &&
              (!RemoteService_State()->session_active || !RemoteService_State()->enable_request ||
-              (int32_t)(PatrolRuntimePort_Now() - RemoteService_State()->lease_deadline_ms) >= 0)) {
+              (int32_t)(PatrolRuntimePort_Now() - RemoteService_State()->lease_deadline_ms) >= 0) &&
+             !(bench_frame == 1 && g_motion.auto_center.requested &&
+               auto_center_safe(RemoteService_State(), PatrolRuntimePort_Now()))) {
             BenchSteering_Stop(&g_motion.bench, PatrolRuntimePort_Now(), 0);
             BenchDrive_Stop(&g_motion.drive, PatrolRuntimePort_Now(), 0);
             have_request = 0;

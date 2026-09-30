@@ -5,6 +5,7 @@
 #include "mqtt_trial_manager.h"
 #include "remote_service.h"
 #include "center_calibration.h"
+#include "patrol_runtime.h"
 #include "ota_service.h"
 
 void CloudTx_NetworkChanged(void)
@@ -145,7 +146,7 @@ void CloudTx_Service(void)
     uint32_t now=CloudPort_Now();
     const ChassisControl *control=RemoteService_State();
     if (CloudTelemetry_Update(&g_cloud.telemetry, now,
-            control->session_active || CenterCalibration_IsActive())) {
+            control->session_active || CenterCalibration_IsActive() || PatrolRuntime_AutoCenterActive())) {
         g_cloud.cloud.status_due=now;
         g_cloud.cloud.heartbeat_due=now;
     }

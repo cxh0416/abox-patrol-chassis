@@ -11,6 +11,7 @@ uint8_t PatrolRuntime_FaultStorage(void);
 
 void PatrolRuntime_GetDiagnostics(PatrolDiagnosticsSnapshot* snapshot);
 void PatrolRuntime_Init(void);
+uint8_t PatrolRuntime_AutoCenterActive(void);
 void PatrolRuntime_Tick(void);
 void PatrolRuntime_OnCanFrame(const PatrolCanFrame* frame, uint32_t now);
 uint8_t PatrolRuntime_BeginEncoderCycle(PatrolDiagnosticsSnapshot* snapshot);

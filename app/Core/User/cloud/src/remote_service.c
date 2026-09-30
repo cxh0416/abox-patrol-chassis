@@ -203,6 +203,9 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
                 code = 5001U;
                 message = "power output write failed";
             } else {
+                if (target_on) {
+                    taskENTER_CRITICAL(); g_control.auto_center_inhibited = 0U; taskEXIT_CRITICAL();
+                }
                 accepted = 1U;
                 code = 200U;
                 message = "operation accepted";

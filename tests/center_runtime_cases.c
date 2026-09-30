@@ -3,6 +3,7 @@
 static void reset_fixture(void)
 {
     memset(&g_motion.center_cal, 0, sizeof(g_motion.center_cal));
+    PatrolAutoCenter_Cancel(&g_motion.auto_center);
     memset(&mock_control, 0, sizeof(mock_control));
     memset(&mock_snapshot, 0, sizeof(mock_snapshot));
     memset(&mock_config, 0, sizeof(mock_config));

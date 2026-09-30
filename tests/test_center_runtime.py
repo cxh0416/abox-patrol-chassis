@@ -15,7 +15,7 @@ class CenterRuntimeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory(prefix="patrol-center-host-") as directory:
             binary = Path(directory) / "center_runtime.exe"
             sources = ["center_calibration.c", "patrol_runtime.c", "bench_steering.c",
-                       "bench_drive.c", "steering_angle.c", "patrol_canopen.c"]
+                       "bench_drive.c", "steering_angle.c", "patrol_canopen.c", "patrol_auto_center.c"]
             command = [gcc, "-std=c11", "-Wall", "-Wextra", "-Werror", "-Wno-format",
                        "-ffunction-sections", "-fdata-sections", "-Wl,--gc-sections",
                        "-DPATROL_STEERING_EXECUTOR_ENABLED=1",

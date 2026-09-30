@@ -41,6 +41,9 @@ int main(void)
     control.session_active = 0; center_active = 1;
     tick = 340000; drain(); assert(g_cloud.telemetry.fast);
     center_active = 0; tick = 370000; drain(); assert(!g_cloud.telemetry.fast);
+    /* A locally owned return remains observable without a remote lease. */
+    auto_center_active = 1U; tick = 370001; drain(); assert(g_cloud.telemetry.fast);
+    auto_center_active = 0U; tick = 400001; drain(); assert(!g_cloud.telemetry.fast);
     connected = 0; event = "safety_stop";
     int before = status_packets; drain(); assert(status_packets == before);
     connected = 1; CloudTx_Service(); assert(last_qos == 1 && status_packets == before + 1);
