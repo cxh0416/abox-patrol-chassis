@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "product": "patrol_vehicle_chassis",
-  "version": "patrol-chassis-0.2.50",
+  "version": "patrol-chassis-0.2.51",
   "configuration": "Release",
   "steering_executor_compiled": true,
   "drive_executor_compiled": true,
@@ -17,25 +17,25 @@
     "0x0803F000"
   ],
   "config_page": "0x0803F800",
-  "product_commit": "666afd869c79403e5d2c45432f1a28a4567bb66f",
+  "product_commit": "1d8c3c9b4dec9578a836519c8106fafc23a88b3b",
   "product_dirty": false,
-  "platform_commit": "e06b1bcd339c99b2a66bcb7b6806f108e5acebda",
+  "platform_commit": "62b26893e8f7a94e090f4dbf6936a4d1026df5eb",
   "platform_dirty": false,
   "toolchain": "arm-none-eabi-gcc.exe (Arm GNU Toolchain 14.2.Rel1 (Build arm-14.52)) 14.2.1 20241119",
   "build_options": [
-    "-DPATROL_CHASSIS_APP_VERSION_OVERRIDE=patrol-chassis-0.2.50",
+    "-DPATROL_CHASSIS_APP_VERSION_OVERRIDE=patrol-chassis-0.2.51",
     "-DPATROL_CHASSIS_ACTUATION_ENABLED=ON",
     "-DPATROL_STEERING_EXECUTOR_ENABLED=ON",
     "-DPATROL_DRIVE_EXECUTOR_ENABLED=ON"
   ],
-  "version_marker": "PATROL_VEHICLE_CHASSIS_FW_VERSION=patrol-chassis-0.2.50",
+  "version_marker": "PATROL_VEHICLE_CHASSIS_FW_VERSION=patrol-chassis-0.2.51",
   "flash_ram": {
     "boot": {
       "image_bytes": 32768,
       "source": "platform/targets/stm32f105_abox_boot"
     },
     "app": {
-      "flash_bytes": 133288,
+      "flash_bytes": 138392,
       "ram_bytes": 61432
     },
     "boot_limit_bytes": 32768,
@@ -45,10 +45,10 @@
   "artifacts": [
     {
       "name": "Patrol_Vehicle_Chassis_App.bin",
-      "length": 133288,
+      "length": 138392,
       "load_address": "0x08008000",
-      "crc32": "96AA08D4",
-      "sha256": "3E83A2998D2C547C05B97D844FC3ED385B8549C00C06EFD2AADCEAC50F15B839",
+      "crc32": "8F83CD1C",
+      "sha256": "6A049FF261D8D7B464E9D689DADC5B245D13D1389C131DA9F251A4231DE71EF6",
       "includes_device_config": false,
       "includes_boot_state": false
     },
@@ -63,10 +63,10 @@
     },
     {
       "name": "Patrol_Vehicle_Chassis_Full.bin",
-      "length": 166056,
+      "length": 171160,
       "load_address": "0x08000000",
-      "crc32": "E04F4D45",
-      "sha256": "8BB3941C86FDE98314B417D93AA30DB7487D6D9DCF0A428418006A6E9E156550",
+      "crc32": "3134ADB0",
+      "sha256": "9C324B2229E54987FDCD916A27A79EF2AEA6E2C80DE568234379721C4A8FD9C3",
       "includes_device_config": false,
       "includes_boot_state": false
     }
