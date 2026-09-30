@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "product": "patrol_vehicle_chassis",
-  "version": "patrol-chassis-0.2.49",
+  "version": "patrol-chassis-0.2.50",
   "configuration": "Release",
   "steering_executor_compiled": true,
   "drive_executor_compiled": true,
@@ -17,25 +17,25 @@
     "0x0803F000"
   ],
   "config_page": "0x0803F800",
-  "product_commit": "d9ff6c4db3bc2019139078497ab07fa4d2b58da6",
+  "product_commit": "666afd869c79403e5d2c45432f1a28a4567bb66f",
   "product_dirty": false,
   "platform_commit": "e06b1bcd339c99b2a66bcb7b6806f108e5acebda",
   "platform_dirty": false,
   "toolchain": "arm-none-eabi-gcc.exe (Arm GNU Toolchain 14.2.Rel1 (Build arm-14.52)) 14.2.1 20241119",
   "build_options": [
-    "-DPATROL_CHASSIS_APP_VERSION_OVERRIDE=patrol-chassis-0.2.49",
+    "-DPATROL_CHASSIS_APP_VERSION_OVERRIDE=patrol-chassis-0.2.50",
     "-DPATROL_CHASSIS_ACTUATION_ENABLED=ON",
     "-DPATROL_STEERING_EXECUTOR_ENABLED=ON",
     "-DPATROL_DRIVE_EXECUTOR_ENABLED=ON"
   ],
-  "version_marker": "PATROL_VEHICLE_CHASSIS_FW_VERSION=patrol-chassis-0.2.49",
+  "version_marker": "PATROL_VEHICLE_CHASSIS_FW_VERSION=patrol-chassis-0.2.50",
   "flash_ram": {
     "boot": {
       "image_bytes": 32768,
       "source": "platform/targets/stm32f105_abox_boot"
     },
     "app": {
-      "flash_bytes": 132632,
+      "flash_bytes": 133288,
       "ram_bytes": 61432
     },
     "boot_limit_bytes": 32768,
@@ -45,10 +45,10 @@
   "artifacts": [
     {
       "name": "Patrol_Vehicle_Chassis_App.bin",
-      "length": 132632,
+      "length": 133288,
       "load_address": "0x08008000",
-      "crc32": "F233E498",
-      "sha256": "298DD5EA8CA43EE5A6B0927008C06A5017114DF62DDF512EBDF9BAF591AE41CA",
+      "crc32": "96AA08D4",
+      "sha256": "3E83A2998D2C547C05B97D844FC3ED385B8549C00C06EFD2AADCEAC50F15B839",
       "includes_device_config": false,
       "includes_boot_state": false
     },
@@ -63,10 +63,10 @@
     },
     {
       "name": "Patrol_Vehicle_Chassis_Full.bin",
-      "length": 165400,
+      "length": 166056,
       "load_address": "0x08000000",
-      "crc32": "3F8FBF66",
-      "sha256": "A25A2B9E8BD79C3B02FEB0F63F2143F84E55A3F8CCD2770AD7532C9D56EEB1A9",
+      "crc32": "E04F4D45",
+      "sha256": "8BB3941C86FDE98314B417D93AA30DB7487D6D9DCF0A428418006A6E9E156550",
       "includes_device_config": false,
       "includes_boot_state": false
     }
