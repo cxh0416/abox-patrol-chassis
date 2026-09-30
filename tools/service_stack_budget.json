@@ -1,0 +1,20 @@
+{
+  "stack_bytes": 4096,
+  "reserve_bytes": 1024,
+  "chains": {
+    "maintenance_commit": [
+      "Patrol_RemoteTask",
+      "CloudService_Task",
+      "ABoxAppService_Poll",
+      "app_before_cloud",
+      "MqttTrialManager_Poll",
+      "ABoxMaintenanceService_Commit",
+      "ABoxConfigStore_Commit",
+      "write_config_snapshot",
+      "PatrolConfig_Save",
+      "OTA_Info_SaveRemoteConfig",
+      "ota_info_write_raw",
+      "ota_info_write_raw_unlocked"
+    ]
+  }
+}

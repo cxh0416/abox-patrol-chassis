@@ -272,3 +272,5 @@ void MQTT_Core_GetRxDiagnostics(MQTT_CoreRxDiagnostics_t *diagnostics)
     diagnostics->rejected_frame_count = counters.receive.rejected;
     diagnostics->multiline_timeout_count = counters.receive.expired;
 }
+
+ABoxMqttEc800Bridge *MQTT_Core_Bridge(void) { return &g_bridge; }

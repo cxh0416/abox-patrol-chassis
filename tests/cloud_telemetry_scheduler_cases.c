@@ -6,7 +6,11 @@ static void drain(void)
 }
 int main(void)
 {
-    assert(ABoxCloudTxTracker_Init(&g_cloud.tx));
+    const ABoxCloudServiceOptions options = { CLOUD_IDLE_HEARTBEAT_MS, CLOUD_IDLE_STATUS_MS, 0U };
+    assert(ABoxCloudService_Init(&g_cloud.cloud, &options, 0U));
+    assert(ABoxCloudService_SetSyncStorage(&g_cloud.cloud, g_cloud.pending_sync_request_id,
+                                          sizeof(g_cloud.pending_sync_request_id)));
+    g_cloud.cloud.ready = 1U;
     drain();
     assert(status_packets == 1 && heartbeat_packets == 1);
     tick = 4999; drain();
@@ -42,17 +46,17 @@ int main(void)
     connected = 1; CloudTx_Service(); assert(last_qos == 1 && status_packets == before + 1);
     /* Responses outrank telemetry and remain pending until broker confirmation. */
     drain();
-    g_cloud.response_pending = 1;
+    g_cloud.cloud.response_pending = 1;
     g_cloud.response_reboots = 1;
     CloudTx_Service();
-    assert(last_kind == CLOUD_TX_RESPONSE && g_cloud.response_pending && !g_cloud.reboot_pending);
+    assert(last_kind == CLOUD_TX_RESPONSE && g_cloud.cloud.response_pending && !g_cloud.reboot_pending);
     CloudTx_Service();
-    assert(g_cloud.response_pending && cached_responses == 0);
+    assert(g_cloud.cloud.response_pending && cached_responses == 0);
     complete_publish();
     CloudTx_Service();
-    assert(!g_cloud.response_pending && cached_responses == 1 && g_cloud.reboot_pending);
+    assert(!g_cloud.cloud.response_pending && cached_responses == 1 && g_cloud.reboot_pending);
     assert(g_cloud.reboot_due == tick + CLOUD_REBOOT_DELAY_MS);
-    g_cloud.response_pending = 1;
+    g_cloud.cloud.response_pending = 1;
     g_cloud.response_reboots = 0;
     g_cloud.mqtt_candidate_pending = 1;
     CloudTx_Service();
@@ -62,56 +66,54 @@ int main(void)
     assert(accepted_count == 1 && !g_cloud.mqtt_candidate_pending);
     drain();
     /* A sync immediately following get_info survives the previous PUBACK. */
-    g_cloud.response_pending = 1;
+    g_cloud.cloud.response_pending = 1;
     CloudTx_Service();
-    strcpy(g_cloud.sync_state_request_id, "sync-after-info");
+    strcpy(g_cloud.cloud.pending_sync_request_id, "sync-after-info");
     CloudTx_Service();
-    assert(g_cloud.sync_state_request_id[0] && !g_cloud.status_report_request_id[0]);
+    assert(g_cloud.cloud.pending_sync_request_id[0] && !g_cloud.cloud.sync_pending);
     complete_publish();
     CloudTx_Service();
-    assert(!g_cloud.sync_state_request_id[0] && g_cloud.response_pending);
-    assert(!strcmp(g_cloud.status_report_request_id, "sync-after-info"));
+    assert(!g_cloud.cloud.pending_sync_request_id[0] && g_cloud.cloud.response_pending);
+    assert(!strcmp(g_cloud.cloud.response_request_id, "sync-after-info"));
     CloudTx_Service();
     assert(last_kind == CLOUD_TX_RESPONSE);
     drain();
-    assert(ABoxCloudTxTracker_Begin(&g_cloud.tx, CLOUD_TX_HEARTBEAT,
-                                    pub_operation));
+    assert(ABoxCloudService_BeginExternal(&g_cloud.cloud, pub_operation, tick));
     pub_result = ABOX_MQTT_RECEIPT_FAILED;
     publish_active = 0;
     connected = 1;
     CloudTx_Service();
-    assert(reconnect_count == 1 && !g_cloud.tx.kind);
+    assert(reconnect_count == 1 && !g_cloud.cloud.in_flight);
     /* A receipt from a different operation must not complete a response. */
-    g_cloud.response_pending = 1;
+    g_cloud.cloud.response_pending = 1;
     CloudTx_Service();
-    assert(g_cloud.tx.kind == CLOUD_TX_RESPONSE);
+    assert(g_cloud.cloud.in_flight == ABOX_CLOUD_JOB_RESPONSE);
     int cached_before_stale = cached_responses;
     pub_operation++;
     pub_result = ABOX_MQTT_RECEIPT_CONFIRMED;
     publish_active = 0;
     CloudTx_Service();
-    assert(g_cloud.response_pending && cached_responses == cached_before_stale);
-    assert(reconnect_count == 2 && !g_cloud.tx.kind);
+    assert(g_cloud.cloud.response_pending && cached_responses == cached_before_stale);
+    assert(reconnect_count == 2 && !g_cloud.cloud.in_flight);
     /* Product bootstrap uses the bounded Platform cursor; a late receipt
      * from an old connection cannot advance the new Manifest stage. */
     memset(&g_cloud, 0, sizeof(g_cloud));
-    assert(ABoxCloudBootstrap_Init(&g_cloud.cloud_bootstrap));
-    assert(ABoxCloudTxTracker_Init(&g_cloud.tx));
+    assert(ABoxCloudService_Init(&g_cloud.cloud, &options, 0U));
+    assert(ABoxCloudService_SetSyncStorage(&g_cloud.cloud, g_cloud.pending_sync_request_id,
+                                          sizeof(g_cloud.pending_sync_request_id)));
     tick = 0U;
     connected = 1U;
-    g_cloud.heartbeat_due = 10000U;
-    g_cloud.status_report_due = 10000U;
-    ABoxCloudBootstrap_SetReady(&g_cloud.cloud_bootstrap, 1);
+    g_cloud.cloud.heartbeat_due = 10000U;
+    g_cloud.cloud.status_due = 10000U;
+    ABoxCloudService_SetReady(&g_cloud.cloud, 1, tick);
     CloudTx_Service();
-    assert(last_kind == CLOUD_TX_MANIFEST && g_cloud.tx.kind == CLOUD_TX_MANIFEST);
-    uint32_t old_generation = g_cloud.cloud_bootstrap.generation;
-    uint64_t old_operation = g_cloud.tx.operation;
+    assert(last_kind == CLOUD_TX_MANIFEST && g_cloud.cloud.in_flight == ABOX_CLOUD_JOB_MANIFEST);
+    uint32_t old_generation = g_cloud.cloud.generation;
+    uint64_t old_operation = g_cloud.cloud.operation;
     CloudTx_NetworkChanged();
-    assert(ABoxCloudTxTracker_Receipt(&g_cloud.tx, old_generation,
-                                      old_operation, 1, 0) == ABOX_CLOUD_TX_IGNORED);
-    assert(ABoxCloudBootstrap_Receipt(&g_cloud.cloud_bootstrap, old_generation,
-                                      old_operation, 1) == ABOX_CLOUD_JOB_NONE);
-    ABoxCloudBootstrap_SetReady(&g_cloud.cloud_bootstrap, 1);
+    assert(ABoxCloudService_Receipt(&g_cloud.cloud, old_generation,
+                                    old_operation, 1, tick) == ABOX_CLOUD_JOB_NONE);
+    ABoxCloudService_SetReady(&g_cloud.cloud, 1, tick);
     publish_active = 0U;
     CloudTx_Service();
     assert(last_kind == CLOUD_TX_MANIFEST);
@@ -123,6 +125,6 @@ int main(void)
     assert(last_kind == CLOUD_TX_STATUS_REPORT);
     complete_publish();
     CloudTx_Service();
-    assert(!ABoxCloudBootstrap_Active(&g_cloud.cloud_bootstrap));
+    assert(!ABoxCloudService_Bootstrapping(&g_cloud.cloud));
     return 0;
 }

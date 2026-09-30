@@ -22,7 +22,18 @@ if ($BenchSteering -and ($Configuration -ne 'Release' -or $ReleasePair -or
 $product = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 . (Join-Path $PSScriptRoot 'product_version.ps1')
 $AppVersion = Resolve-PatrolChassisAppVersion -ProductRoot $product -Override $AppVersion
+$entry = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'release_entry.json') -Raw | ConvertFrom-Json
+$steeringCompiled = [bool]$BenchSteering
+$driveCompiled = [bool]$BenchDrive
+$actuationCompiled = $EnableActuation.IsPresent
+if (-not $BenchSteering -and -not $ReleasePair) {
+    # Preserve the declared production build policy; runtime safety gates remain mandatory.
+    $steeringCompiled = [bool]$entry.formal_options.steering_executor
+    $driveCompiled = [bool]$entry.formal_options.drive_executor
+    $actuationCompiled = [bool]$entry.formal_options.actuation
+}
 $platform = Join-Path $product 'platform'
+. (Join-Path $platform 'tools/standard_release.ps1')
 $bootTarget = Join-Path $platform 'targets/stm32f105_abox_boot'
 $bootArtifact = Join-Path $bootTarget 'dist/ABox_Boot.bin'
 $bootVerifier = Join-Path $bootTarget 'tools/verify_boot_artifact.py'
@@ -32,23 +43,6 @@ $credentialBuildRoot = Join-Path ([IO.Path]::GetTempPath()) ('patrol-chassis-rel
 
 function Get-GitValue([string] $repo, [string[]] $arguments) { return (& git -C $repo @arguments | Out-String).Trim() }
 function Get-Dirty([string] $repo) { return -not [string]::IsNullOrWhiteSpace((& git -C $repo status --porcelain | Out-String).Trim()) }
-Add-Type -TypeDefinition @'
-using System;
-public static class PatrolChassisReleaseCrc32 {
-    public static uint Compute(byte[] data) {
-        uint crc = 0xFFFFFFFFu;
-        foreach (byte value in data) {
-            crc ^= value;
-            for (int bit = 0; bit < 8; ++bit)
-                crc = (crc >> 1) ^ ((crc & 1u) != 0u ? 0xEDB88320u : 0u);
-        }
-        return crc ^ 0xFFFFFFFFu;
-    }
-}
-'@
-function Get-Crc32([string] $path) {
-    return ('{0:X8}' -f [PatrolChassisReleaseCrc32]::Compute([System.IO.File]::ReadAllBytes($path)))
-}
 function Get-Usage([string] $elf) {
     $bin = [IO.Path]::ChangeExtension($elf, '.bin')
     $ramEnd = [int64]0x20000000
@@ -62,8 +56,7 @@ function Get-Usage([string] $elf) {
     return [ordered]@{ flash_bytes = (Get-Item -LiteralPath $bin).Length; ram_bytes = ($ramEnd - 0x20000000) }
 }
 function Get-Artifact([string] $path, [string] $address) {
-    $item = Get-Item -LiteralPath $path
-    return [ordered]@{ name = $item.Name; length = $item.Length; load_address = $address; crc32 = Get-Crc32 $path; sha256 = (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash; includes_device_config = $false; includes_boot_state = $false }
+    return Get-ABoxReleaseArtifact -Path $path -LoadAddress $address
 }
 function Assert-FormalBootArtifacts([string] $buildDirectory) {
     $forbidden = @(
@@ -91,15 +84,8 @@ function Invoke-TargetBuild([string] $role, [string] $target, [string] $buildNam
     } else {
         Join-Path $buildRoot $buildName
     }
-    $toolchain = Join-Path $source 'cmake/gcc-arm-none-eabi.cmake'
-    $cmakeArgs = @('-S', $source, '-B', $build, '-G', 'Ninja', "-DCMAKE_TOOLCHAIN_FILE=$toolchain", "-DCMAKE_BUILD_TYPE=$Configuration") + $definitions
-    & cmake @cmakeArgs | Out-Host
-    if ($LASTEXITCODE -ne 0) { throw "$role configure failed" }
-    & cmake --build $build --parallel 4 | Out-Host
-    if ($LASTEXITCODE -ne 0) { throw "$role build failed" }
-    $bin = Join-Path $build "$target.bin"; $elf = Join-Path $build "$target.elf"
-    if (!(Test-Path -LiteralPath $bin) -or !(Test-Path -LiteralPath $elf)) { throw "Missing $role artifacts" }
-    return [ordered]@{ bin = $bin; elf = $elf }
+    if ($role -ne 'app') { throw 'Release builds App only; Boot must be frozen.' }
+    return Invoke-ABoxAppBuild -ProductRoot $product -BuildDirectory $build -Target $target -Configuration $Configuration -Definitions $definitions
 }
 
 try {
@@ -120,9 +106,9 @@ try {
 
     foreach ($version in $versions) {
         $appDefinitions = @("-DPATROL_CHASSIS_APP_VERSION_OVERRIDE=$version")
-        $appDefinitions += "-DPATROL_CHASSIS_ACTUATION_ENABLED=$(if ($EnableActuation) { 'ON' } else { 'OFF' })"
-        $appDefinitions += "-DPATROL_STEERING_EXECUTOR_ENABLED=$(if ($BenchSteering) { 'ON' } else { 'OFF' })"
-        $appDefinitions += "-DPATROL_DRIVE_EXECUTOR_ENABLED=$(if ($BenchDrive) { 'ON' } else { 'OFF' })"
+        $appDefinitions += "-DPATROL_CHASSIS_ACTUATION_ENABLED=$(if ($actuationCompiled) { 'ON' } else { 'OFF' })"
+        $appDefinitions += "-DPATROL_STEERING_EXECUTOR_ENABLED=$(if ($steeringCompiled) { 'ON' } else { 'OFF' })"
+        $appDefinitions += "-DPATROL_DRIVE_EXECUTOR_ENABLED=$(if ($driveCompiled) { 'ON' } else { 'OFF' })"
         $app = Invoke-TargetBuild 'app' 'Patrol_Vehicle_Chassis_App' "ABoxUnified$Configuration-$version" $appDefinitions $credentialBuildRoot
         $appUsage = Get-Usage $app.elf
         if ($BenchSteering) {
@@ -136,18 +122,12 @@ try {
         if ((Get-Item -LiteralPath $app.bin).Length -gt 221184) { throw 'App artifact exceeds its 216 KiB region.' }
         $release = Join-Path $credentialBuildRoot 'release-stage'
         New-Item -ItemType Directory -Force -Path $release | Out-Null
-        $appOut = Join-Path $release 'Patrol_Vehicle_Chassis_App.bin'; $bootOut = Join-Path $release 'ABox_Boot.bin'; $fullOut = Join-Path $release 'Patrol_Vehicle_Chassis_Full.bin'
-        Copy-Item -LiteralPath $app.bin -Destination $appOut -Force; Copy-Item -LiteralPath $bootArtifact -Destination $bootOut -Force
-        $full = New-Object byte[] (32768 + (Get-Item -LiteralPath $appOut).Length)
-        [Array]::Copy([System.IO.File]::ReadAllBytes($bootOut), 0, $full, 0, (Get-Item -LiteralPath $bootOut).Length)
-        [Array]::Copy([System.IO.File]::ReadAllBytes($appOut), 0, $full, 32768, (Get-Item -LiteralPath $appOut).Length)
-        [System.IO.File]::WriteAllBytes($fullOut, $full)
-        $appText = [System.Text.Encoding]::ASCII.GetString([System.IO.File]::ReadAllBytes($appOut))
-        if ($appText.IndexOf("PATROL_VEHICLE_CHASSIS_FW_VERSION=$version", [StringComparison]::Ordinal) -lt 0) { throw "Version marker missing from $version app image" }
+        $images = New-ABoxReleaseImages -AppPath $app.bin -BootPath $bootArtifact -Stage $release -ContractPath (Join-Path $product 'tools/release_contract.json') -Version $version
+        $appOut = $images.app; $bootOut = $images.boot; $fullOut = $images.full
         $manifest = [ordered]@{
             manifest_version = 3; product = 'patrol_vehicle_chassis'; version = $version; configuration = $Configuration
-            steering_executor_compiled = [bool]$BenchSteering; drive_executor_compiled = [bool]$BenchDrive
-            startup_motion_permit = $false; actuation_enabled = $EnableActuation.IsPresent
+            steering_executor_compiled = $steeringCompiled; drive_executor_compiled = $driveCompiled
+            startup_motion_permit = $false; actuation_enabled = $actuationCompiled
             boot_version = 'abox-boot-2.3.0'; ota_scheme = 'boot_v2_ufs'; ota_downloader = 'app'
             app_range = '0x08008000..0x0803DFFF'; config_recovery_page = '0x0803E000'; boot_state_pages = @('0x0803E800', '0x0803F000'); config_page = '0x0803F800'
             product_commit = $productCommit; product_dirty = $false; platform_commit = $platformCommit; platform_dirty = $false
@@ -162,8 +142,10 @@ try {
         if ($LASTEXITCODE -ne 0) { throw 'Patrol release policy validation failed; dist was not replaced.' }
         & python (Join-Path $platform 'tools/publish_release.py') `
             --contract (Join-Path $product 'tools/release_contract.json') `
-            --stage $release --product-root $product
+            --stage $release --product-root $product --validate-only
         if ($LASTEXITCODE -ne 0) { throw 'Release publication failed; previous dist was preserved or restored.' }
+        & python (Join-Path $PSScriptRoot 'artifact_store.py') --root $product --stage $release --destination dist
+        if ($LASTEXITCODE -ne 0) { throw 'Artifact store publication failed; previous dist was preserved.' }
         Write-Host "Release $version written to $(Join-Path $product 'dist')"
     }
 

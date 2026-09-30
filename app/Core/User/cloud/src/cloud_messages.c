@@ -1,3 +1,4 @@
+#include "abox_cloud_response.h"
 #include "cloud_internal.h"
 #include <stdarg.h>
 #include <stdio.h>
@@ -160,22 +161,13 @@ void CloudMessages_CacheResponse(const char* request_id, const char* topic, cons
 uint8_t CloudMessages_ScheduleResponse(const char* topic, const char* request_id, uint16_t code, const char* message,
                                  const char* result_json, uint8_t reboot)
 {
-    JsonWriter_t writer;
-    if (g_cloud.response_pending) return 0U;
-    json_init(&writer, g_cloud.response_payload, sizeof(g_cloud.response_payload));
-    json_append(&writer, "{\"version\":\"2.0\",\"timestamp\":");
-    json_append_timestamp(&writer);
-    json_append(&writer, ",\"data\":{\"product\":\"patrol_vehicle_chassis\",\"requestId\":");
-    json_string(&writer, request_id);
-    json_appendf(&writer, ",\"code\":%u,\"msg\":", (unsigned int)code);
-    json_string(&writer, message);
-    json_append(&writer, ",\"result\":");
-    json_append(&writer, result_json ? result_json : "{}");
-    json_append(&writer, "}}");
-    if (!writer.valid || writer.length >= CLOUD_PAYLOAD_LIMIT) return 0U;
+    char timestamp[21];
+    if (g_cloud.cloud.response_pending) return 0U;
+    if (!TimeBase_FormatUtcMs(timestamp, sizeof(timestamp))) strcpy(timestamp, "0");
+    if (!ABoxCloudResponse_Encode(g_cloud.response_payload, CLOUD_PAYLOAD_LIMIT,
+            "2.0", timestamp, "patrol_vehicle_chassis", request_id, code, message, result_json)) return 0U;
     CloudMessages_CopyString(g_cloud.response_topic, sizeof(g_cloud.response_topic), topic);
-    CloudMessages_CopyString(g_cloud.response_request_id, sizeof(g_cloud.response_request_id), request_id);
-    g_cloud.response_pending = 1U;
+    if (!ABoxCloudService_QueueResponse(&g_cloud.cloud, request_id, 0)) return 0U;
     g_cloud.response_reboots = reboot;
     return 1U;
 }
@@ -188,11 +180,10 @@ void CloudMessages_ScheduleSimpleError(const char* topic, const char* request_id
 
 uint8_t CloudMessages_ScheduleRawResponse(const char* topic, const char* payload)
 {
-    if (g_cloud.response_pending || topic == 0 || payload == 0 || strlen(payload) >= sizeof(g_cloud.response_payload)) return 0U;
+    if (g_cloud.cloud.response_pending || topic == 0 || payload == 0 || strlen(payload) >= sizeof(g_cloud.response_payload)) return 0U;
     CloudMessages_CopyString(g_cloud.response_topic, sizeof(g_cloud.response_topic), topic);
     CloudMessages_CopyString(g_cloud.response_payload, sizeof(g_cloud.response_payload), payload);
-    g_cloud.response_request_id[0] = '\0';
-    g_cloud.response_pending = 1U;
+    if (!ABoxCloudService_QueueResponse(&g_cloud.cloud, "", 0)) return 0U;
     g_cloud.response_reboots = 0U;
     return 1U;
 }
@@ -206,7 +197,9 @@ uint8_t CloudMessages_ScheduleSyncResponse(const char* request_id)
         "\"code\":200,\"msg\":\"state synchronization scheduled\","
         "\"result\":{\"expectedStates\":[{\"reportName\":\"chassis_status\"}]}}}",
         timestamp, request_id);
-    return CloudMessages_ScheduleRawResponse(g_cloud.topic_control_resp, response);
+    if (!CloudMessages_ScheduleRawResponse(g_cloud.topic_control_resp, response)) return 0U;
+    ABoxCloudService_CancelResponse(&g_cloud.cloud);
+    return (uint8_t)ABoxCloudService_QueueResponse(&g_cloud.cloud, request_id, 1);
 }
 
 void CloudMessages_BuildInfoResult(char* output, uint16_t size)
@@ -371,7 +364,7 @@ uint8_t CloudMessages_BuildStatusReport(char* output, uint16_t size, const char*
     json_append(&writer, ",\"data\":{\"reportId\":");
     json_string(&writer, report_id);
     json_append(&writer, ",\"reportType\":\"state\",\"reportName\":\"chassis_status\"");
-    if (g_cloud.status_report_request_id[0] != '\0')
+    if (g_cloud.status_report_request_id && g_cloud.status_report_request_id[0] != '\0')
     {
         json_append(&writer, ",\"requestId\":");
         json_string(&writer, g_cloud.status_report_request_id);

@@ -1,5 +1,5 @@
 [CmdletBinding()]
-param()
+param([switch] $SkipPlatformTests)
 
 $ErrorActionPreference = 'Stop'
 $productIncludes = @('system', 'motion', 'cloud', 'mqtt', 'ota', 'board', 'common') |
@@ -9,10 +9,14 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 $gcc = (Get-Command gcc -ErrorAction Stop).Source
 $hostBuild = "$PSScriptRoot\..\platform\build\host"
+New-Item -ItemType Directory -Force -Path $hostBuild | Out-Null
+if (-not $SkipPlatformTests) {
 & cmake -S "$PSScriptRoot\..\platform" -B $hostBuild -G Ninja -DBUILD_TESTING=ON "-DCMAKE_C_COMPILER=$gcc"
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & cmake --build $hostBuild
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+}
+
 
 $profileTest = Join-Path $hostBuild 'patrol_mqtt_profile_test.exe'
 & $gcc -std=c11 -Wall -Wextra -Werror `
@@ -104,7 +108,9 @@ foreach ($enabled in @(0, 1)) {
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 }
 
-& ctest --test-dir $hostBuild --output-on-failure
+if (-not $SkipPlatformTests) {
+    & ctest --test-dir $hostBuild --output-on-failure
+}
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 $benchTest = Join-Path $hostBuild 'bench_steering_test.exe'
 & $gcc -std=c11 -Wall -Wextra -Werror `

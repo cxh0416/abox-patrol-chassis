@@ -72,7 +72,7 @@ uint8_t CloudMessages_ScheduleResponse(const char* topic, const char* id, uint16
                                const char* msg, const char* result, uint8_t reboot)
 { (void)topic; (void)id; (void)code; (void)msg; (void)result; (void)reboot; return 1; }
 uint8_t CloudMessages_ScheduleSyncResponse(const char* id)
-{ assert(!g_cloud.response_pending && id[0]); g_cloud.response_pending = 1; return 1; }
+{ assert(!g_cloud.cloud.response_pending && id[0]); return ABoxCloudService_QueueResponse(&g_cloud.cloud, id, 1); }
 void CloudMessages_CopyString(char* out, uint16_t size, const char* value)
 { assert(strlen(value) < size); strcpy(out, value); }
 

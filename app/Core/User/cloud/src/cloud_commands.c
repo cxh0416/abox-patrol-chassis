@@ -1,3 +1,4 @@
+#include "abox_cloud_dispatch.h"
 #include "cloud_internal.h"
 #include "cJSON.h"
 #include "time_base.h"
@@ -319,10 +320,7 @@ static __attribute__((noinline)) void handle_public_control(const char* payload)
         /* get_info may already have reached the broker while its modem publish
          * acknowledgement is still pending. Keep the correlated refresh until
          * both the response slot and the previous status publish are free. */
-        if (g_cloud.sync_state_request_id[0] == '\0' &&
-            strlen(request_id->valuestring) < sizeof(g_cloud.sync_state_request_id))
-            CloudMessages_CopyString(g_cloud.sync_state_request_id,
-                                     sizeof(g_cloud.sync_state_request_id), request_id->valuestring);
+        (void)ABoxCloudService_QueueSyncRequest(&g_cloud.cloud, request_id->valuestring);
         cJSON_Delete(root);
         return;
     }
@@ -341,14 +339,18 @@ void CloudCommands_OnMessage(const char* topic, const char* payload)
     const char* response_topic;
     uint8_t ota_topic;
 
-    if ((topic == 0) || (payload == 0)) return;
-    if (strcmp(topic, g_cloud.topic_control_cmd) == 0)
+    static const ABoxCloudRoute routes[] = {
+        {g_cloud.topic_control_cmd, 1U}, {g_cloud.topic_config_cmd, 2U}, {g_cloud.topic_ota_cmd, 3U}
+    };
+    ABoxCloudRequestContext context;
+    if (!ABoxCloudDispatch_Open(routes, sizeof(routes) / sizeof(routes[0]), topic, payload, &context)) return;
+    if (context.route == 1U)
     {
         handle_public_control(payload);
         return;
     }
-    if ((strcmp(topic, g_cloud.topic_config_cmd) != 0) && (strcmp(topic, g_cloud.topic_ota_cmd) != 0)) return;
-    ota_topic = (strcmp(topic, g_cloud.topic_ota_cmd) == 0) ? 1U : 0U;
+    if (context.route != 2U && context.route != 3U) return;
+    ota_topic = context.route == 3U;
     response_topic = ota_topic ? g_cloud.topic_ota_resp : g_cloud.topic_config_resp;
     payload_length = (uint16_t)strlen(payload);
     status = CloudProtocol_Parse(payload, payload_length, ota_topic, &request);
@@ -364,17 +366,16 @@ void CloudCommands_OnMessage(const char* topic, const char* payload)
         strcmp(request.request_id, g_cloud.mqtt_trial_request_id) == 0) return;
     if (strcmp(request.request_id, g_cloud.last_request_id) == 0 && g_cloud.last_response_payload[0] != '\0')
     {
-        if (!g_cloud.response_pending)
+        if (!g_cloud.cloud.response_pending)
         {
             CloudMessages_CopyString(g_cloud.response_topic, sizeof(g_cloud.response_topic), g_cloud.last_response_topic);
             CloudMessages_CopyString(g_cloud.response_payload, sizeof(g_cloud.response_payload), g_cloud.last_response_payload);
-            CloudMessages_CopyString(g_cloud.response_request_id, sizeof(g_cloud.response_request_id), request.request_id);
-            g_cloud.response_pending = 1U;
+            (void)ABoxCloudService_QueueResponse(&g_cloud.cloud, request.request_id, 0);
             g_cloud.response_reboots = 0U;
         }
         return;
     }
-    if (g_cloud.response_pending || g_cloud.reboot_pending)
+    if (g_cloud.cloud.response_pending || g_cloud.reboot_pending)
     {
         APP_LOGW("CLOUD", "command busy");
         return;

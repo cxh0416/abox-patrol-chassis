@@ -1,0 +1,10 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "script": "tools/build_release.ps1",
+  "version_parameter": "AppVersion",
+  "formal_options": {
+    "steering_executor": true,
+    "drive_executor": true,
+    "actuation": true
+  }
+}

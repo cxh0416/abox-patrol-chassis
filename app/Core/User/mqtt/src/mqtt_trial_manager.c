@@ -1,3 +1,4 @@
+#include "abox_maintenance_service.h"
 #include "mqtt_trial_manager.h"
 #include "mqtt_trial_persistent.h"
 #include "abox_mqtt_trial_executor.h"
@@ -131,22 +132,21 @@ void MqttTrialManager_Cancel(uint32_t now)
     APP_LOGI("MQTT_TRIAL","cancel session=%lu trial=%u reason=%u",(unsigned long)(uint32_t)g_trial.trial.session,
              (unsigned)g_trial.trial.state,(unsigned)g_trial.trial.reason);
 }
+static int maintenance_action(void *context, ABoxMqttTrialExecutorAction action,
+    uint64_t session, const ABoxMqttConfig *config, uint32_t now)
+{
+    (void)context; (void)now;
+    if (action == ABOX_MQTT_TRIAL_ACTION_PREPARE) return prepare(&g_trial, session, config);
+    if (action == ABOX_MQTT_TRIAL_ACTION_RESTORE) return restore(&g_trial, session, config);
+    return 1;
+}
+static const ABoxMaintenanceServicePort maintenance_port = {0, maintenance_action};
 void MqttTrialManager_Poll(uint32_t now)
 {
     ABoxMqttTrialState s;
-    ABoxMqttTrialExecutorAction action;
-    uint64_t session;
-    const ABoxMqttConfig *config;
     if(!g_trial.initialized)return;
-    g_trial.now=now; s=g_trial.trial.state; ABoxMqttTrial_Poll(&g_trial.trial,now);
-    if (ABoxMqttTrialExecutor_Take(&g_trial.executor,&action,&session,&config)) {
-        int ok=1;
-        if(action==ABOX_MQTT_TRIAL_ACTION_PREPARE)
-            ok=prepare(&g_trial,session,config);
-        else if(action==ABOX_MQTT_TRIAL_ACTION_RESTORE)
-            ok=restore(&g_trial,session,config);
-        if(!ok) ABoxMqttTrial_Event(&g_trial.trial,session,ABOX_MQTT_TRIAL_ERROR,0U,now);
-    }
+    g_trial.now=now; s=g_trial.trial.state;
+    (void)ABoxMaintenanceService_Poll(&g_trial.trial, &g_trial.executor, &maintenance_port, now);
     if(s!=g_trial.trial.state)
         APP_LOGI("MQTT_TRIAL","session=%lu state=%u reason=%u",(unsigned long)(uint32_t)g_trial.trial.session,
                  (unsigned)g_trial.trial.state,(unsigned)g_trial.trial.reason);
@@ -175,13 +175,16 @@ void MqttTrialManager_Poll(uint32_t now)
             next.mqtt_tls_enabled=g_trial.candidate.tls_enabled;
             next.mqtt_tls_profile_id=g_trial.candidate.tls_profile_id;
             if (g_trial.first) next.reserved0=1U;
-            result=ABoxConfigStore_Commit(&store,&next,PatrolConfig_Get());
+            result=ABoxMaintenanceService_Commit(&g_trial.trial, g_trial.trial.session,
+                &store, &next, PatrolConfig_Get(), now);
         }
         if(result!=ABOX_CONFIG_STORE_SAVED) {
             if(result==ABOX_CONFIG_STORE_RECOVERY_FAILED) g_trial.flash_restore_failed=1U;
-            ABoxMqttTrial_Event(&g_trial.trial,g_trial.trial.session,ABOX_MQTT_TRIAL_ERROR,0,now);
+            if (!g_trial.persistent)
+                ABoxMqttTrial_Event(&g_trial.trial,g_trial.trial.session,ABOX_MQTT_TRIAL_ERROR,0,now);
         } else {
-            ABoxMqttTrial_Event(&g_trial.trial,g_trial.trial.session,ABOX_MQTT_TRIAL_SAVED,0,now);
+            if (!g_trial.persistent)
+                ABoxMqttTrial_Event(&g_trial.trial,g_trial.trial.session,ABOX_MQTT_TRIAL_SAVED,0,now);
             (void)copy_stable(MqttRuntime_ActiveConfig());
         }
         APP_LOGI("MQTT_TRIAL","commit session=%lu trial=%u reason=%u",(unsigned long)(uint32_t)g_trial.trial.session,
@@ -210,36 +213,10 @@ void MqttTrialManager_OnHeartbeatProof(uint32_t publish_sequence,uint32_t now)
 }
 void MqttTrialManager_OnRuntimeState(ABoxMqttRuntimeState state,uint32_t now)
 {
-    ABoxMqttTrialEvent event;
-    ABoxMqttTrialExecutorAction action, expected;
-    uint64_t session;
-    const ABoxMqttConfig *config;
     if(!g_trial.initialized)return;
     if (g_trial.first && g_trial.trial.state == ABOX_MQTT_TRIAL_RESTORING) return;
-    if(state==ABOX_MQTT_RUNTIME_PREPARED)event=ABOX_MQTT_TRIAL_PREPARED;
-    else if(state==ABOX_MQTT_RUNTIME_CONNECTED)event=ABOX_MQTT_TRIAL_CONNECTED;
-    else if(state==ABOX_MQTT_RUNTIME_READY){
-        event=ABOX_MQTT_TRIAL_SUBSCRIBED;
-        g_trial.proof_sequence=MQTT_Core_GetPubOkSeq();
-    }else if(state==ABOX_MQTT_RUNTIME_FAILED)event=ABOX_MQTT_TRIAL_ERROR;
-    else return;
-    ABoxMqttTrial_Event(&g_trial.trial,g_trial.trial.session,event,0,now);
-    /* These three actions intentionally have no product work. Consume them
-     * in this owner callback so a fast READY/heartbeat cannot race the next
-     * communication-task poll and leave a stale queued action. */
-    expected = event==ABOX_MQTT_TRIAL_PREPARED ? ABOX_MQTT_TRIAL_ACTION_CONNECT :
-               event==ABOX_MQTT_TRIAL_CONNECTED ? ABOX_MQTT_TRIAL_ACTION_SUBSCRIBE :
-               event==ABOX_MQTT_TRIAL_SUBSCRIBED ? ABOX_MQTT_TRIAL_ACTION_VERIFY :
-               ABOX_MQTT_TRIAL_ACTION_NONE;
-    if(((expected==ABOX_MQTT_TRIAL_ACTION_CONNECT && g_trial.trial.state==ABOX_MQTT_TRIAL_CONNECTING) ||
-        (expected==ABOX_MQTT_TRIAL_ACTION_SUBSCRIBE && g_trial.trial.state==ABOX_MQTT_TRIAL_SUBSCRIBING) ||
-        (expected==ABOX_MQTT_TRIAL_ACTION_VERIFY && g_trial.trial.state==ABOX_MQTT_TRIAL_VERIFYING)) &&
-       ABoxMqttTrialExecutor_HasPending(&g_trial.executor)) {
-        if(!ABoxMqttTrialExecutor_Take(&g_trial.executor,&action,&session,&config) ||
-           action!=expected || session!=g_trial.trial.session)
-            ABoxMqttTrial_Event(&g_trial.trial,g_trial.trial.session,
-                                ABOX_MQTT_TRIAL_ERROR,0U,now);
-    }
+    if (state == ABOX_MQTT_RUNTIME_READY) g_trial.proof_sequence=MQTT_Core_GetPubOkSeq();
+    if (ABoxMaintenanceService_RuntimeEvent(&g_trial.trial, &g_trial.executor, state, now) < 0) return;
     APP_LOGI("MQTT_TRIAL","session=%lu runtime=%u trial=%u reason=%u",(unsigned long)(uint32_t)g_trial.trial.session,
              (unsigned)state,(unsigned)g_trial.trial.state,(unsigned)g_trial.trial.reason);
 }

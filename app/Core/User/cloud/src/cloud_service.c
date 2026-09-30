@@ -1,3 +1,4 @@
+#include "abox_app_service.h"
 #include "cloud_service.h"
 #include "cloud_internal.h"
 #include <stdio.h>
@@ -17,12 +18,15 @@
 
 CloudContext g_cloud;
 static uint32_t g_enroll_provision_due;
-static uint32_t g_modem_recovery_due;
+static ABoxEc800Recovery g_modem_recovery;
 static void mqtt_network_changed(void)
 {
     CloudTx_NetworkChanged();
     RemoteService_RevokeForNetworkChange();
 }
+
+_Static_assert(64U >= sizeof(((PatrolRemoteConfigV5_t*)0)->vid) + 21U,
+               "public topic storage must cover maximum Config V5 VID");
 
 static uint8_t build_public_topics(const char* vid)
 {
@@ -96,10 +100,34 @@ static int ec800_write(void *context, const uint8_t *data, uint16_t length,
                              length, timeout_ms) == HAL_OK;
 }
 
-static void ec800_rx_sink(void *context, const uint8_t *data, uint16_t length)
-{
-    EC800_AT_FeedRx((Ec800AtCore_t *)context, data, length);
-}
+
+static ABoxAppService g_app_service;
+static void app_cloud(void *context, uint32_t now);
+static int app_before_cloud(void *, uint32_t);
+static int app_can_connect(void *);
+static void app_runtime(void *, uint32_t);
+static int app_runtime_ready(void *);
+static void app_transport(void *, uint32_t);
+static int app_transport_ready(void *);
+static int app_transport_error(void *);
+static int app_maintenance_busy(void *);
+static void app_event(void *, ABoxAppServiceEvent);
+static void app_restarted(void *, uint32_t);
+static void app_ready(void *, int, uint32_t);
+
+static void app_before_enrollment(void *context, uint32_t now);
+static void app_enrollment(void *context, uint32_t now);
+static void app_restart_rx(void *context);
+static const ABoxAppServicePort app_port = {
+    .restart_rx = app_restart_rx,
+    .before_enrollment = app_before_enrollment,
+    .enrollment = app_enrollment,
+    .cloud = app_cloud, .before_cloud = app_before_cloud, .can_connect = app_can_connect,
+    .runtime = app_runtime, .runtime_ready = app_runtime_ready,
+    .transport = app_transport, .transport_ready = app_transport_ready, .ready = app_ready,
+    .transport_error = app_transport_error, .maintenance_busy = app_maintenance_busy,
+    .recovery = &g_modem_recovery, .event = app_event, .restarted = app_restarted
+};
 
 void CloudService_Init(void)
 {
@@ -110,9 +138,11 @@ void CloudService_Init(void)
     memset(&mqtt, 0, sizeof(mqtt));
     (void)ABoxEc800Rx_Init(&g_cloud.ec800_rx, g_cloud.uart_dma, sizeof(g_cloud.uart_dma),
                            g_cloud.rx_ring, sizeof(g_cloud.rx_ring));
-    (void)ABoxCloudTxTracker_Init(&g_cloud.tx);
-    (void)ABoxCloudBootstrap_Init(&g_cloud.cloud_bootstrap);
-    g_cloud.response_pending = 0U;
+    const ABoxCloudServiceOptions cloud_options = { CLOUD_IDLE_HEARTBEAT_MS, CLOUD_IDLE_STATUS_MS, 0U };
+    (void)ABoxCloudService_Init(&g_cloud.cloud, &cloud_options, HAL_GetTick());
+    (void)ABoxCloudService_SetSyncStorage(&g_cloud.cloud, g_cloud.pending_sync_request_id,
+                                        sizeof(g_cloud.pending_sync_request_id));
+    g_cloud.cloud.response_pending = 0U;
     g_cloud.log_active = 0U;
     g_cloud.alert_pending = 0U;
     g_cloud.reboot_pending = 0U;
@@ -126,7 +156,9 @@ void CloudService_Init(void)
 #endif
     g_cloud.reset_reason = read_reset_reason();
     g_enroll_provision_due = HAL_GetTick();
-    g_modem_recovery_due = HAL_GetTick() + 60000U;
+    ABoxEc800Recovery_Init(&g_modem_recovery, 120000U);
+    g_modem_recovery.waiting = 1U;
+    g_modem_recovery.next_restart_ms = HAL_GetTick() + 60000U;
     g_cloud.config_ready = !CloudService_NeedsEnrollment();
 
     {
@@ -168,11 +200,12 @@ void CloudService_Init(void)
     EC_Power_Init();
     EC_Power_StartOnSequence();
     uart_start_rx();
-    g_cloud.heartbeat_due = HAL_GetTick();
-    g_cloud.status_report_due = HAL_GetTick();
+    g_cloud.cloud.heartbeat_due = HAL_GetTick();
+    g_cloud.cloud.status_due = HAL_GetTick();
     g_cloud.status_report_sequence = 1U;
     memset(&g_cloud.status_snapshot, 0, sizeof(g_cloud.status_snapshot));
     g_cloud.iccid_due = HAL_GetTick() + 1000U;
+    (void)ABoxAppService_Init(&g_app_service, &g_cloud.at_core, &g_cloud.ec800_rx, &app_port);
     g_cloud.initialized = 1U;
     if (g_cloud.config_ready) APP_LOGI("CLOUD", "configured vid=%s broker=%s:%u", cfg->vid, cfg->mqtt_host, cfg->mqtt_port);
     else APP_LOGW("CLOUD", "awaiting HTTPS enrollment");
@@ -180,28 +213,35 @@ void CloudService_Init(void)
 
 void CloudService_Task(void)
 {
-    uint8_t ready;
     if (!g_cloud.initialized) return;
-    EC_Power_Task();
-    (void)ABoxEc800Rx_Drain(&g_cloud.ec800_rx, ec800_rx_sink, &g_cloud.at_core, 0U);
-    EC800_AT_SetRxOverflowCount(&g_cloud.at_core,
-                                ABoxEc800Rx_OverflowCount(&g_cloud.ec800_rx));
-    if (ABoxEc800Rx_TakeRestartRequest(&g_cloud.ec800_rx))
-    {
-        ABoxEc800At_AbortAll(&g_cloud.at_core, ABOX_EC800_RESULT_ERROR);
-        (void)HAL_UART_DMAStop(&huart1);
-        ABoxEc800Rx_AfterRestart(&g_cloud.ec800_rx);
-        uart_start_rx();
-    }
-    EC800_AT_Task(&g_cloud.at_core);
-    OtaService_Task();
+    ABoxAppService_Poll(&g_app_service, HAL_GetTick());
+}
+
+static void app_restart_rx(void *context)
+{
+    (void)context;
+    (void)HAL_UART_DMAStop(&huart1);
+    ABoxEc800Rx_AfterRestart(&g_cloud.ec800_rx);
+    uart_start_rx();
+}
+static void app_before_enrollment(void *context, uint32_t now)
+{
+    (void)context; (void)now;
     if (CloudService_NeedsEnrollment() && EC_Power_IsOnDone() &&
         !OtaService_IsProvisioned() && !OtaService_IsBusy() &&
         (int32_t)(HAL_GetTick() - g_enroll_provision_due) >= 0) {
         if (OtaService_BeginProvisioning())
             g_enroll_provision_due = HAL_GetTick() + 60000U;
     }
+}
+static void app_enrollment(void *context, uint32_t now)
+{
+    (void)context; (void)now;
     PatrolEnrollment_Task();
+}
+static int app_before_cloud(void *context, uint32_t now)
+{
+    (void)context; (void)now;
     MqttTrialManager_Poll(HAL_GetTick());
     if (g_cloud.ota_response_waiting && OtaService_TakeInstallReady())
     {
@@ -221,15 +261,59 @@ void CloudService_Task(void)
                 g_cloud.ota_response_waiting = 0U;
         }
     }
-    if (!g_cloud.config_ready || !EC_Power_IsOnDone()) return;
+    if (!g_cloud.config_ready || !EC_Power_IsOnDone()) return 0;
     if (PatrolConfig_Get() != 0 && PatrolConfig_Get()->mqtt_tls_enabled && !OtaService_IsProvisioned() &&
         !g_cloud.tls_provision_started)
     {
         if (OtaService_BeginProvisioning()) g_cloud.tls_provision_started = 1U;
     }
-    MqttRuntime_Task(HAL_GetTick());
+    return 1;
+}
+static int app_can_connect(void *context) { (void)context; return g_cloud.config_ready && EC_Power_IsOnDone(); }
+static void app_runtime(void *context, uint32_t now) { (void)context; MqttRuntime_Task(now); }
+static int app_runtime_ready(void *context) { (void)context; return MqttRuntime_IsReady(); }
+static void app_transport(void *context, uint32_t now) { (void)context; (void)now; MQTT_Core_Task(); }
+static int app_transport_ready(void *context) { (void)context; return MQTT_Core_IsReady(); }
+static int app_transport_error(void *context) { (void)context; return MQTT_Core_GetState() == MQTT_CORE_ST_ERROR; }
+static int app_maintenance_busy(void *context)
+{
+    ABoxMqttTrialState state = MqttTrialManager_State(); (void)context;
+    return state != ABOX_MQTT_TRIAL_IDLE && state != ABOX_MQTT_TRIAL_COMMITTED && state != ABOX_MQTT_TRIAL_FAILED;
+}
+static void app_event(void *context, ABoxAppServiceEvent event)
+{
+    (void)context;
+    if (event == ABOX_APP_NETWORK_CHANGED) mqtt_network_changed();
+}
+static void app_restarted(void *context, uint32_t now)
+{
+    (void)context; (void)now;
+    APP_LOGW("CLOUD", "MQTT transport blocked; restart EC800");
+}
+static void app_ready(void *context, int ready, uint32_t now)
+{
+    (void)context; (void)now;
+    ABoxCloudService_SetReady(&g_cloud.cloud, ready, HAL_GetTick());
+    if (ready && !g_cloud.mqtt_was_ready)
+    {
+        g_cloud.cloud.heartbeat_due = HAL_GetTick();
+        g_cloud.cloud.status_due = HAL_GetTick();
+        g_cloud.ota_begin_due = HAL_GetTick() + 1000U;
+        g_cloud.ota_begin_pending = 1U;
+        APP_LOGI("CLOUD", "mqtt ready");
+    }
+    else if (!ready && g_cloud.mqtt_was_ready) {
+        ABoxCloudService_SetReady(&g_cloud.cloud, 0, HAL_GetTick());
+        APP_LOGW("CLOUD", "mqtt disconnected");
+    }
+    g_cloud.mqtt_was_ready = ready;
+ }
+static void app_cloud(void *context, uint32_t now)
+{
+    uint8_t ready = MQTT_Core_IsReady();
+    (void)context; (void)now;
     if (g_cloud.mqtt_persistent_active && !g_cloud.mqtt_candidate_pending &&
-        !g_cloud.response_pending) {
+        !g_cloud.cloud.response_pending) {
         ABoxMqttTrialState trial_state = MqttTrialManager_State();
         if (trial_state == ABOX_MQTT_TRIAL_COMMITTED || trial_state == ABOX_MQTT_TRIAL_FAILED) {
             const uint8_t saved = trial_state == ABOX_MQTT_TRIAL_COMMITTED;
@@ -239,50 +323,12 @@ void CloudService_Task(void)
                 g_cloud.mqtt_persistent_active = 0U;
         }
     }
-    if (!MqttRuntime_IsReady()) {
-        ABoxCloudBootstrap_SetReady(&g_cloud.cloud_bootstrap, 0);
-        ABoxCloudTxTracker_SetReady(&g_cloud.tx, 0);
-        g_cloud.mqtt_was_ready = 0U;
-        return;
-    }
-    MQTT_Core_Task();
-    if (MQTT_Core_GetState() == MQTT_CORE_ST_ERROR && !OtaService_IsBusy() &&
-        (MqttTrialManager_State() == ABOX_MQTT_TRIAL_IDLE ||
-         MqttTrialManager_State() == ABOX_MQTT_TRIAL_COMMITTED ||
-         MqttTrialManager_State() == ABOX_MQTT_TRIAL_FAILED) &&
-        (int32_t)(HAL_GetTick() - g_modem_recovery_due) >= 0) {
-        /* AT quarantine requires a fresh modem boot before reusing the UART.
-         * This restarts only the EC800 rail, never a vehicle output. */
-        APP_LOGW("CLOUD", "MQTT transport blocked; restart EC800");
-        g_modem_recovery_due = HAL_GetTick() + 120000U;
-        CloudTx_NetworkChanged();
-        RemoteService_RevokeForNetworkChange();
-        EC_Power_StartRestartSequence();
-        g_cloud.mqtt_was_ready = 0U;
-        return;
-    }
-    ready = MQTT_Core_IsReady();
-    ABoxCloudTxTracker_SetReady(&g_cloud.tx, ready);
-    if (ready && !g_cloud.mqtt_was_ready)
-    {
-        ABoxCloudBootstrap_SetReady(&g_cloud.cloud_bootstrap, 1);
-        g_cloud.heartbeat_due = HAL_GetTick();
-        g_cloud.status_report_due = HAL_GetTick();
-        g_cloud.ota_begin_due = HAL_GetTick() + 1000U;
-        g_cloud.ota_begin_pending = 1U;
-        APP_LOGI("CLOUD", "mqtt ready");
-    }
-    else if (!ready && g_cloud.mqtt_was_ready) {
-        ABoxCloudBootstrap_SetReady(&g_cloud.cloud_bootstrap, 0);
-        APP_LOGW("CLOUD", "mqtt disconnected");
-    }
-    g_cloud.mqtt_was_ready = ready;
     CloudTx_Service();
 #if PATROL_CHASSIS_MQTT_LAB_TEST
-    if (g_cloud.modem_restart_pending && !g_cloud.response_pending &&
-        g_cloud.tx.kind != CLOUD_TX_RESPONSE) {
+    if (g_cloud.modem_restart_pending && !g_cloud.cloud.response_pending &&
+        g_cloud.cloud.in_flight != ABOX_CLOUD_JOB_RESPONSE) {
         g_cloud.modem_restart_pending = 0U;
-        g_modem_recovery_due = HAL_GetTick() + 120000U;
+        g_modem_recovery.next_restart_ms = HAL_GetTick() + 120000U;
         CloudTx_NetworkChanged();
         RemoteService_RevokeForNetworkChange();
         EC_Power_StartRestartSequence();

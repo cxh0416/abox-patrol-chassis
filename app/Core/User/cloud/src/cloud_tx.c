@@ -7,44 +7,25 @@
 #include "center_calibration.h"
 #include "ota_service.h"
 
-static uint8_t start_publish(CloudTxKind_t kind, const char* topic, const char* payload,
-                             uint8_t qos, uint8_t retain)
-{
-    uint64_t operation = 0U;
-    if (g_cloud.tx.kind || !MQTT_Core_IsReady() || MQTT_Core_IsPublishActive()) return 0U;
-    if (!MQTT_Core_PublishExTracked(topic, payload, qos, retain,
-                                    &operation)) return 0U;
-    if (!ABoxCloudTxTracker_Begin(&g_cloud.tx, (uint8_t)kind, operation)) {
-        MQTT_Core_RequestReconnect();
-        return 0U;
-    }
-    return 1U;
-}
 void CloudTx_NetworkChanged(void)
 {
-    ABoxCloudBootstrap_NetworkChanged(&g_cloud.cloud_bootstrap);
-    ABoxCloudTxTracker_NetworkChanged(&g_cloud.tx);
+    ABoxCloudService_NetworkChanged(&g_cloud.cloud);
+    g_cloud.external_tx_kind = 0U;
     g_cloud.mqtt_was_ready = 0U;
     g_cloud.mqtt_cancel_pending = 0U;
 }
 
-static void tx_completed(void)
+static void tx_completed(void *context, ABoxCloudJobKind kind)
 {
     char result[128];
-    uint8_t kind = 0U;
-    uint64_t operation = g_cloud.tx.operation;
-    uint32_t generation = g_cloud.tx.generation;
-    CloudTxKind_t completed;
-    if (ABoxCloudTxTracker_Receipt(&g_cloud.tx, generation, operation, 1,
-                                   &kind) != ABOX_CLOUD_TX_CONFIRMED) return;
-    completed = (CloudTxKind_t)kind;
-    (void)ABoxCloudBootstrap_Receipt(&g_cloud.cloud_bootstrap,
-                                     g_cloud.cloud_bootstrap.generation,
-                                     operation, 1);
+    CloudTxKind_t completed = kind == ABOX_CLOUD_JOB_EXTERNAL
+        ? (CloudTxKind_t)g_cloud.external_tx_kind : (CloudTxKind_t)kind;
+    (void)context;
+    g_cloud.external_tx_kind = 0U;
     if (completed == CLOUD_TX_RESPONSE)
     {
-        CloudMessages_CacheResponse(g_cloud.response_request_id, g_cloud.response_topic, g_cloud.response_payload);
-        g_cloud.response_pending = 0U;
+        CloudMessages_CacheResponse(g_cloud.cloud.response_request_id, g_cloud.response_topic, g_cloud.response_payload);
+        g_cloud.cloud.response_pending = 0U;
         if (g_cloud.response_reboots)
         {
             g_cloud.reboot_pending = 1U;
@@ -71,10 +52,6 @@ static void tx_completed(void)
     {
         MqttTrialManager_OnHeartbeatProof(MQTT_Core_GetPubOkSeq(), CloudPort_Now());
     }
-    else if (completed == CLOUD_TX_STATUS_REPORT)
-    {
-        g_cloud.status_report_request_id[0] = '\0';
-    }
     else if (completed == CLOUD_TX_LOG_CHUNK)
     {
         g_cloud.log_chunk_index++;
@@ -89,125 +66,64 @@ static void tx_completed(void)
     else if (completed == CLOUD_TX_ALERT) g_cloud.alert_pending = 0U;
 }
 
-void CloudTx_Service(void)
+static int tx_ready(void *context) { (void)context; return MQTT_Core_IsReady(); }
+static int tx_active(void *context) { (void)context; return MQTT_Core_IsPublishActive(); }
+static ABoxMqttReceiptStatus tx_receipt(void *context, uint64_t operation)
+{ (void)context; return MQTT_Core_PublishResult(operation); }
+static void tx_failed(void *context)
+{ (void)context; if (MQTT_Core_IsReady()) MQTT_Core_RequestReconnect(); }
+static int tx_publish(void *context, const ABoxCloudJob *job, uint64_t *operation)
 {
-    uint32_t now = CloudPort_Now();
-    const ChassisControl* control = RemoteService_State();
-    if (CloudTelemetry_Update(&g_cloud.telemetry, now,
-            control->session_active || CenterCalibration_IsActive() ||
-            CenterCalibration_IsActive())) {
-        g_cloud.status_report_due = now;
-        g_cloud.heartbeat_due = now;
-    }
-    if (g_cloud.tx.kind)
-    {
-        ABoxMqttReceiptStatus result = MQTT_Core_PublishResult(g_cloud.tx.operation);
-        if (result == ABOX_MQTT_RECEIPT_CONFIRMED) tx_completed();
-        else if (result != ABOX_MQTT_RECEIPT_PENDING || !MQTT_Core_IsPublishActive()) {
-            uint64_t operation = g_cloud.tx.operation;
-            uint32_t generation = g_cloud.tx.generation;
-            (void)ABoxCloudTxTracker_Receipt(&g_cloud.tx, generation, operation,
-                                              0, 0);
-            (void)ABoxCloudBootstrap_Receipt(&g_cloud.cloud_bootstrap,
-                                             g_cloud.cloud_bootstrap.generation,
-                                             operation, 0);
-            /* A failed modem publish has no completion sequence. Recover the
-             * link instead of leaving telemetry permanently queued. */
-            if (MQTT_Core_IsReady()) MQTT_Core_RequestReconnect();
-            return;
+    const char *topic = 0, *payload = g_cloud.tx_payload;
+    uint8_t encoded = 0U, qos = 1U, retain = 0U;
+    (void)context;
+    switch (job->kind) {
+    case ABOX_CLOUD_JOB_RESPONSE:
+        if (!g_cloud.cloud.response_pending) {
+            (void)CloudMessages_ScheduleSyncResponse(job->request_id);
+            return 0;
         }
-        else return;
+        topic=g_cloud.response_topic; payload=g_cloud.response_payload; encoded=1U; break;
+    case ABOX_CLOUD_JOB_MANIFEST:
+        topic=g_cloud.topic_manifest; retain=1U;
+        encoded=CloudMessages_BuildManifest(g_cloud.tx_payload, sizeof(g_cloud.tx_payload)); break;
+    case ABOX_CLOUD_JOB_HEARTBEAT:
+        topic=g_cloud.topic_heartbeat; qos=0U;
+        encoded=CloudMessages_BuildHeartbeat(g_cloud.tx_payload, sizeof(g_cloud.tx_payload)); break;
+    case ABOX_CLOUD_JOB_STATE:
+        topic=g_cloud.topic_status_report;
+        g_cloud.status_report_request_id=job->request_id;
+        encoded=CloudMessages_BuildStatusReport(g_cloud.tx_payload, sizeof(g_cloud.tx_payload), job->reason);
+        g_cloud.status_report_request_id=0; break;
+    default: return 0;
     }
-    if (!MQTT_Core_IsReady() || MQTT_Core_IsPublishActive()) return;
-
-    /* V4 reconnect order is Manifest -> Heartbeat -> complete State. */
-    if (ABoxCloudBootstrap_Active(&g_cloud.cloud_bootstrap))
-    {
-        ABoxCloudJob job;
-        uint8_t published = 0U;
-        if (!ABoxCloudBootstrap_Next(&g_cloud.cloud_bootstrap, &job)) return;
-        if (job.kind == ABOX_CLOUD_JOB_MANIFEST &&
-            CloudMessages_BuildManifest(g_cloud.tx_payload, sizeof(g_cloud.tx_payload)))
-            published = start_publish(CLOUD_TX_MANIFEST, g_cloud.topic_manifest,
-                                      g_cloud.tx_payload, 1U, 1U);
-        else if (job.kind == ABOX_CLOUD_JOB_HEARTBEAT &&
-                 CloudMessages_BuildHeartbeat(g_cloud.tx_payload, sizeof(g_cloud.tx_payload)))
-            published = start_publish(CLOUD_TX_HEARTBEAT, g_cloud.topic_heartbeat,
-                                      g_cloud.tx_payload, 0U, 0U);
-        else if (job.kind == ABOX_CLOUD_JOB_STATE &&
-                 CloudMessages_BuildStatusReport(g_cloud.tx_payload,
-                                                 sizeof(g_cloud.tx_payload), "reconnect")) {
-            published = start_publish(CLOUD_TX_STATUS_REPORT,
-                                      g_cloud.topic_status_report, g_cloud.tx_payload, 1U, 0U);
-            if (published) CloudMessages_RememberStatusSnapshot(now);
-        }
-        if (published) {
-            if (!ABoxCloudBootstrap_Begin(&g_cloud.cloud_bootstrap,
-                                          &job, g_cloud.tx.operation))
-                MQTT_Core_RequestReconnect();
-        }
-        return;
-    }
-
-    if (g_cloud.response_pending)
-    {
-        (void)start_publish(CLOUD_TX_RESPONSE, g_cloud.response_topic, g_cloud.response_payload, 1U, 0U);
-        return;
-    }
-    if (g_cloud.sync_state_request_id[0] != '\0' && g_cloud.status_report_request_id[0] == '\0')
-    {
-        if (CloudMessages_ScheduleSyncResponse(g_cloud.sync_state_request_id)) {
-            CloudMessages_CopyString(g_cloud.status_report_request_id,
-                                     sizeof(g_cloud.status_report_request_id), g_cloud.sync_state_request_id);
-            g_cloud.sync_state_request_id[0] = '\0';
-            g_cloud.status_report_due = now;
-        }
-        return;
-    }
-    {
-        const char* event_reason = CloudMessages_StatusChangeReason(now);
-        if (event_reason != 0)
-        {
-            /* Keep a short observation tail after faults and power/state changes. */
-            CloudTelemetry_Wake(&g_cloud.telemetry, now);
-            if (CloudMessages_BuildStatusReport(g_cloud.tx_payload, sizeof(g_cloud.tx_payload), event_reason) &&
-                start_publish(CLOUD_TX_STATUS_REPORT, g_cloud.topic_status_report, g_cloud.tx_payload, 1U, 0U))
-                CloudMessages_RememberStatusSnapshot(now);
-            return;
-        }
-    }
-    if ((int32_t)(now - g_cloud.heartbeat_due) >= 0)
-    {
-        if (CloudMessages_BuildHeartbeat(g_cloud.tx_payload, sizeof(g_cloud.tx_payload)) &&
-            start_publish(CLOUD_TX_HEARTBEAT, g_cloud.topic_heartbeat, g_cloud.tx_payload, 0U, 0U))
-            g_cloud.heartbeat_due = now + (g_cloud.telemetry.fast ? CLOUD_ACTIVE_HEARTBEAT_MS : CLOUD_IDLE_HEARTBEAT_MS);
-        return;
-    }
-    if ((int32_t)(now - g_cloud.status_report_due) >= 0)
-    {
-        if (CloudMessages_BuildStatusReport(g_cloud.tx_payload, sizeof(g_cloud.tx_payload), "periodic") &&
-            start_publish(CLOUD_TX_STATUS_REPORT, g_cloud.topic_status_report, g_cloud.tx_payload, 1U, 0U))
-        {
-            g_cloud.status_report_due = now + (g_cloud.telemetry.fast ? CLOUD_ACTIVE_STATUS_MS : CLOUD_IDLE_STATUS_MS);
-            CloudMessages_RememberStatusSnapshot(now);
-        }
-        return;
-    }
+    if (!encoded || !MQTT_Core_PublishExTracked(topic, payload, qos, retain, operation)) return 0;
+    if (job->kind == ABOX_CLOUD_JOB_STATE) CloudMessages_RememberStatusSnapshot(CloudPort_Now());
+    return 1;
+}
+static int send_external(CloudTxKind_t kind, const char *topic, const char *payload,
+                         uint8_t qos, uint64_t *operation)
+{
+    if (!MQTT_Core_PublishExTracked(topic, payload, qos, 0U, operation)) return -1;
+    g_cloud.external_tx_kind=(uint8_t)kind;
+    return 1;
+}
+static int tx_external(void *context, uint64_t *operation)
+{
+    (void)context;
     if (g_cloud.log_active)
     {
         if (!CloudMessages_BuildLogChunk(g_cloud.tx_payload, sizeof(g_cloud.tx_payload)))
         {
             g_cloud.log_active = 0U;
             CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, g_cloud.log_request_id, 500U, "LOG_ENCODING_FAILED");
-            return;
+            return -1;
         }
-        (void)start_publish(CLOUD_TX_LOG_CHUNK, g_cloud.topic_log, g_cloud.tx_payload, 1U, 0U);
-        return;
+        return send_external(CLOUD_TX_LOG_CHUNK, g_cloud.topic_log, g_cloud.tx_payload, 1U, operation);
     }
     if (g_cloud.alert_pending)
     {
-        (void)start_publish(CLOUD_TX_ALERT, g_cloud.topic_log, g_cloud.alert_payload, 0U, 0U);
-        return;
+        return send_external(CLOUD_TX_ALERT, g_cloud.topic_log, g_cloud.alert_payload, 0U, operation);
     }
     {
         char line[160];
@@ -215,10 +131,36 @@ void CloudTx_Service(void)
         if (AppLog_ReadMqttAlert(line, sizeof(line), &level) > 0U && CloudMessages_BuildAlert(g_cloud.alert_payload, sizeof(g_cloud.alert_payload), line, level))
         {
             g_cloud.alert_pending = 1U;
-            (void)start_publish(CLOUD_TX_ALERT, g_cloud.topic_log, g_cloud.alert_payload, 0U, 0U);
-            return;
+            return send_external(CLOUD_TX_ALERT, g_cloud.topic_log, g_cloud.alert_payload, 0U, operation);
         }
     }
+    return 0;
+}
+static const ABoxCloudServicePort tx_port = {
+    .ready=tx_ready, .publish_active=tx_active, .receipt=tx_receipt,
+    .publish=tx_publish, .external=tx_external, .completed=tx_completed, .failed=tx_failed
+};
+void CloudTx_Service(void)
+{
+    uint32_t now=CloudPort_Now();
+    const ChassisControl *control=RemoteService_State();
+    if (CloudTelemetry_Update(&g_cloud.telemetry, now,
+            control->session_active || CenterCalibration_IsActive())) {
+        g_cloud.cloud.status_due=now;
+        g_cloud.cloud.heartbeat_due=now;
+    }
+    g_cloud.cloud.options.heartbeat_period_ms=g_cloud.telemetry.fast
+        ? CLOUD_ACTIVE_HEARTBEAT_MS : CLOUD_IDLE_HEARTBEAT_MS;
+    g_cloud.cloud.options.status_period_ms=g_cloud.telemetry.fast
+        ? CLOUD_ACTIVE_STATUS_MS : CLOUD_IDLE_STATUS_MS;
+    if (!ABoxCloudService_Bootstrapping(&g_cloud.cloud) && MQTT_Core_IsReady()) {
+        const char *reason=CloudMessages_StatusChangeReason(now);
+        if (reason) {
+            CloudTelemetry_Wake(&g_cloud.telemetry, now);
+            (void)ABoxCloudService_WakeState(&g_cloud.cloud, reason);
+        }
+    }
+    if (ABoxCloudService_Poll(&g_cloud.cloud, &tx_port, now) != ABOX_CLOUD_POLL_IDLE) return;
     if (!MQTT_Core_IsIccidValid() && !MQTT_Core_IsIccidPending() && (int32_t)(now - g_cloud.iccid_due) >= 0)
     {
         MQTT_Core_RequestIccid();

@@ -59,9 +59,9 @@ typedef struct {
     uint8_t rx_ring[CLOUD_RX_RING_SIZE];
     ABoxEc800Rx ec800_rx;
 
-    char topic_heartbeat[CLOUD_TOPIC_SIZE];
+    char topic_heartbeat[64];
     char topic_manifest[64];
-    char topic_status_report[CLOUD_TOPIC_SIZE];
+    char topic_status_report[64];
     char topic_config_cmd[CLOUD_TOPIC_SIZE];
     char topic_config_resp[CLOUD_TOPIC_SIZE];
     char topic_ota_cmd[CLOUD_TOPIC_SIZE];
@@ -69,8 +69,9 @@ typedef struct {
     char topic_log[CLOUD_TOPIC_SIZE];
     char topic_control_cmd[CLOUD_TOPIC_SIZE];
     char topic_control_resp[CLOUD_TOPIC_SIZE];
-    ABoxCloudBootstrap cloud_bootstrap;
-    ABoxCloudTxTracker tx;
+    ABoxCloudService cloud;
+    char pending_sync_request_id[65];
+    uint8_t external_tx_kind;
 
     uint8_t initialized;
     uint8_t config_ready;
@@ -80,11 +81,8 @@ typedef struct {
     uint8_t ota_begin_pending;
     uint8_t tls_provision_started;
     char ota_request_id[CLOUD_REQUEST_ID_SIZE];
-    uint32_t heartbeat_due;
-    uint32_t status_report_due;
     uint32_t status_report_sequence;
-    char status_report_request_id[CLOUD_REQUEST_ID_SIZE];
-    char sync_state_request_id[CLOUD_REQUEST_ID_SIZE];
+    const char *status_report_request_id;
     CloudTelemetry telemetry;
     ChassisStatusSnapshot_t status_snapshot;
     uint32_t iccid_due;
@@ -92,7 +90,6 @@ typedef struct {
 
     char tx_payload[CLOUD_PAYLOAD_SIZE];
 
-    uint8_t response_pending;
     uint8_t response_reboots;
     uint8_t response_ack_rollback;
     uint8_t mqtt_candidate_pending;
@@ -102,7 +99,6 @@ typedef struct {
 #if PATROL_CHASSIS_MQTT_LAB_TEST
     uint8_t modem_restart_pending;
 #endif
-    char response_request_id[CLOUD_REQUEST_ID_SIZE];
     char response_topic[CLOUD_TOPIC_SIZE];
     char response_payload[CLOUD_PAYLOAD_SIZE];
 

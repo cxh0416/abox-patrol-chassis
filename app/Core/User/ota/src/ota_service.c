@@ -5,7 +5,7 @@
 
 #include "abox_boot_v2.h"
 #include "abox_boot_v2_app.h"
-#include "abox_boot_v2_ec800_port.h"
+#include "abox_boot_v2_services.h"
 #include "abox_boot_v2_ca_pem.h"
 #include "app_log.h"
 #include "app_version.h"
@@ -16,25 +16,6 @@
 #include "patrol_config.h"
 
 static ABoxBootV2Ec800Adapter g_adapter;
-
-static uint32_t adapter_tick(void *context) { (void)context; return HAL_GetTick(); }
-
-static void adapter_mqtt_pause(void *context, uint8_t paused) { (void)context; MQTT_Core_SetPaused(paused); }
-static int adapter_mqtt_stop(void *context, uint32_t now)
-{
-    (void)context;
-    return MQTT_Core_Stop(now);
-}
-static int adapter_workspace_borrow(void *context)
-{
-    (void)context;
-    return MQTT_Core_BorrowWorkspace();
-}
-static void adapter_workspace_return(void *context)
-{
-    (void)context;
-    MQTT_Core_ReturnWorkspace();
-}
 
 static uint8_t adapter_mqtt_client_index(void *context)
 {
@@ -62,15 +43,9 @@ void OtaService_Init(Ec800AtCore_t *at)
     extern uint8_t __app_image_end;
 
     memset(&port, 0, sizeof(port));
-    (void)ABoxBootV2Ec800Adapter_Bind(&g_adapter, at, &port);
-    port.tick_ms = adapter_tick;
-    port.mqtt_pause = adapter_mqtt_pause;
-    port.mqtt_stop = adapter_mqtt_stop;
-    port.workspace_borrow = adapter_workspace_borrow;
-    port.workspace_return = adapter_workspace_return;
+    (void)ABoxBootV2Ec800Adapter_BindServices(&g_adapter, at, MQTT_Core_Bridge(), &port);
     port.mqtt_client_index = adapter_mqtt_client_index;
     port.log = adapter_log;
-    port.transfer_buffer = MQTT_Core_OtaWorkspace(&port.transfer_buffer_size);
 
     memset(&config, 0, sizeof(config));
     config.ota_origin = runtime->ota_origin;

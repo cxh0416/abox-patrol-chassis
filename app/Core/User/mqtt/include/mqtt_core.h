@@ -1,3 +1,4 @@
+#include "abox_mqtt_ec800_bridge.h"
 #ifndef __MQTT_CORE_H__
 #define __MQTT_CORE_H__
 
@@ -110,5 +111,7 @@ const char* MQTT_Core_GetIccid(void);
 uint8_t MQTT_Core_IsIccidPending(void);
 uint8_t MQTT_Core_IsRxCollecting(void);
 void MQTT_Core_GetRxDiagnostics(MQTT_CoreRxDiagnostics_t* diagnostics);
+
+ABoxMqttEc800Bridge *MQTT_Core_Bridge(void);
 
 #endif

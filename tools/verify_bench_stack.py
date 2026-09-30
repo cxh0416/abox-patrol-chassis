@@ -13,7 +13,7 @@ for path in build.rglob('*.su'):
                 continue
             name=fields[0].rsplit(':',1)[-1].split('.')[0]
             frames[name]=max(frames.get(name,0),int(fields[1]))
-chain=['Patrol_RemoteTask','CloudService_Task','CloudCommands_OnMessage','handle_config_request','PatrolConfig_SetCalibration',
+chain=['Patrol_RemoteTask','CloudService_Task','ABoxAppService_Poll','app_transport','MQTT_Core_Task','CloudCommands_OnMessage','handle_config_request','PatrolConfig_SetCalibration',
        'PatrolConfig_Save','OTA_Info_SaveRemoteConfig','ota_info_write_raw']
 for name in chain:
     if name not in frames:raise SystemExit('Missing stack evidence: '+name)
@@ -22,7 +22,8 @@ source=(Path(__file__).resolve().parents[1]/'app/Core/User/system/src/patrol_rto
 capacity=int(re.search(r'#define PATROL_REMOTE_STACK_WORDS (\d+)U',source)[1])*4
 assert used+1024<=capacity, (used,capacity)
 print(f'PASS calibration stack: known frames {used} + 1024 byte reserve <= {capacity}')
-trial_chain=['Patrol_RemoteTask','CloudService_Task','MqttTrialManager_Poll',
+trial_chain=['Patrol_RemoteTask','CloudService_Task','ABoxAppService_Poll','app_before_cloud','MqttTrialManager_Poll',
+             'ABoxMaintenanceService_Commit','ABoxConfigStore_Commit','write_config_snapshot',
              'PatrolConfig_Save','OTA_Info_SaveRemoteConfig','ota_info_write_raw',
              'ota_info_write_raw_unlocked']
 for name in trial_chain:
