@@ -187,15 +187,15 @@ int main(void)
     PatrolDiagnosticsSnapshot diagnostic_snapshot;
     char fixed[24];
     ChassisCloudCommand command;
-    const char json[] = "{\"version\":\"4.0\",\"data\":{\"requestId\":\"r1\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"acquire\",\"sessionId\":\"s1\",\"seq\":1,\"leaseMs\":1000,\"driveRpm\":500,\"steeringDeg\":30}}}";
-    const char over_limit[] = "{\"version\":\"4.0\",\"data\":{\"requestId\":\"r3\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"renew\",\"sessionId\":\"s1\",\"seq\":2,\"leaseMs\":1000,\"driveRpm\":200,\"steeringDeg\":30.001}}}";
-    const char over_rpm[] = "{\"version\":\"4.0\",\"data\":{\"requestId\":\"r4\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"renew\",\"sessionId\":\"s1\",\"seq\":2,\"leaseMs\":1000,\"driveRpm\":501,\"steeringDeg\":0}}}";
-    const char fractional_rpm[] = "{\"version\":\"4.0\",\"data\":{\"requestId\":\"r5\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"renew\",\"sessionId\":\"s1\",\"seq\":2,\"leaseMs\":1000,\"driveRpm\":1.5,\"steeringDeg\":0}}}";
-    const char fractional_lease[] = "{\"version\":\"4.0\",\"data\":{\"requestId\":\"r6\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"renew\",\"sessionId\":\"s1\",\"seq\":2,\"leaseMs\":999.5,\"driveRpm\":0,\"steeringDeg\":0}}}";
-    const char sub_mdeg_steering[] = "{\"version\":\"4.0\",\"data\":{\"requestId\":\"r7\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"renew\",\"sessionId\":\"s1\",\"seq\":2,\"leaseMs\":1000,\"driveRpm\":0,\"steeringDeg\":1.0005}}}";
-    const char invalid_params[] = "{\"version\":\"4.0\",\"data\":{\"requestId\":\"r2\",\"command\":\"chassis_control\",\"params\":{}}}";
-    const char power_on[] = "{\"version\":\"4.0\",\"data\":{\"requestId\":\"p1\",\"deviceType\":\"vehicle_chassis\",\"command\":\"power_on\",\"params\":null}}";
-    const char power_bad_params[] = "{\"version\":\"4.0\",\"data\":{\"requestId\":\"p2\",\"deviceType\":\"vehicle_chassis\",\"command\":\"power_off\",\"params\":{}}}";
+    const char json[] = "{\"version\":\"4.0\",\"timestamp\":1788838333000,\"data\":{\"requestId\":\"r1\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"acquire\",\"sessionId\":\"s1\",\"seq\":1,\"leaseMs\":1000,\"driveRpm\":500,\"steeringDeg\":30}}}";
+    const char over_limit[] = "{\"version\":\"4.0\",\"timestamp\":1788838333000,\"data\":{\"requestId\":\"r3\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"renew\",\"sessionId\":\"s1\",\"seq\":2,\"leaseMs\":1000,\"driveRpm\":200,\"steeringDeg\":30.001}}}";
+    const char over_rpm[] = "{\"version\":\"4.0\",\"timestamp\":1788838333000,\"data\":{\"requestId\":\"r4\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"renew\",\"sessionId\":\"s1\",\"seq\":2,\"leaseMs\":1000,\"driveRpm\":501,\"steeringDeg\":0}}}";
+    const char fractional_rpm[] = "{\"version\":\"4.0\",\"timestamp\":1788838333000,\"data\":{\"requestId\":\"r5\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"renew\",\"sessionId\":\"s1\",\"seq\":2,\"leaseMs\":1000,\"driveRpm\":1.5,\"steeringDeg\":0}}}";
+    const char fractional_lease[] = "{\"version\":\"4.0\",\"timestamp\":1788838333000,\"data\":{\"requestId\":\"r6\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"renew\",\"sessionId\":\"s1\",\"seq\":2,\"leaseMs\":999.5,\"driveRpm\":0,\"steeringDeg\":0}}}";
+    const char sub_mdeg_steering[] = "{\"version\":\"4.0\",\"timestamp\":1788838333000,\"data\":{\"requestId\":\"r7\",\"deviceType\":\"vehicle_chassis\",\"command\":\"chassis_control\",\"params\":{\"action\":\"renew\",\"sessionId\":\"s1\",\"seq\":2,\"leaseMs\":1000,\"driveRpm\":0,\"steeringDeg\":1.0005}}}";
+    const char invalid_params[] = "{\"version\":\"4.0\",\"timestamp\":1788838333000,\"data\":{\"requestId\":\"r2\",\"command\":\"chassis_control\",\"params\":{}}}";
+    const char power_on[] = "{\"version\":\"4.0\",\"timestamp\":1788838333000,\"data\":{\"requestId\":\"p1\",\"deviceType\":\"vehicle_chassis\",\"command\":\"power_on\",\"expiresAt\":1788838338000,\"params\":null}}";
+    const char power_bad_params[] = "{\"version\":\"4.0\",\"timestamp\":1788838333000,\"data\":{\"requestId\":\"p2\",\"deviceType\":\"vehicle_chassis\",\"command\":\"power_off\",\"params\":{}}}";
 
     CHECK(SteeringAngle_FromControllerCount(-58015, -85123, 2710800U, 1) == 10000);
     CHECK(SteeringAngle_FromControllerCount(-112231, -85123, 2710800U, 1) == -10000);
@@ -372,6 +372,12 @@ int main(void)
           command.steering_mdeg == 30000 && strcmp(command.session_id, "s1") == 0);
     CHECK(ChassisCloud_Parse(power_on, (uint16_t)strlen(power_on), &command) == CHASSIS_CLOUD_OK);
     CHECK(command.type == CHASSIS_CLOUD_COMMAND_POWER_ON && strcmp(command.request_id, "p1") == 0);
+    char ttl[256];
+    for (unsigned duration=0; duration<=5001; duration+= duration == 0 ? 5000 : 1) {
+        snprintf(ttl,sizeof(ttl),"{\"version\":\"4.0\",\"timestamp\":10000,\"data\":{\"requestId\":\"ttl\",\"command\":\"power_on\",\"expiresAt\":%u,\"params\":null}}",10000+duration);
+        CHECK(ChassisCloud_Parse(ttl,(uint16_t)strlen(ttl),&command) ==
+            (duration == 5000 ? CHASSIS_CLOUD_OK : CHASSIS_CLOUD_INVALID));
+    }
     CHECK(ChassisCloud_Parse(power_bad_params, (uint16_t)strlen(power_bad_params), &command) ==
           CHASSIS_CLOUD_INVALID);
     CHECK(ChassisCloud_Parse(over_limit, (uint16_t)strlen(over_limit), &command) == CHASSIS_CLOUD_INVALID);

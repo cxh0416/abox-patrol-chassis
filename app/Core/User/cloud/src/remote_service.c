@@ -8,16 +8,25 @@
 #include "fixed_point.h"
 #include "main.h"
 #include "time_base.h"
+#include "abox_mqtt_v4.h"
 #include "patrol_config.h"
 #include "vehicle_power_output.h"
 #include <stdlib.h>
 #include "FreeRTOS.h"
 #include "task.h"
 
+typedef struct {
+    char request_id[64];
+    uint64_t expires_at, protect_until, protect_mono;
+    uint16_t code;
+    uint8_t power_on;
+} ABoxPowerReplay;
+static ABoxPowerReplay g_power_replay[4];
+
 static uint8_t g_remote_initialized;
 static ChassisControl g_control;
 static char g_last_request_id[64];
-static char g_last_response[512];
+static char g_last_response[320] /* fixed motion response, including a 63-byte requestId */;
 static uint32_t g_last_request_hash;
 static uint16_t g_last_request_length;
 #if PATROL_CHASSIS_MQTT_LAB_TEST
@@ -118,6 +127,7 @@ void RemoteService_Init(void)
     g_last_response[0] = '\0';
     g_last_request_hash = 0U;
     g_last_request_length = 0U;
+    memset(g_power_replay, 0, sizeof(g_power_replay));
     g_remote_initialized = 1U;
     APP_LOGI("REMOTE", "initialized calibrated=%u; outputs gated",
              (unsigned int)feedback.calibrated);
@@ -157,9 +167,11 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
     char timestamp[21];
     char steering_value[24];
     int written;
-    uint32_t payload_hash;
+    uint32_t payload_hash = 0U;
     uint8_t request_conflict = 0U;
-    uint8_t stop_applied = 0U;
+    uint8_t stop_applied = 0U, power_cached = 0U;
+    int power_slot = -1;
+    ABoxClockSnapshot clock = TimeBase_GetSnapshot();
     if (!g_remote_initialized || payload == 0 || response == 0 || size == 0U) return 0U;
     parse_status = ChassisCloud_Parse(payload, length, &command);
     if (command.request_id[0] == '\0') return 0U;
@@ -171,6 +183,26 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
             command.seq, command.lease_ms, command.drive_rpm,
             command.steering_mdeg, HAL_GetTick());
         taskEXIT_CRITICAL();
+    }
+    /* Safety stop remains effective on replay and requestId conflict. */
+    if (parse_status == CHASSIS_CLOUD_OK && command.type == CHASSIS_CLOUD_COMMAND_POWER_OFF) {
+        RemoteService_Revoke();
+        (void)VehiclePowerOutput_Set(0U);
+    }
+    if (parse_status == CHASSIS_CLOUD_OK) {
+        for (unsigned i=0; i<4; ++i) {
+            ABoxPowerReplay *e = &g_power_replay[i];
+            if (e->request_id[0] && !strcmp(e->request_id,command.request_id)) {
+                if (command.type != CHASSIS_CLOUD_COMMAND_POWER_ON || e->expires_at != command.expires_at) {
+                    code = 4006U; message = "requestId conflict"; request_conflict = 1U;
+                } else { code = e->code; message = code == 200U ? "operation accepted" : "power output unavailable";
+                         power_cached = 1U; power_slot = (int)i; }
+                goto format_response;
+            }
+            if (!e->request_id[0] || (clock.quality == ABOX_CLOCK_SYNCHRONIZED &&
+                clock.mono_ms >= e->protect_mono && clock.utc_ms >= clock.error_ms &&
+                clock.utc_ms - clock.error_ms >= e->protect_until)) power_slot = (int)i;
+        }
     }
     payload_hash = request_hash(&command);
     if (strcmp(command.request_id, g_last_request_id) == 0 && g_last_response[0] != '\0')
@@ -195,6 +227,13 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
             command.type == CHASSIS_CLOUD_COMMAND_POWER_OFF)
         {
             uint8_t target_on = command.type == CHASSIS_CLOUD_COMMAND_POWER_ON ? 1U : 0U;
+            if (command.has_expires_at && (code = ABoxMqttV4_CheckExpiry(&clock, command.expires_at)) != 200U) {
+                message = code == 4003U ? "trusted time unavailable" : "request expired";
+                goto format_response;
+            }
+            if (target_on && power_slot < 0) {
+                code = 4003U; message = "idempotency cache full"; goto format_response;
+            }
             if (!target_on) RemoteService_Revoke();
             if (!VehiclePowerOutput_IsAvailable()) {
                 code = 5001U;
@@ -209,6 +248,15 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
                 accepted = 1U;
                 code = 200U;
                 message = "operation accepted";
+            }
+            if (target_on) {
+                ABoxPowerReplay *e = &g_power_replay[power_slot];
+                strcpy(e->request_id,command.request_id); e->expires_at=command.expires_at;
+                e->protect_until=ABoxMqttV4_IdempotencyProtectUntil(command.expires_at);
+                uint64_t lower=clock.utc_ms > clock.error_ms ? clock.utc_ms-clock.error_ms : 0U;
+                uint64_t remaining=e->protect_until > lower ? e->protect_until-lower : 0U;
+                e->protect_mono=UINT64_MAX-clock.mono_ms < remaining ? UINT64_MAX : clock.mono_ms+remaining;
+                e->code=code; e->power_on=VehiclePowerOutput_IsOn();
             }
             goto format_response;
         }
@@ -256,7 +304,7 @@ format_response:
             "{\"version\":\"4.0\",\"timestamp\":%s,\"data\":{"
             "\"requestId\":\"%s\",\"code\":%u,\"msg\":\"%s\",\"result\":{\"powerOutputOn\":%s}}}",
             timestamp, command.request_id, (unsigned int)code, message,
-            VehiclePowerOutput_IsOn() ? "true" : "false");
+            (power_cached ? g_power_replay[power_slot].power_on : VehiclePowerOutput_IsOn()) ? "true" : "false");
     else
         written = snprintf(response, size,
             "{\"version\":\"4.0\",\"timestamp\":%s,\"data\":{"
@@ -265,7 +313,7 @@ format_response:
             timestamp, command.request_id, (unsigned int)code, message,
             (int)g_control.target_rpm, steering_value, (unsigned int)g_control.stop_reason);
     if (written <= 0 || written >= size) return 0U;
-    if (!request_conflict) {
+    if (!request_conflict && command.type == CHASSIS_CLOUD_COMMAND_MOTION) {
         strncpy(g_last_request_id, command.request_id, sizeof(g_last_request_id) - 1U);
         g_last_request_id[sizeof(g_last_request_id) - 1U] = '\0';
         g_last_request_hash = payload_hash;

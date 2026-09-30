@@ -1,5 +1,6 @@
 #include "abox_app_service.h"
 #include "cloud_service.h"
+#include "time_sync.h"
 #include "cloud_internal.h"
 #include <stdio.h>
 #include <string.h>
@@ -53,7 +54,7 @@ uint32_t CloudPort_Now(void) { return HAL_GetTick(); }
 
 uint8_t CloudService_ApplyMqttIdentity(const char* vid)
 {
-    const char* subscriptions[3];
+    const char* subscriptions[4];
     if (vid == 0 || vid[0] == '\0' || strlen(vid) >= sizeof(((PatrolRemoteConfigV5_t*)0)->vid)) return 0U;
     if (!MQTT_Core_SetClientId(vid)) return 0U;
     if (!build_public_topics(vid)) return 0U;
@@ -65,7 +66,9 @@ uint8_t CloudService_ApplyMqttIdentity(const char* vid)
     subscriptions[0] = g_cloud.topic_config_cmd;
     subscriptions[1] = g_cloud.topic_ota_cmd;
     subscriptions[2] = g_cloud.topic_control_cmd;
-    MQTT_Core_SetTopics(subscriptions, 3U, g_cloud.topic_heartbeat);
+    TimeSync_Init(vid);
+    subscriptions[3] = TimeSync_ResponseTopic();
+    MQTT_Core_SetTopics(subscriptions, 4U, g_cloud.topic_heartbeat);
     return 1U;
 }
 
@@ -184,7 +187,9 @@ void CloudService_Init(void)
         CloudMessages_CopyString(mqtt.sub_topics[0], sizeof(mqtt.sub_topics[0]), g_cloud.topic_config_cmd);
         CloudMessages_CopyString(mqtt.sub_topics[1], sizeof(mqtt.sub_topics[1]), g_cloud.topic_ota_cmd);
         CloudMessages_CopyString(mqtt.sub_topics[2], sizeof(mqtt.sub_topics[2]), g_cloud.topic_control_cmd);
-        mqtt.sub_topic_count = 3U;
+        TimeSync_Init(cfg->vid);
+        CloudMessages_CopyString(mqtt.sub_topics[3], sizeof(mqtt.sub_topics[3]), TimeSync_ResponseTopic());
+        mqtt.sub_topic_count = 4U;
         CloudMessages_CopyString(mqtt.pub_topic, sizeof(mqtt.pub_topic), g_cloud.topic_heartbeat);
     }
     MQTT_Core_Init(&mqtt, CloudCommands_OnMessage);

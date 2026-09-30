@@ -13,6 +13,9 @@ static ABoxMqttEc800Bridge g_bridge;
 static ABoxMqttEc800Config g_transport_config;
 static const char *g_subscriptions[4];
 static MQTT_CoreMsgCallback_t g_message;
+static uint32_t g_ready_sequence;
+static void state_changed(void *context, ABoxMqttEc800State state)
+{ (void)context; if (state == ABOX_MQTT_EC800_READY) ++g_ready_sequence; }
 static void (*g_network_changed)(void);
 static uint8_t g_header[192], g_topic[TOPIC_CAPACITY];
 static uint8_t g_payload[PAYLOAD_CAPACITY], g_outgoing[1536U];
@@ -58,6 +61,7 @@ void MQTT_Core_Init(const MQTT_CoreConfig_t *config, MQTT_CoreMsgCallback_t call
     memset(&g_config, 0, sizeof(g_config));
     if (config) g_config = *config;
     g_message = callback;
+    g_ready_sequence = 0U;
     g_network_changed = 0;
     memset(&g_bridge, 0, sizeof(g_bridge));
     build_config();
@@ -68,6 +72,7 @@ void MQTT_Core_SetAtCore(Ec800AtCore_t *at)
     ABoxMqttEc800Buffers buffers;
     static const ABoxMqttEc800BridgeHooks hooks = {
         .message = message,
+        .state_changed = state_changed,
         .network_changed = network_changed
     };
     if (!at) return;
@@ -274,3 +279,5 @@ void MQTT_Core_GetRxDiagnostics(MQTT_CoreRxDiagnostics_t *diagnostics)
 }
 
 ABoxMqttEc800Bridge *MQTT_Core_Bridge(void) { return &g_bridge; }
+
+uint32_t MQTT_Core_GetReadySeq(void) { return g_ready_sequence; }

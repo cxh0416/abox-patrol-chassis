@@ -52,6 +52,7 @@ int MqttRuntime_Init(ABoxEc800At *at, const ABoxMqttConfig *c, uint32_t now) {
   if (!ABoxMqttRuntimePort_BindCore(&p, &g_core_api)) return 0;
   ABoxMqttRuntimeOptions_StandardEc800(&o, MQTT_RUNTIME_OWNER,
                                         PATROL_MQTT_TLS_PROFILE_DEFAULT);
+  o.query_clock_mode = 1U;
   p.ca_ready = ca_ready;
   p.time_valid = time_valid;
   p.observe_modem_line = observe_line;

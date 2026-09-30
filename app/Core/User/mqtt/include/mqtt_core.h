@@ -114,4 +114,6 @@ void MQTT_Core_GetRxDiagnostics(MQTT_CoreRxDiagnostics_t* diagnostics);
 
 ABoxMqttEc800Bridge *MQTT_Core_Bridge(void);
 
+uint32_t MQTT_Core_GetReadySeq(void);
+
 #endif

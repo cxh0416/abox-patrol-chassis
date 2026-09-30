@@ -15,7 +15,7 @@
 #define CLOUD_RX_RING_SIZE 4096U
 #define CLOUD_PAYLOAD_SIZE 1536U
 #define CLOUD_PAYLOAD_LIMIT 1535U
-#define CLOUD_TOPIC_SIZE 128U
+#define CLOUD_TOPIC_SIZE 64U /* 11-byte prefix + 31-byte VID + 21-byte suffix + NUL */
 #define CLOUD_REQUEST_ID_SIZE CLOUD_PROTOCOL_REQUEST_ID_SIZE
 #define CLOUD_REBOOT_DELAY_MS 300U
 /* Keep the diagnostic snapshot bounded so the shared TLS manager fits while

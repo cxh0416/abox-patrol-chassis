@@ -1,4 +1,5 @@
 #include "cloud_telemetry_scheduler_stubs.h"
+void TimeSync_Task(void) {}
 static void drain(void)
 {
     /* Complete the independent sends without simulating modem latency. */

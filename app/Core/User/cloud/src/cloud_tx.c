@@ -1,6 +1,7 @@
 #include "cloud_internal.h"
 #include <stdio.h>
 #include "mqtt_core.h"
+#include "time_sync.h"
 #include "mqtt_runtime.h"
 #include "mqtt_trial_manager.h"
 #include "remote_service.h"
@@ -112,6 +113,8 @@ static int send_external(CloudTxKind_t kind, const char *topic, const char *payl
 static int tx_external(void *context, uint64_t *operation)
 {
     (void)context;
+    TimeSync_Task();
+    if (MQTT_Core_IsPublishActive()) return 0;
     if (g_cloud.log_active)
     {
         if (!CloudMessages_BuildLogChunk(g_cloud.tx_payload, sizeof(g_cloud.tx_payload)))

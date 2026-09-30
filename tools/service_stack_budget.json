@@ -15,6 +15,36 @@
       "OTA_Info_SaveRemoteConfig",
       "ota_info_write_raw",
       "ota_info_write_raw_unlocked"
+    ],
+    "clock_sync_apply": [
+      "Patrol_RemoteTask",
+      "CloudService_Task",
+      "ABoxAppService_Poll",
+      "app_cloud",
+      "CloudTx_Service",
+      "ABoxCloudService_Poll",
+      "tx_external",
+      "TimeSync_Task",
+      "ABoxTimeSync_Poll",
+      "apply",
+      "TimeBase_Synchronize",
+      "ABoxClock_Synchronize",
+      "ABoxClock_Snapshot"
+    ],
+    "clock_sync_send": [
+      "Patrol_RemoteTask",
+      "CloudService_Task",
+      "ABoxAppService_Poll",
+      "app_cloud",
+      "CloudTx_Service",
+      "ABoxCloudService_Poll",
+      "tx_external",
+      "TimeSync_Task",
+      "ABoxTimeSync_Poll",
+      "send",
+      "MQTT_Core_PublishEx",
+      "MQTT_Core_PublishExTracked",
+      "ABoxMqttEc800_Publish"
     ]
   }
 }

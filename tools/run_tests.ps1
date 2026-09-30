@@ -19,7 +19,7 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 
 $profileTest = Join-Path $hostBuild 'patrol_mqtt_profile_test.exe'
-& $gcc -std=c11 -Wall -Wextra -Werror `
+& $gcc "-I$PSScriptRoot\..\platform\components\core\include" "-I$PSScriptRoot\..\platform\components\mqtt\include" -std=c11 -Wall -Wextra -Werror `
     "-I$PSScriptRoot\..\platform\components\mqtt\include" `
     "-I$PSScriptRoot\..\platform\tests" `
     "-I$PSScriptRoot\..\app\Core\User\cloud\include" `
@@ -30,7 +30,7 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $profileTest
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 $cloudTest = Join-Path $hostBuild 'cloud_protocol_test.exe'
-& $gcc -std=c11 -Wall -Wextra `
+& $gcc "-I$PSScriptRoot\..\platform\components\core\include" "-I$PSScriptRoot\..\platform\components\mqtt\include" -std=c11 -Wall -Wextra `
     @productIncludes `
     "-I$PSScriptRoot\..\platform\components\cloud\include" `
     "-I$PSScriptRoot\..\platform\components\cjson" `
@@ -44,7 +44,7 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 $mqttAdapterTest = Join-Path $hostBuild 'mqtt_adapter_test.exe'
-& $gcc -std=c11 -Wall -Wextra -Werror `
+& $gcc "-I$PSScriptRoot\..\platform\components\core\include" "-I$PSScriptRoot\..\platform\components\mqtt\include" -std=c11 -Wall -Wextra -Werror `
     "-I$PSScriptRoot\..\tests\mqtt_adapter_stubs" `
     "-I$PSScriptRoot\..\app\Core\User\mqtt\include" `
     "-I$PSScriptRoot\..\platform\components\ec800\include" `
@@ -63,12 +63,13 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 $chassisTest = Join-Path $hostBuild 'chassis_safety_test.exe'
-& $gcc -std=c11 -Wall -Wextra `
+& $gcc "-I$PSScriptRoot\..\platform\components\core\include" "-I$PSScriptRoot\..\platform\components\mqtt\include" -std=c11 -Wall -Wextra `
     '-DPATROL_CHASSIS_ACTUATION_ENABLED=1' `
     @productIncludes `
     "-I$PSScriptRoot\..\platform\components\cjson" `
     "$PSScriptRoot\..\app\Core\User\motion\src\absolute_encoder.c" `
     "$PSScriptRoot\..\app\Core\User\cloud\src\chassis_cloud_protocol.c" `
+    "$PSScriptRoot\..\platform\components\mqtt\src\abox_mqtt_v4.c" `
     "$PSScriptRoot\..\app\Core\User\motion\src\chassis_control.c" `
     "$PSScriptRoot\..\app\Core\User\common\src\fixed_point.c" `
     "$PSScriptRoot\..\app\Core\User\motion\src\patrol_canopen.c" `
@@ -83,7 +84,7 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 $powerOffTest = Join-Path $hostBuild 'power_output_off_test.exe'
-& $gcc -std=c11 -Wall -Wextra -Werror `
+& $gcc "-I$PSScriptRoot\..\platform\components\core\include" "-I$PSScriptRoot\..\platform\components\mqtt\include" -std=c11 -Wall -Wextra -Werror `
     "-I$PSScriptRoot\..\app\Core\User\board\include" `
     "$PSScriptRoot\..\app\Core\User\board\src\vehicle_power_output.c" `
     "$PSScriptRoot\..\tests\power_output_off_test.c" -o $powerOffTest
@@ -92,7 +93,7 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 foreach ($enabled in @(0, 1)) {
     $boardPowerTest = Join-Path $hostBuild "vehicle_power_port_$enabled.exe"
-    & $gcc -std=c11 -Wall -Wextra -Werror `
+    & $gcc "-I$PSScriptRoot\..\platform\components\core\include" "-I$PSScriptRoot\..\platform\components\mqtt\include" -std=c11 -Wall -Wextra -Werror `
         "-DPATROL_CHASSIS_POWER_OUTPUT_ENABLED=$enabled" `
         '-DPATROL_CHASSIS_ACTUATION_ENABLED=1' `
         "-I$PSScriptRoot\..\app\Core\User\board\include" `
@@ -113,7 +114,7 @@ if (-not $SkipPlatformTests) {
 }
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 $benchTest = Join-Path $hostBuild 'bench_steering_test.exe'
-& $gcc -std=c11 -Wall -Wextra -Werror `
+& $gcc "-I$PSScriptRoot\..\platform\components\core\include" "-I$PSScriptRoot\..\platform\components\mqtt\include" -std=c11 -Wall -Wextra -Werror `
     @productIncludes `
     "$PSScriptRoot\..\app\Core\User\motion\src\bench_steering.c" `
     "$PSScriptRoot\..\app\Core\User\motion\src\steering_angle.c" `
@@ -123,7 +124,7 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $benchTest
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 $benchConfigTest = Join-Path $hostBuild 'control_config_session_test.exe'
-& $gcc -std=c11 -Wall -Wextra -Werror `
+& $gcc "-I$PSScriptRoot\..\platform\components\core\include" "-I$PSScriptRoot\..\platform\components\mqtt\include" -std=c11 -Wall -Wextra -Werror `
     '-DPATROL_CHASSIS_ACTUATION_ENABLED=1' `
     "-I$PSScriptRoot\..\tests\bench_stubs" `
     @productIncludes `
@@ -140,6 +141,7 @@ $benchConfigTest = Join-Path $hostBuild 'control_config_session_test.exe'
     "$PSScriptRoot\..\app\Core\User\cloud\src\cloud_protocol.c" `
     "$PSScriptRoot\..\platform\components\cloud\src\abox_cloud_internal_v2.c" `
     "$PSScriptRoot\..\app\Core\User\cloud\src\chassis_cloud_protocol.c" `
+    "$PSScriptRoot\..\platform\components\mqtt\src\abox_mqtt_v4.c" `
     "$PSScriptRoot\..\app\Core\User\common\src\fixed_point.c" `
     "$PSScriptRoot\..\app\Core\User\board\src\vehicle_power_output.c" `
     "$PSScriptRoot\..\platform\components\cjson\cJSON.c" `
@@ -148,7 +150,7 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $benchConfigTest
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 $driveTest = Join-Path $hostBuild 'bench_drive_test.exe'
-& $gcc -std=c11 -Wall -Wextra -Werror `
+& $gcc "-I$PSScriptRoot\..\platform\components\core\include" "-I$PSScriptRoot\..\platform\components\mqtt\include" -std=c11 -Wall -Wextra -Werror `
     @productIncludes `
     "$PSScriptRoot\..\app\Core\User\motion\src\bench_drive.c" `
     "$PSScriptRoot\..\app\Core\User\motion\src\patrol_canopen.c" `

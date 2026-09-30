@@ -89,6 +89,7 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 
 # Product source files and module-scoped include paths.
 include(Core/User/modules.cmake)
+abox_platform_attach_standard_clock(${CMAKE_PROJECT_NAME})
 
 # Add project symbols (macros)
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE

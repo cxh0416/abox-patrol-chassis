@@ -25,6 +25,9 @@ typedef struct {
     char request_id[64];
     char action[8];
     char session_id[40];
+    uint64_t timestamp_ms;
+    uint64_t expires_at;
+    uint8_t has_expires_at;
     uint32_t seq;
     uint32_t lease_ms;
     int16_t drive_rpm;

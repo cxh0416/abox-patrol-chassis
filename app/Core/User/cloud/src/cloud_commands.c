@@ -2,6 +2,7 @@
 #include "cloud_internal.h"
 #include "cJSON.h"
 #include "time_base.h"
+#include "time_sync.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -313,10 +314,20 @@ static __attribute__((noinline)) void handle_public_control(const char* payload)
     cJSON* request_id = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "requestId") : 0;
     cJSON* params = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "params") : 0;
     cJSON* version = root ? cJSON_GetObjectItemCaseSensitive(root, "version") : 0;
+    cJSON* timestamp = root ? cJSON_GetObjectItemCaseSensitive(root, "timestamp") : 0;
+    cJSON* expires = data ? cJSON_GetObjectItemCaseSensitive(data, "expiresAt") : 0;
     if (cJSON_IsString(version) && strcmp(version->valuestring, "4.0") == 0 &&
         cJSON_IsString(command) && strcmp(command->valuestring, "sync_state") == 0 &&
-        cJSON_IsString(request_id) && request_id->valuestring[0] != '\0' && cJSON_IsNull(params))
+        cJSON_IsString(request_id) && request_id->valuestring[0] != '\0' && cJSON_IsNull(params) &&
+        cJSON_IsNumber(timestamp) && timestamp->valuedouble >= 0 &&
+        timestamp->valuedouble <= 9007199254740991.0 &&
+        timestamp->valuedouble == (double)(uint64_t)timestamp->valuedouble)
     {
+        if (expires) {
+            CloudMessages_ScheduleSimpleError(g_cloud.topic_control_resp, request_id->valuestring,
+                                               4001U, "sync_state does not use expiresAt");
+            cJSON_Delete(root); return;
+        }
         /* get_info may already have reached the broker while its modem publish
          * acknowledgement is still pending. Keep the correlated refresh until
          * both the response slot and the previous status publish are free. */
@@ -332,6 +343,7 @@ static __attribute__((noinline)) void handle_public_control(const char* payload)
 
 void CloudCommands_OnMessage(const char* topic, const char* payload)
 {
+    if (TimeSync_OnMessage(topic, payload)) return;
     /* MQTT callbacks are serialized by the Remote task and never re-enter. */
     static CloudProtocolRequest_t request;
     CloudProtocolStatus_t status;
