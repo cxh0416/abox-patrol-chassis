@@ -73,7 +73,7 @@ def build_config_page(
     absolute_direction: int = 1,
     steering_tolerance_mdeg: int = 2000,
     calibrated: bool = False,
-    mqtt_tls_enabled: bool = False,
+    mqtt_tls_enabled: bool = True,
     mqtt_tls_profile_id: int = DEFAULT_TLS_PROFILE_ID,
 ) -> bytes:
     if not VID_RE.fullmatch(vid):
@@ -228,8 +228,8 @@ def main() -> int:
     parser.add_argument("--absolute-direction", type=int, choices=(-1, 1), default=1)
     parser.add_argument("--steering-tolerance-mdeg", type=int, default=2000)
     parser.add_argument("--calibrated", action="store_true")
-    parser.add_argument("--mqtt-tls-enabled", action="store_true",
-                        help="store the V5 policy flag only; firmware runtime remains plaintext in work package 6")
+    parser.add_argument("--mqtt-tls-enabled", action=argparse.BooleanOptionalAction, default=True,
+                        help="use TLS by default; --no-mqtt-tls-enabled is for explicit legacy/debug use")
     parser.add_argument("--mqtt-tls-profile-id", type=int, default=DEFAULT_TLS_PROFILE_ID)
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()

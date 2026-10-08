@@ -55,7 +55,7 @@ void PatrolConfig_ResetDefault(PatrolRemoteConfigV5_t* cfg)
     cfg->version = PATROL_CONFIG_VERSION;
     cfg->length = sizeof(*cfg);
     cfg->reserved_remote = 0U;
-    cfg->mqtt_tls_enabled = 0U;
+    cfg->mqtt_tls_enabled = 1U;
     cfg->mqtt_tls_profile_id = PATROL_CONFIG_TLS_PROFILE_DEFAULT;
     copy_string(cfg->vid, sizeof(cfg->vid), PATROL_CONFIG_DEFAULT_VID);
     copy_string(cfg->mqtt_host, sizeof(cfg->mqtt_host), PATROL_CONFIG_DEFAULT_MQTT_HOST);

@@ -8,6 +8,10 @@
 
 ## 公共平台收尾
 
+源码候选 `patrol-chassis-0.2.52` 与公共平台 `1f9f031` 默认使用 TLS/profile `0`；空配置仍通过既有入网审批获取逐设备凭据。配置生成器默认 TLS，Python `--no-mqtt-tls-enabled` / PowerShell `-PlainMqtt` 保留显式明文调试，已有 Config V5 不强制转换。时间修复、运动与电源安全准入保持不变。
+
+该候选按声明的正式编译选项完成 ARM 构建，主机回归通过；同型号 EC800E 台架主机名负向测试失败，尚未正式打包或进行本产品完整 TLS/授时实机验收，当前正式 dist 保持 `0.2.51`。此产品仍处于开发测试，不建立批量迁移系统。正式启用 TLS 前必须完成设备 CA、主机名、有效期、ACL 和失败恢复验收。
+
 三产品固定相同公共平台提交，具体 SHA 以子模块与正式清单为准。构建接入 `abox_platform_attach_standard_app`；运行入口为 `ABoxAppService_Init/Poll`，通信只有一个 owner。公共 Cloud port 统一响应、启动、关联状态、事件、周期及精确回执；产品提供 Profile、报文、状态和业务 handler。维护使用 `ABoxMaintenanceService` 组合 trial/executor/ConfigStore。OTA 采用现有 Boot V2 App 状态机和公共 bridge 暂停/工作区接线。
 
 产品 Config V5（400 字节） 字节 ABI 保持不变，公共 MQTT V4 冻结。真实轮速、反馈时效、转角、CAN 故障及 OTA 门禁不变；方向改变仍要求零速及连续三次左右实测不超过 20 rpm，2 秒超时撤销使能并锁存故障。正式编译选项沿用原正式版；构建不证明运动或机械反馈。

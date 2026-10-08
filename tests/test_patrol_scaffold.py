@@ -190,7 +190,7 @@ class PatrolScaffoldTests(unittest.TestCase):
         details = module.inspect_config_page(page)
         self.assertEqual(len(page), 0x800)
         self.assertFalse(details["remoteEnabled"])
-        self.assertFalse(details["mqttTlsEnabled"])
+        self.assertTrue(details["mqttTlsEnabled"])
         self.assertEqual(details["mqttTlsProfileId"], 0)
         self.assertFalse(details["calibrated"])
         self.assertEqual(details["mqttPort"], 0)
