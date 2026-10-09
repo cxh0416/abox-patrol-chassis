@@ -6,7 +6,7 @@
 #include "mqtt_runtime.h"
 #include "mqtt_core.h"
 
-static ABoxMqttConfig active = {"plain", 19683, "u", "p", 0, 0};
+static ABoxMqttConfig active = {"plain", 19683, "u", "p", 0, 0, {0}};
 static ABoxMqttConfig staged;
 static uint32_t pub_sequence;
 static unsigned activations, restores;
@@ -16,6 +16,12 @@ static unsigned fail_restore;
 static MqttRuntimeState runtime_state = ABOX_MQTT_RUNTIME_READY;
 static int first_stop_result;
 static PatrolRemoteConfigV5_t persisted;
+static PatrolRemoteConfigV5_t flash_config;
+static ABoxTlsCredentials persisted_credentials, flash_credentials;
+const ABoxTlsCredentials *PatrolConfig_MqttCredentials(void) { return &persisted_credentials; }
+void PatrolConfig_Load(void) { persisted=flash_config; persisted_credentials=flash_credentials; }
+uint8_t PatrolConfig_WriteMqttSnapshot(const PatrolRemoteConfigV5_t *c, const ABoxTlsCredentials *credentials)
+{ saves++; if (fail_save) { fail_save=0; return 0; } flash_config=*c; flash_credentials=*credentials; return 1; }
 static char identity[32];
 
 const PatrolRemoteConfigV5_t *PatrolConfig_Get(void) { return &persisted; }
@@ -24,7 +30,8 @@ uint8_t PatrolMqttConfig_FromV5(const PatrolRemoteConfigV5_t *c, ABoxMqttConfig 
 {
     if (!c || !out) return 0;
     *out = (ABoxMqttConfig){c->mqtt_host,c->mqtt_port,c->mqtt_username,c->mqtt_password,
-                            c->mqtt_tls_enabled,c->mqtt_tls_profile_id};
+                            c->mqtt_tls_enabled,c->mqtt_tls_profile_id,{0}};
+    out->tls_credentials = persisted_credentials;
     return 1;
 }
 uint8_t PatrolConfig_Save(const PatrolRemoteConfigV5_t *c)
@@ -61,8 +68,8 @@ static void to_verifying(uint32_t now)
 }
 int main(void)
 {
-    ABoxMqttConfig tls = {"tls", 19688, "u", "p", 1, 0};
-    ABoxMqttConfig plain = {"plain", 19683, "u", "p", 0, 0};
+    ABoxMqttConfig tls = {"tls", 19688, "u", "p", 1, 0, {0}};
+    ABoxMqttConfig plain = {"plain", 19683, "u", "p", 0, 0, {0}};
     MqttTrialManager_Init();
     assert(MqttTrialManager_Stage(&tls, 11, 100));
     to_verifying(100);
@@ -163,6 +170,23 @@ int main(void)
     MqttTrialManager_Poll(703);
     assert(MqttTrialManager_State() == ABOX_MQTT_TRIAL_RESTORE_FAILED);
     assert(strcmp(persisted.vid, "PATROL-NEW") == 0);
-    puts("MQTT trial manager: real phases, candidate proof, cancel restore passed");
+    /* Secret and endpoint form one trial snapshot, including save recovery. */
+    fail_restore=0; runtime_state=ABOX_MQTT_RUNTIME_READY; active=plain;
+    ABoxTlsCredentials key={0}; key.mode=ABOX_TLS_AUTH_PSK; key.generation=1;
+    strcpy(key.identity,"host-test.g1"); strcpy(key.secret,"0123456789abcdefghijklmnopqrstuv");
+    candidate=persisted; candidate.mqtt_tls_enabled=1;
+    MqttTrialManager_Init();
+    assert(MqttTrialManager_StagePersistentPsk(&candidate,&key,40,800));
+    to_verifying(800); MqttTrialManager_OnHeartbeatProof(++pub_sequence,804);
+    MqttTrialManager_Poll(805);
+    assert(MqttTrialManager_State()==ABOX_MQTT_TRIAL_COMMITTED);
+    assert(persisted_credentials.generation==1 && !memcmp(&persisted_credentials,&key,sizeof(key)));
+    MqttTrialManager_Init(); key.generation=2; strcpy(key.identity,"host-test.g2");
+    assert(MqttTrialManager_StagePersistentPsk(&candidate,&key,41,900));
+    to_verifying(900); MqttTrialManager_OnHeartbeatProof(++pub_sequence,904);
+    fail_save=1; MqttTrialManager_Poll(905);
+    assert(MqttTrialManager_State()==ABOX_MQTT_TRIAL_RESTORING);
+    assert(persisted_credentials.generation==1 && flash_credentials.generation==1);
+    puts("MQTT trial manager: real phases, secret snapshot and failed-save recovery passed");
     return 0;
 }

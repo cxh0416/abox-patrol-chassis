@@ -6,6 +6,7 @@
 #include "vehicle_steering_profile.h"
 
 static PatrolRemoteConfigV5_t g_patrol_config;
+static ABoxTlsCredentials g_mqtt_credentials;
 
 static void copy_string(char* dst, uint16_t size, const char* src)
 {
@@ -77,6 +78,7 @@ void PatrolConfig_ResetDefault(PatrolRemoteConfigV5_t* cfg)
 
 void PatrolConfig_Load(void)
 {
+    (void)OTA_Info_LoadMqttCredentials(&g_mqtt_credentials);
     if (!OTA_Info_LoadRemoteConfig(&g_patrol_config))
     {
         PatrolConfig_ResetDefault(&g_patrol_config);
@@ -90,7 +92,7 @@ void PatrolConfig_Load(void)
 
 const PatrolRemoteConfigV5_t* PatrolConfig_Get(void) { return &g_patrol_config; }
 
-uint8_t PatrolConfig_Save(const PatrolRemoteConfigV5_t* cfg)
+static uint8_t prepare_snapshot(const PatrolRemoteConfigV5_t* cfg, PatrolRemoteConfigV5_t* output)
 {
     PatrolRemoteConfigV5_t next;
     if (cfg == 0) return 0U;
@@ -110,7 +112,20 @@ uint8_t PatrolConfig_Save(const PatrolRemoteConfigV5_t* cfg)
     if (next.diag_log_level > 3U) next.diag_log_level = PATROL_CONFIG_DEFAULT_DIAG_LEVEL;
     if (next.diag_log_port == 0U) next.diag_log_port = PATROL_CONFIG_DEFAULT_DIAG_PORT;
     next.checksum = config_checksum(&next);
-    if (!OTA_Info_SaveRemoteConfig(&next)) return 0U;
+    *output = next;
+    return 1U;
+}
+
+const ABoxTlsCredentials* PatrolConfig_MqttCredentials(void) { return &g_mqtt_credentials; }
+uint8_t PatrolConfig_WriteMqttSnapshot(const PatrolRemoteConfigV5_t* cfg, const ABoxTlsCredentials* credentials)
+{
+    PatrolRemoteConfigV5_t next;
+    return prepare_snapshot(cfg, &next) && OTA_Info_SaveMqttSnapshot(&next, credentials);
+}
+uint8_t PatrolConfig_Save(const PatrolRemoteConfigV5_t* cfg)
+{
+    PatrolRemoteConfigV5_t next;
+    if (!prepare_snapshot(cfg, &next) || !OTA_Info_SaveRemoteConfig(&next)) return 0U;
     g_patrol_config = next;
     APP_LOGI("CFG", "saved vid=%s", next.vid);
     return 1U;

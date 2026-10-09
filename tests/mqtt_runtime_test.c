@@ -94,8 +94,8 @@ static void init_at(ABoxEc800At *at)
 int main(void)
 {
     ABoxEc800At at;
-    ABoxMqttConfig plain = {"plain.example", 19683U, "plain-user", "plain-pass", 0U, 0U};
-    ABoxMqttConfig tls = {"tls.example", 8883U, "tls-user", "tls-pass", 1U, 0U};
+    ABoxMqttConfig plain = {"plain.example", 19683U, "plain-user", "plain-pass", 0U, 0U, {0}};
+    ABoxMqttConfig tls = {"tls.example", 8883U, "tls-user", "tls-pass", 1U, 0U, {0}};
 
     reset_fakes(); init_at(&at);
     assert(MqttRuntime_Init(&at, &plain, now_ms));

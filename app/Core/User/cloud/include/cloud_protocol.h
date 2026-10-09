@@ -2,6 +2,7 @@
 #define PATROL_CHASSIS_CLOUD_PROTOCOL_H
 
 #include <stdint.h>
+#include "abox_ec800_tls.h"
 
 #define CLOUD_PROTOCOL_REQUEST_ID_SIZE 64U
 #define CLOUD_PROTOCOL_MAX_PAYLOAD 1023U
@@ -17,6 +18,7 @@ typedef enum {
     CLOUD_PROTOCOL_ACTION_GET_LOG,
     CLOUD_PROTOCOL_ACTION_REBOOT,
     CLOUD_PROTOCOL_ACTION_SET_MQTT,
+    CLOUD_PROTOCOL_ACTION_SET_MQTT_PSK,
     CLOUD_PROTOCOL_ACTION_OTA,
     CLOUD_PROTOCOL_ACTION_GET_CAN_DIAG,
     CLOUD_PROTOCOL_ACTION_GET_CALIBRATION,
@@ -53,6 +55,7 @@ typedef struct {
     uint16_t mqtt_port;
     char mqtt_username[CLOUD_PROTOCOL_MQTT_USER_SIZE];
     char mqtt_password[CLOUD_PROTOCOL_MQTT_PASSWORD_SIZE];
+    ABoxTlsCredentials mqtt_psk;
     uint8_t mqtt_tls_enabled;
     uint8_t mqtt_tls_profile_id;
     char center_session_id[40];

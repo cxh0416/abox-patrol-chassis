@@ -74,6 +74,16 @@ int main(void) {
  v5.mqtt_tls_enabled=0;v5.mqtt_tls_profile_id=0;v5.checksum=checksum(&v5,sizeof(v5));
  install(&v5,sizeof(v5));erase_count=0;assert(OTA_Info_LoadRemoteConfig(&out));assert(!memcmp(&out,&v5,sizeof(v5)));assert(!erase_count);
  assert(OTA_Info_SaveRemoteConfig(&v5));memset(&out,0,sizeof(out));assert(OTA_Info_LoadRemoteConfig(&out));assert(!memcmp(&out,&v5,sizeof(v5)));
+ ABoxTlsCredentials key={0},read={0};
+ assert(OTA_Info_LoadMqttCredentials(&read) && read.mode==ABOX_TLS_AUTH_CA);
+ key.mode=ABOX_TLS_AUTH_PSK;key.generation=1;
+ strcpy(key.identity,"storage-test.g1");strcpy(key.secret,"0123456789abcdefghijklmnopqrstuv");
+ assert(OTA_Info_SaveMqttSnapshot(&v5,&key));
+ assert(OTA_Info_LoadMqttCredentials(&read) && !memcmp(&read,&key,sizeof(key)));
+ assert(OTA_Info_SaveRemoteConfig(&v5));
+ assert(OTA_Info_LoadMqttCredentials(&read) && read.generation==1);
+ ((OTA_Info_t*)OTA_INFO_ADDR)->mqtt_tls_secret.checksum^=1;
+ assert(!OTA_Info_LoadMqttCredentials(&read) && read.mode==0xff);
 
  v5.checksum^=1;install(&v5,sizeof(v5));assert(!OTA_Info_LoadRemoteConfig(&out));
  v5.checksum^=1;v5.length--;v5.checksum=checksum(&v5,sizeof(v5));install(&v5,sizeof(v5));assert(!OTA_Info_LoadRemoteConfig(&out));
@@ -84,7 +94,7 @@ int main(void) {
 """, encoding="utf-8")
             cmd = [shutil.which("gcc"), "-std=c11", "-D_DEFAULT_SOURCE", "-Wno-int-to-pointer-cast",
                    "-I" + str(d), "-I" + str(ROOT / "shared/include"), str(d / "test.c"),
-                   str(ROOT / "app/Core/User/ota/src/ota_info.c"), "-o", str(d / "test.exe")]
+                   str(ROOT / "app/Core/User/ota/src/ota_info.c"), "-I" + str(ROOT / "platform/components/ec800/include"), str(ROOT / "platform/components/ec800/src/abox_tls_secret_record.c"), "-o", str(d / "test.exe")]
             result = subprocess.run(cmd, capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             subprocess.run([str(d / "test.exe")], check=True)

@@ -25,6 +25,9 @@ uint8_t PatrolConfig_SingleTurnProfileReady(void);
 void PatrolConfig_ResetDefault(PatrolRemoteConfigV5_t* cfg);
 void PatrolConfig_Load(void);
 const PatrolRemoteConfigV5_t* PatrolConfig_Get(void);
+const ABoxTlsCredentials* PatrolConfig_MqttCredentials(void);
+/* Write/readback without changing the immutable RAM stable snapshot. */
+uint8_t PatrolConfig_WriteMqttSnapshot(const PatrolRemoteConfigV5_t*, const ABoxTlsCredentials*);
 uint8_t PatrolConfig_Save(const PatrolRemoteConfigV5_t* cfg);
 uint8_t PatrolConfig_SetMqtt(const char* vid, const char* host, uint16_t port, const char* username,
                           const char* password);

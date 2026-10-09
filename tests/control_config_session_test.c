@@ -8,6 +8,7 @@
 #include <string.h>
 
 static PatrolRemoteConfigV5_t flash;
+static ABoxTlsCredentials flash_credentials;
 static uint8_t valid, save_ok = 1, power_level;
 static uint32_t tick = 1000;
 static uint64_t utc_now = 1788838333000ULL;
@@ -20,6 +21,14 @@ uint8_t TimeBase_FormatUtcMs(char* s, uint16_t n) { snprintf(s, n, "178883833300
 uint8_t OTA_Info_LoadRemoteConfig(PatrolRemoteConfigV5_t* c) { if (valid) *c = flash; return valid; }
 uint8_t OTA_Info_SaveRemoteConfig(const PatrolRemoteConfigV5_t* c)
 { if (!save_ok) return 0; flash = *c; valid = 1; return 1; }
+uint8_t OTA_Info_LoadMqttCredentials(ABoxTlsCredentials* c)
+{ if (!c) return 0; *c = flash_credentials; return 1; }
+uint8_t OTA_Info_SaveMqttSnapshot(const PatrolRemoteConfigV5_t* c, const ABoxTlsCredentials* credentials)
+{
+    if (!credentials || !OTA_Info_SaveRemoteConfig(c)) return 0;
+    flash_credentials = *credentials;
+    return 1;
+}
 static uint8_t write_power(uint8_t on) { power_level = on; return 1; }
 
 static void command(const char* session, int rpm, int angle, const char* action, int seq,

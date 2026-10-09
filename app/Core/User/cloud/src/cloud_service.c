@@ -16,6 +16,10 @@
 #include "patrol_config.h"
 #include "patrol_enrollment.h"
 #include "remote_service.h"
+#ifdef ABOX_PSK_STATION
+#include "abox_psk_station.h"
+#include "mqtt_trial_persistent.h"
+#endif
 
 CloudContext g_cloud;
 static uint32_t g_enroll_provision_due;
@@ -46,6 +50,8 @@ static uint8_t build_public_topics(const char* vid)
 uint8_t CloudService_NeedsEnrollment(void)
 {
     const PatrolRemoteConfigV5_t *cfg = PatrolConfig_Get();
+    ABoxMqttTrialState state = MqttTrialManager_State();
+    if (state >= ABOX_MQTT_TRIAL_WAIT_ACCEPT && state <= ABOX_MQTT_TRIAL_RESTORING) return 0;
     return cfg != 0 && (!PatrolConfig_IsCloudReady(cfg) ||
            (cfg->reserved0 != 1U && strcmp(cfg->vid, PATROL_CONFIG_DEFAULT_VID) == 0));
 }
@@ -211,15 +217,47 @@ void CloudService_Init(void)
     memset(&g_cloud.status_snapshot, 0, sizeof(g_cloud.status_snapshot));
     g_cloud.iccid_due = HAL_GetTick() + 1000U;
     (void)ABoxAppService_Init(&g_app_service, &g_cloud.at_core, &g_cloud.ec800_rx, &app_port);
+#ifdef ABOX_PSK_STATION
+    ABoxPskStation_SetInputBuffer(g_cloud.last_response_payload, sizeof(g_cloud.last_response_payload));
+#endif
     g_cloud.initialized = 1U;
     if (g_cloud.config_ready) APP_LOGI("CLOUD", "configured vid=%s broker=%s:%u", cfg->vid, cfg->mqtt_host, cfg->mqtt_port);
     else APP_LOGW("CLOUD", "awaiting HTTPS enrollment");
 }
 
+#ifdef ABOX_PSK_STATION
+static int stage_station_psk(const ABoxPskStationInput *input)
+{
+    PatrolRemoteConfigV5_t next = *PatrolConfig_Get();
+    ABoxMqttConfig runtime;
+    const ABoxTlsCredentials *credentials = &input->credentials;
+    if (!CloudService_NeedsEnrollment() ||
+        credentials->generation <= PatrolConfig_MqttCredentials()->generation) return 0;
+    if (input->host[0]) strcpy(next.mqtt_host, input->host);
+    if (input->username[0]) strcpy(next.mqtt_username, input->username);
+    if (input->password[0]) strcpy(next.mqtt_password, input->password);
+    next.mqtt_port = input->port;
+    next.mqtt_tls_enabled = 1;
+    next.mqtt_tls_profile_id = PATROL_CONFIG_TLS_PROFILE_DEFAULT;
+    if (!PatrolMqttConfig_FromV5(&next, &runtime)) return 0;
+    runtime.tls_credentials = *credentials;
+    if (!MqttTrialManager_StartEnrollment(&runtime, next.vid, HAL_GetTick())) return 0;
+    g_cloud.config_ready = 1;
+    MqttTrialManager_Accepted(HAL_GetTick());
+    return 1;
+}
+#endif
+
 void CloudService_Task(void)
 {
     if (!g_cloud.initialized) return;
     ABoxAppService_Poll(&g_app_service, HAL_GetTick());
+#ifdef ABOX_PSK_STATION
+    if (!CloudService_NeedsEnrollment()) ABoxPskStation_SetInputBuffer(NULL, 0);
+    else if (!ABoxPskStation_Input)
+        ABoxPskStation_SetInputBuffer(g_cloud.last_response_payload, sizeof(g_cloud.last_response_payload));
+    ABoxPskStation_Poll(stage_station_psk);
+#endif
 }
 
 static void app_restart_rx(void *context)
@@ -267,7 +305,8 @@ static int app_before_cloud(void *context, uint32_t now)
         }
     }
     if (!g_cloud.config_ready || !EC_Power_IsOnDone()) return 0;
-    if (PatrolConfig_Get() != 0 && PatrolConfig_Get()->mqtt_tls_enabled && !OtaService_IsProvisioned() &&
+    if (PatrolConfig_Get() != 0 && PatrolConfig_Get()->mqtt_tls_enabled &&
+        PatrolConfig_MqttCredentials()->mode == ABOX_TLS_AUTH_CA && !OtaService_IsProvisioned() &&
         !g_cloud.tls_provision_started)
     {
         if (OtaService_BeginProvisioning()) g_cloud.tls_provision_started = 1U;

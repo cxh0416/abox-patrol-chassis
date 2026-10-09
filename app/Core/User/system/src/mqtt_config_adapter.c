@@ -1,4 +1,5 @@
 #include "mqtt_config_adapter.h"
+#include "patrol_config.h"
 
 #include <string.h>
 
@@ -28,5 +29,6 @@ uint8_t PatrolMqttConfig_FromV5(const PatrolRemoteConfigV5_t *config,
     runtime->password = config->mqtt_password;
     runtime->tls_enabled = config->mqtt_tls_enabled;
     runtime->tls_profile_id = config->mqtt_tls_profile_id;
+    runtime->tls_credentials = *PatrolConfig_MqttCredentials();
     return 1U;
 }

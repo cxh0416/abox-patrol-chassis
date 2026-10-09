@@ -13,6 +13,7 @@ class MqttRuntimeTests(unittest.TestCase):
             exe = Path(directory) / "mqtt_runtime_test.exe"
             sources = [
                 ROOT / "tests/mqtt_runtime_test.c",
+                ROOT / "platform/components/ec800/src/abox_tls_secret_record.c",
                 ROOT / "app/Core/User/mqtt/src/mqtt_runtime.c",
                 ROOT / "platform/components/mqtt/src/abox_mqtt_runtime.c",
                 ROOT / "platform/components/mqtt/src/abox_mqtt_runtime_core_port.c",

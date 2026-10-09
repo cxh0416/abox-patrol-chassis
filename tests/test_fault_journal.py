@@ -19,6 +19,7 @@ int HAL_FLASH_Program(uint32_t,uint32_t,uint64_t);
 #include <assert.h>
 #include <string.h>
 #include <stdint.h>
+#include <stddef.h>
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -69,9 +70,25 @@ int main(void) {
  /* Power after primary verification but before recovery-page erase also rolls back. */
  fail_recovery_erase_after=1; assert(!OTA_Info_Save(&next)); fail_recovery_erase_after=-1;
  OTA_Info_Load(&loaded); assert(memcmp(&loaded,&old,sizeof(old))==0);
+ /* Frozen V1 journal from the old firmware, interrupted before primary write. */
+ typedef struct { uint32_t magic; uint16_t version,length;
+   unsigned char info[offsetof(OTA_Info_t,mqtt_tls_secret)];
+   unsigned char fault_valid,reserved[3]; MotionFaultRecord fault;
+   uint32_t checksum,commit; } V1Journal;
+ V1Journal legacy={0};legacy.magic=0x43524631;legacy.version=1;
+ legacy.length=sizeof(legacy);legacy.commit=0x434F4D31;
+ memcpy(legacy.info,&old,sizeof(legacy.info));
+ uint32_t crc=0xffffffff;const unsigned char *bytes=(const unsigned char*)&legacy;
+ for(unsigned i=0;i<offsetof(V1Journal,checksum);++i){crc^=bytes[i];for(unsigned b=0;b<8;++b)crc=(crc>>1)^((crc&1)?0xedb88320:0);}
+ legacy.checksum=crc^0xffffffff;
+ memset((void*)CONFIG_RECOVERY_ADDR,255,2048);memcpy((void*)CONFIG_RECOVERY_ADDR,&legacy,sizeof(legacy));
+ memset((void*)OTA_INFO_ADDR,255,2048);
+ OTA_Info_Load(&loaded);assert(!memcmp(&loaded,&old,sizeof(legacy.info)));
+ ABoxTlsCredentials credentials={0};assert(OTA_Info_LoadMqttCredentials(&credentials));
+ assert(credentials.mode==ABOX_TLS_AUTH_CA);
  return 0;
 }
 """)
-   cmd=[shutil.which('gcc'),' -std=c11'.strip(),'-D_DEFAULT_SOURCE','-Wno-int-to-pointer-cast','-ffunction-sections','-fdata-sections','-Wl,--gc-sections','-I'+str(d),'-I'+str(ROOT/'shared/include'),str(d/'test.c'),str(ROOT/'app/Core/User/ota/src/ota_info.c'),'-o',str(d/'test.exe')]
+   cmd=[shutil.which('gcc'),' -std=c11'.strip(),'-D_DEFAULT_SOURCE','-Wno-int-to-pointer-cast','-ffunction-sections','-fdata-sections','-Wl,--gc-sections','-I'+str(d),'-I'+str(ROOT/'shared/include'),str(d/'test.c'),str(ROOT/'app/Core/User/ota/src/ota_info.c'),'-I'+str(ROOT/'platform/components/ec800/include'),str(ROOT/'platform/components/ec800/src/abox_tls_secret_record.c'),'-o',str(d/'test.exe')]
    r=subprocess.run(cmd,capture_output=True,text=True);self.assertEqual(r.returncode,0,r.stdout+r.stderr)
    subprocess.run([str(d/'test.exe')],check=True)

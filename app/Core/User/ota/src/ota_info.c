@@ -76,6 +76,16 @@ typedef struct
     uint32_t checksum;
     uint32_t commit;
 } ConfigRecoveryRecord;
+/* V1 recovery journal predates the optional secret extension. */
+typedef struct {
+    uint32_t magic;
+    uint16_t version, length;
+    uint8_t info[offsetof(OTA_Info_t, mqtt_tls_secret)];
+    uint8_t fault_valid, reserved[3];
+    MotionFaultRecord fault;
+    uint32_t checksum, commit;
+} LegacyConfigRecoveryRecord;
+
 
 _Static_assert(sizeof(ConfigRecoveryRecord) <= CONFIG_RECOVERY_PAGE_SIZE,
                "config recovery record must fit its dedicated page");
@@ -133,9 +143,21 @@ static uint8_t flash_program_words(uint32_t address, const void* data, uint32_t 
 
 static uint8_t recovery_valid(const ConfigRecoveryRecord* record)
 {
-    return record->magic == CONFIG_RECOVERY_MAGIC && record->version == 1U &&
+    return record->magic == CONFIG_RECOVERY_MAGIC && record->version == 2U &&
            record->length == sizeof(*record) && record->commit == CONFIG_RECOVERY_COMMIT &&
            record->checksum == recovery_checksum(record);
+}
+static uint8_t legacy_recovery_valid(const LegacyConfigRecoveryRecord* record)
+{
+    const uint8_t* p = (const uint8_t*)record;
+    uint32_t crc = 0xFFFFFFFFU;
+    if (record->magic != CONFIG_RECOVERY_MAGIC || record->version != 1U ||
+        record->length != sizeof(*record) || record->commit != CONFIG_RECOVERY_COMMIT) return 0;
+    for (uint32_t i = 0; i < offsetof(LegacyConfigRecoveryRecord, checksum); ++i) {
+        crc ^= p[i];
+        for (uint8_t b = 0; b < 8; ++b) crc = (crc >> 1) ^ ((crc & 1U) ? 0xEDB88320U : 0U);
+    }
+    return record->checksum == (crc ^ 0xFFFFFFFFU);
 }
 
 static uint8_t recovery_clear_unlocked(void)
@@ -146,8 +168,15 @@ static uint8_t recovery_clear_unlocked(void)
 static uint8_t recovery_restore_if_needed(void)
 {
     const ConfigRecoveryRecord* record = (const ConfigRecoveryRecord*)CONFIG_RECOVERY_ADDR;
-    if (!recovery_valid(record)) return 1U;
-    ConfigRecoveryRecord copy = *record;
+    const LegacyConfigRecoveryRecord* legacy = (const LegacyConfigRecoveryRecord*)record;
+    ConfigRecoveryRecord copy;
+    if (recovery_valid(record)) copy = *record;
+    else if (legacy_recovery_valid(legacy)) {
+        memset(&copy, 0xFF, sizeof(copy));
+        memcpy(&copy.info, legacy->info, sizeof(legacy->info));
+        copy.fault_valid = legacy->fault_valid;
+        copy.fault = legacy->fault;
+    } else return 1U;
     HAL_FLASH_Unlock();
     if (!flash_erase_page(OTA_INFO_ADDR) ||
         !flash_program_words(OTA_INFO_ADDR, &copy.info, sizeof(copy.info)) ||
@@ -203,7 +232,7 @@ static uint8_t ota_info_write_raw_unlocked(const OTA_Info_t* info)
 
     memset(&recovery, 0xFF, sizeof(recovery));
     recovery.magic = CONFIG_RECOVERY_MAGIC;
-    recovery.version = 1U;
+    recovery.version = 2U;
     recovery.length = sizeof(recovery);
     memcpy(&recovery.info, (const void*)OTA_INFO_ADDR, sizeof(recovery.info));
     recovery.fault_valid = have_fault;
@@ -397,4 +426,26 @@ void OTA_Info_IncReqFailCount(void)
     if (!OTA_Info_IsRequestValid(&info)) return;
     if (info.req_fail_count < 0xFFFFFFFFU) info.req_fail_count++;
     (void)ota_info_write_raw(&info);
+}
+
+uint8_t OTA_Info_LoadMqttCredentials(ABoxTlsCredentials* credentials)
+{
+    OTA_Info_t info;
+    ota_info_read_raw(&info);
+    return (uint8_t)ABoxTlsSecretRecord_Decode(&info.mqtt_tls_secret, credentials);
+}
+
+uint8_t OTA_Info_SaveMqttSnapshot(const PatrolRemoteConfigV5_t* cfg, const ABoxTlsCredentials* credentials)
+{
+    OTA_Info_t info;
+    ABoxTlsSecretRecord expected;
+    if (!cfg || !config_valid(cfg) || !ABoxTlsCredentials_Valid(credentials)) return 0;
+    ABoxTlsSecretRecord_Encode(&expected, credentials);
+    ota_info_read_raw(&info);
+    info.remote_config = *cfg;
+    info.mqtt_tls_secret = expected;
+    if (!ota_info_write_raw(&info)) return 0;
+    ota_info_read_raw(&info);
+    return memcmp(&info.remote_config, cfg, sizeof(*cfg)) == 0 &&
+           memcmp(&info.mqtt_tls_secret, &expected, sizeof(expected)) == 0;
 }

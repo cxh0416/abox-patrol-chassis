@@ -50,12 +50,12 @@ typedef struct
     uint8_t client_idx;
     char server_host[64];
     uint16_t server_port;
-    char client_id[64];
+    char client_id[32];
     char username[32];
     char password[64];
-    char sub_topics[4][128];
+    char sub_topics[4][72];
     uint8_t sub_topic_count;
-    char pub_topic[128];
+    char pub_topic[72];
 } MQTT_CoreConfig_t;
 
 typedef void (*MQTT_CoreMsgCallback_t)(const char* topic, const char* payload);

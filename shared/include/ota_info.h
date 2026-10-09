@@ -2,6 +2,7 @@
 #define PATROL_CHASSIS_OTA_INFO_H
 
 #include <stdint.h>
+#include "abox_tls_secret_record.h"
 
 #include "boot_cfg.h"
 
@@ -51,8 +52,11 @@ typedef struct
     char url[128];
     PatrolRemoteConfigV5_t remote_config;
     uint32_t reserved[8];
+    ABoxTlsSecretRecord mqtt_tls_secret; /* Optional extension; frozen config ABI unchanged. */
 } OTA_Info_t;
 
+uint8_t OTA_Info_LoadMqttCredentials(ABoxTlsCredentials* credentials);
+uint8_t OTA_Info_SaveMqttSnapshot(const PatrolRemoteConfigV5_t* cfg, const ABoxTlsCredentials* credentials);
 void OTA_Info_Load(OTA_Info_t* info);
 uint8_t OTA_Info_Save(const OTA_Info_t* info);
 uint8_t OTA_Info_Clear(void);

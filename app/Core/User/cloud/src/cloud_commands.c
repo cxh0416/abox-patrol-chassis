@@ -154,10 +154,21 @@ static __attribute__((noinline)) void handle_config_request(const CloudProtocolR
         else
             (void)CloudMessages_ScheduleResponse(g_cloud.topic_config_resp, request_id, 200U, "REBOOTING", "{}", 1U);
     }
-    else if (action == CLOUD_PROTOCOL_ACTION_SET_MQTT)
+    else if (action == CLOUD_PROTOCOL_ACTION_SET_MQTT || action == CLOUD_PROTOCOL_ACTION_SET_MQTT_PSK)
     {
         PatrolRemoteConfigV5_t candidate = *PatrolConfig_Get();
         ABoxMqttTrialState trial_state = MqttTrialManager_State();
+        const ABoxTlsCredentials *credentials = PatrolConfig_MqttCredentials();
+        if (action == CLOUD_PROTOCOL_ACTION_SET_MQTT_PSK) {
+            const ABoxMqttConfig *active = MqttRuntime_ActiveConfig();
+            if (!MqttRuntime_IsReady() || !active || !active->tls_enabled ||
+                active->tls_credentials.mode != ABOX_TLS_AUTH_PSK ||
+                request->mqtt_psk.generation <= credentials->generation) {
+                CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "PSK_ROTATION_REJECTED");
+                return;
+            }
+            credentials = &request->mqtt_psk;
+        } else {
         strcpy(candidate.vid, request->mqtt_vid);
         strcpy(candidate.mqtt_host, request->mqtt_host);
         candidate.mqtt_port = request->mqtt_port;
@@ -165,12 +176,13 @@ static __attribute__((noinline)) void handle_config_request(const CloudProtocolR
         strcpy(candidate.mqtt_password, request->mqtt_password);
         candidate.mqtt_tls_enabled = request->mqtt_tls_enabled;
         candidate.mqtt_tls_profile_id = request->mqtt_tls_profile_id;
+        }
         if (!boot_state_allows_reboot() || OtaService_IsBusy() ||
             g_cloud.mqtt_candidate_pending || g_cloud.mqtt_persistent_active ||
             (trial_state >= ABOX_MQTT_TRIAL_WAIT_ACCEPT && trial_state <= ABOX_MQTT_TRIAL_RESTORING) ||
             trial_state == ABOX_MQTT_TRIAL_RESTORE_FAILED) {
             CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "DEVICE_BUSY");
-        } else if (!MqttTrialManager_StagePersistent(&candidate, mqtt_trial_proof_id(request_id), CloudPort_Now())) {
+        } else if (!MqttTrialManager_StagePersistentPsk(&candidate, credentials, mqtt_trial_proof_id(request_id), CloudPort_Now())) {
             CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "RUNTIME_NOT_READY");
         } else {
             g_cloud.mqtt_candidate_pending = 1U;

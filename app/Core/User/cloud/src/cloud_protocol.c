@@ -188,6 +188,11 @@ CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, 
     else if (strcmp(action->valuestring, "mqtt_runtime_cancel") == 0)
         request->action = CLOUD_PROTOCOL_ACTION_MQTT_RUNTIME_CANCEL;
 #endif
+    else if (strcmp(action->valuestring, "set_mqtt_psk") == 0)
+    {
+        if (!ABoxCloudInternalV2_PskCredentials(params, &request->mqtt_psk)) goto done;
+        request->action = CLOUD_PROTOCOL_ACTION_SET_MQTT_PSK;
+    }
     else if (strcmp(action->valuestring, "set_mqtt") == 0)
     {
         mqtt_vid = cJSON_GetObjectItemCaseSensitive(params, "vid");

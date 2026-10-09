@@ -32,7 +32,15 @@ static int network_ready(void *user)
     return EC_Power_IsOnDone() && OtaService_IsProvisioned() && !OtaService_IsBusy();
 }
 static int needs_enrollment(void *user)
-{ (void)user; return CloudService_NeedsEnrollment(); }
+{
+    (void)user;
+#ifdef ABOX_PSK_STATION
+    /* Controlled first injection owns enrollment scratch; no HTTP enrollment. */
+    return 0;
+#else
+    return CloudService_NeedsEnrollment();
+#endif
+}
 static void mqtt_pause(void *user, uint8_t pause)
 { (void)user; MQTT_Core_SetPaused(pause); }
 

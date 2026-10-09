@@ -59,7 +59,8 @@ int main(void)
 {
     ABoxEc800AtPort at_port = {0};
     MQTT_CoreConfig_t core = {0};
-    ABoxMqttConfig config = {"broker.example", 1883U, "user", "pass", 0U, 0U};
+    ABoxMqttConfig config = {.host = "broker.example", .port = 1883U,
+                            .username = "user", .password = "pass"};
     at_port.tick_ms = tick;
     at_port.write = write_bytes;
     assert(ABoxEc800At_Init(&at, &at_port));

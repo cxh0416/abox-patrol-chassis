@@ -44,10 +44,12 @@ static uint8_t copy_candidate(const ABoxMqttConfig *c)
     g_trial.candidate.password=g_trial.candidate_password;
     return 1;
 }
+typedef struct { const PatrolRemoteConfigV5_t *config; const ABoxTlsCredentials *credentials; } MqttSnapshot;
 static int write_config_snapshot(void *context, const void *snapshot)
 {
+    const MqttSnapshot *value = snapshot;
     (void)context;
-    return PatrolConfig_Save((const PatrolRemoteConfigV5_t *)snapshot);
+    return PatrolConfig_WriteMqttSnapshot(value->config, value->credentials);
 }
 static int prepare(void*u,uint64_t s,const ABoxMqttConfig*c)
 {
@@ -94,18 +96,24 @@ int MqttTrialManager_Stage(const ABoxMqttConfig*c,uint64_t proof,uint32_t now)
     g_trial.now=now;g_trial.cancel_pending=0U;g_trial.persistent=0U;g_trial.first=0U;g_trial.flash_restore_failed=0U;
     return ABoxMqttTrial_Start(&g_trial.trial,&g_trial.stable,&g_trial.candidate,proof,now,120000U,90000U);
 }
-int MqttTrialManager_StagePersistent(const PatrolRemoteConfigV5_t *candidate, uint64_t proof, uint32_t now)
+int MqttTrialManager_StagePersistentPsk(const PatrolRemoteConfigV5_t *candidate,
+    const ABoxTlsCredentials *credentials, uint64_t proof, uint32_t now)
 {
     ABoxMqttConfig runtime, stable_runtime;
     const PatrolRemoteConfigV5_t *stable = PatrolConfig_Get();
-    if (!candidate || !stable || !PatrolConfig_IsCloudReady(candidate) ||
-        !PatrolMqttConfig_FromV5(candidate, &runtime) ||
-        !PatrolMqttConfig_FromV5(stable, &stable_runtime) ||
-        !MqttTrialManager_Stage(&runtime, proof, now)) return 0;
+    if (!candidate || !stable || !ABoxTlsCredentials_Valid(credentials) ||
+        !PatrolConfig_IsCloudReady(candidate) || !PatrolMqttConfig_FromV5(candidate, &runtime) ||
+        !PatrolMqttConfig_FromV5(stable, &stable_runtime)) return 0;
+    runtime.tls_credentials = *credentials;
+    if (!MqttTrialManager_Stage(&runtime, proof, now)) return 0;
     memcpy(g_trial.candidate_vid, candidate->vid, sizeof(g_trial.candidate_vid));
     (void)copy_stable(&stable_runtime);
     g_trial.persistent = 1U;
     return 1;
+}
+int MqttTrialManager_StagePersistent(const PatrolRemoteConfigV5_t *candidate, uint64_t proof, uint32_t now)
+{
+    return MqttTrialManager_StagePersistentPsk(candidate, PatrolConfig_MqttCredentials(), proof, now);
 }
 int MqttTrialManager_StartEnrollment(const ABoxMqttConfig *candidate, const char *vid, uint32_t now)
 {
@@ -175,8 +183,11 @@ void MqttTrialManager_Poll(uint32_t now)
             next.mqtt_tls_enabled=g_trial.candidate.tls_enabled;
             next.mqtt_tls_profile_id=g_trial.candidate.tls_profile_id;
             if (g_trial.first) next.reserved0=1U;
+            const MqttSnapshot candidate = {&next, &g_trial.candidate.tls_credentials};
+            const MqttSnapshot stable = {PatrolConfig_Get(), PatrolConfig_MqttCredentials()};
             result=ABoxMaintenanceService_Commit(&g_trial.trial, g_trial.trial.session,
-                &store, &next, PatrolConfig_Get(), now);
+                &store, &candidate, &stable, now);
+            if (result == ABOX_CONFIG_STORE_SAVED) PatrolConfig_Load();
         }
         if(result!=ABOX_CONFIG_STORE_SAVED) {
             if(result==ABOX_CONFIG_STORE_RECOVERY_FAILED) g_trial.flash_restore_failed=1U;

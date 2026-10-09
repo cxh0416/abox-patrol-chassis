@@ -7,7 +7,7 @@
 
 /* Legacy MQTT_Core API for the product. The standard EC800 session, receipt,
  * ICCID and workspace lifecycle are owned by Platform. */
-enum { TOPIC_CAPACITY = 128U, PAYLOAD_CAPACITY = 1152U };
+enum { TOPIC_CAPACITY = 72U, PAYLOAD_CAPACITY = 1152U };
 static MQTT_CoreConfig_t g_config;
 static ABoxMqttEc800Bridge g_bridge;
 static ABoxMqttEc800Config g_transport_config;
@@ -17,7 +17,7 @@ static uint32_t g_ready_sequence;
 static void state_changed(void *context, ABoxMqttEc800State state)
 { (void)context; if (state == ABOX_MQTT_EC800_READY) ++g_ready_sequence; }
 static void (*g_network_changed)(void);
-static uint8_t g_header[192], g_topic[TOPIC_CAPACITY];
+static uint8_t g_header[128], g_topic[TOPIC_CAPACITY];
 static uint8_t g_payload[PAYLOAD_CAPACITY], g_outgoing[1536U];
 
 static void message(void *context, const char *topic, const char *payload)

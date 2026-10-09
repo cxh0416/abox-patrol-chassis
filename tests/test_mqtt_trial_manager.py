@@ -21,6 +21,7 @@ class MqttTrialManagerTests(unittest.TestCase):
                        "-I" + str(ROOT / "platform/components/cloud/include"),
                        "-I" + str(ROOT / "platform/components/mqtt/include"),
                        str(ROOT / "tests/mqtt_trial_manager_test.c"),
+                str(ROOT / "platform/components/ec800/src/abox_tls_secret_record.c"),
                        str(ROOT / "app/Core/User/mqtt/src/mqtt_trial_manager.c"),
                        str(ROOT / "platform/components/mqtt/src/abox_mqtt_trial.c"),
                        str(ROOT / "platform/components/mqtt/src/abox_mqtt_trial_executor.c"),

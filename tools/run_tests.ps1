@@ -34,6 +34,8 @@ $cloudTest = Join-Path $hostBuild 'cloud_protocol_test.exe'
     @productIncludes `
     "-I$PSScriptRoot\..\platform\components\cloud\include" `
     "-I$PSScriptRoot\..\platform\components\cjson" `
+    "-I$PSScriptRoot\..\platform\components\ec800\include" `
+    "$PSScriptRoot\..\platform\components\ec800\src\abox_tls_secret_record.c" `
     "$PSScriptRoot\..\app\Core\User\cloud\src\cloud_protocol.c" `
     "$PSScriptRoot\..\platform\components\cloud\src\abox_cloud_internal_v2.c" `
     "$PSScriptRoot\..\platform\components\cjson\cJSON.c" `
@@ -141,6 +143,7 @@ $benchConfigTest = Join-Path $hostBuild 'control_config_session_test.exe'
     "$PSScriptRoot\..\app\Core\User\cloud\src\cloud_protocol.c" `
     "$PSScriptRoot\..\platform\components\cloud\src\abox_cloud_internal_v2.c" `
     "$PSScriptRoot\..\app\Core\User\cloud\src\chassis_cloud_protocol.c" `
+    "$PSScriptRoot\..\platform\components\ec800\src\abox_tls_secret_record.c" `
     "$PSScriptRoot\..\platform\components\mqtt\src\abox_mqtt_v4.c" `
     "$PSScriptRoot\..\app\Core\User\common\src\fixed_point.c" `
     "$PSScriptRoot\..\app\Core\User\board\src\vehicle_power_output.c" `
