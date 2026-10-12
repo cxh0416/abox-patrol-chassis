@@ -32,7 +32,7 @@ static void leave(void *context, uint32_t key) { (void)context; (void)key; }
 const ABoxBoardIoPort *ABoxBoardIoStm32_Port(void)
 {
     static const ABoxBoardIoPort port = {0, prepare, write_output, read_output,
-                                         read_input, write_led, enter, leave};
+                                         read_input, write_led, enter, leave, 0};
     return &port;
 }
 int main(void)

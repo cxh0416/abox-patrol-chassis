@@ -26,6 +26,12 @@ static int write_bytes(void *context, const uint8_t *bytes, uint16_t length,
         assert(length < sizeof(command));
         memcpy(command, bytes, length);
         command[length] = 0;
+        if (!strncmp(command, "AT+QMTCONN", 10U)) {
+            assert(strstr(command, "\"patrol-2\""));
+            assert(strstr(command, "\"user\",\"pass\""));
+        }
+        if (!strncmp(command, "AT+QMTSUB", 9U))
+            assert(strstr(command, "\"a/c\""));
     }
     return 1;
 }
@@ -68,6 +74,14 @@ int main(void)
     strcpy(core.sub_topics[0], "a/b");
     core.sub_topic_count = 1U;
     MQTT_Core_Init(&core, message);
+    memset(&core, 0, sizeof(core)); /* The adapter owns its copied strings. */
+    assert(MQTT_Core_SetClientId("patrol-2"));
+    {
+        char topic[8] = "a/c";
+        const char *topics[] = {topic};
+        MQTT_Core_SetTopics(topics, 1U, "unused/default");
+        memset(topic, 0, sizeof(topic));
+    }
     MQTT_Core_SetNetworkChangedCallback(network_changed);
     MQTT_Core_SetAtCore(&at);
     assert(MQTT_Core_ApplyRuntimeConfig(&config));

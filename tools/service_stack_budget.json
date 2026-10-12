@@ -2,6 +2,26 @@
   "stack_bytes": 4096,
   "reserve_bytes": 1024,
   "chains": {
+    "mqtt_transport_init": [
+      "main",
+      "CloudService_Init",
+      "MQTT_Core_SetAtCore",
+      "ABoxMqttEc800Bridge_Init",
+      "ABoxMqttEc800_Init"
+    ],
+    "mqtt_transport_configure": [
+      "Patrol_RemoteTask",
+      "CloudService_Task",
+      "ABoxAppService_Poll",
+      "app_runtime",
+      "MqttRuntime_Task",
+      "ABoxMqttRuntime_Poll",
+      "start",
+      "apply_config",
+      "MQTT_Core_ApplyRuntimeConfig",
+      "ABoxMqttEc800Bridge_Configure",
+      "ABoxMqttEc800_Configure"
+    ],
     "maintenance_commit": [
       "Patrol_RemoteTask",
       "CloudService_Task",

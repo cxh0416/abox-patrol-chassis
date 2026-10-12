@@ -8,9 +8,17 @@
 /* Legacy MQTT_Core API for the product. The standard EC800 session, receipt,
  * ICCID and workspace lifecycle are owned by Platform. */
 enum { TOPIC_CAPACITY = 72U, PAYLOAD_CAPACITY = 1152U };
-static MQTT_CoreConfig_t g_config;
+/* Keep only configuration consumed by the bridge. The public API's default
+ * publish topic is unused because every publish supplies its own topic. */
+static struct {
+    uint8_t client_idx;
+    char server_host[64];
+    uint16_t server_port;
+    char client_id[32], username[32], password[64];
+    char sub_topics[4][72];
+    uint8_t sub_topic_count;
+} g_config;
 static ABoxMqttEc800Bridge g_bridge;
-static ABoxMqttEc800Config g_transport_config;
 static const char *g_subscriptions[4];
 static MQTT_CoreMsgCallback_t g_message;
 static uint32_t g_ready_sequence;
@@ -32,44 +40,53 @@ static void network_changed(void *context)
     if (g_network_changed) g_network_changed();
 }
 
-static void build_config(void)
+static void build_config(ABoxMqttEc800Config *config)
 {
     uint8_t i;
-    memset(&g_transport_config, 0, sizeof(g_transport_config));
-    g_transport_config.apn = "CMNET";
-    g_transport_config.host = g_config.server_host;
-    g_transport_config.port = g_config.server_port;
-    g_transport_config.client_id = g_config.client_id;
-    g_transport_config.username = g_config.username;
-    g_transport_config.password = g_config.password;
-    g_transport_config.client_index = g_config.client_idx;
-    g_transport_config.subscription_count = g_config.sub_topic_count;
+    memset(config, 0, sizeof(*config));
+    config->apn = "CMNET";
+    config->host = g_config.server_host;
+    config->port = g_config.server_port;
+    config->client_id = g_config.client_id;
+    config->username = g_config.username;
+    config->password = g_config.password;
+    config->client_index = g_config.client_idx;
+    config->subscription_count = g_config.sub_topic_count;
     for (i = 0U; i < 4U; ++i)
         g_subscriptions[i] = g_config.sub_topics[i];
-    g_transport_config.subscriptions = g_subscriptions;
-    g_transport_config.command_timeout_ms = 5000U;
-    g_transport_config.open_timeout_ms = 125000U;
-    g_transport_config.connect_timeout_ms = 10000U;
-    g_transport_config.subscribe_timeout_ms = 5000U;
-    g_transport_config.publish_timeout_ms = 15000U;
-    g_transport_config.retry_delay_ms = 4000U;
-    g_transport_config.legacy_json = 1U;
+    config->subscriptions = g_subscriptions;
+    config->command_timeout_ms = 5000U;
+    config->open_timeout_ms = 125000U;
+    config->connect_timeout_ms = 10000U;
+    config->subscribe_timeout_ms = 5000U;
+    config->publish_timeout_ms = 15000U;
+    config->retry_delay_ms = 4000U;
+    config->legacy_json = 1U;
 }
 
 void MQTT_Core_Init(const MQTT_CoreConfig_t *config, MQTT_CoreMsgCallback_t callback)
 {
     memset(&g_config, 0, sizeof(g_config));
-    if (config) g_config = *config;
+    if (config) {
+        g_config.client_idx = config->client_idx;
+        g_config.server_port = config->server_port;
+        g_config.sub_topic_count = config->sub_topic_count;
+        memcpy(g_config.server_host, config->server_host, sizeof(g_config.server_host));
+        memcpy(g_config.client_id, config->client_id, sizeof(g_config.client_id));
+        memcpy(g_config.username, config->username, sizeof(g_config.username));
+        memcpy(g_config.password, config->password, sizeof(g_config.password));
+        memcpy(g_config.sub_topics, config->sub_topics, sizeof(g_config.sub_topics));
+    }
     g_message = callback;
     g_ready_sequence = 0U;
     g_network_changed = 0;
     memset(&g_bridge, 0, sizeof(g_bridge));
-    build_config();
 }
 
 void MQTT_Core_SetAtCore(Ec800AtCore_t *at)
 {
     ABoxMqttEc800Buffers buffers;
+    ABoxMqttEc800Config config;
     static const ABoxMqttEc800BridgeHooks hooks = {
         .message = message,
         .state_changed = state_changed,
@@ -82,7 +99,9 @@ void MQTT_Core_SetAtCore(Ec800AtCore_t *at)
     buffers.payload = g_payload; buffers.payload_capacity = sizeof(g_payload);
     buffers.publish_payload = g_outgoing;
     buffers.publish_capacity = sizeof(g_outgoing);
-    if (!ABoxMqttEc800Bridge_Init(&g_bridge, at, &g_transport_config,
+    /* Init copies this descriptor; its strings and subscriptions stay static. */
+    build_config(&config);
+    if (!ABoxMqttEc800Bridge_Init(&g_bridge, at, &config,
                                    &buffers, &hooks,
                                    ABOX_EC800_OWNER_PRODUCT_BASE + 5U,
                                    HAL_GetTick()))
@@ -154,10 +173,10 @@ void MQTT_Core_UpdateBroker(const char *host, uint16_t port,
     if (port) g_config.server_port = port;
     copy_text(g_config.username, sizeof(g_config.username), username);
     copy_text(g_config.password, sizeof(g_config.password), password);
-    build_config();
 }
 uint8_t MQTT_Core_ApplyRuntimeConfig(const ABoxMqttConfig *config)
 {
+    ABoxMqttEc800Config transport_config;
     if (!config || !config->host || !config->username ||
         !config->password || !config->port || !g_bridge.initialized ||
         strlen(config->host) >= sizeof(g_config.server_host) ||
@@ -170,16 +189,15 @@ uint8_t MQTT_Core_ApplyRuntimeConfig(const ABoxMqttConfig *config)
     MQTT_Core_UpdateBroker(config->host, config->port,
                            config->username, config->password);
     g_config.client_idx = config->tls_enabled ? 1U : 0U;
-    build_config();
+    build_config(&transport_config);
     return (uint8_t)ABoxMqttEc800Bridge_Configure(&g_bridge,
-                                                    &g_transport_config);
+                                                    &transport_config);
 }
 uint8_t MQTT_Core_SetClientId(const char *client_id)
 {
     if (!client_id || !*client_id ||
         strlen(client_id) >= sizeof(g_config.client_id)) return 0U;
     copy_text(g_config.client_id, sizeof(g_config.client_id), client_id);
-    build_config();
     return 1U;
 }
 void MQTT_Core_SetTopics(const char *const *topics, uint8_t count,
@@ -192,8 +210,7 @@ void MQTT_Core_SetTopics(const char *const *topics, uint8_t count,
         copy_text(g_config.sub_topics[i], sizeof(g_config.sub_topics[i]),
                   topics[i]);
     g_config.sub_topic_count = count;
-    copy_text(g_config.pub_topic, sizeof(g_config.pub_topic), pub_topic);
-    build_config();
+    (void)pub_topic;
 }
 uint8_t MQTT_Core_IsReady(void)
 {
