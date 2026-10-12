@@ -2,6 +2,8 @@
 
 本文件是 `patrol_vehicle_chassis` 的唯一当前状态入口。正式状态由 [dist 清单](../dist/release.manifest.json) 与实际固件哈希确定；源码版本不代表已发布。
 
+同事接手所需仓库、环境、构建测试、运动许可排查和现场待办见[项目交接与接手指南](operations/项目交接与接手指南.md)。
+
 ## 当前正式包
 
 2026-10-12 正式包为 `patrol-chassis-0.2.54`，App SHA256 `1AE5A6285154857A9A48E1344D583510A653858DCADF171174ED4F7F6974D5BE`。构建源码提交 `04cef8e3feada5b167f7255fa7da9ac6ecc8d94b`，公共平台固定 `ce626575b9462817f486a2360f36f4a7a2203ca0`。构建与暂存校验通过后已整体替换 dist；本轮未部署服务、下发 OTA 或进行现场验收。
