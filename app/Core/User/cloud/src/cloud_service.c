@@ -174,7 +174,6 @@ void CloudService_Init(void)
         const ABoxEc800AtPort at_port = {&huart1, ec800_tick, ec800_write, 0};
         (void)EC800_AT_Init(&g_cloud.at_core, &at_port);
     }
-    OtaService_Init(&g_cloud.at_core);
     memset(&runtime, 0, sizeof(runtime));
     if (cfg != 0)
     {
@@ -201,6 +200,7 @@ void CloudService_Init(void)
     MQTT_Core_Init(&mqtt, CloudCommands_OnMessage);
     MQTT_Core_SetNetworkChangedCallback(mqtt_network_changed);
     MQTT_Core_SetAtCore(&g_cloud.at_core);
+    OtaService_Init(&g_cloud.at_core);
     if (!MqttRuntime_Init(&g_cloud.at_core, g_cloud.config_ready ? &runtime : 0, HAL_GetTick())) {
         g_cloud.config_ready = 0U;
         APP_LOGE("CLOUD", "invalid MQTT V5 runtime configuration");

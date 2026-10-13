@@ -1,4 +1,5 @@
 #include "mqtt_core.h"
+#include "abox_boot_v2_services.h"
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -64,6 +65,8 @@ static void answer(const char *expected, const char *reply)
 int main(void)
 {
     ABoxEc800AtPort at_port = {0};
+    ABoxBootV2Ec800Adapter ota_adapter = {0};
+    ABoxBootV2AppPort ota_port = {0};
     MQTT_CoreConfig_t core = {0};
     ABoxMqttConfig config = {.host = "broker.example", .port = 1883U,
                             .username = "user", .password = "pass"};
@@ -83,7 +86,14 @@ int main(void)
         memset(topic, 0, sizeof(topic));
     }
     MQTT_Core_SetNetworkChangedCallback(network_changed);
+    /* OTA borrows the product bridge; AT initialization alone is insufficient. */
+    assert(!ABoxBootV2Ec800Adapter_BindServices(&ota_adapter, &at,
+                                               MQTT_Core_Bridge(), &ota_port));
     MQTT_Core_SetAtCore(&at);
+    assert(ABoxBootV2Ec800Adapter_BindServices(&ota_adapter, &at,
+                                              MQTT_Core_Bridge(), &ota_port));
+    assert(ota_port.tick_ms(ota_port.context) == now_ms);
+    assert(ota_port.transfer_buffer && ota_port.transfer_buffer_size >= 1024U);
     assert(MQTT_Core_ApplyRuntimeConfig(&config));
     MQTT_Core_SetSecurityReady(1U);
     MQTT_Core_SetPaused(0U);

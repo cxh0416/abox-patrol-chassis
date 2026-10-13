@@ -47,12 +47,16 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 $mqttAdapterTest = Join-Path $hostBuild 'mqtt_adapter_test.exe'
 & $gcc "-I$PSScriptRoot\..\platform\components\core\include" "-I$PSScriptRoot\..\platform\components\mqtt\include" -std=c11 -Wall -Wextra -Werror `
+    "-I$PSScriptRoot\..\platform\components\boot_v2\include" `
+    "-I$PSScriptRoot\..\platform\components\ota\include" `
     "-I$PSScriptRoot\..\tests\mqtt_adapter_stubs" `
     "-I$PSScriptRoot\..\app\Core\User\mqtt\include" `
     "-I$PSScriptRoot\..\platform\components\ec800\include" `
     "-I$PSScriptRoot\..\platform\components\mqtt\include" `
     "$PSScriptRoot\..\tests\mqtt_adapter_test.c" `
     "$PSScriptRoot\..\app\Core\User\mqtt\src\mqtt_core_adapter.c" `
+    "$PSScriptRoot\..\platform\components\boot_v2\src\abox_boot_v2_ec800_port.c" `
+    "$PSScriptRoot\..\platform\components\boot_v2\src\abox_boot_v2_services.c" `
     "$PSScriptRoot\..\platform\components\mqtt\src\abox_mqtt_ec800.c" `
     "$PSScriptRoot\..\platform\components\mqtt\src\abox_mqtt_ec800_bridge.c" `
     "$PSScriptRoot\..\platform\components\mqtt\src\abox_mqtt_ec800_rx.c" `

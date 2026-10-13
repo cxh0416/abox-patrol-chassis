@@ -43,7 +43,11 @@ void OtaService_Init(Ec800AtCore_t *at)
     extern uint8_t __app_image_end;
 
     memset(&port, 0, sizeof(port));
-    (void)ABoxBootV2Ec800Adapter_BindServices(&g_adapter, at, MQTT_Core_Bridge(), &port);
+    if (!ABoxBootV2Ec800Adapter_BindServices(&g_adapter, at, MQTT_Core_Bridge(), &port)) {
+        APP_LOGE("OTA", "MQTT bridge not ready for OTA binding");
+        Error_Handler();
+        return;
+    }
     port.mqtt_client_index = adapter_mqtt_client_index;
     port.log = adapter_log;
 
@@ -59,7 +63,10 @@ void OtaService_Init(Ec800AtCore_t *at)
     config.app_size = (uint32_t)(&__app_image_end - (uint8_t *)APP_START_ADDR);
     config.app_max_size = APP_MAX_SIZE;
     (void)ABoxBootV2_StateBindLayout(&layout);
-    (void)ABoxBootV2App_Init(&port, &config);
+    if (!ABoxBootV2App_Init(&port, &config)) {
+        APP_LOGE("OTA", "OTA service initialization failed");
+        Error_Handler();
+    }
 }
 
 uint8_t OtaService_BeginProvisioning(void) { return (uint8_t)ABoxBootV2App_BeginProvisioning(); }
