@@ -319,7 +319,9 @@ static void handle_ota_request(const CloudProtocolRequest_t* request)
 
 static __attribute__((noinline)) void handle_public_control(const char* payload)
 {
-    char response[CLOUD_PAYLOAD_SIZE];
+    /* Remote owns this workspace. ScheduleRawResponse copies it before a later
+     * report reuses it; the transport also owns its own publish copy. */
+    char *response = g_cloud.tx_payload;
     cJSON* root = cJSON_Parse(payload);
     cJSON* data = root ? cJSON_GetObjectItemCaseSensitive(root, "data") : 0;
     cJSON* command = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "command") : 0;
@@ -348,7 +350,7 @@ static __attribute__((noinline)) void handle_public_control(const char* payload)
         return;
     }
     if (root) cJSON_Delete(root);
-    if (RemoteService_HandleControl(payload, (uint16_t)strlen(payload), response, sizeof(response)))
+    if (RemoteService_HandleControl(payload, (uint16_t)strlen(payload), response, sizeof(g_cloud.tx_payload)))
         (void)CloudMessages_ScheduleRawResponse(g_cloud.topic_control_resp, response);
     else APP_LOGW("REMOTE", "invalid or busy chassis control request");
 }

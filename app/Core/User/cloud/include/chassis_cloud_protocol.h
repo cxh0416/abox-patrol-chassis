@@ -36,5 +36,7 @@ typedef struct {
 
 ChassisCloudStatus ChassisCloud_Parse(const char* payload, uint16_t length,
                                       ChassisCloudCommand* command);
+/* Uses existing validated milli-degree fields; never changes wire units. */
+uint8_t ChassisCloud_RequestDigest(const ChassisCloudCommand *command, uint8_t digest[32]);
 
 #endif

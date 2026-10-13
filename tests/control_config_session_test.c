@@ -14,6 +14,7 @@ static PatrolRemoteConfigV5_t flash;
 static ABoxTlsCredentials flash_credentials;
 static uint8_t valid, save_ok = 1, power_level;
 static unsigned saves;
+static unsigned power_on_writes;
 static uint32_t tick = 1000;
 static uint64_t utc_now = 1788838333000ULL;
 static uint8_t time_trusted = 1U;
@@ -33,7 +34,45 @@ uint8_t OTA_Info_SaveMqttSnapshot(const PatrolRemoteConfigV5_t* c, const ABoxTls
     flash_credentials = *credentials;
     return 1;
 }
-static uint8_t write_power(uint8_t on) { power_level = on; return 1; }
+static uint8_t write_power(uint8_t on) { power_level = on; if (on) ++power_on_writes; return 1; }
+static void check_digest(const uint8_t digest[32], const char *expected)
+{
+    char hex[65];
+    for (unsigned i = 0; i < 32; ++i) snprintf(hex + i * 2, 3, "%02x", digest[i]);
+    assert(!strcmp(hex, expected));
+}
+
+static void test_reboot_power_window(void)
+{
+    const uint64_t started = 1788838333000ULL;
+    const char *packet = "{\"version\":\"4.0\",\"timestamp\":1788838333000,\"data\":{\"requestId\":\"reboot-window\","
+        "\"command\":\"power_on\",\"expiresAt\":1788838338000,\"params\":null}}";
+    char first[512], response[512];
+    utc_now = started; time_trusted = 1;
+    VehiclePowerOutput_Init(write_power); RemoteService_Init();
+    unsigned before = power_on_writes;
+    assert(RemoteService_HandleControl(packet, (uint16_t)strlen(packet), first, sizeof(first)));
+    assert(strstr(first, "\"code\":200") && power_level && power_on_writes == before + 1);
+    VehiclePowerOutput_Set(0);
+    assert(RemoteService_HandleControl(packet, (uint16_t)strlen(packet), response, sizeof(response)));
+    assert(strstr(response, "\"code\":200") && !power_level && power_on_writes == before + 1);
+    /* Full startup clears cache/outputs; its mandatory modem sequence is 11 s.
+     * Host test simulates elapsed UTC, not a measured physical boot. */
+    VehiclePowerOutput_Init(write_power); RemoteService_Init();
+    utc_now = started + 11000; time_trusted = 0;
+    assert(RemoteService_HandleControl(packet, (uint16_t)strlen(packet), response, sizeof(response)));
+    assert(strstr(response, "\"code\":4003") && !power_level && power_on_writes == before + 1);
+    time_trusted = 1;
+    assert(RemoteService_HandleControl(packet, (uint16_t)strlen(packet), response, sizeof(response)));
+    assert(strstr(response, "\"code\":4005") && !power_level && power_on_writes == before + 1);
+    assert(strcmp(response, first)); /* Original result is lost, despite safe rejection. */
+    /* Artificial cache-only fast restart with trust retained CAN re-enable.
+     * It is not the current MCU reboot path; it bounds the residual risk. */
+    VehiclePowerOutput_Init(write_power); RemoteService_Init(); utc_now = started + 2000;
+    assert(RemoteService_HandleControl(packet, (uint16_t)strlen(packet), response, sizeof(response)));
+    assert(strstr(response, "\"code\":200") && power_level && power_on_writes == before + 2);
+    assert(!RemoteService_State()->session_active && !RemoteService_State()->enable_request);
+}
 
 static void test_vid_validation(void)
 {
@@ -89,6 +128,18 @@ static void test_request_identity_and_boundaries(void)
     const char *collision = "{\"version\":\"4.0\",\"timestamp\":1788838333000,\"data\":{\"requestId\":\"collision-1\","
         "\"command\":\"chassis_control\",\"params\":{\"action\":\"acquire\",\"sessionId\":\"collision-session\","
         "\"seq\":2828726036,\"leaseMs\":1000,\"driveRpm\":442,\"steeringDeg\":26}}}";
+    uint8_t digest[32], other[32];
+    assert(ChassisCloud_Parse(first, (uint16_t)strlen(first), &parsed) == CHASSIS_CLOUD_OK);
+    assert(ChassisCloud_RequestDigest(&parsed, digest));
+    check_digest(digest, "bd22fc32cd0fbdbf7f3f096516622be447ebca2f54c25c1100c2518391d08b5e");
+    assert(ChassisCloud_Parse(collision, (uint16_t)strlen(collision), &parsed) == CHASSIS_CLOUD_OK);
+    assert(ChassisCloud_RequestDigest(&parsed, other) && memcmp(digest, other, sizeof(digest)));
+    const char *milli = "{\"version\":\"4.0\",\"timestamp\":1788838333000,\"data\":{\"requestId\":\"milli\","
+        "\"command\":\"chassis_control\",\"params\":{\"steeringDeg\":-0.200,\"driveRpm\":7,\"leaseMs\":1000,"
+        "\"seq\":9,\"sessionId\":\"millidegree\",\"action\":\"renew\"}}}";
+    assert(ChassisCloud_Parse(milli, (uint16_t)strlen(milli), &parsed) == CHASSIS_CLOUD_OK);
+    assert(ChassisCloud_RequestDigest(&parsed, other));
+    check_digest(other, "2b14a5ea2bfacae336357cfd3e26b5ba7d2793ddf646fc6a3786b820751ee5ce");
     RemoteService_RevokeForNetworkChange();
     assert(RemoteService_HandleControl(first, (uint16_t)strlen(first), cached, sizeof(cached)));
     assert(strstr(cached, "\"code\":200"));
@@ -222,6 +273,7 @@ int main(void)
     RemoteService_ExecutionFault();
     command("fault-session", 0, 0, "acquire", 9, 400);
     assert(RemoteService_State()->fault_latched);
+    test_reboot_power_window();
     puts("PASS Config V5 layout, uncalibrated gate, direct control session, reconnect and lease revoke");
     return 0;
 }

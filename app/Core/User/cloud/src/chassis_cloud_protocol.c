@@ -5,6 +5,7 @@
 #include "cJSON.h"
 #include "abox_mqtt_v4.h"
 #include "chassis_control.h"
+#include "abox_mqtt_digest.h"
 
 static uint8_t duplicate_free(const cJSON *node)
 {
@@ -16,6 +17,27 @@ static uint8_t duplicate_free(const cJSON *node)
         if (!duplicate_free(a)) return 0U;
     }
     return 1U;
+}
+static int motion_params(void *value, ABoxCanonicalWriter write, void *context)
+{
+    const ChassisCloudCommand *command = value;
+    return write(context, "{\"action\":", 10) &&
+        ABoxMqttDigest_WriteString(command->action, write, context) &&
+        write(context, ",\"driveRpm\":", 12) && ABoxMqttDigest_WriteInteger(command->drive_rpm, write, context) &&
+        write(context, ",\"leaseMs\":", 11) && ABoxMqttDigest_WriteInteger(command->lease_ms, write, context) &&
+        write(context, ",\"seq\":", 7) && ABoxMqttDigest_WriteInteger(command->seq, write, context) &&
+        write(context, ",\"sessionId\":", 13) && ABoxMqttDigest_WriteString(command->session_id, write, context) &&
+        write(context, ",\"steeringDeg\":", 15) && ABoxMqttDigest_WriteMilli(command->steering_mdeg, write, context) &&
+        write(context, "}", 1);
+}
+uint8_t ChassisCloud_RequestDigest(const ChassisCloudCommand *command, uint8_t digest[32])
+{
+    if (!command) return 0;
+    if (command->type == CHASSIS_CLOUD_COMMAND_MOTION)
+        return (uint8_t)ABoxMqttDigest_RequestStream("chassis_control", 0, 0, motion_params, (void *)command, digest);
+    if (command->type != CHASSIS_CLOUD_COMMAND_POWER_ON && command->type != CHASSIS_CLOUD_COMMAND_POWER_OFF) return 0;
+    return (uint8_t)ABoxMqttDigest_NullRequest(command->type == CHASSIS_CLOUD_COMMAND_POWER_ON ? "power_on" : "power_off",
+        command->has_expires_at, command->expires_at, digest);
 }
 static uint8_t integer(const cJSON *n)
 { return cJSON_IsNumber(n) && n->valuedouble >= 0 && n->valuedouble <= 9007199254740991.0 &&

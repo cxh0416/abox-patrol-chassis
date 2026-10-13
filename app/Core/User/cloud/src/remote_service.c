@@ -9,6 +9,7 @@
 #include "main.h"
 #include "time_base.h"
 #include "abox_mqtt_v4.h"
+#include "abox_mqtt_digest.h"
 #include "patrol_config.h"
 #include "vehicle_power_output.h"
 #include <stdlib.h>
@@ -28,25 +29,11 @@ static ChassisControl g_control;
 static char g_last_request_id[65];
 /* Covers the longest motion result/message with a 64-byte ID and UTC integer. */
 static char g_last_response[288];
-static struct {
-    char action[8], session_id[40];
-    uint32_t seq, lease_ms;
-    int32_t steering_mdeg;
-    int16_t drive_rpm;
-} g_last_motion;
+static uint8_t g_last_digest[32];
 #if PATROL_CHASSIS_MQTT_LAB_TEST
 static uint8_t g_lab_hold_state;
 #endif
 
-static uint8_t same_request(const ChassisCloudCommand* command)
-{
-    /* Compare normalized motion fields exactly; timestamp is not request identity. */
-    return command->type == CHASSIS_CLOUD_COMMAND_MOTION &&
-        !strcmp(command->action, g_last_motion.action) &&
-        !strcmp(command->session_id, g_last_motion.session_id) &&
-        command->seq == g_last_motion.seq && command->lease_ms == g_last_motion.lease_ms &&
-        command->drive_rpm == g_last_motion.drive_rpm && command->steering_mdeg == g_last_motion.steering_mdeg;
-}
 
 void RemoteService_Revoke(void)
 {
@@ -159,11 +146,14 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
     int written;
     uint8_t request_conflict = 0U;
     uint8_t stop_applied = 0U, power_cached = 0U;
+    uint8_t digest[32];
     int power_slot = -1;
     ABoxClockSnapshot clock = TimeBase_GetSnapshot();
     if (!g_remote_initialized || payload == 0 || response == 0 || size == 0U) return 0U;
     parse_status = ChassisCloud_Parse(payload, length, &command);
     if (command.request_id[0] == '\0') return 0U;
+    if (parse_status == CHASSIS_CLOUD_OK && !ChassisCloud_RequestDigest(&command, digest))
+        parse_status = CHASSIS_CLOUD_INVALID;
     /* A valid safety stop takes effect even on replay or requestId conflict. */
     if (parse_status == CHASSIS_CLOUD_OK && command.type == CHASSIS_CLOUD_COMMAND_MOTION &&
         strcmp(command.action, "stop") == 0) {
@@ -182,7 +172,10 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
         for (unsigned i=0; i<4; ++i) {
             ABoxPowerReplay *e = &g_power_replay[i];
             if (e->request_id[0] && !strcmp(e->request_id,command.request_id)) {
-                if (command.type != CHASSIS_CLOUD_COMMAND_POWER_ON || e->expires_at != command.expires_at) {
+                uint8_t original_digest[32];
+                if (command.type != CHASSIS_CLOUD_COMMAND_POWER_ON ||
+                    !ABoxMqttDigest_NullRequest("power_on", 1, e->expires_at, original_digest) ||
+                    memcmp(digest, original_digest, sizeof(digest))) {
                     code = 4006U; message = "requestId conflict"; request_conflict = 1U;
                 } else { code = e->code; message = code == 200U ? "operation accepted" : "power output unavailable";
                          power_cached = 1U; power_slot = (int)i; }
@@ -195,7 +188,8 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
     }
     if (strcmp(command.request_id, g_last_request_id) == 0 && g_last_response[0] != '\0')
     {
-        if (same_request(&command)) {
+        if (parse_status == CHASSIS_CLOUD_OK && command.type == CHASSIS_CLOUD_COMMAND_MOTION &&
+            !memcmp(digest, g_last_digest, sizeof(digest))) {
             if (strlen(g_last_response) >= size) return 0U;
             strcpy(response, g_last_response);
             return 1U;
@@ -301,15 +295,10 @@ format_response:
             timestamp, command.request_id, (unsigned int)code, message,
             (int)g_control.target_rpm, steering_value, (unsigned int)g_control.stop_reason);
     if (written <= 0 || written >= size) return 0U;
-    if (!request_conflict && command.type == CHASSIS_CLOUD_COMMAND_MOTION) {
+    if (!request_conflict && parse_status == CHASSIS_CLOUD_OK && command.type == CHASSIS_CLOUD_COMMAND_MOTION) {
         strncpy(g_last_request_id, command.request_id, sizeof(g_last_request_id) - 1U);
         g_last_request_id[sizeof(g_last_request_id) - 1U] = '\0';
-        strcpy(g_last_motion.action, command.action);
-        strcpy(g_last_motion.session_id, command.session_id);
-        g_last_motion.seq = command.seq;
-        g_last_motion.lease_ms = command.lease_ms;
-        g_last_motion.drive_rpm = command.drive_rpm;
-        g_last_motion.steering_mdeg = command.steering_mdeg;
+        memcpy(g_last_digest, digest, sizeof(digest));
         if ((size_t)written < sizeof(g_last_response)) strcpy(g_last_response, response);
     }
     return 1U;

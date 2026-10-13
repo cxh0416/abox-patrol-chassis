@@ -2,6 +2,21 @@
   "stack_bytes": 4096,
   "reserve_bytes": 1024,
   "chains": {
+    "public_motion_digest": [
+      "Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "app_cloud",
+      "ABoxMqttEc800Bridge_Poll", "ABoxMqttEc800_Poll", "ABoxMqttEc800Rx_Poll",
+      "message", "on_message", "CloudCommands_OnMessage", "handle_public_control",
+      "RemoteService_HandleControl", "ChassisCloud_RequestDigest", "ABoxMqttDigest_RequestStream",
+      "ABoxMqttDigest_WriteRequest", "motion_params", "ABoxMqttDigest_WriteMilli",
+      "ABoxMqttDigest_WriteInteger", "hash", "ABoxSha256_Update", "transform"
+    ],
+    "public_power_replay_digest": [
+      "Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "app_cloud",
+      "ABoxMqttEc800Bridge_Poll", "ABoxMqttEc800_Poll", "ABoxMqttEc800Rx_Poll",
+      "message", "on_message", "CloudCommands_OnMessage", "handle_public_control",
+      "RemoteService_HandleControl", "ABoxMqttDigest_NullRequest", "ABoxMqttDigest_RequestStream",
+      "ABoxMqttDigest_WriteRequest", "null_params", "hash", "ABoxSha256_Update", "transform"
+    ],
     "mqtt_transport_init": [
       "main",
       "CloudService_Init",
