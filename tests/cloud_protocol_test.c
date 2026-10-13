@@ -188,6 +188,27 @@ int main(void)
             strcmp(request.mqtt_password, "test-pass") != 0) return 1;
     }
 
+    {
+        char vid[34], json[512]; CloudProtocolRequest_t request;
+        const char *invalid[] = {"", "bad.id", "bad/id", "bad+id", "bad id", "中"};
+        for (unsigned n = 7; n <= 33; n += n == 7 ? 24 : 1) {
+            memset(vid, 'a', n); vid[n] = '\0';
+            snprintf(json, sizeof(json), "{\"version\":\"2.0\",\"timestamp\":0,\"data\":{\"requestId\":\"vid-test\","
+                "\"command\":\"internal_config\",\"params\":{\"action\":\"set_mqtt\",\"vid\":\"%s\","
+                "\"host\":\"broker.example\",\"port\":19683,\"username\":\"u\",\"password\":\"p\","
+                "\"tlsEnabled\":false,\"tlsProfileId\":0}}}", vid);
+            if (CloudProtocol_Parse(json, (uint16_t)strlen(json), 0U, &request) !=
+                (n <= 31 ? CLOUD_PROTOCOL_OK : CLOUD_PROTOCOL_INVALID)) return 1;
+            if (n <= 31 && strcmp(vid, request.mqtt_vid)) return 1;
+        }
+        for (unsigned i = 0; i < sizeof(invalid) / sizeof(invalid[0]); ++i) {
+            snprintf(json, sizeof(json), "{\"version\":\"2.0\",\"timestamp\":0,\"data\":{\"requestId\":\"vid-test\","
+                "\"command\":\"internal_config\",\"params\":{\"action\":\"set_mqtt\",\"vid\":\"%s\","
+                "\"host\":\"broker.example\",\"port\":19683,\"username\":\"u\",\"password\":\"p\","
+                "\"tlsEnabled\":false,\"tlsProfileId\":0}}}", invalid[i]);
+            if (CloudProtocol_Parse(json, (uint16_t)strlen(json), 0U, &request) != CLOUD_PROTOCOL_INVALID) return 1;
+        }
+    }
     memset(oversized, 'x', sizeof(oversized));
     memcpy(oversized, oversized_prefix, sizeof(oversized_prefix) - 1U);
     oversized[sizeof(oversized) - 2U] = '"';

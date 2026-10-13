@@ -101,7 +101,8 @@ int MqttTrialManager_StagePersistentPsk(const PatrolRemoteConfigV5_t *candidate,
 {
     ABoxMqttConfig runtime, stable_runtime;
     const PatrolRemoteConfigV5_t *stable = PatrolConfig_Get();
-    if (!candidate || !stable || !ABoxTlsCredentials_Valid(credentials) ||
+    if (!candidate || !stable || !PatrolConfig_IsVidValid(candidate->vid) ||
+        !ABoxTlsCredentials_Valid(credentials) ||
         !PatrolConfig_IsCloudReady(candidate) || !PatrolMqttConfig_FromV5(candidate, &runtime) ||
         !PatrolMqttConfig_FromV5(stable, &stable_runtime)) return 0;
     runtime.tls_credentials = *credentials;
@@ -117,7 +118,7 @@ int MqttTrialManager_StagePersistent(const PatrolRemoteConfigV5_t *candidate, ui
 }
 int MqttTrialManager_StartEnrollment(const ABoxMqttConfig *candidate, const char *vid, uint32_t now)
 {
-    if (!g_trial.initialized || !candidate || !vid || strlen(vid) >= sizeof(g_trial.candidate_vid) ||
+    if (!g_trial.initialized || !candidate || !PatrolConfig_IsVidValid(vid) ||
         g_trial.trial.state == ABOX_MQTT_TRIAL_RESTORE_FAILED ||
         (g_trial.trial.state >= ABOX_MQTT_TRIAL_WAIT_ACCEPT &&
          g_trial.trial.state <= ABOX_MQTT_TRIAL_RESTORING) ||

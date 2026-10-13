@@ -43,7 +43,8 @@ static uint8_t string_is_safe(const char* value, uint16_t size, uint8_t topic_co
         uint8_t ch = (uint8_t)value[i];
         if (ch == '\0') return 1U;
         if ((ch < 0x21U) || (ch > 0x7EU) || (ch == '"') || (ch == '\\')) return 0U;
-        if (topic_component && ((ch == '/') || (ch == '+') || (ch == '#'))) return 0U;
+        if (topic_component && !((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') ||
+            (ch >= '0' && ch <= '9') || ch == '_' || ch == '-')) return 0U;
     }
     return 0U;
 }
@@ -92,11 +93,15 @@ void PatrolConfig_Load(void)
 
 const PatrolRemoteConfigV5_t* PatrolConfig_Get(void) { return &g_patrol_config; }
 
+uint8_t PatrolConfig_IsVidValid(const char* vid)
+{ return string_is_safe(vid, sizeof(g_patrol_config.vid), 1U); }
+
 static uint8_t prepare_snapshot(const PatrolRemoteConfigV5_t* cfg, PatrolRemoteConfigV5_t* output)
 {
     PatrolRemoteConfigV5_t next;
     if (cfg == 0) return 0U;
     next = *cfg;
+    if (!PatrolConfig_IsVidValid(next.vid)) return 0U;
     next.magic = PATROL_CONFIG_MAGIC;
     next.version = PATROL_CONFIG_VERSION;
     next.length = sizeof(next);
@@ -135,6 +140,7 @@ uint8_t PatrolConfig_SetMqtt(const char* vid, const char* host, uint16_t port, c
                           const char* password)
 {
     PatrolRemoteConfigV5_t next = g_patrol_config;
+    if (vid != 0 && !PatrolConfig_IsVidValid(vid)) return 0U;
     if (vid != 0) copy_string(next.vid, sizeof(next.vid), vid);
     if (host != 0) copy_string(next.mqtt_host, sizeof(next.mqtt_host), host);
     if (port != 0U) next.mqtt_port = port;

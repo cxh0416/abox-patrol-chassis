@@ -61,7 +61,7 @@ uint32_t CloudPort_Now(void) { return HAL_GetTick(); }
 uint8_t CloudService_ApplyMqttIdentity(const char* vid)
 {
     const char* subscriptions[4];
-    if (vid == 0 || vid[0] == '\0' || strlen(vid) >= sizeof(((PatrolRemoteConfigV5_t*)0)->vid)) return 0U;
+    if (!PatrolConfig_IsVidValid(vid)) return 0U;
     if (!MQTT_Core_SetClientId(vid)) return 0U;
     if (!build_public_topics(vid)) return 0U;
     (void)snprintf(g_cloud.topic_config_cmd, sizeof(g_cloud.topic_config_cmd), "/zxwl/abox/%s/internal/config", vid);

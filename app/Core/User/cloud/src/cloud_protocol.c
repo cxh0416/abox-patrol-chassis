@@ -29,7 +29,7 @@ static uint8_t config_string_valid(const char* value, uint16_t capacity, uint8_t
         if (ch == '\0') return 1U;
         if (ch < 0x21U || ch > 0x7EU || ch == '"' || ch == '\\') return 0U;
         if (vid && !((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') ||
-                     ch == '.' || ch == '_' || ch == '-')) return 0U;
+                       ch == '_' || ch == '-')) return 0U;
     }
     return 0U;
 }

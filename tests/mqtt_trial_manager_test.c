@@ -11,6 +11,7 @@ static ABoxMqttConfig staged;
 static uint32_t pub_sequence;
 static unsigned activations, restores;
 static unsigned saves;
+static unsigned stages;
 static unsigned fail_save;
 static unsigned fail_restore;
 static MqttRuntimeState runtime_state = ABOX_MQTT_RUNTIME_READY;
@@ -26,6 +27,17 @@ static char identity[32];
 
 const PatrolRemoteConfigV5_t *PatrolConfig_Get(void) { return &persisted; }
 uint8_t PatrolConfig_IsCloudReady(const PatrolRemoteConfigV5_t *c) { return c && c->vid[0] && c->mqtt_host[0]; }
+uint8_t PatrolConfig_IsVidValid(const char *vid)
+{
+    if (!vid || !vid[0]) return 0;
+    unsigned i;
+    for (i = 0; i < 32 && vid[i]; ++i) {
+        unsigned char c = (unsigned char)vid[i];
+        if (!((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
+              (c >= '0' && c <= '9') || c == '_' || c == '-')) return 0;
+    }
+    return i < 32;
+}
 uint8_t PatrolMqttConfig_FromV5(const PatrolRemoteConfigV5_t *c, ABoxMqttConfig *out)
 {
     if (!c || !out) return 0;
@@ -40,7 +52,7 @@ uint8_t CloudService_ApplyMqttIdentity(const char *vid)
 { strcpy(identity, vid); return 1; }
 
 int MqttRuntime_StageRamCandidate(const ABoxMqttConfig *c)
-{ staged = *c; return 1; }
+{ stages++; staged = *c; return 1; }
 int MqttRuntime_ActivateStagedCandidate(uint32_t now)
 { (void)now; activations++; return 1; }
 int MqttRuntime_StopFirst(void) { return first_stop_result; }
@@ -110,6 +122,13 @@ int main(void)
     strcpy(candidate.mqtt_host, "tls");
     candidate.mqtt_port = 19688;
     candidate.mqtt_tls_enabled = 1;
+    PatrolRemoteConfigV5_t bad_candidate = candidate;
+    strcpy(bad_candidate.vid, "bad.id");
+    unsigned before_stages = stages, before_saves = saves;
+    assert(!MqttTrialManager_StagePersistent(&bad_candidate, 30, 300));
+    memset(bad_candidate.vid, 'a', sizeof(bad_candidate.vid));
+    assert(!MqttTrialManager_StagePersistent(&bad_candidate, 30, 300));
+    assert(stages == before_stages && saves == before_saves);
     assert(MqttTrialManager_StagePersistent(&candidate, 30, 300));
     assert(saves == 0 && strcmp(identity, "") == 0);
     to_verifying(300);
@@ -139,6 +158,19 @@ int main(void)
     assert(strcmp(identity, "NEW") == 0 && strcmp(persisted.vid, "NEW") == 0);
     MqttTrialManager_Init();
     first_stop_result = 0;
+    const char *invalid_vid[] = {"", "bad.id", "bad/id", "bad id",
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"};
+    for (unsigned i = 0; i < sizeof(invalid_vid) / sizeof(invalid_vid[0]); ++i) {
+        unsigned before_stages = stages, before_saves = saves;
+        ABoxMqttConfig before_staged = staged;
+        PatrolRemoteConfigV5_t before_persisted = persisted;
+        char before_identity[sizeof(identity)]; memcpy(before_identity, identity, sizeof(identity));
+        assert(!MqttTrialManager_StartEnrollment(&plain, invalid_vid[i], 500));
+        assert(stages == before_stages && saves == before_saves);
+        assert(!memcmp(&before_staged, &staged, sizeof(staged)));
+        assert(!memcmp(&before_persisted, &persisted, sizeof(persisted)));
+        assert(!memcmp(before_identity, identity, sizeof(identity)));
+    }
     assert(MqttTrialManager_StartEnrollment(&plain, "PATROL-NEW", 500));
     assert(MqttTrialManager_State() == ABOX_MQTT_TRIAL_PREPARING);
     MqttTrialManager_Poll(500);

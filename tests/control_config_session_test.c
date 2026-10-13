@@ -8,10 +8,12 @@
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
+#include <stddef.h>
 
 static PatrolRemoteConfigV5_t flash;
 static ABoxTlsCredentials flash_credentials;
 static uint8_t valid, save_ok = 1, power_level;
+static unsigned saves;
 static uint32_t tick = 1000;
 static uint64_t utc_now = 1788838333000ULL;
 static uint8_t time_trusted = 1U;
@@ -22,7 +24,7 @@ ABoxClockSnapshot TimeBase_GetSnapshot(void) {
 uint8_t TimeBase_FormatUtcMs(char* s, uint16_t n) { return (uint8_t)ABoxMqttV4_FormatInteger(s, n, utc_now); }
 uint8_t OTA_Info_LoadRemoteConfig(PatrolRemoteConfigV5_t* c) { if (valid) *c = flash; return valid; }
 uint8_t OTA_Info_SaveRemoteConfig(const PatrolRemoteConfigV5_t* c)
-{ if (!save_ok) return 0; flash = *c; valid = 1; return 1; }
+{ saves++; if (!save_ok) return 0; flash = *c; valid = 1; return 1; }
 uint8_t OTA_Info_LoadMqttCredentials(ABoxTlsCredentials* c)
 { if (!c) return 0; *c = flash_credentials; return 1; }
 uint8_t OTA_Info_SaveMqttSnapshot(const PatrolRemoteConfigV5_t* c, const ABoxTlsCredentials* credentials)
@@ -32,6 +34,37 @@ uint8_t OTA_Info_SaveMqttSnapshot(const PatrolRemoteConfigV5_t* c, const ABoxTls
     return 1;
 }
 static uint8_t write_power(uint8_t on) { power_level = on; return 1; }
+
+static void test_vid_validation(void)
+{
+    char id[34];
+    const char *invalid[] = {"", "bad.id", "bad/id", "bad+id", "bad#id", "bad id", "\xe4\xb8\xad"};
+    assert(sizeof(PatrolRemoteConfigV5_t) == 400);
+    assert(offsetof(PatrolRemoteConfigV5_t, mqtt_tls_enabled) == 396);
+    assert(PatrolConfig_IsVidValid("V050006") && PatrolConfig_IsVidValid("a_-9"));
+    assert(PatrolConfig_SetMqtt("V050006", "broker.example", 19683, "u", "p"));
+    memset(id, 'a', 31); id[31] = '\0';
+    assert(PatrolConfig_SetMqtt(id, "broker.example", 19683, "u", "p"));
+    for (unsigned i = 0; i < sizeof(invalid) / sizeof(invalid[0]) + 2; ++i) {
+        const char *bad;
+        if (i < sizeof(invalid) / sizeof(invalid[0])) bad = invalid[i];
+        else { unsigned n = 32 + i - sizeof(invalid) / sizeof(invalid[0]);
+            memset(id, 'b', n); id[n] = '\0'; bad = id; }
+        PatrolRemoteConfigV5_t before = *PatrolConfig_Get(), stored = flash;
+        ABoxTlsCredentials credentials = flash_credentials;
+        unsigned writes = saves;
+        assert(!PatrolConfig_IsVidValid(bad));
+        assert(!PatrolConfig_SetMqtt(bad, "changed.example", 1883, "changed", "changed"));
+        PatrolRemoteConfigV5_t candidate = before;
+        memset(candidate.vid, 0, sizeof(candidate.vid));
+        memcpy(candidate.vid, bad, strlen(bad) < sizeof(candidate.vid) ? strlen(bad) : sizeof(candidate.vid));
+        assert(!PatrolConfig_Save(&candidate));
+        assert(saves == writes && !memcmp(&before, PatrolConfig_Get(), sizeof(before)));
+        assert(!memcmp(&stored, &flash, sizeof(flash)));
+        assert(!memcmp(&credentials, &flash_credentials, sizeof(credentials)));
+    }
+    assert(PatrolConfig_SetMqtt("PATROL-001", "broker.example", 19683, "device", "secret"));
+}
 
 static void command(const char* session, int rpm, int angle, const char* action, int seq,
                     unsigned expected_code)
@@ -130,6 +163,7 @@ int main(void)
     assert(PatrolConfig_Get()->calibrated && PatrolConfig_Get()->reserved_remote == 1);
     assert(PatrolConfig_SingleTurnProfileReady());
     assert(PatrolConfig_SetMqtt("PATROL-001", "broker.example", 19683, "device", "secret"));
+    test_vid_validation();
     flash.mqtt_tls_enabled = 1; flash.mqtt_tls_profile_id = 0; PatrolConfig_Load();
     assert(PatrolMqttConfig_FromV5(PatrolConfig_Get(), &mqtt_runtime));
     assert(!strcmp(mqtt_runtime.host, flash.mqtt_host) && mqtt_runtime.port == flash.mqtt_port);
@@ -175,6 +209,16 @@ int main(void)
     command("final-session", 0, 0, "stop", 8, 200);
     assert(!RemoteService_State()->session_active);
     test_request_identity_and_boundaries();
+    assert(VehiclePowerOutput_Set(1U));
+    const char *invalid_stop = "{\"version\":\"4.0\",\"timestamp\":1788838333000,\"data\":{\"requestId\":\"invalid-stop\","
+        "\"command\":\"chassis_control\",\"params\":{\"action\":\"stop\",\"sessionId\":\"s\","
+        "\"seq\":1,\"leaseMs\":\"bad\",\"driveRpm\":0,\"steeringDeg\":0}}}";
+    assert(RemoteService_HandleControl(invalid_stop, (uint16_t)strlen(invalid_stop), response, sizeof(response)));
+    assert(strstr(response, "\"code\":4001") && power_level);
+    const char *conflicting_off = "{\"version\":\"4.0\",\"timestamp\":1788838333000,\"data\":{\"requestId\":\"power-1\","
+        "\"command\":\"power_off\",\"params\":null}}";
+    assert(RemoteService_HandleControl(conflicting_off, (uint16_t)strlen(conflicting_off), response, sizeof(response)));
+    assert(strstr(response, "\"code\":4006") && !power_level);
     RemoteService_ExecutionFault();
     command("fault-session", 0, 0, "acquire", 9, 400);
     assert(RemoteService_State()->fault_latched);
