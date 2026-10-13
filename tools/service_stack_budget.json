@@ -80,6 +80,20 @@
       "MQTT_Core_PublishEx",
       "MQTT_Core_PublishExTracked",
       "ABoxMqttEc800_Publish"
-    ]
+    ],
+    "at_ota_termination": [
+      "Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "ABoxEc800Rx_Drain", "ABoxEc800At_Feed", "emit_line", "ABoxEc800At_OnModemReset", "ABoxEc800At_Reset", "terminate_all", "command_done", "download_fail", "log_failure", "log_message", "adapter_log", "AppLog_Printf"
+    ],
+    "at_enrollment_termination": [
+      "Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "ABoxEc800Rx_Drain", "ABoxEc800At_Feed", "emit_line", "ABoxEc800At_OnModemReset", "ABoxEc800At_Reset", "terminate_all", "command_done", "finish", "http_done", "ABoxEnrollment_OnHttp"
+    ],
+    "modem_reset_runtime": [
+      "Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "ABoxEc800At_OnModemReset", "ABoxMqttRuntime_OnModemReset", "start", "changed", "AppLog_Printf"
+    ],
+    "uart_rx_retry": ["Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "app_restart_rx", "HAL_UARTEx_ReceiveToIdle_DMA", "UART_Start_Receive_DMA", "HAL_DMA_Start_IT"],
+    "uart_rx_failure_log": ["Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "app_restart_rx", "AppLog_Printf"],
+    "uart_tx_termination": ["Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "ABoxEc800At_Task", "terminate_all", "command_done", "download_fail", "log_failure", "log_message", "adapter_log", "AppLog_Printf"],
+    "enrollment_payload_termination": ["Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "ABoxEc800Rx_Drain", "ABoxEc800At_Feed", "emit_line", "on_event", "ABoxEc800At_SendPayload", "terminate_all", "command_done", "stop_http", "finish", "http_done", "ABoxEnrollment_OnHttp"],
+    "ota_payload_termination": ["Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "ABoxBootV2App_Task", "send_payload", "ABoxEc800At_SendPayload", "terminate_all", "command_done", "download_fail", "log_failure", "log_message", "adapter_log", "AppLog_Printf"]
   }
 }

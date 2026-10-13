@@ -80,6 +80,7 @@ void MQTT_Core_ForceReconnect(void);
 void MQTT_Core_SetPaused(uint8_t paused);
 void MQTT_Core_SetSecurityReady(uint8_t ready);
 void MQTT_Core_SetNetworkChangedCallback(void (*callback)(void));
+void MQTT_Core_SetModemResetCallback(void (*callback)(void));
 /* Register the existing shared RAM with OTA at startup. The App OTA callback
  * must first stop MQTT and acquire the workspace lease; it returns the lease
  * before resuming MQTT. */

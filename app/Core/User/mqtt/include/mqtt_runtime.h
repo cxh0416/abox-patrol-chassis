@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include "abox_mqtt_runtime.h"
+uint8_t MqttRuntime_NeedsModemRecovery(void);
 
 #define PATROL_MQTT_TLS_CONTEXT 2U
 #define PATROL_MQTT_TLS_PROFILE_DEFAULT 0U

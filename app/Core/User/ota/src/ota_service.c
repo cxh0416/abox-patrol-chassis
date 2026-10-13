@@ -42,10 +42,11 @@ void OtaService_Init(Ec800AtCore_t *at)
     const PatrolRemoteConfigV5_t *runtime = PatrolConfig_Get();
     extern uint8_t __app_image_end;
 
+    /* Invalidate startup readiness even if binding fails before App Init. */
+    (void)ABoxBootV2App_Init(NULL, NULL);
     memset(&port, 0, sizeof(port));
     if (!ABoxBootV2Ec800Adapter_BindServices(&g_adapter, at, MQTT_Core_Bridge(), &port)) {
         APP_LOGE("OTA", "MQTT bridge not ready for OTA binding");
-        Error_Handler();
         return;
     }
     port.mqtt_client_index = adapter_mqtt_client_index;
@@ -62,13 +63,13 @@ void OtaService_Init(Ec800AtCore_t *at)
     config.app_start_addr = APP_START_ADDR;
     config.app_size = (uint32_t)(&__app_image_end - (uint8_t *)APP_START_ADDR);
     config.app_max_size = APP_MAX_SIZE;
-    (void)ABoxBootV2_StateBindLayout(&layout);
-    if (!ABoxBootV2App_Init(&port, &config)) {
-        APP_LOGE("OTA", "OTA service initialization failed");
-        Error_Handler();
+    if (!ABoxBootV2_StateBindLayout(&layout) ||
+        !ABoxBootV2App_Init(&port, &config)) {
+        APP_LOGE("OTA", "OTA service initialization failed; OTA disabled");
     }
 }
 
+uint8_t OtaService_IsInitialized(void) { return (uint8_t)ABoxBootV2App_IsInitialized(); }
 uint8_t OtaService_BeginProvisioning(void) { return (uint8_t)ABoxBootV2App_BeginProvisioning(); }
 void OtaService_Task(void) { ABoxBootV2App_Task(); }
 uint8_t OtaService_IsProvisioned(void) { return (uint8_t)ABoxBootV2App_IsProvisioned(); }
@@ -82,7 +83,7 @@ uint8_t OtaService_Start(const CloudProtocolRequest_t *request)
     ABoxBootV2AppRequest common;
     size_t url_length;
     size_t version_length;
-    if (!request) return 0U;
+    if (!OtaService_IsInitialized() || !request) return 0U;
     url_length = strlen(request->ota_url);
     version_length = strlen(request->ota_version);
     if (url_length >= sizeof(common.url) || version_length >= sizeof(common.version)) return 0U;

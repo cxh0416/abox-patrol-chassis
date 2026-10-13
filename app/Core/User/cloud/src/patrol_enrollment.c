@@ -65,6 +65,7 @@ static int start_trial(void *user, const ABoxEnrollmentCredential *credential)
     runtime = (ABoxMqttConfig){credential->host, credential->port,
                               credential->username, credential->password,
                               credential->tls_enabled, credential->tls_profile_id};
+    runtime.tls_credentials = credential->tls_credentials;
     if (!MqttTrialManager_StartEnrollment(&runtime, credential->vid, HAL_GetTick())) return 0;
     g_cloud.config_ready = 1U;
     return 1;
@@ -78,14 +79,14 @@ static int trial_result(void *user)
     (void)user;
     state = MqttTrialManager_State();
     if (state == ABOX_MQTT_TRIAL_COMMITTED) return 1;
-    if (state == ABOX_MQTT_TRIAL_FAILED) {
+    if (state == ABOX_MQTT_TRIAL_FAILED || state == ABOX_MQTT_TRIAL_RESTORE_FAILED) {
         g_cloud.config_ready = 0U;
         return 0;
     }
     return -1;
 }
 
-void PatrolEnrollment_Init(ABoxEc800At *at)
+uint8_t PatrolEnrollment_Init(ABoxEc800At *at)
 {
     ABoxEnrollmentServicePort port = {0, now_ms, network_ready,
         needs_enrollment, identity, mqtt_pause, start_trial, trial_result,
@@ -96,7 +97,7 @@ void PatrolEnrollment_Init(ABoxEc800At *at)
     buffers.response = g_cloud.tx_payload; buffers.response_size = 769U;
     buffers.request_id = g_request_id; buffers.request_id_size = sizeof(g_request_id);
     buffers.poll_token = g_poll_token; buffers.poll_token_size = sizeof(g_poll_token);
-    (void)ABoxEnrollmentService_Init(&g_service, at, ENROLL_OWNER,
+    return (uint8_t)ABoxEnrollmentService_Init(&g_service, at, ENROLL_OWNER,
         "UFS:ota_ca.pem", PatrolConfig_Get()->ota_origin, &buffers,
         PATROL_MQTT_TLS_PROFILE_DEFAULT, &port);
 }
@@ -104,4 +105,9 @@ void PatrolEnrollment_Init(ABoxEc800At *at)
 void PatrolEnrollment_Task(void)
 {
     ABoxEnrollmentService_Poll(&g_service);
+}
+
+void PatrolEnrollment_AfterModemReset(void)
+{
+    ABoxEnrollmentService_AfterModemReset(&g_service);
 }

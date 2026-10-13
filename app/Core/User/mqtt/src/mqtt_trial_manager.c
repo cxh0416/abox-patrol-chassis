@@ -22,6 +22,8 @@ typedef struct {
     char candidate_vid[32];
 } PatrolMqttTrialManager;
 static PatrolMqttTrialManager g_trial;
+uint8_t MqttTrialManager_RuntimeRecoveryAllowed(void)
+{ return !g_trial.flash_restore_failed && g_trial.trial.state != ABOX_MQTT_TRIAL_RESTORE_FAILED; }
 
 static uint8_t copy_text(char *dst, uint16_t size, const char *src)
 { size_t n;if(!dst||!size||!src)return 0;n=strlen(src);if(n>=size)return 0;memcpy(dst,src,n+1);return 1; }

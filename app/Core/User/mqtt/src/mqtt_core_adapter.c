@@ -25,6 +25,9 @@ static uint32_t g_ready_sequence;
 static void state_changed(void *context, ABoxMqttEc800State state)
 { (void)context; if (state == ABOX_MQTT_EC800_READY) ++g_ready_sequence; }
 static void (*g_network_changed)(void);
+static void (*g_modem_reset)(void);
+static void modem_reset(void *context)
+{ (void)context; if (g_modem_reset) g_modem_reset(); }
 static uint8_t g_header[128], g_topic[TOPIC_CAPACITY];
 static uint8_t g_payload[PAYLOAD_CAPACITY], g_outgoing[1536U];
 
@@ -80,6 +83,7 @@ void MQTT_Core_Init(const MQTT_CoreConfig_t *config, MQTT_CoreMsgCallback_t call
     g_message = callback;
     g_ready_sequence = 0U;
     g_network_changed = 0;
+    g_modem_reset = 0;
     memset(&g_bridge, 0, sizeof(g_bridge));
 }
 
@@ -90,7 +94,8 @@ void MQTT_Core_SetAtCore(Ec800AtCore_t *at)
     static const ABoxMqttEc800BridgeHooks hooks = {
         .message = message,
         .state_changed = state_changed,
-        .network_changed = network_changed
+        .network_changed = network_changed,
+        .modem_reset = modem_reset
     };
     if (!at) return;
     memset(&buffers, 0, sizeof(buffers));
@@ -136,6 +141,10 @@ void MQTT_Core_SetSecurityReady(uint8_t ready)
 void MQTT_Core_SetNetworkChangedCallback(void (*callback)(void))
 {
     g_network_changed = callback;
+}
+void MQTT_Core_SetModemResetCallback(void (*callback)(void))
+{
+    g_modem_reset = callback;
 }
 
 int MQTT_Core_Stop(uint32_t now_ms)

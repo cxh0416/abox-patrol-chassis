@@ -16,6 +16,7 @@
 #define OTA_ERROR_UFS_IO_FAILED 1501U
 
 void OtaService_Init(Ec800AtCore_t* at);
+uint8_t OtaService_IsInitialized(void);
 uint8_t OtaService_BeginProvisioning(void);
 void OtaService_Task(void);
 uint8_t OtaService_IsProvisioned(void);

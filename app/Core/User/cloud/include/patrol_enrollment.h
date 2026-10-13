@@ -3,7 +3,8 @@
 
 #include "abox_ec800_at.h"
 
-void PatrolEnrollment_Init(ABoxEc800At *at);
+uint8_t PatrolEnrollment_Init(ABoxEc800At *at);
 void PatrolEnrollment_Task(void);
+void PatrolEnrollment_AfterModemReset(void);
 
 #endif

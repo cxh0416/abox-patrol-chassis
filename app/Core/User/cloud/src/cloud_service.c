@@ -91,9 +91,9 @@ static uint8_t read_reset_reason(void)
     return reason;
 }
 
-static void uart_start_rx(void)
+static int uart_start_rx(void)
 {
-    (void)HAL_UARTEx_ReceiveToIdle_DMA(&huart1, g_cloud.uart_dma, sizeof(g_cloud.uart_dma));
+    return HAL_UARTEx_ReceiveToIdle_DMA(&huart1, g_cloud.uart_dma, sizeof(g_cloud.uart_dma)) == HAL_OK;
 }
 
 static uint32_t ec800_tick(void *context)
@@ -126,7 +126,7 @@ static void app_ready(void *, int, uint32_t);
 
 static void app_before_enrollment(void *context, uint32_t now);
 static void app_enrollment(void *context, uint32_t now);
-static void app_restart_rx(void *context);
+static int app_restart_rx(void *context);
 static const ABoxAppServicePort app_port = {
     .restart_rx = app_restart_rx,
     .before_enrollment = app_before_enrollment,
@@ -140,15 +140,22 @@ static const ABoxAppServicePort app_port = {
 
 void CloudService_Init(void)
 {
+    g_cloud.initialized = 0U;
     memset(&g_cloud.telemetry, 0, sizeof(g_cloud.telemetry));
     MQTT_CoreConfig_t mqtt;
     ABoxMqttConfig runtime;
     const PatrolRemoteConfigV5_t* cfg = PatrolConfig_Get();
     memset(&mqtt, 0, sizeof(mqtt));
-    (void)ABoxEc800Rx_Init(&g_cloud.ec800_rx, g_cloud.uart_dma, sizeof(g_cloud.uart_dma),
-                           g_cloud.rx_ring, sizeof(g_cloud.rx_ring));
+    if (!ABoxEc800Rx_Init(&g_cloud.ec800_rx, g_cloud.uart_dma, sizeof(g_cloud.uart_dma),
+                           g_cloud.rx_ring, sizeof(g_cloud.rx_ring))) {
+        APP_LOGE("CLOUD", "RX initialization failed; communication disabled");
+        return;
+    }
     const ABoxCloudServiceOptions cloud_options = { CLOUD_IDLE_HEARTBEAT_MS, CLOUD_IDLE_STATUS_MS, 0U };
-    (void)ABoxCloudService_Init(&g_cloud.cloud, &cloud_options, HAL_GetTick());
+    if (!ABoxCloudService_Init(&g_cloud.cloud, &cloud_options, HAL_GetTick())) {
+        APP_LOGE("CLOUD", "cloud initialization failed; communication disabled");
+        return;
+    }
     (void)ABoxCloudService_SetSyncStorage(&g_cloud.cloud, g_cloud.pending_sync_request_id,
                                         sizeof(g_cloud.pending_sync_request_id));
     g_cloud.cloud.response_pending = 0U;
@@ -172,7 +179,10 @@ void CloudService_Init(void)
 
     {
         const ABoxEc800AtPort at_port = {&huart1, ec800_tick, ec800_write, 0};
-        (void)EC800_AT_Init(&g_cloud.at_core, &at_port);
+        if (!EC800_AT_Init(&g_cloud.at_core, &at_port)) {
+            APP_LOGE("CLOUD", "AT initialization failed; communication disabled");
+            return;
+        }
     }
     memset(&runtime, 0, sizeof(runtime));
     if (cfg != 0)
@@ -199,24 +209,33 @@ void CloudService_Init(void)
     }
     MQTT_Core_Init(&mqtt, CloudCommands_OnMessage);
     MQTT_Core_SetNetworkChangedCallback(mqtt_network_changed);
+    MQTT_Core_SetModemResetCallback(PatrolEnrollment_AfterModemReset);
     MQTT_Core_SetAtCore(&g_cloud.at_core);
+    if (!MQTT_Core_Bridge()->initialized) {
+        APP_LOGE("CLOUD", "MQTT bridge initialization failed; communication disabled");
+        return;
+    }
     OtaService_Init(&g_cloud.at_core);
     if (!MqttRuntime_Init(&g_cloud.at_core, g_cloud.config_ready ? &runtime : 0, HAL_GetTick())) {
         g_cloud.config_ready = 0U;
         APP_LOGE("CLOUD", "invalid MQTT V5 runtime configuration");
+        return;
     }
     MqttTrialManager_Init();
-    PatrolEnrollment_Init(&g_cloud.at_core);
+    if (!PatrolEnrollment_Init(&g_cloud.at_core))
+        APP_LOGE("ENROLL", "initialization failed; enrollment unavailable");
 
     EC_Power_Init();
     EC_Power_StartOnSequence();
-    uart_start_rx();
     g_cloud.cloud.heartbeat_due = HAL_GetTick();
     g_cloud.cloud.status_due = HAL_GetTick();
     g_cloud.status_report_sequence = 1U;
     memset(&g_cloud.status_snapshot, 0, sizeof(g_cloud.status_snapshot));
     g_cloud.iccid_due = HAL_GetTick() + 1000U;
-    (void)ABoxAppService_Init(&g_app_service, &g_cloud.at_core, &g_cloud.ec800_rx, &app_port);
+    if (!ABoxAppService_Init(&g_app_service, &g_cloud.at_core, &g_cloud.ec800_rx, &app_port)) {
+        APP_LOGE("CLOUD", "App service initialization failed; communication disabled");
+        return;
+    }
 #ifdef ABOX_PSK_STATION
     ABoxPskStation_SetInputBuffer(g_cloud.last_response_payload, sizeof(g_cloud.last_response_payload));
 #endif
@@ -260,12 +279,19 @@ void CloudService_Task(void)
 #endif
 }
 
-static void app_restart_rx(void *context)
+static int app_restart_rx(void *context)
 {
     (void)context;
-    (void)HAL_UART_DMAStop(&huart1);
+    if (HAL_UART_DMAStop(&huart1) != HAL_OK) {
+        APP_LOGE("UART", "RX stop failed");
+        return 0;
+    }
     ABoxEc800Rx_AfterRestart(&g_cloud.ec800_rx);
-    uart_start_rx();
+    if (!uart_start_rx()) {
+        APP_LOGE("UART", "RX start failed");
+        return 0;
+    }
+    return 1;
 }
 static void app_before_enrollment(void *context, uint32_t now)
 {
@@ -318,11 +344,12 @@ static void app_runtime(void *context, uint32_t now) { (void)context; MqttRuntim
 static int app_runtime_ready(void *context) { (void)context; return MqttRuntime_IsReady(); }
 static void app_transport(void *context, uint32_t now) { (void)context; (void)now; MQTT_Core_Task(); }
 static int app_transport_ready(void *context) { (void)context; return MQTT_Core_IsReady(); }
-static int app_transport_error(void *context) { (void)context; return MQTT_Core_GetState() == MQTT_CORE_ST_ERROR; }
+static int app_transport_error(void *context) { (void)context; return MQTT_Core_GetState() == MQTT_CORE_ST_ERROR || MqttRuntime_NeedsModemRecovery(); }
 static int app_maintenance_busy(void *context)
 {
     ABoxMqttTrialState state = MqttTrialManager_State(); (void)context;
-    return state != ABOX_MQTT_TRIAL_IDLE && state != ABOX_MQTT_TRIAL_COMMITTED && state != ABOX_MQTT_TRIAL_FAILED;
+    return !MqttTrialManager_RuntimeRecoveryAllowed() || (state != ABOX_MQTT_TRIAL_IDLE && state != ABOX_MQTT_TRIAL_COMMITTED && state != ABOX_MQTT_TRIAL_FAILED) ||
+        (MqttRuntime_State() == ABOX_MQTT_RUNTIME_BLOCKED && !MqttRuntime_NeedsModemRecovery());
 }
 static void app_event(void *context, ABoxAppServiceEvent event)
 {

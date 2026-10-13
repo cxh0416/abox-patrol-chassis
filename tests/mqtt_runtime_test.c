@@ -13,6 +13,8 @@ static ABoxMqttConfig applied;
 static char commands[32][160];
 static unsigned command_count;
 static int fail_tls_command;
+static uint8_t recovery_allowed = 1U;
+uint8_t MqttTrialManager_RuntimeRecoveryAllowed(void) { return recovery_allowed; }
 static ABoxMqttRuntimeState observed[32];
 static unsigned observed_count;
 
@@ -83,6 +85,7 @@ static void reset_fakes(void)
     now_ms = 1U; time_valid = paused = security_ready = core_ready = 0U; core_auto_ready = 1U; revoked = 0U;
     command_count = stops = 0U; fail_tls_command = 0; memset(&applied, 0, sizeof(applied));
     observed_count = 0U;
+    recovery_allowed = 1U;
     memset(commands, 0, sizeof(commands));
 }
 static void init_at(ABoxEc800At *at)
@@ -155,6 +158,14 @@ int main(void)
     assert(MqttRuntime_State() == MQTT_RUNTIME_FAILED && !MqttRuntime_IsReady());
     assert(!security_ready && paused && !has_command("QMTOPEN=0") && !has_command("QMTCONN=0"));
 
-    puts("MQTT runtime: plain client0, TLS client1/context2/CA, RAM switch revoke, no fallback passed");
+    assert(MqttRuntime_NeedsModemRecovery());
+    recovery_allowed=0U; /* restore/readback protection before the next RDY */
+    ABoxEc800At_OnModemReset(&at);
+    assert(MqttRuntime_State()==ABOX_MQTT_RUNTIME_BLOCKED && !MqttRuntime_NeedsModemRecovery());
+    assert(!security_ready && paused);
+    recovery_allowed=1U;
+    ABoxEc800At_OnModemReset(&at);
+    assert(MqttRuntime_State()==ABOX_MQTT_RUNTIME_BLOCKED && !security_ready && paused);
+    puts("MQTT runtime: TLS, RAM switch revoke, no fallback and reset safety latch passed");
     return 0;
 }

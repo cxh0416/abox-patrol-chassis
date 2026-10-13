@@ -9,6 +9,8 @@
 #include <string.h>
 #define MQTT_RUNTIME_OWNER (ABOX_EC800_OWNER_PRODUCT_BASE + 4U)
 static ABoxMqttRuntime g_runtime;
+uint8_t MqttRuntime_NeedsModemRecovery(void)
+{ return ABoxMqttRuntime_NeedsModemRecovery(&g_runtime); }
 static uint32_t g_runtime_now;
 static const ABoxMqttRuntimeCoreApi g_core_api = {
   MQTT_Core_SetPaused, MQTT_Core_SetSecurityReady,
@@ -22,6 +24,10 @@ static uint8_t ca_ready(void *u) {
 static uint8_t time_valid(void *u) {
   (void)u;
   return TimeBase_IsValid();
+}
+static uint8_t recovery_allowed(void *u) {
+  (void)u;
+  return MqttTrialManager_RuntimeRecoveryAllowed();
 }
 static void observe_line(void *u, const char *l) {
   (void)u;
@@ -55,6 +61,7 @@ int MqttRuntime_Init(ABoxEc800At *at, const ABoxMqttConfig *c, uint32_t now) {
   o.query_clock_mode = 1U;
   p.ca_ready = ca_ready;
   p.time_valid = time_valid;
+  p.recovery_allowed = recovery_allowed;
   p.observe_modem_line = observe_line;
   p.before_network_change = revoke;
   p.state_changed = changed;

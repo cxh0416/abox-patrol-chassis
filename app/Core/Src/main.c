@@ -80,9 +80,17 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+  if (HAL_Init() != HAL_OK) Error_Handler();
 
   /* USER CODE BEGIN Init */
+  /* Boot disables and clears NVIC before handing off with PRIMASK set.
+   * VTOR now selects App handlers; HAL_Init installs the TIM1 tick. Validate
+   * that tick before enabling interrupts needed by clock-init timeouts. */
+  if (SCB->VTOR != APP_START_ADDR ||
+      (TIM1->CR1 & TIM_CR1_CEN) == 0U ||
+      (TIM1->DIER & TIM_DIER_UIE) == 0U ||
+      NVIC_GetEnableIRQ(TIM1_UP_IRQn) == 0U) Error_Handler();
+  __enable_irq();
 
   /* USER CODE END Init */
 

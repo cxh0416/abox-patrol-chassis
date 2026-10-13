@@ -11,7 +11,7 @@ $gcc = (Get-Command gcc -ErrorAction Stop).Source
 $hostBuild = "$PSScriptRoot\..\platform\build\host"
 New-Item -ItemType Directory -Force -Path $hostBuild | Out-Null
 if (-not $SkipPlatformTests) {
-& cmake -S "$PSScriptRoot\..\platform" -B $hostBuild -G Ninja -DBUILD_TESTING=ON "-DCMAKE_C_COMPILER=$gcc"
+& cmake -S "$PSScriptRoot\..\platform" -B $hostBuild -G Ninja -DBUILD_TESTING=ON "-DCMAKE_C_COMPILER=$gcc" "-DABOX_STAGE2_PRODUCT_ROOT=$PSScriptRoot/.."
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & cmake --build $hostBuild
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
@@ -168,4 +168,8 @@ $driveTest = Join-Path $hostBuild 'bench_drive_test.exe'
     "$PSScriptRoot\..\tests\bench_drive_test.c" -o $driveTest
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $driveTest
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& python (Join-Path $PSScriptRoot '..\tests\test_startup_handoff.py')
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& python (Join-Path $PSScriptRoot '..\platform\tools\test_product_ota_init.py') --product-root (Join-Path $PSScriptRoot '..')
 exit $LASTEXITCODE
