@@ -38,8 +38,9 @@ ChassisCloudStatus ChassisCloud_Parse(const char* payload, uint16_t length,
     cJSON *action, *session_id, *seq, *lease, *rpm, *angle;
     double steering_mdeg;
     ChassisCloudStatus status = CHASSIS_CLOUD_INVALID;
-    if (payload == 0 || command == 0 || length == 0U || length > 1023U) return status;
+    if (command == 0) return status;
     memset(command, 0, sizeof(*command));
+    if (payload == 0 || length == 0U || length > 1024U) return status;
     root = cJSON_ParseWithLength(payload, length);
     if (root == 0) return status;
     version = cJSON_GetObjectItemCaseSensitive(root, "version");

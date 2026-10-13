@@ -12,21 +12,13 @@ Profile：`vehicle_chassis 1.0`
 
 公共报文外层、Topic、QoS、请求响应、公共响应码、`requestId` 幂等、Manifest、心跳和 `sync_state` 通用规则统一遵循 [A-BOX 设备公共 MQTT 协议 V4](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md)，本文不重复定义。
 
-`/internal/*` 的运维和标定接口由[内部运维协议 V2.3](A-BOX内部运维协议V2.3.md)定义。硬件映射、内部算法、标定操作和验收记录不属于本 Profile。
+`/internal/*` 运维、标定及硬件映射、内部算法、操作和验收记录不属于本 Profile。
 
-## 2. 设备类型和能力描述
+## 2. Profile 与能力
 
 Profile 名称固定为 `vehicle_chassis`，不从客户或项目名称派生。本 Profile 为单实例能力，不使用 `instanceId`。
 
-| 能力 | 业务接口 |
-|---|---|
-| 车辆电源命令 | `power_on`、`power_off` |
-| 连续底盘控制 | `chassis_control`，使用 `sessionId + seq + leaseMs` |
-| 完整底盘状态 | `chassis_status` |
-
-命令成功只表示达到对应章节的业务接受边界，不证明车辆已经真实上电、断电、运动、停止或到位。
-
-## 3. Manifest / Profile 定义
+## 3. 能力声明与命令清单
 
 Manifest Profile 条目固定为：
 
@@ -34,33 +26,60 @@ Manifest Profile 条目固定为：
 {"name":"vehicle_chassis","version":"1.0"}
 ```
 
-| 类型 | 名称及匹配条件 | 分类 |
-|---|---|---|
-| Command | `power_on` | `DISCRETE_ACTION` |
-| Command | `power_off` | `SAFETY_STOP` |
-| Command | `chassis_control`, `action=acquire/renew` | `CONTINUOUS_SESSION` |
-| Command | `chassis_control`, `action=stop` | `SAFETY_STOP` |
-| Report | `chassis_status` | `state`，完整状态 |
+| 接口 / 匹配条件 | 分类 | params | expiresAt / 最大有效期 |
+|---|---|---|---|
+| `power_on` | DISCRETE_ACTION | null | 必填 / 5 秒 |
+| `power_off` | SAFETY_STOP | null | 可选 |
+| `chassis_control`, action=acquire/renew | CONTINUOUS_SESSION | 第 4.3 节 | 不使用 |
+| `chassis_control`, action=stop | SAFETY_STOP | 第 4.3 节 | 不使用 |
+| `chassis_status` | state，完整状态 | 第 5 节 payload | — |
 
 同一固件固定提供该能力时可以省略 `manifestId`；其他 Manifest 规则遵循公共 V4。
 
 ## 4. 业务命令定义
 
-携带有效期的请求，其原始申请有效期按 `0 < expiresAt - request.timestamp <= 最大有效期` 校验；设备当前时间只判断是否已到期，不参与最大有效期计算。外层 `timestamp` 不作为严格时钟一致性门禁。必填有效期缺少或非法有效期返回 `4001`；已过期返回 `4005`；可信 UTC 不可用或剩余时间无法越过估计误差边界时返回 `4003`。合法重复请求先返回已保存结果，再对新请求检查当前过期状态，不能再次执行离散动作。`sync_state` 和连续控制不使用 `expiresAt`。
+有效期、可信时间、幂等和异常响应遵循公共 V4 第 4 节；本 Profile 的有效期限制见第 3 节。`sync_state` 和连续控制不使用 `expiresAt`。
 
 ### 4.1 `power_on`
 
-- `params` 固定为 `null`；
-- `expiresAt` 必填，最大有效期 5 秒；
-- `code=200` 表示 MCU 电源输出命令已锁存；`result.powerOutputOn` 表示当前命令锁存状态；
+- `code=200` 表示 MCU 电源输出命令已锁存；`result.powerOutputOn`（Boolean）表示当前命令锁存状态；
 - 成功不表示负载端或整车已经真实上电；运动目标仍由 MCU 实时安全条件决定。
 
 ### 4.2 `power_off`
 
-- `params` 固定为 `null`，`expiresAt` 可选；
 - `code=200` 表示 MCU 电源输出命令已关闭，当前运动目标和控制会话已撤销；
-- `result.powerOutputOn` 表示当前命令锁存状态；成功不表示真实断电或车轮已经静止；
+- `result.powerOutputOn`（Boolean）表示当前命令锁存状态；成功不表示真实断电或车轮已经静止；
 - 本操作为安全停止，允许重复执行。
+
+电源开启请求及成功响应示例（只表示命令锁存，不表示真实供电反馈）：
+
+```json
+{
+  "version": "4.0",
+  "timestamp": 1800000000000,
+  "data": {
+    "requestId": "patrol-power-001",
+    "command": "power_on",
+    "params": null,
+    "expiresAt": 1800000003000
+  }
+}
+```
+
+```json
+{
+  "version": "4.0",
+  "timestamp": 1800000000100,
+  "data": {
+    "requestId": "patrol-power-001",
+    "code": 200,
+    "msg": "operation accepted",
+    "result": {
+      "powerOutputOn": true
+    }
+  }
+}
+```
 
 ### 4.3 `chassis_control`
 
@@ -128,7 +147,7 @@ Manifest Profile 条目固定为：
 
 `safetyReady` 及其组成字段用于状态展示、诊断和操作提示，不构成平台侧 `acquire/renew` 的额外授权门禁。平台可提示设备未就绪，但不得复制 MCU 的安全条件组合来决定是否发送控制请求；设备对请求的实时响应及持续安全裁决为准。
 
-## 6. `sync_state` 对接说明
+## 6. `sync_state` 状态集合
 
 `sync_state` 的通用规则由公共 V4 定义。本 Profile 的预期完整状态集合为：
 
@@ -149,7 +168,7 @@ Manifest Profile 条目固定为：
 | 值 | 名称 | 含义 |
 |---:|---|---|
 | `0` | `none` | 无停止原因。 |
-| `1` | `reserved` | 历史 `remote_disabled` 编号；生产路径不产生，后续编号保持不变。 |
+| `1` | `reserved` | 保留值，正式运行不产生；后续编号保持不变。 |
 | `2` | `uncalibrated` | 无可用转向标定。 |
 | `3` | `feedback_stale` | 运动反馈过期。 |
 | `4` | `angle_mismatch` | 双转角反馈偏差超限。 |

@@ -16,39 +16,36 @@
 #include "task.h"
 
 typedef struct {
-    char request_id[64];
     uint64_t expires_at, protect_until, protect_mono;
     uint16_t code;
     uint8_t power_on;
+    char request_id[65];
 } ABoxPowerReplay;
 static ABoxPowerReplay g_power_replay[4];
 
 static uint8_t g_remote_initialized;
 static ChassisControl g_control;
-static char g_last_request_id[64];
-static char g_last_response[320] /* fixed motion response, including a 63-byte requestId */;
-static uint32_t g_last_request_hash;
-static uint16_t g_last_request_length;
+static char g_last_request_id[65];
+/* Covers the longest motion result/message with a 64-byte ID and UTC integer. */
+static char g_last_response[288];
+static struct {
+    char action[8], session_id[40];
+    uint32_t seq, lease_ms;
+    int32_t steering_mdeg;
+    int16_t drive_rpm;
+} g_last_motion;
 #if PATROL_CHASSIS_MQTT_LAB_TEST
 static uint8_t g_lab_hold_state;
 #endif
 
-static uint32_t request_hash(const ChassisCloudCommand* command)
+static uint8_t same_request(const ChassisCloudCommand* command)
 {
-    uint32_t hash = 2166136261UL;
-    char canonical[192];
-    int length;
-    int i;
-    length = snprintf(canonical, sizeof(canonical), "%u|%s|%s|%lu|%lu|%d|%ld",
-        (unsigned)command->type, command->action, command->session_id,
-        (unsigned long)command->seq, (unsigned long)command->lease_ms,
-        (int)command->drive_rpm, (long)command->steering_mdeg);
-    if (length < 0 || length >= (int)sizeof(canonical)) return 0U;
-    for (i = 0; i < length; i++) {
-        hash ^= (uint8_t)canonical[i];
-        hash *= 16777619UL;
-    }
-    return hash;
+    /* Compare normalized motion fields exactly; timestamp is not request identity. */
+    return command->type == CHASSIS_CLOUD_COMMAND_MOTION &&
+        !strcmp(command->action, g_last_motion.action) &&
+        !strcmp(command->session_id, g_last_motion.session_id) &&
+        command->seq == g_last_motion.seq && command->lease_ms == g_last_motion.lease_ms &&
+        command->drive_rpm == g_last_motion.drive_rpm && command->steering_mdeg == g_last_motion.steering_mdeg;
 }
 
 void RemoteService_Revoke(void)
@@ -64,8 +61,6 @@ void RemoteService_RevokeForNetworkChange(void)
     RemoteService_Revoke();
     g_last_request_id[0] = '\0';
     g_last_response[0] = '\0';
-    g_last_request_hash = 0U;
-    g_last_request_length = 0U;
 #if PATROL_CHASSIS_MQTT_LAB_TEST
     g_lab_hold_state = 0U;
 #endif
@@ -82,8 +77,7 @@ uint8_t RemoteService_FormatNetworkState(char *output, uint16_t size)
         g_control.session_active ? "true" : "false", g_control.session_id,
         g_control.enable_request ? "true" : "false", (int)g_control.target_rpm,
         (int)g_control.requested_rpm, (long)g_control.target_steering_mdeg,
-        (g_last_request_id[0] != '\0' || g_last_response[0] != '\0' ||
-         g_last_request_hash != 0U || g_last_request_length != 0U) ? "true" : "false");
+        (g_last_request_id[0] != '\0' || g_last_response[0] != '\0') ? "true" : "false");
     return written > 0 && written < size;
 }
 #if PATROL_CHASSIS_MQTT_LAB_TEST
@@ -98,8 +92,6 @@ void RemoteService_LabSeedNetworkState(void)
     strcpy(g_control.session_id, "mqtt-lab-old-session");
     strcpy(g_last_request_id, "mqtt-lab-replay");
     strcpy(g_last_response, "cached");
-    g_last_request_hash = 0xA5A55A5AUL;
-    g_last_request_length = 123U;
     g_lab_hold_state = 1U;
     taskEXIT_CRITICAL();
     APP_LOGW("REMOTE", "lab-only non-actuating network state seeded");
@@ -125,8 +117,6 @@ void RemoteService_Init(void)
     ChassisControl_SetFeedback(&g_control, &feedback);
     g_last_request_id[0] = '\0';
     g_last_response[0] = '\0';
-    g_last_request_hash = 0U;
-    g_last_request_length = 0U;
     memset(g_power_replay, 0, sizeof(g_power_replay));
     g_remote_initialized = 1U;
     APP_LOGI("REMOTE", "initialized calibrated=%u; outputs gated",
@@ -167,7 +157,6 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
     char timestamp[21];
     char steering_value[24];
     int written;
-    uint32_t payload_hash = 0U;
     uint8_t request_conflict = 0U;
     uint8_t stop_applied = 0U, power_cached = 0U;
     int power_slot = -1;
@@ -204,10 +193,9 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
                 clock.utc_ms - clock.error_ms >= e->protect_until)) power_slot = (int)i;
         }
     }
-    payload_hash = request_hash(&command);
     if (strcmp(command.request_id, g_last_request_id) == 0 && g_last_response[0] != '\0')
     {
-        if (payload_hash == g_last_request_hash) {
+        if (same_request(&command)) {
             if (strlen(g_last_response) >= size) return 0U;
             strcpy(response, g_last_response);
             return 1U;
@@ -316,8 +304,12 @@ format_response:
     if (!request_conflict && command.type == CHASSIS_CLOUD_COMMAND_MOTION) {
         strncpy(g_last_request_id, command.request_id, sizeof(g_last_request_id) - 1U);
         g_last_request_id[sizeof(g_last_request_id) - 1U] = '\0';
-        g_last_request_hash = payload_hash;
-        g_last_request_length = length;
+        strcpy(g_last_motion.action, command.action);
+        strcpy(g_last_motion.session_id, command.session_id);
+        g_last_motion.seq = command.seq;
+        g_last_motion.lease_ms = command.lease_ms;
+        g_last_motion.drive_rpm = command.drive_rpm;
+        g_last_motion.steering_mdeg = command.steering_mdeg;
         if ((size_t)written < sizeof(g_last_response)) strcpy(g_last_response, response);
     }
     return 1U;

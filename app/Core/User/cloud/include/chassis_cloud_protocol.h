@@ -22,7 +22,7 @@ typedef enum {
 
 typedef struct {
     ChassisCloudCommandType type;
-    char request_id[64];
+    char request_id[65]; /* 64 wire characters plus NUL. */
     char action[8];
     char session_id[40];
     uint64_t timestamp_ms;

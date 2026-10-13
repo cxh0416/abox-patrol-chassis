@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-12",
+  "timezone": "Asia/Shanghai",
+  "product": "patrol_vehicle_chassis",
+  "vid": "PATROL-05D3FF343733574E43043550",
+  "job_id": "1ed485a0-f29a-4c5b-a788-d614b8d30ae2",
+  "get_info_operation_id": "261b6ff4-3ed6-435d-99fd-afbd726b1f8c",
+  "get_log_operation_id": "8e0a0835-dbdc-47f2-b262-adfd1c875387",
+  "result": "ROLLBACK to 0.2.45; trialFailCount=3; lastOtaError=5; exact crash cause unobserved",
+  "log_scope": "16 lines from 0.2.45 startup after rollback, retrieved at 13:22 CST; server reception time is not device event time",
+  "source": "Ops Readonly fixed server47 OTA database queries; original returned JSON text with LF terminator",
+  "host_build": {
+    "configuration": "Release, formal steering/drive/actuation options ON",
+    "app_sha256": "1ae5a6285154857a9a48e1344d583510a653858dcadf171174ed4f7f6974d5be",
+    "matches_dist_and_server_revision": true,
+    "flash_bytes": 143168,
+    "ram_reserved_bytes": 61432,
+    "bss_end": "0x2000BC14",
+    "fault_mailbox": "0x2000BC40",
+    "ram_reserved_end": "0x2000EFF8",
+    "tim2_handler": "0x0801786C",
+    "scope": "static build evidence; does not establish field fault cause",
+    "build_directory": "build/diagnosis-054"
+  },
+  "device_actions": "Audited get_info and get_log only; no J-Link attachment, reset, flash, OTA retry or motion",
+  "limitations": "No host at the vehicle. App log buffers reset on reboot; Boot clears consumed fault mailbox. Exposed resetReason reads RCC flags after Boot cleared them. New firmware crash PC/LR and Boot UART log are unavailable.",
+  "files": [
+    {
+      "file": "device-logs.json",
+      "bytes": 5884,
+      "sha256": "1be719d4e379d61a61443e64798ca5b7eead5b56a9d874f8678b52077bdd3061",
+      "query": "ota_device_logs vid, start=2026-10-12T05:21:50Z, end=2026-10-12T05:22:10Z, limit=25"
+    },
+    {
+      "file": "get-info-trace.json",
+      "bytes": 2252,
+      "sha256": "31046db3d5811680cff939bd37fd2978e93c1a38e1318d231ea834dc62ea8d9c",
+      "query": "ota_mqtt_traces vid, direction=response, start=2026-10-12T05:18:27Z, end=2026-10-12T05:18:29Z, include_payload=true, limit=2"
+    },
+    {
+      "file": "ota-task.json",
+      "bytes": 780,
+      "sha256": "f9e306e82b8125772a15d065f43e88e8704265be9b7fbc14ec6902e8343cdf06",
+      "query": "ota_tasks vid, limit=1"
+    }
+  ]
+}
