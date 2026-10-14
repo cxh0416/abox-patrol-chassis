@@ -1,0 +1,18 @@
+{
+  "uid": "05D3FF343733574E43043550",
+  "vid": "PATROL-05D3FF343733574E43043550",
+  "request_id": "d9813d31-3318-4914-8d90-3eb51b76164e",
+  "generation": 6,
+  "identity": "p3ad9e7131d2f4c63af680987955b22",
+  "mqtt_username": "p_ea6c6681b407421f886c4e2029e8",
+  "mqtt_host": "36.153.162.171",
+  "mqtt_port": 19684,
+  "tls_profile_id": 0,
+  "calibration_bytes_unchanged": true,
+  "all_non_mqtt_bytes_unchanged": true,
+  "config_sha256_before": "192ee2686674e3e8a0e772238f8100021202af950d6470243a67a93f6cbae3de",
+  "config_sha256_after": "58081e976d2b7c439dbca0f114b61916e1c6ae1ce4993f3130043ecb64fc0847",
+  "pre_snapshot_sha256": "f6f0c5f383a9844e9e57b1bb3ea9d702113f3240c27c30be1ad8351ddfe32fbe",
+  "config_address": "0x0803F800",
+  "changed_byte_count": 157
+}

@@ -1,0 +1,14 @@
+{
+  "request_id": "d9813d31-3318-4914-8d90-3eb51b76164e",
+  "actor": "ssh:zxwl",
+  "uid": "05D3FF343733574E43043550",
+  "vid": "PATROL-05D3FF343733574E43043550",
+  "product": "patrol_vehicle_chassis",
+  "mqtt_auth": "psk",
+  "generation": 6,
+  "profile_id": 0,
+  "port": 19684,
+  "state": "provisioned",
+  "preflight_operation_id": "007e0197-39f3-46d8-b8ee-56344138fd39",
+  "protected_credential_path": "/var/lib/device-ota-service/maintenance/patrol-psk-20261014/credential.private.json"
+}

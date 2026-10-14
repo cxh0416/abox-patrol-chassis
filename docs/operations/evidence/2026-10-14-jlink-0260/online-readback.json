@@ -1,0 +1,27 @@
+{
+  "operation_id": "f41a720d-91be-4324-9799-cfe63c2bdb58",
+  "state": "succeeded",
+  "response_code": "200",
+  "completed_at": 1791956055.718391,
+  "result": {
+    "fwVersion": "patrol-chassis-0.2.60",
+    "bootVersion": "abox-boot-2.3.0",
+    "vid": "PATROL-05D3FF343733574E43043550",
+    "mqttHost": "zxwl.ntiov.com",
+    "mqttPort": 19683,
+    "mqttTls": false,
+    "mqttTlsProfileId": 0,
+    "mqttState": "READY",
+    "uptimeMs": 85597,
+    "otaState": "CONFIRMED",
+    "otaReady": true,
+    "otaBusy": false,
+    "otaPhase": "IDLE",
+    "trialFailCount": 0,
+    "lastOtaError": 0,
+    "powerOutputAvailable": true,
+    "powerOutputOn": false,
+    "stableSlot": 0,
+    "candidateSlot": 0
+  }
+}

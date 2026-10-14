@@ -1,0 +1,17 @@
+{
+  "version": "patrol-chassis-0.2.60",
+  "uid": "05D3FF343733574E43043550",
+  "readback_full_matches": true,
+  "readback_state_matches": true,
+  "config_unchanged": true,
+  "config_recovery_unchanged": true,
+  "other_boot_state_unchanged": true,
+  "boot_unchanged": true,
+  "backup_path": "/home/cxh/patrol-flash-20261014-0260/flash-before.private.bin",
+  "backup_sha256": "aa5c5cf9675192d57cd46dfef381685d0c2c72afe0aa6f5d3072b5bcad6a2545",
+  "after_sha256": "4ec66097aac21ca6c6e19554b52fd19d3c321a7d5ef6654430cd51f625075340",
+  "config_sha256": "192ee2686674e3e8a0e772238f8100021202af950d6470243a67a93f6cbae3de",
+  "full_sha256": "576e13368366499ea71c1483c7a159d44710a46655e962eb750ab7949cd40883",
+  "target_state_address": "0x803e800",
+  "preserved_stable_version": "patrol-chassis-0.2.58"
+}

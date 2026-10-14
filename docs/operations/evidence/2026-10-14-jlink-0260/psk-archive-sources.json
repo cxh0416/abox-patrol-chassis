@@ -1,0 +1,68 @@
+[
+  {
+    "source_host": "wyse3040",
+    "original_path": "/home/cxh/patrol-flash-20261014-0260/capture-psk.log",
+    "archive_path": "capture-psk.log",
+    "sha256": "1d146483895bdc031398123ba2728a4446cecff17bf4bb09ca94304e2303fec6"
+  },
+  {
+    "source_host": "wyse3040",
+    "original_path": "/home/cxh/patrol-flash-20261014-0260/write-psk.log",
+    "archive_path": "write-psk.log",
+    "sha256": "08038679b625c7c183bc27b6f0943fe7916467c6bb089b177ec207d2e3bb6c1c"
+  },
+  {
+    "source_host": "wyse3040",
+    "original_path": "/home/cxh/patrol-flash-20261014-0260/resume-psk.log",
+    "archive_path": "resume-psk.log",
+    "sha256": "167faa87467ffedf6e6293957ec38812b590f40a121a543f4939b01d42e2b296"
+  },
+  {
+    "source_host": "wyse3040",
+    "original_path": "/home/cxh/patrol-flash-20261014-0260/config-psk-plan.json",
+    "archive_path": "config-psk-plan.json",
+    "sha256": "d81af8adb59c7be87de3ab228124c9696af78cee0e0430890d42b813550545b7"
+  },
+  {
+    "source_host": "wyse3040",
+    "original_path": "/home/cxh/patrol-flash-20261014-0260/config-psk-verification.json",
+    "archive_path": "config-psk-verification.json",
+    "sha256": "41d585572120966720a8293cb9ff32c6f221209b03ee3b6e0d51a24d0dba8e80"
+  },
+  {
+    "source_host": "wyse3040",
+    "original_path": "/home/cxh/patrol-flash-20261014-0260/config-psk-reboot.json",
+    "archive_path": "config-psk-reboot.json",
+    "sha256": "cb6c6ccfadedcb80ba1e1918433afea5898a3dc907a3ad521d7971565c995b32"
+  },
+  {
+    "source_host": "server47",
+    "original_path": "/var/lib/device-ota-service/maintenance/patrol-psk-20261014/provisioning.json",
+    "archive_path": "provisioning.json",
+    "sha256": "a5c14d997901e0296ce1950bd567e284403815ee6107536b5461a377b53adc0f"
+  },
+  {
+    "source_host": "server47",
+    "original_path": "/var/lib/device-ota-service/maintenance/patrol-psk-20261014/runtime.json",
+    "archive_path": "runtime.json",
+    "sha256": "51768823439cd195eca51d9ac89b3db5e067bbbafa1f105738dbcf5148a0b6d5"
+  },
+  {
+    "source_host": "server47",
+    "original_path": "/var/lib/device-ota-service/maintenance/patrol-psk-20261014/enrollment-verification.json",
+    "archive_path": "enrollment-verification.json",
+    "sha256": "2801dbfda5cc7432636f8a7adec882232b80d171675a8681890820ec54792502"
+  },
+  {
+    "source_host": "server47",
+    "original_path": "/var/lib/device-ota-service/maintenance/patrol-psk-20261014/power-on.json",
+    "archive_path": "power-on.json",
+    "sha256": "44174fe4587ebeb310e707334e27e0443f69ff05e8d65ef1079c96b06f54f71a"
+  },
+  {
+    "source_host": "server47",
+    "original_path": "/var/lib/device-ota-service/maintenance/patrol-psk-20261014/after-power-info.json",
+    "archive_path": "after-power-info.json",
+    "sha256": "dcce16ea42020b538736c1145afb7e65af526a4f0ef1ee1c93ffb58642c973dc"
+  }
+]

@@ -1,0 +1,48 @@
+{
+  "get_info": {
+    "operation_id": "5a3ed950-f765-4bba-8b3d-7eb6c28ccf39",
+    "state": "succeeded",
+    "response_code": "200",
+    "completed_at": 1791956600.0167615
+  },
+  "result": {
+    "fwVersion": "patrol-chassis-0.2.60",
+    "bootVersion": "abox-boot-2.3.0",
+    "vid": "PATROL-05D3FF343733574E43043550",
+    "mqttHost": "36.153.162.171",
+    "mqttPort": 19684,
+    "mqttTls": true,
+    "mqttTlsProfileId": 0,
+    "mqttState": "READY",
+    "uptimeMs": 71353,
+    "otaState": "CONFIRMED",
+    "otaReady": true,
+    "otaBusy": false,
+    "otaPhase": "IDLE",
+    "trialFailCount": 0,
+    "lastOtaError": 0,
+    "powerOutputOn": false
+  },
+  "get_log_operation_id": "a2a69d4b-3924-4727-bed7-005d9e145c40",
+  "log_result": {
+    "dropped": 0,
+    "lineCount": 21
+  },
+  "broker": {
+    "clientid": "PATROL-05D3FF343733574E43043550",
+    "username": "p_ea6c6681b407421f886c4e2029e8",
+    "connected_at": "2026-10-14T05:42:27.602+00:00",
+    "ip_address": "192.168.4.47",
+    "port": 51168
+  },
+  "tls_proof": {
+    "pskIdentity": "p3ad9e7131d2f4c63af680987955b22",
+    "tlsVersion": "TLSv1.2",
+    "cipherSuite": "0xCCAC",
+    "identity": "p3ad9e7131d2f4c63af680987955b22",
+    "observedAt": 1791956547.0,
+    "peerIp": "192.168.4.47",
+    "peerPort": 51168
+  },
+  "enrollment_state": "provisioned"
+}

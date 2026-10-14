@@ -1,0 +1,197 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "vid": "PATROL-05D3FF343733574E43043550",
+  "uid": "05D3FF343733574E43043550",
+  "date": "2026-10-14",
+  "host": "wyse3040",
+  "probe_serial": 59406895,
+  "target": "STM32F105RC / Cortex-M3",
+  "firmware": "patrol-chassis-0.2.60",
+  "app_sha256": "321305c63e0ba0915bfb8e775324dd8a56b15ef4eebe0f13309a99820b1a3605",
+  "full_sha256": "576e13368366499ea71c1483c7a159d44710a46655e962eb750ab7949cd40883",
+  "result": {
+    "jlink_program_readback": "matched",
+    "boot_state": "CONFIRMED",
+    "mqtt_tls": "TLSv1.2 / 0xCCAC",
+    "psk_generation": 6,
+    "enrollment_request_id": "d9813d31-3318-4914-8d90-3eb51b76164e",
+    "enrollment_state": "verified",
+    "config_after_reboot_sha256": "58081e976d2b7c439dbca0f114b61916e1c6ae1ce4993f3130043ecb64fc0847",
+    "calibration_bytes_preserved": true,
+    "time_log_id": 616219,
+    "trusted_time_rtt_ms": 239,
+    "trusted_time_error_ms": 151,
+    "power_on_operation_id": "aefcc736-0cd5-4157-bdd7-7279ddcc6282",
+    "power_on_response_code": "200",
+    "independent_power_readback_id": "ad1296e5-e9ef-4741-8f04-e78349bb428c",
+    "power_output_on": true,
+    "drive_steering_encoder_online": true
+  },
+  "interpretation": [
+    "Full program and State A current image metadata were updated without mass erase; frozen Boot content, recovery page, State B and per-car Config V5 were retained during firmware refresh.",
+    "State A NORMAL sequence 107 initially kept the real old UFS stable version 0.2.58; running 0.2.60 subsequently seeded and confirmed itself.",
+    "Ordinary firmware 0.2.60 has no remote first-PSK migration command or get_info PSK fields. PSK credentials were delivered through the token-checked enrollment service under validated SSH operator approval, then injected locally through SWD.",
+    "Post-boot independent raw SWD Flash readback supplies persistentMqtt evidence to the existing worker integration; normal internal evidence API still validates live EMQX session, generation/identity and exact stunnel endpoint/time. No SQLite edits or fabricated get_info fields were used.",
+    "TIME platform log is emitted only after TimeBase_Synchronize succeeds; it preceded the audited power_on request.",
+    "Power success evidence combines the output response, independent MCU readback and powered device heartbeats. Relay/contact feedback and actual vehicle movement were not inspected.",
+    "Debugger-induced Boot HAL_Delay halt was cleared using identity-checked raw force attach, clean SYSRESETREQ and removal of FPB/DEMCR/watchdog freeze; no manual Boot-to-App jump was used."
+  ],
+  "protected_originals": [
+    {
+      "host": "wyse3040",
+      "path": "/home/cxh/patrol-flash-20261014-0260/flash-before.private.bin",
+      "sha256": "aa5c5cf9675192d57cd46dfef381685d0c2c72afe0aa6f5d3072b5bcad6a2545",
+      "permissions": "0600 under 0700 directory"
+    },
+    {
+      "host": "wyse3040",
+      "path": "/home/cxh/patrol-flash-20261014-0260/flash-after.private.bin",
+      "sha256": "4ec66097aac21ca6c6e19554b52fd19d3c321a7d5ef6654430cd51f625075340",
+      "permissions": "0600 under 0700 directory"
+    },
+    {
+      "host": "wyse3040",
+      "path": "/home/cxh/patrol-flash-20261014-0260/pre-psk.private.bin",
+      "sha256": "f6f0c5f383a9844e9e57b1bb3ea9d702113f3240c27c30be1ad8351ddfe32fbe",
+      "permissions": "0600 under 0700 directory"
+    },
+    {
+      "host": "wyse3040",
+      "path": "/home/cxh/patrol-flash-20261014-0260/post-psk.private.bin",
+      "sha256": "ce62f573af55339c5164c3517bdcc7001e475cab657b6693b73e9fb643b99b48",
+      "permissions": "0600 under 0700 directory"
+    }
+  ],
+  "private_material_policy": "Raw Flash and credential bundles remain on protected remote paths and are not copied into Git. Originals and raw logs are not rewritten.",
+  "files": [
+    {
+      "source_host": "wyse3040",
+      "original_path": "/home/cxh/patrol-flash-20261014-0260/capture-psk.log",
+      "archive_path": "capture-psk.log",
+      "sha256": "1d146483895bdc031398123ba2728a4446cecff17bf4bb09ca94304e2303fec6"
+    },
+    {
+      "source_host": "wyse3040",
+      "original_path": "/home/cxh/patrol-flash-20261014-0260/write-psk.log",
+      "archive_path": "write-psk.log",
+      "sha256": "08038679b625c7c183bc27b6f0943fe7916467c6bb089b177ec207d2e3bb6c1c"
+    },
+    {
+      "source_host": "wyse3040",
+      "original_path": "/home/cxh/patrol-flash-20261014-0260/resume-psk.log",
+      "archive_path": "resume-psk.log",
+      "sha256": "167faa87467ffedf6e6293957ec38812b590f40a121a543f4939b01d42e2b296"
+    },
+    {
+      "source_host": "wyse3040",
+      "original_path": "/home/cxh/patrol-flash-20261014-0260/config-psk-plan.json",
+      "archive_path": "config-psk-plan.json",
+      "sha256": "d81af8adb59c7be87de3ab228124c9696af78cee0e0430890d42b813550545b7"
+    },
+    {
+      "source_host": "wyse3040",
+      "original_path": "/home/cxh/patrol-flash-20261014-0260/config-psk-verification.json",
+      "archive_path": "config-psk-verification.json",
+      "sha256": "41d585572120966720a8293cb9ff32c6f221209b03ee3b6e0d51a24d0dba8e80"
+    },
+    {
+      "source_host": "wyse3040",
+      "original_path": "/home/cxh/patrol-flash-20261014-0260/config-psk-reboot.json",
+      "archive_path": "config-psk-reboot.json",
+      "sha256": "cb6c6ccfadedcb80ba1e1918433afea5898a3dc907a3ad521d7971565c995b32"
+    },
+    {
+      "source_host": "server47",
+      "original_path": "/var/lib/device-ota-service/maintenance/patrol-psk-20261014/provisioning.json",
+      "archive_path": "provisioning.json",
+      "sha256": "a5c14d997901e0296ce1950bd567e284403815ee6107536b5461a377b53adc0f"
+    },
+    {
+      "source_host": "server47",
+      "original_path": "/var/lib/device-ota-service/maintenance/patrol-psk-20261014/runtime.json",
+      "archive_path": "runtime.json",
+      "sha256": "51768823439cd195eca51d9ac89b3db5e067bbbafa1f105738dbcf5148a0b6d5"
+    },
+    {
+      "source_host": "server47",
+      "original_path": "/var/lib/device-ota-service/maintenance/patrol-psk-20261014/enrollment-verification.json",
+      "archive_path": "enrollment-verification.json",
+      "sha256": "2801dbfda5cc7432636f8a7adec882232b80d171675a8681890820ec54792502"
+    },
+    {
+      "source_host": "server47",
+      "original_path": "/var/lib/device-ota-service/maintenance/patrol-psk-20261014/power-on.json",
+      "archive_path": "power-on.json",
+      "sha256": "44174fe4587ebeb310e707334e27e0443f69ff05e8d65ef1079c96b06f54f71a"
+    },
+    {
+      "source_host": "server47",
+      "original_path": "/var/lib/device-ota-service/maintenance/patrol-psk-20261014/after-power-info.json",
+      "archive_path": "after-power-info.json",
+      "sha256": "dcce16ea42020b538736c1145afb7e65af526a4f0ef1ee1c93ffb58642c973dc"
+    },
+    {
+      "source_host": "wyse3040",
+      "original_path": "/home/cxh/patrol-flash-20261014-0260/backup.jlink.log",
+      "archive_path": "backup.jlink.log",
+      "sha256": "e91a0bc1812226b1e2d8ba1cad657dc510ff076a086f50b46681e8876d49c773"
+    },
+    {
+      "source_host": "wyse3040",
+      "original_path": "/home/cxh/patrol-flash-20261014-0260/flash.jlink.log",
+      "archive_path": "flash.jlink.log",
+      "sha256": "c25a2ba68ed9e705d2590af8815f4f5a79ada277d5e3328dbe37fc30ebe9b54a"
+    },
+    {
+      "source_host": "wyse3040",
+      "original_path": "/home/cxh/patrol-flash-20261014-0260/raw-resume.log",
+      "archive_path": "raw-resume.log",
+      "sha256": "1117d244347667b47b885c3b8dd53eecbb695b72f4700bd1fd01f6070a6e6fb4"
+    },
+    {
+      "source_host": "wyse3040",
+      "original_path": "/home/cxh/patrol-flash-20261014-0260/raw-startup.log",
+      "archive_path": "raw-startup.log",
+      "sha256": "8be24a6e07de67d2bb376f083e1d28163fee3803b8385cb4102c6852c95d0c70"
+    },
+    {
+      "source_host": "wyse3040",
+      "original_path": "/home/cxh/patrol-flash-20261014-0260/run-check.jlink.log",
+      "archive_path": "run-check.jlink.log",
+      "sha256": "4b6acd60f66ebf675160535aa750ae18e966c35c87ae5fb6d39b90d6683c017f"
+    },
+    {
+      "source_host": "wyse3040",
+      "original_path": "/home/cxh/patrol-flash-20261014-0260/flash-plan.json",
+      "archive_path": "flash-plan.json",
+      "sha256": "4f2d744a749de989c3a827247ff7060878b1e5dbaccfd62f21e592ab3b11b698"
+    },
+    {
+      "source_host": "wyse3040",
+      "original_path": "/home/cxh/patrol-flash-20261014-0260/flash-verification.json",
+      "archive_path": "flash-verification.json",
+      "sha256": "644a93ea6b4decef3a013513e842573e96dc70b0b5055a1f913de8dd994f4e95"
+    },
+    {
+      "source_host": "wyse3040",
+      "original_path": "/home/cxh/patrol-flash-20261014-0260/release.manifest.json",
+      "archive_path": "release.manifest.json",
+      "sha256": "22d8cd0f1f90160fa9c01ee1622b5bcb2fc41f5761f9082e4f520322eda78df6"
+    },
+    {
+      "original_path": "server47 audited get_info operation f41a720d-91be-4324-9799-cfe63c2bdb58",
+      "archive_path": "online-readback.json",
+      "sha256": "6b45e7455c0e663d004ab3da82811db1f30a15819084f35b704689e870474dbe"
+    },
+    {
+      "original_path": "server47 readonly device_logs IDs 616199..616219",
+      "archive_path": "startup-device-logs.json",
+      "sha256": "5fafc4cc42acb46a3ff827a531adea32f7f2faf5c26bc2db81c999f869acd655"
+    },
+    {
+      "original_path": "locally generated archive source and hash navigation",
+      "archive_path": "psk-archive-sources.json",
+      "sha256": "d5a154d3d2419b651ee8c97508f8a2ff643b7074b60a9e518d1a03ed76033180"
+    }
+  ]
+}

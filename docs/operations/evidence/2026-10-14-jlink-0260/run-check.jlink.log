@@ -1,0 +1,79 @@
+SEGGER J-Link Commander V9.74 (Compiled Sep  2 2026 12:35:07)
+DLL version V9.74, compiled Sep  2 2026 12:34:24
+
+J-Link Commander will now exit on Error
+Connecting to J-Link ...O.K.
+Firmware: J-Link V9 compiled May  7 2021 16:26:12
+Hardware version: V9.40
+J-Link uptime (since boot): N/A (Not supported by this model)
+S/N: 59406895
+License(s): RDI,FlashBP,FlashDL,JFlash,GDB
+VTref=3.300V
+
+
+Type "connect" to establish a target connection, '?' for help
+Selecting SWD as current target interface.
+Selecting 1000 kHz as target interface speed
+Device "STM32F105RC" selected.
+
+
+Connecting to target via SWD
+InitTarget() start
+SWD selected. Executing JTAG -> SWD switching sequence.
+DAP initialized successfully.
+InitTarget() end - Took 16.8ms
+Found SW-DP with ID 0x1BA01477
+DPIDR: 0x1BA01477
+CoreSight SoC-400 or earlier
+Scanning AP map to find all available APs
+AP[1]: Stopped AP scan as end of AP map has been reached
+AP[0]: AHB-AP (IDR: 0x14770011, ADDR: 0x00000000)
+Iterating through AP map to find AHB-AP to use
+AP[0]: Core found
+AP[0]: AHB-AP ROM base: 0xE00FF000
+CPUID register: 0x411FC231. Implementer code: 0x41 (ARM)
+Found Cortex-M3 r1p1, Little endian.
+FPUnit: 6 code (BP) slots and 2 literal slots
+CoreSight components:
+ROMTbl[0] @ E00FF000
+[0][0]: E000E000 CID B105E00D PID 001BB000 SCS
+[0][1]: E0001000 CID B105E00D PID 001BB002 DWT
+[0][2]: E0002000 CID B105E00D PID 000BB003 FPB
+[0][3]: E0000000 CID B105E00D PID 001BB001 ITM
+[0][4]: E0040000 CID B105900D PID 001BB923 TPIU-Lite
+[0][5]: E0041000 CID B105900D PID 101BB924 ETM-M3
+Memory zones:
+  Zone: "Default" Description: Default access mode
+Cortex-M3 identified.
+E000EDF0 = 00030003 
+E000ED08 = 00000000 
+E000ED28 = 00000000 00000000 00000001 E000EDF8 
+E000ED38 = E000EDF8 00000000 
+E0042004 = 00000307 
+0803E800 = 42535632 00700003 0000006B 00000000 
+0803E810 = 00000000 00024420 3EECC5FB 
+0803F000 = 42535632 00700003 0000006A 00000004 
+0803F010 = 05000000 00023960 A7358F9C 
+PC = 08000A7A, CycleCnt = 000925D4
+R0 = 0000000A, R1 = 00800000, R2 = 00000000, R3 = 00000004
+R4 = 000003E9, R5 = 00000006, R6 = 20000714, R7 = 200002C0
+R8 = A5A5A5A5, R9 = A5A5A5A5, R10= A5A5A5A5, R11= A5A5A5A5
+R12= 0000000A
+SP(R13)= 2000FFE0, MSP= 2000FFE0, PSP= 20000EF8, R14(LR) = 08000A79
+XPSR = 21000000: APSR = nzCvq, EPSR = 01000000, IPSR = 000 (NoException)
+CFBP = 00000000, CONTROL = 00, FAULTMASK = 00, BASEPRI = 00, PRIMASK = 00
+FPU regs: FPU not enabled / not implemented on connected CPU.
+PC = 08000A7A, CycleCnt = 000925D4
+R0 = 0000000A, R1 = 00800000, R2 = 00000000, R3 = 00000004
+R4 = 000003E9, R5 = 00000006, R6 = 20000714, R7 = 200002C0
+R8 = A5A5A5A5, R9 = A5A5A5A5, R10= A5A5A5A5, R11= A5A5A5A5
+R12= 0000000A
+SP(R13)= 2000FFE0, MSP= 2000FFE0, PSP= 20000EF8, R14(LR) = 08000A79
+XPSR = 21000000: APSR = nzCvq, EPSR = 01000000, IPSR = 000 (NoException)
+CFBP = 00000000, CONTROL = 00, FAULTMASK = 00, BASEPRI = 00, PRIMASK = 00
+FPU regs: FPU not enabled / not implemented on connected CPU.
+Writing 00000000 -> E0042004
+Memory map 'after startup completion point' is active
+Writing A05F0000 -> E000EDF0
+OnDisconnectTarget() start
+OnDisconnectTarget() end - Took 1.20ms

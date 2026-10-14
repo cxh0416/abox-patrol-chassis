@@ -1,0 +1,1 @@
+{"uid": "05D3FF343733574E43043550", "dhcsr": "0x3010000", "vtor": "0x0", "demcr": "0x0", "dbgmcu": "0x0", "reset": "SYSRESETREQ", "manual_boot_jump": false}

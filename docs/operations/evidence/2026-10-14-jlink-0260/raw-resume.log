@@ -1,0 +1,1 @@
+{"uid": "05D3FF343733574E43043550", "before": {"dhcsr": "0x30003", "vtor": "0x0", "dbg": "0x0"}, "after": {"dhcsr": "0x3010000", "vtor": "0x0", "dbg": "0x0", "cfsr": "0x0", "hfsr": "0x0"}, "reset": "AIRCR system reset, no manual jump", "debug_cleanup": true}

@@ -1,0 +1,16 @@
+{
+  "uid": "05D3FF343733574E43043550",
+  "application_running": true,
+  "persisted_config_matches_after_reboot": true,
+  "config_sha256": "58081e976d2b7c439dbca0f114b61916e1c6ae1ce4993f3130043ecb64fc0847",
+  "source": "independent raw SWD Flash readback after ordinary Boot startup",
+  "persistentMqtt": {
+    "mqttAuthMode": "psk",
+    "mqttTls": true,
+    "mqttPskGeneration": 6,
+    "mqttPskIdentity": "p3ad9e7131d2f4c63af680987955b22",
+    "mqttUsername": "p_ea6c6681b407421f886c4e2029e8",
+    "mqttHost": "36.153.162.171",
+    "mqttPort": 19684
+  }
+}

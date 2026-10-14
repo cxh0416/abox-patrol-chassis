@@ -1,0 +1,27 @@
+{
+  "operation_id": "ad1296e5-e9ef-4741-8f04-e78349bb428c",
+  "product": "patrol_vehicle_chassis",
+  "vid": "PATROL-05D3FF343733574E43043550",
+  "state": "succeeded",
+  "response_code": "200",
+  "completed_at": 1791956686.4061735,
+  "result": {
+    "fwVersion": "patrol-chassis-0.2.60",
+    "vid": "PATROL-05D3FF343733574E43043550",
+    "mqttHost": "36.153.162.171",
+    "mqttPort": 19684,
+    "mqttTls": true,
+    "mqttState": "READY",
+    "uptimeMs": 157434,
+    "otaState": "CONFIRMED",
+    "otaReady": true,
+    "otaBusy": false,
+    "powerOutputOn": true,
+    "diagnostics": {
+      "canRx": 95,
+      "driveHb": true,
+      "encoderOnline": true,
+      "steerHb": true
+    }
+  }
+}
