@@ -1,0 +1,48 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "vid": "PATROL-05D3FF343733574E43043550",
+  "date": "2026-10-14",
+  "query_mode": "read-only source and server database evidence; one audited read-only get_bench_steering was rejected by server",
+  "conclusion": {
+    "admin_takeover_time_cst": "13:48:28",
+    "admin_session": "c-490e9ebc3f054bab801fdd04c308c194",
+    "response_code": 400,
+    "response_message": "motion safety gate rejected",
+    "session_end_reason": "device_rejected",
+    "stop_reason": 13,
+    "meaning": "latched execution fault",
+    "fault_first_report_time_cst": "13:44:49.622985",
+    "fault_first_report_trace": 1009953,
+    "fault_sequence": 5,
+    "steering_executor_phase": 4,
+    "steering_executor_step": 22,
+    "steering_executor_fault": 3,
+    "executor_meaning": "shutdown/disable confirmation timeout, while reading 0x6041 status",
+    "initial_output_readback_time_cst": "13:44:46",
+    "auto_center_start_feedback_deg": 8.416,
+    "auto_center_near_zero_feedback_deg": 0.542,
+    "power_cut_after_fault": true,
+    "later_power_on_did_not_reset_fault": true
+  },
+  "source_evidence": [
+    "app/Core/User/motion/src/bench_steering.c: stop deadline reason 3, READ_DISABLED step 22, status object 0x6041",
+    "app/Core/User/cloud/src/remote_service.c: execution fault sets fault_latched and stopReason 13; motion rejects safety gate with code 400",
+    "app/Core/User/motion/src/patrol_runtime.c: powered idle position beyond tolerance requests automatic centering; executor faults revoke control and cut power",
+    "app/Core/User/motion/src/patrol_auto_center.c: three fresh samples within +/-1 degree finish centering",
+    "docs/operations/故障记录与复位.md: reset requires output off and does not rearm automatically"
+  ],
+  "limits": [
+    "Fault 3 is a stop/finish deadline timeout; it is different from the per-SDO transaction timeout fault 6.",
+    "No raw CAN timing was captured for the original shutdown, so whether the 200 ms confirmation deadline or the 100 ms post-confirmation cleanup deadline expired is not established.",
+    "Stored last_abort 0x06020000 is a diagnostic historical field, not proof of the cause of this executor timeout.",
+    "The earlier output and online checks were point-in-time successes; they did not establish continued healthy auto-centering/stop behavior.",
+    "No power command, reset, new takeover or motion was sent during this diagnosis."
+  ],
+  "files": [
+    {
+      "original_path": "server47 readonly core/control database query",
+      "archive_path": "readback.json",
+      "sha256": "503aa2b61ae61723ab76c60c945aa0049b18d7fd046789839f20a5c43a7275e8"
+    }
+  ]
+}

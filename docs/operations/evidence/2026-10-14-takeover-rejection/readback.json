@@ -1,0 +1,198 @@
+{
+  "queried_at": 1791957172.8674922,
+  "core_database": "/var/lib/device-ota-service/ota.sqlite3",
+  "control_database": "/var/lib/device-ota-service/chassis-control.sqlite3",
+  "traces": [
+    {
+      "id": 1009935,
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-05D3FF343733574E43043550",
+      "direction": "request",
+      "topic": "/zxwl/abox/PATROL-05D3FF343733574E43043550/request",
+      "received_at": 1791956683.593992,
+      "payload_text": "{\"version\":\"4.0\",\"timestamp\":1791956683593,\"data\":{\"requestId\":\"1d4c1cfb-6979-4a75-9158-05ce3f7a5d66\",\"command\":\"power_on\",\"params\":null,\"expiresAt\":1791956688593}}",
+      "payload_sha256": "ddfd91f952ed8fe361b7c083c94f6225589ea65b52aa6a92107df7696ef9a8a7"
+    },
+    {
+      "id": 1009936,
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-05D3FF343733574E43043550",
+      "direction": "response",
+      "topic": "/zxwl/abox/PATROL-05D3FF343733574E43043550/response",
+      "received_at": 1791956684.0494044,
+      "payload_text": "{\"version\":\"4.0\",\"timestamp\":1791956683894,\"data\":{\"requestId\":\"1d4c1cfb-6979-4a75-9158-05ce3f7a5d66\",\"code\":200,\"msg\":\"operation accepted\",\"result\":{\"powerOutputOn\":true}}}",
+      "payload_sha256": "43df01c162e7ce8b02853c459aaa268e86e104e060f8b954d05578d047fc9fe2"
+    },
+    {
+      "id": 1009937,
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-05D3FF343733574E43043550",
+      "direction": "report",
+      "topic": "/zxwl/abox/PATROL-05D3FF343733574E43043550/report",
+      "received_at": 1791956684.3544502,
+      "payload_text": "{\"version\":\"4.0\",\"timestamp\":1791956684173,\"data\":{\"reportId\":\"PATROL-05D3FF343733574E43043550-1791956684173-97\",\"reportType\":\"state\",\"reportName\":\"chassis_status\",\"payload\":{\"reportReason\":\"state_changed\",\"motionState\":\"stopped\",\"targetDriveRpm\":0,\"targetSteeringDeg\":0.0,\"leftActualRpm\":0,\"rightActualRpm\":0,\"steeringActualDeg\":30.918,\"absoluteActualDeg\":0.0,\"steeringOnline\":false,\"driveOnline\":false,\"encoderOnline\":false,\"canBusOff\":false,\"driveFault\":false,\"feedbackFresh\":false,\"calibrated\":true,\"steeringProfileReady\":true,\"steeringRangeValid\":true,\"powerReady\":false,\"powerOutputOn\":true,\"otaBusy\":false,\"safetyReady\":false,\"stopReason\":5,\"faultLatched\":false,\"steeringBoundary\":0,\"faultRecordVersion\":1,\"lastFault\":[4,85481,1,10,0,0,0,0,0,5027,1192,8759,5175,0,0,479,449,19,29,4,22,3,3,20,0,100794368,1,0,1]}}}",
+      "payload_sha256": "d4bd5070507799adf30b49a2e319bd576c1977e67f9c729d6040093eda638046"
+    },
+    {
+      "id": 1009938,
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-05D3FF343733574E43043550",
+      "direction": "report",
+      "topic": "/zxwl/abox/PATROL-05D3FF343733574E43043550/report",
+      "received_at": 1791956684.8360271,
+      "payload_text": "{\"version\":\"4.0\",\"timestamp\":1791956684655,\"data\":{\"reportId\":\"PATROL-05D3FF343733574E43043550-1791956684655-98\",\"reportType\":\"state\",\"reportName\":\"chassis_status\",\"payload\":{\"reportReason\":\"state_changed\",\"motionState\":\"stopped\",\"targetDriveRpm\":0,\"targetSteeringDeg\":0.0,\"leftActualRpm\":0,\"rightActualRpm\":0,\"steeringActualDeg\":30.918,\"absoluteActualDeg\":8.416,\"steeringOnline\":true,\"driveOnline\":true,\"encoderOnline\":true,\"canBusOff\":false,\"driveFault\":false,\"feedbackFresh\":false,\"calibrated\":true,\"steeringProfileReady\":true,\"steeringRangeValid\":true,\"powerReady\":false,\"powerOutputOn\":true,\"otaBusy\":false,\"safetyReady\":false,\"stopReason\":3,\"faultLatched\":false,\"steeringBoundary\":0,\"faultRecordVersion\":1,\"lastFault\":[4,85481,1,10,0,0,0,0,0,5027,1192,8759,5175,0,0,479,449,19,29,4,22,3,3,20,0,100794368,1,0,1]}}}",
+      "payload_sha256": "0ba25a289ebb477184a2820fdaebf4409abad2ae3dd74b2f8288829118197c86"
+    },
+    {
+      "id": 1009939,
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-05D3FF343733574E43043550",
+      "direction": "report",
+      "topic": "/zxwl/abox/PATROL-05D3FF343733574E43043550/report",
+      "received_at": 1791956685.1421378,
+      "payload_text": "{\"version\":\"4.0\",\"timestamp\":1791956684958,\"data\":{\"reportId\":\"PATROL-05D3FF343733574E43043550-1791956684958-99\",\"reportType\":\"state\",\"reportName\":\"chassis_status\",\"payload\":{\"reportReason\":\"state_changed\",\"motionState\":\"stopped\",\"targetDriveRpm\":0,\"targetSteeringDeg\":0.0,\"leftActualRpm\":0,\"rightActualRpm\":0,\"steeringActualDeg\":30.918,\"absoluteActualDeg\":8.416,\"steeringOnline\":true,\"driveOnline\":true,\"encoderOnline\":true,\"canBusOff\":false,\"driveFault\":true,\"feedbackFresh\":false,\"calibrated\":true,\"steeringProfileReady\":true,\"steeringRangeValid\":true,\"powerReady\":false,\"powerOutputOn\":true,\"otaBusy\":false,\"safetyReady\":false,\"stopReason\":7,\"faultLatched\":false,\"steeringBoundary\":0,\"faultRecordVersion\":1,\"lastFault\":[4,85481,1,10,0,0,0,0,0,5027,1192,8759,5175,0,0,479,449,19,29,4,22,3,3,20,0,100794368,1,0,1]}}}",
+      "payload_sha256": "57ff7c2823bbf959fcaea1389056fadbc41621e886be0fefb5a0e8e5685fbba2"
+    },
+    {
+      "id": 1009940,
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-05D3FF343733574E43043550",
+      "direction": "request",
+      "topic": "/zxwl/abox/PATROL-05D3FF343733574E43043550/internal/config",
+      "received_at": 1791956685.6665778,
+      "payload_text": "{\"version\":\"2.0\",\"timestamp\":1791956685666,\"data\":{\"requestId\":\"5029d1e1-29e9-4754-841c-40f0a6ce29ee\",\"command\":\"internal_config\",\"params\":{\"action\":\"get_info\"}}}",
+      "payload_sha256": "d55522068fb76f22aa7126c31f2b6862c492ec71eb5d80c2b43c9e648c05aa3a"
+    },
+    {
+      "id": 1009941,
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-05D3FF343733574E43043550",
+      "direction": "report",
+      "topic": "/zxwl/abox/PATROL-05D3FF343733574E43043550/report",
+      "received_at": 1791956686.0268352,
+      "payload_text": "{\"version\":\"4.0\",\"timestamp\":1791956685815,\"data\":{\"reportId\":\"PATROL-05D3FF343733574E43043550-1791956685815-100\",\"reportType\":\"state\",\"reportName\":\"chassis_status\",\"payload\":{\"reportReason\":\"state_changed\",\"motionState\":\"stopped\",\"targetDriveRpm\":0,\"targetSteeringDeg\":0.0,\"leftActualRpm\":0,\"rightActualRpm\":0,\"steeringActualDeg\":30.918,\"absoluteActualDeg\":8.416,\"steeringOnline\":true,\"driveOnline\":true,\"encoderOnline\":true,\"canBusOff\":false,\"driveFault\":false,\"feedbackFresh\":false,\"calibrated\":true,\"steeringProfileReady\":true,\"steeringRangeValid\":true,\"powerReady\":false,\"powerOutputOn\":true,\"otaBusy\":false,\"safetyReady\":false,\"stopReason\":3,\"faultLatched\":false,\"steeringBoundary\":0,\"faultRecordVersion\":1,\"lastFault\":[4,85481,1,10,0,0,0,0,0,5027,1192,8759,5175,0,0,479,449,19,29,4,22,3,3,20,0,100794368,1,0,1]}}}",
+      "payload_sha256": "7bdb675e9f98526795d4ddafc5430bc9a949807708ecfadc80b51be24755cb9a"
+    },
+    {
+      "id": 1009944,
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-05D3FF343733574E43043550",
+      "direction": "response",
+      "topic": "/zxwl/abox/PATROL-05D3FF343733574E43043550/internal/config/resp",
+      "received_at": 1791956686.3702474,
+      "payload_text": "{\"version\":\"2.0\",\"timestamp\":1791956685832,\"data\":{\"product\":\"patrol_vehicle_chassis\",\"requestId\":\"5029d1e1-29e9-4754-841c-40f0a6ce29ee\",\"code\":200,\"msg\":\"OK\",\"result\":{\"fwVersion\":\"patrol-chassis-0.2.60\",\"bootVersion\":\"abox-boot-2.3.0\",\"bootDescriptorValid\":true,\"bootApiVersion\":1,\"bootFeatures\":15,\"otaScheme\":\"boot_v2_ufs\",\"otaDownloader\":\"app\",\"stableSeedSource\":\"local_flash\",\"otaBootstrapNeedsRevision\":false,\"maintenanceProtocols\":{\"mqttConfigTransaction\":1,\"vidChangeTransaction\":1},\"vid\":\"PATROL-05D3FF343733574E43043550\",\"mqttHost\":\"36.153.162.171\",\"mqttPort\":19684,\"mqttTls\":true,\"mqttTlsProfileId\":0,\"uptimeMs\":157434,\"mqttState\":\"READY\",\"mqttStateCode\":29,\"iccid\":\"89860868102540109153\",\"canInitialized\":true,\"canBusOff\":false,\"canRxOverflow\":0,\"boDiag\":[0,0],\"otaState\":\"CONFIRMED\",\"powerOutputAvailable\":true,\"powerOutputOn\":true,\"stableSlot\":0,\"candidateSlot\":0,\"trialFailCount\":0,\"resetReason\":0,\"otaProvisioned\":true,\"otaReady\":true,\"otaBusy\":false,\"otaPhase\":\"IDLE\",\"otaTargetVersion\":\"patrol-chassis-0.2.60\",\"lastOtaError\":0,\"diagnostics\":{\"canRx\":95,\"steerHb\":true,\"driveHb\":true,\"encoderOnline\":true}}}}",
+      "payload_sha256": "5ca0fb0590f8107747e8bcefc8a0ffdfc990adb88292feb91a03114ba58fcd3f"
+    },
+    {
+      "id": 1009946,
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-05D3FF343733574E43043550",
+      "direction": "report",
+      "topic": "/zxwl/abox/PATROL-05D3FF343733574E43043550/report",
+      "received_at": 1791956686.6821804,
+      "payload_text": "{\"version\":\"4.0\",\"timestamp\":1791956686492,\"data\":{\"reportId\":\"PATROL-05D3FF343733574E43043550-1791956686492-101\",\"reportType\":\"state\",\"reportName\":\"chassis_status\",\"payload\":{\"reportReason\":\"state_changed\",\"motionState\":\"stopped\",\"targetDriveRpm\":0,\"targetSteeringDeg\":0.0,\"leftActualRpm\":0,\"rightActualRpm\":0,\"steeringActualDeg\":8.415,\"absoluteActualDeg\":8.416,\"steeringOnline\":true,\"driveOnline\":true,\"encoderOnline\":true,\"canBusOff\":false,\"driveFault\":false,\"feedbackFresh\":true,\"calibrated\":true,\"steeringProfileReady\":true,\"steeringRangeValid\":true,\"powerReady\":true,\"powerOutputOn\":true,\"otaBusy\":false,\"safetyReady\":true,\"stopReason\":9,\"faultLatched\":false,\"steeringBoundary\":0,\"faultRecordVersion\":1,\"lastFault\":[4,85481,1,10,0,0,0,0,0,5027,1192,8759,5175,0,0,479,449,19,29,4,22,3,3,20,0,100794368,1,0,1]}}}",
+      "payload_sha256": "895943d0681b6305dbfed29049afcbef8c86cf2f35e33d23aa2017d7231f647e"
+    },
+    {
+      "id": 1009949,
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-05D3FF343733574E43043550",
+      "direction": "report",
+      "topic": "/zxwl/abox/PATROL-05D3FF343733574E43043550/report",
+      "received_at": 1791956687.9870486,
+      "payload_text": "{\"version\":\"4.0\",\"timestamp\":1791956687813,\"data\":{\"reportId\":\"PATROL-05D3FF343733574E43043550-1791956687813-102\",\"reportType\":\"state\",\"reportName\":\"chassis_status\",\"payload\":{\"reportReason\":\"periodic\",\"motionState\":\"stopped\",\"targetDriveRpm\":0,\"targetSteeringDeg\":0.0,\"leftActualRpm\":0,\"rightActualRpm\":0,\"steeringActualDeg\":5.391,\"absoluteActualDeg\":5.502,\"steeringOnline\":true,\"driveOnline\":true,\"encoderOnline\":true,\"canBusOff\":false,\"driveFault\":false,\"feedbackFresh\":true,\"calibrated\":true,\"steeringProfileReady\":true,\"steeringRangeValid\":true,\"powerReady\":true,\"powerOutputOn\":true,\"otaBusy\":false,\"safetyReady\":true,\"stopReason\":9,\"faultLatched\":false,\"steeringBoundary\":0,\"faultRecordVersion\":1,\"lastFault\":[4,85481,1,10,0,0,0,0,0,5027,1192,8759,5175,0,0,479,449,19,29,4,22,3,3,20,0,100794368,1,0,1]}}}",
+      "payload_sha256": "771248a83d978e3d2da496fcf3bf7ba405467234343afdf034e4c9fb00e1f939"
+    },
+    {
+      "id": 1009952,
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-05D3FF343733574E43043550",
+      "direction": "report",
+      "topic": "/zxwl/abox/PATROL-05D3FF343733574E43043550/report",
+      "received_at": 1791956689.3064365,
+      "payload_text": "{\"version\":\"4.0\",\"timestamp\":1791956689135,\"data\":{\"reportId\":\"PATROL-05D3FF343733574E43043550-1791956689135-103\",\"reportType\":\"state\",\"reportName\":\"chassis_status\",\"payload\":{\"reportReason\":\"periodic\",\"motionState\":\"stopped\",\"targetDriveRpm\":0,\"targetSteeringDeg\":0.0,\"leftActualRpm\":0,\"rightActualRpm\":0,\"steeringActualDeg\":0.489,\"absoluteActualDeg\":0.542,\"steeringOnline\":true,\"driveOnline\":true,\"encoderOnline\":true,\"canBusOff\":false,\"driveFault\":false,\"feedbackFresh\":true,\"calibrated\":true,\"steeringProfileReady\":true,\"steeringRangeValid\":true,\"powerReady\":true,\"powerOutputOn\":true,\"otaBusy\":false,\"safetyReady\":true,\"stopReason\":9,\"faultLatched\":false,\"steeringBoundary\":0,\"faultRecordVersion\":1,\"lastFault\":[4,85481,1,10,0,0,0,0,0,5027,1192,8759,5175,0,0,479,449,19,29,4,22,3,3,20,0,100794368,1,0,1]}}}",
+      "payload_sha256": "1900ee909f8fd92b6d9a44debbf3094d64d347b88a0469371188ebf832f381a2"
+    },
+    {
+      "id": 1009953,
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-05D3FF343733574E43043550",
+      "direction": "report",
+      "topic": "/zxwl/abox/PATROL-05D3FF343733574E43043550/report",
+      "received_at": 1791956689.6229854,
+      "payload_text": "{\"version\":\"4.0\",\"timestamp\":1791956689428,\"data\":{\"reportId\":\"PATROL-05D3FF343733574E43043550-1791956689428-104\",\"reportType\":\"state\",\"reportName\":\"chassis_status\",\"payload\":{\"reportReason\":\"fault_raised\",\"motionState\":\"fault\",\"targetDriveRpm\":0,\"targetSteeringDeg\":0.0,\"leftActualRpm\":0,\"rightActualRpm\":0,\"steeringActualDeg\":-7.941,\"absoluteActualDeg\":0.434,\"steeringOnline\":true,\"driveOnline\":true,\"encoderOnline\":true,\"canBusOff\":false,\"driveFault\":false,\"feedbackFresh\":true,\"calibrated\":true,\"steeringProfileReady\":true,\"steeringRangeValid\":true,\"powerReady\":false,\"powerOutputOn\":false,\"otaBusy\":false,\"safetyReady\":false,\"stopReason\":13,\"faultLatched\":true,\"steeringBoundary\":0,\"faultRecordVersion\":1,\"lastFault\":[5,160881,1,9,0,0,0,0,0,-105342,24,8759,8272,0,0,270,220,20,50,4,22,3,0,0,0,100794368,1,0,2]}}}",
+      "payload_sha256": "832c7765e751c43b69e9a89c2273497f455a4f6ef433829a241f3bc689f0ac24"
+    },
+    {
+      "id": 1009954,
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-05D3FF343733574E43043550",
+      "direction": "report",
+      "topic": "/zxwl/abox/PATROL-05D3FF343733574E43043550/report",
+      "received_at": 1791956690.9845877,
+      "payload_text": "{\"version\":\"4.0\",\"timestamp\":1791956690752,\"data\":{\"reportId\":\"PATROL-05D3FF343733574E43043550-1791956690752-105\",\"reportType\":\"state\",\"reportName\":\"chassis_status\",\"payload\":{\"reportReason\":\"periodic\",\"motionState\":\"fault\",\"targetDriveRpm\":0,\"targetSteeringDeg\":0.0,\"leftActualRpm\":0,\"rightActualRpm\":0,\"steeringActualDeg\":-7.941,\"absoluteActualDeg\":0.434,\"steeringOnline\":true,\"driveOnline\":true,\"encoderOnline\":false,\"canBusOff\":false,\"driveFault\":false,\"feedbackFresh\":false,\"calibrated\":true,\"steeringProfileReady\":true,\"steeringRangeValid\":true,\"powerReady\":false,\"powerOutputOn\":false,\"otaBusy\":false,\"safetyReady\":false,\"stopReason\":13,\"faultLatched\":true,\"steeringBoundary\":0,\"faultRecordVersion\":1,\"lastFault\":[5,160881,1,9,0,0,0,0,0,-105342,24,8759,8272,0,0,270,220,20,50,4,22,3,0,0,0,100794368,1,0,2]}}}",
+      "payload_sha256": "aa86c6ed86ff7b233a5b46fe040529ccd07aa2efd04bf68f0fc51b08f49612bb"
+    }
+  ],
+  "takeover_audit": [
+    {
+      "id": 138904,
+      "actor": "ljk",
+      "action": "chassis_control_session_started",
+      "created_at": 1791956734.2051632,
+      "details_json": "{\"session_id\": \"c-0393a7a4c616433885576a61af09adca\", \"vid\": \"PATROL-05D3FF343733574E43043550\"}"
+    },
+    {
+      "id": 138912,
+      "actor": "admin",
+      "action": "chassis_control_session_started",
+      "created_at": 1791956908.459032,
+      "details_json": "{\"session_id\": \"c-490e9ebc3f054bab801fdd04c308c194\", \"vid\": \"PATROL-05D3FF343733574E43043550\"}"
+    }
+  ],
+  "sessions": [
+    {
+      "id": "c-0393a7a4c616433885576a61af09adca",
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-05D3FF343733574E43043550",
+      "actor": "ljk",
+      "state": "ended",
+      "seq": 2,
+      "drive_rpm": 0,
+      "steering_mdeg": 0,
+      "last_client_at": 1791956734.4677827,
+      "last_dispatched_at": 1791956734.4754035,
+      "device_accepted": 1,
+      "feedback_json": "{\"requestId\": \"cc:c-0393a7a4c616433885576a61af09adca:955372203\", \"code\": 200, \"msg\": \"operation accepted\", \"result\": {\"targetDriveRpm\": 0, \"targetSteeringDeg\": 0.0, \"stopReason\": 13}}",
+      "created_at": 1791956734.1885211,
+      "updated_at": 1791956734.8998818,
+      "ended_at": 1791956734.5912442,
+      "end_reason": "device_rejected"
+    },
+    {
+      "id": "c-490e9ebc3f054bab801fdd04c308c194",
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-05D3FF343733574E43043550",
+      "actor": "admin",
+      "state": "ended",
+      "seq": 2,
+      "drive_rpm": 0,
+      "steering_mdeg": 0,
+      "last_client_at": 1791956908.68229,
+      "last_dispatched_at": 1791956908.7454603,
+      "device_accepted": 0,
+      "feedback_json": "{\"requestId\": \"cc:c-490e9ebc3f054bab801fdd04c308c194:955546049\", \"code\": 400, \"msg\": \"motion safety gate rejected\", \"result\": {\"targetDriveRpm\": 0, \"targetSteeringDeg\": 0.0, \"stopReason\": 13}}",
+      "created_at": 1791956908.4434276,
+      "updated_at": 1791956908.8053076,
+      "ended_at": 1791956908.7730985,
+      "end_reason": "device_rejected"
+    }
+  ],
+  "current_status": [
+    {
+      "vid": "PATROL-05D3FF343733574E43043550",
+      "payload_json": "{\"version\": \"4.0\", \"timestamp\": 1791957123624, \"data\": {\"reportId\": \"PATROL-05D3FF343733574E43043550-1791957123624-186\", \"reportType\": \"state\", \"reportName\": \"chassis_status\", \"payload\": {\"reportReason\": \"periodic\", \"motionState\": \"fault\", \"targetDriveRpm\": 0, \"targetSteeringDeg\": 0.0, \"leftActualRpm\": 0, \"rightActualRpm\": 0, \"steeringActualDeg\": 0.506, \"absoluteActualDeg\": 0.506, \"steeringOnline\": true, \"driveOnline\": true, \"encoderOnline\": true, \"canBusOff\": false, \"driveFault\": false, \"feedbackFresh\": true, \"calibrated\": true, \"steeringProfileReady\": true, \"steeringRangeValid\": true, \"powerReady\": true, \"powerOutputOn\": true, \"otaBusy\": false, \"safetyReady\": false, \"stopReason\": 13, \"faultLatched\": true, \"steeringBoundary\": 0, \"faultRecordVersion\": 1, \"lastFault\": [5, 160881, 1, 9, 0, 0, 0, 0, 0, -105342, 24, 8759, 8272, 0, 0, 270, 220, 20, 50, 4, 22, 3, 0, 0, 0, 100794368, 1, 0, 2]}}}",
+      "received_at": 1791957123.8172147
+    }
+  ]
+}
