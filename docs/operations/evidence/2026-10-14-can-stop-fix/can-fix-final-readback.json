@@ -1,0 +1,101 @@
+{
+  "get_info": {
+    "operation_id": "d16aa814-f1cb-44fb-a867-403615c1d1c9",
+    "product": "patrol_vehicle_chassis",
+    "vid": "PATROL-05D3FF343733574E43043550",
+    "state": "succeeded",
+    "response_code": "200",
+    "completed_at": 1791959106.0956483,
+    "result": {
+      "fwVersion": "patrol-chassis-0.2.61",
+      "bootVersion": "abox-boot-2.3.0",
+      "vid": "PATROL-05D3FF343733574E43043550",
+      "mqttTls": true,
+      "mqttState": "READY",
+      "otaState": "CONFIRMED",
+      "otaReady": true,
+      "otaBusy": false,
+      "powerOutputOn": false,
+      "uptimeMs": 598661,
+      "diagnostics": {
+        "canRx": 7669,
+        "driveHb": false,
+        "encoderOnline": false,
+        "steerHb": false
+      },
+      "lastOtaError": 0,
+      "trialFailCount": 0
+    }
+  },
+  "chassis_status": {
+    "payload": {
+      "version": "4.0",
+      "timestamp": 1791959105436,
+      "data": {
+        "reportId": "PATROL-05D3FF343733574E43043550-1791959105436-146",
+        "reportType": "state",
+        "reportName": "chassis_status",
+        "payload": {
+          "reportReason": "periodic",
+          "motionState": "stopped",
+          "targetDriveRpm": 0,
+          "targetSteeringDeg": 0.0,
+          "leftActualRpm": 0,
+          "rightActualRpm": 0,
+          "steeringActualDeg": -2.404,
+          "absoluteActualDeg": 0.597,
+          "steeringOnline": false,
+          "driveOnline": false,
+          "encoderOnline": false,
+          "canBusOff": false,
+          "driveFault": false,
+          "feedbackFresh": false,
+          "calibrated": true,
+          "steeringProfileReady": true,
+          "steeringRangeValid": true,
+          "powerReady": false,
+          "powerOutputOn": false,
+          "otaBusy": false,
+          "safetyReady": false,
+          "stopReason": 5,
+          "faultLatched": false,
+          "steeringBoundary": 0,
+          "faultRecordVersion": 1,
+          "lastFault": [
+            4,
+            85481,
+            1,
+            10,
+            0,
+            0,
+            0,
+            0,
+            0,
+            5027,
+            1192,
+            8759,
+            5175,
+            0,
+            0,
+            479,
+            449,
+            19,
+            29,
+            4,
+            22,
+            3,
+            3,
+            20,
+            0,
+            100794368,
+            1,
+            0,
+            1
+          ]
+        }
+      }
+    },
+    "received_at": 1791959105.7778425
+  },
+  "queried_at": 1791959106.5183613
+}

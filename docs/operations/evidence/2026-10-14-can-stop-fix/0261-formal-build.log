@@ -1,0 +1,27 @@
+PASS Boot origin = 0x08000000
+PASS Boot length = 0x00008000
+PASS App origin = 0x08008000
+PASS BootState A 0x0803E800-0x0803EFFF
+PASS config recovery 0x0803E000-0x0803E7FF
+PASS BootState B 0x0803F000-0x0803F7FF
+PASS OTA page 0x0803F800-0x0803FFFF
+Build type: Release
+CMake Warning in F:/work/A-Box/Patrol_Vehicle_Chassis/platform/components/enrollment/CMakeLists.txt:
+  The object file directory
+
+    C:/Users/cxh/AppData/Local/Temp/patrol-chassis-release-22c30ef19d1a4f2587d1db75b14bf13d/ABoxUnifiedRelease-patrol-chassis-0.2.61/abox_platform_build/components/enrollment/CMakeFiles/abox_enrollment_ec800_http.dir/./
+
+  has 215 characters.  The maximum full path to an object file is 250
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    src/abox_enrollment_ec800_http.c.obj
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+PASS calibration stack: known frames 2320 + 1024 byte reserve <= 4096
+PASS MQTT trial save stack: known frames 2800 + 1024 byte reserve <= 4096
+PASS CANopen fault stack: known frames 424 + 512 byte library reserve <= 1024
+PASS center commit stack: known frames 1712 + 1024 byte reserve <= 4096
+Release patrol-chassis-0.2.61 written to F:\work\A-Box\Patrol_Vehicle_Chassis\dist

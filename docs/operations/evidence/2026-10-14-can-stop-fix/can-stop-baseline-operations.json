@@ -1,0 +1,76 @@
+[
+  {
+    "id": "e0fb2f35-509b-4498-884e-b2dab83ea894",
+    "capability": "power_off",
+    "state": "succeeded",
+    "response_code": "200",
+    "result": {
+      "powerOutputOn": false
+    },
+    "error": "",
+    "completed_at": 1791957943.7633157
+  },
+  {
+    "id": "3d95b52a-0ac2-47b9-8578-3900744ba07b",
+    "capability": "reset_motion_fault",
+    "state": "succeeded",
+    "response_code": "200",
+    "result": {
+      "faultRecordPreserved": true,
+      "powerOutputOn": false
+    },
+    "error": "",
+    "completed_at": 1791957944.7322848
+  },
+  {
+    "id": "bcda7469-1242-4976-898d-c7ba6acbfd49",
+    "capability": "power_on",
+    "state": "succeeded",
+    "response_code": "200",
+    "result": {
+      "powerOutputOn": true
+    },
+    "error": "",
+    "completed_at": 1791957945.8467443
+  },
+  {
+    "session": {
+      "id": "c-7d08768e0a4b4406a593241dc3c7173a",
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-05D3FF343733574E43043550",
+      "actor": "ssh:zxwl",
+      "state": "ended",
+      "seq": 30,
+      "drive_rpm": 0,
+      "steering_mdeg": 0,
+      "last_client_at": 1791957954.6235676,
+      "last_dispatched_at": 1791957954.605583,
+      "device_accepted": true,
+      "created_at": 1791957948.5540204,
+      "updated_at": 1791957954.8719878,
+      "ended_at": 1791957954.8396587,
+      "end_reason": "explicit_stop",
+      "feedback": {
+        "requestId": "cc:c-7d08768e0a4b4406a593241dc3c7173a:956589819",
+        "code": 200,
+        "msg": "operation accepted",
+        "result": {
+          "targetDriveRpm": 0,
+          "targetSteeringDeg": 0.434,
+          "stopReason": 0
+        }
+      }
+    }
+  },
+  {
+    "id": "e0fb2f35-509b-4498-884e-b2dab83ea894",
+    "capability": "power_off",
+    "state": "succeeded",
+    "response_code": "200",
+    "result": {
+      "powerOutputOn": false
+    },
+    "error": "",
+    "completed_at": 1791957943.7633157
+  }
+]

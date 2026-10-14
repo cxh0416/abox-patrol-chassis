@@ -1,0 +1,98 @@
+[
+  {
+    "id": "4e867f03-6a37-4d54-ac9c-214fd2d69f2f",
+    "capability": "power_off",
+    "state": "succeeded",
+    "response_code": "200",
+    "result": {
+      "powerOutputOn": false
+    },
+    "error": "",
+    "completed_at": 1791958081.0520205
+  },
+  {
+    "id": "8cfe5c62-2ffd-44ea-b407-204ee1d6fc8f",
+    "capability": "reset_motion_fault",
+    "state": "succeeded",
+    "response_code": "200",
+    "result": {
+      "faultRecordPreserved": true,
+      "powerOutputOn": false
+    },
+    "error": "",
+    "completed_at": 1791958082.1681812
+  },
+  {
+    "id": "253557a0-53a9-4b5f-8eff-e2e0459d9766",
+    "capability": "power_on",
+    "state": "succeeded",
+    "response_code": "200",
+    "result": {
+      "powerOutputOn": true
+    },
+    "error": "",
+    "completed_at": 1791958083.1602306
+  },
+  {
+    "session": {
+      "id": "c-dfc8db231c424c52942084bd2cd5b0d1",
+      "product": "patrol_vehicle_chassis",
+      "vid": "PATROL-05D3FF343733574E43043550",
+      "actor": "ssh:zxwl",
+      "state": "ended",
+      "seq": 40,
+      "drive_rpm": 0,
+      "steering_mdeg": 0,
+      "last_client_at": 1791958094.0037274,
+      "last_dispatched_at": 1791958094.036393,
+      "device_accepted": true,
+      "created_at": 1791958085.8468819,
+      "updated_at": 1791958094.5264106,
+      "ended_at": 1791958094.2256055,
+      "end_reason": "explicit_stop",
+      "feedback": {
+        "requestId": "cc:c-dfc8db231c424c52942084bd2cd5b0d1:956731814",
+        "code": 200,
+        "msg": "operation accepted",
+        "result": {
+          "targetDriveRpm": 0,
+          "targetSteeringDeg": 0.0,
+          "stopReason": 12
+        }
+      }
+    }
+  },
+  {
+    "id": "042383c4-5589-4285-923b-d0607c4147e7",
+    "capability": "power_off",
+    "state": "succeeded",
+    "response_code": "200",
+    "result": {
+      "powerOutputOn": false
+    },
+    "error": "",
+    "completed_at": 1791958096.3565907
+  },
+  {
+    "id": "f2185c93-8bd4-48b9-bb59-aae94d004d88",
+    "capability": "power_on",
+    "state": "succeeded",
+    "response_code": "200",
+    "result": {
+      "powerOutputOn": true
+    },
+    "error": "",
+    "completed_at": 1791958097.5421045
+  },
+  {
+    "id": "747cc227-bbdd-47a8-a086-490df619533a",
+    "capability": "power_off",
+    "state": "succeeded",
+    "response_code": "200",
+    "result": {
+      "powerOutputOn": false
+    },
+    "error": "",
+    "completed_at": 1791958104.5012386
+  }
+]

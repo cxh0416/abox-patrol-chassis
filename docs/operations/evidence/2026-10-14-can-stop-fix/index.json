@@ -1,0 +1,218 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "vid": "PATROL-05D3FF343733574E43043550",
+  "date": "2026-10-14",
+  "firmware": "patrol-chassis-0.2.61",
+  "app_sha256": "3990B87DC261692E429CD807327B8221CF81A238EA4ADC615E124645D63E67B6",
+  "source_revision": "586dd010c790cb488ddada5cc6462f4f906c0d6a",
+  "platform_revision": "bc64f52b290521f53ececa626dc91765861845f8",
+  "service_version": "0.4.185",
+  "cause": {
+    "old_stop_deadline_ms": 200,
+    "observation": "PP shutdown write acknowledgement precedes actual Operation Enabled release; centering completion can require more than 200 ms",
+    "baseline_failed_executor": {
+      "phase": 4,
+      "step": 22,
+      "fault": 3,
+      "stop_ms": 1574091,
+      "last_enabled_status_ms": 1574271,
+      "later_disabled_status_ms": 1574448
+    },
+    "stable_fixed_capture": {
+      "shutdown_ack_ms": 565792,
+      "enabled_status_ms": 565932,
+      "disabled_status_ms": 566162,
+      "executor_finished_stop_ms": 566035,
+      "executor_finished_phase": 0,
+      "fault": 0
+    },
+    "qualification": "Initial whole-queue snapshots are non-atomic and may contain torn records; only timestamp-bracketed stable capture is treated as verified individual CAN frame evidence. Receiver queue sampling is not lossless full-bus capture. Bench state fields are independently sampled, not an atomic structure snapshot."
+  },
+  "change": {
+    "stop_confirmation_deadline_ms": 500,
+    "sdo_transaction_deadline_ms": 100,
+    "post_disable_cleanup_deadline_ms": 100,
+    "shutdown_write_replayed": false,
+    "fault_latch_recovery": "explicitly confirmed new takeover reuses power_off/reset_motion_fault, preserves history, powers up and waits for a new MCU safetyReady report; no timer retry or restoration of old targets"
+  },
+  "verification": {
+    "python_product_regressions": 41,
+    "product_c_fixtures": "passed",
+    "arm_release_and_stack_checks": "passed",
+    "candidate_equals_formal_app": true,
+    "boot_confirmed": true,
+    "ota_ready": true,
+    "mqtt_tls": true,
+    "config_page_sha256_preserved": "58081e976d2b7c439dbca0f114b61916e1c6ae1ce4993f3130043ecb64fc0847",
+    "platform_frontend_tests": 26,
+    "platform_chassis_backend_tests": 15,
+    "final_reacquire_session_id": "c-5cb61f83099d4283ab7f2c4e75175fcc",
+    "final_reacquire_accepted": true,
+    "renew_sequences": 40,
+    "session_duration_seconds": 8.36970067024231,
+    "wheel_target_rpm": 0,
+    "steering_test_target_deg": 3,
+    "closure_power_output_on": false,
+    "closure_fault_latched": false,
+    "closure_active_sessions": 0
+  },
+  "unconfirmed_attempts": [
+    {
+      "operation_id": "9862472a-f4b0-48b8-b8b1-fb2687817483",
+      "capability": "get_info",
+      "outcome": "timed_out around firmware/service startup; later independent get_info confirmed 0.2.61 CONFIRMED"
+    },
+    {
+      "operation_id": "264f38bf-c7ee-48be-a4f9-5b0986aac85c",
+      "capability": "power_off",
+      "outcome": "device later reported output false but correlated response absent; original operation remained timed_out. Subsequent complete cycle and closing power_off were independently successful."
+    }
+  ],
+  "private_backups": [
+    {
+      "host": "wyse3040",
+      "path": "/home/cxh/patrol-fix-20261014-0261/pre.private.bin",
+      "sha256": "ce62f573af55339c5164c3517bdcc7001e475cab657b6693b73e9fb643b99b48"
+    },
+    {
+      "host": "wyse3040",
+      "path": "/home/cxh/patrol-fix-20261014-0261/post.private.bin",
+      "sha256": "f68dd88abc0d4837641ca66a17ac71e39f03d26aacd20dede777ea110c1bf799"
+    }
+  ],
+  "boundaries": [
+    "No USB-CAN was connected. J-Link reads the existing MCU receive queue while running; target identity and ELF offsets were checked against the reproduced 0.2.60 App hash and 0.2.61 symbol addresses.",
+    "No debugger halt or reset was used during CAN sampling; temporary reset/debug settings from flashing were cleared before running.",
+    "Final remote takeover proof is the device 200 response and continued session renewals. Wheel target remained zero. Angular observations are driver/encoder feedback, not external mechanical measurement.",
+    "Boot, Config V5, PSK credentials, calibration, Flash page boundaries and direction-change zero-speed checks are preserved.",
+    "Raw logs retain their original byte sequences and hashes, including native line endings; .gitattributes disables conversion for this evidence log directory."
+  ],
+  "files": [
+    {
+      "host": "wyse3040",
+      "original_path": "/home/cxh/patrol-can-timing-20261014/baseline-0260-can.jsonl",
+      "archive_path": "baseline-0260-can.jsonl",
+      "sha256": "b27e8ff479d4ef12385c186c36bc978f3ecf2915a4c1ea9be0d92771fc58ed8d"
+    },
+    {
+      "host": "wyse3040",
+      "original_path": "/home/cxh/patrol-can-timing-20261014/moving-0260-can.jsonl",
+      "archive_path": "moving-0260-can.jsonl",
+      "sha256": "0d052a9dcd0b24f5f70d6afc4a01860008074c969f7aff4151889550795c0df1"
+    },
+    {
+      "host": "wyse3040",
+      "original_path": "/home/cxh/patrol-can-timing-20261014/fixed-0261-can.jsonl",
+      "archive_path": "fixed-0261-can.jsonl",
+      "sha256": "7309a8c09223906f022e66ede7b9a5413d933e7dc3d850d6c163c80c233d0d59"
+    },
+    {
+      "host": "wyse3040",
+      "original_path": "/home/cxh/patrol-can-timing-20261014/stable-0261-can.jsonl",
+      "archive_path": "stable-0261-can.jsonl",
+      "sha256": "568cc32315a594e1a824d2249f90f04f6dafb33d0e8c49e663ce7a0f2172c3ef"
+    },
+    {
+      "host": "wyse3040",
+      "original_path": "/home/cxh/patrol-can-timing-20261014/layout-0260.json",
+      "archive_path": "layout-0260.json",
+      "sha256": "f5ea0e38787a8cc6c9a17b998188c468be9b885249f0ff88d213fa8d6a138b97"
+    },
+    {
+      "host": "wyse3040",
+      "original_path": "/home/cxh/patrol-can-timing-20261014/layout-0261.json",
+      "archive_path": "layout-0261.json",
+      "sha256": "10bd84b6a7df8016c283c8267961b98eac9c5df5d57b7c60dfe93a46e1ea267c"
+    },
+    {
+      "host": "wyse3040",
+      "original_path": "/home/cxh/patrol-fix-20261014-0261/backup.log",
+      "archive_path": "backup.jlink.log",
+      "sha256": "707d0a33ae7926338f170c65ba3b2404ad385108073113014fb649734ed2173f"
+    },
+    {
+      "host": "wyse3040",
+      "original_path": "/home/cxh/patrol-fix-20261014-0261/flash.log",
+      "archive_path": "flash.jlink.log",
+      "sha256": "783ad1f3018a9a86a9448f3add7d24e8246be4e8303f9f37e47dfcd80147069f"
+    },
+    {
+      "host": "wyse3040",
+      "original_path": "/home/cxh/patrol-fix-20261014-0261/plan.json",
+      "archive_path": "flash-plan.json",
+      "sha256": "c85c1c03c50a610e577fef6da060f75aad4f96cde19e068ccc9144cdc150f36e"
+    },
+    {
+      "host": "wyse3040",
+      "original_path": "/home/cxh/patrol-fix-20261014-0261/verification.json",
+      "archive_path": "flash-verification.json",
+      "sha256": "85741c2114e4f84f4e06809fff3aed049b6f2ad34ddd13c54c90d344d88ab09a"
+    },
+    {
+      "host": "wyse3040",
+      "original_path": "/home/cxh/patrol-fix-20261014-0261/resume.log",
+      "archive_path": "resume.log",
+      "sha256": "167faa87467ffedf6e6293957ec38812b590f40a121a543f4939b01d42e2b296"
+    },
+    {
+      "host": "server47",
+      "original_path": "/var/lib/device-ota-service/maintenance/patrol-psk-20261014/can-stop-baseline-operations.json",
+      "archive_path": "can-stop-baseline-operations.json",
+      "sha256": "c934c4a746d75c70eba483d585d8b572d1ee16c55ef1c892872f52dc0285190e"
+    },
+    {
+      "host": "server47",
+      "original_path": "/var/lib/device-ota-service/maintenance/patrol-psk-20261014/can-stop-moving-operations.json",
+      "archive_path": "can-stop-moving-operations.json",
+      "sha256": "646d6504fbc94c3120a82ae37e5fe6d31179d375c07f5eea8e9d4a53514ecb0b"
+    },
+    {
+      "host": "server47",
+      "original_path": "/var/lib/device-ota-service/maintenance/patrol-psk-20261014/can-stop-verified-operations.json",
+      "archive_path": "can-stop-verified-operations.json",
+      "sha256": "686eae03ba9057271df7a29fff5eb94c4829556d8e1646e4e6e35c2263aa471a"
+    },
+    {
+      "host": "server47",
+      "original_path": "/var/lib/device-ota-service/maintenance/patrol-psk-20261014/can-stop-reacquire-operations.json",
+      "archive_path": "can-stop-reacquire-operations.json",
+      "sha256": "d2cddf85ad97021219cd99fb7cc6c3dae388ac6b6fd355f652ee208c4bc06331"
+    },
+    {
+      "host": "server47",
+      "original_path": "/var/lib/device-ota-service/maintenance/patrol-psk-20261014/can-fix-final-readback.json",
+      "archive_path": "can-fix-final-readback.json",
+      "sha256": "5e485974644ac1851dc4a4f70777262523cb1bba601c47de912264f382331b46"
+    },
+    {
+      "original_path": "out/logs/0261-host-tests.log",
+      "archive_path": "0261-host-tests.log",
+      "sha256": "e338e1aeae6bfb7db7aa3aff382e8e83e112fa1b92b8af88472c3ceaf8c6c543"
+    },
+    {
+      "original_path": "out/logs/0261-formal-build.log",
+      "archive_path": "0261-formal-build.log",
+      "sha256": "8d658f805b1b6a0ce026cf941b5282d26709455e3c1a53e8340c0516c86b177e"
+    },
+    {
+      "original_path": "out/candidates/bench-drive/candidate.manifest.json",
+      "archive_path": "candidate.manifest.json",
+      "sha256": "adc03f5a43a4c64dfa459b39047690ae528ce9ab9081871aee3a2bdc22d6a8e0"
+    },
+    {
+      "original_path": "dist/release.manifest.json",
+      "archive_path": "release.manifest.json",
+      "sha256": "ade86175d7dbc949d25f437344fe5fe731d95d51a5243532b35d519a43b1ac9b"
+    },
+    {
+      "original_path": "generated from read-only server query",
+      "archive_path": "closure-status.json",
+      "sha256": "d5b1ad56e5a0167de9d4682b898776d8b204232d97dd95985540b270afea7e1d"
+    },
+    {
+      "original_path": "local archive navigation",
+      "archive_path": "sources.json",
+      "sha256": "e2d8a1d429b3865d9bbeb1933f955d1cd5dd4911a0b5bf6210d03bea191c90cd"
+    }
+  ]
+}

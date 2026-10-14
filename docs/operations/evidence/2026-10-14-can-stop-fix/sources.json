@@ -1,0 +1,118 @@
+[
+  {
+    "host": "wyse3040",
+    "original_path": "/home/cxh/patrol-can-timing-20261014/baseline-0260-can.jsonl",
+    "archive_path": "baseline-0260-can.jsonl",
+    "sha256": "b27e8ff479d4ef12385c186c36bc978f3ecf2915a4c1ea9be0d92771fc58ed8d"
+  },
+  {
+    "host": "wyse3040",
+    "original_path": "/home/cxh/patrol-can-timing-20261014/moving-0260-can.jsonl",
+    "archive_path": "moving-0260-can.jsonl",
+    "sha256": "0d052a9dcd0b24f5f70d6afc4a01860008074c969f7aff4151889550795c0df1"
+  },
+  {
+    "host": "wyse3040",
+    "original_path": "/home/cxh/patrol-can-timing-20261014/fixed-0261-can.jsonl",
+    "archive_path": "fixed-0261-can.jsonl",
+    "sha256": "7309a8c09223906f022e66ede7b9a5413d933e7dc3d850d6c163c80c233d0d59"
+  },
+  {
+    "host": "wyse3040",
+    "original_path": "/home/cxh/patrol-can-timing-20261014/stable-0261-can.jsonl",
+    "archive_path": "stable-0261-can.jsonl",
+    "sha256": "568cc32315a594e1a824d2249f90f04f6dafb33d0e8c49e663ce7a0f2172c3ef"
+  },
+  {
+    "host": "wyse3040",
+    "original_path": "/home/cxh/patrol-can-timing-20261014/layout-0260.json",
+    "archive_path": "layout-0260.json",
+    "sha256": "f5ea0e38787a8cc6c9a17b998188c468be9b885249f0ff88d213fa8d6a138b97"
+  },
+  {
+    "host": "wyse3040",
+    "original_path": "/home/cxh/patrol-can-timing-20261014/layout-0261.json",
+    "archive_path": "layout-0261.json",
+    "sha256": "10bd84b6a7df8016c283c8267961b98eac9c5df5d57b7c60dfe93a46e1ea267c"
+  },
+  {
+    "host": "wyse3040",
+    "original_path": "/home/cxh/patrol-fix-20261014-0261/backup.log",
+    "archive_path": "backup.jlink.log",
+    "sha256": "707d0a33ae7926338f170c65ba3b2404ad385108073113014fb649734ed2173f"
+  },
+  {
+    "host": "wyse3040",
+    "original_path": "/home/cxh/patrol-fix-20261014-0261/flash.log",
+    "archive_path": "flash.jlink.log",
+    "sha256": "783ad1f3018a9a86a9448f3add7d24e8246be4e8303f9f37e47dfcd80147069f"
+  },
+  {
+    "host": "wyse3040",
+    "original_path": "/home/cxh/patrol-fix-20261014-0261/plan.json",
+    "archive_path": "flash-plan.json",
+    "sha256": "c85c1c03c50a610e577fef6da060f75aad4f96cde19e068ccc9144cdc150f36e"
+  },
+  {
+    "host": "wyse3040",
+    "original_path": "/home/cxh/patrol-fix-20261014-0261/verification.json",
+    "archive_path": "flash-verification.json",
+    "sha256": "85741c2114e4f84f4e06809fff3aed049b6f2ad34ddd13c54c90d344d88ab09a"
+  },
+  {
+    "host": "wyse3040",
+    "original_path": "/home/cxh/patrol-fix-20261014-0261/resume.log",
+    "archive_path": "resume.log",
+    "sha256": "167faa87467ffedf6e6293957ec38812b590f40a121a543f4939b01d42e2b296"
+  },
+  {
+    "host": "server47",
+    "original_path": "/var/lib/device-ota-service/maintenance/patrol-psk-20261014/can-stop-baseline-operations.json",
+    "archive_path": "can-stop-baseline-operations.json",
+    "sha256": "c934c4a746d75c70eba483d585d8b572d1ee16c55ef1c892872f52dc0285190e"
+  },
+  {
+    "host": "server47",
+    "original_path": "/var/lib/device-ota-service/maintenance/patrol-psk-20261014/can-stop-moving-operations.json",
+    "archive_path": "can-stop-moving-operations.json",
+    "sha256": "646d6504fbc94c3120a82ae37e5fe6d31179d375c07f5eea8e9d4a53514ecb0b"
+  },
+  {
+    "host": "server47",
+    "original_path": "/var/lib/device-ota-service/maintenance/patrol-psk-20261014/can-stop-verified-operations.json",
+    "archive_path": "can-stop-verified-operations.json",
+    "sha256": "686eae03ba9057271df7a29fff5eb94c4829556d8e1646e4e6e35c2263aa471a"
+  },
+  {
+    "host": "server47",
+    "original_path": "/var/lib/device-ota-service/maintenance/patrol-psk-20261014/can-stop-reacquire-operations.json",
+    "archive_path": "can-stop-reacquire-operations.json",
+    "sha256": "d2cddf85ad97021219cd99fb7cc6c3dae388ac6b6fd355f652ee208c4bc06331"
+  },
+  {
+    "host": "server47",
+    "original_path": "/var/lib/device-ota-service/maintenance/patrol-psk-20261014/can-fix-final-readback.json",
+    "archive_path": "can-fix-final-readback.json",
+    "sha256": "5e485974644ac1851dc4a4f70777262523cb1bba601c47de912264f382331b46"
+  },
+  {
+    "original_path": "out/logs/0261-host-tests.log",
+    "archive_path": "0261-host-tests.log",
+    "sha256": "e338e1aeae6bfb7db7aa3aff382e8e83e112fa1b92b8af88472c3ceaf8c6c543"
+  },
+  {
+    "original_path": "out/logs/0261-formal-build.log",
+    "archive_path": "0261-formal-build.log",
+    "sha256": "8d658f805b1b6a0ce026cf941b5282d26709455e3c1a53e8340c0516c86b177e"
+  },
+  {
+    "original_path": "out/candidates/bench-drive/candidate.manifest.json",
+    "archive_path": "candidate.manifest.json",
+    "sha256": "adc03f5a43a4c64dfa459b39047690ae528ce9ab9081871aee3a2bdc22d6a8e0"
+  },
+  {
+    "original_path": "dist/release.manifest.json",
+    "archive_path": "release.manifest.json",
+    "sha256": "ade86175d7dbc949d25f437344fe5fe731d95d51a5243532b35d519a43b1ac9b"
+  }
+]

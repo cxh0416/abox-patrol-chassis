@@ -1,0 +1,10 @@
+{
+  "app_sha256": "3990b87dc261692e429cd807327b8221cf81a238ea4adc615e124645d63e67b6",
+  "app_length": 148520,
+  "app_crc": "0x30d8e899",
+  "target_state_address": "0x803e800",
+  "sequence": 109,
+  "preserved_ufs_stable": "patrol-chassis-0.2.60",
+  "pre_snapshot_sha256": "ce62f573af55339c5164c3517bdcc7001e475cab657b6693b73e9fb643b99b48",
+  "config_sha256_before": "58081e976d2b7c439dbca0f114b61916e1c6ae1ce4993f3130043ecb64fc0847"
+}

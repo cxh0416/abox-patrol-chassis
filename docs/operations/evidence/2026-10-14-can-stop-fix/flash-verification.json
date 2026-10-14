@@ -1,0 +1,8 @@
+{
+  "readback_exact_match": true,
+  "config_preserved": true,
+  "boot_preserved": true,
+  "recovery_preserved": true,
+  "post_snapshot_sha256": "f68dd88abc0d4837641ca66a17ac71e39f03d26aacd20dede777ea110c1bf799",
+  "config_sha256": "58081e976d2b7c439dbca0f114b61916e1c6ae1ce4993f3130043ecb64fc0847"
+}
