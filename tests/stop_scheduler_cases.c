@@ -77,9 +77,9 @@ int main(void)
     BenchSteering_Tick(&g_motion.bench, 1200, 0, 1, 0, 0);
     assert(take(1200, &f));
     assert(f.id == 0 && f.data[0] == 0x80 && g_motion.bench.phase == BENCH_IDLE);
-    /* A genuinely stuck shutdown still trips the original 200 ms deadline. */
+    /* A genuinely stuck shutdown still trips the bounded 500 ms deadline. */
     reset_fixture();
-    for (uint32_t now=1000; now<=1200; now+=10) {
+    for (uint32_t now=1000; now<=1500; now+=10) {
         BenchSteering_Tick(&g_motion.bench, now, 0, 1, 0, 0);
         if (g_motion.bench.phase == BENCH_FAULT) break;
         if (take(now, &f)) reply(f, now+5, 1);

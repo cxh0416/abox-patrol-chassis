@@ -7,7 +7,10 @@
 /* No write retries: a trigger whose acknowledgement was lost must never replay. */
 #define TRANSACTION_MS 100U
 #define PREPARE_MS 5000U
-#define STOP_MS 200U
+/* PP shutdown acknowledges the write before deceleration releases enable.
+ * Vehicle status remained 0x2237 at 180 ms and reached 0x2231 at 357 ms.
+ * Keep the SDO deadline independent; never re-send the shutdown write. */
+#define STOP_MS 500U
 #define STOP_FINISH_MS 100U
 #define BENCH_STEERING_ENVELOPE_MDEG VEHICLE_STEERING_TRIP_MDEG
 

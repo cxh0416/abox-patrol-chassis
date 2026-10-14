@@ -169,7 +169,7 @@ int main(void)
     BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0);
     BenchSteering_Tick(&b,1,1,0,0,0); assert(b.phase==BENCH_FAULT&&b.cut_power);
     BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0);
-    BenchSteering_Stop(&b,10,0); BenchSteering_Tick(&b,210,0,1,0,0);
+    BenchSteering_Stop(&b,10,0); BenchSteering_Tick(&b,510,0,1,0,0);
     assert(b.phase==BENCH_FAULT&&b.cut_power);
     BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0);
     BenchSteering_Tick(&b,1,1,1,1001,0); assert(b.phase==BENCH_FAULT);
@@ -192,8 +192,8 @@ int main(void)
     BenchSteering_Stop(&b,1000,0);
     assert(BenchSteering_Take(&b,1000,&f)); r=reply(&b,0);
     assert(BenchSteering_OnFrame(&b,&r,1001));
-    assert(BenchSteering_Take(&b,1180,&f)); r=reply(&b,0x2231);
-    assert(BenchSteering_OnFrame(&b,&r,1200));
+    assert(BenchSteering_Take(&b,1480,&f)); r=reply(&b,0x2231);
+    assert(BenchSteering_OnFrame(&b,&r,1500));
     assert(b.phase==BENCH_FAULT&&b.fault==3); /* Late disable is not accepted. */
 
     BenchSteering_Init(&b); b.phase=BENCH_ACTIVE;
@@ -230,14 +230,35 @@ int main(void)
         assert(BenchSteering_Take(&b,1000,&f)); r=reply(&b,0);
         assert(BenchSteering_OnFrame(&b,&r,1001));
         r=(PatrolCanFrame){.id=0x181,.dlc=kind==1?1:7,.data={0x31,0x22}};
-        BenchSteering_OnFrame(&b,&r,kind==2?1200:1192);
+        BenchSteering_OnFrame(&b,&r,kind==2?1500:1192);
         assert(!b.stop_confirmed); /* Unknown mapping, malformed or late PDO. */
-        BenchSteering_Tick(&b,1200,0,1,0,0);
+        BenchSteering_Tick(&b,1500,0,1,0,0);
         assert(b.phase==BENCH_FAULT);
     }
     BenchSteering_Init(&b); b.phase=BENCH_PREPARING; b.step=3;
     assert(BenchSteering_Take(&b,0,&f)&&f.data[3]==1);
     r=reply(&b,0x80000181); /* Disabled COB-ID must not authorize PDO decoding. */
     BenchSteering_OnFrame(&b,&r,1); assert(b.phase==BENCH_FAULT);
+    /* Vehicle trace: shutdown is acknowledged immediately, but PP deceleration
+       keeps Operation Enabled beyond 200 ms. A 6-byte SDO status and verified
+       TPDO confirm disable at 357 ms; they must precede the bounded deadline. */
+    for (int pdo=0; pdo<2; ++pdo) {
+        BenchSteering_Init(&b); b.phase=BENCH_ACTIVE; b.tpdo_check=2;
+        BenchSteering_Stop(&b,1000,0);
+        assert(BenchSteering_Take(&b,1000,&f)); r=reply(&b,0);
+        assert(BenchSteering_OnFrame(&b,&r,1001));
+        for (uint32_t t=1020; t<=1340; t+=40) {
+            assert(BenchSteering_Take(&b,t,&f)); r=reply(&b,0x2237); r.dlc=6;
+            assert(BenchSteering_OnFrame(&b,&r,t+1));
+            BenchSteering_Tick(&b,t+2,0,1,0,0);
+            assert(b.phase==BENCH_STOPPING && !b.stop_confirmed);
+        }
+        if (pdo) r=(PatrolCanFrame){.id=0x181,.dlc=7,.data={0x31,0x22}};
+        else { assert(BenchSteering_Take(&b,1356,&f)); r=reply(&b,0x2231); r.dlc=6; }
+        assert(BenchSteering_OnFrame(&b,&r,1357));
+        assert(BenchSteering_StopFinishReady(&b));
+        assert(BenchSteering_Take(&b,1360,&f) && f.id==0);
+        assert(b.phase==BENCH_IDLE && !b.cut_power);
+    }
     puts("PASS bench handshake, target conversion, limits, stop, malformed replies, faults and timeout");
 }
