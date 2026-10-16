@@ -24,9 +24,9 @@ python tools/clean_workspace.py --build
 ## 文档入口
 
 1. [CURRENT](docs/CURRENT.md)：唯一当前状态、冻结测试基线、当前 blocker、下一步和权威文档入口。
-2. [底盘业务 Profile](docs/protocols/A-BOX巡防车底盘业务协议-V4.0.md)与[内部运维接口 V2.3](docs/protocols/A-BOX内部运维协议V2.3.md)：目标产品接口合同。公共 MQTT V4 由平台仓定义；Profile 1.0、内部报文 2.0 和 Config V5 分别是不同的版本。现场切换状态见 [CURRENT](docs/CURRENT.md)。
+2. [公共 MQTT V4](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md)与[底盘业务 Profile](docs/protocols/A-BOX巡防车底盘业务协议-V4.0.md)：对外业务开发只需这两份协议，首次订阅、主动 Manifest、能力确认和消息归属见公共第 7.5 节及产品第 3.2 节。
 3. [源码模块与依赖](docs/implementation/源码模块与依赖.md)与[硬件与安全边界](docs/hardware/硬件与安全边界.md)：当前实现和安全边界。
-4. [当前运维说明](docs/operations/)：标定、CANopen、台架和维护流程。
+4. [当前运维说明](docs/operations/)与[巡防车底盘内部运维协议 V2.3](docs/protocols/A-BOX巡防车底盘内部运维协议-V2.3.md)：内部标定、CANopen、台架和维护流程。Profile 1.0、内部报文 2.0 和 Config V5 分别是不同的版本。
 5. [Evidence 索引](docs/operations/evidence/README.md)：需要证明结论时再进入原始证据。
 
 已完成工作包和旧阶段记录位于 `docs/operations/history/`，不代表当前发布或当前操作步骤。

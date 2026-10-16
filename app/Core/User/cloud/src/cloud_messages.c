@@ -273,7 +273,7 @@ uint8_t CloudMessages_BuildHeartbeat(char* output, uint16_t size)
     json_append_timestamp(&writer);
     json_append(&writer, ",\"data\":{\"firmware\":"); json_string(&writer, Patrol_AppFwVersion());
     json_append(&writer, "}}");
-    return (uint8_t)(writer.valid && writer.length < CLOUD_PAYLOAD_LIMIT);
+    return (uint8_t)(writer.valid && writer.length <= CLOUD_PUBLIC_PAYLOAD_MAX);
 }
 
 uint8_t CloudMessages_BuildManifest(char* output, uint16_t size)
@@ -287,7 +287,7 @@ uint8_t CloudMessages_BuildManifest(char* output, uint16_t size)
     json_append(&writer, ",\"profiles\":[{\"name\":"); json_string(&writer, profile->name);
     json_append(&writer, ",\"version\":"); json_string(&writer, profile->version);
     json_append(&writer, "}]}}");
-    return (uint8_t)(writer.valid && writer.length < CLOUD_PAYLOAD_LIMIT);
+    return (uint8_t)(writer.valid && writer.length <= CLOUD_PUBLIC_PAYLOAD_MAX);
 }
 
 void CloudMessages_RememberStatusSnapshot(uint32_t now)
@@ -339,9 +339,7 @@ uint8_t CloudMessages_BuildStatusReport(char* output, uint16_t size, const char*
     char actual_steering[24];
     char actual_encoder[24];
     PatrolDiagnosticsSnapshot diagnostics;
-    MQTT_CoreRxDiagnostics_t mqtt_rx;
-    MotionFaultRecord fault;
-    uint8_t have_fault=PatrolRuntime_GetFault(&fault);
+    uint16_t payload_start;
     if (control->fault_latched) motion_state = "fault";
     else if (control->reversal_pending) motion_state = "reversing_wait";
     else if (feedback_fresh &&
@@ -357,7 +355,6 @@ uint8_t CloudMessages_BuildStatusReport(char* output, uint16_t size, const char*
         !FixedPoint_FormatMilli(actual_encoder, sizeof(actual_encoder),
                                 feedback->encoder_actual_mdeg)) return 0U;
     PatrolRuntime_GetDiagnostics(&diagnostics);
-    MQTT_Core_GetRxDiagnostics(&mqtt_rx);
     json_init(&writer, output, size);
     json_append(&writer, "{\"version\":\"4.0\",\"timestamp\":");
     json_append(&writer, timestamp);
@@ -369,7 +366,9 @@ uint8_t CloudMessages_BuildStatusReport(char* output, uint16_t size, const char*
         json_append(&writer, ",\"requestId\":");
         json_string(&writer, g_cloud.status_report_request_id);
     }
-    json_append(&writer, ",\"payload\":{\"reportReason\":");
+    json_append(&writer, ",\"payload\":");
+    payload_start = writer.length;
+    json_append(&writer, "{\"reportReason\":");
     json_string(&writer, report_reason ? report_reason : "periodic");
     json_append(&writer, ",\"motionState\":");
     json_string(&writer, motion_state);
@@ -398,31 +397,10 @@ uint8_t CloudMessages_BuildStatusReport(char* output, uint16_t size, const char*
         feedback->ota_busy ? "true" : "false",
         ChassisControl_SafetyReady(control, now) ? "true" : "false",
         (unsigned int)control->stop_reason, control->fault_latched ? "true" : "false", (int)control->steering_boundary);
-    if (have_fault) {
-        const uint32_t* words=(const uint32_t*)&fault;
-        json_append(&writer, ",\"lastFault\":[");
-        /* Word order is frozen by faultRecordVersion, signed words 6..10. */
-        for (unsigned i=1;i<=28;i++) {
-            if (i>1) json_append(&writer, ",");
-            if (i>=6 && i<=10) json_appendf(&writer,"%ld",(long)(int32_t)words[i]);
-            else json_appendf(&writer,"%lu",(unsigned long)words[i]);
-        }
-        json_appendf(&writer, ",%u]", (unsigned)PatrolRuntime_FaultStorage());
-    } else {
-        json_appendf(&writer,
-            ",\"transportDiagnostics\":{\"mqttRxLines\":%lu,\"mqttRxDecoded\":%lu,"
-            "\"mqttRxRejected\":%lu,\"mqttRxDispatched\":%lu,\"mqttRxOverwrites\":%lu,"
-            "\"mqttRxTimeouts\":%lu,\"mqttRxLastMs\":%lu,\"ecDmaOverflows\":%lu,"
-            "\"ecDmaRestarts\":%lu,\"ecDmaMaxBacklog\":%lu,\"ecLineOverflows\":%lu}",
-            (unsigned long)mqtt_rx.qmtrecv_line_count, (unsigned long)mqtt_rx.decoded_message_count,
-            (unsigned long)mqtt_rx.rejected_frame_count, (unsigned long)mqtt_rx.dispatched_message_count,
-            (unsigned long)mqtt_rx.pending_overwrite_count, (unsigned long)mqtt_rx.multiline_timeout_count,
-            (unsigned long)mqtt_rx.last_qmtrecv_tick, (unsigned long)ABoxEc800Rx_OverflowCount(&g_cloud.ec800_rx),
-            (unsigned long)ABoxEc800Rx_RestartCount(&g_cloud.ec800_rx),
-            (unsigned long)ABoxEc800Rx_MaxBacklog(&g_cloud.ec800_rx), (unsigned long)EC800_AT_LineOverflowCount(&g_cloud.at_core));
-    }
+    /* Keep mandatory public state bounded; diagnostic extensions are optional. */
     json_append(&writer,"}}}");
-    return (uint8_t)(writer.valid && writer.length < CLOUD_PAYLOAD_LIMIT);
+    return (uint8_t)(writer.valid && writer.length <= CLOUD_PUBLIC_PAYLOAD_MAX &&
+                     writer.length - payload_start - 2U <= CLOUD_PUBLIC_OBJECT_MAX);
 }
 
 void CloudMessages_PrepareLogSnapshot(const char* request_id)
