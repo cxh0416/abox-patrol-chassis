@@ -28,6 +28,11 @@
 #ifndef PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED
 #define PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED 0
 #endif
+/* >>>>> CAN2-GATEWAY: START >>>>> */
+#ifndef PATROL_CHASSIS_CAN2_GATEWAY_ENABLED
+#define PATROL_CHASSIS_CAN2_GATEWAY_ENABLED 0
+#endif
+/* <<<<< CAN2-GATEWAY: END <<<<< */
 
 #define PATROL_HEALTH_SAFETY  (1U << 0)
 #define PATROL_HEALTH_CAN_RX  (1U << 1)
@@ -269,6 +274,30 @@ static void Patrol_SafetyControlTask(void *argument)
     }
 }
 
+/* >>>>> CAN2-GATEWAY: START >>>>> */
+#if PATROL_CHASSIS_CAN2_GATEWAY_ENABLED
+static void patrol_can_gateway_forward(const PatrolCanFrame_t *frame)
+{
+    /* Offline remote: transparently bridge CAN2 (remote port) and CAN1
+     * (chassis CANopen). Standard data frames are relayed verbatim so a PC
+     * CANopen master on CAN2 can command the Node 1 steering and Node 2 dual
+     * drive on CAN1. Extended/remote frames are not forwarded. */
+    CAN_TxHeaderTypeDef header = {0};
+    CAN_HandleTypeDef *target;
+    uint32_t mailbox;
+    if (frame == 0 || frame->header.IDE != CAN_ID_STD || frame->header.RTR != CAN_RTR_DATA)
+        return;
+    target = (frame->bus == 1U) ? &hcan1 : &hcan2;
+    header.StdId = frame->header.StdId;
+    header.IDE = CAN_ID_STD;
+    header.RTR = CAN_RTR_DATA;
+    header.DLC = frame->header.DLC;
+    header.TransmitGlobalTime = DISABLE;
+    (void)HAL_CAN_AddTxMessage(target, &header, (uint8_t *)frame->data, &mailbox);
+}
+#endif
+/* <<<<< CAN2-GATEWAY: END <<<<< */
+
 static void Patrol_CanRxTask(void *argument)
 {
     PatrolCanFrame_t frame;
@@ -280,6 +309,11 @@ static void Patrol_CanRxTask(void *argument)
         (void)ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(100U));
         while (PatrolRtos_CanRxPop(&frame, 0U) == pdPASS)
         {
+/* >>>>> CAN2-GATEWAY: START >>>>> */
+#if PATROL_CHASSIS_CAN2_GATEWAY_ENABLED
+            patrol_can_gateway_forward(&frame);
+#endif
+/* <<<<< CAN2-GATEWAY: END <<<<< */
             if (frame.bus != 0U || frame.header.IDE != CAN_ID_STD || frame.header.RTR != CAN_RTR_DATA)
                 continue;
             memset(&decoded, 0, sizeof(decoded));
