@@ -100,8 +100,12 @@ class PatrolScaffoldTests(unittest.TestCase):
         product_modules = (ROOT / "app/Core/User/modules.cmake").read_text(encoding="utf-8")
         self.assertIn("AT+QMTSUB=%u,%u", transport)
         self.assertIn("mqtt_core_adapter.c", product_modules)
-        self.assertIn('\\\"transportDiagnostics\\\"', cloud)
-        self.assertIn('\\\"ecDmaOverflows\\\"', cloud)
+        # Optional diagnostics keep their schema even when the public encoder omits them.
+        mqtt = (ROOT / "docs/protocols/A-BOX巡防车底盘业务协议-V4.0.md").read_text(encoding="utf-8")
+        for field, kind in (("transportDiagnostics", "Object"), ("lastFault", "Array&lt;Integer&gt;")):
+            self.assertRegex(mqtt, rf"\|\s*`payload\.{field}`\s*\|\s*{kind}\s*\|\s*可选")
+        self.assertIn('`payload.transportDiagnostics.ecDmaOverflows`', mqtt)
+        self.assertIn('`0..4294967295`', mqtt)
         self.assertNotIn('\\\"encoderTimeouts\\\":%lu}}}', cloud)
 
     def test_archive_hashes(self):
