@@ -41,7 +41,7 @@ typedef struct {
 
 static const PatrolCarProfile car_profiles[] = {
     { "CAR1", -83815, 0U },
-    { "CAR2", -1463, 0U },  /* measured after CAR2 center calibration */
+    { "CAR2", -1463, 0U },
     { "CAR3", PATROL_CAR_CENTER_UNKNOWN, 0U },
     { "CAR4", PATROL_CAR_CENTER_UNKNOWN, 0U },
 };
