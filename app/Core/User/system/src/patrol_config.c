@@ -5,6 +5,63 @@
 #include "app_log.h"
 #include "vehicle_steering_profile.h"
 
+/* >>>>> CAR-PROFILE: START >>>>> */
+/*
+ * Per-car calibration profiles for a shared A-BOX board that is moved
+ * between chassis. PATROL_ACTIVE_CAR selects the car this image is built
+ * for: 0 disables this per-car profile gate, 1..4 selects a car profile.
+ * Bench/field images set 1..4 explicitly; formal images leave it 0.
+ *
+ * steering_center_count is the driver 6064 raw count at mechanical center.
+ * absolute_center_count is the encoder zero (0 after zeroing).
+ *
+ * Use PATROL_CAR_CENTER_UNKNOWN until a car has been calibrated. After that
+ * car's first center-calibration commit, fill in its measured
+ * steering_center_count and rebuild the image for that car.
+ *
+ * When the loaded Config V5 does not match the active car's known profile,
+ * only the runtime calibrated flag is cleared; Flash content is preserved so
+ * the normal center-calibration flow can run and commit this car's values.
+ *
+ * CAR1 historical profile (do not delete):
+ *   steering_center_count = -83815
+ *   absolute_center_count = 0
+ */
+#ifndef PATROL_ACTIVE_CAR
+#define PATROL_ACTIVE_CAR 0U
+#endif
+
+#define PATROL_CAR_CENTER_UNKNOWN ((int32_t)0x7FFFFFFF)
+
+typedef struct {
+    const char* tag;
+    int32_t steering_center_count;
+    uint32_t absolute_center_count;
+} PatrolCarProfile;
+
+static const PatrolCarProfile car_profiles[] = {
+    { "CAR1", -83815, 0U },
+    { "CAR2", -1463, 0U },  /* measured after CAR2 center calibration */
+    { "CAR3", PATROL_CAR_CENTER_UNKNOWN, 0U },
+    { "CAR4", PATROL_CAR_CENTER_UNKNOWN, 0U },
+};
+
+static const PatrolCarProfile* active_car_profile(void)
+{
+    if (PATROL_ACTIVE_CAR < 1U || PATROL_ACTIVE_CAR > 4U) return 0;
+    return &car_profiles[PATROL_ACTIVE_CAR - 1U];
+}
+
+static uint8_t config_matches_active_car(const PatrolRemoteConfigV5_t* cfg)
+{
+    const PatrolCarProfile* profile = active_car_profile();
+    if (cfg == 0 || profile == 0 || !cfg->calibrated) return 0U;
+    if (profile->steering_center_count == PATROL_CAR_CENTER_UNKNOWN) return 0U;
+    return (uint8_t)(cfg->steering_center_count == profile->steering_center_count &&
+        cfg->absolute_center_count == profile->absolute_center_count);
+}
+/* <<<<< CAR-PROFILE: END <<<<< */
+
 static PatrolRemoteConfigV5_t g_patrol_config;
 static ABoxTlsCredentials g_mqtt_credentials;
 
@@ -88,6 +145,18 @@ void PatrolConfig_Load(void)
     else
     {
         APP_LOGI("CFG", "loaded vid=%s", g_patrol_config.vid);
+/* >>>>> CAR-PROFILE: START >>>>> */
+        if (PATROL_ACTIVE_CAR >= 1U && PATROL_ACTIVE_CAR <= 4U &&
+            g_patrol_config.calibrated && !config_matches_active_car(&g_patrol_config))
+        {
+            /* The board is on a different car, or this car has not been
+             * calibrated yet. Clear only the runtime flag; Flash is kept.
+             * A center-calibration commit persists this car's values. */
+            g_patrol_config.calibrated = 0U;
+            APP_LOGW("CFG", "%s calibration profile not ready; center calibration required",
+                active_car_profile() ? active_car_profile()->tag : "ACTIVE_CAR");
+        }
+/* <<<<< CAR-PROFILE: END <<<<< */
     }
 }
 

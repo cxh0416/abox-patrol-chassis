@@ -1,5 +1,6 @@
 [CmdletBinding()]
-param([string]$AppVersion = '', [switch]$Drive, [switch]$EnableActuation)
+param([string]$AppVersion = '', [switch]$Drive, [switch]$EnableActuation,
+       [ValidateRange(1,4)] [int]$ActiveCar = 2)
 $ErrorActionPreference = 'Stop'
 if ($EnableActuation -and -not $Drive) { throw 'Motion-enabled candidate requires -Drive.' }
 $product = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
@@ -11,7 +12,7 @@ $output = Join-Path ([IO.Path]::GetTempPath()) ('patrol-chassis-bench-' + [guid]
 try {
 & cmake -S (Join-Path $product 'app') -B $build -G Ninja `
     "-DCMAKE_TOOLCHAIN_FILE=$product/app/cmake/gcc-arm-none-eabi.cmake" `
-    '-DCMAKE_BUILD_TYPE=Release' "-DPATROL_CHASSIS_APP_VERSION_OVERRIDE=$AppVersion" `
+    '-DCMAKE_BUILD_TYPE=Release' "-DPATROL_CHASSIS_APP_VERSION_OVERRIDE=$AppVersion" "-DPATROL_ACTIVE_CAR=$ActiveCar" `
     "-DPATROL_CHASSIS_ACTUATION_ENABLED=$(if ($EnableActuation) { 'ON' } else { 'OFF' })" '-DPATROL_STEERING_EXECUTOR_ENABLED=ON' `
     "-DPATROL_DRIVE_EXECUTOR_ENABLED=$($Drive.IsPresent)" `
     '-DPATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED=ON' '-DPATROL_CHASSIS_APP_FAULT_INJECTION_TEST=OFF'
@@ -29,7 +30,7 @@ if ($bytes.Length -gt 221184 -or [Text.Encoding]::ASCII.GetString($bytes).IndexO
 $candidateManifest = [ordered]@{
     product='patrol_vehicle_chassis'; version=$AppVersion; candidate=$true
     steering_executor_compiled=$true; drive_executor_compiled=$Drive.IsPresent
-    startup_permit=$false; actuation_enabled=$EnableActuation.IsPresent
+    startup_permit=$false; actuation_enabled=$EnableActuation.IsPresent; active_car=$ActiveCar
     commit=(& git -C $product rev-parse HEAD | Out-String).Trim()
     dirty=(-not [string]::IsNullOrWhiteSpace((& git -C $product status --porcelain | Out-String)))
     app_start='0x08008000'; app_end='0x0803DFFF'; config_recovery_page='0x0803E000'; config_page='0x0803F800'

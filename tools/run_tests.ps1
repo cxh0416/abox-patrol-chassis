@@ -134,6 +134,7 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 $benchConfigTest = Join-Path $hostBuild 'control_config_session_test.exe'
 & $gcc "-I$PSScriptRoot\..\platform\components\core\include" "-I$PSScriptRoot\..\platform\components\mqtt\include" -std=c11 -Wall -Wextra -Werror `
     '-DPATROL_CHASSIS_ACTUATION_ENABLED=1' `
+    '-DPATROL_ACTIVE_CAR=1' `
     "-I$PSScriptRoot\..\tests\bench_stubs" `
     @productIncludes `
     "-I$PSScriptRoot\..\shared\include" `

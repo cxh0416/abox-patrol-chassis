@@ -46,6 +46,12 @@ option(PATROL_CHASSIS_OTA_AUTO_SEED "Seed first stable OTA slot" ON)
 option(PATROL_DRIVE_EXECUTOR_ENABLED "Compile bounded drive executor" OFF)
 option(PATROL_STEERING_EXECUTOR_ENABLED "Compile bounded steering executor" OFF)
 option(PATROL_CHASSIS_ACTUATION_ENABLED "Allow CANopen motion output after hardware validation" OFF)
+# >>>>> CAR-PROFILE: START >>>>>
+set(PATROL_ACTIVE_CAR "0" CACHE STRING "Active vehicle calibration profile: 0=disabled, 1..4=car")
+if(NOT PATROL_ACTIVE_CAR MATCHES "^[0-4]$")
+    message(FATAL_ERROR "PATROL_ACTIVE_CAR must be 0..4")
+endif()
+# <<<<< CAR-PROFILE: END <<<<<
 # >>>>> CAN2-GATEWAY: START >>>>>
 option(PATROL_CHASSIS_CAN2_GATEWAY_ENABLED "Bridge CAN2<->CAN1 for offline bench remote control" OFF)
 # <<<<< CAN2-GATEWAY: END <<<<<
@@ -100,6 +106,9 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
     $<$<CONFIG:Debug>:PATROL_EC800_AT_TRACE=1>
     PATROL_OTA_AUTO_SEED=$<BOOL:${PATROL_CHASSIS_OTA_AUTO_SEED}>
     PATROL_CHASSIS_ACTUATION_ENABLED=$<BOOL:${PATROL_CHASSIS_ACTUATION_ENABLED}>
+    # >>>>> CAR-PROFILE: START >>>>>
+    PATROL_ACTIVE_CAR=${PATROL_ACTIVE_CAR}
+    # <<<<< CAR-PROFILE: END <<<<<
     PATROL_STEERING_EXECUTOR_ENABLED=$<BOOL:${PATROL_STEERING_EXECUTOR_ENABLED}>
     PATROL_DRIVE_EXECUTOR_ENABLED=$<BOOL:${PATROL_DRIVE_EXECUTOR_ENABLED}>
     # >>>>> CAN2-GATEWAY: START >>>>>
