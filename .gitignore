@@ -1,4 +1,5 @@
 # Generated firmware build output
+/build/
 app/build/
 dist/
 out/

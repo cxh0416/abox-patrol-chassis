@@ -15,7 +15,7 @@
 - 台架候选分别写入 `out/candidates/bench-steering/`、`out/candidates/bench-drive/`，在线调试包写入 `out/debug/online/`；每类只保留最近一次成功构建，临时构建/测试日志写入 `out/logs/`。
 - 构建产物必须先在暂存目录完成校验，再通过 `tools/artifact_store.py` 整体替换目标目录；失败保留或恢复原产物，不得先删正式包再构建。
 - 清理使用 `python tools/clean_workspace.py` 预览，显式加 `--apply` 执行；清除产品构建缓存需加 `--build`。不得清除平台子模块的冻结 Boot、源码或逐车配置。
-- 现场原始记录不能作为普通日志清除。先归档到内部 `docs/operations/evidence/`，建立原路径、归档位置和 SHA256 索引，校验成功后才删除原件；历史证据正文和哈希不得改写。
+- 现场原始记录按任务要求筛选保留，有诊断或追溯价值的原件不能作为普通日志清除；无用临时记录直接删除，不另建归档或副本。需要长期保留的证据明确实际位置和必要校验值，历史证据正文和哈希不得改写。
 - 当前运维步骤与带日期/版本的历史记录分开维护。历史参数不得直接作为新固件操作步骤，当前文档必须区分源码、主机测试、构建和现场验收证据。
 
 ## 文档生命周期
@@ -26,7 +26,7 @@
 - RUNBOOK：当前可执行维护和测试流程放在 `docs/operations/`。
 - HISTORY：已关闭工作包、旧版本设计和阶段结果放在 `docs/operations/history/`，不作为当前操作依据。
 - EVIDENCE：原始不可变证据放在 `docs/operations/evidence/`；只允许增加导航索引，不得为整理目录改写原始日志和既有哈希。
-- 工作包关闭后，其结论进入 `docs/CURRENT.md` 或长期实现文档，过程进入 history，原始材料留在 evidence；关闭的工作包不再作为 Current 文档维护。
+- 工作包关闭后，其结论进入 `docs/CURRENT.md` 或长期实现文档；有追溯价值的过程和原始材料按任务要求筛选保留，无用临时材料直接删除、不另留副本。关闭的工作包不再作为 Current 文档维护。
 - 新建文档前先归类并检查是否已有权威入口；能够更新 CURRENT、现有长期 implementation、protocol 或 runbook 时，不新增同主题总结文档。
 
 ## 能力归属与命名
