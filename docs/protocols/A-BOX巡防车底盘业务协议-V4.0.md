@@ -33,9 +33,7 @@
 
 本文定义巡防车底盘在 A-BOX MQTT V4 下的业务 Profile，包括车辆上下电、租约式底盘控制、完整底盘状态和业务安全语义。
 
-公共报文外层、Topic、QoS、请求响应、公共响应码、`requestId` 幂等、Manifest、心跳和 `sync_state` 通用规则统一遵循 [A-BOX 设备公共 MQTT 协议 V4](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md)，本文不重复定义。
-
-`/internal/*` 运维、标定及硬件映射、内部算法、操作和验收记录不属于本 Profile。
+公共报文外层、Topic、QoS、请求响应、公共响应码、`requestId` 幂等、Manifest、心跳和 `sync_state` 通用规则统一遵循 [A-BOX 设备公共 MQTT 协议 V4](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md)。
 
 **表 1：公共规则查阅索引**
 
@@ -53,7 +51,7 @@
 
 ## 2. 通信约定与 Profile
 
-Profile 名称固定为 `vehicle_chassis`，不从客户或项目名称派生。本 Profile 为单实例能力，不使用 `instanceId`。
+Profile 名称固定为 `vehicle_chassis`，为单实例能力，不使用 `instanceId`。
 
 本 Profile 中 Number 类型的角度字段统一使用度（°），分辨率为 `0.001°`；数值编码、等价写法及请求摘要遵循公共 V4 第 3.2 节与附录 A。
 
@@ -86,14 +84,12 @@ Manifest Profile 条目固定为：
 
 ### 3.2 业务识别与接入流程
 
-本文与所引用的公共 V4 协议共同构成底盘业务接入合同；接入方无需额外产品类型对照表、其他产品协议、平台源码或内部运维资料。首次订阅、主动 Manifest、在线确认和请求关联统一遵循公共协议[第 7.5 节](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md#75-平台首次接入与恢复流程)。本产品按以下对应关系使用：
+接入流程遵循公共协议[第 7.5 节](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md#75-平台首次接入与恢复流程)，本产品对应关系如下：
 
-1. 从 Manifest Topic 取得 `deviceId`，按名称查找平台支持主版本的 `vehicle_chassis`。该 Profile 表示本文的底盘能力；不能仅凭公共 Topic、`power_on` 命令或固件名称判断设备属于本业务，也不能把其他 Profile 的电源语义用于底盘。
-2. Manifest 由设备主动发布并 Retain，平台订阅即可接收；不发送手动查询。该设备的当前心跳与 Manifest 按公共第 7.3 节确认后，才具备该节规定的动作下发条件；单独的 Retained Manifest 不证明底盘当前在线或反馈新鲜。
-3. 对该 `deviceId` 的 `chassis_status` 按[第 5.1 节](#51-chassis_status)保存和解释。`sync_state` 的本 Profile 完整状态集合及关联规则见[第 4.4 节](#44-sync_state)；其他设备的报告或心跳不能补足本设备的同步或反馈。
-4. 上下电与 `chassis_control` 发往选定设备的公共 Request Topic，Response 仅关联该设备的原 `requestId`。`sessionId`、`seq`、`leaseMs` 是第 4.3 节的控制会话字段，不能用 `requestId` 替代，也不能跨设备复用控制会话上下文。成功响应不替代新鲜实测反馈。
-
-例如，`demo_chassis_01` 声明并确认 `vehicle_chassis 1.0` 后，接入方即可按本文使用底盘业务；另一台使用公共 Topic 或同名上下电命令的设备仍按它自己的 `deviceId`、能力和原请求处理，不进入本设备的状态或控制会话。
+1. 从 Manifest Topic 取得 `deviceId`，按名称匹配平台支持主版本的 `vehicle_chassis`。
+2. 将该设备的 Manifest 与当前心跳按公共第 7.3 节确认后，使用已确认能力的命令。
+3. 对该 `deviceId` 的 `chassis_status` 按[第 5.1 节](#51-chassis_status)处理；`sync_state` 的完整状态集合与关联规则见[第 4.4 节](#44-sync_state)。
+4. 命令响应按该设备及原 `requestId` 关联。`sessionId`、`seq`、`leaseMs` 是第 4.3 节的控制会话字段，不能用 `requestId` 替代；控制会话上下文按设备分别维护。
 
 ## 4. 命令定义
 
@@ -106,7 +102,7 @@ Manifest Profile 条目固定为：
 
 **接口属性与请求参数**
 
-分类、`params=null` 及有效期见[第 3 节](#3-能力声明与接口总览)；公共 Topic、QoS 和响应信封见公共协议第 2、4 节。
+分类、`params=null` 及有效期见[第 3 节](#3-能力声明与接口总览)。
 
 **响应结果**
 
@@ -121,8 +117,6 @@ Manifest Profile 条目固定为：
 失败与安全边界见[第 7.1 节](#71-业务失败语义)；完整状态见[第 5.1 节](#51-chassis_status)。
 
 **请求和响应示例**
-
-电源开启请求及成功响应示例（只表示命令锁存，不表示真实供电反馈）：
 
 **示例 2：`power_on`（平台 → 设备；完整请求）**
 
@@ -164,7 +158,7 @@ Manifest Profile 条目固定为：
 
 **接口属性与请求参数**
 
-分类、`params=null` 及有效期见[第 3 节](#3-能力声明与接口总览)；公共 Topic、QoS 和响应信封见公共协议第 2、4 节。
+分类、`params=null` 及有效期见[第 3 节](#3-能力声明与接口总览)。
 
 **响应结果**
 
@@ -180,7 +174,7 @@ Manifest Profile 条目固定为：
 
 ### 4.3 `chassis_control`
 
-租约式底盘控制；`code=200` 仅表示设备目标更新或停车请求受理，具体成功边界见下文。
+租约式底盘控制。
 
 #### 4.3.1 接口属性与请求参数
 
@@ -217,11 +211,11 @@ Manifest Profile 条目固定为：
 
 `stop` 先将本地目标归零并请求安全停车，不因有效格式的 `sessionId` 不匹配或 `seq` 未递增而保留非零目标。会话匹配时同时释放会话；不匹配时保留原会话归属，不让请求方抢占控制权。重复 `stop` 安全且幂等。`code=200` 仅表示本地停车请求已受理，不证明车轮已静止。
 
-失败与持续安全规则见[第 7 节](#7-错误与停止原因)。
+持续安全规则见[第 6 节](#6-交互与持续安全规则)，失败语义见[第 7 节](#7-错误与停止原因)。
 
 #### 4.3.4 请求和响应示例
 
-以下完整示例仅使用本节已定义的字段，表示零速会话目标受理，不证明车轮停止。
+以下为零速会话目标请求及响应：
 
 **示例 4：请求和响应示例（平台 → 设备；完整请求）**
 
@@ -283,7 +277,7 @@ Manifest Profile 条目固定为：
 }
 ```
 
-设备随后发布完整 `chassis_status`，并按公共规则关联同一 `requestId`。本 Profile 为单实例，因此不携带 `instanceId`。
+设备随后发布完整 `chassis_status`，并按公共规则关联同一 `requestId`。
 
 ## 5. 完整状态报告
 
@@ -294,8 +288,6 @@ Manifest Profile 条目固定为：
 单实例完整 `state`；Topic、QoS 及启动、重连、同步触发遵循公共协议第 2、5、6 节。
 
 **payload 字段**
-
-`chassis_status` 是完整状态快照，不是增量补丁。公共 Report 字段遵循公共 V4；业务 `payload` 定义如下：
 
 **表 7：chassis_status payload 字段**
 
@@ -331,17 +323,13 @@ Manifest Profile 条目固定为：
 
 **子对象、枚举与新鲜度规则**
 
-`reportReason`、`motionState`、`steeringBoundary` 枚举直接列在字段表，`stopReason` 的数值表见[第 7.2 节](#72-stopreason)。
-
-`lastFault` 与 `transportDiagnostics` 至多出现一个，均为可省略的诊断扩展；接收方不得将其缺失解释为故障已清除或通信正常。发送方须同时满足公共协议的 payload 768 字节及整包 1024 字节上限，计算整包时包含 reportId、requestId 和所有已携带的流字段。预算不足时省略可选诊断，完整状态中的必填字段不得因此缺失；需要详细证据时使用已定义的内部诊断和日志接口；公共状态不保证完整传输历史故障记录。
+发送方须同时满足公共协议的 payload 768 字节及整包 1024 字节上限，计算整包时包含 reportId、requestId 和所有已携带的流字段。预算不足时省略可选诊断，完整状态中的必填字段不得因此缺失。公共状态不保证完整传输历史故障记录。
 
 本 Profile 普通完整状态遵循公共第 5.3 节的接收顺序与去重规则；时间戳、目标值、节点在线或公共心跳均不能替代新鲜的实测反馈。
 
 `safetyReady` 及其组成字段用于状态展示、诊断和操作提示，不构成平台侧 `acquire/renew` 的额外授权门禁。平台可提示设备未就绪，但不得复制 MCU 的安全条件组合来决定是否发送控制请求；设备对请求的实时响应及持续安全裁决为准。
 
 **完整状态示例**
-
-以下示例不包含两个可选诊断字段；仅展示协议已定义的状态字段，不表示运动许可。
 
 **示例 7：`chassis_status`（设备 → 平台；完整报告）**
 
@@ -386,9 +374,9 @@ Manifest Profile 条目固定为：
 
 ### 5.2 可选诊断扩展的线格式
 
-本节定义既有可选诊断字段的表示方式；接入基本上下电、控制、状态与同步不依赖这些字段。两者可同时省略、不得同时出现；省略不表示无故障或通信正常，不发送 `null`。未知 `faultRecordVersion` 的记录可原样保存，不能按版本 1 的位置解释。诊断值不作为当前控制授权或动作完成证据。
+诊断字段省略不表示无故障或通信正常，不发送 `null`。未知 `faultRecordVersion` 的记录可原样保存，不能按版本 1 的位置解释。诊断值不作为当前控制授权或动作完成证据。
 
-`faultRecordVersion=1` 时，`payload.lastFault` 固定包含 29 个 Integer。索引从 0 开始；索引 5～9 为有符号 32 位整数，其余为无符号 32 位整数。未特别注明的原始诊断码没有公共业务枚举，接收方可原样展示或忽略，不需要解析设备内部步骤或厂商协议。
+`faultRecordVersion=1` 时，`payload.lastFault` 固定包含 29 个 Integer。索引从 0 开始；索引 5～9 为有符号 32 位整数，其余为无符号 32 位整数。未特别注明的原始诊断码没有公共业务枚举，接收方可原样展示或忽略。
 
 **表 8：lastFault 版本 1 的数组元素**
 
