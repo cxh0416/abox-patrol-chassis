@@ -12,20 +12,20 @@
 ## 目录
 
 - [1. 范围与引用](#1-范围与引用)
-- [2. 通信约定与 Profile](#2-通信约定与-profile)
-- [3. 能力声明与接口总览](#3-能力声明与接口总览)
-  - [3.1 Profile 声明与接口](#31-profile-声明与接口)
-  - [3.2 业务识别与接入流程](#32-业务识别与接入流程)
+- [2. 通信约定与能力声明](#2-通信约定与能力声明)
+  - [2.1 Profile 声明](#21-profile-声明)
+  - [2.2 接入流程](#22-接入流程)
+- [3. 接口总览与时序约束](#3-接口总览与时序约束)
 - [4. 命令定义](#4-命令定义)
   - [4.1 power_on](#41-power_on)
   - [4.2 power_off](#42-power_off)
   - [4.3 chassis_control](#43-chassis_control)
   - [4.4 sync_state](#44-sync_state)
-- [5. 完整状态报告](#5-完整状态报告)
+- [5. 业务报告](#5-业务报告)
   - [5.1 chassis_status](#51-chassis_status)
   - [5.2 可选诊断扩展的线格式](#52-可选诊断扩展的线格式)
-- [6. 交互与持续安全规则](#6-交互与持续安全规则)
-- [7. 错误与停止原因](#7-错误与停止原因)
+- [6. 交互与异常处理](#6-交互与异常处理)
+- [7. 错误与产品约束](#7-错误与产品约束)
   - [7.1 业务失败语义](#71-业务失败语义)
   - [7.2 stopReason](#72-stopreason)
 
@@ -49,19 +49,17 @@
 | 首次接入与 Manifest 主动获取 | [第 7.5 节](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md#75-平台首次接入与恢复流程) |
 | 公共兼容性 | [第 9 节](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md#9-平台处理与-v4-兼容性) |
 
-## 2. 通信约定与 Profile
+## 2. 通信约定与能力声明
+
+### 2.1 Profile 声明
 
 Profile 名称固定为 `vehicle_chassis`，为单实例能力，不使用 `instanceId`。
 
 本 Profile 中 Number 类型的角度字段统一使用度（°），分辨率为 `0.001°`；数值编码、等价写法及请求摘要遵循公共 V4 第 3.2 节与附录 A。
 
-## 3. 能力声明与接口总览
-
-### 3.1 Profile 声明与接口
-
 Manifest Profile 条目固定为：
 
-**示例 1：能力声明与接口总览（设备 → 平台；Manifest profiles[] 局部片段）**
+**示例 1：Manifest（设备 → 平台；`/zxwl/abox/demo_chassis_01/manifest`；profiles[] 局部片段）**
 
 ```json
 {
@@ -70,19 +68,9 @@ Manifest Profile 条目固定为：
 }
 ```
 
-**表 2：接口分类与有效期**
-
-| 接口 / 匹配条件 | 分类 | params | expiresAt / 最大有效期 |
-|---|---|---|---|
-| `power_on` | DISCRETE_ACTION | null | 必填 / 5 秒 |
-| `power_off` | SAFETY_STOP | null | 可选 |
-| `chassis_control`, action=acquire/renew | CONTINUOUS_SESSION | 第 4.3 节 | 不使用 |
-| `chassis_control`, action=stop | SAFETY_STOP | 第 4.3 节 | 不使用 |
-| `chassis_status` | state，完整状态 | 第 5 节 payload | — |
-
 同一固件固定提供该能力时可以省略 `manifestId`；其他 Manifest 规则遵循公共 V4。
 
-### 3.2 业务识别与接入流程
+### 2.2 接入流程
 
 接入流程遵循公共协议[第 7.5 节](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md#75-平台首次接入与恢复流程)，本产品对应关系如下：
 
@@ -90,6 +78,18 @@ Manifest Profile 条目固定为：
 2. 将该设备的 Manifest 与当前心跳按公共第 7.3 节确认后，使用已确认能力的命令。
 3. 对该 `deviceId` 的 `chassis_status` 按[第 5.1 节](#51-chassis_status)处理；`sync_state` 的完整状态集合与关联规则见[第 4.4 节](#44-sync_state)。
 4. 命令响应按该设备及原 `requestId` 关联。`sessionId`、`seq`、`leaseMs` 是第 4.3 节的控制会话字段，不能用 `requestId` 替代；控制会话上下文按设备分别维护。
+
+## 3. 接口总览与时序约束
+
+**表 2：接口分类与有效期**
+
+| 接口 / 匹配条件 | 分类 | `params` | `expiresAt` / 最大有效期 |
+| --- | --- | --- | --- |
+| `power_on` | `DISCRETE_ACTION` | `null` | 必填 / 5 秒 |
+| `power_off` | `SAFETY_STOP` | `null` | 可选 |
+| `chassis_control`, `action`=`acquire`/`renew` | `CONTINUOUS_SESSION` | 第 4.3 节 | 不使用 |
+| `chassis_control`, `action`=`stop` | `SAFETY_STOP` | 第 4.3 节 | 不使用 |
+| `chassis_status` | `state`，完整状态 | 第 5 节 `payload` | — |
 
 ## 4. 命令定义
 
@@ -100,25 +100,23 @@ Manifest Profile 条目固定为：
 - `code=200` 表示 MCU 电源输出命令已锁存；`result.powerOutputOn`（Boolean）表示当前命令锁存状态；
 - 成功不表示负载端或整车已经真实上电；运动目标仍由 MCU 实时安全条件决定。
 
-**接口属性与请求参数**
+**请求参数**
 
-分类、`params=null` 及有效期见[第 3 节](#3-能力声明与接口总览)。
+分类、`params=null` 及有效期见[第 3 节](#3-接口总览与时序约束)。
 
-**响应结果**
+**响应与执行规则**
 
-**表 3：power_on 响应结果**
+**表 3：`power_on` 响应结果**
 
 | 字段路径 | 类型 | 必填或出现条件 | 约束与说明 |
 | --- | --- | --- | --- |
 | `result.powerOutputOn` | Boolean | 成功结果 | 当前 MCU 电源输出命令锁存状态；本节定义成功边界。 |
 
-**特殊错误与关联报告**
+关联报告：失败与安全边界见[第 7.1 节](#71-业务失败语义)；完整状态见[第 5.1 节](#51-chassis_status)。
 
-失败与安全边界见[第 7.1 节](#71-业务失败语义)；完整状态见[第 5.1 节](#51-chassis_status)。
+**请求与响应示例**
 
-**请求和响应示例**
-
-**示例 2：`power_on`（平台 → 设备；完整请求）**
+**示例 2：`power_on`（平台 → 设备；`/zxwl/abox/demo_chassis_01/request`；完整请求）**
 
 ```json
 {
@@ -133,7 +131,7 @@ Manifest Profile 条目固定为：
 }
 ```
 
-**示例 3：`power_on`（设备 → 平台；完整响应）**
+**示例 3：`power_on`（设备 → 平台；`/zxwl/abox/demo_chassis_01/response`；完整成功响应）**
 
 ```json
 {
@@ -156,34 +154,32 @@ Manifest Profile 条目固定为：
 - `result.powerOutputOn`（Boolean）表示当前命令锁存状态；成功不表示真实断电或车轮已经静止；
 - 本操作为安全停止，允许重复执行。
 
-**接口属性与请求参数**
+**请求参数**
 
-分类、`params=null` 及有效期见[第 3 节](#3-能力声明与接口总览)。
+分类、`params=null` 及有效期见[第 3 节](#3-接口总览与时序约束)。
 
-**响应结果**
+**响应与执行规则**
 
-**表 4：power_off 响应结果**
+**表 4：`power_off` 响应结果**
 
 | 字段路径 | 类型 | 必填或出现条件 | 约束与说明 |
 | --- | --- | --- | --- |
 | `result.powerOutputOn` | Boolean | 成功结果 | 当前 MCU 电源输出命令锁存状态；本节定义成功边界。 |
 
-**特殊错误与关联报告**
-
-失败与安全边界见[第 7.1 节](#71-业务失败语义)；完整状态见[第 5.1 节](#51-chassis_status)。
+关联报告：失败与安全边界见[第 7.1 节](#71-业务失败语义)；完整状态见[第 5.1 节](#51-chassis_status)。
 
 ### 4.3 `chassis_control`
 
 租约式底盘控制。
 
-#### 4.3.1 接口属性与请求参数
+**请求参数**
 
-操作分类及有效期见[第 3 节](#3-能力声明与接口总览)。
+操作分类及有效期见[第 3 节](#3-接口总览与时序约束)。
 
-**表 5：chassis_control 请求参数**
+**表 5：`chassis_control` 请求参数**
 
 | 字段路径 | 类型 | 必填或出现条件 | 约束与说明 |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `params.action` | String | 是 | `acquire` / `renew` / `stop`；建立租约、更新目标并续租，或请求零速并释放会话。 |
 | `params.sessionId` | String | 是 | 1～39 个字符；控制会话标识；不得用 `requestId` 替代。 |
 | `params.seq` | Integer | 是 | `1..4294967295`；会话内序号；`acquire/renew` 必须严格递增；`stop` 不依赖序号递增。 |
@@ -191,11 +187,11 @@ Manifest Profile 条目固定为：
 | `params.driveRpm` | Integer | 是 | rpm；`-500..500`；行走目标；正负方向由产品标定定义，`0` 为零速。 |
 | `params.steeringDeg` | Number | 是 | °；`-30.000..30.000`，精度 `0.001°`；轮胎转向角目标，`0` 为回中。 |
 
-#### 4.3.2 响应结果与成功边界
+**响应与执行规则**
 
 `code=200` 只表示请求通过会话和安全仲裁并更新设备目标，不表示车辆已运动、到位或停止。`data.result` 包含：
 
-**表 6：chassis_control 响应结果**
+**表 6：`chassis_control` 响应结果**
 
 | 字段路径 | 类型 | 约束与说明 |
 | --- | --- | --- |
@@ -203,7 +199,7 @@ Manifest Profile 条目固定为：
 | `result.targetSteeringDeg` | Number | 当前仲裁的转向目标，单位 °；不是实测转角。 |
 | `result.stopReason` | Integer | 当前或最近一次安全停止原因，见第 7.2 节。 |
 
-#### 4.3.3 特殊错误及执行规则
+**执行约束**
 
 非零 `driveRpm` 只有在兼容标定、有效控制会话及 MCU 当前运行安全条件满足时才接受；MCU 对目标是否继续执行作实时安全裁决。无需额外行走许可。
 
@@ -211,13 +207,13 @@ Manifest Profile 条目固定为：
 
 `stop` 先将本地目标归零并请求安全停车，不因有效格式的 `sessionId` 不匹配或 `seq` 未递增而保留非零目标。会话匹配时同时释放会话；不匹配时保留原会话归属，不让请求方抢占控制权。重复 `stop` 安全且幂等。`code=200` 仅表示本地停车请求已受理，不证明车轮已静止。
 
-持续安全规则见[第 6 节](#6-交互与持续安全规则)，失败语义见[第 7 节](#7-错误与停止原因)。
+持续安全规则见[第 6 节](#6-交互与异常处理)，失败语义见[第 7 节](#7-错误与产品约束)。
 
-#### 4.3.4 请求和响应示例
+**请求与响应示例**
 
 以下为零速会话目标请求及响应：
 
-**示例 4：请求和响应示例（平台 → 设备；完整请求）**
+**示例 4：`chassis_control`（平台 → 设备；`/zxwl/abox/demo_chassis_01/request`；完整请求）**
 
 ```json
 {
@@ -238,7 +234,7 @@ Manifest Profile 条目固定为：
 }
 ```
 
-**示例 5：请求和响应示例（设备 → 平台；完整响应）**
+**示例 5：`chassis_control`（设备 → 平台；`/zxwl/abox/demo_chassis_01/response`；完整成功响应）**
 
 ```json
 {
@@ -257,15 +253,13 @@ Manifest Profile 条目固定为：
 }
 ```
 
-**关联报告**
-
-当前目标与实测反馈见[第 5.1 节 `chassis_status`](#51-chassis_status)。
+关联报告：当前目标与实测反馈见[第 5.1 节 `chassis_status`](#51-chassis_status)。
 
 ### 4.4 `sync_state`
 
 `sync_state` 的通用规则由公共 V4 定义。本 Profile 的预期完整状态集合为：
 
-**示例 6：`sync_state`（设备 → 平台；result 局部片段）**
+**示例 6：`sync_state`（设备 → 平台；`/zxwl/abox/demo_chassis_01/response`；result 局部片段）**
 
 ```json
 {
@@ -279,7 +273,7 @@ Manifest Profile 条目固定为：
 
 设备随后发布完整 `chassis_status`，并按公共规则关联同一 `requestId`。
 
-## 5. 完整状态报告
+## 5. 业务报告
 
 ### 5.1 `chassis_status`
 
@@ -287,9 +281,7 @@ Manifest Profile 条目固定为：
 
 单实例完整 `state`；Topic、QoS 及启动、重连、同步触发遵循公共协议第 2、5、6 节。
 
-**payload 字段**
-
-**表 7：chassis_status payload 字段**
+**表 7：`chassis_status` `payload` 字段**
 
 | 字段路径 | 类型 | 约束与说明 |
 | --- | --- | --- |
@@ -329,9 +321,7 @@ Manifest Profile 条目固定为：
 
 `safetyReady` 及其组成字段用于状态展示、诊断和操作提示，不构成平台侧 `acquire/renew` 的额外授权门禁。平台可提示设备未就绪，但不得复制 MCU 的安全条件组合来决定是否发送控制请求；设备对请求的实时响应及持续安全裁决为准。
 
-**完整状态示例**
-
-**示例 7：`chassis_status`（设备 → 平台；完整报告）**
+**示例 7：`chassis_status`（设备 → 平台；`/zxwl/abox/demo_chassis_01/report`；完整报告）**
 
 ```json
 {
@@ -378,7 +368,7 @@ Manifest Profile 条目固定为：
 
 `faultRecordVersion=1` 时，`payload.lastFault` 固定包含 29 个 Integer。索引从 0 开始；索引 5～9 为有符号 32 位整数，其余为无符号 32 位整数。未特别注明的原始诊断码没有公共业务枚举，接收方可原样展示或忽略。
 
-**表 8：lastFault 版本 1 的数组元素**
+**表 8：`lastFault` 版本 1 的数组元素**
 
 | 索引 | 内容 | 单位及取值语义 |
 | --- | --- | --- |
@@ -404,7 +394,7 @@ Manifest Profile 条目固定为：
 
 `payload.transportDiagnostics` 出现时包含下列全部字段，类型均为 Integer，范围均为 `0..4294967295`，不使用 `null`。计数属于设备本次运行，可回绕或在重启后清零，不能跨设备或跨重启直接累加；单个零计数不证明链路正常。
 
-**表 9：transportDiagnostics 子字段**
+**表 9：`transportDiagnostics` 子字段**
 
 | 字段路径 | 单位 | 含义 |
 | --- | --- | --- |
@@ -420,7 +410,7 @@ Manifest Profile 条目固定为：
 | `payload.transportDiagnostics.ecDmaMaxBacklog` | Byte | 接收缓冲积压量的运行期最大观测值 |
 | `payload.transportDiagnostics.ecLineOverflows` | 次 | 接收行缓冲溢出计数 |
 
-## 6. 交互与持续安全规则
+## 6. 交互与异常处理
 
 - MCU 当前安全条件不满足时拒绝控制目标，并在持续执行中请求安全停止；
 - 未标定、反馈过期、双转角偏差超限、节点离线、CAN Bus-Off、驱动故障、OTA 忙或转向配置无效时禁止运动；
@@ -428,7 +418,7 @@ Manifest Profile 条目固定为：
 - 租约超时、连接中断或安全条件失效时进入安全停止；
 - `stop`、`power_off` 或成功响应均不能单独证明机械停止，必须结合新鲜实测反馈判断。
 
-## 7. 错误与停止原因
+## 7. 错误与产品约束
 
 ### 7.1 业务失败语义
 
@@ -436,10 +426,10 @@ Manifest Profile 条目固定为：
 
 ### 7.2 `stopReason`
 
-**表 10：stopReason 停止原因**
+**表 10：`stopReason` 停止原因**
 
 | 值 | 名称 | 含义 |
-|---:|---|---|
+| ---: | --- | --- |
 | `0` | `none` | 无停止原因。 |
 | `1` | `reserved` | 保留值，正式运行不产生；后续编号保持不变。 |
 | `2` | `uncalibrated` | 无可用转向标定。 |
