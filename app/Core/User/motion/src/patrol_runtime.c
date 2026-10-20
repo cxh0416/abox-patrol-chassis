@@ -220,6 +220,26 @@ uint8_t PatrolRuntime_Take(uint32_t now, PatrolCanFrame* request, uint8_t* owner
 
 static uint32_t feedback_due;
 
+/* >>>>> DRIVE-RECOVERY: START >>>>> */
+/* A hot MCU reset leaves the drive controllers in their previous states, which
+ * can still be Operation Enabled. The normal chain then deadlocks: the steering
+ * coordinate and power_ready require the steering disabled and the drive not
+ * enabled, but the executors that would disable them cannot start until
+ * power_ready. Break the deadlock by forcing both nodes pre-operational when
+ * they are enabled, nothing owns the actuators and both executors are idle. */
+static uint8_t recovery_wanted(uint32_t now)
+{
+    const ChassisControl* c = RemoteService_State();
+    if (g_motion.bench.phase != BENCH_IDLE || g_motion.drive.phase != BENCH_IDLE) return 0U;
+    if (c->session_active || g_motion.center_cal.phase != CENTER_CAL_IDLE) return 0U;
+    if ((g_motion.diagnostics.steering_status_word & 0x6FU) == 0x27U &&
+        (int32_t)(now - g_motion.diagnostics.steering_status_ms) <= 250U) return 1U;
+    if ((g_motion.diagnostics.drive_status_word & 0x4FU) == 7U &&
+        (int32_t)(now - g_motion.diagnostics.drive_status_ms) <= 250U) return 1U;
+    return 0U;
+}
+/* <<<<< DRIVE-RECOVERY: END <<<<< */
+
 uint8_t PatrolRuntime_AutoCenterActive(void)
 {
     uint8_t active;
@@ -450,6 +470,25 @@ void PatrolRuntime_Tick(void)
         fault_storage=OTA_Info_SaveMotionFault(&last_fault) ? 1U : 2U;
         fault_dirty=0;
     }
+    /* >>>>> DRIVE-RECOVERY: START >>>>> */
+    if (VehiclePowerOutput_IsOn() && !PatrolRuntimePort_CanBusOffActive() &&
+        PatrolRuntimePort_CanTxReady())
+    {
+        PatrolRuntimePort_Enter();
+        if (recovery_wanted(now)) {
+            PatrolCanFrame rec;
+            uint8_t ok1, ok2;
+            /* The drives ignore NMT pre-operational while in Operation Enabled;
+             * the CiA402 shutdown controlword is what actually releases them. */
+            rec = PatrolCanopen_SdoWrite16(PATROL_CANOPEN_STEERING_NODE, 0x6040U, 0U, 6U);
+            ok1 = PatrolRuntimePort_SendCan(&rec);
+            rec = PatrolCanopen_SdoWrite16(PATROL_CANOPEN_DRIVE_NODE, 0x6040U, 0U, 6U);
+            ok2 = PatrolRuntimePort_SendCan(&rec);
+            APP_LOGI("RECOVER", "shutdown steer=%u drive=%u", (unsigned)ok1, (unsigned)ok2);
+        }
+        PatrolRuntimePort_Exit();
+    }
+    /* <<<<< DRIVE-RECOVERY: END <<<<< */
     if (VehiclePowerOutput_IsOn() && !PatrolRuntimePort_CanBusOffActive() &&
         PatrolRuntimePort_CanTxReady())
     {
