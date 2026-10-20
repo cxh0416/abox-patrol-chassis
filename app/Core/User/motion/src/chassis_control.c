@@ -136,6 +136,10 @@ uint8_t ChassisControl_Apply(ChassisControl* control, const char* action, const 
     } else {
         control->requested_rpm = drive_rpm;
         control->target_rpm = drive_rpm;
+        /* Releasing/changing a pending reverse command cancels it. Retain the
+         * last nonzero direction so a later reversal still confirms zero. */
+        control->reversal_pending = 0U;
+        control->zero_confirmations = 0U;
         if (requested_direction != 0) control->active_direction = requested_direction;
     }
     steering_boundary(control, steering_mdeg, 1U);

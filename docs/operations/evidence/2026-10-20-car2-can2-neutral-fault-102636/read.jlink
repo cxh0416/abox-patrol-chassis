@@ -1,0 +1,12 @@
+device STM32F105RC
+exec InhibitConnectRetries = 1
+exec ForceAttachTarget = 1
+if SWD
+speed 1000
+connect
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-can2-neutral-fault-102636\power.bin", 0x20008428, 0x1
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-can2-neutral-fault-102636\control.bin", 0x200080E0, 0x68
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-can2-neutral-fault-102636\motion.bin", 0x20008530, 0x25C
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-can2-neutral-fault-102636\tick.bin", 0x2000021C, 0x4
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-can2-neutral-fault-102636\last-fault.bin", 0x200084B0, 0x80
+qc

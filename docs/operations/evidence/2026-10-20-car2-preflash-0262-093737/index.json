@@ -1,0 +1,73 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "operation": "Preflash read-only backup, rejected by powered-output gate; no flash performed.",
+  "artifacts": [
+    {
+      "path": "backup.jlink",
+      "sha256": "e862462f5b29808b5f5ae4ce78ba8156a40e7c1296cf7b85f4925e0b52b815a3",
+      "bytes": 1535
+    },
+    {
+      "path": "backup.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "backup.stdout.log",
+      "sha256": "29354ffaab1d4d6159a60a176af86a0ddfe47c14c9db59a5b6d81f5fa7fe68c0",
+      "bytes": 5543
+    },
+    {
+      "path": "boot-before.bin",
+      "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+      "bytes": 32768
+    },
+    {
+      "path": "control-before.bin",
+      "sha256": "f438f45bcbf1ab396d706f56fea484b4945158411111fe6d1660a41acee16534",
+      "bytes": 104
+    },
+    {
+      "path": "motion-before.bin",
+      "sha256": "53e7b298815f33440728e4d92d7370b3de672e3b5c66ed7d4ef0fbcbb73422d8",
+      "bytes": 604
+    },
+    {
+      "path": "power-command-before.bin",
+      "sha256": "4bf5122f344554c53bde2ebb8cd2b7e3d1600ad631c385a5d7cce23c7785459a",
+      "bytes": 1
+    },
+    {
+      "path": "preflight.json",
+      "sha256": "1e74e2dc98afc514f5b0c84a1b94ac1068df0baa555032055f67d34c0c7e5140",
+      "bytes": 1134
+    },
+    {
+      "path": "state-a-before.bin",
+      "sha256": "32a85c505d18c6ea7639e43882a6248625c6b1eae3cf195cf54674f6707c366a",
+      "bytes": 2048
+    },
+    {
+      "path": "state-b-before.bin",
+      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8",
+      "bytes": 2048
+    },
+    {
+      "path": "uid.bin",
+      "sha256": "4d46849cde0edf35dcd65338a472ff614a7193426a4a4b0d712dcc1a29a73f92",
+      "bytes": 12
+    }
+  ],
+  "protected_backups": [
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-20-car2-preflash-0262-093737\\app-region-before.bin",
+      "sha256": "8760e3538fb76db0f6e3e2fbcb0793f4bce1726cbb8cd125ee3acefdec3ca54d",
+      "bytes": 221184
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-20-car2-preflash-0262-093737\\config-before.bin",
+      "sha256": "6f8f8ed12227504c5881147a3488f017d406fd7bd5156b6937dae34a0d74845e",
+      "bytes": 2048
+    }
+  ]
+}

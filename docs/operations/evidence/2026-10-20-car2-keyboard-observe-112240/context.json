@@ -1,0 +1,7 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.63",
+  "app_sha256": "7DD0B02296020CF477D9D36C8E1DA782AA5DA430DF3CC022430E66D1E9E606E5",
+  "boundary": "Read-only memory observation. No halt, reset, load, erase, write or motion commands. Sequential samples are not a motion permit or physical observation.",
+  "sample_limit": 32
+}

@@ -1,0 +1,15 @@
+device STM32F105RC
+exec InhibitConnectRetries = 1
+exec ForceAttachTarget = 1
+if SWD
+speed 1000
+connect
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-install-0262-094818\runtime-second-power.bin", 0x20008418, 0x1
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-install-0262-094818\runtime-second-control.bin", 0x200080D0, 0x68
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-install-0262-094818\runtime-second-motion.bin", 0x20008520, 0x25C
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-install-0262-094818\runtime-second-tick.bin", 0x2000021C, 0x4
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-install-0262-094818\runtime-second-state-a.bin", 0x0803E800, 0x800
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-install-0262-094818\runtime-second-state-b.bin", 0x0803F000, 0x800
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\out\flash\2026-10-20-car2-install-0262-094818\runtime-second-ota-context.bin", 0x2000BC54, 0x3C0
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-install-0262-094818\runtime-second-cloud-ready.bin", 0x2000448A, 0x3
+qc

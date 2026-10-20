@@ -1,0 +1,112 @@
+CAR2 keyboard hardware test: 500 rpm / 30 degrees.
+R: reset previous latch while off. P: power on.
+Wait at least 5 seconds and flags=0x07, then tap E to arm.
+Steering already confirmed. Test W then release, wait for 0 rpm, then S and release.
+To finish normally: SPACE, wait 2 seconds, then O. ESC exits.
+Evidence: E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-keyboard-field-111637
+Selected CAR2: recorded steering center=-1463, absolute center=0
+Profile selection does not identify the connected car or verify startup coordinates.
+MCU flags=0x0A reason=13 age=254ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+CAN2 MCU control. P=power on, E=arm at neutral, WASD=move, SPACE=stop/disarm,
+O=power off, R=reset fault while off, ESC=stop/off/exit. Focus loss stops/disarms.
+Start with wheels lifted and hardware E-stop available. Limits: 500 rpm / 30.0 deg.
+MCU flags=0x0A reason=13 age=257ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=262ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=253ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=260ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=262ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=254ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=258ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=265ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=253ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=260ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=264ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=254ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=257ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=268ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=252ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=259ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=269ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=254ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=260ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=270ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=254ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=260ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=271ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=257ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=265ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=267ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=255ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=265ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=252ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=254ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=267ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=271ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=257ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=262ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=270ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=258ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=264ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=271ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=259ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=266ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=271ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=259ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=269ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=254ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=262ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=267ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=251ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=262ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=267ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=253ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=259ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=270ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=256ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=264ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=268ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=256ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=264ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=269ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=258ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=263ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=268ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=259ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=263ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=262ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=270ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=257ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=262ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=271ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=256ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=264ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=270ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=254ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=261ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=253ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=256ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=263ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=251ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=257ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=267ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=270ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=261ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=267ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=271ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=257ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=267ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=251ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=257ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=267ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=255ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=258ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=266ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=255ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=261ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=269ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=254ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=263ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=266ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+MCU flags=0x0A reason=13 age=256ms wheel L/R=0/0 rpm steer/encoder=-2.40/0.02 deg
+CAN2 control stopped: MCU rejected command: MCU safety gate (code 2)
+Keyboard session ended, code: 1

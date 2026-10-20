@@ -1,0 +1,49 @@
+{
+  "artifacts": [
+    {
+      "path": "control.bin",
+      "bytes": 104,
+      "sha256": "fc5b21c9a18d20df8d861931c38b497ff6e6541c4d544c0f29ee2290e6935fc8"
+    },
+    {
+      "path": "decoded.json",
+      "bytes": 577,
+      "sha256": "a442750ae492045a641fea367171b7cb677b236e65b8c866a4b19fcdae5adf15"
+    },
+    {
+      "path": "last-fault.bin",
+      "bytes": 128,
+      "sha256": "13b4af8203aad152258a883c181b71db4ecb0be4c2622a1b7bdd3a0c3616eee1"
+    },
+    {
+      "path": "motion.bin",
+      "bytes": 604,
+      "sha256": "f70aa1f61f3f4f49df993746a0e72dfce50acd81a0d4df8f6dbb13a4e3ab043e"
+    },
+    {
+      "path": "power.bin",
+      "bytes": 1,
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d"
+    },
+    {
+      "path": "read.jlink",
+      "bytes": 944,
+      "sha256": "bea64aa0698a1cb5b3a7583a05cb9a91db8b0bfb5620c2de02410843738b4a2a"
+    },
+    {
+      "path": "stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "stdout.log",
+      "bytes": 4022,
+      "sha256": "669703245933b5484e94c886cbb1e1887881be7e98b6ad8dd3f8545c886f1769"
+    },
+    {
+      "path": "tick.bin",
+      "bytes": 4,
+      "sha256": "bf5ee6e17dee1fe8d8d01141c0dfcf58abf15122432f476133ef8514362a4b71"
+    }
+  ]
+}

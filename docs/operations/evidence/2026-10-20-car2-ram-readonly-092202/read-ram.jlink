@@ -1,0 +1,15 @@
+device STM32F105RC
+if SWD
+speed 4000
+connect
+mem32 0xE000EDF0, 1
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-ram-readonly-092202\motion.bin", 0x20008520, 0x25C
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-ram-readonly-092202\control.bin", 0x200080D0, 0x68
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-ram-readonly-092202\tick.bin", 0x2000021C, 0x4
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-ram-readonly-092202\power_command.bin", 0x20008418, 0x1
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-ram-readonly-092202\busoff_mask.bin", 0x20008791, 0x1
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-ram-readonly-092202\raw_rx_counts.bin", 0x20008794, 0x8
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-ram-readonly-092202\fault.bin", 0x200084A0, 0x80
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-ram-readonly-092202\current_app.bin", 0x08008000, 0x24428
+mem32 0xE000EDF0, 1
+qc

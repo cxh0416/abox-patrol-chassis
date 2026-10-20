@@ -1,0 +1,37 @@
+{
+  "result": "NOT_FLASHED_POWER_COMMAND_ON",
+  "checks": {
+    "power_command_off": false,
+    "no_control_session": true,
+    "no_enable_request": true,
+    "ota_idle": true,
+    "calibration_idle_or_done": true,
+    "steering_executor_idle": true
+  },
+  "boot_state_before": [
+    {
+      "file": "state-a-before.bin",
+      "valid": true,
+      "sequence": 1,
+      "state": 4,
+      "image_size": 148520,
+      "image_crc32": "30D8E899",
+      "image_version": "patrol-chassis-0.2.61",
+      "stable_slot": 0,
+      "candidate_slot": 0
+    },
+    {
+      "file": "state-b-before.bin",
+      "valid": false
+    }
+  ],
+  "app_version_before": "patrol-chassis-0.2.61",
+  "app_prefix_sha256": "3990b87dc261692e429cd807327b8221cf81a238ea4adc615e124645d63e67b6",
+  "frozen_boot_sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+  "uid_words": [
+    "05D3FF34",
+    "3733574E",
+    "43043550"
+  ],
+  "boundary": "Read-only backup; no halt/reset/run/load/erase/write commands. Output is commanded ON; physical contactor state not measured. Flash has not been attempted."
+}

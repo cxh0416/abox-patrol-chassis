@@ -1,0 +1,11 @@
+device STM32F105RC
+if SWD
+speed 4000
+connect
+mem32 0xE000EDF0, 1
+mem32 0xE000ED08, 1
+mem32 0x40006400, 8
+mem32 0x40006800, 8
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-swd-readonly-090620\app-region.bin", 0x08008000, 0x36000
+mem32 0xE000EDF0, 1
+qc

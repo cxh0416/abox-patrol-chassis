@@ -1,0 +1,11 @@
+device STM32F105RC
+if SWD
+speed 4000
+connect
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-after-center-093417\motion.bin", 0x20008520, 0x25C
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-after-center-093417\control.bin", 0x200080D0, 0x68
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-after-center-093417\tick.bin", 0x2000021C, 0x4
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-after-center-093417\power_command.bin", 0x20008418, 0x1
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-after-center-093417\current_app.bin", 0x08008000, 0x24428
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\out\flash\2026-10-20-car2-after-center-093417\config-page.bin", 0x0803F800, 0x800
+qc

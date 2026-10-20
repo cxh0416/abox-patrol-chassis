@@ -31,8 +31,67 @@ static void advance(BenchSteering* b, uint32_t* now)
     }
     *now+=10;
 }
+static void initial_limits(BenchSteering* b, int32_t low, int32_t high)
+{
+    PatrolCanFrame f,r;
+    BenchSteering_Tick(b,0,1,1,0,0);
+    assert(BenchSteering_Take(b,0,&f) && f.id==0);
+    assert(BenchSteering_Take(b,1,&f) && b->index==0x201A && b->read);
+    r=reply(b,low); assert(BenchSteering_OnFrame(b,&r,2));
+    assert(BenchSteering_Take(b,3,&f) && b->index==0x2019 && b->read);
+    r=reply(b,high); assert(BenchSteering_OnFrame(b,&r,4));
+}
+static void zero_limit_bootstrap(void)
+{
+    BenchSteering b; PatrolCanFrame f,r;
+    BenchSteering_Init(&b);
+    assert(BenchSteering_Start(&b,-1463,-1463,-1463,30000,0));
+    initial_limits(&b,0,0);
+    assert(b.phase==BENCH_PREPARING && b.fault==0);
+    assert(b.minimum==-84142 && b.maximum==81216 && !b.limits_aligned);
+    for (uint32_t t=5;t<9;t++) {
+        assert(BenchSteering_Take(&b,t,&f));
+        assert(f.id==0x601 && (b.index==0x201A || b.index==0x2019));
+        r=reply(&b,b.expected); assert(BenchSteering_OnFrame(&b,&r,t));
+    }
+    assert(b.limits_aligned && b.cached_minimum==-84142 && b.cached_maximum==81216);
+    /* A disappearing pair in a live epoch is not permission to re-anchor. */
+    b.phase=BENCH_IDLE;
+    assert(BenchSteering_Start(&b,-1463,-1463,-1463,30000,0));
+    initial_limits(&b,0,0);
+    assert(b.phase==BENCH_FAULT && b.fault==8 && b.cut_power);
+
+    /* Commissioning keeps its original envelope, including rejecting zero. */
+    BenchSteering_Init(&b);
+    assert(BenchSteering_StartCommissioning(&b,-1463,-1463,60000,0));
+    initial_limits(&b,0,0);
+    assert(b.phase==BENCH_FAULT && b.fault==8);
+    assert(!BenchSteering_Take(&b,5,&f));
+
+    for (int kind=0;kind<3;kind++) {
+        BenchSteering_Init(&b);
+        assert(BenchSteering_Start(&b,-1463,-1463,-1463,30000,0));
+        initial_limits(&b,kind==0?123:kind==1?100:0,kind==0?123:kind==1?-100:-1);
+        assert(b.phase==BENCH_FAULT && b.fault==8);
+    }
+    /* An ACK is insufficient; mismatched limit readback cannot reach enable. */
+    BenchSteering_Init(&b);
+    assert(BenchSteering_Start(&b,-1463,-1463,-1463,30000,0));
+    initial_limits(&b,0,0);
+    assert(BenchSteering_Take(&b,5,&f) && !b.read);
+    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,6));
+    assert(BenchSteering_Take(&b,7,&f) && b.read);
+    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,8));
+    assert(b.phase==BENCH_FAULT && b.fault==10 && b.cut_power);
+
+    BenchSteering_Init(&b);
+    assert(BenchSteering_Start(&b,-1463,-1463,-1463,30000,0));
+    BenchSteering_Tick(&b,0,1,0,0,0);
+    assert(b.phase==BENCH_FAULT && !BenchSteering_Take(&b,1,&f));
+}
 int main(void)
 {
+    zero_limit_bootstrap();
     SteeringCoordinate coordinate;
     BenchSteering b; PatrolCanFrame f,r; uint32_t now=0; int32_t target;
     SteeringCoordinate_Reset(&coordinate);

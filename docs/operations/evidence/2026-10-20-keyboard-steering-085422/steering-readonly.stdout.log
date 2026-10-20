@@ -1,0 +1,25 @@
+Direction mapping (WASD):
+  [space]      brake
+  a            left             speed=  +0 rpm  steer=-30.0 deg
+  a+s          backward+left    speed=-500 rpm  steer=-30.0 deg
+  a+w          forward+left     speed=+500 rpm  steer=-30.0 deg
+  d            right            speed=  +0 rpm  steer=+30.0 deg
+  d+s          backward+right   speed=-500 rpm  steer=+30.0 deg
+  d+w          forward+right    speed=+500 rpm  steer=+30.0 deg
+  s            backward         speed=-500 rpm  steer= +0.0 deg
+  w            forward          speed=+500 rpm  steer= +0.0 deg
+
+[steer diag] Node 1 SDO reads only; values describe this snapshot.
+  0x6040 controlword        ERROR SDO read timeout
+  0x6041 statusword         ERROR SDO read timeout
+  0x6060 requested_mode     ERROR SDO read timeout
+  0x6061 displayed_mode     ERROR SDO read timeout
+  0x6064 actual_position    ERROR SDO read timeout
+  0x607A target_position    ERROR SDO read timeout
+  0x201A minimum_limit      ERROR SDO read timeout
+  0x2019 maximum_limit      ERROR SDO read timeout
+  0x6080 maximum_speed      ERROR SDO read timeout
+  0x6081 profile_speed      ERROR SDO read timeout
+  0x603F error_code         ERROR SDO read timeout
+  0x1001 error_register     ERROR SDO read timeout
+  A stopped script normally leaves Node 1 disabled; this alone is not a fault.

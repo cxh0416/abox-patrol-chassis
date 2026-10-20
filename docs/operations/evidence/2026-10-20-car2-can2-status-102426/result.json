@@ -1,0 +1,19 @@
+{
+  "mode": "QUERY only; no motion/power/arm command",
+  "product": "patrol_vehicle_chassis",
+  "success": true,
+  "feedback": {
+    "sequence": 5887,
+    "flags": 2,
+    "reason": 5,
+    "age_ms": 254,
+    "steering_mdeg": 540,
+    "encoder_mdeg": 0,
+    "steering_online": false,
+    "drive_online": false,
+    "left_rpm": 0,
+    "right_rpm": 0,
+    "reversing": false,
+    "enabled": false
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "original_index_preserved": "c6fd6c303d12504972a833a5893e4a81fa87d82152fbc2fff4ca10bde46e83dc",
+  "added_artifact": {
+    "path": "voltage-correction.json",
+    "sha256": "3cfb1b605a3c5c4309a66512c0485a65ce7eaff23d0a852c87fd81892b42205a",
+    "bytes": 559
+  }
+}

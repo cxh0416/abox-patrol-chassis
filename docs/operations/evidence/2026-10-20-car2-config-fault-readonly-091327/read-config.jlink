@@ -1,0 +1,6 @@
+device STM32F105RC
+if SWD
+speed 4000
+connect
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\out\flash\2026-10-20-car2-config-fault-readonly-091327\config-page.bin", 0x0803F800, 0x800
+qc

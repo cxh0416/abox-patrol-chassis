@@ -1,0 +1,14 @@
+{
+  "artifacts": [
+    {
+      "path": "frames.jsonl",
+      "bytes": 47811,
+      "sha256": "226cf7624916e262bfe057f15e2ef777579450f352718d2ccd96ccf9bee361dd"
+    },
+    {
+      "path": "result.json",
+      "bytes": 48469,
+      "sha256": "e81f31fa3ff6962b85cb71c9e2f3c5377d5ea9840707979ba3433ab882f152bd"
+    }
+  ]
+}

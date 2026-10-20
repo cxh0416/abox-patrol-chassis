@@ -54,6 +54,9 @@ endif()
 # <<<<< CAR-PROFILE: END <<<<<
 # >>>>> CAN2-GATEWAY: START >>>>>
 option(PATROL_CHASSIS_CAN2_GATEWAY_ENABLED "Bridge CAN2<->CAN1 for offline bench remote control" OFF)
+if(PATROL_CHASSIS_CAN2_GATEWAY_ENABLED)
+    message(FATAL_ERROR "Transparent CAN2 gateway bypasses motion arbitration; use the CAN2 keyboard command service")
+endif()
 # <<<<< CAN2-GATEWAY: END <<<<<
 option(PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED "Allow read-only CANopen and encoder polling" ON)
 option(PATROL_CHASSIS_POWER_OUTPUT_ENABLED "Allow the confirmed PA0 vehicle relay-supply output" ON)

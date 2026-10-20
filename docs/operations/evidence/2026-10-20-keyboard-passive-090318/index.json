@@ -1,0 +1,39 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "started_at": "2026-10-20T09:03:18.552454+08:00",
+  "command": [
+    "D:\\Anaconda-3\\python.exe",
+    "E:\\1_work\\ChassisCar_test\\chassis_can_remote_monitor.py",
+    "--channel",
+    "1",
+    "--dll",
+    "E:\\canalyst-II-Driver\\CAN\\二次开发库文件\\x64(64bit)\\ControlCAN.dll",
+    "--duration",
+    "3",
+    "--label",
+    "CANalyst-channel2-wiring-unverified",
+    "--log",
+    "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-20-keyboard-passive-090318\\passive.jsonl"
+  ],
+  "exit_code": 0,
+  "script_sha256": "3deba39e0f13a622d53cbf7e68dcfcc141b424cfea2aa0224538d226badc7a8c",
+  "operation": "VCI listen-only Mode=1 capture; no CAN transmit API bound or called.",
+  "artifacts": [
+    {
+      "path": "passive.jsonl",
+      "sha256": "bfb69b43ae9273df27a450a87e881f9813c0005a0982647d5c5e27bedab48bad",
+      "bytes": 273
+    },
+    {
+      "path": "passive.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "passive.stdout.log",
+      "sha256": "60cd24621560835e09a746f6e07e7c4d090192ca494ac332ff6b3bae6a430e0a",
+      "bytes": 1195
+    }
+  ],
+  "boundary": "Physical wiring not verified. Capture only; not proof of node, mechanical or power state."
+}

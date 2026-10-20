@@ -1,0 +1,16 @@
+patrol_vehicle_chassis | LISTEN-ONLY / Mode=1 | CANalyst-channel2-wiring-unverified
+Adapter channel 2 (index 1), 500 kbps. Ctrl+C to exit.
+No motor-control interface. No NMT, SDO, parameter writes or automatic homing.
+Candidate layouts: XLSX 11A=axes,11B=E/G/H/F/A/B/C/D; reference 10B=axes,10A=switches.
+Axis words are tentative s16/u16 little-endian views; XLSX X1 bit31/sign/ranges conflict.
+CAN2 parallel capture proves bus traffic only; separate CAN1 capture can check gateway forwarding.
+CAN freshness cannot establish RF-link health; test handset-off/failsafe separately.
+[CAN summary; recent traffic does not establish RF-link health]
+  Candidate standard-data IDs not seen: 0x10A, 0x10B, 0x11A, 0x11B
+  No CAN frames received; check wiring, bitrate, power and ACK node.
+[CAN summary; recent traffic does not establish RF-link health]
+  Candidate standard-data IDs not seen: 0x10A, 0x10B, 0x11A, 0x11B
+  No CAN frames received; check wiring, bitrate, power and ACK node.
+[CAN summary; recent traffic does not establish RF-link health]
+  Candidate standard-data IDs not seen: 0x10A, 0x10B, 0x11A, 0x11B
+  No CAN frames received; check wiring, bitrate, power and ACK node.

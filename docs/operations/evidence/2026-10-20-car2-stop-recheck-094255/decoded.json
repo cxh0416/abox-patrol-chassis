@@ -1,0 +1,7 @@
+{
+  "result": "READ_FAILED_TARGET_DAP_UNAVAILABLE",
+  "operation": "Pre-install state recheck requested read/save commands only; no load/erase/write/halt/reset/run commands in submitted script.",
+  "observed": "VTref approximately 0.004 V; failed DAP connection, no RAM/Flash data collected.",
+  "tool_side_effect_boundary": "J-Link automatically tried connect-under-reset and reset-pin fallback after attach failure. Do not describe this session as having no reset attempts. No firmware write commands were submitted or reached.",
+  "next_action": "Restore/confirm MCU/probe target supply and SWD connection; keep vehicle power output disabled. Do not retry attachment until target connection is confirmed."
+}

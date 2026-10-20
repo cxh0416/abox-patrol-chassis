@@ -1,0 +1,25 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "artifacts": [
+    {
+      "path": "decoded.json",
+      "bytes": 718,
+      "sha256": "c828daeb448539781bd998fa1a87fd3fd22a1554292066ac7591115ac9601172"
+    },
+    {
+      "path": "readonly.jlink",
+      "bytes": 853,
+      "sha256": "d4b7cd677bb4055fc3125d5e1e22b8c826deddb42e3ba7e999227574b52c69c1"
+    },
+    {
+      "path": "stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "stdout.log",
+      "bytes": 1754,
+      "sha256": "b54acbd0c54f0561956ed74a4cc2de8363f8a824712c20427ff13cd7afde8bdf"
+    }
+  ]
+}

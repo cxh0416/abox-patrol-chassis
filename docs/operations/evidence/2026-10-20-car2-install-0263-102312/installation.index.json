@@ -1,0 +1,181 @@
+{
+  "artifacts": [
+    {
+      "path": "app-readback.bin",
+      "sha256": "7dd0b02296020cf477d9d36c8e1da782aa5da430df3cc022430e66d1e9e606e5",
+      "bytes": 149936
+    },
+    {
+      "path": "backup.jlink",
+      "sha256": "8166510f6c39f53327e19de0ee4111eb1e90d4cb9175c78167c1f38204c1783e",
+      "bytes": 1732
+    },
+    {
+      "path": "backup.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "backup.stdout.log",
+      "sha256": "6b1d34d0c31a63374bb0a5ec9ac78971a8f85ef28b469337d75b1a15e3437085",
+      "bytes": 5964
+    },
+    {
+      "path": "boot-after.bin",
+      "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+      "bytes": 32768
+    },
+    {
+      "path": "boot-before.bin",
+      "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+      "bytes": 32768
+    },
+    {
+      "path": "control-before.bin",
+      "sha256": "8f4abc4e3115bb8ba71a25cdd6fc0dc6fda88682c56d4c17bdd6c283f452dbd9",
+      "bytes": 104
+    },
+    {
+      "path": "control-halted.bin",
+      "sha256": "dcd39251be6ff37cdae5c942ef6931ebc090f6c212ef19aa0e6aec1a19d9c682",
+      "bytes": 104
+    },
+    {
+      "path": "halt-and-guard.jlink",
+      "sha256": "c02817926d212b5106199fa7975e58a6c0428cc509a9f71c96bd9e72941a53e5",
+      "bytes": 614
+    },
+    {
+      "path": "halt-and-guard.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "halt-and-guard.stdout.log",
+      "sha256": "4201d5e2a90cf07dc66206e00e2cc32d20ba0f5da310ff04344ddb975cdc4cee",
+      "bytes": 3733
+    },
+    {
+      "path": "motion-before.bin",
+      "sha256": "b63c3fda3a7030524671fac6259ee99f69f3f0e799d637b527210a60033c313e",
+      "bytes": 604
+    },
+    {
+      "path": "motion-halted.bin",
+      "sha256": "81a2fd0c19384d059e2cfe70ce75b9ca7a9f3b2360a346d39609da07a0051e18",
+      "bytes": 604
+    },
+    {
+      "path": "power-before.bin",
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "bytes": 1
+    },
+    {
+      "path": "power-halted.bin",
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "bytes": 1
+    },
+    {
+      "path": "preflight.json",
+      "sha256": "6b49c4af3295d26710ed2bad4d954ab761f0405481df56ecdb53c876a6479d9a",
+      "bytes": 1108
+    },
+    {
+      "path": "program-and-verify.jlink",
+      "sha256": "46e05c8229a9e68d4a8c7053ff99c61ba6197599d125201057519c8a6c06ac8d",
+      "bytes": 1684
+    },
+    {
+      "path": "program-and-verify.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "program-and-verify.stdout.log",
+      "sha256": "a70418a1ba1ab98bc2510a601d77b00ab56fb33806834337c98a2e592c77ce98",
+      "bytes": 9452
+    },
+    {
+      "path": "program-result.json",
+      "sha256": "f1950446136a7129931cc9e8d59cac384a63c3bcc85466b91be750b206b2b684",
+      "bytes": 509
+    },
+    {
+      "path": "restart.jlink",
+      "sha256": "8f1bfe019c5a0fdb91dbf3a0f93b005010b8666cefcaacef1bed62ce49e2d54a",
+      "bytes": 119
+    },
+    {
+      "path": "restart.json",
+      "sha256": "33a411c7d25bec7b97278ae55dfa98fa3d18997cb433bc000470a104281fc049",
+      "bytes": 76
+    },
+    {
+      "path": "restart.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "restart.stdout.log",
+      "sha256": "9b83f3aa4e2e144ec8ee534ef209ceecb80e592b5c7d9095ac7db08aba726a2f",
+      "bytes": 2258
+    },
+    {
+      "path": "state-a-before.bin",
+      "sha256": "3182b8831285a67e1dfc4663ed3231b56015d820646d027781051bfc91c21474",
+      "bytes": 2048
+    },
+    {
+      "path": "state-a-installed.bin",
+      "sha256": "004d536c2aaa4eea696e47602a253bf839a0370dcf786d246ad15b84596985b4",
+      "bytes": 2048
+    },
+    {
+      "path": "state-a-readback.bin",
+      "sha256": "004d536c2aaa4eea696e47602a253bf839a0370dcf786d246ad15b84596985b4",
+      "bytes": 2048
+    },
+    {
+      "path": "state-b-after.bin",
+      "sha256": "0465bb0f72acd7512cacdc615de4eec002b609b22ef7f1b43d4be2afb33dc61e",
+      "bytes": 2048
+    },
+    {
+      "path": "state-b-before.bin",
+      "sha256": "0465bb0f72acd7512cacdc615de4eec002b609b22ef7f1b43d4be2afb33dc61e",
+      "bytes": 2048
+    },
+    {
+      "path": "uid.bin",
+      "sha256": "4d46849cde0edf35dcd65338a472ff614a7193426a4a4b0d712dcc1a29a73f92",
+      "bytes": 12
+    }
+  ],
+  "protected_backups": [
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-20-car2-install-0263-102312\\app-region-before.bin",
+      "sha256": "3e4238436ee38856b2ec676d5a5fecab4a6c98689104977b3faf0a0f97ec8c06",
+      "bytes": 221184
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-20-car2-install-0263-102312\\config-after-halted.bin",
+      "sha256": "6f8f8ed12227504c5881147a3488f017d406fd7bd5156b6937dae34a0d74845e",
+      "bytes": 2048
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-20-car2-install-0263-102312\\config-before.bin",
+      "sha256": "6f8f8ed12227504c5881147a3488f017d406fd7bd5156b6937dae34a0d74845e",
+      "bytes": 2048
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-20-car2-install-0263-102312\\recovery-after-halted.bin",
+      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8",
+      "bytes": 2048
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-20-car2-install-0263-102312\\recovery-before.bin",
+      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8",
+      "bytes": 2048
+    }
+  ]
+}

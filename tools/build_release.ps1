@@ -110,6 +110,8 @@ try {
         $appDefinitions += "-DPATROL_STEERING_EXECUTOR_ENABLED=$(if ($steeringCompiled) { 'ON' } else { 'OFF' })"
         $appDefinitions += "-DPATROL_DRIVE_EXECUTOR_ENABLED=$(if ($driveCompiled) { 'ON' } else { 'OFF' })"
         $app = Invoke-TargetBuild 'app' 'Patrol_Vehicle_Chassis_App' "ABoxUnified$Configuration-$version" $appDefinitions $credentialBuildRoot
+        & python (Join-Path $PSScriptRoot 'verify_can2_stack.py') (Split-Path -Parent $app.elf)
+        if ($LASTEXITCODE -ne 0) { throw 'CAN2 owner stack validation failed; dist was not replaced.' }
         $appUsage = Get-Usage $app.elf
         if ($BenchSteering) {
             & python (Join-Path $PSScriptRoot 'verify_bench_stack.py') (Split-Path -Parent $app.elf)

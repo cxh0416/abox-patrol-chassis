@@ -1,0 +1,29 @@
+{
+  "artifacts": [
+    {
+      "path": "context.json",
+      "bytes": 364,
+      "sha256": "0c168e50b5dbba72d31134689c789e51657847743e181590d7fd8a630617fa6b"
+    },
+    {
+      "path": "observe.jlink",
+      "bytes": 28673,
+      "sha256": "26b07671afdd7b0ffc5443046db2b811468e44f8b68522baed454f893cd11ace"
+    },
+    {
+      "path": "samples.jsonl",
+      "bytes": 35911,
+      "sha256": "f78062c96c83d12ed4be25b4a2aa1e8be4be08de91461887a4ca12efbc984c5e"
+    },
+    {
+      "path": "stdout.log",
+      "bytes": 223139,
+      "sha256": "7e3dd8b3565c5d2851c4f04aa0713ab07486034d109355fd512acaf1ae489183"
+    },
+    {
+      "path": "summary.json",
+      "bytes": 298,
+      "sha256": "e7819a301a78e86517503a545bb028cd4ea8a06ab60facce5ff16cfd4395a231"
+    }
+  ]
+}

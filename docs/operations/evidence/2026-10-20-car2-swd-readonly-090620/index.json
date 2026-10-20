@@ -1,0 +1,29 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "started_at": "2026-10-20T09:06:20.282785+08:00",
+  "exit_code": 0,
+  "operation": "Read-only SWD connection, DHCSR/VTOR/CAN register reads and App region savebin; no halt/reset/run, erase, load or write command issued.",
+  "artifacts": [
+    {
+      "path": "app-region.bin",
+      "sha256": "8760e3538fb76db0f6e3e2fbcb0793f4bce1726cbb8cd125ee3acefdec3ca54d",
+      "bytes": 221184
+    },
+    {
+      "path": "jlink.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "jlink.stdout.log",
+      "sha256": "a0eb3b4e5c6bd01694380f73090ed78728ec77d6436ff69017058d99a994b77e",
+      "bytes": 2731
+    },
+    {
+      "path": "read-app.jlink",
+      "sha256": "b6a3a2d08f1e0558da0163111634f172fe804553bbf45ffc6374e3402aca81e1",
+      "bytes": 324
+    }
+  ],
+  "boundary": "Target connection may have debugger side effects; do not infer mechanical state from firmware or register readback."
+}

@@ -408,7 +408,15 @@ uint8_t BenchSteering_OnFrame(BenchSteering *b, const PatrolCanFrame *f, uint32_
                 b->step = STEER_STEP_WRITE_MODE;
                 return 1;
             }
-            if (b->previous_minimum >= value ||
+            /* A driver with both RAM limits at zero has no usable envelope.
+             * Normal arming already requires a calibrated, stationary runtime
+             * coordinate and fresh cross-checked feedback. Bootstrap that one
+             * known empty pair through the same bounded write/readback path.
+             * Commissioning above must continue to preserve existing limits;
+             * an uncalibrated provisional origin cannot define new limits.
+             * Cached limits below still reject an unexpected live epoch loss. */
+            if ((b->previous_minimum >= value &&
+                 (b->previous_minimum != 0 || value != 0)) ||
                 !SteeringAngle_ToControllerCount(-BENCH_STEERING_ENVELOPE_MDEG, b->center,
                                                  VEHICLE_STEERING_COUNTS_MILLI, VEHICLE_STEERING_DIRECTION,
                                                  INT32_MIN, INT32_MAX, &envelope_low) ||

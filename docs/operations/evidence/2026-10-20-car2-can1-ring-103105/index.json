@@ -1,0 +1,29 @@
+{
+  "artifacts": [
+    {
+      "path": "decoded.json",
+      "bytes": 4449,
+      "sha256": "8e34850d5b4f43ac161dcb3b9cbc5fa7a362447872ec5000c549b97c382dbe29"
+    },
+    {
+      "path": "queue.bin",
+      "bytes": 1408,
+      "sha256": "d80919caaffc66e0f1391422b924747a756ebe828c9b7ae2151ac38e6bf143b7"
+    },
+    {
+      "path": "read.jlink",
+      "bytes": 269,
+      "sha256": "6108e20d4a911d1394c16929febe49995c534d7865669763c11c0a58ddbde717"
+    },
+    {
+      "path": "stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "stdout.log",
+      "bytes": 2383,
+      "sha256": "ffc9c84fad816714d4773b3aa34da50f0726b83b2d7d7d4600174c9153f176af"
+    }
+  ]
+}

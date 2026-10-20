@@ -1,0 +1,60 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "started_at": "2026-10-20T09:34:17.020443+08:00",
+  "operation": "Read-only SWD verification after user operated center calibration; no halt/reset/run/write/erase/load commands.",
+  "artifacts": [
+    {
+      "path": "control.bin",
+      "sha256": "34c9461cdf4805463154e1a4d6a9bda20a552bc15577f22882e17398c204d58d",
+      "bytes": 104
+    },
+    {
+      "path": "current_app.bin",
+      "sha256": "3990b87dc261692e429cd807327b8221cf81a238ea4adc615e124645d63e67b6",
+      "bytes": 148520
+    },
+    {
+      "path": "decoded.json",
+      "sha256": "5dabdcd99dad2a17d064225f12093ee2aa0240c60f3c4a9b3969909cc467b379",
+      "bytes": 2466
+    },
+    {
+      "path": "jlink.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "jlink.stdout.log",
+      "sha256": "581e404dd9ee3407284ed52dbea668ffbbcae0b9bb62951e08bb2137b020f4ff",
+      "bytes": 4275
+    },
+    {
+      "path": "motion.bin",
+      "sha256": "f6e4894e08f9bfd283b6a02bb61c99e44a5220c7efa947301202e404776473b9",
+      "bytes": 604
+    },
+    {
+      "path": "power_command.bin",
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "bytes": 1
+    },
+    {
+      "path": "read-results.jlink",
+      "sha256": "590e7047495b37bc588cd81e1d7cf8b4db57328eb9b48667917ad819bed1dd4f",
+      "bytes": 1011
+    },
+    {
+      "path": "tick.bin",
+      "sha256": "be053a3dfa2894534279a0ea69762d3f6b3a98187302cd02bab54d1321853122",
+      "bytes": 4
+    }
+  ],
+  "protected_backups": [
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-20-car2-after-center-093417\\config-page.bin",
+      "sha256": "6f8f8ed12227504c5881147a3488f017d406fd7bd5156b6937dae34a0d74845e",
+      "bytes": 2048
+    }
+  ],
+  "boundary": "Device RAM/Flash outcome only. Platform authenticated operation-history API returned 401; no server operation record was read. Sequential RAM snapshot is not a motion permit."
+}

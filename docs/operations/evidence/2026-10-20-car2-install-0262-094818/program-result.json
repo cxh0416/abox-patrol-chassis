@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-10-20T09:49:22.747701+08:00",
+  "version": "patrol-chassis-0.2.62",
+  "app_sha256": "AB9244C91D98A7F287057B15420C1753A0C9A127C403CBFEA1F438776C0FD362",
+  "boot_state_sequence": 2,
+  "verification": {
+    "app_byte_equal": true,
+    "state_a_byte_equal": true,
+    "boot_unchanged": true,
+    "state_b_unchanged": true,
+    "config_unchanged": true,
+    "config_recovery_unchanged": true
+  },
+  "all_passed": true,
+  "target_state": "HALTED; restart requires all verification passed",
+  "boundary": "Only App and Boot State A programmed; no motion command sent. This does not prove successful runtime, actual wheel motion, power contacts or OTA."
+}

@@ -12,6 +12,7 @@
 #include "abox_mqtt_digest.h"
 #include "patrol_config.h"
 #include "vehicle_power_output.h"
+#include "center_calibration.h"
 #include <stdlib.h>
 #include "FreeRTOS.h"
 #include "task.h"
@@ -132,6 +133,25 @@ void RemoteService_SafetyTick(uint32_t now_ms)
 void RemoteService_UpdateFeedback(const ChassisFeedback* feedback)
 {
     if (g_remote_initialized && feedback != 0) ChassisControl_SetFeedback(&g_control, feedback);
+}
+
+uint8_t RemoteService_ApplyLocal(const char* action, const char* session_id,
+    uint32_t seq, uint32_t lease_ms, int16_t rpm, int32_t steering_mdeg, uint32_t now_ms)
+{
+    uint8_t accepted = 0U;
+    if (!g_remote_initialized || action == NULL || session_id == NULL || !session_id[0]) return 0U;
+    taskENTER_CRITICAL();
+    if (!strcmp(action, "stop")) {
+        accepted = ChassisControl_Apply(&g_control, action, session_id, seq, lease_ms,
+                                        rpm, steering_mdeg, now_ms);
+    } else if (!CenterCalibration_IsActive() &&
+               (!g_control.session_active || !strcmp(g_control.session_id, session_id)) &&
+               ChassisControl_SafetyReady(&g_control, now_ms)) {
+        accepted = ChassisControl_Apply(&g_control, action, session_id, seq, lease_ms,
+                                        rpm, steering_mdeg, now_ms);
+    }
+    taskEXIT_CRITICAL();
+    return accepted;
 }
 
 uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* response, uint16_t size)

@@ -1,0 +1,188 @@
+{"at": 54134.859, "direction": "TX", "id": 1312, "hex": "0100f7e800000000", "accepted_by_adapter": true}
+{"at": 54134.859, "direction": "RX", "id": 1313, "hex": "0100f7e802050001"}
+{"at": 54134.859, "direction": "RX", "id": 1314, "hex": "f7e81c0200000000"}
+{"at": 54134.859, "direction": "RX", "id": 1315, "hex": "f7e8000000000000"}
+{"at": 54134.859, "direction": "TX", "id": 1312, "hex": "0105f8e800000000", "accepted_by_adapter": true}
+{"at": 54134.859, "direction": "RX", "id": 1313, "hex": "0100f8e803050201"}
+{"at": 54134.859, "direction": "RX", "id": 1314, "hex": "f8e81c0200000000"}
+{"at": 54134.859, "direction": "RX", "id": 1315, "hex": "f8e8000000000000"}
+{"at": 54134.859, "direction": "TX", "id": 1312, "hex": "0100f9e800000000", "accepted_by_adapter": true}
+{"at": 54134.859, "direction": "RX", "id": 1313, "hex": "0100f9e803050301"}
+{"at": 54134.859, "direction": "RX", "id": 1314, "hex": "f9e81c0200000000"}
+{"at": 54134.859, "direction": "RX", "id": 1315, "hex": "f9e8000000000000"}
+{"at": 54134.968, "direction": "TX", "id": 1312, "hex": "0100fae800000000", "accepted_by_adapter": true}
+{"at": 54134.968, "direction": "RX", "id": 1313, "hex": "0100fae803050501"}
+{"at": 54134.968, "direction": "RX", "id": 1314, "hex": "fae81c0200000000"}
+{"at": 54134.968, "direction": "RX", "id": 1315, "hex": "fae8000000000000"}
+{"at": 54135.062, "direction": "TX", "id": 1312, "hex": "0100fbe800000000", "accepted_by_adapter": true}
+{"at": 54135.062, "direction": "RX", "id": 1313, "hex": "0100fbe803050701"}
+{"at": 54135.078, "direction": "RX", "id": 1314, "hex": "fbe81c0200000000"}
+{"at": 54135.078, "direction": "RX", "id": 1315, "hex": "fbe8000000000000"}
+{"at": 54135.171, "direction": "TX", "id": 1312, "hex": "0100fce800000000", "accepted_by_adapter": true}
+{"at": 54135.171, "direction": "RX", "id": 1313, "hex": "0100fce803050901"}
+{"at": 54135.171, "direction": "RX", "id": 1314, "hex": "fce81c0200000000"}
+{"at": 54135.171, "direction": "RX", "id": 1315, "hex": "fce8000000000000"}
+{"at": 54135.265, "direction": "TX", "id": 1312, "hex": "0100fde800000000", "accepted_by_adapter": true}
+{"at": 54135.281, "direction": "RX", "id": 1313, "hex": "0100fde803050b01"}
+{"at": 54135.281, "direction": "RX", "id": 1314, "hex": "fde81c0200000000"}
+{"at": 54135.281, "direction": "RX", "id": 1315, "hex": "fde8000000000000"}
+{"at": 54135.375, "direction": "TX", "id": 1312, "hex": "0100fee800000000", "accepted_by_adapter": true}
+{"at": 54135.375, "direction": "RX", "id": 1313, "hex": "0100fee803050e01"}
+{"at": 54135.375, "direction": "RX", "id": 1314, "hex": "fee81c0200000000"}
+{"at": 54135.375, "direction": "RX", "id": 1315, "hex": "fee8000000000000"}
+{"at": 54135.484, "direction": "TX", "id": 1312, "hex": "0100ffe800000000", "accepted_by_adapter": true}
+{"at": 54135.484, "direction": "RX", "id": 1313, "hex": "0100ffe80305fc00"}
+{"at": 54135.484, "direction": "RX", "id": 1314, "hex": "ffe81c0200000001"}
+{"at": 54135.484, "direction": "RX", "id": 1315, "hex": "ffe8000000000000"}
+{"at": 54135.578, "direction": "TX", "id": 1312, "hex": "010000e900000000", "accepted_by_adapter": true}
+{"at": 54135.578, "direction": "RX", "id": 1313, "hex": "010000e90303fe00"}
+{"at": 54135.578, "direction": "RX", "id": 1314, "hex": "00e91c0200000101"}
+{"at": 54135.578, "direction": "RX", "id": 1315, "hex": "00e9000000000000"}
+{"at": 54135.687, "direction": "TX", "id": 1312, "hex": "010001e900000000", "accepted_by_adapter": true}
+{"at": 54135.687, "direction": "RX", "id": 1313, "hex": "010001e90303ff00"}
+{"at": 54135.687, "direction": "RX", "id": 1314, "hex": "01e91c0200000101"}
+{"at": 54135.687, "direction": "RX", "id": 1315, "hex": "01e9000000000000"}
+{"at": 54135.781, "direction": "TX", "id": 1312, "hex": "010002e900000000", "accepted_by_adapter": true}
+{"at": 54135.781, "direction": "RX", "id": 1313, "hex": "010002e903070201"}
+{"at": 54135.781, "direction": "RX", "id": 1314, "hex": "02e91c0200000101"}
+{"at": 54135.781, "direction": "RX", "id": 1315, "hex": "02e9000000000000"}
+{"at": 54135.89, "direction": "TX", "id": 1312, "hex": "010003e900000000", "accepted_by_adapter": true}
+{"at": 54135.89, "direction": "RX", "id": 1313, "hex": "010003e903070401"}
+{"at": 54135.89, "direction": "RX", "id": 1314, "hex": "03e91c0212000101"}
+{"at": 54135.89, "direction": "RX", "id": 1315, "hex": "03e9000000000000"}
+{"at": 54135.984, "direction": "TX", "id": 1312, "hex": "010004e900000000", "accepted_by_adapter": true}
+{"at": 54135.984, "direction": "RX", "id": 1313, "hex": "010004e903070601"}
+{"at": 54135.984, "direction": "RX", "id": 1314, "hex": "04e91c0212000101"}
+{"at": 54135.984, "direction": "RX", "id": 1315, "hex": "04e9000000000000"}
+{"at": 54136.093, "direction": "TX", "id": 1312, "hex": "010005e900000000", "accepted_by_adapter": true}
+{"at": 54136.093, "direction": "RX", "id": 1313, "hex": "010005e903070701"}
+{"at": 54136.093, "direction": "RX", "id": 1314, "hex": "05e91c0212000101"}
+{"at": 54136.093, "direction": "RX", "id": 1315, "hex": "05e9000000000000"}
+{"at": 54136.187, "direction": "TX", "id": 1312, "hex": "010006e900000000", "accepted_by_adapter": true}
+{"at": 54136.187, "direction": "RX", "id": 1313, "hex": "010006e903070001"}
+{"at": 54136.187, "direction": "RX", "id": 1314, "hex": "06e91c0212000101"}
+{"at": 54136.187, "direction": "RX", "id": 1315, "hex": "06e9000000000000"}
+{"at": 54136.296, "direction": "TX", "id": 1312, "hex": "010007e900000000", "accepted_by_adapter": true}
+{"at": 54136.296, "direction": "RX", "id": 1313, "hex": "010007e903070201"}
+{"at": 54136.296, "direction": "RX", "id": 1314, "hex": "07e91c0212000101"}
+{"at": 54136.296, "direction": "RX", "id": 1315, "hex": "07e9000000000000"}
+{"at": 54136.39, "direction": "TX", "id": 1312, "hex": "010008e900000000", "accepted_by_adapter": true}
+{"at": 54136.39, "direction": "RX", "id": 1313, "hex": "010008e903070401"}
+{"at": 54136.39, "direction": "RX", "id": 1314, "hex": "08e91c0212000101"}
+{"at": 54136.39, "direction": "RX", "id": 1315, "hex": "08e9000000000000"}
+{"at": 54136.5, "direction": "TX", "id": 1312, "hex": "010009e900000000", "accepted_by_adapter": true}
+{"at": 54136.5, "direction": "RX", "id": 1313, "hex": "010009e903070601"}
+{"at": 54136.5, "direction": "RX", "id": 1314, "hex": "09e91c0212000101"}
+{"at": 54136.5, "direction": "RX", "id": 1315, "hex": "09e9000000000000"}
+{"at": 54136.593, "direction": "TX", "id": 1312, "hex": "01000ae900000000", "accepted_by_adapter": true}
+{"at": 54136.593, "direction": "RX", "id": 1313, "hex": "01000ae903070801"}
+{"at": 54136.593, "direction": "RX", "id": 1314, "hex": "0ae91c0212000101"}
+{"at": 54136.593, "direction": "RX", "id": 1315, "hex": "0ae9000000000000"}
+{"at": 54136.703, "direction": "TX", "id": 1312, "hex": "01000be900000000", "accepted_by_adapter": true}
+{"at": 54136.703, "direction": "RX", "id": 1313, "hex": "01000be903070a01"}
+{"at": 54136.703, "direction": "RX", "id": 1314, "hex": "0be91c0212000101"}
+{"at": 54136.703, "direction": "RX", "id": 1315, "hex": "0be9000000000000"}
+{"at": 54136.796, "direction": "TX", "id": 1312, "hex": "01000ce900000000", "accepted_by_adapter": true}
+{"at": 54136.812, "direction": "RX", "id": 1313, "hex": "01000ce903030c01"}
+{"at": 54136.812, "direction": "RX", "id": 1314, "hex": "0ce91c0212000101"}
+{"at": 54136.812, "direction": "RX", "id": 1315, "hex": "0ce9000000000000"}
+{"at": 54136.906, "direction": "TX", "id": 1312, "hex": "01000de900000000", "accepted_by_adapter": true}
+{"at": 54136.906, "direction": "RX", "id": 1313, "hex": "01000de903030e01"}
+{"at": 54136.906, "direction": "RX", "id": 1314, "hex": "0de91c0212000101"}
+{"at": 54136.906, "direction": "RX", "id": 1315, "hex": "0de9000000000000"}
+{"at": 54137.0, "direction": "TX", "id": 1312, "hex": "01000ee900000000", "accepted_by_adapter": true}
+{"at": 54137.015, "direction": "RX", "id": 1313, "hex": "01000ee903092b00"}
+{"at": 54137.015, "direction": "RX", "id": 1314, "hex": "0ee9000012000101"}
+{"at": 54137.015, "direction": "RX", "id": 1315, "hex": "0ee9000000000000"}
+{"at": 54137.109, "direction": "TX", "id": 1312, "hex": "01000fe900000000", "accepted_by_adapter": true}
+{"at": 54137.109, "direction": "RX", "id": 1313, "hex": "01000fe903093400"}
+{"at": 54137.109, "direction": "RX", "id": 1314, "hex": "0fe9000012000101"}
+{"at": 54137.109, "direction": "RX", "id": 1315, "hex": "0fe9000000000000"}
+{"at": 54137.218, "direction": "TX", "id": 1312, "hex": "010010e900000000", "accepted_by_adapter": true}
+{"at": 54137.218, "direction": "RX", "id": 1313, "hex": "010010e903098800"}
+{"at": 54137.218, "direction": "RX", "id": 1314, "hex": "10e9000012000101"}
+{"at": 54137.218, "direction": "RX", "id": 1315, "hex": "10e9000000000000"}
+{"at": 54137.312, "direction": "TX", "id": 1312, "hex": "010011e900000000", "accepted_by_adapter": true}
+{"at": 54137.312, "direction": "RX", "id": 1313, "hex": "010011e907097e00"}
+{"at": 54137.312, "direction": "RX", "id": 1314, "hex": "11e9120012000101"}
+{"at": 54137.312, "direction": "RX", "id": 1315, "hex": "11e9000000000000"}
+{"at": 54137.312, "direction": "TX", "id": 1312, "hex": "010112e900000000", "accepted_by_adapter": true}
+{"at": 54137.312, "direction": "RX", "id": 1313, "hex": "010012e937008000"}
+{"at": 54137.312, "direction": "RX", "id": 1314, "hex": "12e9120012000101"}
+{"at": 54137.312, "direction": "RX", "id": 1315, "hex": "12e9000000000001"}
+{"at": 54137.312, "direction": "TX", "id": 1312, "hex": "010213e900000000", "accepted_by_adapter": true}
+{"at": 54137.312, "direction": "RX", "id": 1313, "hex": "010013e937008200"}
+{"at": 54137.312, "direction": "RX", "id": 1314, "hex": "13e9120012000101"}
+{"at": 54137.312, "direction": "RX", "id": 1315, "hex": "13e9000000000001"}
+{"at": 54137.375, "direction": "TX", "id": 1312, "hex": "010214e900000000", "accepted_by_adapter": true}
+{"at": 54137.375, "direction": "RX", "id": 1313, "hex": "010014e937004700"}
+{"at": 54137.375, "direction": "RX", "id": 1314, "hex": "14e9120012000101"}
+{"at": 54137.375, "direction": "RX", "id": 1315, "hex": "14e9000000000001"}
+{"at": 54137.421, "direction": "TX", "id": 1312, "hex": "010215e900000000", "accepted_by_adapter": true}
+{"at": 54137.421, "direction": "RX", "id": 1313, "hex": "010015e937007b00"}
+{"at": 54137.421, "direction": "RX", "id": 1314, "hex": "15e9120012000101"}
+{"at": 54137.421, "direction": "RX", "id": 1315, "hex": "15e9000000000001"}
+{"at": 54137.468, "direction": "TX", "id": 1312, "hex": "010216e900000000", "accepted_by_adapter": true}
+{"at": 54137.468, "direction": "RX", "id": 1313, "hex": "010016e937006900"}
+{"at": 54137.468, "direction": "RX", "id": 1314, "hex": "16e9120012000101"}
+{"at": 54137.468, "direction": "RX", "id": 1315, "hex": "16e9000000000001"}
+{"at": 54137.531, "direction": "TX", "id": 1312, "hex": "010217e900000000", "accepted_by_adapter": true}
+{"at": 54137.531, "direction": "RX", "id": 1313, "hex": "010017e937007400"}
+{"at": 54137.531, "direction": "RX", "id": 1314, "hex": "17e9120012000101"}
+{"at": 54137.531, "direction": "RX", "id": 1315, "hex": "17e9000000000001"}
+{"at": 54137.578, "direction": "TX", "id": 1312, "hex": "010218e900000000", "accepted_by_adapter": true}
+{"at": 54137.578, "direction": "RX", "id": 1313, "hex": "010018e937005900"}
+{"at": 54137.578, "direction": "RX", "id": 1314, "hex": "18e9120012000101"}
+{"at": 54137.578, "direction": "RX", "id": 1315, "hex": "18e9000000000001"}
+{"at": 54137.625, "direction": "TX", "id": 1312, "hex": "010219e900000000", "accepted_by_adapter": true}
+{"at": 54137.625, "direction": "RX", "id": 1313, "hex": "010019e937006d00"}
+{"at": 54137.625, "direction": "RX", "id": 1314, "hex": "19e9120012000101"}
+{"at": 54137.625, "direction": "RX", "id": 1315, "hex": "19e9000000000001"}
+{"at": 54137.687, "direction": "TX", "id": 1312, "hex": "01021ae900000000", "accepted_by_adapter": true}
+{"at": 54137.687, "direction": "RX", "id": 1313, "hex": "01001ae937003500"}
+{"at": 54137.687, "direction": "RX", "id": 1314, "hex": "1ae9120012000101"}
+{"at": 54137.687, "direction": "RX", "id": 1315, "hex": "1ae9000000000001"}
+{"at": 54137.734, "direction": "TX", "id": 1312, "hex": "01021be900000000", "accepted_by_adapter": true}
+{"at": 54137.734, "direction": "RX", "id": 1313, "hex": "01001be937006600"}
+{"at": 54137.734, "direction": "RX", "id": 1314, "hex": "1be9120012000101"}
+{"at": 54137.734, "direction": "RX", "id": 1315, "hex": "1be9000000000001"}
+{"at": 54137.781, "direction": "TX", "id": 1312, "hex": "01021ce900000000", "accepted_by_adapter": true}
+{"at": 54137.781, "direction": "RX", "id": 1313, "hex": "01001ce937006100"}
+{"at": 54137.781, "direction": "RX", "id": 1314, "hex": "1ce9120012000101"}
+{"at": 54137.781, "direction": "RX", "id": 1315, "hex": "1ce9000000000001"}
+{"at": 54137.843, "direction": "TX", "id": 1312, "hex": "01021de900000000", "accepted_by_adapter": true}
+{"at": 54137.843, "direction": "RX", "id": 1313, "hex": "01001de937006000"}
+{"at": 54137.843, "direction": "RX", "id": 1314, "hex": "1de9120012000101"}
+{"at": 54137.843, "direction": "RX", "id": 1315, "hex": "1de9000000000001"}
+{"at": 54137.89, "direction": "TX", "id": 1312, "hex": "01021ee900000000", "accepted_by_adapter": true}
+{"at": 54137.89, "direction": "RX", "id": 1313, "hex": "01001ee937005200"}
+{"at": 54137.89, "direction": "RX", "id": 1314, "hex": "1ee9120012000101"}
+{"at": 54137.89, "direction": "RX", "id": 1315, "hex": "1ee9000000000001"}
+{"at": 54137.937, "direction": "TX", "id": 1312, "hex": "01021fe900000000", "accepted_by_adapter": true}
+{"at": 54137.937, "direction": "RX", "id": 1313, "hex": "01001fe937005e00"}
+{"at": 54137.937, "direction": "RX", "id": 1314, "hex": "1fe9120012000101"}
+{"at": 54137.937, "direction": "RX", "id": 1315, "hex": "1fe9000000000001"}
+{"at": 54138.0, "direction": "TX", "id": 1312, "hex": "010220e900000000", "accepted_by_adapter": true}
+{"at": 54138.0, "direction": "RX", "id": 1313, "hex": "010020e937005600"}
+{"at": 54138.0, "direction": "RX", "id": 1314, "hex": "20e9120012000101"}
+{"at": 54138.0, "direction": "RX", "id": 1315, "hex": "20e9000000000001"}
+{"at": 54138.046, "direction": "TX", "id": 1312, "hex": "010221e900000000", "accepted_by_adapter": true}
+{"at": 54138.046, "direction": "RX", "id": 1313, "hex": "010021e937005200"}
+{"at": 54138.046, "direction": "RX", "id": 1314, "hex": "21e9120012000101"}
+{"at": 54138.046, "direction": "RX", "id": 1315, "hex": "21e9000000000001"}
+{"at": 54138.093, "direction": "TX", "id": 1312, "hex": "010222e900000000", "accepted_by_adapter": true}
+{"at": 54138.093, "direction": "RX", "id": 1313, "hex": "010022e937005a00"}
+{"at": 54138.093, "direction": "RX", "id": 1314, "hex": "22e9120012000101"}
+{"at": 54138.093, "direction": "RX", "id": 1315, "hex": "22e9000000000001"}
+{"at": 54138.156, "direction": "TX", "id": 1312, "hex": "010223e900000000", "accepted_by_adapter": true}
+{"at": 54138.156, "direction": "RX", "id": 1313, "hex": "010023e937004b00"}
+{"at": 54138.156, "direction": "RX", "id": 1314, "hex": "23e9150012000101"}
+{"at": 54138.156, "direction": "RX", "id": 1315, "hex": "23e9000000000001"}
+{"at": 54138.203, "direction": "TX", "id": 1312, "hex": "010224e900000000", "accepted_by_adapter": true}
+{"at": 54138.203, "direction": "RX", "id": 1313, "hex": "010024e937007f00"}
+{"at": 54138.203, "direction": "RX", "id": 1314, "hex": "24e9360012000101"}
+{"at": 54138.203, "direction": "RX", "id": 1315, "hex": "24e9000000000001"}
+{"at": 54138.25, "direction": "TX", "id": 1312, "hex": "010225e900000000", "accepted_by_adapter": true}
+{"at": 54138.25, "direction": "RX", "id": 1313, "hex": "010525e90a0d5600"}
+{"at": 54138.25, "direction": "TX", "id": 1312, "hex": "010326e900000000", "accepted_by_adapter": true}
+{"at": 54138.25, "direction": "TX", "id": 1312, "hex": "010427e900000000", "accepted_by_adapter": true}

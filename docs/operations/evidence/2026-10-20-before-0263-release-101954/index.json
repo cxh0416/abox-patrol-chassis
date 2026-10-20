@@ -1,0 +1,30 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "scope": "Previous complete formal .62 package before atomic .63 replacement",
+  "files": [
+    {
+      "original": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\dist\\ABox_Boot.bin",
+      "archived": "ABox_Boot.bin",
+      "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+      "bytes": 32768
+    },
+    {
+      "original": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\dist\\Patrol_Vehicle_Chassis_App.bin",
+      "archived": "Patrol_Vehicle_Chassis_App.bin",
+      "sha256": "ab9244c91d98a7f287057b15420c1753a0c9a127c403cbfea1f438776c0fd362",
+      "bytes": 148520
+    },
+    {
+      "original": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\dist\\Patrol_Vehicle_Chassis_Full.bin",
+      "archived": "Patrol_Vehicle_Chassis_Full.bin",
+      "sha256": "1500245adee9f8d9c5ec654922f0b40a5018fd2a49716b88ebc61db2fafc2a75",
+      "bytes": 181288
+    },
+    {
+      "original": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\dist\\release.manifest.json",
+      "archived": "release.manifest.json",
+      "sha256": "42bd9221aada5845aeec3b4068a502663ba2733ab78e7f69c6f766c68cb80607",
+      "bytes": 2344
+    }
+  ]
+}

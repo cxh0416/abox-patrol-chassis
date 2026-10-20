@@ -1,0 +1,30 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "started_at": "2026-10-19T18:37:29.346093+08:00",
+  "purpose": "Read Node 1 after keyboard remote stopped; diagnose equal zero steering limits.",
+  "command": [
+    "D:\\Anaconda-3\\python.exe",
+    "E:\\1_work\\ChassisCar_test\\chassis_offline_remote.py",
+    "--channel",
+    "1",
+    "--dll",
+    "E:\\canalyst-II-Driver\\CAN\\二次开发库文件\\x64(64bit)\\ControlCAN.dll",
+    "--diagnose-steering"
+  ],
+  "exit_code": 0,
+  "script_sha256": "29acaa881ff006fc01505595faaba63d09354966e585256978b8df052c5cac9b",
+  "operation": "12 Node 1 SDO upload requests only; no NMT, download, enable, target, parameter write or flashing.",
+  "artifacts": [
+    {
+      "path": "steering-readonly.stdout.log",
+      "sha256": "11cb44f92a1c09d95464899ed77f0164a9c8b5a4f9f213195c3ce96c36f942c0",
+      "bytes": 1441
+    },
+    {
+      "path": "steering-readonly.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "boundary": "Post-stop snapshot. No motion command or physical movement verification. Position is not a calibrated mechanical center."
+}

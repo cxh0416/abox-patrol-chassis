@@ -3,6 +3,7 @@
 #include "center_calibration.h"
 #include "patrol_runtime_port.h"
 #include "patrol_can_recovery.h"
+#include "patrol_can_remote.h"
 
 #include <string.h>
 
@@ -118,6 +119,7 @@ static void patrol_start_can(void)
 void PatrolRtos_Init(void)
 {
     PatrolRuntime_Init();
+    PatrolCanRemote_Init();
     g_can_rx_queue = xQueueCreateStatic(PATROL_CAN_RX_QUEUE_LENGTH,
                                          sizeof(PatrolCanFrame_t),
                                          (uint8_t *)g_can_rx_queue_storage,
@@ -268,6 +270,8 @@ static void Patrol_SafetyControlTask(void *argument)
         VehiclePowerPort_Poll(HAL_GetTick());
         taskENTER_CRITICAL();
         RemoteService_SafetyTick(HAL_GetTick());
+        PatrolCanRemote_Tick(HAL_GetTick(),
+            (uint8_t)((hcan2.Instance->ESR & CAN_ESR_BOFF) == 0U));
         taskEXIT_CRITICAL();
         xEventGroupSetBits(g_health_events, PATROL_HEALTH_SAFETY);
         vTaskDelayUntil(&last_wake, pdMS_TO_TICKS(10U));
@@ -302,6 +306,7 @@ static void Patrol_CanRxTask(void *argument)
 {
     PatrolCanFrame_t frame;
     PatrolCanFrame decoded;
+    PatrolCanFrame replies[3];
     (void)argument;
     patrol_start_can();
     for (;;)
@@ -314,15 +319,36 @@ static void Patrol_CanRxTask(void *argument)
             patrol_can_gateway_forward(&frame);
 #endif
 /* <<<<< CAN2-GATEWAY: END <<<<< */
-            if (frame.bus != 0U || frame.header.IDE != CAN_ID_STD || frame.header.RTR != CAN_RTR_DATA)
+            if (frame.header.IDE != CAN_ID_STD || frame.header.RTR != CAN_RTR_DATA ||
+                frame.header.DLC > 8U)
                 continue;
             memset(&decoded, 0, sizeof(decoded));
             decoded.id = (uint16_t)frame.header.StdId;
             decoded.dlc = (uint8_t)frame.header.DLC;
             memcpy(decoded.data, frame.data, sizeof(decoded.data));
             taskENTER_CRITICAL();
-            PatrolRuntime_OnCanFrame(&decoded, frame.timestamp_ms);
+            if (frame.bus == 1U)
+                PatrolCanRemote_OnFrame(&decoded, frame.timestamp_ms, HAL_GetTick());
+            else
+                PatrolRuntime_OnCanFrame(&decoded, frame.timestamp_ms);
             taskEXIT_CRITICAL();
+        }
+        taskENTER_CRITICAL();
+        uint8_t reply = PatrolCanRemote_TakeReply(replies, HAL_GetTick());
+        taskEXIT_CRITICAL();
+        if (reply) {
+            for (unsigned i=0;i<3;i++) {
+                CAN_TxHeaderTypeDef header={0};
+                uint32_t mailbox;
+                header.StdId=replies[i].id; header.IDE=CAN_ID_STD;
+                header.RTR=CAN_RTR_DATA; header.DLC=replies[i].dlc;
+                if (HAL_CAN_AddTxMessage(&hcan2,&header,replies[i].data,&mailbox)!=HAL_OK) {
+                    taskENTER_CRITICAL();
+                    PatrolCanRemote_Tick(HAL_GetTick(),0U);
+                    taskEXIT_CRITICAL();
+                    break;
+                }
+            }
         }
         xEventGroupSetBits(g_health_events, PATROL_HEALTH_CAN_RX);
     }

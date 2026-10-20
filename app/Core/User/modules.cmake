@@ -14,6 +14,7 @@ set(PATROL_PRODUCT_SOURCES
     Core/User/cloud/src/cloud_protocol.c
     Core/User/cloud/src/chassis_cloud_protocol.c
     Core/User/motion/src/chassis_control.c
+    Core/User/motion/src/patrol_can_remote.c
     Core/User/motion/src/patrol_auto_center.c
     Core/User/common/src/fixed_point.c
     Core/User/mqtt/src/mqtt_core_adapter.c

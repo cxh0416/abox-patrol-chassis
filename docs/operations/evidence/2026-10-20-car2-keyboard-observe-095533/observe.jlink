@@ -1,0 +1,13 @@
+device STM32F105RC
+exec InhibitConnectRetries = 1
+exec ForceAttachTarget = 1
+if SWD
+speed 1000
+connect
+mem8 0x2000021C 0x4
+mem8 0x200080D0 0x68
+mem8 0x20008520 0x25C
+mem8 0x20008418 0x1
+mem8 0x2000021C 0x4
+sleep 500
+qc
