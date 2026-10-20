@@ -4,6 +4,7 @@
 #include "patrol_runtime_port.h"
 #include "patrol_can_recovery.h"
 #include "patrol_can_remote.h"
+#include "patrol_phy_remote.h"
 
 #include <string.h>
 
@@ -120,6 +121,7 @@ void PatrolRtos_Init(void)
 {
     PatrolRuntime_Init();
     PatrolCanRemote_Init();
+    PatrolPhyRemote_Init();
     g_can_rx_queue = xQueueCreateStatic(PATROL_CAN_RX_QUEUE_LENGTH,
                                          sizeof(PatrolCanFrame_t),
                                          (uint8_t *)g_can_rx_queue_storage,
@@ -272,6 +274,10 @@ static void Patrol_SafetyControlTask(void *argument)
         RemoteService_SafetyTick(HAL_GetTick());
         PatrolCanRemote_Tick(HAL_GetTick(),
             (uint8_t)((hcan2.Instance->ESR & CAN_ESR_BOFF) == 0U));
+        /* >>>>> PHY-REMOTE: START >>>>> */
+        PatrolPhyRemote_Tick(HAL_GetTick(),
+            (uint8_t)((hcan2.Instance->ESR & CAN_ESR_BOFF) == 0U));
+        /* <<<<< PHY-REMOTE: END <<<<< */
         taskEXIT_CRITICAL();
         xEventGroupSetBits(g_health_events, PATROL_HEALTH_SAFETY);
         vTaskDelayUntil(&last_wake, pdMS_TO_TICKS(10U));
@@ -327,10 +333,17 @@ static void Patrol_CanRxTask(void *argument)
             decoded.dlc = (uint8_t)frame.header.DLC;
             memcpy(decoded.data, frame.data, sizeof(decoded.data));
             taskENTER_CRITICAL();
-            if (frame.bus == 1U)
-                PatrolCanRemote_OnFrame(&decoded, frame.timestamp_ms, HAL_GetTick());
-            else
+            if (frame.bus == 1U) {
+                /* >>>>> PHY-REMOTE: START >>>>> */
+                /* Handset receiver (0x10A/0x10B) is wired to CAN2; check it
+                 * before the CAN2 keyboard command service (0x520). */
+                if (!PatrolPhyRemote_OnFrame(&decoded, frame.timestamp_ms, HAL_GetTick())) {
+                    PatrolCanRemote_OnFrame(&decoded, frame.timestamp_ms, HAL_GetTick());
+                }
+                /* <<<<< PHY-REMOTE: END <<<<< */
+            } else {
                 PatrolRuntime_OnCanFrame(&decoded, frame.timestamp_ms);
+            }
             taskEXIT_CRITICAL();
         }
         taskENTER_CRITICAL();
