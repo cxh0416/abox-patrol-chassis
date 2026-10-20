@@ -1,0 +1,271 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "created_at": "2026-10-20T18:11:26.508055+08:00",
+  "version": "patrol-chassis-0.2.64",
+  "release_kind": "candidate",
+  "user_authorization": "Implement and flash B brake; keep existing hot-reset recovery design. Operator then confirmed A off, sticks released and vehicle stopped.",
+  "uid": "34ffd3054e57333750350443",
+  "program_result": "program-result.json",
+  "runtime_result": "runtime-final.json",
+  "flash_plan": "flash-plan.json",
+  "build": {
+    "directory": "build/Release",
+    "configuration": "Release",
+    "app_matches_candidate": true,
+    "arm_build": "success; ninja no work to do",
+    "targeted_host_tests": "test_drive_brake_runtime and test_can_remote passed again",
+    "stack_check": "tools/verify_can2_stack.py build/Release passed all 7 chains",
+    "known_existing_static_failure": "test_identity_and_safe_defaults; user confirmed existing recovery design is intentional; test retained",
+    "formal_dist": "unchanged patrol-chassis-0.2.63"
+  },
+  "physical_motion_verified": false,
+  "public_evidence": [
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\app-installed.bin",
+      "bytes": 151056,
+      "sha256": "10ef9284390fa6acb73fcf40e709ec5d22215e2fbb5da67f0f30f0a7f798e3ab"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\app-readback.bin",
+      "bytes": 151056,
+      "sha256": "10ef9284390fa6acb73fcf40e709ec5d22215e2fbb5da67f0f30f0a7f798e3ab"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\boot-state-running.bin",
+      "bytes": 4096,
+      "sha256": "dfea95d93023a31591506f9109ed3b204d01c3e0490bb1344535d85a24926b6e"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\candidate.manifest.json",
+      "bytes": 2895,
+      "sha256": "fe5d216b4e9fea71a94c5d6e94375dc6b7984ebcd4225607060fa19dbad024d8"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\flash-plan.json",
+      "bytes": 1071,
+      "sha256": "a9b9bbf83a79d852fdb6e80d88cfa85e403f5f9271eb33d3eb16d6facc4ba176"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\halt-and-backup.jlink",
+      "bytes": 416,
+      "sha256": "e8217ca6d0a2d47cf0f210b94de6187b7aa73dfc32b97bafdcaed4319169e16b"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\halt-and-backup.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\halt-and-backup.stdout.log",
+      "bytes": 3265,
+      "sha256": "7d4f7bc4b28d2fbcadaa5e223909ed25aa652b96882a4be390416ef8314fac55"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\preflight-readonly.jlink",
+      "bytes": 606,
+      "sha256": "704c1b2dd50a741c7b88aa28e55e2484481aeadb6e1dede33a5fd8b1aa232ac7"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\preflight-readonly.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\preflight-readonly.stdout.log",
+      "bytes": 3220,
+      "sha256": "86eb3797f02a9470707798370a892bb699a2f4d42723ce2d8a27ecd5c01fda5b"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\preflight.json",
+      "bytes": 1181,
+      "sha256": "4c49bc8187c3dc23d7fb43abe09b9a63bb9e0b919fdd352eeae5f9927612da0c"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\program-and-verify.jlink",
+      "bytes": 929,
+      "sha256": "7eb1f04e4e0663accfe538dc07aa4a9be067fbcc745c9b8c2c4b5823891be957"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\program-and-verify.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\program-and-verify.stdout.log",
+      "bytes": 7597,
+      "sha256": "b0c21a1972666a28c0fb7a597c3253df37d04b1bf6139d9af6e4be25e2fa4b60"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\program-result.json",
+      "bytes": 403,
+      "sha256": "fe314da5e3fc8a3f5c931f088d4f5dd20fe7dc1e372254b36c9cbf3a55d0e8b1"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\restart.jlink",
+      "bytes": 119,
+      "sha256": "8f1bfe019c5a0fdb91dbf3a0f93b005010b8666cefcaacef1bed62ce49e2d54a"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\restart.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\restart.stdout.log",
+      "bytes": 2258,
+      "sha256": "255e1606305eca1a2b8c69d0aafff05069a7fef10e5bcb0beb958cbbd0ff00d7"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\runtime-final.jlink",
+      "bytes": 301,
+      "sha256": "a2f7781c188a8c81650fcdcd808332f19d033455eb5d5f3f50584da9bfba6228"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\runtime-final.json",
+      "bytes": 556,
+      "sha256": "50a375820b94dc52ef23a30c6c9fcd3e9fd67533692084de5803199645131908"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\runtime-final.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\runtime-final.stdout.log",
+      "bytes": 2464,
+      "sha256": "99bb72894d02e65e171cc1d2ed8b97aa7fa077d6d7cb5a6a24d5f8331bd0d1ca"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\runtime-readonly.jlink",
+      "bytes": 1130,
+      "sha256": "85017493da770a26b51cf8dd61b432f9b1b0644d9f19c1b6ca8f96e74d8934e0"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\runtime-readonly.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\runtime-readonly.stdout.log",
+      "bytes": 4493,
+      "sha256": "c125a0d4438496933b20a563b7725e0a718e0af7abd5f5815a1d9fe87dc51ed9"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\runtime-result.json",
+      "bytes": 946,
+      "sha256": "873afc48e6d30ab5a7ebd7000c2f98154588aed62bb107bb49aab0ada18bc6a2"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\state-a-installed.bin",
+      "bytes": 2048,
+      "sha256": "7bec9991862ddded06e0b887ee829f180b0c21a3d9dad81a9b7c168a36a270b7"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\stopped-preflight.json",
+      "bytes": 919,
+      "sha256": "31f43419eb799bc6e8da39e7e77f2971feeca8b6f881083093509cd88c1287ec"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\stopped-readonly.jlink",
+      "bytes": 263,
+      "sha256": "9b81180bc9052ef5b6d60a58988c0d18c220ec9c90a7c4352cd36247c794080f"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\stopped-readonly.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\stopped-readonly.stdout.log",
+      "bytes": 2370,
+      "sha256": "f8a090ea3a37c2d4620d243728781361e68a40ad7066c9651d3e2b519ef8571c"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\tick-first.bin",
+      "bytes": 4,
+      "sha256": "2b53cc4d02f0faa8f146ca21d746ba66a0461c839fb8b48d93f684766f567f13"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\tick-last.bin",
+      "bytes": 4,
+      "sha256": "867a2892c86c8716c8518f5eee14734e46d03f9ea650e7833feae4b7337b3367"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-b-brake-install-180251\\uid.bin",
+      "bytes": 12,
+      "sha256": "4d46849cde0edf35dcd65338a472ff614a7193426a4a4b0d712dcc1a29a73f92"
+    }
+  ],
+  "protected_evidence": [
+    {
+      "path": "out\\flash\\2026-10-20-b-brake-install-180251\\config-running.bin",
+      "bytes": 2048,
+      "sha256": "1835f5eb2c548b64c56a6c73bb0f434fb28fb19a5b29d56e2f5734e035a06b34"
+    },
+    {
+      "path": "out\\flash\\2026-10-20-b-brake-install-180251\\flash-before.bin",
+      "bytes": 262144,
+      "sha256": "914685e3b7de6b895402e30cd8f8bfa872e6369e607d3fa793f632ce65a36fd5"
+    },
+    {
+      "path": "out\\flash\\2026-10-20-b-brake-install-180251\\flash-halted.bin",
+      "bytes": 262144,
+      "sha256": "914685e3b7de6b895402e30cd8f8bfa872e6369e607d3fa793f632ce65a36fd5"
+    },
+    {
+      "path": "out\\flash\\2026-10-20-b-brake-install-180251\\flash-programmed.bin",
+      "bytes": 262144,
+      "sha256": "9f5a0bed29a0869262f4ad50c8bb565916b31e79d717f4f25b75531a7a1cba3a"
+    },
+    {
+      "path": "out\\flash\\2026-10-20-b-brake-install-180251\\layout.bin",
+      "bytes": 76,
+      "sha256": "ecebab0e9ddfb0e75191338465da25fa3cbb806bf8449227265068a25e3b4af2"
+    },
+    {
+      "path": "out\\flash\\2026-10-20-b-brake-install-180251\\layout.c",
+      "bytes": 979,
+      "sha256": "e89b6b3de4fa2c6622d683c1f9929d2729cb091b42fe733aa3327965c221bff3"
+    },
+    {
+      "path": "out\\flash\\2026-10-20-b-brake-install-180251\\layout.o",
+      "bytes": 904,
+      "sha256": "18ba7d3c8c6ef0c9744fa3eb11c3c1d3d6a09e7a5157c1540f60cfebf2a9e476"
+    },
+    {
+      "path": "out\\flash\\2026-10-20-b-brake-install-180251\\new-app.elf",
+      "bytes": 258592,
+      "sha256": "0cac88ee9a13a22347bbe2111feadeacd7d249cfcb854664aacad9a898a02858"
+    },
+    {
+      "path": "out\\flash\\2026-10-20-b-brake-install-180251\\old-app.elf",
+      "bytes": 258364,
+      "sha256": "57d39610714c12dc9e306da383f66efdaaa68292bf330c8a56be519d411fbdb7"
+    },
+    {
+      "path": "out\\flash\\2026-10-20-b-brake-install-180251\\ram-before.bin",
+      "bytes": 65536,
+      "sha256": "fbffc318a1f189f44464fa0e5653cf46174c457347aa92457c049589be77497b"
+    },
+    {
+      "path": "out\\flash\\2026-10-20-b-brake-install-180251\\ram-final.bin",
+      "bytes": 65536,
+      "sha256": "4f6a2e3dbf7af72d0970b265f83f967db68d9cab4a83e724dfc85ac2d7cc8a8c"
+    },
+    {
+      "path": "out\\flash\\2026-10-20-b-brake-install-180251\\ram-halted.bin",
+      "bytes": 65536,
+      "sha256": "9c673ce9fd53ebb9c85ba90f05013dfb99b9d3751b3d79545ef1864d97b95866"
+    },
+    {
+      "path": "out\\flash\\2026-10-20-b-brake-install-180251\\ram-running.bin",
+      "bytes": 65536,
+      "sha256": "435e072dbee1648a8b9f0cb1c177a8dcd78fcac3c268372af81034264838e87b"
+    },
+    {
+      "path": "out\\flash\\2026-10-20-b-brake-install-180251\\ram-stopped.bin",
+      "bytes": 65536,
+      "sha256": "a36c6f210f2866524853e1638d2b3c65c50e5e91d47d0d56e40b511ef234e540"
+    }
+  ]
+}

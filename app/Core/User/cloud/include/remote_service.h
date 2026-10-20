@@ -18,6 +18,8 @@ void RemoteService_Init(void);
 void RemoteService_Task(void);
 void RemoteService_SafetyTick(uint32_t now_ms);
 void RemoteService_UpdateFeedback(const ChassisFeedback* feedback);
+/* Physical B switch inhibits traction for every transport without revoking steering. */
+void RemoteService_SetDriveBrake(uint8_t active);
 /* Local transports share the same owner, safety checks and lease watchdog.
  * No network clock or JSON envelope is required on the physical CAN port. */
 uint8_t RemoteService_ApplyLocal(const char* action, const char* session_id,

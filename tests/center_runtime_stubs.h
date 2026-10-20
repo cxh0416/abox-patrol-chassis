@@ -62,7 +62,18 @@ uint8_t PatrolConfig_SetCalibration(int32_t driver, uint32_t encoder, uint32_t d
 { (void)driver; (void)encoder; (void)dc; (void)ec; (void)dd; (void)ed; (void)tolerance; return 1; }
 
 void PatrolRuntimePort_Enter(void) {}
+#ifdef DRIVE_BRAKE_RUNTIME_TEST
+uint8_t mock_brake_after_take;
+void PatrolRuntimePort_Exit(void)
+{
+    if (mock_brake_after_take && g_motion.drive.pending && g_motion.drive.phase == BENCH_ACTIVE) {
+        mock_brake_after_take = 0U;
+        ChassisControl_SetDriveBrake(&mock_control, 1U);
+    }
+}
+#else
 void PatrolRuntimePort_Exit(void) {}
+#endif
 void AppLog_Printf(AppLogLevel_t level, const char* tag, const char* format, ...)
 { (void)level; (void)tag; (void)format; }
 uint8_t PatrolConfig_CalibrationCompatible(void) { return 1; }

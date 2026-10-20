@@ -23,6 +23,7 @@ class CanRemoteTests(unittest.TestCase):
                        *['-I' + str(p) for p in (ROOT / 'platform/components').glob('*/include')],
                        str(ROOT / 'tests/can_remote_test.c'),
                        str(ROOT / 'app/Core/User/motion/src/patrol_can_remote.c'),
+                       str(ROOT / 'app/Core/User/motion/src/patrol_phy_remote.c'),
                        str(ROOT / 'app/Core/User/motion/src/chassis_control.c'),
                        str(ROOT / 'app/Core/User/cloud/src/remote_service.c'),
                        str(ROOT / 'app/Core/User/common/src/fixed_point.c'),

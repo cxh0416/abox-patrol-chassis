@@ -99,7 +99,10 @@ void RemoteService_Init(void)
 {
     const PatrolRemoteConfigV5_t* cfg = PatrolConfig_Get();
     ChassisFeedback feedback = {0};
+    uint8_t drive_brake = g_control.drive_brake;
     ChassisControl_Init(&g_control);
+    /* Fault reset/reinitialization cannot release a physical brake switch. */
+    ChassisControl_SetDriveBrake(&g_control, drive_brake);
     feedback.calibrated = cfg != 0 && cfg->calibrated && PatrolConfig_CalibrationCompatible();
     feedback.feedback_ms = HAL_GetTick();
     ChassisControl_SetFeedback(&g_control, &feedback);
@@ -133,6 +136,13 @@ void RemoteService_SafetyTick(uint32_t now_ms)
 void RemoteService_UpdateFeedback(const ChassisFeedback* feedback)
 {
     if (g_remote_initialized && feedback != 0) ChassisControl_SetFeedback(&g_control, feedback);
+}
+
+void RemoteService_SetDriveBrake(uint8_t active)
+{
+    taskENTER_CRITICAL();
+    ChassisControl_SetDriveBrake(&g_control, active);
+    taskEXIT_CRITICAL();
 }
 
 uint8_t RemoteService_ApplyLocal(const char* action, const char* session_id,

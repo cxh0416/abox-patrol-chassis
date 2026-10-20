@@ -1,0 +1,48 @@
+{
+  "halted_checks": {
+    "output_off": true,
+    "no_session": true,
+    "no_enable": true,
+    "zero_target": true,
+    "ota_idle": true,
+    "executors_idle": true,
+    "center_idle": true,
+    "no_auto_center": true,
+    "zero_wheels": true,
+    "old_image_unchanged": true,
+    "frozen_boot_match": true
+  },
+  "previous_states": [
+    {
+      "page": "A",
+      "offset": 0,
+      "sequence": 12,
+      "state": 4,
+      "app_size": 150800,
+      "app_crc": 1787742367,
+      "version": "patrol-chassis-0.2.63"
+    },
+    {
+      "page": "B",
+      "offset": 0,
+      "sequence": 12,
+      "state": 4,
+      "app_size": 150800,
+      "app_crc": 1787742367,
+      "version": "patrol-chassis-0.2.63"
+    }
+  ],
+  "new_state_sequence": 13,
+  "write_addresses": {
+    "App": "0x08008000",
+    "BootStateA": "0x0803E800"
+  },
+  "preserved": [
+    "Boot",
+    "Config recovery",
+    "BootStateB",
+    "ConfigV5"
+  ],
+  "app_sha256": "10ef9284390fa6acb73fcf40e709ec5d22215e2fbb5da67f0f30f0a7f798e3ab",
+  "app_size": 151056
+}

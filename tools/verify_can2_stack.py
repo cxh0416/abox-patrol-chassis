@@ -25,6 +25,12 @@ chains = {
                                'ChassisControl_RuntimeSafetyReason']),
     'CAN2 lease stop': (safety_capacity, ['Patrol_SafetyControlTask', 'PatrolCanRemote_Tick',
                                         'RemoteService_ApplyLocal', 'ChassisControl_Apply']),
+    'handset B switch': (rx_capacity, ['Patrol_CanRxTask', 'PatrolPhyRemote_OnFrame',
+                                     'RemoteService_SetDriveBrake', 'ChassisControl_SetDriveBrake']),
+    'handset joystick': (rx_capacity, ['Patrol_CanRxTask', 'PatrolPhyRemote_OnFrame',
+                                     'RemoteService_ApplyLocal', 'ChassisControl_Apply']),
+    'handset lease stop': (safety_capacity, ['Patrol_SafetyControlTask', 'PatrolPhyRemote_Tick',
+                                           'RemoteService_ApplyLocal', 'ChassisControl_Apply']),
 }
 for label, (capacity, chain) in chains.items():
     missing = [name for name in chain if name not in frames]

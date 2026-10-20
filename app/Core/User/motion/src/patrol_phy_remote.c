@@ -19,8 +19,10 @@
 static uint32_t control_seq;
 static uint8_t armed;
 static uint32_t power_off_deadline_ms;   /* 0 = no pending power-off */
-static uint8_t last_enable;              /* previous switch-frame enable; 0 = active */
+static uint8_t last_enable;              /* previous switch-frame enable; nonzero = active */
 static uint8_t powered_by_remote;        /* this module commanded power-on */
+static uint8_t switch_seen;
+static uint32_t last_switch_ms;
 
 static uint8_t owns(void)
 {
@@ -61,15 +63,28 @@ void PatrolPhyRemote_Init(void)
     power_off_deadline_ms = 0U;
     last_enable = 0U;   /* 0 = inactive; first nonzero frame is a rising edge */
     powered_by_remote = 0U;
+    switch_seen = 0U;
+    last_switch_ms = 0U;
 }
 
 uint8_t PatrolPhyRemote_OnFrame(const PatrolCanFrame* frame, uint32_t received_ms, uint32_t now_ms)
 {
-    (void)received_ms;
     if (frame == 0) return 0U;
+
+    if (frame->id != PATROL_PHY_REMOTE_SWITCH_ID && frame->id != PATROL_PHY_REMOTE_JOYSTICK_ID)
+        return 0U;
+    /* A queued old switch must never release a newer brake state. */
+    if (frame->dlc != 8U || (uint32_t)(now_ms - received_ms) > 100U)
+        return 1U;
 
     if (frame->id == PATROL_PHY_REMOTE_SWITCH_ID) {
         if (frame->dlc == 8U) {
+            if (switch_seen && (int32_t)(received_ms - last_switch_ms) < 0) return 1U;
+            switch_seen = 1U;
+            last_switch_ms = received_ms;
+            /* Operator confirmed B follows A: lamp on/nonzero, lamp off/zero.
+             * Use the transmitted state, never toggle on each cyclic frame. */
+            RemoteService_SetDriveBrake(frame->data[3] != 0U);
             /* byte2 = channel A = handset enable (nonzero = active, 0 = inactive). */
             uint8_t enable = frame->data[2];
             uint8_t was_active = (last_enable != 0U);
@@ -106,6 +121,10 @@ uint8_t PatrolPhyRemote_OnFrame(const PatrolCanFrame* frame, uint32_t received_m
 
     if (frame->id == PATROL_PHY_REMOTE_JOYSTICK_ID) {
         if (frame->dlc == 8U && armed) {
+            if (!switch_seen || (uint32_t)(now_ms - last_switch_ms) >= PATROL_PHY_REMOTE_LEASE_MS) {
+                stop_remote(now_ms);
+                return 1U;
+            }
             int16_t raw_steer = (int16_t)((uint16_t)frame->data[0] |
                                          ((uint16_t)frame->data[1] << 8));
             int16_t raw_throttle = (int16_t)((uint16_t)frame->data[4] |
@@ -134,7 +153,9 @@ void PatrolPhyRemote_Tick(uint32_t now_ms, uint8_t transport_healthy)
     }
     if (!armed) return;
     c = RemoteService_State();
-    if (!transport_healthy || CenterCalibration_IsActive() || !owns() ||
+    if (!transport_healthy || !switch_seen ||
+        (uint32_t)(now_ms - last_switch_ms) >= PATROL_PHY_REMOTE_LEASE_MS ||
+        CenterCalibration_IsActive() || !owns() ||
         !c->enable_request || (int32_t)(now_ms - c->lease_deadline_ms) >= 0 ||
         !ChassisControl_SafetyReady(c, now_ms)) {
         stop_remote(now_ms);

@@ -4,7 +4,11 @@
 
 同事接手所需仓库、环境、构建测试、运动许可排查和现场待办见[项目交接与接手指南](operations/项目交接与接手指南.md)。
 
-2026-10-20 当前正式包和第二台车现场 App 均为 `patrol-chassis-0.2.63`。用户明确当前硬件测试目标为电脑键盘经 CAN 分析仪接 A-BOX CAN2，暂不处理无线遥控器协议；网页只用于中位标定等维护，不作为本次遥控验收路径。外部原入口 `E:\1_work\ChassisCar_test\chassis_offline_remote.py` 已接入 MCU CAN2 指令，按用户要求默认 **500 rpm、30°**；P 上电、E 中立接管、WASD 目标、空格停机撤管、O 下电、R 下电后复位故障、Esc 停机下电退出。失焦撤管，MCU 租约 300 ms；电脑不再在正常控制路径直接写 CANopen。
+2026-10-20 当前增量为 T12 B 行走制动：操作者指定 B 灯亮禁止行走、转向不受正常制动影响，B 再次点击熄灭即允许新行走目标；数值按用户要求沿用当前 A 的非零亮/零灭极性。代码、实际控制服务/执行器主机夹具及 ARM Release 构建已完成，测试说明和当前操作边界见[源码模块](implementation/源码模块与依赖.md)与[B 行走制动流程](operations/架空行走与平台远控实现.md#t12-b-行走制动)。现场 B 报文、停车时间/距离及保持制动时的真实转向尚未验收。随后操作者确认热复位恢复为预期设计，要求保留并烧录 B 功能；已通过 SWD 安装 `0.2.64` 候选，见[本次安装与读回索引](operations/evidence/2026-10-20-b-brake-install-180251/installation.index.json)。安装前读到实体遥控会话仍使能，操作者关闭 A 并确认停稳后，重新读回输出关闭、无会话/使能、执行器空闲、OTA 空闲及轮速零才暂停主控并写入。App `0x08008000` 与 Boot State A `0x0803E800` 逐字节校验通过；Boot、State B、配置恢复页及本车 Config V5 保持不变。复位后 App 运行、系统时钟推进、输出关闭、无接管及运动故障锁存；没有发送运动目标，真实 B 制动和转向效果仍待现场验收。
+
+本次完整产品 Python 回归 43 项中 42 项通过，`test_identity_and_safe_defaults` 失败：现有热复位恢复路径在执行器之外直接调用 CANopen SDO 写。用本次修改前的 `ac8e51f` 对应源码重跑该检查，同样失败，确认是既有基线问题；没有放宽测试或移除该恢复功能。B 功能的真实控制服务、重复开关帧、行走禁用/转向保持、其他 owner、旧帧、开关流丢失、解除后换向、停车期间早解除、左右目标发送竞态、停车超时保护回归通过。ARM 静态 RAM 地址覆盖为 61,432 字节；CAN2、B 开关、实体遥控及公共服务栈检查通过。原始主机日志与基线复核在 `out/logs/b-brake-*`。由于完整验证仍保留该既有失败，`out/candidates/bench-drive/` 的 `0.2.64` 保持候选身份（显式构建版本覆盖），按本次用户指令已烧入上述设备；不替换 `dist/`，当前正式版仍以其 `0.2.63` 清单与哈希为准。本次相关 B 回归、候选与当前源文件哈希、ARM 增量构建及 CAN2/实体遥控栈复查通过；现车 App SHA256 为 `10EF9284390FA6ACB73FCF40E709EC5D22215E2FBB5DA67F0F30F0A7F798E3AB`。
+
+2026-10-20 较早的电脑键盘验证阶段，正式包和第二台车现场 App 均为 `patrol-chassis-0.2.63`；后续 B 功能安装状态以上文为准。当时硬件测试目标为电脑键盘经 CAN 分析仪接 A-BOX CAN2，网页只用于中位标定等维护。外部原入口 `E:\1_work\ChassisCar_test\chassis_offline_remote.py` 已接入 MCU CAN2 指令，按用户要求默认 **500 rpm、30°**；P 上电、E 中立接管、WASD 目标、空格停机撤管、O 下电、R 下电后复位故障、Esc 停机下电退出。失焦撤管，MCU 租约 300 ms；电脑不再在正常控制路径直接写 CANopen。
 
 10:23 安装 0.2.63，App/启动状态 A 逐字节一致，Boot、状态 B、恢复页与 Config V5 不变；见[安装索引](operations/evidence/2026-10-20-car2-install-0263-102312/installation.index.json)。10:24 经 CAN 分析仪通道 2 实际获得 `0x521/0x522/0x523` 同序号三帧响应，[CAN2 只读记录](operations/evidence/2026-10-20-car2-can2-status-102426/index.json)确认链路已打通。随后通过同一路径上电并只发送 ARM/零 rpm/零转角目标，执行器完成 RAM 软限位写入/复读，但随后转向状态字 `0x22BB` 出现故障位，控制撤销并已下电；见[零目标原始记录](operations/evidence/2026-10-20-car2-can2-neutral-102532/index.json)和[故障 RAM](operations/evidence/2026-10-20-car2-can2-neutral-fault-102636/index.json)。零目标检查失败，不是运动验收通过，尚未开放键盘测试。
 

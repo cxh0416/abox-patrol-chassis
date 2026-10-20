@@ -233,9 +233,9 @@ static uint8_t recovery_wanted(uint32_t now)
     if (g_motion.bench.phase != BENCH_IDLE || g_motion.drive.phase != BENCH_IDLE) return 0U;
     if (c->session_active || g_motion.center_cal.phase != CENTER_CAL_IDLE) return 0U;
     if ((g_motion.diagnostics.steering_status_word & 0x6FU) == 0x27U &&
-        (int32_t)(now - g_motion.diagnostics.steering_status_ms) <= 250U) return 1U;
+        (uint32_t)(now - g_motion.diagnostics.steering_status_ms) <= 250U) return 1U;
     if ((g_motion.diagnostics.drive_status_word & 0x4FU) == 7U &&
-        (int32_t)(now - g_motion.diagnostics.drive_status_ms) <= 250U) return 1U;
+        (uint32_t)(now - g_motion.diagnostics.drive_status_ms) <= 250U) return 1U;
     return 0U;
 }
 /* <<<<< DRIVE-RECOVERY: END <<<<< */
@@ -438,10 +438,11 @@ void PatrolRuntime_Tick(void)
                     CHASSIS_MAX_STEERING_MDEG, now);
         }
         safe = safe && !c->fault_latched;
-        if (PATROL_CHASSIS_ACTUATION_ENABLED && PATROL_DRIVE_EXECUTOR_ENABLED && remote_requested && safe &&
+        uint8_t drive_requested = remote_requested && !c->drive_brake;
+        if (PATROL_CHASSIS_ACTUATION_ENABLED && PATROL_DRIVE_EXECUTOR_ENABLED && drive_requested && safe &&
             g_motion.bench.phase == BENCH_ACTIVE && g_motion.drive.phase == BENCH_IDLE)
             BenchDrive_Start(&g_motion.drive, now);
-        BenchDrive_Tick(&g_motion.drive, now, remote_requested, safe,
+        BenchDrive_Tick(&g_motion.drive, now, drive_requested, safe,
             c->target_rpm, g_motion.diagnostics.left_actual_rpm, g_motion.diagnostics.right_actual_rpm,
             g_motion.diagnostics.left_rpm_ms, g_motion.diagnostics.right_rpm_ms);
         BenchSteering_Tick(&g_motion.bench, now, requested && g_motion.drive.phase != BENCH_FAULT,
@@ -499,8 +500,16 @@ void PatrolRuntime_Tick(void)
     if (have_request)
     {
         PatrolRuntimePort_Enter();
+        /* A B switch can arrive after frame selection. Discard an old drive
+         * command and start its bounded zero/disable sequence, without touching
+         * the steering executor or the shared session. */
+        if (bench_frame == 2 && RemoteService_State()->drive_brake &&
+            g_motion.drive.phase != BENCH_STOPPING && g_motion.drive.phase != BENCH_IDLE) {
+            BenchDrive_Stop(&g_motion.drive, PatrolRuntimePort_Now(), 0U);
+            have_request = 0U;
+        }
         /* A higher priority safety tick may have revoked the selected command. */
-        if (bench_frame && g_motion.center_cal.phase != CENTER_CAL_JOGGING &&
+        if (have_request && bench_frame && g_motion.center_cal.phase != CENTER_CAL_JOGGING &&
             g_motion.center_cal.phase != CENTER_CAL_STOPPING && (bench_frame == 1 ?
             (g_motion.bench.phase != BENCH_STOPPING && g_motion.bench.phase != BENCH_IDLE) :
             (g_motion.drive.phase != BENCH_STOPPING && g_motion.drive.phase != BENCH_IDLE)) &&

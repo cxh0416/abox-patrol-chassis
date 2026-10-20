@@ -61,11 +61,13 @@ typedef struct {
     uint8_t enable_request;
     uint8_t fault_latched;
     uint8_t auto_center_inhibited; /* SAFETY_STOP parks until a new accepted command/power cycle. */
+    uint8_t drive_brake; /* Traction-only inhibit; steering/session stay authorized. */
     ChassisStopReason stop_reason;
     ChassisFeedback feedback;
 } ChassisControl;
 
 void ChassisControl_Init(ChassisControl* control);
+void ChassisControl_SetDriveBrake(ChassisControl* control, uint8_t active);
 ChassisStopReason ChassisControl_SafetyReason(const ChassisControl* control, uint32_t now_ms);
 ChassisStopReason ChassisControl_RuntimeSafetyReason(const ChassisControl* control, uint32_t now_ms);
 void ChassisControl_SetFeedback(ChassisControl* control, const ChassisFeedback* feedback);

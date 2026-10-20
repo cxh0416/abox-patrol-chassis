@@ -34,6 +34,18 @@ void ChassisControl_Init(ChassisControl* control)
     control->stop_reason = CHASSIS_STOP_UNCALIBRATED;
 }
 
+void ChassisControl_SetDriveBrake(ChassisControl* control, uint8_t active)
+{
+    control->drive_brake = active != 0U;
+    if (control->drive_brake) {
+        control->target_rpm = 0;
+        control->requested_rpm = 0;
+        control->reversal_pending = 0U;
+        control->zero_confirmations = 0U;
+        /* Keep the last nonzero direction: release must not bypass reversal. */
+    }
+}
+
 void ChassisControl_SetFeedback(ChassisControl* control, const ChassisFeedback* feedback)
 {
     control->feedback = *feedback;
@@ -123,6 +135,7 @@ uint8_t ChassisControl_Apply(ChassisControl* control, const char* action, const 
     control->last_seq = seq;
     control->lease_deadline_ms = now_ms + lease_ms;
     control->target_steering_mdeg = steering_mdeg;
+    if (control->drive_brake) drive_rpm = 0;
     requested_direction = direction_of(drive_rpm);
     if (requested_direction != 0 && control->active_direction != 0 && requested_direction != control->active_direction) {
         control->requested_rpm = drive_rpm;
@@ -158,6 +171,10 @@ void ChassisControl_Tick(ChassisControl* control, uint32_t now_ms)
         return;
     }
     steering_boundary(control, control->target_steering_mdeg, 0U);
+    if (control->drive_brake) {
+        ChassisControl_SetDriveBrake(control, 1U);
+        return;
+    }
     if (!control->reversal_pending) return;
     control->target_rpm = 0;
     if (control->feedback.feedback_ms != control->last_zero_feedback_ms) {
