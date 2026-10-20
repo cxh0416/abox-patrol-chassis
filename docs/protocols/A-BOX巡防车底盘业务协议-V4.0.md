@@ -25,6 +25,8 @@
   - [5.1 chassis_status](#51-chassis_status)
   - [5.2 可选诊断扩展的线格式](#52-可选诊断扩展的线格式)
 - [6. 交互与异常处理](#6-交互与异常处理)
+  - [6.1 远控主时序](#61-远控主时序)
+  - [6.2 持续安全规则](#62-持续安全规则)
 - [7. 错误与产品约束](#7-错误与产品约束)
   - [7.1 业务失败语义](#71-业务失败语义)
   - [7.2 stopReason](#72-stopreason)
@@ -33,7 +35,9 @@
 
 本文定义巡防车底盘在 A-BOX MQTT V4 下的业务 Profile，包括车辆上下电、租约式底盘控制、完整底盘状态和业务安全语义。
 
-公共报文外层、Topic、QoS、请求响应、公共响应码、`requestId` 幂等、Manifest、心跳和 `sync_state` 通用规则统一遵循 [A-BOX 设备公共 MQTT 协议 V4](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md)。
+公共通信及兼容规则遵循 [A-BOX 设备公共 MQTT 协议 V4.0](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md)；本文件补充底盘 Profile 与产品接口语义。
+
+局部 JSON 示例按标题所示字段嵌入公共报文。
 
 **表 1：公共规则查阅索引**
 
@@ -62,10 +66,7 @@ Manifest Profile 条目固定为：
 **示例 1：Manifest（设备 → 平台；`/zxwl/abox/demo_chassis_01/manifest`；profiles[] 局部片段）**
 
 ```json
-{
-  "name": "vehicle_chassis",
-  "version": "1.0"
-}
+{"name": "vehicle_chassis", "version": "1.0"}
 ```
 
 同一固件固定提供该能力时可以省略 `manifestId`；其他 Manifest 规则遵循公共 V4。
@@ -113,40 +114,6 @@ Manifest Profile 条目固定为：
 | `result.powerOutputOn` | Boolean | 成功结果 | 当前 MCU 电源输出命令锁存状态；本节定义成功边界。 |
 
 关联报告：失败与安全边界见[第 7.1 节](#71-业务失败语义)；完整状态见[第 5.1 节](#51-chassis_status)。
-
-**请求与响应示例**
-
-**示例 2：`power_on`（平台 → 设备；`/zxwl/abox/demo_chassis_01/request`；完整请求）**
-
-```json
-{
-  "version": "4.0",
-  "timestamp": 1800000000000,
-  "data": {
-    "requestId": "patrol-power-001",
-    "command": "power_on",
-    "params": null,
-    "expiresAt": 1800000003000
-  }
-}
-```
-
-**示例 3：`power_on`（设备 → 平台；`/zxwl/abox/demo_chassis_01/response`；完整成功响应）**
-
-```json
-{
-  "version": "4.0",
-  "timestamp": 1800000000100,
-  "data": {
-    "requestId": "patrol-power-001",
-    "code": 200,
-    "msg": "operation accepted",
-    "result": {
-      "powerOutputOn": true
-    }
-  }
-}
-```
 
 ### 4.2 `power_off`
 
@@ -203,9 +170,9 @@ Manifest Profile 条目固定为：
 
 非零 `driveRpm` 只有在兼容标定、有效控制会话及 MCU 当前运行安全条件满足时才接受；MCU 对目标是否继续执行作实时安全裁决。无需额外行走许可。
 
-无有效远控目标时，设备可在本地安全条件满足、行走已确认停车后自行回中，包括上电后的空闲状态和远控租约到期。该行为不恢复远控会话、不允许非零行走目标；有效的新远控目标可接管转向。`stop` 和 `power_off` 保持安全停车语义，取消自动回中；新的有效控制目标或显式上电可重新允许空闲回中。目标为 `0` 不表示已经回中，仍以两路实测转角判断。
+无有效远控目标时，设备可在本地安全条件满足且行走已确认停车后自行回中，适用于上电空闲及租约到期；不恢复会话，也不允许非零行走。新有效远控目标可接管转向。`stop` / `power_off` 取消回中并保持安全停车；新有效目标或显式上电可重新允许空闲回中。目标 `0` 不证明已回中，以两路实测转角判断。
 
-`stop` 先将本地目标归零并请求安全停车，不因有效格式的 `sessionId` 不匹配或 `seq` 未递增而保留非零目标。会话匹配时同时释放会话；不匹配时保留原会话归属，不让请求方抢占控制权。重复 `stop` 安全且幂等。`code=200` 仅表示本地停车请求已受理，不证明车轮已静止。
+格式有效的 `stop` 先将本地目标归零并请求安全停车，不因 `sessionId` 不匹配或 `seq` 未递增而保留非零目标。会话匹配则释放，不匹配保留原归属，不让请求方抢占控制权。重复 `stop` 安全且幂等；`code=200` 仅表示本地停车请求受理，不证明车轮静止。
 
 持续安全规则见[第 6 节](#6-交互与异常处理)，失败语义见[第 7 节](#7-错误与产品约束)。
 
@@ -213,7 +180,7 @@ Manifest Profile 条目固定为：
 
 以下为零速会话目标请求及响应：
 
-**示例 4：`chassis_control`（平台 → 设备；`/zxwl/abox/demo_chassis_01/request`；完整请求）**
+**示例 2：`chassis_control`（平台 → 设备；`/zxwl/abox/demo_chassis_01/request`；完整请求）**
 
 ```json
 {
@@ -234,7 +201,7 @@ Manifest Profile 条目固定为：
 }
 ```
 
-**示例 5：`chassis_control`（设备 → 平台；`/zxwl/abox/demo_chassis_01/response`；完整成功响应）**
+**示例 3：`chassis_control`（设备 → 平台；`/zxwl/abox/demo_chassis_01/response`；完整成功响应）**
 
 ```json
 {
@@ -259,16 +226,10 @@ Manifest Profile 条目固定为：
 
 `sync_state` 的通用规则由公共 V4 定义。本 Profile 的预期完整状态集合为：
 
-**示例 6：`sync_state`（设备 → 平台；`/zxwl/abox/demo_chassis_01/response`；result 局部片段）**
+**示例 4：`sync_state`（设备 → 平台；`/zxwl/abox/demo_chassis_01/response`；result 局部片段）**
 
 ```json
-{
-  "expectedStates": [
-    {
-      "reportName": "chassis_status"
-    }
-  ]
-}
+{"expectedStates": [{"reportName": "chassis_status"}]}
 ```
 
 设备随后发布完整 `chassis_status`，并按公共规则关联同一 `requestId`。
@@ -315,56 +276,15 @@ Manifest Profile 条目固定为：
 
 **子对象、枚举与新鲜度规则**
 
-发送方须同时满足公共协议的 payload 768 字节及整包 1024 字节上限，计算整包时包含 reportId、requestId 和所有已携带的流字段。预算不足时省略可选诊断，完整状态中的必填字段不得因此缺失。公共状态不保证完整传输历史故障记录。
+`payload` 及整包分别受公共 768 / 1024 字节上限限制，整包计入 `reportId`、`requestId` 和全部已携带流字段。超预算时省略可选诊断，必填状态保持完整；公共状态不保证完整传输历史故障记录。
 
 本 Profile 普通完整状态遵循公共第 5.3 节的接收顺序与去重规则；时间戳、目标值、节点在线或公共心跳均不能替代新鲜的实测反馈。
 
-`safetyReady` 及其组成字段用于状态展示、诊断和操作提示，不构成平台侧 `acquire/renew` 的额外授权门禁。平台可提示设备未就绪，但不得复制 MCU 的安全条件组合来决定是否发送控制请求；设备对请求的实时响应及持续安全裁决为准。
-
-**示例 7：`chassis_status`（设备 → 平台；`/zxwl/abox/demo_chassis_01/report`；完整报告）**
-
-```json
-{
-  "version": "4.0",
-  "timestamp": 1800000000100,
-  "data": {
-    "reportId": "patrol-state-001",
-    "reportType": "state",
-    "reportName": "chassis_status",
-    "payload": {
-      "reportReason": "periodic",
-      "motionState": "stopped",
-      "targetDriveRpm": 0,
-      "targetSteeringDeg": 0,
-      "leftActualRpm": 0,
-      "rightActualRpm": 0,
-      "steeringActualDeg": 0,
-      "absoluteActualDeg": 0,
-      "steeringOnline": true,
-      "driveOnline": true,
-      "encoderOnline": true,
-      "canBusOff": false,
-      "driveFault": false,
-      "feedbackFresh": true,
-      "calibrated": true,
-      "steeringProfileReady": true,
-      "steeringRangeValid": true,
-      "powerReady": false,
-      "powerOutputOn": false,
-      "otaBusy": false,
-      "safetyReady": false,
-      "stopReason": 12,
-      "faultLatched": false,
-      "steeringBoundary": 0,
-      "faultRecordVersion": 1
-    }
-  }
-}
-```
+`safetyReady` 及组成字段用于状态展示、诊断和操作提示，不增设平台侧 `acquire/renew` 授权门禁。平台可提示未就绪，不得复制 MCU 条件组合决定是否发请求；以设备实时响应和持续安全裁决为准。
 
 ### 5.2 可选诊断扩展的线格式
 
-诊断字段省略不表示无故障或通信正常，不发送 `null`。未知 `faultRecordVersion` 的记录可原样保存，不能按版本 1 的位置解释。诊断值不作为当前控制授权或动作完成证据。
+诊断字段省略不表示无故障或通信正常，不发送 `null`；未知 `faultRecordVersion` 记录可原样保存，不按版本 1 的位置解释。诊断值不作为当前控制授权或动作完成证据。
 
 `faultRecordVersion=1` 时，`payload.lastFault` 固定包含 29 个 Integer。索引从 0 开始；索引 5～9 为有符号 32 位整数，其余为无符号 32 位整数。未特别注明的原始诊断码没有公共业务枚举，接收方可原样展示或忽略。
 
@@ -392,7 +312,7 @@ Manifest Profile 条目固定为：
 | `27` | 标定阶段原值 | 无量纲原始诊断值 |
 | `28` | 本机记录保存状态 | `0` 待保存、`1` 已保存、`2` 保存失败或空间已满 |
 
-`payload.transportDiagnostics` 出现时包含下列全部字段，类型均为 Integer，范围均为 `0..4294967295`，不使用 `null`。计数属于设备本次运行，可回绕或在重启后清零，不能跨设备或跨重启直接累加；单个零计数不证明链路正常。
+`payload.transportDiagnostics` 出现时须含下表全部 Integer 字段，范围均为 `0..4294967295`，不使用 `null`。计数限本次运行，可回绕或重启清零；不得跨设备/重启直接累加，单个零计数不证明链路正常。
 
 **表 9：`transportDiagnostics` 子字段**
 
@@ -412,6 +332,29 @@ Manifest Profile 条目固定为：
 
 ## 6. 交互与异常处理
 
+### 6.1 远控主时序
+
+下图沿用[第 4.3 节](#43-chassis_control)的零速申请示例；请求参数、成功边界和持续安全约束仍按对应条款判断。
+
+```mermaid
+sequenceDiagram
+    participant P as 平台
+    participant D as 巡防车底盘
+    P->>D: sync_state
+    D-->>P: 成功响应与关联 chassis_status（先后不限）
+    P->>D: chassis_control(action=acquire, 零速示例)
+    D-->>P: 200 / 已接受目标
+    loop 同一会话，seq 严格递增
+        P->>D: chassis_control(action=renew, 目标, leaseMs)
+        D-->>P: 200 / 已更新目标
+    end
+    P->>D: chassis_control(action=stop)
+    D-->>P: 200 / 本地停车请求已受理
+    Note over P,D: 机械停止须结合新鲜实测反馈判断
+```
+
+### 6.2 持续安全规则
+
 - MCU 当前安全条件不满足时拒绝控制目标，并在持续执行中请求安全停止；
 - 未标定、反馈过期、双转角偏差超限、节点离线、CAN Bus-Off、驱动故障、OTA 忙或转向配置无效时禁止运动；
 - 改变前进/后退方向前先发送零速，并连续三次确认左右实测转速绝对值不超过 `20 rpm`；2 秒超时撤销会话并锁存故障；
@@ -422,7 +365,7 @@ Manifest Profile 条目固定为：
 
 ### 7.1 业务失败语义
 
-公共错误码遵循公共 V4。电源输出不可用或写入失败时不得报告成功；目标超出范围、安全条件不满足、`acquire/renew` 会话不匹配或流程繁忙时不得更新为非零目标或抢占有效会话；内部异常不得通过成功响应掩盖。
+公共错误码遵循公共 V4。电源不可用或写入失败不得报成功；目标越界、安全不满足、`acquire/renew` 会话不匹配或流程忙时，不得更新为非零目标或抢占有效会话；内部异常不得用成功响应掩盖。
 
 ### 7.2 `stopReason`
 
