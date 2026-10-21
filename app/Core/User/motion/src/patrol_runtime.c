@@ -500,7 +500,7 @@ void PatrolRuntime_Tick(void)
     if (have_request)
     {
         PatrolRuntimePort_Enter();
-        /* A B switch can arrive after frame selection. Discard an old drive
+        /* A traction inhibit can arrive after frame selection. Discard an old drive
          * command and start its bounded zero/disable sequence, without touching
          * the steering executor or the shared session. */
         if (bench_frame == 2 && RemoteService_State()->drive_brake &&

@@ -90,72 +90,60 @@ static void joystick(int16_t throttle, int16_t steer)
     f.data[4]=(uint8_t)throttle; f.data[5]=(uint8_t)((uint16_t)throttle>>8);
     assert(PatrolPhyRemote_OnFrame(&f,now,now));
 }
-static void physical_brake_cases(void)
+static void physical_b_ignored_cases(void)
 {
-    init(); switches(1,0); joystick(450,180);
-    assert(state()->target_rpm==1000 && state()->target_steering_mdeg==10000);
-    assert(state()->active_direction==1 && state()->enable_request);
-    uint32_t deadline=state()->lease_deadline_ms;
-    now+=10; switches(1,1);
-    assert(state()->drive_brake && state()->target_rpm==0 && state()->requested_rpm==0);
-    assert(state()->target_steering_mdeg==10000 && state()->enable_request && state()->session_active);
-    assert(state()->lease_deadline_ms==deadline && VehiclePowerOutput_IsOn());
-    for(unsigned n=0;n<5;n++) {
-        now+=10; healthy(); switches(1,1); joystick(-450,-180);
-        assert(state()->drive_brake && state()->target_rpm==0 && !state()->reversal_pending);
-        assert(state()->target_steering_mdeg==-10000 && state()->enable_request);
+    /* Every protocol B value and repeated frames leave both targets intact. */
+    for (unsigned b=0; b<=2; b++) {
+        init(); switches(1,0); joystick(450,180);
+        uint32_t deadline=state()->lease_deadline_ms;
+        for (unsigned n=0; n<5; n++) {
+            now+=10; healthy(); switches(1,(uint8_t)b);
+            assert(!state()->drive_brake && state()->target_rpm==1000);
+            assert(state()->target_steering_mdeg==10000 && state()->enable_request);
+            assert(state()->session_active && state()->lease_deadline_ms==deadline);
+            assert(VehiclePowerOutput_IsOn());
+        }
+        joystick(225,-180);
+        assert(state()->target_rpm==500 && state()->target_steering_mdeg==-10000);
+        joystick(0,0); assert(state()->target_rpm==0);
     }
-    /* Both nonzero protocol values mean on; repeated frames never toggle. */
-    switches(1,2); assert(state()->drive_brake);
-    /* Invalid/stale/out-of-order switch packets cannot release B. */
-    PatrolCanFrame f={PATROL_PHY_REMOTE_SWITCH_ID,7,{0}};
-    f.data[2]=1;
-    assert(PatrolPhyRemote_OnFrame(&f,now,now) && state()->drive_brake);
-    f.dlc=8;
-    assert(PatrolPhyRemote_OnFrame(&f,now-101,now) && state()->drive_brake);
-    assert(PatrolPhyRemote_OnFrame(&f,now-1,now) && state()->drive_brake);
-    /* Releasing B accepts fresh targets, but retains the prior drive direction. */
-    now+=10; healthy(); switches(1,0);
-    assert(!state()->drive_brake && state()->target_rpm==0);
-    joystick(-450,180);
+    /* B cannot cancel or bypass the existing three-sample reversal gate. */
+    init(); switches(1,0); joystick(450,0); joystick(-450,180);
     assert(state()->reversal_pending && state()->target_rpm==0);
-    for(unsigned n=0;n<3;n++) { now+=10; healthy(); RemoteService_SafetyTick(now); }
-    assert(state()->target_rpm==-1000 && state()->target_steering_mdeg==10000);
-    /* Brake cancels an already-pending reversal. */
-    joystick(450,0); assert(state()->reversal_pending);
-    switches(1,1);
-    assert(!state()->reversal_pending && state()->requested_rpm==0);
-    now+=10; healthy(); RemoteService_SafetyTick(now);
-    assert(state()->target_rpm==0 && state()->enable_request);
+    for (unsigned b=0; b<=2; b++) {
+        now+=10; healthy(); switches(1,(uint8_t)b);
+        assert(state()->reversal_pending && state()->requested_rpm==-1000);
+        RemoteService_SafetyTick(now);
+        if (b<2) assert(state()->target_rpm==0);
+    }
+    assert(!state()->reversal_pending && state()->target_rpm==-1000);
+    switches(1,1); assert(state()->target_rpm==-1000);
 
-    /* The physical brake also covers other control owners and survives reset. */
-    init(); assert(RemoteService_ApplyLocal("acquire","other-owner",1,300,100,8000,now));
-    switches(0,1);
-    assert(state()->drive_brake && state()->target_rpm==0 && state()->target_steering_mdeg==8000);
+    /* B also has no effect on another transport's motion or enable. */
+    init(); assert(RemoteService_ApplyLocal("acquire","other-owner",1,300,200,8000,now));
+    switches(0,1); switches(0,2); switches(0,0);
+    assert(state()->target_rpm==200 && state()->target_steering_mdeg==8000);
     assert(state()->enable_request && !strcmp(state()->session_id,"other-owner"));
-    assert(RemoteService_ApplyLocal("renew","other-owner",2,300,200,-8000,now));
-    assert(state()->target_rpm==0 && state()->target_steering_mdeg==-8000);
-    RemoteService_Init(); healthy(); assert(state()->drive_brake);
-    assert(RemoteService_ApplyLocal("acquire","other-owner",1,300,200,8000,now));
-    assert(state()->target_rpm==0 && state()->enable_request);
-    now+=10; switches(0,0);
-    assert(RemoteService_ApplyLocal("renew","other-owner",2,300,200,8000,now));
-    assert(state()->target_rpm==200);
 
-    /* Joystick traffic alone cannot keep a missing B/A switch stream alive. */
+    /* A off, stale switches and missing switch traffic still stop with B lit. */
+    init(); VehiclePowerOutput_Set(0); switches(1,1); healthy(); joystick(450,180);
+    assert(VehiclePowerOutput_IsOn() && state()->target_rpm==1000);
+    PatrolCanFrame f={PATROL_PHY_REMOTE_SWITCH_ID,7,{0}};
+    assert(PatrolPhyRemote_OnFrame(&f,now,now) && state()->enable_request);
+    f.dlc=8;
+    assert(PatrolPhyRemote_OnFrame(&f,now-101,now) && state()->enable_request);
+    assert(PatrolPhyRemote_OnFrame(&f,now-1,now) && state()->enable_request);
+    now+=10; switches(0,1);
+    assert(!state()->enable_request && state()->target_rpm==0 && VehiclePowerOutput_IsOn());
+    now+=3000; PatrolPhyRemote_Tick(now,1); assert(!VehiclePowerOutput_IsOn());
     init(); switches(1,1); joystick(450,180);
     for(unsigned n=0;n<2;n++) {
-        now+=100; healthy(); joystick(450,180);
-        assert(state()->enable_request && state()->drive_brake);
+        now+=100; healthy(); joystick(450,180); assert(state()->enable_request);
     }
     now+=100; healthy(); PatrolPhyRemote_Tick(now,1);
-    assert(!state()->enable_request && state()->drive_brake);
-    /* A off still performs its normal stop and delayed power-off with B on. */
-    init(); VehiclePowerOutput_Set(0); switches(1,1); healthy(); joystick(450,180);
-    assert(VehiclePowerOutput_IsOn() && state()->drive_brake);
-    now+=10; switches(0,1); assert(!state()->enable_request && VehiclePowerOutput_IsOn());
-    now+=3000; PatrolPhyRemote_Tick(now,1); assert(!VehiclePowerOutput_IsOn());
-    /* Releasing B never clears an actual fault or enables an uncalibrated car. */
+    assert(!state()->enable_request && state()->target_rpm==0);
+
+    /* B cannot clear a latched fault or bypass calibration requirements. */
     init(); switches(1,1); RemoteService_ExecutionFault();
     switches(1,0); joystick(450,180);
     assert(state()->fault_latched && !state()->enable_request);
@@ -258,7 +246,7 @@ int main(void)
     assert(state()->fault_latched && state()->stop_reason==CHASSIS_STOP_DIRECTION_TIMEOUT);
     assert(!state()->enable_request);
     drive_speed_cases();
-    physical_brake_cases();
-    puts("CAN2 and physical B brake, steering continuity, release/reversal, freshness, owners and faults: PASS");
+    physical_b_ignored_cases();
+    puts("CAN2 and ignored B button, A stop, reversal, freshness, owners and faults: PASS");
     return 0;
 }

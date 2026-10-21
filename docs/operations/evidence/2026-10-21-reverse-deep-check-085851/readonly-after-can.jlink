@@ -1,0 +1,13 @@
+device STM32F105RC
+exec InhibitConnectRetries = 1
+exec ForceAttachTarget = 1
+if SWD
+speed 1000
+connect
+mem32 0xE000EDF0 1
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-21-reverse-deep-check-085851\control-after-can.bin", 0x200080F0, 0x68
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-21-reverse-deep-check-085851\motion-after-can.bin", 0x20008540, 0x25C
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-21-reverse-deep-check-085851\fault-after-can.bin", 0x200084C0, 0x80
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-21-reverse-deep-check-085851\power-after-can.bin", 0x20008438, 0x1
+mem32 0xE000EDF0 1
+qc

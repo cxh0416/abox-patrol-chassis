@@ -1,0 +1,32 @@
+{
+  "driver": "E:\\canalyst-II-Driver\\CAN\\二次开发库文件\\x64(64bit)\\ControlCAN.dll",
+  "driver_sha256": "6d151f92217983c39a6690ded76b41f86ebad7570bcc27fc9d13f7141425b1e3",
+  "bitrate_kbps": 500,
+  "channels": [
+    {
+      "physical_channel": 1,
+      "hardware_mode": 1,
+      "transmit_api_bound": false,
+      "frame_count": 0,
+      "id_counts": {},
+      "error": null
+    },
+    {
+      "physical_channel": 2,
+      "hardware_mode": 1,
+      "transmit_api_bound": false,
+      "frame_count": 764,
+      "id_counts": {
+        "0x181": 200,
+        "0x281": 200,
+        "0x601": 55,
+        "0x581": 55,
+        "0x702": 22,
+        "0x602": 105,
+        "0x582": 105,
+        "0x701": 22
+      },
+      "error": null
+    }
+  ]
+}

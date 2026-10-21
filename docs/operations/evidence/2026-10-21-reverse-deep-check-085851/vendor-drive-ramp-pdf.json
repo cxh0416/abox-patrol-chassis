@@ -1,0 +1,167 @@
+{
+  "file": "docs\\archive\\2026-08-31-input\\底盘小车\\CAN协议\\源文件\\风得控双电机伺服驱动器CANOPEN说明(1).pdf",
+  "page_count": 59,
+  "matches": [
+    {
+      "physical_page": 34,
+      "snippets": [
+        {
+          "keyword": "6083",
+          "text": "VAR TargetPosition INT32 RW\n6081 h VAR profile_velocity UINT32 RW\n6082 h VAR end_velocity UINT32 RW\n6083 h VAR profile_acceleration UINT32 RW\n6084 h VAR profile_deceleration UINT32 RW\n6085 h VAR quick_stop_deceleration UINT32 RW\n6086 h VAR motion_profile_type INT16 RW\n8.3.2、右电机相关参数\nIndex Object Name"
+        },
+        {
+          "keyword": "6084",
+          "text": "file_velocity UINT32 RW\n6082 h VAR end_velocity UINT32 RW\n6083 h VAR profile_acceleration UINT32 RW\n6084 h VAR profile_deceleration UINT32 RW\n6085 h VAR quick_stop_deceleration UINT32 RW\n6086 h VAR motion_profile_type INT16 RW\n8.3.2、右电机相关参数\nIndex Object Name Type Attr.\n6864h VAR PositionFdb_R INT32 "
+        },
+        {
+          "keyword": "6085",
+          "text": "ocity UINT32 RW\n6083 h VAR profile_acceleration UINT32 RW\n6084 h VAR profile_deceleration UINT32 RW\n6085 h VAR quick_stop_deceleration UINT32 RW\n6086 h VAR motion_profile_type INT16 RW\n8.3.2、右电机相关参数\nIndex Object Name Type Attr.\n6864h VAR PositionFdb_R INT32 RO\n687Ah VAR TargetPosition_R INT32 RW\n688"
+        },
+        {
+          "keyword": "6883",
+          "text": "rgetPosition_R INT32 RW\n6881 h VAR profile_velocity_R UINT32 RW\n6882 h VAR end_velocity_R UINT32 RW\n6883h VAR profile_acceleration_R UINT32 RW\n6884h VAR profile_deceleration_R UINT32 RW\n6885 h VAR quick_stop_deceleration_R UINT32 RW\n6886 h VAR motion_profile_type INT16 RW\nPositionFdb\nPositionFdb为位置的"
+        },
+        {
+          "keyword": "6884",
+          "text": "velocity_R UINT32 RW\n6882 h VAR end_velocity_R UINT32 RW\n6883h VAR profile_acceleration_R UINT32 RW\n6884h VAR profile_deceleration_R UINT32 RW\n6885 h VAR quick_stop_deceleration_R UINT32 RW\n6886 h VAR motion_profile_type INT16 RW\nPositionFdb\nPositionFdb为位置的实时反馈值。\nIndex 6064h\nName PositionFdb\nObject "
+        }
+      ]
+    },
+    {
+      "physical_page": 35,
+      "snippets": [
+        {
+          "keyword": "加速",
+          "text": "S\nUnits position units\nValue Range ----\nDefault Value 0\nprofile_velocity\nprofile_velocity 是指位置启动后，完成加速后最终到达的速度。（单位：转/分钟）\nIndex 6081h\nName profile_velocity\nObject Code VAR\nData Type UINT32\nAccess RW\nPDO Mapping YES\nUnits speed units\nValue Range ----\nDefault Value 0\nend_velocity\nend_velocity 是到达给定位置（ "
+        }
+      ]
+    },
+    {
+      "physical_page": 36,
+      "snippets": [
+        {
+          "keyword": "6083",
+          "text": "8 页\nValue Range ----\nDefault Value 0\nprofile_acceleration\nprofile_acceleration 是到达给定位置期间的加速度。\nIndex 6083h\nName profile_acceleration\nObject Code VAR\nData Type UINT32\nAccess RW\nPDO Mapping YES\nUnits Accelerationunits\nValue Range ----\nDefault Value 20R/min/s\nprofile_deceleration\nprofile_deceleration是到达"
+        },
+        {
+          "keyword": "6084",
+          "text": "e_deceleration\nprofile_deceleration是到达给定位置期间的减速度。（该加速度暂时用 profile_acceleration\n代替。所以该参数暂时不支持）\nIndex 6084h\nName profile_deceleration\nObject Code VAR\nData Type UINT32\nAccess RW\nPDO Mapping YES\nUnits Accelerationunits\nValue Range ----\nDefault Value 20R/min/s\nmotion_profile_type\nmotion_profile_type 被用来选"
+        },
+        {
+          "keyword": "减速",
+          "text": "onunits\nValue Range ----\nDefault Value 20R/min/s\nprofile_deceleration\nprofile_deceleration是到达给定位置期间的减速度。（该加速度暂时用 profile_acceleration\n代替。所以该参数暂时不支持）\nIndex 6084h\nName profile_deceleration\nObject Code VAR\nData Type UINT32\nAccess RW\nPDO Mapping YES\nUnits Accelerationunits\nValue Range ----\nDefault Value"
+        },
+        {
+          "keyword": "加速",
+          "text": "\n第 35 页 共 58 页\nValue Range ----\nDefault Value 0\nprofile_acceleration\nprofile_acceleration 是到达给定位置期间的加速度。\nIndex 6083h\nName profile_acceleration\nObject Code VAR\nData Type UINT32\nAccess RW\nPDO Mapping YES\nUnits Accelerationunits\nValue Range ----\nDefault Value 20R/min/s\nprofile_deceleration\nprofile_dece"
+        },
+        {
+          "keyword": "加速",
+          "text": "s\nValue Range ----\nDefault Value 20R/min/s\nprofile_deceleration\nprofile_deceleration是到达给定位置期间的减速度。（该加速度暂时用 profile_acceleration\n代替。所以该参数暂时不支持）\nIndex 6084h\nName profile_deceleration\nObject Code VAR\nData Type UINT32\nAccess RW\nPDO Mapping YES\nUnits Accelerationunits\nValue Range ----\nDefault Value 20R/m"
+        }
+      ]
+    },
+    {
+      "physical_page": 45,
+      "snippets": [
+        {
+          "keyword": "加速",
+          "text": "Byte 5 Byte 6 Byte 7\n601 23 81 60 00 20 03 00 00\n对该参数 ProfileVelocity_R（索引 0x6881）控制位置环速度，表示位置启动后，完成加速\n后最终到达的速度；\n上位机设备发送，往驱动器写 800 转/分的速度\nCOBID Byte 0 Byte 1 Byte 2 Byte 3 Byte 4 Byte 5 Byte 6 Byte 7\n601 23 81 68 00 20 03 00 00\n（3）、假如当前控制字 ControlWord 低 4 位为 0，则依次对该控制字低 4 位写 6,7,15，表示\n开使能。\n上位机设备发送\nC"
+        }
+      ]
+    },
+    {
+      "physical_page": 46,
+      "snippets": [
+        {
+          "keyword": "减速",
+          "text": "位置\n并开始运动。在获取新的目标位置前，电机速度通常为零。\n连续设定：\n电机到达目标位置后，立即继续朝下一个事先设置好的目标位置运动。这样可达到\n无停顿的连续运动效果，在两个目标位置之间，电机可以无需减速到零。\n以上两种方法都可被控制字（ controlword）的 bit4、bit5 和状态字 statusword 的\nbit12 （ set_point_acknowledge）实时改变。\n通过握手机制，可中断正在执行中的位置控制，利用这几个字位重设目标位置并启\n动执行。\n单步设定方法的步骤：\n首先设置网络管理（ NMT）状态为“操作（ Operational）”，并且设置控制模式参\n数（ "
+        }
+      ]
+    },
+    {
+      "physical_page": 47,
+      "snippets": [
+        {
+          "keyword": "减速",
+          "text": "（ Operational）”，并且设置控制模式参\n数（ 6060 h）为 1。\n1、 根据实际需要设置第 1 个给定目标位置（ target_ position ： 607A h）、目标速度、\n加/减速等相关参数；\n2 、 将控制字 controlword 的 bit4（ new_set_point ）设为“ 1”； bit5\n（ change_set_immediately）设为“ 0”； bit6（绝对/相对）则由目标位置类型（绝对\n或相对）而定；\n3、 在状态字 statusword 的 bit12（ set_point_acknowledge）设置好驱动器应答，然\n后开始执行位置控制"
+        },
+        {
+          "keyword": "减速",
+          "text": "12（ set_point_acknowledge）设置好驱动器应答，然\n后开始执行位置控制；\n4、 设置第 2 个给定目标位置（ target_ position ： 607A h）、目标速度、加/减速等\n相关参数；\n5 、 将控制字 controlword 的 bit4（ new_set_point ）设为“ 1”； bit5\n（ change_set_immediately）设为“ 0”； bit6（绝对/相对）则由目标位置类型（绝对\n或相对）而定；\n6、到达第 1 个目标位置后，驱动器不停机继续走第 2 个目标位置控制；当到达第 2\n个目标位置后，驱动器通过状态字 statusword"
+        },
+        {
+          "keyword": "加速",
+          "text": "置控制；当到达第 2\n个目标位置后，驱动器通过状态字 statusword 的 bit10（ target_reached）应答。然\n后依照程序继续运动或接受新的目标位置。\n注意：\n1、驱动器上电默认加速度等参数，如果用户没有设置加速度，则以默认参数控制，如果需要设置加速度，"
+        },
+        {
+          "keyword": "加速",
+          "text": "置后，驱动器通过状态字 statusword 的 bit10（ target_reached）应答。然\n后依照程序继续运动或接受新的目标位置。\n注意：\n1、驱动器上电默认加速度等参数，如果用户没有设置加速度，则以默认参数控制，如果需要设置加速度，"
+        },
+        {
+          "keyword": "加速",
+          "text": "ord 的 bit10（ target_reached）应答。然\n后依照程序继续运动或接受新的目标位置。\n注意：\n1、驱动器上电默认加速度等参数，如果用户没有设置加速度，则以默认参数控制，如果需要设置加速度，"
+        }
+      ]
+    },
+    {
+      "physical_page": 52,
+      "snippets": [
+        {
+          "keyword": "减速",
+          "text": "rnal_value_R =position_actual_value _R* electronic_gear_ratio_R;\n10.6、设置给定速度比\n左电机：\n默认给定速度比为 1，如果电机配置减速机，假设为 7:1，在速度环情况下，如果想通\n过 60FF_00 写 200r/m，的速度，电机经过减速机后也转 200r/m 的速度。\nSpeedRef_Gain = (6094_01 ) / (6094_02) = 7/1 = 7;"
+        },
+        {
+          "keyword": "减速",
+          "text": "ear_ratio_R;\n10.6、设置给定速度比\n左电机：\n默认给定速度比为 1，如果电机配置减速机，假设为 7:1，在速度环情况下，如果想通\n过 60FF_00 写 200r/m，的速度，电机经过减速机后也转 200r/m 的速度。\nSpeedRef_Gain = (6094_01 ) / (6094_02) = 7/1 = 7;"
+        }
+      ]
+    },
+    {
+      "physical_page": 53,
+      "snippets": [
+        {
+          "keyword": "减速",
+          "text": "桂林风得控科技有限公司\n第 52 页 共 58 页\n右电机：\n默认给定速度比为 1，如果电机配置减速机，假设为 7:1，在速度环情况下，如果想通\n过 68FF_00 写 200r/m，的速度，电机经过减速机后也转 200r/m 的速度。\nSpeedRef_Gain _R= (6894_01 ) / (6894_02) = 7/1 = 7;\n10.7、设置反馈速度比\n默认反馈速度比为 1，如果电机配置减速机，假设为 7:1，在速度环情况下，如果想通\n过 60FF_00 写 200r/m，的速度"
+        },
+        {
+          "keyword": "减速",
+          "text": "桂林风得控科技有限公司\n第 52 页 共 58 页\n右电机：\n默认给定速度比为 1，如果电机配置减速机，假设为 7:1，在速度环情况下，如果想通\n过 68FF_00 写 200r/m，的速度，电机经过减速机后也转 200r/m 的速度。\nSpeedRef_Gain _R= (6894_01 ) / (6894_02) = 7/1 = 7;\n10.7、设置反馈速度比\n默认反馈速度比为 1，如果电机配置减速机，假设为 7:1，在速度环情况下，如果想通\n过 60FF_00 写 200r/m，的速度，要使反馈的速度也为 200r/m，则需要设置反馈速度比。\nSpeedFdbGain = (6095_0"
+        },
+        {
+          "keyword": "减速",
+          "text": "速机后也转 200r/m 的速度。\nSpeedRef_Gain _R= (6894_01 ) / (6894_02) = 7/1 = 7;\n10.7、设置反馈速度比\n默认反馈速度比为 1，如果电机配置减速机，假设为 7:1，在速度环情况下，如果想通\n过 60FF_00 写 200r/m，的速度，要使反馈的速度也为 200r/m，则需要设置反馈速度比。\nSpeedFdbGain = (6095_01 ) / (6095_02) = 1/7；\n右电机：\n默认反馈速度比为 1，如果电机配置减速机，假设为 7:1，在速度环情况下，如果想通\n过 68FF_00 写 200r/m，的速度，要使反馈的速度也"
+        },
+        {
+          "keyword": "减速",
+          "text": "的速度，要使反馈的速度也为 200r/m，则需要设置反馈速度比。\nSpeedFdbGain = (6095_01 ) / (6095_02) = 1/7；\n右电机：\n默认反馈速度比为 1，如果电机配置减速机，假设为 7:1，在速度环情况下，如果想通\n过 68FF_00 写 200r/m，的速度，要使反馈的速度也为 200r/m，则需要设置反馈速度比。\nSpeedFdbGain _R= (6895_01 ) / (6895_02) = 1/7；"
+        }
+      ]
+    },
+    {
+      "physical_page": 54,
+      "snippets": [
+        {
+          "keyword": "6083",
+          "text": "ocity UINT32 RW RxMap\n6082 6882 EndVelocity UINT32 RW RxMap\n6067 ------- ReachPosition UINT32 RW NO\n6083 6883 Profileacceleration UINT32 RW RxMap\n6084 6884 profile_deceleration UINT32 RW RxMap\n6085 6885 quick_stop_deceleration UINT32 RW RxMap"
+        },
+        {
+          "keyword": "6084",
+          "text": "NT32 RW RxMap\n6067 ------- ReachPosition UINT32 RW NO\n6083 6883 Profileacceleration UINT32 RW RxMap\n6084 6884 profile_deceleration UINT32 RW RxMap\n6085 6885 quick_stop_deceleration UINT32 RW RxMap"
+        },
+        {
+          "keyword": "6085",
+          "text": " RW NO\n6083 6883 Profileacceleration UINT32 RW RxMap\n6084 6884 profile_deceleration UINT32 RW RxMap\n6085 6885 quick_stop_deceleration UINT32 RW RxMap"
+        },
+        {
+          "keyword": "6883",
+          "text": " UINT32 RW RxMap\n6082 6882 EndVelocity UINT32 RW RxMap\n6067 ------- ReachPosition UINT32 RW NO\n6083 6883 Profileacceleration UINT32 RW RxMap\n6084 6884 profile_deceleration UINT32 RW RxMap\n6085 6885 quick_stop_deceleration UINT32 RW RxMap"
+        },
+        {
+          "keyword": "6884",
+          "text": "RW RxMap\n6067 ------- ReachPosition UINT32 RW NO\n6083 6883 Profileacceleration UINT32 RW RxMap\n6084 6884 profile_deceleration UINT32 RW RxMap\n6085 6885 quick_stop_deceleration UINT32 RW RxMap"
+        }
+      ]
+    }
+  ]
+}

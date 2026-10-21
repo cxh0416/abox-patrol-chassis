@@ -1,0 +1,59 @@
+{
+  "tick": 14314,
+  "rtos_tick": 14305,
+  "session": "phy-remote",
+  "seq": 62,
+  "lease_deadline": 15009,
+  "reversal_start": 0,
+  "requested_rpm": 0,
+  "target_rpm": 0,
+  "target_mdeg": 0,
+  "control_flags_hex": "000001000001000000000000",
+  "feedback_flags_hex": "01010100000001010100",
+  "feedback_rpms": [
+    0,
+    0
+  ],
+  "feedback_angles": [
+    -208,
+    -325
+  ],
+  "feedback_ms": 14623,
+  "left_rpm": 0,
+  "right_rpm": 0,
+  "left_ms": 14714,
+  "right_ms": 14735,
+  "steer_ms": 14745,
+  "steer_status_ms": 14695,
+  "drive_status_ms": 14754,
+  "sdo_counts": {
+    "timeout": 0,
+    "success": 166
+  },
+  "diag_tail_hex": "010101010101010002000000a2390000cb390000cb390000063a0000ac390000c1390000cd3c0000eb3c00005c3400008e340000a2340000f2340000fc34000003010000",
+  "bench_hex": "021000000200010000004060b2380000963100000000000000000000e39dfeffd1230100dae0ffff47e0ffffdae0ffffdae0ffff4b00000048faffffe39dfeffd12301000000000030754b004b004b0002000000",
+  "bench_phase": 2,
+  "bench_step": 16,
+  "bench_pending": 0,
+  "bench_fault": 0,
+  "bench_desired": -7974,
+  "bench_applied": -7974,
+  "drive_hex": "020c00010200000041600000523400004433000000000000000000000000000000000000070000000000000000000000",
+  "drive_phase": 2,
+  "drive_step": 12,
+  "drive_pending": 0,
+  "drive_fault": 0,
+  "drive_index": 24641,
+  "drive_targets": [
+    0,
+    0,
+    0
+  ],
+  "gate_mask": 0,
+  "can_raw_rx": [
+    885,
+    124
+  ],
+  "can_queue_overflows": 0,
+  "phy_region": "000000000000000000000000393900000101020000000000010000003c0000000000000000000000"
+}

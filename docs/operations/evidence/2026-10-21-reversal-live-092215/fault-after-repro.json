@@ -1,0 +1,80 @@
+{
+  "device_app_sha256": "ddfe2361bc187b4658383cd7fe8e529d16d9786b319b9b34a2313d51ed18986f",
+  "state": {
+    "ram_tick": 177839,
+    "tick_after_ram": 178734,
+    "power": 0,
+    "enable": 0,
+    "session": 0,
+    "fault_latched": 1,
+    "stop_reason": 11,
+    "reversal_started_ms": 77964,
+    "fault_storage": 2,
+    "fault_dirty": 0,
+    "drive_phase": 4,
+    "drive_step": 12,
+    "drive_index": "0x68ff",
+    "drive_sent_ms": 77951,
+    "left_sample_ms": 79941,
+    "right_sample_ms": 79951,
+    "left_rpm": 22,
+    "right_rpm": -22,
+    "fault_after_reverse_ms": 2007
+  },
+  "fault": {
+    "magic": 1296445489,
+    "sequence": 14,
+    "at_ms": 79971,
+    "source": 1,
+    "reason": 11,
+    "gates": 0,
+    "target_rpm": 0,
+    "target_mdeg": 0,
+    "left_rpm": 22,
+    "right_rpm": -22,
+    "driver_raw": -8026,
+    "encoder_raw": 3,
+    "steer_sw": 1591,
+    "drive_sw": 55,
+    "left_code": 0,
+    "right_code": 0,
+    "left_code_age": 720,
+    "right_code_age": 550,
+    "steer_age": 10,
+    "drive_age": 40,
+    "bench_phase": 4,
+    "bench_step": 16,
+    "bench_fault": 1,
+    "drive_phase": 4,
+    "drive_step": 12,
+    "drive_fault": 3,
+    "last_abort": 100794368,
+    "encoder_error": 0,
+    "center_phase": 0,
+    "reserved0": 0,
+    "reserved1": 0,
+    "checksum": 0
+  },
+  "core_registers": [
+    [
+      "E000EDF0",
+      "01010001 "
+    ],
+    [
+      "E000ED08",
+      "08008000 "
+    ],
+    [
+      "E000ED04",
+      "00000000 "
+    ],
+    [
+      "E000ED28",
+      "00000000 00000000 "
+    ],
+    [
+      "E000EDF0",
+      "01010001 "
+    ]
+  ]
+}

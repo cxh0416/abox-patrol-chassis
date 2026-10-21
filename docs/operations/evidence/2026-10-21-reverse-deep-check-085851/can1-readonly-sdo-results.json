@@ -1,0 +1,219 @@
+{
+  "physical_channel": 2,
+  "target_node": 2,
+  "only_upload_requests_sent": true,
+  "no_NMT_or_writes_or_reset": true,
+  "objects": [
+    {
+      "index": "0x6061",
+      "subindex": 0,
+      "name": "operation_mode",
+      "status": "ok",
+      "value": 3,
+      "signed_value": 3,
+      "width": 1,
+      "data": "4f61600003"
+    },
+    {
+      "index": "0x6040",
+      "subindex": 0,
+      "name": "controlword",
+      "status": "ok",
+      "value": 15,
+      "signed_value": 15,
+      "width": 2,
+      "data": "4b4060000f00"
+    },
+    {
+      "index": "0x60ff",
+      "subindex": 0,
+      "name": "left_target",
+      "status": "ok",
+      "value": 0,
+      "signed_value": 0,
+      "width": 4,
+      "data": "43ff600000000000"
+    },
+    {
+      "index": "0x68ff",
+      "subindex": 0,
+      "name": "right_target",
+      "status": "ok",
+      "value": 0,
+      "signed_value": 0,
+      "width": 4,
+      "data": "43ff680000000000"
+    },
+    {
+      "index": "0x606b",
+      "subindex": 0,
+      "name": "left_demand",
+      "status": "ok",
+      "value": 0,
+      "signed_value": 0,
+      "width": 4,
+      "data": "436b600000000000"
+    },
+    {
+      "index": "0x686b",
+      "subindex": 0,
+      "name": "right_demand",
+      "status": "ok",
+      "value": 0,
+      "signed_value": 0,
+      "width": 4,
+      "data": "436b680000000000"
+    },
+    {
+      "index": "0x6080",
+      "subindex": 0,
+      "name": "maximum_speed",
+      "status": "ok",
+      "value": 3000,
+      "signed_value": 3000,
+      "width": 4,
+      "data": "43806000b80b0000"
+    },
+    {
+      "index": "0x6083",
+      "subindex": 0,
+      "name": "left_PP_acceleration",
+      "status": "ok",
+      "value": 50000,
+      "signed_value": 50000,
+      "width": 4,
+      "data": "4383600050c30000"
+    },
+    {
+      "index": "0x6883",
+      "subindex": 0,
+      "name": "right_PP_acceleration",
+      "status": "ok",
+      "value": 50000,
+      "signed_value": 50000,
+      "width": 4,
+      "data": "4383680050c30000"
+    },
+    {
+      "index": "0x6084",
+      "subindex": 0,
+      "name": "left_PP_deceleration",
+      "status": "ok",
+      "value": 50000,
+      "signed_value": 50000,
+      "width": 4,
+      "data": "4384600050c30000"
+    },
+    {
+      "index": "0x6884",
+      "subindex": 0,
+      "name": "right_PP_deceleration",
+      "status": "ok",
+      "value": 50000,
+      "signed_value": 50000,
+      "width": 4,
+      "data": "4384680050c30000"
+    },
+    {
+      "index": "0x6085",
+      "subindex": 0,
+      "name": "left_PP_quickstop",
+      "status": "ok",
+      "value": 300000,
+      "signed_value": 300000,
+      "width": 4,
+      "data": "43856000e0930400"
+    },
+    {
+      "index": "0x6885",
+      "subindex": 0,
+      "name": "right_PP_quickstop",
+      "status": "ok",
+      "value": 0,
+      "signed_value": 0,
+      "width": 4,
+      "data": "4385680000000000"
+    },
+    {
+      "index": "0x6094",
+      "subindex": 1,
+      "name": "left_target_gain",
+      "status": "ok",
+      "value": 1,
+      "signed_value": 1,
+      "width": 4,
+      "data": "4394600101000000"
+    },
+    {
+      "index": "0x6094",
+      "subindex": 2,
+      "name": "left_target_gain",
+      "status": "ok",
+      "value": 1,
+      "signed_value": 1,
+      "width": 4,
+      "data": "4394600201000000"
+    },
+    {
+      "index": "0x6894",
+      "subindex": 1,
+      "name": "right_target_gain",
+      "status": "ok",
+      "value": 1,
+      "signed_value": 1,
+      "width": 4,
+      "data": "4394680101000000"
+    },
+    {
+      "index": "0x6894",
+      "subindex": 2,
+      "name": "right_target_gain",
+      "status": "ok",
+      "value": 1,
+      "signed_value": 1,
+      "width": 4,
+      "data": "4394680201000000"
+    },
+    {
+      "index": "0x6095",
+      "subindex": 1,
+      "name": "left_feedback_gain",
+      "status": "ok",
+      "value": 1,
+      "signed_value": 1,
+      "width": 4,
+      "data": "4395600101000000"
+    },
+    {
+      "index": "0x6095",
+      "subindex": 2,
+      "name": "left_feedback_gain",
+      "status": "ok",
+      "value": 1,
+      "signed_value": 1,
+      "width": 4,
+      "data": "4395600201000000"
+    },
+    {
+      "index": "0x6895",
+      "subindex": 1,
+      "name": "right_feedback_gain",
+      "status": "ok",
+      "value": 1,
+      "signed_value": 1,
+      "width": 4,
+      "data": "4395680101000000"
+    },
+    {
+      "index": "0x6895",
+      "subindex": 2,
+      "name": "right_feedback_gain",
+      "status": "ok",
+      "value": 1,
+      "signed_value": 1,
+      "width": 4,
+      "data": "4395680201000000"
+    }
+  ],
+  "limits": "PP ramp objects are not assumed to control installed velocity mode; object values are readbacks, not a stopping-curve measurement."
+}

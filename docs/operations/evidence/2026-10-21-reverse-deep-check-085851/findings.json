@@ -1,0 +1,49 @@
+{
+  "field_episode": {
+    "source_index": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-reverse-lock-readonly-084141\\index.json",
+    "app_version": "patrol-chassis-0.2.65",
+    "initial_reverse_ms": 50799879,
+    "last_zero_right_request_timer_ms": 50799950,
+    "fault_ms": 50801880,
+    "request_to_fault_ms": 2001,
+    "last_zero_request_to_fault_ms": 1930,
+    "last_zero_request_offset_ms": 71,
+    "last_zero_request_timestamp_kind": "software request timestamp, not CAN bus capture",
+    "zero_write_ack_sequence_complete": true,
+    "drive_lower_reversing_at_capture": false,
+    "captured_left_rpm": 22,
+    "captured_right_raw_rpm": -17,
+    "drive_status_hex": "0x37",
+    "drive_status_fault_bit_set": false,
+    "drive_executor_fault3_meaning": "unsafe control gate or out-of-range target; captured target=0 is in range, so upper safety gate revoked",
+    "secondary_steering_fault1": "cross-stop/unsafe after revocation, not standalone driver panel error"
+  },
+  "confirmed_implementation_findings": [
+    "Upper control starts 2s total budget when it receives the opposite target, before zero SDO scheduling/acknowledgements.",
+    "BenchDrive accepted the ordinary zero targets but had not entered its separate reversing branch when the upper timeout latched.",
+    "Upper and lower control independently perform stopped confirmation. The host fixture reproduces two zero-write pairs and two three-sample waits.",
+    "Upper confirmation uses aggregate coherent_feedback_ms; lower confirmation uses independent left/right timestamps after zero acknowledgements. The freshness contracts are different.",
+    "T12 A/B do not call the controlled fault reset entry."
+  ],
+  "vendor_scope": {
+    "pdf": "docs\\archive\\2026-08-31-input\\底盘小车\\CAN协议\\源文件\\风得控双电机伺服驱动器CANOPEN说明(1).pdf",
+    "physical_pages": [
+      31,
+      36,
+      43
+    ],
+    "notes": [
+      "The active firmware sets 6060=3 and controls velocity through 60FF/68FF.",
+      "The documented 6083/6084 profile parameters are in the position-control chapter; 6084 is explicitly described there as unsupported/replaced by profile_acceleration.",
+      "This does not establish a supported ramp-setting interface or current values for the installed velocity-mode drive. Position-profile defaults must not be used to infer actual velocity stopping time."
+    ]
+  },
+  "unresolved": [
+    "No real pre-stop speed/deceleration trajectory was recorded.",
+    "Actual installed velocity-mode ramp/limit settings have not been read.",
+    "The repeated lower confirmation is a confirmed structural issue but did not directly trigger this captured upper-layer timeout."
+  ],
+  "live_followup": "Failed before connecting to the probe/programmer. No new device RAM/Flash, reset, halt or control commands were executed.",
+  "firmware_changes": false,
+  "hardware_motion_commands": false
+}

@@ -1,0 +1,92 @@
+{
+  "scope": "Passive CAN1 capture plus non-halting read-only SWD. No transmitted diagnostic/control frames, reset, fault clearing, flash or production code changes in this recording.",
+  "zero_transactions": [
+    {
+      "object": "0x60ff",
+      "request_host_s": 57.269377,
+      "ack_host_s": 57.269444
+    },
+    {
+      "object": "0x68ff",
+      "request_host_s": 57.290691,
+      "ack_host_s": 57.290762
+    }
+  ],
+  "speed_timeline": [
+    {
+      "reference_host_s": 57.29,
+      "samples": {
+        "left": {
+          "host_s": 57.26191,
+          "raw_rpm": 1000
+        },
+        "right": {
+          "host_s": 57.283408,
+          "raw_rpm": -1000
+        }
+      }
+    },
+    {
+      "reference_host_s": 57.79,
+      "samples": {
+        "left": {
+          "host_s": 57.791881,
+          "raw_rpm": 771
+        },
+        "right": {
+          "host_s": 57.79917,
+          "raw_rpm": -777
+        }
+      }
+    },
+    {
+      "reference_host_s": 58.29,
+      "samples": {
+        "left": {
+          "host_s": 58.286872,
+          "raw_rpm": 502
+        },
+        "right": {
+          "host_s": 58.300794,
+          "raw_rpm": -510
+        }
+      }
+    },
+    {
+      "reference_host_s": 58.79,
+      "samples": {
+        "left": {
+          "host_s": 58.779904,
+          "raw_rpm": 243
+        },
+        "right": {
+          "host_s": 58.791483,
+          "raw_rpm": -247
+        }
+      }
+    },
+    {
+      "reference_host_s": 59.29,
+      "samples": {
+        "left": {
+          "host_s": 59.284055,
+          "raw_rpm": 22
+        },
+        "right": {
+          "host_s": 59.291246,
+          "raw_rpm": -22
+        }
+      }
+    }
+  ],
+  "fault": "MCU reason11 direction timeout, reversal77964ms -> fault79971ms (2007ms), last paired feedback22/-22rpm. Driver status0x0037 Fault bit clear; error objects0/0.",
+  "interpretation": "From steady ~1000rpm, actual speeds decrease continuously after accepted zero targets but do not reach <=20rpm within the reversal budget, so three fresh qualifying pairs cannot be obtained. No negative-left reverse target was transmitted in this captured event. This proves timeout latching, not mechanical stall.",
+  "limits": [
+    "CAN2 handset frames are not present: raw reverse joystick arrival is inferred from retained MCU reversal_started_ms, not captured on CAN1.",
+    "Host elapsed timestamps are batched receive times; hardware timestamps retained without assuming unit.",
+    "No velocity feedback replies after host59.291246s; later CAN heartbeat/PDO traffic continues. Cannot infer post-latch actual wheel speed from last sample22/-22.",
+    "No confirmed velocity-mode deceleration parameter or physical braking distance from this capture.",
+    "Existing upper/lower duplicate zero confirmations are a separate implementation issue; lower reversing was not entered in this event."
+  ],
+  "proposal": "Keep zero plus three fresh bilateral <=20rpm confirmations and 2s timeout/latch. Consolidate confirmation ownership; cancel pending reverse on neutral/forward/lost input; validate velocity-mode braking to fit budget or reduce speed. A longer timeout or wider threshold changes current safety requirement and is not applied."
+}

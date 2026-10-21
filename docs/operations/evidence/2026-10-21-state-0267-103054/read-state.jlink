@@ -1,0 +1,12 @@
+device STM32F105RC
+exec InhibitConnectRetries = 1
+exec ForceAttachTarget = 1
+if SWD
+speed 1000
+connect
+mem32 0xE000EDF0 1
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\out\flash\2026-10-21-state-0267-103054/flash-readonly.bin", 0x08000000, 0x40000
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-21-state-0267-103054/uid.bin", 0x1FFFF7E8, 0xC
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-21-state-0267-103054/state-readonly.bin", 0x0803E800, 0x1000
+mem32 0xE000EDF0 1
+qc

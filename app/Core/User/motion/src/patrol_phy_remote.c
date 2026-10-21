@@ -73,7 +73,7 @@ uint8_t PatrolPhyRemote_OnFrame(const PatrolCanFrame* frame, uint32_t received_m
 
     if (frame->id != PATROL_PHY_REMOTE_SWITCH_ID && frame->id != PATROL_PHY_REMOTE_JOYSTICK_ID)
         return 0U;
-    /* A queued old switch must never release a newer brake state. */
+    /* Reject queued old switch frames before updating enable state. */
     if (frame->dlc != 8U || (uint32_t)(now_ms - received_ms) > 100U)
         return 1U;
 
@@ -82,9 +82,7 @@ uint8_t PatrolPhyRemote_OnFrame(const PatrolCanFrame* frame, uint32_t received_m
             if (switch_seen && (int32_t)(received_ms - last_switch_ms) < 0) return 1U;
             switch_seen = 1U;
             last_switch_ms = received_ms;
-            /* Operator confirmed B follows A: lamp on/nonzero, lamp off/zero.
-             * Use the transmitted state, never toggle on each cyclic frame. */
-            RemoteService_SetDriveBrake(frame->data[3] != 0U);
+            /* B (data[3]) is reserved and has no control action. */
             /* byte2 = channel A = handset enable (nonzero = active, 0 = inactive). */
             uint8_t enable = frame->data[2];
             uint8_t was_active = (last_enable != 0U);

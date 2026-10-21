@@ -1,0 +1,86 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "created_at": "2026-10-21T09:29:39.742394+08:00",
+  "type": "operator reproduced reversal fault, passive CAN capture and read-only SWD",
+  "commit": "6dc46630cd6cae3cabf0600be1ca4c0f3e03a29a",
+  "app_sha256": "ddfe2361bc187b4658383cd7fe8e529d16d9786b319b9b34a2313d51ed18986f",
+  "firmware_changed": false,
+  "can_actions": "hardware Mode1 listen-only, both physical channels; channel2 CAN1 traffic, channel1 silent; no transmit interface bound",
+  "swd_actions": "ForceAttachTarget, inhibit connect retries, read/save only, no halt/reset/run/write",
+  "findings": "analysis.json",
+  "public_evidence": [
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reversal-live-092215\\analysis.json",
+      "bytes": 3299,
+      "sha256": "7cae5d412634a0dbc5947562a797a2ab8067bb3f448ded19e2049f387b9923c1"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reversal-live-092215\\can-raw.jsonl",
+      "bytes": 5901366,
+      "sha256": "5572c20af03a0281c78017ab6d6d4e5853a7f27bc2f4b78cfdf99712d8e44a9f"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reversal-live-092215\\capture-metadata.json",
+      "bytes": 927,
+      "sha256": "b03ef811d1f98a49d41de49cbfcbe95b23d824839f901b55ae872f14ea0799ca"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reversal-live-092215\\capture-summary.json",
+      "bytes": 778,
+      "sha256": "06ba3dc95ce15c25c63dc10285c3e711cc4e7f96369117cb7db4152419349eef"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reversal-live-092215\\events.jsonl",
+      "bytes": 5131,
+      "sha256": "8a22e8d82305d420819fa6a21c110899d3937ac0ea35745724fd324dcced8672"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reversal-live-092215\\fault-after-repro.json",
+      "bytes": 1649,
+      "sha256": "f2fa2b86fbf10772a700ab9001d1e25471e43abce2ab0e92a27636aa33e34d75"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reversal-live-092215\\readonly-fault-snapshot.jlink",
+      "bytes": 830,
+      "sha256": "befd5e2f28333385ab4d85c50ba7b483d717bfbb058acd7544224d90c03d2e3e"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reversal-live-092215\\readonly-fault-snapshot.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reversal-live-092215\\readonly-fault-snapshot.stdout.log",
+      "bytes": 3776,
+      "sha256": "741540c386c1ea0b776dfbb836372b48a0b2c220090410ac7f1cc01cc758a521"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reversal-live-092215\\speed-samples.json",
+      "bytes": 108762,
+      "sha256": "266d3925a7ec557e0db147c89c4b619eb4a7e1ae29b33c837bf140601ebf36ea"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reversal-live-092215\\tick-after-ram.bin",
+      "bytes": 4,
+      "sha256": "1f8c4795fe87f8949d1356601dc845d8cb5299aa48b0b80d5feaf033bd9b5962"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reversal-live-092215\\uid.bin",
+      "bytes": 12,
+      "sha256": "4d46849cde0edf35dcd65338a472ff614a7193426a4a4b0d712dcc1a29a73f92"
+    }
+  ],
+  "protected_evidence": [
+    {
+      "path": "out\\flash\\2026-10-21-reversal-live-092215\\app-after-repro.bin",
+      "bytes": 151048,
+      "sha256": "ddfe2361bc187b4658383cd7fe8e529d16d9786b319b9b34a2313d51ed18986f"
+    },
+    {
+      "path": "out\\flash\\2026-10-21-reversal-live-092215\\ram-after-repro.bin",
+      "bytes": 65536,
+      "sha256": "74af86934564311255b7509a6c3a7e2dd17a207fa89353152c80cc1b44a2e164"
+    }
+  ],
+  "note": "Protected full RAM may contain credentials; retained in ignored out/flash, not copied to public evidence."
+}

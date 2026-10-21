@@ -1,0 +1,101 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "created_at": "2026-10-21T10:17:05.813689+08:00",
+  "type": "per-board offline Boot State payload generation, not firmware installation",
+  "version": "patrol-chassis-0.2.66",
+  "uid": "34ffd3054e57333750350443",
+  "generation_plan": "generation-plan.json",
+  "verification": "state-0266-verification.log",
+  "board_actions": "Read-only force attach and two consistent Flash/State reads; no halt, reset, write, erase or CAN commands. DHCSR before/after 0x01010001.",
+  "generated_state": "A sequence15 and B sequence16, NORMAL, current App0.2.66/150952 bytes/CRC74B51F07; retained prior stable0.2.65 metadata; does not declare a new UFS stable image confirmed.",
+  "required_full_image": {
+    "path": "out\\debug\\online\\Patrol_Vehicle_Chassis_Full.bin",
+    "bytes": 183720,
+    "sha256": "7321acb042316b56eba1517d79173e470217275ee9258270e6ee01128ebbf14a"
+  },
+  "app_image": {
+    "path": "out\\debug\\online\\Patrol_Vehicle_Chassis_App.bin",
+    "bytes": 150952,
+    "sha256": "233fa5563c7c60a1aaadf013cbe48f8fca84e65d1126633396e962a9895afe43"
+  },
+  "addresses": {
+    "BootState_A.bin": "0x803e800",
+    "BootState_B.bin": "0x803f000"
+  },
+  "public_evidence": [
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0266-101351\\BootState_A.bin",
+      "bytes": 2048,
+      "sha256": "bbd16b54748370f963fc5ec3e6a25de1eef0141891635cc44414d840222e1751"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0266-101351\\BootState_B.bin",
+      "bytes": 2048,
+      "sha256": "75ccac5bb7288cd851ad09ee4de7497af9eff78a4b605bec4492d50d10f170d7"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0266-101351\\generation-plan.json",
+      "bytes": 2042,
+      "sha256": "c9366a234e65949e8cbb96d53115415d801ba36fcd9f8afd6299935927c9fb6f"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0266-101351\\read-state.jlink",
+      "bytes": 611,
+      "sha256": "3de684ed44c07f081e7fe2356ca3c9468dd40f282e1fea50389aa07cd7ee2921"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0266-101351\\read-state.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0266-101351\\read-state.stdout.log",
+      "bytes": 3234,
+      "sha256": "c3ec4d070c8430d364f30e96da55e1635e8330d2724bddf9440e41b407f5b360"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0266-101351\\state-0266-verification.log",
+      "bytes": 180,
+      "sha256": "f5ecaf894752fadc36a627f73202de237b836910e4052e79e07fffb1aced21aa"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0266-101351\\state-before.json",
+      "bytes": 1299,
+      "sha256": "fa89054b357a511c2ce5ec862bfa8a1e6d5972fb453b357bd4d92c709f00e65b"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0266-101351\\state-readonly.bin",
+      "bytes": 4096,
+      "sha256": "098d9b1d8239cac1866f8e2d26378ae5d14cf8f09479aef6e7f2252bc9253a69"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0266-101351\\uid.bin",
+      "bytes": 12,
+      "sha256": "4d46849cde0edf35dcd65338a472ff614a7193426a4a4b0d712dcc1a29a73f92"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0266-101351\\verify-state-0266.c",
+      "bytes": 3367,
+      "sha256": "92e9bfeba16d869dabe68f5316ff5a43d7bdb0c90e73c22ebe01240181510f23"
+    }
+  ],
+  "protected_evidence": [
+    {
+      "path": "out\\flash\\2026-10-21-state-0266-101351\\config-recovery-backup.bin",
+      "bytes": 2048,
+      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+    },
+    {
+      "path": "out\\flash\\2026-10-21-state-0266-101351\\config-v5-backup.bin",
+      "bytes": 2048,
+      "sha256": "1835f5eb2c548b64c56a6c73bb0f434fb28fb19a5b29d56e2f5734e035a06b34"
+    },
+    {
+      "path": "out\\flash\\2026-10-21-state-0266-101351\\flash-readonly.bin",
+      "bytes": 262144,
+      "sha256": "4747172bc195310a28eba1caf72638b0abed4639aff1bd67e43354ac1ac9ee0c"
+    }
+  ],
+  "protected_note": "Full Flash and Config V5 may contain credentials; retained privately in ignored out/flash only.",
+  "flash_instructions": "Write Full at0x08000000 and StateA at0x0803E800 and StateB at0x0803F000 before one final reset; preserve recovery0x0803E000 and ConfigV5 0x0803F800; do not mass erase. Files derived for current UID and this App; regenerate after another OTA/install/state change."
+}

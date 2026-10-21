@@ -1,0 +1,164 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "created_at": "2026-10-21T10:34:05.332062+08:00",
+  "type": "4-second direction timeout candidate and per-board offline Boot State payload generation; not installation",
+  "version": "patrol-chassis-0.2.67",
+  "uid": "34ffd3054e57333750350443",
+  "direction_timeout_ms": 4000,
+  "ordinary_stop_timeout_ms": 2000,
+  "sd_response_timeout_ms": 100,
+  "generation_plan": "generation-plan.json",
+  "state_verification": "state-0267-verification.log",
+  "validation": "candidate.manifest.json",
+  "source_board_state": {
+    "magic": 1112757810,
+    "abi": 3,
+    "length": 112,
+    "sequence": 17,
+    "state": 4,
+    "stable_slot": 0,
+    "candidate_slot": 0,
+    "trial_fail_count": 0,
+    "last_reset_reason": 0,
+    "image_size": 150952,
+    "image_crc32": 1958027015,
+    "image_version": "patrol-chassis-0.2.66",
+    "stable_image_size": 150952,
+    "stable_image_crc32": 1958027015,
+    "stable_image_version": "patrol-chassis-0.2.66",
+    "last_error": 0,
+    "rollback_report_pending": 0,
+    "rollback_installed": 0,
+    "reserved0": 0,
+    "reserved1": 0,
+    "record_crc32": 3035056783,
+    "page": "A",
+    "valid": true
+  },
+  "files": [
+    {
+      "file": "BootState_A.bin",
+      "address": "0x803e800",
+      "bytes": 2048,
+      "sha256": "7e2c5c901a22df7b008bcd1346231ee44a14243be83ddeca08329f30f6162212",
+      "sequence": 18,
+      "state": "NORMAL",
+      "state_code": 0,
+      "candidate_slot": 255,
+      "app_version": "patrol-chassis-0.2.67",
+      "app_size": 150952,
+      "app_crc32": "E133D8B4",
+      "record_crc32": "0342B55B"
+    },
+    {
+      "file": "BootState_B.bin",
+      "address": "0x803f000",
+      "bytes": 2048,
+      "sha256": "26d03facc8f00ffca71d86b2385a7cd028a2a2cdaaa7cec45ae1ab9af46e0587",
+      "sequence": 19,
+      "state": "NORMAL",
+      "state_code": 0,
+      "candidate_slot": 255,
+      "app_version": "patrol-chassis-0.2.67",
+      "app_size": 150952,
+      "app_crc32": "E133D8B4",
+      "record_crc32": "76DD73C6"
+    }
+  ],
+  "board_actions": "Read-only ForceAttachTarget with connect retries inhibited; no halt, reset, erase, write, clear fault or CAN commands; two State reads consistent.",
+  "public_evidence": [
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0267-103054\\BootState_A.bin",
+      "bytes": 2048,
+      "sha256": "7e2c5c901a22df7b008bcd1346231ee44a14243be83ddeca08329f30f6162212"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0267-103054\\BootState_B.bin",
+      "bytes": 2048,
+      "sha256": "26d03facc8f00ffca71d86b2385a7cd028a2a2cdaaa7cec45ae1ab9af46e0587"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0267-103054\\candidate.manifest.json",
+      "bytes": 4532,
+      "sha256": "03b3339c2edfc0fa26f4ff4c879c6e925f78b294eae8bb017d79da81354e6644"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0267-103054\\debug.manifest.json",
+      "bytes": 1862,
+      "sha256": "983ac1063426ae77f6289bd47497d3aba56b4df5b6436a9a80fd1e40a7e3ab8f"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0267-103054\\generation-plan.json",
+      "bytes": 2042,
+      "sha256": "01eaab60ae6540abb47e7c8efd095b04f0e46b39dbc84523d957ae49072a6802"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0267-103054\\Patrol_Vehicle_Chassis_App.bin",
+      "bytes": 150952,
+      "sha256": "d3d3055fa6edfb087f50ac2052e8a858cfd44bbb3d5b3112c06f22fe01cdb6ed"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0267-103054\\Patrol_Vehicle_Chassis_Full.bin",
+      "bytes": 183720,
+      "sha256": "976e55161ca29500f6077c5cf465c17a2c7d737ed4e51142bedee7415735ea3d"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0267-103054\\read-state.jlink",
+      "bytes": 611,
+      "sha256": "b19371730b519a49b49350588bb2c25b90f081371c6a206d567760288b318f8e"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0267-103054\\read-state.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0267-103054\\read-state.stdout.log",
+      "bytes": 3234,
+      "sha256": "7eda3d5e1448b8d233636f9c82b7c168663a8a2af0c9dab6607547942e2b4043"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0267-103054\\state-0267-verification.log",
+      "bytes": 180,
+      "sha256": "f5ecaf894752fadc36a627f73202de237b836910e4052e79e07fffb1aced21aa"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0267-103054\\state-before.json",
+      "bytes": 1301,
+      "sha256": "60ea6a1e52f48e438dd2f1a6868e47a7fac12174790c5ef72abbea4cbbde243f"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0267-103054\\state-readonly.bin",
+      "bytes": 4096,
+      "sha256": "c461f277bfbbbf692f4bd33e98213e8e774f0df9c1578b956a8807764222632d"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0267-103054\\uid.bin",
+      "bytes": 12,
+      "sha256": "4d46849cde0edf35dcd65338a472ff614a7193426a4a4b0d712dcc1a29a73f92"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-state-0267-103054\\verify-state-0267.c",
+      "bytes": 3421,
+      "sha256": "5a5b722bbd648746ae045863fbe03f709d771b85cd3d811d5640be58ab20faf0"
+    }
+  ],
+  "protected_evidence": [
+    {
+      "path": "out\\flash\\2026-10-21-state-0267-103054\\config-recovery-backup.bin",
+      "bytes": 2048,
+      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+    },
+    {
+      "path": "out\\flash\\2026-10-21-state-0267-103054\\config-v5-backup.bin",
+      "bytes": 2048,
+      "sha256": "1835f5eb2c548b64c56a6c73bb0f434fb28fb19a5b29d56e2f5734e035a06b34"
+    },
+    {
+      "path": "out\\flash\\2026-10-21-state-0267-103054\\flash-readonly.bin",
+      "bytes": 262144,
+      "sha256": "84de7038720c023e64a8601fc39c9db57b68923d4ebf526bb4d307fd6e87ad9f"
+    }
+  ],
+  "instructions": "Use this Full at0x08000000 with these StateA at0x0803E800 and StateB at0x0803F000; finish all writes and verification before reset. Preserve recovery0x0803E000 and ConfigV5 0x0803F800; no mass erase. Re-read/regenerate if board state changes before installation."
+}

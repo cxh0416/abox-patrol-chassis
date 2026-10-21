@@ -1,0 +1,51 @@
+{
+  "fresh_device_matches_installed_app": true,
+  "device_app_sha256": "ddfe2361bc187b4658383cd7fe8e529d16d9786b319b9b34a2313d51ed18986f",
+  "can1_physical_channel": 2,
+  "only_node2_upload_requests": 21,
+  "state_after_readonly_queries": {
+    "fault_sequence": 14,
+    "fault_reason": 11,
+    "fault_latched": 1,
+    "stop_reason": 11,
+    "enable_request": 0,
+    "session_active": 0,
+    "target_rpm": 0,
+    "output_command": 1,
+    "drive_status_hex": "0x1037",
+    "left_rpm": 0,
+    "right_rpm": 0
+  },
+  "readback_values": {
+    "operation_mode": 3,
+    "controlword": 15,
+    "left_target": 0,
+    "right_target": 0,
+    "left_demand": 0,
+    "right_demand": 0,
+    "maximum_speed": 3000,
+    "left_PP_acceleration": 50000,
+    "right_PP_acceleration": 50000,
+    "left_PP_deceleration": 50000,
+    "right_PP_deceleration": 50000,
+    "left_PP_quickstop": 300000,
+    "right_PP_quickstop": 0,
+    "left_target_gain_1": 1,
+    "left_target_gain_2": 1,
+    "right_target_gain_1": 1,
+    "right_target_gain_2": 1,
+    "left_feedback_gain_1": 1,
+    "left_feedback_gain_2": 1,
+    "right_feedback_gain_1": 1,
+    "right_feedback_gain_2": 1
+  },
+  "interpretation": [
+    "Current MCU fault remains reason 11, sequence14. No reset or fault clearing occurred.",
+    "Mode3 + controlword15 + status1037 + zero targets/demands/feedback is consistent with an enabled controller holding a zero-speed command; mechanical holding torque/brake state was not measured.",
+    "Target and feedback scaling numerators and denominators are all 1.",
+    "The drive responded to uploads without aborts. No hardware Fault bit was present in the fresh status and passive fault-code uploads were zero.",
+    "Both profile acceleration/deceleration read as 50000; these are not assumed to describe velocity-mode stopping dynamics.",
+    "Quickstop objects differ (left300000/right0), but this reversal path sends ordinary zero targets and does not invoke quickstop; the asymmetry is not established as this incident cause."
+  ],
+  "remaining_gap": "A pre-stop speed/zero-command/actual-speed curve is still required to distinguish drive velocity-ramp behavior, mechanical deceleration and speed-feedback lag. No motion was commanded to obtain such a curve."
+}
