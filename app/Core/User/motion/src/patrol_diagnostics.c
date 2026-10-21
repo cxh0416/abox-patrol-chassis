@@ -28,16 +28,19 @@ static const PatrolSdoEntry g_sdo_entries[PATROL_DIAG_SDO_ENTRY_COUNT] = {
     {2U, 0x2006U, 0U, 1000U},
 };
 
+// 判断无符号毫秒时钟下调度期限是否到达。通过带符号差值比较支持时钟自然回绕，要求期限差处于可比较的半周期范围。
 static uint8_t due(uint32_t now_ms, uint32_t due_ms)
 {
     return (uint8_t)((int32_t)(now_ms - due_ms) >= 0);
 }
 
+// 判断一个已出现的采样是否仍在允许时效内。未见样本或年龄超过 timeout_ms 均无效，不用默认零值伪造新鲜反馈。
 static uint8_t fresh(uint8_t seen, uint32_t sample_ms, uint32_t now_ms, uint32_t timeout_ms)
 {
     return (uint8_t)(seen && (now_ms - sample_ms) <= timeout_ms);
 }
 
+// 检查节点在线及当前时间下的诊断读取资格。供只读轮询选择节点使用，不代表节点已取得运动使能。
 static uint8_t sdo_node_ready(const PatrolDiagnostics* d, uint8_t node, uint32_t now_ms)
 {
     uint8_t seen = node == 1U ? d->steering_heartbeat_seen : d->drive_heartbeat_seen;
@@ -49,6 +52,7 @@ static uint8_t sdo_node_ready(const PatrolDiagnostics* d, uint8_t node, uint32_t
                      (state == 0x7FU || state == 0x05U));
 }
 
+// 结束当前诊断 SDO 事务并安排后续轮询。清理在途标志及相关时间状态，避免旧响应阻塞后续安全反馈读取。
 static void finish_pending(PatrolDiagnostics* diagnostics, uint32_t now_ms)
 {
     uint8_t entry = diagnostics->pending_entry;
@@ -57,6 +61,7 @@ static void finish_pending(PatrolDiagnostics* diagnostics, uint32_t now_ms)
     diagnostics->pending_retry = 0U;
 }
 
+// 把已匹配的对象字典反馈写入诊断缓存。按轮询表条目更新数值与各自采样时间，左右轮和状态字的新鲜度分别维护。
 static void store_sdo_value(PatrolDiagnostics* diagnostics, const PatrolSdoEntry* entry,
                             int32_t value, uint32_t now_ms)
 {
@@ -95,12 +100,14 @@ static void store_sdo_value(PatrolDiagnostics* diagnostics, const PatrolSdoEntry
     }
 }
 
+// 初始化只读运动诊断状态与轮询进度。清空在线、反馈、错误和在途事务，不发送写对象请求。
 void PatrolDiagnostics_Init(PatrolDiagnostics* diagnostics)
 {
     if (diagnostics == 0) return;
     memset(diagnostics, 0, sizeof(*diagnostics));
 }
 
+// 解析节点心跳、PDO 和匹配的诊断 SDO 响应。根据有效报文更新对应缓存与时间戳，保留 Abort 和协议错误证据，不把无关帧算作目标对象响应。
 void PatrolDiagnostics_OnCanFrame(PatrolDiagnostics* diagnostics, const PatrolCanFrame* frame,
                                   uint32_t now_ms)
 {
@@ -166,6 +173,7 @@ void PatrolDiagnostics_OnCanFrame(PatrolDiagnostics* diagnostics, const PatrolCa
     }
 }
 
+// 在允许轮询时取出下一条只读 SDO 请求。遵守节点状态、单事务和运动优先级限制；返回零时无需发送，取出后由发送方报告发送错误。
 uint8_t PatrolDiagnostics_TakeSdoRead(PatrolDiagnostics* diagnostics, uint32_t now_ms,
                                      PatrolCanFrame* frame)
 {
@@ -231,6 +239,7 @@ uint8_t PatrolDiagnostics_TakeSdoRead(PatrolDiagnostics* diagnostics, uint32_t n
     return 0U;
 }
 
+// 记录诊断读请求未能提交到 CAN。清理在途事务并维护发送失败统计，允许后续按调度重试。
 void PatrolDiagnostics_OnSdoTxError(PatrolDiagnostics* diagnostics, uint32_t now_ms)
 {
     if (diagnostics == 0) return;
@@ -238,6 +247,7 @@ void PatrolDiagnostics_OnSdoTxError(PatrolDiagnostics* diagnostics, uint32_t now
     if (diagnostics->pending_valid) diagnostics->pending_sent_ms = now_ms - PATROL_DIAG_SDO_TIMEOUT_MS;
 }
 
+// 登记编码器规格寄存器与成功读取时间。用于区分编码器在线、规格合法和正式标定兼容，不能只凭位置计数认定配置正确。
 void PatrolDiagnostics_OnEncoderConfig(PatrolDiagnostics* diagnostics, const uint16_t registers[3],
                                        uint32_t now_ms)
 {
@@ -247,6 +257,7 @@ void PatrolDiagnostics_OnEncoderConfig(PatrolDiagnostics* diagnostics, const uin
     diagnostics->encoder_config_ms = now_ms;
 }
 
+// 更新编码器原始计数及成功采样时间。只有有效解析后的计数应调用本接口，以保证时效门禁可信。
 void PatrolDiagnostics_OnEncoderCount(PatrolDiagnostics* diagnostics, uint32_t count,
                                       uint32_t now_ms)
 {
@@ -256,6 +267,7 @@ void PatrolDiagnostics_OnEncoderCount(PatrolDiagnostics* diagnostics, uint32_t c
     diagnostics->encoder_seen = 1U;
 }
 
+// 累计编码器错误并保存最近错误类别。与成功采样时间独立维护，错误不能延长旧样本的可用时间。
 void PatrolDiagnostics_OnEncoderError(PatrolDiagnostics* diagnostics, PatrolEncoderError error)
 {
     if (diagnostics == 0) return;
@@ -267,6 +279,7 @@ void PatrolDiagnostics_OnEncoderError(PatrolDiagnostics* diagnostics, PatrolEnco
     else diagnostics->encoder_transport_error_count++;
 }
 
+// 生成指定时刻的一致诊断快照。计算节点在线、各反馈年龄与规格有效性，供运动门禁和查询使用；调用者负责共享缓存的并发保护。
 void PatrolDiagnostics_Snapshot(const PatrolDiagnostics* diagnostics, uint32_t now_ms,
                                 PatrolDiagnosticsSnapshot* snapshot)
 {
@@ -331,6 +344,7 @@ void PatrolDiagnostics_Snapshot(const PatrolDiagnostics* diagnostics, uint32_t n
     snapshot->last_encoder_error = diagnostics->last_encoder_error;
 }
 
+// 把 CAN 诊断快照格式化为受限 JSON。包含总线状态、原始轮速、错误计数和反馈门禁；输出受 size 限制，格式化成功不代表物理动作成功。
 uint8_t PatrolDiagnostics_FormatCanJson(const PatrolDiagnosticsSnapshot* s,
     uint8_t bus_off, uint8_t bus_off_active, uint32_t rx_overflow,
     uint32_t can1_raw_rx, uint32_t can2_raw_rx, char* output, uint16_t size)

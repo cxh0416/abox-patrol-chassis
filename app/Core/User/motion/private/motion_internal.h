@@ -145,22 +145,31 @@ typedef struct {
 
 extern PatrolMotion g_motion;
 
+// 汇总标定阶段所需的全部安全门禁位。检查供电、CAN、OTA、节点、双反馈、编码器、车轮运动、会话及执行器状态；require_steering_disabled 控制是否要求转向撤使能。
 uint32_t CenterCalibration_GateMask(const PatrolDiagnosticsSnapshot* s,
                                  uint8_t require_steering_disabled);
+// 从本轮起点计算驱动器和编码器相对角度。只在本次标定坐标成立时更新，并保留双传感器一致性判断所需的独立结果。
 void CenterCalibration_UpdateRelative(const PatrolDiagnosticsSnapshot* s);
+// 在标定失败瞬间冻结诊断证据。调用方持锁，记录时间、门禁、阶段、执行器、原始计数和错误；后续状态变化不应改写首因证据。
 void CenterCalibration_CaptureFailureLocked(CenterCalibrationReason reason, uint32_t gate_mask,
                                           uint32_t now,
                                           const PatrolDiagnosticsSnapshot* snapshot);
+// 在仍可发送停车报文时登记故障停车请求。保留标定执行器对 STOPPING 的归属，避免在未标定状态下误用普通运动门禁而跳过有序停机。
 void CenterCalibration_RequestStopForFault(CenterCalibrationReason reason, uint32_t gate_mask,
                                           uint32_t now);
+// 统一终止标定并关联执行器故障。保存失败快照并撤销后续标定动作，交由运行层安全停机；不把软件终止等同于物理停止。
 void CenterCalibration_Fail(uint32_t fault, CenterCalibrationReason reason,
                                     const PatrolDiagnosticsSnapshot* snapshot,
                                     uint32_t gate_mask);
 
 /* Integration helpers. ApplyReset and Take require the runtime lock;
  * ApplyCut and UpdateFeedback retain their own task/critical-section boundaries. */
+// 处理下电或节点复位引起的转向坐标失效。下电清回中和限位对齐缓存，带电坐标周期丢失则停止转向并按标定阶段保留故障；调用方按运行层约定持锁。
 void PatrolRuntime_ApplyReset(uint32_t now);
+// 处理执行器请求的切电及故障传播。将执行错误汇总到控制层并更新动力输出命令；返回处理后的时间基准，输出写入成功不代表已获得接触器物理反馈。
 uint32_t PatrolRuntime_ApplyCut(uint32_t now);
+// 汇总驱动器与绝对编码器反馈并更新安全仲裁输入。同锁读取时间和诊断快照，建立运行坐标并归一化镜像右轮方向；标定相对反馈、Bus-Off 恢复观察和反馈门禁在此同步更新。
 void PatrolRuntime_UpdateFeedback(uint32_t now);
+// 在执行器和只读诊断之间仲裁下一个 CAN 请求。通过 owner 标识报文归属，维持运动期间事务优先级与交替读取；返回报文仅表示选中，真正发送前仍须复核授权。
 uint8_t PatrolRuntime_Take(uint32_t now, PatrolCanFrame* request, uint8_t* owner);
 #endif

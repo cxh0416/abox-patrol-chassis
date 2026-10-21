@@ -38,6 +38,7 @@ extern "C" {
 
 /* USER CODE END Private defines */
 
+// 启用 DMA 控制器时钟并配置通道中断。具体串口 DMA 传输参数由 UART MSP 绑定，初始化不启动实际接收或发送。
 void MX_DMA_Init(void);
 
 /* USER CODE BEGIN Prototypes */

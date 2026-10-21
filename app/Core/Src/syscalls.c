@@ -32,7 +32,9 @@
 
 
 /* Variables */
+// 声明供标准库重定向使用的单字符输出钩子。具体发送设备、阻塞方式和错误返回由链接进来的实现决定，本声明不启动外设。
 extern int __io_putchar(int ch) __attribute__((weak));
+// 声明供标准库重定向使用的单字符输入钩子。实际输入来源、阻塞方式与无数据处理由链接实现决定。
 extern int __io_getchar(void) __attribute__((weak));
 
 
@@ -41,15 +43,18 @@ char **environ = __env;
 
 
 /* Functions */
+// 保留标准库监控句柄初始化兼容入口。当前函数为空，不建立半主机或文件系统服务。
 void initialise_monitor_handles()
 {
 }
 
+// 为裸机标准库提供固定进程号。本固件没有进程模型，兼容桩始终返回 1。
 int _getpid(void)
 {
   return 1;
 }
 
+// 拒绝裸机环境不支持的进程信号操作。忽略进程与信号参数，设置 errno 为 EINVAL 并返回 -1。
 int _kill(int pid, int sig)
 {
   (void)pid;
@@ -58,12 +63,14 @@ int _kill(int pid, int sig)
   return -1;
 }
 
+// 为标准库程序退出提供不返回的终止入口。调用兼容 kill 后永久等待，固件不会退出到操作系统。
 void _exit (int status)
 {
   _kill(status, -1);
   while (1) {}    /* Make sure we hang here */
 }
 
+// 通过字符输入钩子向标准库读取指定长度数据。逐字节调用 __io_getchar 并返回 len，文件号未使用，阻塞行为取决于实际输入钩子。
 __attribute__((weak)) int _read(int file, char *ptr, int len)
 {
   (void)file;
@@ -77,6 +84,7 @@ __attribute__((weak)) int _read(int file, char *ptr, int len)
   return len;
 }
 
+// 通过字符输出钩子发送标准库写入的数据。逐字节调用 __io_putchar 并返回 len，文件号未使用，不代表实际外设已确认接收全部字符。
 __attribute__((weak)) int _write(int file, char *ptr, int len)
 {
   (void)file;
@@ -89,6 +97,7 @@ __attribute__((weak)) int _write(int file, char *ptr, int len)
   return len;
 }
 
+// 提供不支持关闭文件的标准库兼容桩。忽略文件号并返回 -1，工程没有实现通用文件系统句柄管理。
 int _close(int file)
 {
   (void)file;
@@ -96,6 +105,7 @@ int _close(int file)
 }
 
 
+// 将标准库文件句柄报告为字符设备。填写 st_mode 为 S_IFCHR 并返回 0，不查询真实文件系统元数据。
 int _fstat(int file, struct stat *st)
 {
   (void)file;
@@ -103,12 +113,14 @@ int _fstat(int file, struct stat *st)
   return 0;
 }
 
+// 把标准库句柄视为终端字符设备。兼容桩固定返回 1，文件号未参与判断。
 int _isatty(int file)
 {
   (void)file;
   return 1;
 }
 
+// 提供不执行文件定位的标准库兼容桩。忽略文件号、偏移和方向并返回 0，不能据此认为存在可随机访问的文件。
 int _lseek(int file, int ptr, int dir)
 {
   (void)file;
@@ -117,6 +129,7 @@ int _lseek(int file, int ptr, int dir)
   return 0;
 }
 
+// 拒绝裸机环境未实现的文件打开请求。忽略路径和标志并返回 -1，不进行 Flash 或模块文件操作。
 int _open(char *path, int flags, ...)
 {
   (void)path;
@@ -125,6 +138,7 @@ int _open(char *path, int flags, ...)
   return -1;
 }
 
+// 拒绝裸机环境不支持的子进程等待。设置 errno 为 ECHILD 并返回 -1。
 int _wait(int *status)
 {
   (void)status;
@@ -132,6 +146,7 @@ int _wait(int *status)
   return -1;
 }
 
+// 拒绝未实现的文件删除请求。设置 errno 为 ENOENT 并返回 -1，不会删除固件、配置或模块文件。
 int _unlink(char *name)
 {
   (void)name;
@@ -139,12 +154,14 @@ int _unlink(char *name)
   return -1;
 }
 
+// 提供未实现的进程运行时间查询桩。忽略输出参数并返回 -1，不能用作固件单调时钟。
 clock_t _times(struct tms *buf)
 {
   (void)buf;
   return -1;
 }
 
+// 将路径查询结果按字符设备兼容方式填充。不访问实际文件，写入 S_IFCHR 并返回 0，仅满足标准库链接需求。
 int _stat(const char *file, struct stat *st)
 {
   (void)file;
@@ -152,6 +169,7 @@ int _stat(const char *file, struct stat *st)
   return 0;
 }
 
+// 拒绝裸机环境未实现的硬链接操作。设置 errno 为 EMLINK 并返回 -1。
 int _link(char *old, char *new)
 {
   (void)old;
@@ -160,12 +178,14 @@ int _link(char *old, char *new)
   return -1;
 }
 
+// 拒绝创建子进程。设置 errno 为 EAGAIN 并返回 -1，固件任务应由 RTOS 接口创建。
 int _fork(void)
 {
   errno = EAGAIN;
   return -1;
 }
 
+// 拒绝裸机环境未实现的进程映像替换。设置 errno 为 ENOMEM 并返回 -1，不参与 Boot 或 OTA 镜像切换。
 int _execve(char *name, char **argv, char **env)
 {
   (void)name;
@@ -185,6 +205,7 @@ int _execve(char *name, char **argv, char **env)
  * @param file FILE stream pointer (ignored).
  * @retval int The character written.
  */
+// 为备用标准库把一个字符转交输出钩子。忽略 FILE 对象，调用 __io_putchar 后返回字符值。
 static int starm_putc(char c, FILE *file)
 {
 	(void) file;
@@ -198,6 +219,7 @@ static int starm_putc(char c, FILE *file)
  * @param file FILE stream pointer (ignored).
  * @retval int The character read, cast to an unsigned char then int.
  */
+// 为备用标准库从输入钩子读取一个字符。忽略 FILE 对象，字符转换及阻塞语义遵循 __io_getchar 的实际实现。
 static int starm_getc(FILE *file)
 {
 	unsigned char c;

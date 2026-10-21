@@ -126,25 +126,45 @@ typedef struct {
 
 extern CloudContext g_cloud;
 
+// 将文本有界复制到指定缓冲区。处理空源和容量边界，确保可用空间内有终止符；不用于证明源字段通过业务验证。
 void CloudMessages_CopyString(char* dst, uint16_t size, const char* src);
+// 缓存最近已完成发送的请求响应。保存 requestId、Topic 和载荷以支持重复请求，缓存不取代动作摘要冲突检查。
 void CloudMessages_CacheResponse(const char* request_id, const char* topic, const char* payload);
+// 构造并排队一条内部管理响应。编码请求关联、结果码、说明及结果 JSON；reboot 仅登记发送完成后的重启意图，不在此立即复位。
 uint8_t CloudMessages_ScheduleResponse(const char* topic, const char* request_id, uint16_t code, const char* message,
                                  const char* result_json, uint8_t reboot);
+// 安排不带复杂结果对象的错误响应。复用统一响应构造与单响应队列，避免各命令自行拼接不一致结构。
 void CloudMessages_ScheduleSimpleError(const char* topic, const char* request_id, uint16_t code, const char* message);
+// 排队一条已经编码的完整响应载荷。检查缓冲区与当前排队状态，调用者负责载荷已满足对应协议格式。
 uint8_t CloudMessages_ScheduleRawResponse(const char* topic, const char* payload);
+// 构造公共同步请求对应的响应任务。通过统一公共协议字段和可信时间生成载荷，最终是否发送由 CloudTx 跟踪回执。
 uint8_t CloudMessages_ScheduleSyncResponse(const char* request_id);
+// 格式化内部设备信息结果对象。汇总固件、配置、Boot 与运行诊断，使用受限输出缓冲区，不触发硬件动作。
 void CloudMessages_BuildInfoResult(char* output, uint16_t size);
+// 构造公共 MQTT 心跳消息。使用产品身份及公共字段语义，不在公共接口中写入内部控制过程记录。
 uint8_t CloudMessages_BuildHeartbeat(char* output, uint16_t size);
+// 构造产品公共能力清单消息。从正式产品注册表声明能力及版本语义，构造成功不意味着所有能力已通过实车测试。
 uint8_t CloudMessages_BuildManifest(char* output, uint16_t size);
+// 保存一次已提交状态报告所对应的比较快照。后续事件检测据此识别目标、使能与故障变化，快照属于发送调度状态而非不可变现场证据。
 void CloudMessages_RememberStatusSnapshot(uint32_t now);
+// 比较当前运行状态与上次报告快照。返回需要唤醒状态上报的原因文本，未发生相关变化时返回空指针。
 const char* CloudMessages_StatusChangeReason(uint32_t now);
+// 构造公共底盘状态报告。在容量内编码当前状态和触发原因；请求 ID 由当前调度上下文提供，不在构造时判定真实运动成功。
 uint8_t CloudMessages_BuildStatusReport(char* output, uint16_t size, const char* report_reason);
+// 截取一次有界日志快照并初始化分片。关联请求 ID，限制总行数和存储容量，后续分片只读取该次快照而非持续移动的日志环。
 void CloudMessages_PrepareLogSnapshot(const char* request_id);
+// 构造当前日志分片消息。按转义后容量和每片行数限制编码，分片索引在发送完成后再推进，避免失败时跳过数据。
 uint8_t CloudMessages_BuildLogChunk(char* output, uint16_t size);
+// 将一条指定等级日志编码为告警载荷。执行 JSON 转义和容量检查，是否发布由发送调度决定，不阻塞运动任务等待网络。
 uint8_t CloudMessages_BuildAlert(char* output, uint16_t size, const char* line, AppLogLevel_t level);
+// 构造中位标定管理响应结果。汇总当前业务状态与诊断，不能把单次 ACK 或格式化成功解释为标定落盘成功。
 void CloudMessages_BuildCalibrationResult(char* output, uint16_t size);
+// 按 Topic 分发收到的 MQTT 消息。优先识别时间同步、公共控制和内部维护入口，未知 Topic 不执行动作；解析结果仍须通过各业务门禁。
 void CloudCommands_OnMessage(const char* topic, const char* payload);
+// 执行一次云消息与状态事件发送调度。比较状态变化、轮询公共发送器，空闲时再安排 ICCID 查询；消息完成以跟踪回执为准。
 void CloudTx_Service(void);
+// 清除网络变更前的云发送在途关联。通知公共云服务，重置外部消息类型及候选取消标记，避免旧回执完成新连接的动作。
 void CloudTx_NetworkChanged(void);
+// 向云服务调度提供当前毫秒单调时钟。使用 HAL_GetTick 端口，不将返回值作为 UTC 或请求有效期绝对时间。
 uint32_t CloudPort_Now(void);
 #endif

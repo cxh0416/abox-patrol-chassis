@@ -50,6 +50,7 @@ extern "C" {
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
+// 在无法继续的初始化或 HAL 错误后终止执行。关闭中断并永久等待，当前实现不返回，也不保证外部驱动器已经收到停车命令。
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */

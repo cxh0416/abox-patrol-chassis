@@ -51,11 +51,13 @@ typedef enum
     STEER_STEP_PROFILE_SPEED_ACTIVE_COMPLETE = 31,
 } BenchSteeringStep;
 
+// 检查请求的转向软限位是否属于已支持档位。只接受代码中明确列举的毫度档位，避免未验证的幅度直接进入定位流程。
 static uint8_t valid_limit(uint16_t limit)
 {
     return (limit == 1000 || limit == 3000 || limit == 5000 || limit == 20000 || limit == 30000) ? 1U : 0U;
 }
 
+// 按目标误差与当前位置选择转向轮廓速度。接近目标或软限位时使用慢速，其次中速，否则使用最大速度；速度来自统一 profile 常量，不在此改变配置。
 static uint16_t profile_speed(int32_t target_mdeg, int32_t actual_mdeg)
 {
     int64_t error = (int64_t)target_mdeg - actual_mdeg;
@@ -74,6 +76,7 @@ static uint16_t profile_speed(int32_t target_mdeg, int32_t actual_mdeg)
     return VEHICLE_STEERING_PROFILE_MAX_RPM;
 }
 
+// 锁存转向执行器首个故障并置切电请求。撤销待响应事务并进入故障阶段；重复故障不会覆盖最初的故障编号。
 static void fail(BenchSteering *b, uint32_t reason)
 {
     /* Cross-executor emergency stopping must not replace the first cause. */
@@ -84,10 +87,12 @@ static void fail(BenchSteering *b, uint32_t reason)
     b->cut_power = 1;
     b->phase = BENCH_FAULT;
 }
+// 清空转向执行器全部运行状态。仅操作状态结构，不写驱动器；需要保留的已对齐限位缓存由启动函数显式恢复。
 void BenchSteering_Init(BenchSteering *b)
 {
     memset(b, 0, sizeof(*b));
 }
+// 启动正常转向位置模式握手。要求空闲且软限位档位合法；保存实测保持位置、运行中位及标定中位，后续逐项读写验证驱动器对象。
 uint8_t BenchSteering_Start(BenchSteering *b, int32_t actual, int32_t center, int32_t calibration_center,
                             uint16_t limit, uint32_t now)
 {
@@ -110,6 +115,7 @@ uint8_t BenchSteering_Start(BenchSteering *b, int32_t actual, int32_t center, in
     b->applied = INT32_MIN;
     return 1;
 }
+// 启动中位标定专用转向握手。仅允许合法范围和空闲执行器，置 preserve_limits 保留现有驱动限位；不能替代普通运动的标定与坐标门禁。
 uint8_t BenchSteering_StartCommissioning(BenchSteering *b, int32_t actual, int32_t center, uint32_t limit,
                                          uint32_t now)
 {
@@ -128,6 +134,7 @@ uint8_t BenchSteering_StartCommissioning(BenchSteering *b, int32_t actual, int32
     b->applied = INT32_MIN;
     return 1U;
 }
+// 请求转向撤使能或故障切电。普通停车进入有期限的撤使能确认；准备过程中限位尚未成对对齐则判故障，避免继续使用半更新的限位。
 void BenchSteering_Stop(BenchSteering *b, uint32_t now, uint8_t cut_power)
 {
     if (cut_power)
@@ -149,10 +156,12 @@ void BenchSteering_Stop(BenchSteering *b, uint32_t now, uint8_t cut_power)
     b->stop_ms = now;
     b->stop_confirmed = 0;
 }
+// 记录转向 CAN 请求发送失败。交由统一故障入口锁存，不能以一次报文提交失败推断驱动器处于安全状态。
 void BenchSteering_TxFailed(BenchSteering *b)
 {
     fail(b, 2U);
 }
+// 根据请求、安全条件和时间推进转向执行器。检查目标范围、计数转换、准备与事务期限；活动阶段按误差切换轮廓速度，停止阶段保留专用确认期限。
 void BenchSteering_Tick(BenchSteering *b, uint32_t now, uint8_t requested, uint8_t safe,
                         int32_t angle, int32_t actual_angle)
 {
@@ -198,6 +207,7 @@ void BenchSteering_Tick(BenchSteering *b, uint32_t now, uint8_t requested, uint8
         fail(b, 6U);
 }
 
+// 构造当前转向步骤的 NMT 或 SDO 请求。只控制 Node 1，依次处理限位、模式、速度、保持位置、使能、定位触发及停止；只允许一个在途事务。
 uint8_t BenchSteering_Take(BenchSteering *b, uint32_t now, PatrolCanFrame *f)
 {
     int32_t value = 0;
@@ -334,6 +344,7 @@ uint8_t BenchSteering_Take(BenchSteering *b, uint32_t now, PatrolCanFrame *f)
     return 1;
 }
 
+// 校验并消费当前转向事务的驱动器响应。确认索引、长度、模式、状态字和写回值；按状态推进限位对齐及定位握手，不能把 ACK 当成真实转角到位。
 uint8_t BenchSteering_OnFrame(BenchSteering *b, const PatrolCanFrame *f, uint32_t now)
 {
     int32_t value;
@@ -504,6 +515,7 @@ uint8_t BenchSteering_OnFrame(BenchSteering *b, const PatrolCanFrame *f, uint32_
     return 1;
 }
 
+// 查询转向停止过程是否已取得撤使能确认。用于运行层区分等待驱动器确认与最后完成步骤，避免提前释放执行器归属。
 uint8_t BenchSteering_StopFinishReady(const BenchSteering *b)
 {
     return b->phase == BENCH_STOPPING && b->step == STEER_STEP_STOP_COMPLETE && !b->pending;

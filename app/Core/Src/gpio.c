@@ -40,6 +40,7 @@
         * EVENT_OUT
         * EXTI
 */
+// 配置工程 GPIO 并设置启动输出电平。按当前硬件定义建立安全初值，不能从初始化电平推断继电器或接触器物理状态。
 void MX_GPIO_Init(void)
 {
 

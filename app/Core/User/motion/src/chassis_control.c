@@ -4,12 +4,15 @@
 #include <stdlib.h>
 #include <string.h>
 
+// 提取车体目标转速的方向符号。只区分前进、后退和零速，不涉及左右轮镜像安装方向；返回 1、-1 或 0。
 static int8_t direction_of(int16_t rpm) { return (rpm > 0) ? 1 : ((rpm < 0) ? -1 : 0); }
+// 判断左右驱动轮是否都已进入停车确认范围。两轮实测转速绝对值均不超过 20 rpm 才成立；本函数不计数，连续三次确认由调用方负责。
 static uint8_t stopped(const ChassisFeedback* feedback)
 {
     return (abs(feedback->left_actual_rpm) <= 20 && abs(feedback->right_actual_rpm) <= 20) ? 1U : 0U;
 }
 
+// 统一撤销运动目标并按原因更新停车状态。清除行走、转向、待换向请求和使能；保留已锁存的首个故障原因，按 release 决定是否释放会话。
 static void force_stop(ChassisControl* control, ChassisStopReason reason, uint8_t release)
 {
     control->target_rpm = 0;
@@ -28,12 +31,14 @@ static void force_stop(ChassisControl* control, ChassisStopReason reason, uint8_
     }
 }
 
+// 初始化底盘控制上下文到未标定的安全默认状态。清空会话、目标、反馈和换向计数；初始化本身不会使能电机，后续仍须通过反馈安全门禁。
 void ChassisControl_Init(ChassisControl* control)
 {
     memset(control, 0, sizeof(*control));
     control->stop_reason = CHASSIS_STOP_UNCALIBRATED;
 }
 
+// 设置内部行走禁用状态，不撤销转向授权。激活时立即清零行走与待换向目标，保留最近非零方向以防解除后绕过换向检查；当前不绑定 T12 B 键。
 void ChassisControl_SetDriveBrake(ChassisControl* control, uint8_t active)
 {
     control->drive_brake = active != 0U;
@@ -46,16 +51,19 @@ void ChassisControl_SetDriveBrake(ChassisControl* control, uint8_t active)
     }
 }
 
+// 复制最新一组底盘反馈到控制上下文。调用方须提供一致的双轮、双角度和时间戳快照；本函数仅复制，不推断反馈是否新鲜。
 void ChassisControl_SetFeedback(ChassisControl* control, const ChassisFeedback* feedback)
 {
     control->feedback = *feedback;
 }
 
+// 检查驱动器与绝对编码器角度是否均处于硬保护范围。采用 64 位绝对值运算处理符号边界；硬范围由转向配置常量决定，不等同于普通目标软限位。
 static uint8_t steering_hard_range(const ChassisFeedback* f)
 {
     return llabs((int64_t)f->steering_actual_mdeg)<=VEHICLE_STEERING_TRIP_MDEG &&
            llabs((int64_t)f->encoder_actual_mdeg)<=VEHICLE_STEERING_TRIP_MDEG;
 }
+// 更新转向边界保持状态并限制越界方向目标。触边时禁止行走、取消换向并将转向目标限制到恢复角度；仅在允许清除且请求与双反馈均回到恢复范围时解除。
 static void steering_boundary(ChassisControl* c, int32_t requested, uint8_t allow_clear)
 {
     const ChassisFeedback* f=&c->feedback;
@@ -75,11 +83,13 @@ static void steering_boundary(ChassisControl* c, int32_t requested, uint8_t allo
         c->target_steering_mdeg=-VEHICLE_STEERING_RECOVER_MDEG;
 }
 
+// 查询当前全部正常运动门禁是否通过。复用统一安全原因检查；通过仅表示软件条件允许，不代表驱动器已经执行目标或车辆已经运动。
 uint8_t ChassisControl_SafetyReady(const ChassisControl* control, uint32_t now_ms)
 {
     return ChassisControl_SafetyReason(control, now_ms) == CHASSIS_STOP_NONE;
 }
 
+// 查询运行期故障、通信与反馈时效门禁。依次检查锁存、节点在线、Bus-Off、驱动故障、OTA 与反馈超时；标定和角度门禁由完整检查函数补充。
 ChassisStopReason ChassisControl_RuntimeSafetyReason(const ChassisControl* control, uint32_t now_ms)
 {
     const ChassisFeedback* f = &control->feedback;
@@ -92,6 +102,7 @@ ChassisStopReason ChassisControl_RuntimeSafetyReason(const ChassisControl* contr
     return CHASSIS_STOP_NONE;
 }
 
+// 返回阻止正常运动的首个安全原因。在运行期门禁基础上检查标定、编码器规格、量程、电源就绪和双角度偏差；偏差超过 2000 mdeg 即拒绝运动。
 ChassisStopReason ChassisControl_SafetyReason(const ChassisControl* control, uint32_t now_ms)
 {
     const ChassisFeedback* f = &control->feedback;
@@ -105,6 +116,7 @@ ChassisStopReason ChassisControl_SafetyReason(const ChassisControl* control, uin
     return CHASSIS_STOP_NONE;
 }
 
+// 仲裁控制会话并提交经过校验的行走与转向目标。支持 acquire、renew、stop；校验所有者、序号、租约和幅度。反向请求先令目标为零并等待反馈确认；stop 可撤目标但仅按会话归属释放控制权。
 uint8_t ChassisControl_Apply(ChassisControl* control, const char* action, const char* session_id,
                              uint32_t seq, uint32_t lease_ms, int16_t drive_rpm,
                              int32_t steering_mdeg, uint32_t now_ms)
@@ -162,6 +174,7 @@ uint8_t ChassisControl_Apply(ChassisControl* control, const char* action, const 
     return 1U;
 }
 
+// 周期检查租约、安全门禁和换向停车确认。等待换向时保持零速，每个不同反馈时间戳最多计一次，两轮均不超过 20 rpm 连续三次才放行；超过当前代码的 2 秒期限撤使能并锁存故障。
 void ChassisControl_Tick(ChassisControl* control, uint32_t now_ms)
 {
     ChassisStopReason reason = ChassisControl_SafetyReason(control, now_ms);

@@ -12,22 +12,28 @@ static uint32_t control_seq;
 static uint16_t last_seq, reply_seq;
 static uint8_t armed, have_sequence, reply_pending, reply_code;
 
+// 按小端顺序读取 CAN 载荷中的 16 位数值。输入至少包含两个可读字节；返回未作符号扩展的无符号值。
 static uint16_t u16(const uint8_t* p) { return (uint16_t)p[0] | (uint16_t)p[1] << 8; }
+// 按小端顺序将 16 位数值写入 CAN 载荷。调用方保证两个输出字节可写，符号解释由协议字段类型决定。
 static void put16(uint8_t* p, uint16_t v) { p[0]=(uint8_t)v; p[1]=(uint8_t)(v>>8); }
+// 判断 CAN2 键盘控制入口是否持有共享会话。通过固定会话标识检查归属，不以收到某条命令代替控制权确认。
 static uint8_t owns(void)
 {
     const ChassisControl* c=RemoteService_State();
     return c->session_active && !strcmp(c->session_id,session);
 }
+// 通过共享仲裁请求 CAN2 远控停止。撤销该入口目标和武装状态，实际驱动器停车由运动运行层完成。
 static void stop(uint32_t now)
 {
     (void)RemoteService_ApplyLocal("stop",session,0,0,0,0,now);
     armed=0U;
 }
+// 清空 CAN2 命令入口序号、武装和待响应状态。初始化不依赖 MQTT 或 UTC，仍须在后续 ARM 命令中通过安全门禁。
 void PatrolCanRemote_Init(void)
 {
     control_seq=0; last_seq=reply_seq=0; armed=have_sequence=reply_pending=reply_code=0;
 }
+// 监督 CAN2 远控租约与底层通信状态。在失联或通信故障时撤销会话，故障按现有安全仲裁记录；不得借续租延续陈旧目标。
 void PatrolCanRemote_Tick(uint32_t now, uint8_t healthy)
 {
     const ChassisControl* c=RemoteService_State();
@@ -43,6 +49,7 @@ void PatrolCanRemote_Tick(uint32_t now, uint8_t healthy)
         stop(now);
     }
 }
+// 解析 CAN2 本地控制命令并执行仲裁。校验帧格式、版本、序号和接收年龄，分别处理查询、供电、使能、目标、停止及复位；运动权限仍由共享服务决定。
 void PatrolCanRemote_OnFrame(const PatrolCanFrame* f, uint32_t received, uint32_t now)
 {
     uint16_t seq,delta;
@@ -97,6 +104,7 @@ void PatrolCanRemote_OnFrame(const PatrolCanFrame* f, uint32_t received, uint32_
     }
     last_seq=seq; reply_code=PATROL_CAN_OK;
 }
+// 取出一组关联同一请求序号的三帧响应。将当前结果和安全状态编码到固定响应 ID；没有待响应时返回零，响应成功不表示真实运动完成。
 uint8_t PatrolCanRemote_TakeReply(PatrolCanFrame frames[3], uint32_t now)
 {
     const ChassisControl* c=RemoteService_State();

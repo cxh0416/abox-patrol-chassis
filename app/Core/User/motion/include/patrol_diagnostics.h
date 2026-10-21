@@ -110,19 +110,28 @@ typedef struct {
     uint8_t last_encoder_error;
 } PatrolDiagnosticsSnapshot;
 
+// 初始化只读运动诊断状态与轮询进度。清空在线、反馈、错误和在途事务，不发送写对象请求。
 void PatrolDiagnostics_Init(PatrolDiagnostics* diagnostics);
+// 解析节点心跳、PDO 和匹配的诊断 SDO 响应。根据有效报文更新对应缓存与时间戳，保留 Abort 和协议错误证据，不把无关帧算作目标对象响应。
 void PatrolDiagnostics_OnCanFrame(PatrolDiagnostics* diagnostics, const PatrolCanFrame* frame,
                                   uint32_t now_ms);
+// 在允许轮询时取出下一条只读 SDO 请求。遵守节点状态、单事务和运动优先级限制；返回零时无需发送，取出后由发送方报告发送错误。
 uint8_t PatrolDiagnostics_TakeSdoRead(PatrolDiagnostics* diagnostics, uint32_t now_ms,
                                      PatrolCanFrame* frame);
+// 记录诊断读请求未能提交到 CAN。清理在途事务并维护发送失败统计，允许后续按调度重试。
 void PatrolDiagnostics_OnSdoTxError(PatrolDiagnostics* diagnostics, uint32_t now_ms);
+// 登记编码器规格寄存器与成功读取时间。用于区分编码器在线、规格合法和正式标定兼容，不能只凭位置计数认定配置正确。
 void PatrolDiagnostics_OnEncoderConfig(PatrolDiagnostics* diagnostics, const uint16_t registers[3],
                                        uint32_t now_ms);
+// 更新编码器原始计数及成功采样时间。只有有效解析后的计数应调用本接口，以保证时效门禁可信。
 void PatrolDiagnostics_OnEncoderCount(PatrolDiagnostics* diagnostics, uint32_t count,
                                       uint32_t now_ms);
+// 累计编码器错误并保存最近错误类别。与成功采样时间独立维护，错误不能延长旧样本的可用时间。
 void PatrolDiagnostics_OnEncoderError(PatrolDiagnostics* diagnostics, PatrolEncoderError error);
+// 生成指定时刻的一致诊断快照。计算节点在线、各反馈年龄与规格有效性，供运动门禁和查询使用；调用者负责共享缓存的并发保护。
 void PatrolDiagnostics_Snapshot(const PatrolDiagnostics* diagnostics, uint32_t now_ms,
                                 PatrolDiagnosticsSnapshot* snapshot);
+// 把 CAN 诊断快照格式化为受限 JSON。包含总线状态、原始轮速、错误计数和反馈门禁；输出受 size 限制，格式化成功不代表物理动作成功。
 uint8_t PatrolDiagnostics_FormatCanJson(const PatrolDiagnosticsSnapshot* snapshot,
     uint8_t bus_off, uint8_t bus_off_active, uint32_t rx_overflow,
     uint32_t can1_raw_rx, uint32_t can2_raw_rx, char* output, uint16_t size);

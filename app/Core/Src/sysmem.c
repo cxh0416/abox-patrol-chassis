@@ -51,6 +51,7 @@ static uint8_t *__sbrk_heap_end = NULL;
  * @param incr Memory size
  * @return Pointer to allocated memory
  */
+// 为 C 标准库堆分配调整堆末端指针。从链接器 _end 起扩展，检查不能侵入预留 MSP 栈；空间不足设置 ENOMEM 并返回 (void*)-1。
 void *_sbrk(ptrdiff_t incr)
 {
   extern uint8_t _end; /* Symbol defined in the linker script */

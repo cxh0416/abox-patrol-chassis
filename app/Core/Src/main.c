@@ -52,7 +52,9 @@
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
+// 配置本工程系统时钟、总线分频及 Flash 等待周期。按当前板级 HSE/PLL 配置执行，任何 HAL 配置失败均进入 Error_Handler，不能随意沿用其他硬件时钟参数。
 void SystemClock_Config(void);
+// 创建本产品 FreeRTOS 运行对象。转交 PatrolRtos_Init 创建静态任务和队列，随后由主函数启动内核调度。
 void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 
@@ -67,6 +69,7 @@ void MX_FREERTOS_Init(void);
   * @brief  The application entry point.
   * @retval int
   */
+// 执行 App 启动初始化并启动 RTOS 调度器。先设置 App 向量表并核验 HAL 时基，再初始化外设、配置、电源端口和服务；调度启动前不自动授予运动许可。
 int main(void)
 {
 
@@ -147,6 +150,7 @@ int main(void)
   * @brief System Clock Configuration
   * @retval None
   */
+// 配置本工程系统时钟、总线分频及 Flash 等待周期。按当前板级 HSE/PLL 配置执行，任何 HAL 配置失败均进入 Error_Handler，不能随意沿用其他硬件时钟参数。
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
@@ -190,11 +194,13 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
+// 把串口空闲线 DMA 接收事件转交云接收器。Size 表示 HAL 提供的 DMA 接收位置，具体串口过滤和环形处理由 CloudService 完成。
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef* huart, uint16_t Size)
 {
   CloudService_OnUartRxEvent(huart, Size);
 }
 
+// 将 HAL 串口错误通知转交云服务。回调只登记后续恢复需求，不在中断中直接执行 MQTT 重连或 JSON 业务。
 void HAL_UART_ErrorCallback(UART_HandleTypeDef* huart)
 {
   CloudService_OnUartError(huart);
@@ -210,6 +216,7 @@ void HAL_UART_ErrorCallback(UART_HandleTypeDef* huart)
   * @param  htim : TIM handle
   * @retval None
   */
+// 在 TIM1 更新事件中维护 HAL 毫秒 tick。仅对 TIM1 调用 HAL_IncTick，避免把其他定时器事件重复计入系统时间。
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   /* USER CODE BEGIN Callback 0 */
@@ -228,6 +235,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   * @brief  This function is executed in case of error occurrence.
   * @retval None
   */
+// 在无法继续的初始化或 HAL 错误后终止执行。关闭中断并永久等待，当前实现不返回，也不保证外部驱动器已经收到停车命令。
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
@@ -246,6 +254,7 @@ void Error_Handler(void)
   * @param  line: assert_param error line source number
   * @retval None
   */
+// 提供启用完整 HAL 断言时的错误报告钩子。参数是触发文件和行号，当前函数体预留为空，不自动打印或复位。
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */

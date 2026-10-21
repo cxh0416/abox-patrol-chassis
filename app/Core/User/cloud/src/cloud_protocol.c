@@ -7,6 +7,7 @@
 #include "cJSON.h"
 #include "abox_cloud_internal_v2.h"
 
+// 检查固件版本文本是否可用于内部 OTA 请求。限制字符与长度，避免版本标识带入无效控制字符或不支持的格式。
 static uint8_t version_valid(const char* value)
 {
     static const char prefix[] = "patrol-chassis-";
@@ -20,6 +21,7 @@ static uint8_t version_valid(const char* value)
     return 0U;
 }
 
+// 验证内部配置字符串的容量与允许字符。按 vid 标志补充身份字段约束，不接受会造成 Topic 或命令注入歧义的内容。
 static uint8_t config_string_valid(const char* value, uint16_t capacity, uint8_t vid)
 {
     uint16_t i;
@@ -34,6 +36,7 @@ static uint8_t config_string_valid(const char* value, uint16_t capacity, uint8_t
     return 0U;
 }
 
+// 校验 JSON 数字是指定闭区间内的整数。同时拒绝错误类型、小数及越界值，避免窄整数转换前发生截断。
 static uint8_t json_integer_between(const cJSON* item, double minimum, double maximum)
 {
     double value;
@@ -45,6 +48,7 @@ static uint8_t json_integer_between(const cJSON* item, double minimum, double ma
     return value == (double)integer ? 1U : 0U;
 }
 
+// 解析内部配置和 OTA 管理请求。按 ota_topic 区分允许动作，验证字段、字符串和数值范围；仅构造请求结构，不执行配置写入或升级。
 CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, uint8_t ota_topic,
                                           CloudProtocolRequest_t* request)
 {
@@ -227,6 +231,7 @@ done:
     return status;
 }
 
+// 将内部协议解析状态映射为响应文本。返回只读状态说明，未知状态使用兜底错误语义，不改变请求或设备状态。
 const char* CloudProtocol_StatusMessage(CloudProtocolStatus_t status)
 {
     switch (status)

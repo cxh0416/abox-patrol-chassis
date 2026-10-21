@@ -24,12 +24,14 @@ static uint8_t powered_by_remote;        /* this module commanded power-on */
 static uint8_t switch_seen;
 static uint32_t last_switch_ms;
 
+// 检查实体 T12 是否持有当前共享控制会话。必须同时存在活动会话且 session_id 匹配 phy-remote，避免停止或续租其他控制方的会话。
 static uint8_t owns(void)
 {
     const ChassisControl* c = RemoteService_State();
     return c->session_active && !strcmp(c->session_id, PATROL_PHY_REMOTE_SESSION);
 }
 
+// 撤销实体遥控目标并释放其本地武装状态。通过统一 stop 仲裁清除目标，后续执行器负责有序停机；本函数不直接操作驱动器寄存器。
 static void stop_remote(uint32_t now_ms)
 {
     /* "stop" always takes effect and releases our session; targets go to zero
@@ -38,6 +40,7 @@ static void stop_remote(uint32_t now_ms)
     armed = 0U;
 }
 
+// 将 T12 有符号摇杆量换算为转向目标。按满量程 450 映射到正负 25000 mdeg，并钳位异常超幅输入。
 static int32_t map_steering(int16_t raw)
 {
     int32_t value = ((int32_t)raw * PATROL_PHY_REMOTE_MAX_ANGLE_MDEG) /
@@ -47,6 +50,7 @@ static int32_t map_steering(int16_t raw)
     return value;
 }
 
+// 将 T12 油门摇杆量换算为车体目标转速。按满量程 450 映射到 CHASSIS_MAX_RPM，输出钳位于当前正负 1000 rpm 上限。
 static int16_t map_rpm(int16_t raw)
 {
     int32_t value = ((int32_t)raw * PATROL_PHY_REMOTE_MAX_RPM) /
@@ -56,6 +60,7 @@ static int16_t map_rpm(int16_t raw)
     return (int16_t)value;
 }
 
+// 重置 T12 接收、会话武装和延迟下电状态。初始 A 视为关闭，首次有效开启帧形成上升沿；不自动建立运动目标。
 void PatrolPhyRemote_Init(void)
 {
     control_seq = 0U;
@@ -67,6 +72,7 @@ void PatrolPhyRemote_Init(void)
     last_switch_ms = 0U;
 }
 
+// 处理 T12 开关与摇杆帧并提交共享控制请求。校验 8 字节长度、100 ms 接收时效及开关帧顺序；A 控制使能和延迟下电，B 字节不执行动作，摇杆必须有新鲜开关流和有效会话。
 uint8_t PatrolPhyRemote_OnFrame(const PatrolCanFrame* frame, uint32_t received_ms, uint32_t now_ms)
 {
     if (frame == 0) return 0U;
@@ -140,6 +146,7 @@ uint8_t PatrolPhyRemote_OnFrame(const PatrolCanFrame* frame, uint32_t received_m
     return 0U;
 }
 
+// 周期检查 T12 租约、开关流和安全条件。通信不健康、标定占用、会话丢失或门禁失败即撤目标；A 关闭后的下电请求按既有停车宽限时间处理。
 void PatrolPhyRemote_Tick(uint32_t now_ms, uint8_t transport_healthy)
 {
     const ChassisControl* c;

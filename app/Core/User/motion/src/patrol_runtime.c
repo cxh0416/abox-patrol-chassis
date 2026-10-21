@@ -23,13 +23,17 @@ PatrolMotion g_motion;
 
 static MotionFaultRecord last_fault;
 static uint8_t fault_captured, fault_dirty, fault_storage;
+// 复制最近一次运动故障记录。在临界区读取固定快照，记录是否存在由返回值表示；故障记录与实时反馈是不同证据。
 uint8_t PatrolRuntime_GetFault(MotionFaultRecord* record)
 {
     PatrolRuntimePort_Enter(); *record = last_fault; PatrolRuntimePort_Exit();
     return record->magic == 0x4D463031U;
 }
+// 开启一个新的故障记录周期。仅重置本轮首故障捕获标志，后续首因由 CaptureFault 保存，不等同于清除驱动器故障。
 void PatrolRuntime_BeginFaultEpisode(void) { if (!fault_dirty) fault_captured=0; }
+// 读取运动故障记录的持久化状态码。返回当前存储标记，区分待处理、写入成功与写入失败，不能据此认定车辆已停车。
 uint8_t PatrolRuntime_FaultStorage(void) { return fault_storage; }
+// 在本轮首次故障时冻结运行上下文。记录来源、原因、门禁、双轮反馈和执行器状态并标记待存储；Flash 写入延后到断开输出且 OTA 不忙时。
 void PatrolRuntime_CaptureFault(uint32_t source, uint32_t reason, uint32_t gates)
 {
     PatrolRuntimePort_Enter();
@@ -59,6 +63,7 @@ void PatrolRuntime_CaptureFault(uint32_t source, uint32_t reason, uint32_t gates
     PatrolRuntimePort_Exit();
 }
 
+// 初始化运动诊断、执行器与标定运行上下文。载入既有故障证据并建立安全默认状态，不自动恢复遥控会话或发出运动目标。
 void PatrolRuntime_Init(void)
 {
     PatrolDiagnostics_Init(&g_motion.diagnostics);
@@ -68,6 +73,7 @@ void PatrolRuntime_Init(void)
     fault_storage=OTA_Info_LoadMotionFault(&last_fault) ? 1U : 0U;
 }
 
+// 取得带当前时间判断的运动诊断快照。在运行端口临界区内统一取样，供业务查询使用；调用者不应把旧快照当作当前运动许可。
 void PatrolRuntime_GetDiagnostics(PatrolDiagnosticsSnapshot* snapshot)
 {
     if (snapshot == NULL) return;
@@ -76,6 +82,7 @@ void PatrolRuntime_GetDiagnostics(PatrolDiagnosticsSnapshot* snapshot)
     PatrolRuntimePort_Exit();
 }
 
+// 在安全前提满足时申请清除 MCU 运动故障。复位路径检查输出、OTA、标定与执行器上下文；这是软件故障复位入口，不保证外部驱动器故障已消失。
 uint8_t PatrolRuntime_ResetFault(void)
 {
     PatrolRuntimePort_Enter();
@@ -93,6 +100,7 @@ uint8_t PatrolRuntime_ResetFault(void)
     PatrolRuntimePort_Exit(); return 1;
 }
 
+// 将驱动器 CAN 反馈分发给诊断与执行器。同一帧可用于状态维护和在途响应匹配；调用方须按运行层并发约定保护共享状态。
 void PatrolRuntime_OnCanFrame(const PatrolCanFrame* frame, uint32_t now)
 {
     PatrolRuntimePort_Enter();
@@ -122,6 +130,7 @@ void PatrolRuntime_OnCanFrame(const PatrolCanFrame* frame, uint32_t now)
     PatrolRuntimePort_Exit();
 }
 
+// 处理下电或节点复位引起的转向坐标失效。下电清回中和限位对齐缓存，带电坐标周期丢失则停止转向并按标定阶段保留故障；调用方按运行层约定持锁。
 void PatrolRuntime_ApplyReset(uint32_t now)
 {
     if (!VehiclePowerOutput_IsOn()) {
@@ -147,6 +156,7 @@ void PatrolRuntime_ApplyReset(uint32_t now)
     }
 }
 
+// 处理执行器请求的切电及故障传播。将执行错误汇总到控制层并更新动力输出命令；返回处理后的时间基准，输出写入成功不代表已获得接触器物理反馈。
 uint32_t PatrolRuntime_ApplyCut(uint32_t now)
 {
     if (g_motion.bench.cut_power || g_motion.drive.cut_power) {
@@ -175,6 +185,7 @@ uint32_t PatrolRuntime_ApplyCut(uint32_t now)
     return now;
 }
 
+// 在执行器和只读诊断之间仲裁下一个 CAN 请求。通过 owner 标识报文归属，维持运动期间事务优先级与交替读取；返回报文仅表示选中，真正发送前仍须复核授权。
 uint8_t PatrolRuntime_Take(uint32_t now, PatrolCanFrame* request, uint8_t* owner)
 {
     uint8_t have_request = 0, bench_frame = 0;
@@ -227,6 +238,7 @@ static uint32_t feedback_due;
  * enabled, but the executors that would disable them cannot start until
  * power_ready. Break the deadlock by forcing both nodes pre-operational when
  * they are enabled, nothing owns the actuators and both executors are idle. */
+// 判断是否需要补发驱动器 shutdown 恢复命令。以会话、执行器、供电和恢复节流状态约束补发，避免持续停留在 Operation Enabled；不能取代正常停车确认。
 static uint8_t recovery_wanted(uint32_t now)
 {
     const ChassisControl* c = RemoteService_State();
@@ -240,6 +252,7 @@ static uint8_t recovery_wanted(uint32_t now)
 }
 /* <<<<< DRIVE-RECOVERY: END <<<<< */
 
+// 查询本地自动回中是否持有转向请求。供业务状态和任务协调使用；不把请求存在等同于回中已经完成。
 uint8_t PatrolRuntime_AutoCenterActive(void)
 {
     uint8_t active;
@@ -247,6 +260,7 @@ uint8_t PatrolRuntime_AutoCenterActive(void)
     return active;
 }
 
+// 检查无遥控会话时本地自动回中可用条件。同时约束抑制标志、标定、坐标、供电、CAN、OTA 和统一安全门禁，不能绕过正常故障锁存。
 static uint8_t auto_center_safe(const ChassisControl* control, uint32_t now)
 {
     return PATROL_CHASSIS_ACTUATION_ENABLED && PATROL_STEERING_EXECUTOR_ENABLED &&
@@ -256,6 +270,7 @@ static uint8_t auto_center_safe(const ChassisControl* control, uint32_t now)
         ChassisControl_SafetyReady(control, now);
 }
 
+// 汇总驱动器与绝对编码器反馈并更新安全仲裁输入。同锁读取时间和诊断快照，建立运行坐标并归一化镜像右轮方向；标定相对反馈、Bus-Off 恢复观察和反馈门禁在此同步更新。
 void PatrolRuntime_UpdateFeedback(uint32_t now)
 {
     PatrolDiagnosticsSnapshot snapshot;
@@ -366,6 +381,7 @@ void PatrolRuntime_UpdateFeedback(uint32_t now)
     feedback_due = now + 20U;
 }
 
+// 执行一次运动运行层的非阻塞调度。仲裁遥控、标定和回中，推进双执行器并处理切电、故障存储与 CAN 请求；发送前再次检查会话和租约，防止选帧后授权被撤销。
 void PatrolRuntime_Tick(void)
 {
     PatrolCanFrame request;
@@ -542,6 +558,7 @@ void PatrolRuntime_Tick(void)
     }
 }
 
+// 为编码器任务取得快照并领取一次配置写入请求。领取动作在临界区内将请求改为进行中，避免重复写入；返回非零表示本周期应执行编码器写事务。
 uint8_t PatrolRuntime_BeginEncoderCycle(PatrolDiagnosticsSnapshot* snapshot)
 {
     uint8_t write_center = 0;
@@ -555,6 +572,7 @@ uint8_t PatrolRuntime_BeginEncoderCycle(PatrolDiagnosticsSnapshot* snapshot)
     return write_center;
 }
 
+// 发布编码器配置写入或验证的结果状态。在临界区更新标定写状态，后续标定流程据此决定提交或故障，不在此写 Flash。
 void PatrolRuntime_EncoderWriteCompleted(uint8_t state)
 {
     PatrolRuntimePort_Enter();
@@ -562,16 +580,19 @@ void PatrolRuntime_EncoderWriteCompleted(uint8_t state)
     PatrolRuntimePort_Exit();
 }
 
+// 接收编码器寄存器配置并更新诊断。调用方须保护诊断共享上下文；仅登记本次读到的参数，不自行改变规格或标定。
 void PatrolRuntime_OnEncoderConfig(const uint16_t* registers, uint32_t now)
 {
     PatrolDiagnostics_OnEncoderConfig(&g_motion.diagnostics, registers, now);
 }
 
+// 接收绝对编码器计数及其采样时间。调用方持有运行层所需保护，计数随后参与角度、量程和新鲜度判断。
 void PatrolRuntime_OnEncoderCount(uint32_t count, uint32_t now)
 {
     PatrolDiagnostics_OnEncoderCount(&g_motion.diagnostics, count, now);
 }
 
+// 登记编码器通信或格式错误。错误分类交由诊断层累计和暴露，不用无效数据刷新成功采样时间。
 void PatrolRuntime_OnEncoderError(PatrolEncoderError error)
 {
     PatrolDiagnostics_OnEncoderError(&g_motion.diagnostics, error);

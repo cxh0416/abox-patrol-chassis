@@ -34,9 +34,11 @@ typedef struct {
     int32_t steering_mdeg;
 } ChassisCloudCommand;
 
+// 将公共请求 JSON 转为底盘类型化命令。检查长度、结构、重复键、身份和各动作参数，输出解析状态；本函数不授予控制权、不写硬件。
 ChassisCloudStatus ChassisCloud_Parse(const char* payload, uint16_t length,
                                       ChassisCloudCommand* command);
 /* Uses existing validated milli-degree fields; never changes wire units. */
+// 生成底盘命令的规范化 32 字节摘要。供同 requestId 的重放和冲突检测使用，摘要只基于正式命令字段，不代表授权或签名验证。
 uint8_t ChassisCloud_RequestDigest(const ChassisCloudCommand *command, uint8_t digest[32]);
 
 #endif

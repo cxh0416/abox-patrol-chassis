@@ -378,6 +378,7 @@
   */
 #define assert_param(expr) ((expr) ? (void)0U : assert_failed((uint8_t *)__FILE__, __LINE__))
 /* Exported functions ------------------------------------------------------- */
+// 提供启用完整 HAL 断言时的错误报告钩子。参数是触发文件和行号，当前函数体预留为空，不自动打印或复位。
 void assert_failed(uint8_t* file, uint32_t line);
 #else
 #define assert_param(expr) ((void)0U)

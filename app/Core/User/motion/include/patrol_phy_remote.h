@@ -26,14 +26,17 @@
 #define PATROL_PHY_REMOTE_JOYSTICK_ID  0x10BU
 #define PATROL_PHY_REMOTE_LEASE_MS     300U
 
+// 重置 T12 接收、会话武装和延迟下电状态。初始 A 视为关闭，首次有效开启帧形成上升沿；不自动建立运动目标。
 void PatrolPhyRemote_Init(void);
 
 /* Returns 1 when the frame is a physical-remote frame and was consumed by this
  * module. Called under the product control critical section on the CAN2 path. */
+// 处理 T12 开关与摇杆帧并提交共享控制请求。校验 8 字节长度、100 ms 接收时效及开关帧顺序；A 控制使能和延迟下电，B 字节不执行动作，摇杆必须有新鲜开关流和有效会话。
 uint8_t PatrolPhyRemote_OnFrame(const PatrolCanFrame* frame, uint32_t received_ms, uint32_t now_ms);
 
 /* Caller holds the product control critical section. transport_healthy is the
  * CAN2 (remote bus) non-Bus-Off state. */
+// 周期检查 T12 租约、开关流和安全条件。通信不健康、标定占用、会话丢失或门禁失败即撤目标；A 关闭后的下电请求按既有停车宽限时间处理。
 void PatrolPhyRemote_Tick(uint32_t now_ms, uint8_t transport_healthy);
 
 #endif

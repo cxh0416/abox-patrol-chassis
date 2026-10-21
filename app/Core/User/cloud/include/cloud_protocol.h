@@ -62,8 +62,10 @@ typedef struct {
     int16_t center_delta_mdeg;
 } CloudProtocolRequest_t;
 
+// 解析内部配置和 OTA 管理请求。按 ota_topic 区分允许动作，验证字段、字符串和数值范围；仅构造请求结构，不执行配置写入或升级。
 CloudProtocolStatus_t CloudProtocol_Parse(const char* payload, uint16_t length, uint8_t ota_topic,
                                           CloudProtocolRequest_t* request);
+// 将内部协议解析状态映射为响应文本。返回只读状态说明，未知状态使用兜底错误语义，不改变请求或设备状态。
 const char* CloudProtocol_StatusMessage(CloudProtocolStatus_t status);
 
 #endif
