@@ -32,7 +32,7 @@ static void fixture(void)
     g_motion.bench.phase=BENCH_ACTIVE; g_motion.bench.step=16;
     g_motion.bench.center=0; g_motion.bench.limit_mdeg=30000;
     g_motion.bench.minimum=-82680; g_motion.bench.maximum=82680;
-    g_motion.bench.applied=13554; g_motion.bench.applied_profile_rpm=75;
+    g_motion.bench.applied=13554; g_motion.bench.applied_profile_rpm=VEHICLE_STEERING_PROFILE_CREEP_RPM;
     PatrolRuntime_UpdateFeedback(mock_now);
     assert(ChassisControl_Apply(&mock_control,"acquire","remote",1,1000,1000,5000,mock_now));
 }
@@ -108,7 +108,7 @@ int main(void)
 
     /* An actual stop failure still cuts power and latches the common fault. */
     fixture(); ChassisControl_SetDriveBrake(&mock_control,1);
-    PatrolRuntime_Tick(); mock_can_ready=0; mock_now+=2000;
+    PatrolRuntime_Tick(); mock_can_ready=0; mock_now+=6000;
     mock_snapshot.coherent_feedback_ms=mock_now;
     PatrolRuntime_UpdateFeedback(mock_now); PatrolRuntime_Tick();
     assert(mock_control.fault_latched && !mock_power);

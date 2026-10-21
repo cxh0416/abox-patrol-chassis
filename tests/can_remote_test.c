@@ -236,12 +236,15 @@ int main(void)
 
     init(); assert(send(PATROL_CAN_ARM,1,0,0)==PATROL_CAN_OK);
     assert(send(PATROL_CAN_TARGET,2,50,0)==PATROL_CAN_OK);
-    for (unsigned n=0;n<=20;n++) {
+    for (unsigned n=0;n<=60;n++) {
         ChassisFeedback f=state()->feedback; f.left_actual_rpm=f.right_actual_rpm=30;
         f.feedback_ms=now; RemoteService_UpdateFeedback(&f);
         assert(send(PATROL_CAN_TARGET,(uint16_t)(3+n),-50,0)==PATROL_CAN_OK);
         RemoteService_SafetyTick(now);
-        if(n<20) now+=100;
+        if(n<60) {
+            assert(!state()->fault_latched && state()->reversal_pending);
+            now+=100;
+        }
     }
     assert(state()->fault_latched && state()->stop_reason==CHASSIS_STOP_DIRECTION_TIMEOUT);
     assert(!state()->enable_request);

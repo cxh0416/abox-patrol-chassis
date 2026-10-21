@@ -337,10 +337,17 @@ int main(void)
     CHECK(ChassisControl_Apply(&control, "renew", "reverse", 3, 1000, -50, 0, 900));
     feedback.feedback_ms = 1800; ChassisControl_SetFeedback(&control, &feedback);
     CHECK(ChassisControl_Apply(&control, "renew", "reverse", 4, 1000, -50, 0, 1800));
-    feedback.feedback_ms = 2010; ChassisControl_SetFeedback(&control, &feedback);
-    ChassisControl_Tick(&control, 2010);
+    /* Renew the lease while preserving the original reversal start at 10 ms. */
+    for (uint32_t t=2500; t<=6000; t+=500) {
+        feedback.feedback_ms=t; ChassisControl_SetFeedback(&control,&feedback);
+        CHECK(ChassisControl_Apply(&control,"renew","reverse",5+t,1000,-50,0,t));
+        ChassisControl_Tick(&control,t);
+        CHECK(control.reversal_pending && !control.fault_latched && control.target_rpm==0);
+    }
+    feedback.feedback_ms = 6010; ChassisControl_SetFeedback(&control, &feedback);
+    ChassisControl_Tick(&control, 6010);
     CHECK(control.fault_latched && control.stop_reason == CHASSIS_STOP_DIRECTION_TIMEOUT);
-    CHECK(!ChassisControl_Apply(&control, "acquire", "again", 1, 1000, 50, 0, 2010));
+    CHECK(!ChassisControl_Apply(&control, "acquire", "again", 1, 1000, 50, 0, 6010));
 
     ChassisControl_Init(&control);
     memset(&feedback, 0, sizeof(feedback));

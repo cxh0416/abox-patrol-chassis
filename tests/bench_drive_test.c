@@ -53,7 +53,12 @@ int main(void)
     for(int i=0;i<3;i++) { now+=20; BenchDrive_Tick(&b,now,0,1,0,0,0,now,now); }
     transact(&b,&now); transact(&b,&now); transact(&b,&now); assert(b.phase==BENCH_IDLE);
     active(&b,&now); BenchDrive_Stop(&b,now,0);
-    BenchDrive_Tick(&b,now+2000,0,1,0,50,50,now,now); assert(b.phase==BENCH_FAULT && b.cut_power);
+    BenchDrive_Tick(&b,now+2000,0,1,0,50,50,now,now);
+    assert(b.phase==BENCH_STOPPING && !b.cut_power);
+    BenchDrive_Tick(&b,now+5999,0,1,0,50,50,now,now);
+    assert(b.phase==BENCH_STOPPING && !b.cut_power);
+    BenchDrive_Tick(&b,now+6000,0,1,0,50,50,now,now);
+    assert(b.phase==BENCH_FAULT && b.cut_power);
     /* Full-scale targets reach both motor SDOs with the correct wheel signs. */
     for (int sign=-1; sign<=1; sign+=2) {
         active(&b,&now); BenchDrive_Tick(&b,now,1,1,sign*1000,0,0,now,now);

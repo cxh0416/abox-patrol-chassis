@@ -150,7 +150,7 @@ int main(void)
     BenchSteering_Init(&b); now=0;
     assert(BenchSteering_Start(&b,-83815,-85123,-85123,30000,now));
     for(int i=0;i<20;i++) advance(&b,&now);
-    assert(b.phase==BENCH_ACTIVE && b.applied_profile_rpm==75);
+    assert(b.phase==BENCH_ACTIVE && b.applied_profile_rpm==90);
     BenchSteering_Tick(&b,now,1,1,30000,0);
     assert(BenchSteering_Take(&b,now,&f) && b.index==0x6081);
     r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+1));
@@ -168,10 +168,19 @@ int main(void)
        it can consume the 30.0 to 30.5 degree fault margin. */
     BenchSteering_Tick(&b,now+10,1,1,30000,27000);
     assert(BenchSteering_Take(&b,now+10,&f) && b.index==0x6081);
+    assert(f.data[4]==90 && f.data[5]==0 && f.data[6]==0 && f.data[7]==0);
     r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+11));
     assert(BenchSteering_Take(&b,now+12,&f) && b.index==0x6081 && b.read);
-    r=reply(&b,75); assert(BenchSteering_OnFrame(&b,&r,now+13));
-    assert(b.applied_profile_rpm==75 && b.step==16);
+    r=reply(&b,90); assert(BenchSteering_OnFrame(&b,&r,now+13));
+    assert(b.applied_profile_rpm==90 && b.step==16);
+    /* At 24 degrees the mid profile is written and verified before proceeding. */
+    BenchSteering_Tick(&b,now+20,1,1,30000,24000);
+    assert(BenchSteering_Take(&b,now+20,&f) && b.index==0x6081);
+    assert(f.data[4]==180 && f.data[5]==0 && f.data[6]==0 && f.data[7]==0);
+    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+21));
+    assert(BenchSteering_Take(&b,now+22,&f) && b.index==0x6081 && b.read);
+    r=reply(&b,180); assert(BenchSteering_OnFrame(&b,&r,now+23));
+    assert(b.applied_profile_rpm==180 && b.phase==BENCH_ACTIVE && b.step==16);
 
     BenchSteering_Init(&b);
     assert(BenchSteering_Start(&b,-83815,-72187,-85123,30000,0)); now=0;

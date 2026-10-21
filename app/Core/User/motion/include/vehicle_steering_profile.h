@@ -10,8 +10,8 @@
 /* 0x6080 remains the driver ceiling.  0x6081 is selected internally from the
  * commanded-versus-measured wheel angle; it is never supplied by cloud input. */
 #define VEHICLE_STEERING_PROFILE_MAX_RPM 300U
-#define VEHICLE_STEERING_PROFILE_MID_RPM 150U
-#define VEHICLE_STEERING_PROFILE_CREEP_RPM 75U
+#define VEHICLE_STEERING_PROFILE_MID_RPM 180U
+#define VEHICLE_STEERING_PROFILE_CREEP_RPM 90U
 #define VEHICLE_STEERING_PROFILE_NEAR_TARGET_MDEG 3000
 #define VEHICLE_STEERING_PROFILE_MID_TARGET_MDEG 10000
 /* Start slowing well inside the 30 degree command limit.  The 30.5 degree
