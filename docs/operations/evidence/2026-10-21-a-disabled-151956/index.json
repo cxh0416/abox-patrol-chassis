@@ -1,0 +1,117 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.72",
+  "source_commit": "d3614871be8400dd37565ebfe97b044996be85be",
+  "app_sha256": "82246d08866e6c9e83f9a8aab0f3551464b646387389471b499436ca52c1fc35",
+  "board_flashed": false,
+  "current_board_capture": false,
+  "boot_state_policy": "manual-install NORMAL, stable UFS metadata explicitly unseeded",
+  "states": [
+    {
+      "file": "BootState_A.bin",
+      "sequence": 1,
+      "state": "NORMAL",
+      "bytes": 2048,
+      "sha256": "0e1145a32866ee20a563f1df4f7aa8fbe5d8758f9ea9f6317615e117a92ecf7e",
+      "address": "0x0803E800",
+      "app_version": "patrol-chassis-0.2.72",
+      "app_size": 150920,
+      "app_crc32": "D6EBC64F",
+      "stable_metadata": "unseeded"
+    },
+    {
+      "file": "BootState_B.bin",
+      "sequence": 2,
+      "state": "NORMAL",
+      "bytes": 2048,
+      "sha256": "5d8c32fdd59b4140653deddef085618989cae0c6bc6958853d5f1ecc6b9c4723",
+      "address": "0x0803F000",
+      "app_version": "patrol-chassis-0.2.72",
+      "app_size": 150920,
+      "app_crc32": "D6EBC64F",
+      "stable_metadata": "unseeded"
+    }
+  ],
+  "files": {
+    "a-disabled-arm.log": {
+      "bytes": 6512,
+      "sha256": "77f15e678f9b60445507c44c3e7b03a8e29ced42c2cc02f4ecf6eab871062468"
+    },
+    "a-disabled-boot.log": {
+      "bytes": 208,
+      "sha256": "bbfc3d831c9390d994c173862385a257e5a7f9af896d96c2f1e29684457e28f2"
+    },
+    "a-disabled-c-tests.log": {
+      "bytes": 240,
+      "sha256": "846972a2e7b1bba3f8bcaefadd0f96267c9ed8983c90c3e3347d1863796d3e87"
+    },
+    "a-disabled-chassis-test.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "a-disabled-configure.log": {
+      "bytes": 186,
+      "sha256": "eff1d958214c395f5ff6e2bd96977932e26d0c62a2cb08ac6fbd8f2372d137bb"
+    },
+    "a-disabled-layout.log": {
+      "bytes": 253,
+      "sha256": "0c7076fd7c4b9a18e0f7173bc168689737dd8035c8f8093927e1a7e29c6ab9b2"
+    },
+    "a-disabled-python.log": {
+      "bytes": 107717,
+      "sha256": "ed2b2369f5521a74876f9891b550748f63bb55d670df637615ab1820bb9bd524"
+    },
+    "a-disabled-stack.log": {
+      "bytes": 674,
+      "sha256": "25a17293001ec836f7040cca08f60aa1f34c6d153ac1a86de1f654b2e9157e4f"
+    },
+    "ABox_Boot.bin": {
+      "bytes": 32768,
+      "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+    },
+    "A_Disabled_Flash.zip": {
+      "bytes": 123308,
+      "sha256": "a5639a750954d518cdd3c49a878252b55f322d21c1fa2a06a320795f7ee3b55f"
+    },
+    "boot-state-verification.log": {
+      "bytes": 179,
+      "sha256": "c338891e01df5496bd6c0f8dbba9c94809398c6ae2f1d98390f1a76f7018cf50"
+    },
+    "BootState_A.bin": {
+      "bytes": 2048,
+      "sha256": "0e1145a32866ee20a563f1df4f7aa8fbe5d8758f9ea9f6317615e117a92ecf7e"
+    },
+    "BootState_B.bin": {
+      "bytes": 2048,
+      "sha256": "5d8c32fdd59b4140653deddef085618989cae0c6bc6958853d5f1ecc6b9c4723"
+    },
+    "candidate.manifest.json": {
+      "bytes": 15164,
+      "sha256": "402c62644c56b313e5f64638b245b3620e40904514da3817b2e7e036948f5414"
+    },
+    "debug.manifest.json": {
+      "bytes": 1270,
+      "sha256": "5248301c50372c70bf8ad04dfad4e582a9b44369139878580b3bf6fc54082747"
+    },
+    "FLASH_ADDRESSES.txt": {
+      "bytes": 1592,
+      "sha256": "fccc5d2c780058dd4126d915f5a2197c2fb662a752750d0692b0fd3f181022b8"
+    },
+    "Patrol_Vehicle_Chassis_App.bin": {
+      "bytes": 150920,
+      "sha256": "82246d08866e6c9e83f9a8aab0f3551464b646387389471b499436ca52c1fc35"
+    },
+    "Patrol_Vehicle_Chassis_Full.bin": {
+      "bytes": 183688,
+      "sha256": "cfcc185b28c8ecb0e4bab802bbd1a0fa11ef356d6a84bc597b14a5676772cf22"
+    },
+    "source-changes.patch": {
+      "bytes": 40551,
+      "sha256": "e356326e5e5d7b7a48c3a13e104f4120c0d30a200ed4eea040460274ba2625d6"
+    },
+    "verify-state-a-disabled.c": {
+      "bytes": 3379,
+      "sha256": "e9f80980806ae2beaaa8d89f82b0cab519ce6afc1d98c3dddce0516be04c9576"
+    }
+  }
+}

@@ -104,7 +104,7 @@ void BenchDrive_Tick(BenchDrive *b, uint32_t now, uint8_t requested, uint8_t saf
         fail(b, 5);
         return;
     }
-    if (b->phase == BENCH_STOPPING && now - b->started_ms >= 2000U)
+    if (b->phase == BENCH_STOPPING && now - b->started_ms >= 6000U)
     {
         fail(b, 6);
         return;
@@ -115,7 +115,7 @@ void BenchDrive_Tick(BenchDrive *b, uint32_t now, uint8_t requested, uint8_t saf
     {
         if (b->reversing)
         {
-            if (now - b->started_ms >= 2000U)
+            if (now - b->started_ms >= 6000U)
             {
                 fail(b, 6);
                 return;

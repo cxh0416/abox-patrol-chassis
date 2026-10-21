@@ -1,0 +1,150 @@
+diff --git a/app/Core/User/motion/src/bench_drive.c b/app/Core/User/motion/src/bench_drive.c
+index 20f9e56..2a8dcb8 100644
+--- a/app/Core/User/motion/src/bench_drive.c
++++ b/app/Core/User/motion/src/bench_drive.c
+@@ -104,7 +104,7 @@ void BenchDrive_Tick(BenchDrive *b, uint32_t now, uint8_t requested, uint8_t saf
+         fail(b, 5);
+         return;
+     }
+-    if (b->phase == BENCH_STOPPING && now - b->started_ms >= 2000U)
++    if (b->phase == BENCH_STOPPING && now - b->started_ms >= 6000U)
+     {
+         fail(b, 6);
+         return;
+@@ -115,7 +115,7 @@ void BenchDrive_Tick(BenchDrive *b, uint32_t now, uint8_t requested, uint8_t saf
+     {
+         if (b->reversing)
+         {
+-            if (now - b->started_ms >= 2000U)
++            if (now - b->started_ms >= 6000U)
+             {
+                 fail(b, 6);
+                 return;
+diff --git a/app/Core/User/motion/src/chassis_control.c b/app/Core/User/motion/src/chassis_control.c
+index 20f4637..63adaaa 100644
+--- a/app/Core/User/motion/src/chassis_control.c
++++ b/app/Core/User/motion/src/chassis_control.c
+@@ -201,6 +201,6 @@ void ChassisControl_Tick(ChassisControl* control, uint32_t now_ms)
+             }
+         } else control->zero_confirmations = 0U;
+     }
+-    if (control->reversal_pending && (now_ms - control->reversal_started_ms) >= 2000U)
++    if (control->reversal_pending && (now_ms - control->reversal_started_ms) >= 6000U)
+         force_stop(control, CHASSIS_STOP_DIRECTION_TIMEOUT, 1U);
+ }
+diff --git "a/docs/operations/CANopen\346\211\247\350\241\214\347\272\246\346\235\237.md" "b/docs/operations/CANopen\346\211\247\350\241\214\347\272\246\346\235\237.md"
+index 189af6d..f28f2d0 100644
+--- "a/docs/operations/CANopen\346\211\247\350\241\214\347\272\246\346\235\237.md"
++++ "b/docs/operations/CANopen\346\211\247\350\241\214\347\272\246\346\235\237.md"
+@@ -33,6 +33,6 @@ Node 1 使用 SDO `0x601/0x581`、心跳 `0x701`；Node 2 使用 SDO `0x602/0x58
+ 
+ 当前候选的独立行走目标限制为 `±1000 rpm`，转向范围为 `±30°`，并受本次 RAM 许可幅度限制。独立编码器按单圈 4096 count、中位置零 解释；比例为 55.25 count/轮胎度。转向驱动器使用逐车保存中位及上电建立的 RAM 坐标，比例为 2710.8 count/轮胎度。RAM 软限位按 ±30.5° 设置并复读，不保存驱动器 EEP。
+ 
+-未标定、安全配置不匹配、单圈范围异常、反馈过期、两路角度偏差大于 `2°`、节点离线、CAN Bus-Off、驱动故障或 OTA 忙时禁止运动。方向反转必须先发送左右零速，双写入完成后连续三次左右实测绝对值不超过 `20 rpm` 才可反向；每次必须为新反馈，2 秒未停车则撤销使能并锁存故障。
++未标定、安全配置不匹配、单圈范围异常、反馈过期、两路角度偏差大于 `2°`、节点离线、CAN Bus-Off、驱动故障或 OTA 忙时禁止运动。方向反转必须先发送左右零速，双写入完成后连续三次左右实测绝对值不超过 `20 rpm` 才可反向；每次必须为新反馈，6 秒未停车则撤销使能并锁存故障。
+ 
+ 早期 ±300 rpm/±5° 阶段边界见 [历史首阶段需求与验收](history/首阶段需求与验收.md)。0.2.13 正式包行走限速为 50 rpm；不能用当前候选参数描述该历史正式包。
+diff --git "a/docs/operations/\346\236\266\347\251\272\350\241\214\350\265\260\344\270\216\345\271\263\345\217\260\350\277\234\346\216\247\345\256\236\347\216\260.md" "b/docs/operations/\346\236\266\347\251\272\350\241\214\350\265\260\344\270\216\345\271\263\345\217\260\350\277\234\346\216\247\345\256\236\347\216\260.md"
+index 6129c69..fa1b755 100644
+--- "a/docs/operations/\346\236\266\347\251\272\350\241\214\350\265\260\344\270\216\345\271\263\345\217\260\350\277\234\346\216\247\345\256\236\347\216\260.md"
++++ "b/docs/operations/\346\236\266\347\251\272\350\241\214\350\265\260\344\270\216\345\271\263\345\217\260\350\277\234\346\216\247\345\256\236\347\216\260.md"
+@@ -15,7 +15,7 @@ Enabled 和 Fault；不能照搬 Node 1 对 bit 5 的组合掩码。左右速度
+ 0.2.14 的目标限制曾扩大到 ±200 rpm；当前台架候选上限为 ±1000 rpm。实际转速存在控制偏差，不能把目标上限当成已测量的绝对速度上限。
+ 
+ 换向先写左右零速，两个写入均应答后，连续三组左右新反馈均 ≤20 rpm 才发反向目标。
+-任何一侧旧样本不能重复计数，中间超标会清零计数。换向超时 2 秒锁存故障；停止先零速、
++任何一侧旧样本不能重复计数，中间超标会清零计数。换向超时 6 秒锁存故障；停止先零速、
+ 确认静止，再撤使能并读状态确认。SDO 应答超时 100 ms，不重放运动写入，失败关闭 PA0。转向 PP 模式的 Shutdown 写应答不等于已撤使能；停机后最多等待 500 ms 的新 6041 状态或本周期已核验映射的 TPDO 确认撤使能，随后最多 100 ms 完成在途应答排空和 NMT 收尾。超时、通信失败或驱动 Fault 仍停机并关闭输出。
+ 反馈、标定、双角度、节点、Bus-Off、驱动故障及 OTA 门禁持续有效。执行器读取到的
+ 有效状态字也更新时间，但不完成诊断模块事务，不推进其轮询游标。
+diff --git a/tests/bench_drive_test.c b/tests/bench_drive_test.c
+index 6d2b43a..0a05524 100644
+--- a/tests/bench_drive_test.c
++++ b/tests/bench_drive_test.c
+@@ -53,7 +53,26 @@ int main(void)
+     for(int i=0;i<3;i++) { now+=20; BenchDrive_Tick(&b,now,0,1,0,0,0,now,now); }
+     transact(&b,&now); transact(&b,&now); transact(&b,&now); assert(b.phase==BENCH_IDLE);
+     active(&b,&now); BenchDrive_Stop(&b,now,0);
+-    BenchDrive_Tick(&b,now+2000,0,1,0,50,50,now,now); assert(b.phase==BENCH_FAULT && b.cut_power);
++    BenchDrive_Tick(&b,now+2000,0,1,0,50,50,now,now); assert(b.phase==BENCH_STOPPING && !b.cut_power);
++    BenchDrive_Tick(&b,now+4000,0,1,0,50,50,now,now); assert(b.phase==BENCH_STOPPING && !b.cut_power);
++    BenchDrive_Tick(&b,now+5999,0,1,0,50,50,now,now); assert(b.phase==BENCH_STOPPING && !b.cut_power);
++    BenchDrive_Tick(&b,now+6000,0,1,0,50,50,now,now); assert(b.phase==BENCH_FAULT && b.cut_power);
++    /* Reversal waits through the old limit, but faults at the new boundary. */
++    active(&b,&now); BenchDrive_Tick(&b,now,1,1,30,0,0,now,now);
++    transact(&b,&now); transact(&b,&now);
++    BenchDrive_Tick(&b,now,1,1,-30,30,30,now,now);
++    {
++        uint32_t started=b.started_ms;
++        transact(&b,&now); transact(&b,&now);
++        BenchDrive_Tick(&b,started+2000,1,1,-30,30,30,started+2000,started+2000);
++        assert(b.reversing && b.phase==BENCH_ACTIVE && !b.cut_power);
++        BenchDrive_Tick(&b,started+4000,1,1,-30,30,30,started+4000,started+4000);
++        assert(b.reversing && b.phase==BENCH_ACTIVE && !b.cut_power);
++        BenchDrive_Tick(&b,started+5999,1,1,-30,30,30,started+5999,started+5999);
++        assert(b.reversing && b.phase==BENCH_ACTIVE && !b.cut_power);
++        BenchDrive_Tick(&b,started+6000,1,1,-30,30,30,started+6000,started+6000);
++        assert(b.phase==BENCH_FAULT && b.fault==6 && b.cut_power);
++    }
+     /* Full-scale targets reach both motor SDOs with the correct wheel signs. */
+     for (int sign=-1; sign<=1; sign+=2) {
+         active(&b,&now); BenchDrive_Tick(&b,now,1,1,sign*1000,0,0,now,now);
+diff --git a/tests/can_remote_test.c b/tests/can_remote_test.c
+index c8a1914..b70a037 100644
+--- a/tests/can_remote_test.c
++++ b/tests/can_remote_test.c
+@@ -236,12 +236,15 @@ int main(void)
+ 
+     init(); assert(send(PATROL_CAN_ARM,1,0,0)==PATROL_CAN_OK);
+     assert(send(PATROL_CAN_TARGET,2,50,0)==PATROL_CAN_OK);
+-    for (unsigned n=0;n<=20;n++) {
++    for (unsigned n=0;n<=60;n++) {
+         ChassisFeedback f=state()->feedback; f.left_actual_rpm=f.right_actual_rpm=30;
+         f.feedback_ms=now; RemoteService_UpdateFeedback(&f);
+         assert(send(PATROL_CAN_TARGET,(uint16_t)(3+n),-50,0)==PATROL_CAN_OK);
+         RemoteService_SafetyTick(now);
+-        if(n<20) now+=100;
++        if(n<60) {
++            assert(!state()->fault_latched && state()->reversal_pending);
++            now+=100;
++        }
+     }
+     assert(state()->fault_latched && state()->stop_reason==CHASSIS_STOP_DIRECTION_TIMEOUT);
+     assert(!state()->enable_request);
+diff --git a/tests/chassis_safety_test.c b/tests/chassis_safety_test.c
+index cee251d..6732b42 100644
+--- a/tests/chassis_safety_test.c
++++ b/tests/chassis_safety_test.c
+@@ -339,8 +339,18 @@ int main(void)
+     CHECK(ChassisControl_Apply(&control, "renew", "reverse", 4, 1000, -50, 0, 1800));
+     feedback.feedback_ms = 2010; ChassisControl_SetFeedback(&control, &feedback);
+     ChassisControl_Tick(&control, 2010);
++    CHECK(!control.fault_latched && control.reversal_pending && control.target_rpm == 0);
++    for (uint32_t t = 2600, seq = 5; t <= 5300; t += 900, ++seq) {
++        feedback.feedback_ms = t; ChassisControl_SetFeedback(&control, &feedback);
++        CHECK(ChassisControl_Apply(&control, "renew", "reverse", seq, 1000, -50, 0, t));
++    }
++    feedback.feedback_ms = 6009; ChassisControl_SetFeedback(&control, &feedback);
++    ChassisControl_Tick(&control, 6009);
++    CHECK(!control.fault_latched && control.reversal_pending && control.reversal_started_ms == 10);
++    feedback.feedback_ms = 6010; ChassisControl_SetFeedback(&control, &feedback);
++    ChassisControl_Tick(&control, 6010);
+     CHECK(control.fault_latched && control.stop_reason == CHASSIS_STOP_DIRECTION_TIMEOUT);
+-    CHECK(!ChassisControl_Apply(&control, "acquire", "again", 1, 1000, 50, 0, 2010));
++    CHECK(!ChassisControl_Apply(&control, "acquire", "again", 1, 1000, 50, 0, 6010));
+ 
+     ChassisControl_Init(&control);
+     memset(&feedback, 0, sizeof(feedback));
+diff --git a/tests/drive_brake_runtime_cases.c b/tests/drive_brake_runtime_cases.c
+index 1b99d4c..dd9b8d1 100644
+--- a/tests/drive_brake_runtime_cases.c
++++ b/tests/drive_brake_runtime_cases.c
+@@ -108,7 +108,7 @@ int main(void)
+ 
+     /* An actual stop failure still cuts power and latches the common fault. */
+     fixture(); ChassisControl_SetDriveBrake(&mock_control,1);
+-    PatrolRuntime_Tick(); mock_can_ready=0; mock_now+=2000;
++    PatrolRuntime_Tick(); mock_can_ready=0; mock_now+=6000;
+     mock_snapshot.coherent_feedback_ms=mock_now;
+     PatrolRuntime_UpdateFeedback(mock_now); PatrolRuntime_Tick();
+     assert(mock_control.fault_latched && !mock_power);

@@ -1,0 +1,117 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.71",
+  "source_commit": "d3614871be8400dd37565ebfe97b044996be85be",
+  "app_sha256": "cabf025c64c028ed08e7006e38ff3f9c9e9955069640ab102cf629aafc2bdca8",
+  "board_flashed": false,
+  "current_board_capture": false,
+  "boot_state_policy": "manual-install NORMAL, stable UFS metadata explicitly unseeded",
+  "states": [
+    {
+      "file": "BootState_A.bin",
+      "sequence": 1,
+      "state": "NORMAL",
+      "bytes": 2048,
+      "sha256": "7bea145a8b16f7c4361f26b2beac81dff4f7b4a623526885322e1e88dbf5a297",
+      "address": "0x0803E800",
+      "app_version": "patrol-chassis-0.2.71",
+      "app_size": 151016,
+      "app_crc32": "6C253069",
+      "stable_metadata": "unseeded"
+    },
+    {
+      "file": "BootState_B.bin",
+      "sequence": 2,
+      "state": "NORMAL",
+      "bytes": 2048,
+      "sha256": "fb4d26e934a135edbf3670931d1c8d55304b6ce07378100fc1416104da611645",
+      "address": "0x0803F000",
+      "app_version": "patrol-chassis-0.2.71",
+      "app_size": 151016,
+      "app_crc32": "6C253069",
+      "stable_metadata": "unseeded"
+    }
+  ],
+  "files": {
+    "ABox_Boot.bin": {
+      "bytes": 32768,
+      "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+    },
+    "boot-state-verification.log": {
+      "bytes": 179,
+      "sha256": "c338891e01df5496bd6c0f8dbba9c94809398c6ae2f1d98390f1a76f7018cf50"
+    },
+    "BootState_A.bin": {
+      "bytes": 2048,
+      "sha256": "7bea145a8b16f7c4361f26b2beac81dff4f7b4a623526885322e1e88dbf5a297"
+    },
+    "BootState_B.bin": {
+      "bytes": 2048,
+      "sha256": "fb4d26e934a135edbf3670931d1c8d55304b6ce07378100fc1416104da611645"
+    },
+    "candidate.manifest.json": {
+      "bytes": 14915,
+      "sha256": "66ba8016df3305e46becfc9395d62a97d139b56b6d4ecf7ddfa2f9df82c45f74"
+    },
+    "debug.manifest.json": {
+      "bytes": 1167,
+      "sha256": "3158116df3fda547b8ed75357cabf4130c04973917a7d7046987a8b2c636a007"
+    },
+    "FLASH_ADDRESSES.txt": {
+      "bytes": 1219,
+      "sha256": "5c95369624a3935dfbe0ca81eccabf45a6ad98ec7eb743b35d4aa89c426a2906"
+    },
+    "Patrol_Vehicle_Chassis_App.bin": {
+      "bytes": 151016,
+      "sha256": "cabf025c64c028ed08e7006e38ff3f9c9e9955069640ab102cf629aafc2bdca8"
+    },
+    "Patrol_Vehicle_Chassis_Full.bin": {
+      "bytes": 183784,
+      "sha256": "e573022885d03f4278c4275d2441f9f555780d3590dc51d0d54911f3b09dbdec"
+    },
+    "source-changes.patch": {
+      "bytes": 15520,
+      "sha256": "df1a6e5bcf437f99321a37c02168dc060c699822c92bab942687dd88964f085c"
+    },
+    "steering-speed-arm.log": {
+      "bytes": 6512,
+      "sha256": "cb8ee63644a46bb487f3f14aeb3eed23c4b693d2accda78a08f13abbbb3952ea"
+    },
+    "steering-speed-boot.log": {
+      "bytes": 208,
+      "sha256": "bbfc3d831c9390d994c173862385a257e5a7f9af896d96c2f1e29684457e28f2"
+    },
+    "steering-speed-c-tests.log": {
+      "bytes": 240,
+      "sha256": "846972a2e7b1bba3f8bcaefadd0f96267c9ed8983c90c3e3347d1863796d3e87"
+    },
+    "steering-speed-chassis-test.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "steering-speed-configure.log": {
+      "bytes": 186,
+      "sha256": "eff1d958214c395f5ff6e2bd96977932e26d0c62a2cb08ac6fbd8f2372d137bb"
+    },
+    "steering-speed-layout.log": {
+      "bytes": 253,
+      "sha256": "0c7076fd7c4b9a18e0f7173bc168689737dd8035c8f8093927e1a7e29c6ab9b2"
+    },
+    "steering-speed-python.log": {
+      "bytes": 107717,
+      "sha256": "28890365264890d80ffbd8235426b9da7ea56ec2d4ae128a17e49f8f3990faf8"
+    },
+    "steering-speed-stack.log": {
+      "bytes": 674,
+      "sha256": "1081181ca93c71a02358221e023c3d274e064b74a161a2e9c831837fd40c93f3"
+    },
+    "SteeringSpeed_Flash.zip": {
+      "bytes": 123187,
+      "sha256": "8e45e0eca1ac1dd2ec12f6d8d1bef06c1ea6a66eda35c8aa912372c1c68cf05d"
+    },
+    "verify-state-steering-speed.c": {
+      "bytes": 3379,
+      "sha256": "076ad9048a2f3819f173769734142007e14c3021bd0d2cd08912d8add528c026"
+    }
+  }
+}

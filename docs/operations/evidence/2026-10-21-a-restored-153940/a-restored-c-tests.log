@@ -1,0 +1,4 @@
+mqtt_adapter_test passed
+PASS bench handshake, target conversion, limits, stop, malformed replies, faults and timeout
+PASS Config V5 layout, uncalibrated gate, direct control session, reconnect and lease revoke
+bench drive tests passed
