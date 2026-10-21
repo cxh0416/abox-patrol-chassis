@@ -11,7 +11,7 @@
 | 0 | version | 固定为 1 |
 | 1 | operation | 下表中的操作码 |
 | 2–3 | sequence | uint16，请求序号 |
-| 4–5 | driveRpm | int16，车辆前进为正，范围 ±500 rpm |
+| 4–5 | driveRpm | int16，车辆前进为正，范围 ±1000 rpm |
 | 6–7 | steeringMdeg | int16，右转为正，范围 ±30000 mdeg |
 
 | 操作码 | 操作 | 语义 |

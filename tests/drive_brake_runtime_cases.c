@@ -28,13 +28,13 @@ static void fixture(void)
     g_motion.coordinate.valid=1;
     PatrolRuntime_Init();
     g_motion.drive.phase=BENCH_ACTIVE; g_motion.drive.step=12;
-    g_motion.drive.applied=100; g_motion.drive.direction=1;
+    g_motion.drive.applied=1000; g_motion.drive.direction=1;
     g_motion.bench.phase=BENCH_ACTIVE; g_motion.bench.step=16;
     g_motion.bench.center=0; g_motion.bench.limit_mdeg=30000;
     g_motion.bench.minimum=-82680; g_motion.bench.maximum=82680;
     g_motion.bench.applied=13554; g_motion.bench.applied_profile_rpm=75;
     PatrolRuntime_UpdateFeedback(mock_now);
-    assert(ChassisControl_Apply(&mock_control,"acquire","remote",1,1000,100,5000,mock_now));
+    assert(ChassisControl_Apply(&mock_control,"acquire","remote",1,1000,1000,5000,mock_now));
 }
 static void next_sample(void)
 {
@@ -75,7 +75,7 @@ int main(void)
     assert(g_motion.drive.phase==BENCH_IDLE && !g_motion.drive.cut_power);
     next_sample(); PatrolRuntime_Tick(); assert(g_motion.drive.phase==BENCH_IDLE);
     /* Steering can receive a new target while the drive stays disabled. */
-    assert(ChassisControl_Apply(&mock_control,"renew","remote",2,1000,500,-5000,mock_now));
+    assert(ChassisControl_Apply(&mock_control,"renew","remote",2,1000,1000,-5000,mock_now));
     PatrolRuntime_Tick();
     assert(g_motion.drive.phase==BENCH_IDLE && g_motion.bench.phase==BENCH_ACTIVE);
     assert(g_motion.bench.desired==-13554 && mock_control.target_rpm==0 && mock_power);

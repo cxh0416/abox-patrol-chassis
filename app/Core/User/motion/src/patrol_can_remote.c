@@ -66,7 +66,7 @@ void PatrolCanRemote_OnFrame(const PatrolCanFrame* f, uint32_t received, uint32_
     }
     if ((uint32_t)(now-received)>100U) { reply_code=PATROL_CAN_STALE; return; }
     if (op==PATROL_CAN_QUERY) { reply_code=PATROL_CAN_OK; return; }
-    if ((op!=PATROL_CAN_TARGET && (rpm || angle)) || rpm>500 || rpm<-500 || angle>30000 || angle<-30000) return;
+    if ((op!=PATROL_CAN_TARGET && (rpm || angle)) || rpm>CHASSIS_MAX_RPM || rpm<-CHASSIS_MAX_RPM || angle>30000 || angle<-30000) return;
     c=RemoteService_State();
     if (CenterCalibration_IsActive() || PatrolRuntimePort_OtaBusy()) { reply_code=PATROL_CAN_SAFETY; return; }
     if (c->session_active && !owns()) { reply_code=PATROL_CAN_OWNER; return; }

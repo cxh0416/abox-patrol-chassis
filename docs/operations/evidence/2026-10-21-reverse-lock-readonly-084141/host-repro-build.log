@@ -1,0 +1,3 @@
+C:\Users\ijk\AppData\Local\Temp\ccAaGPch.o:remote_service.c:(.text$RemoteService_RevokeForNetworkChange+0x2f): undefined reference to `AppLog_Printf'
+C:\Users\ijk\AppData\Local\Temp\ccAaGPch.o:remote_service.c:(.text$RemoteService_Init+0xeb): undefined reference to `AppLog_Printf'
+collect2.exe: error: ld returned 1 exit status

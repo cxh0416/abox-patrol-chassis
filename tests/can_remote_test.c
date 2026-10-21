@@ -93,7 +93,7 @@ static void joystick(int16_t throttle, int16_t steer)
 static void physical_brake_cases(void)
 {
     init(); switches(1,0); joystick(450,180);
-    assert(state()->target_rpm==500 && state()->target_steering_mdeg==10000);
+    assert(state()->target_rpm==1000 && state()->target_steering_mdeg==10000);
     assert(state()->active_direction==1 && state()->enable_request);
     uint32_t deadline=state()->lease_deadline_ms;
     now+=10; switches(1,1);
@@ -120,7 +120,7 @@ static void physical_brake_cases(void)
     joystick(-450,180);
     assert(state()->reversal_pending && state()->target_rpm==0);
     for(unsigned n=0;n<3;n++) { now+=10; healthy(); RemoteService_SafetyTick(now); }
-    assert(state()->target_rpm==-500 && state()->target_steering_mdeg==10000);
+    assert(state()->target_rpm==-1000 && state()->target_steering_mdeg==10000);
     /* Brake cancels an already-pending reversal. */
     joystick(450,0); assert(state()->reversal_pending);
     switches(1,1);
@@ -163,6 +163,26 @@ static void physical_brake_cases(void)
     ChassisFeedback bad=state()->feedback; bad.calibrated=0; RemoteService_UpdateFeedback(&bad);
     RemoteService_SafetyTick(now); switches(1,0); joystick(450,180);
     assert(!state()->enable_request && state()->target_rpm==0);
+}
+static void drive_speed_cases(void)
+{
+    for (int sign=-1; sign<=1; sign+=2) {
+        init(); switches(1,0); joystick(sign*225,sign*450);
+        assert(state()->target_rpm==sign*500 && state()->target_steering_mdeg==sign*25000);
+        joystick(sign*450,sign*450);
+        assert(state()->target_rpm==sign*1000 && state()->target_steering_mdeg==sign*25000);
+        joystick(sign*32767,sign*32767);
+        assert(state()->target_rpm==sign*1000 && state()->target_steering_mdeg==sign*25000);
+
+        init(); assert(send(PATROL_CAN_ARM,1,0,0)==PATROL_CAN_OK);
+        assert(send(PATROL_CAN_TARGET,2,sign*1000,sign*30000)==PATROL_CAN_OK);
+        assert(state()->target_rpm==sign*1000 && state()->target_steering_mdeg==sign*30000);
+        uint32_t deadline=state()->lease_deadline_ms;
+        assert(send(PATROL_CAN_TARGET,3,sign*1001,0)==PATROL_CAN_INVALID);
+        assert(state()->target_rpm==sign*1000 && state()->lease_deadline_ms==deadline);
+        assert(!RemoteService_ApplyLocal("renew","can2-keyboard",100,300,sign*1001,0,now));
+        assert(state()->target_rpm==sign*1000);
+    }
 }
 int main(void)
 {
@@ -237,6 +257,7 @@ int main(void)
     }
     assert(state()->fault_latched && state()->stop_reason==CHASSIS_STOP_DIRECTION_TIMEOUT);
     assert(!state()->enable_request);
+    drive_speed_cases();
     physical_brake_cases();
     puts("CAN2 and physical B brake, steering continuity, release/reversal, freshness, owners and faults: PASS");
     return 0;

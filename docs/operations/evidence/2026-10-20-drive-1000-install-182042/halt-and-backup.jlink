@@ -1,0 +1,10 @@
+device STM32F105RC
+exec InhibitConnectRetries = 1
+exec ForceAttachTarget = 1
+if SWD
+speed 1000
+connect
+h
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\out\flash\2026-10-20-drive-1000-install-182042\ram-halted.bin", 0x20000000, 0x10000
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\out\flash\2026-10-20-drive-1000-install-182042\flash-halted.bin", 0x08000000, 0x40000
+qc

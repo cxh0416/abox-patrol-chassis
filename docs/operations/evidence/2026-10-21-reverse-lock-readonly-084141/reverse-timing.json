@@ -1,0 +1,10 @@
+{
+  "reversal_started_ms": 50799879,
+  "last_zero_feedback_ms": 50801811,
+  "active_direction": 1,
+  "last_seq": 433,
+  "lease_deadline_ms": 50802179,
+  "zero_confirmations_now": 0,
+  "reversal_pending_now": 0,
+  "fault_minus_reverse_start_ms": 2001
+}

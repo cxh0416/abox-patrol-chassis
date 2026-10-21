@@ -79,7 +79,7 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertIn("A-BOX 设备公共 MQTT 协议 V4", mqtt)
         self.assertNotIn("/zxwl/abox/{deviceId}", mqtt)
         self.assertIn("vehicle_chassis", mqtt)
-        self.assertIn("`±500 rpm`", canopen)
+        self.assertIn("`±1000 rpm`", canopen)
         self.assertIn("`±30°`", canopen)
         self.assertIn("连续三次", canopen)
 

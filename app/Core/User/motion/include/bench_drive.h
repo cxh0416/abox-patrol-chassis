@@ -2,7 +2,7 @@
 #define BENCH_DRIVE_H
 #include "bench_steering.h"
 /* Drive actuator limit shared by normal control. */
-#define BENCH_DRIVE_MAX_RPM 500
+#define BENCH_DRIVE_MAX_RPM 1000
 typedef struct {
     BenchPhase phase;
     uint8_t step, pending, read, width, cut_power, confirmations, reversing;

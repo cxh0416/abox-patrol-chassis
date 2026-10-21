@@ -1,0 +1,26 @@
+{
+  "observed": {
+    "output_command": 1,
+    "session_active": 1,
+    "enable_request": 1,
+    "target_rpm": 0,
+    "fault_latched": 0,
+    "bench_phase": 2,
+    "drive_phase": 2,
+    "center_phase": 0,
+    "auto_requested": 0,
+    "ota_busy": 0,
+    "left_actual_rpm": 0,
+    "right_actual_rpm": 0
+  },
+  "checks": {
+    "old_app_matches_retained_elf_binary": true,
+    "output_off": false,
+    "no_session_or_enable": false,
+    "executors_idle": false,
+    "ota_idle": true,
+    "no_auto_or_calibration": true,
+    "zero_wheels": true,
+    "frozen_boot": true
+  }
+}

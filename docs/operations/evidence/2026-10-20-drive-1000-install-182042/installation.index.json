@@ -1,0 +1,271 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "created_at": "2026-10-20T18:29:43.633085+08:00",
+  "version": "patrol-chassis-0.2.65",
+  "release_kind": "candidate",
+  "authorization": "User requested drive 1000 rpm, steering speed unchanged; explicitly requested flash to current board; confirmed A off, sticks released, vehicle stopped.",
+  "uid": "34ffd3054e57333750350443",
+  "drive_max_rpm": 1000,
+  "steering_profile_rpm": {
+    "maximum": 300,
+    "medium": 150,
+    "creep": 75
+  },
+  "steering_source_unchanged": true,
+  "program_result": "program-result.json",
+  "runtime_result": "runtime-result.json",
+  "flash_plan": "flash-plan.json",
+  "physical_1000rpm_motion_verified": false,
+  "formal_dist": "unchanged patrol-chassis-0.2.63; existing hot-reset static assertion remains",
+  "public_evidence": [
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\app-installed.bin",
+      "bytes": 151048,
+      "sha256": "ddfe2361bc187b4658383cd7fe8e529d16d9786b319b9b34a2313d51ed18986f"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\app-readback.bin",
+      "bytes": 151048,
+      "sha256": "ddfe2361bc187b4658383cd7fe8e529d16d9786b319b9b34a2313d51ed18986f"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\boot-state-running.bin",
+      "bytes": 4096,
+      "sha256": "098d9b1d8239cac1866f8e2d26378ae5d14cf8f09479aef6e7f2252bc9253a69"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\candidate.manifest.json",
+      "bytes": 3211,
+      "sha256": "4e12d7d9b1906f58c067ab0543a80b52ac3e9682b7e935e9065382d1e4c1a986"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\flash-plan.json",
+      "bytes": 1067,
+      "sha256": "65917e30c9a217fe55d523c673195a499760990d774728ed28c83ef9512d3f43"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\halt-and-backup.jlink",
+      "bytes": 422,
+      "sha256": "a1c9b626b23ca5bc7e0381ecf9f42ede2bca962221432b05f933e40c27ae9826"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\halt-and-backup.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\halt-and-backup.stdout.log",
+      "bytes": 3277,
+      "sha256": "c66d657e5341b1b958ade3a80b7ba67697616c3f7867ef625d4b6583830c44ac"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\preflight-readonly.jlink",
+      "bytes": 615,
+      "sha256": "022257eaa16c0666569a0c933aadfa315dcd984e4902644b1f7d837f8b59c1a5"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\preflight-readonly.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\preflight-readonly.stdout.log",
+      "bytes": 3238,
+      "sha256": "e25d165e2107cdfa6ea932e64eb74d51ae65f262902a8e40394834a4561ed767"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\preflight.json",
+      "bytes": 595,
+      "sha256": "3e0934e89b34846fa51887a78556fef011bd62c8695ca4dfe4d93bfb538559ce"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\program-and-verify.jlink",
+      "bytes": 944,
+      "sha256": "5f8af917e68d62757f73a6164ac733718fbe6ad404962f24d9629b2719414d11"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\program-and-verify.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\program-and-verify.stdout.log",
+      "bytes": 7627,
+      "sha256": "55ec5de55eed07628de52db17fe8361ba0b49ea7395a50eedd4007ff26a36418"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\program-result.json",
+      "bytes": 459,
+      "sha256": "2451dea00a4d89bcc0c4af3af27d434a8e1edb5c8821061e3fb25a30c23fac26"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\restart.jlink",
+      "bytes": 119,
+      "sha256": "8f1bfe019c5a0fdb91dbf3a0f93b005010b8666cefcaacef1bed62ce49e2d54a"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\restart.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\restart.stdout.log",
+      "bytes": 2258,
+      "sha256": "9f599224e2b9aa842592be8cb0f831e0d43b7779313cd61ffa7605b16b731986"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\runtime-readonly.jlink",
+      "bytes": 1148,
+      "sha256": "4ad014872c662fdce654f5b346e0c24e393e78f51d04bbce4531099e73e5f89c"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\runtime-readonly.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\runtime-readonly.stdout.log",
+      "bytes": 4529,
+      "sha256": "380e0c46cd06fb8ad03b0d90a9d94749949fb1988806cf4c9cbd32f8d98a7b04"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\runtime-result.json",
+      "bytes": 966,
+      "sha256": "947271fb77f5828a766f404a4f69ede4bfaff12150fbedc969846b6509cddefd"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\state-a-installed.bin",
+      "bytes": 2048,
+      "sha256": "0018f0ba76a18814b227858e30b6764a4d7054664970faee256a7fee6b0a2c71"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\stopped-preflight.json",
+      "bytes": 327,
+      "sha256": "30f6872e8767af72b1884676fd65a0d4596598dec731a74380bbd8e77d3e6cdc"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\stopped-readonly.jlink",
+      "bytes": 266,
+      "sha256": "4b5e414f5772e2a20652f767e16068ea498f424d83a12bdfe7c151930e327384"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\stopped-readonly.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\stopped-readonly.stdout.log",
+      "bytes": 2376,
+      "sha256": "cfacaee6006eefd4ea9f6223a14b1dcd95a9fc9d996edb7f8dfa83bf1a50e896"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\tick-first.bin",
+      "bytes": 4,
+      "sha256": "9770d127b899994e52f8b383aedc507c60f8994a4a6e88c243436856e96a6b90"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\tick-last.bin",
+      "bytes": 4,
+      "sha256": "2ebdd505b170e9faa3f284c62b43aeca6c16b5faf37a24534eb0201fc2046762"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-20-drive-1000-install-182042\\uid.bin",
+      "bytes": 12,
+      "sha256": "4d46849cde0edf35dcd65338a472ff614a7193426a4a4b0d712dcc1a29a73f92"
+    }
+  ],
+  "protected_evidence": [
+    {
+      "path": "out\\flash\\2026-10-20-drive-1000-install-182042\\candidate-stage\\candidate.manifest.json",
+      "bytes": 3211,
+      "sha256": "4e12d7d9b1906f58c067ab0543a80b52ac3e9682b7e935e9065382d1e4c1a986"
+    },
+    {
+      "path": "out\\flash\\2026-10-20-drive-1000-install-182042\\candidate-stage\\Patrol_Vehicle_Chassis_App.bin",
+      "bytes": 151048,
+      "sha256": "ddfe2361bc187b4658383cd7fe8e529d16d9786b319b9b34a2313d51ed18986f"
+    },
+    {
+      "path": "out\\flash\\2026-10-20-drive-1000-install-182042\\config-running.bin",
+      "bytes": 2048,
+      "sha256": "1835f5eb2c548b64c56a6c73bb0f434fb28fb19a5b29d56e2f5734e035a06b34"
+    },
+    {
+      "path": "out\\flash\\2026-10-20-drive-1000-install-182042\\flash-before.bin",
+      "bytes": 262144,
+      "sha256": "9f5a0bed29a0869262f4ad50c8bb565916b31e79d717f4f25b75531a7a1cba3a"
+    },
+    {
+      "path": "out\\flash\\2026-10-20-drive-1000-install-182042\\flash-halted.bin",
+      "bytes": 262144,
+      "sha256": "9f5a0bed29a0869262f4ad50c8bb565916b31e79d717f4f25b75531a7a1cba3a"
+    },
+    {
+      "path": "out\\flash\\2026-10-20-drive-1000-install-182042\\flash-programmed.bin",
+      "bytes": 262144,
+      "sha256": "4747172bc195310a28eba1caf72638b0abed4639aff1bd67e43354ac1ac9ee0c"
+    },
+    {
+      "path": "out\\flash\\2026-10-20-drive-1000-install-182042\\new-app.elf",
+      "bytes": 258592,
+      "sha256": "b5f0b2a41d10ebfcbf1ac97952e4c4001e656d6d4ad70b0489b877827266bd4a"
+    },
+    {
+      "path": "out\\flash\\2026-10-20-drive-1000-install-182042\\old-app.bin",
+      "bytes": 151056,
+      "sha256": "10ef9284390fa6acb73fcf40e709ec5d22215e2fbb5da67f0f30f0a7f798e3ab"
+    },
+    {
+      "path": "out\\flash\\2026-10-20-drive-1000-install-182042\\old-app.elf",
+      "bytes": 258592,
+      "sha256": "0cac88ee9a13a22347bbe2111feadeacd7d249cfcb854664aacad9a898a02858"
+    },
+    {
+      "path": "out\\flash\\2026-10-20-drive-1000-install-182042\\ram-before.bin",
+      "bytes": 65536,
+      "sha256": "6c56b1ddf3f837f70becac8756ae2e0eface528c98889ea1c38b8918c5fdd4ea"
+    },
+    {
+      "path": "out\\flash\\2026-10-20-drive-1000-install-182042\\ram-halted.bin",
+      "bytes": 65536,
+      "sha256": "36726f03f3fff738cce838727c69bd5ee8a0720388a90c38a0ea7a3a93d2555b"
+    },
+    {
+      "path": "out\\flash\\2026-10-20-drive-1000-install-182042\\ram-running.bin",
+      "bytes": 65536,
+      "sha256": "743183befe5df588b82f4e89a789d50d5194ce7a4bd7e100866306a2e5f3c27e"
+    },
+    {
+      "path": "out\\flash\\2026-10-20-drive-1000-install-182042\\ram-stopped.bin",
+      "bytes": 65536,
+      "sha256": "86e1fbb91b44df87d75246c0f1ae64c31057e8914a6744e06f5370c5546de65a"
+    }
+  ],
+  "build_test_logs": [
+    {
+      "path": "out\\logs\\drive-1000-arm-build.log",
+      "bytes": 18851,
+      "sha256": "2baade74017488e28e2bbd527aa773aa444f867c39d0056b9eb7017d2ffeee67"
+    },
+    {
+      "path": "out\\logs\\drive-1000-host-tests.log",
+      "bytes": 94116,
+      "sha256": "3384d3d35f6875f7aaf258d1e0cd301e72a9cad1a986e87c013fb5743c453244"
+    },
+    {
+      "path": "out\\logs\\drive-1000-c-tests.log",
+      "bytes": 296,
+      "sha256": "ec0674898e36ff460a4f8da89e8656eb0702b0d71c4e668652cdad92d94a8472"
+    },
+    {
+      "path": "out\\logs\\drive-1000-c-tests-recheck.log",
+      "bytes": 240,
+      "sha256": "846972a2e7b1bba3f8bcaefadd0f96267c9ed8983c90c3e3347d1863796d3e87"
+    },
+    {
+      "path": "out\\logs\\drive-1000-c-tests.ps1",
+      "bytes": 15327,
+      "sha256": "cf602620edd5c4d5f3fb89585e23f0b59a0dc6713243c1f000db4aaf9e3399fe"
+    }
+  ]
+}

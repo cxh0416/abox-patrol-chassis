@@ -10,7 +10,7 @@
 #define PATROL_PHY_REMOTE_SESSION         "phy-remote"
 #define PATROL_PHY_REMOTE_FULL_SCALE      450
 #define PATROL_PHY_REMOTE_MAX_ANGLE_MDEG  25000  /* +/-25 deg, matches keyboard default */
-#define PATROL_PHY_REMOTE_MAX_RPM         500    /* CHASSIS_MAX_RPM */
+#define PATROL_PHY_REMOTE_MAX_RPM         CHASSIS_MAX_RPM
 /* Handset inactive -> stop now, power off only after the bounded stop sequence
  * has time to finish. Immediate power-off while an executor is still stopping
  * would trip an execution fault. */
