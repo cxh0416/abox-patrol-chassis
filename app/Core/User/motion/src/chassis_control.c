@@ -201,6 +201,6 @@ void ChassisControl_Tick(ChassisControl* control, uint32_t now_ms)
             }
         } else control->zero_confirmations = 0U;
     }
-    if (control->reversal_pending && (now_ms - control->reversal_started_ms) >= 2000U)
+    if (control->reversal_pending && (now_ms - control->reversal_started_ms) >= 6000U)
         force_stop(control, CHASSIS_STOP_DIRECTION_TIMEOUT, 1U);
 }
