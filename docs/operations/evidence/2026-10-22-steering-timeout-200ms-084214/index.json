@@ -1,0 +1,287 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.76",
+  "app_sha256": "177efdb46df9a968755edcaf0007fac78768125fb2bad2a43e4ca7fa27d822b2",
+  "app_size": 152744,
+  "board_flashed": false,
+  "field_motion_tested": false,
+  "formal_release": false,
+  "dist_manifest_sha256_unchanged": "72f4f7d2b3cb156c0ae3c20b6005fefd6abc47aaec70b34760bb163bb8540836",
+  "boot_state_policy": "offline NORMAL A/B; stable UFS explicitly unseeded; not a readback of the current board",
+  "states": [
+    {
+      "file": "BootState_A.bin",
+      "address": "0x0803E800",
+      "sequence": 1,
+      "state": "NORMAL",
+      "stable_ufs_metadata": "explicitly unseeded",
+      "sha256": "af6366a0b8105d11c099240371216036e2cf6d15a2e3352c77efd16d3b8ac932",
+      "bytes": 2048,
+      "app_size": 152744,
+      "app_crc32": "84AE7AD5"
+    },
+    {
+      "file": "BootState_B.bin",
+      "address": "0x0803F000",
+      "sequence": 2,
+      "state": "NORMAL",
+      "stable_ufs_metadata": "explicitly unseeded",
+      "sha256": "0db5b9b6c9ed398bb376ed9b697338d64f0ba3d87ccc67360a0936247ae0ab53",
+      "bytes": 2048,
+      "app_size": 152744,
+      "app_crc32": "84AE7AD5"
+    }
+  ],
+  "validation": {
+    "arm_release_build": true,
+    "stack_checks": true,
+    "flash_layout": true,
+    "frozen_boot": true,
+    "standalone_product_c_tests": true,
+    "fault_stop_production_regression": true,
+    "steering_199_200_ms_boundary": true,
+    "product_python_passed": 43,
+    "product_python_total": 44,
+    "known_existing_failure": "test_identity_and_safe_defaults: existing hot-reset recovery design; unchanged assertion",
+    "formal_publication": false,
+    "formal_blocker": "Existing Python failure and clean-worktree publication gate",
+    "hardware_motion_verified": false,
+    "board_flashed": false
+  },
+  "files": [
+    {
+      "original_path": "C:\\Users\\ijk\\AppData\\Local\\Temp\\patrol-fault-stop-stage-t9jw8wql\\package\\ABox_Boot.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\ABox_Boot.bin",
+      "bytes": 32768,
+      "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+    },
+    {
+      "original_path": "C:\\Users\\ijk\\AppData\\Local\\Temp\\patrol-fault-stop-stage-t9jw8wql\\package\\BootState_A.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\BootState_A.bin",
+      "bytes": 2048,
+      "sha256": "af6366a0b8105d11c099240371216036e2cf6d15a2e3352c77efd16d3b8ac932"
+    },
+    {
+      "original_path": "C:\\Users\\ijk\\AppData\\Local\\Temp\\patrol-fault-stop-stage-t9jw8wql\\package\\BootState_B.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\BootState_B.bin",
+      "bytes": 2048,
+      "sha256": "0db5b9b6c9ed398bb376ed9b697338d64f0ba3d87ccc67360a0936247ae0ab53"
+    },
+    {
+      "original_path": "C:\\Users\\ijk\\AppData\\Local\\Temp\\patrol-fault-stop-stage-t9jw8wql\\package\\candidate.manifest.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\candidate.manifest.json",
+      "bytes": 15248,
+      "sha256": "65c150457ad77bd8caab54785378f03585ba4fe2fdff8ce02dc42cc00ebce51d"
+    },
+    {
+      "original_path": "C:\\Users\\ijk\\AppData\\Local\\Temp\\patrol-fault-stop-stage-t9jw8wql\\package\\debug.manifest.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\debug.manifest.json",
+      "bytes": 1325,
+      "sha256": "25acfeb242ab645e9fe4304d83094d72dc364bc3f851cc04ab11057204b18db8"
+    },
+    {
+      "original_path": "C:\\Users\\ijk\\AppData\\Local\\Temp\\patrol-fault-stop-stage-t9jw8wql\\package\\FLASH_ADDRESSES.txt",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\FLASH_ADDRESSES.txt",
+      "bytes": 1516,
+      "sha256": "df4f66b519fbfc5cf7cfc9ac261c0ecf73dd4294ad4cd4be70a152b33c2eb1d5"
+    },
+    {
+      "original_path": "C:\\Users\\ijk\\AppData\\Local\\Temp\\patrol-fault-stop-stage-t9jw8wql\\package\\Patrol_Vehicle_Chassis_App.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\Patrol_Vehicle_Chassis_App.bin",
+      "bytes": 152744,
+      "sha256": "177efdb46df9a968755edcaf0007fac78768125fb2bad2a43e4ca7fa27d822b2"
+    },
+    {
+      "original_path": "C:\\Users\\ijk\\AppData\\Local\\Temp\\patrol-fault-stop-stage-t9jw8wql\\package\\Patrol_Vehicle_Chassis_Full.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\Patrol_Vehicle_Chassis_Full.bin",
+      "bytes": 185512,
+      "sha256": "849485b8b1feac652602119795541e414d05a43332c411fe9dd8f6fa4f82ff3f"
+    },
+    {
+      "original_path": "derived host verifier from immutable 0.2.74 evidence; size/version updated only",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\verify-fault-stop-state.c",
+      "bytes": 3434,
+      "sha256": "8b6c5d1649cace6e397b0f91710eb3306c666ef058a107bbb39c84718538cc78"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\build\\FaultStopRelease\\Patrol_Vehicle_Chassis_App.elf",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\Patrol_Vehicle_Chassis_App.elf",
+      "bytes": 263600,
+      "sha256": "0d65d7ce240636aa63225169bdb1141cd29d6a28ef56f56e65dd02e63c4dca39"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\build\\FaultStopRelease\\Patrol_Vehicle_Chassis_App.map",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\Patrol_Vehicle_Chassis_App.map",
+      "bytes": 663817,
+      "sha256": "d088b269beffd79b6da0bac0f4016cdb674d6e75d25f49d9c2d226d9723bd179"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-200-arm-configure.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\validation\\steering-200-arm-configure.log",
+      "bytes": 199,
+      "sha256": "0e482bcf5fb5f8d94ec993f2b820d27ad623b08fd87da8f5ff455b8a205c0190"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-200-arm-build.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\validation\\steering-200-arm-build.log",
+      "bytes": 6576,
+      "sha256": "739e7a3c67203bf51f290bf7404b6d56458c49ae9c212c52e6928ea9913a9a14"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-200-bench-stack.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\validation\\steering-200-bench-stack.log",
+      "bytes": 298,
+      "sha256": "04ed3fe85ecece3e64a123978469839defcebfc5847b6222a96d32cdd1accce2"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-200-can-stack.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\validation\\steering-200-can-stack.log",
+      "bytes": 738,
+      "sha256": "bb31315a882341bb3ce3d857cefe98ff9e186b767e453d4a0f1a5fc212312b7a"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-200-service-stack.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\validation\\steering-200-service-stack.log",
+      "bytes": 1178,
+      "sha256": "5676c5d233915e5aa13af27e7eee51f871222c5af1aa0ce7e3de435814d5853f"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-200-frozen-boot.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\validation\\steering-200-frozen-boot.log",
+      "bytes": 208,
+      "sha256": "bbfc3d831c9390d994c173862385a257e5a7f9af896d96c2f1e29684457e28f2"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-200-layout.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\validation\\steering-200-layout.log",
+      "bytes": 253,
+      "sha256": "0c7076fd7c4b9a18e0f7173bc168689737dd8035c8f8093927e1a7e29c6ab9b2"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-200-product-c.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\validation\\steering-200-product-c.log",
+      "bytes": 240,
+      "sha256": "846972a2e7b1bba3f8bcaefadd0f96267c9ed8983c90c3e3347d1863796d3e87"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-200-python.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\validation\\steering-200-python.log",
+      "bytes": 113933,
+      "sha256": "382a68d8afe88b310582c8db6ab6d85d5180582791f35b0975bc2279f192bfdf"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-200-baseline-check.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\validation\\steering-200-baseline-check.json",
+      "bytes": 513,
+      "sha256": "ce8d5faf6d483b15347b0bca0dd5edcc7636d3508883a16bc44ebeb3ebd605a9"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-200-formal-gate.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\validation\\steering-200-formal-gate.log",
+      "bytes": 253,
+      "sha256": "0c7076fd7c4b9a18e0f7173bc168689737dd8035c8f8093927e1a7e29c6ab9b2"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-200-whitespace.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\validation\\steering-200-whitespace.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-200-boot-state.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\validation\\steering-200-boot-state.log",
+      "bytes": 180,
+      "sha256": "f5ecaf894752fadc36a627f73202de237b836910e4052e79e07fffb1aced21aa"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\package-steering-200.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\validation\\package-steering-200.py",
+      "bytes": 14029,
+      "sha256": "a51025c2ffe21646158e3b8fbee45e9a9301103de018580f619d826cad607040"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\include\\patrol_fault_stop.h",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\source\\app\\Core\\User\\motion\\include\\patrol_fault_stop.h",
+      "bytes": 2188,
+      "sha256": "a72bc565a39211a19cc22392159a5cb0cb1840b7b16e65407d32682b89b9da91"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\src\\patrol_fault_stop.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\source\\app\\Core\\User\\motion\\src\\patrol_fault_stop.c",
+      "bytes": 5826,
+      "sha256": "2c728d6a90eed92504d885c771eb30c163304a1afc3882593f221e084d05897a"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\src\\patrol_runtime.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\source\\app\\Core\\User\\motion\\src\\patrol_runtime.c",
+      "bytes": 40336,
+      "sha256": "8aab440a50e96b76ef80481d20c6fefcd2e3bb0f0385e8157cc06b103338f154"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\src\\chassis_control.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\source\\app\\Core\\User\\motion\\src\\chassis_control.c",
+      "bytes": 12849,
+      "sha256": "3d5666c548eb9a4d1ab54e1fd4ca5ab421cf940ce4f83c78ee28e5eff4732ab8"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\include\\chassis_control.h",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\source\\app\\Core\\User\\motion\\include\\chassis_control.h",
+      "bytes": 5212,
+      "sha256": "c966bb575db8e001c4261c01ebcba36184e30b9af47ef901057c5a168153e215"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\cloud\\src\\remote_service.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\source\\app\\Core\\User\\cloud\\src\\remote_service.c",
+      "bytes": 17111,
+      "sha256": "58d0b1ff6810f7f0a1f342137b3613a42ea14ca78660354fee471bbfbc3695ad"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\tests\\fault_stop_runtime_cases.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\source\\tests\\fault_stop_runtime_cases.c",
+      "bytes": 17411,
+      "sha256": "8110d7e9951ded5fcea3a8efc430ced3c75358ff72d6849563c714a0fcf39605"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\tests\\test_fault_stop_runtime.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\source\\tests\\test_fault_stop_runtime.py",
+      "bytes": 2766,
+      "sha256": "6389e05746ca6c105bf2b37c796b6b0b13794a9bb570b592da1b3962f6cccbaa"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\tests\\bench_steering_test.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\source\\tests\\bench_steering_test.c",
+      "bytes": 18159,
+      "sha256": "80a43753518b72ce92b54a4765ae89c8cdc2dae9049ddce93a39b5929f1f9c27"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\src\\bench_steering.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\source\\app\\Core\\User\\motion\\src\\bench_steering.c",
+      "bytes": 20661,
+      "sha256": "a9136011cc7351b3bf377e9f1387d14d186e80b65a7055fd50de68b9fd0abbeb"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\tools\\verify_can2_stack.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\source\\tools\\verify_can2_stack.py",
+      "bytes": 4207,
+      "sha256": "e65a0459e99e48d4ae5505750709538c2b25f9179cbc406d86bad232ef79563c"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\tools\\service_stack_budget.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\source\\tools\\service_stack_budget.json",
+      "bytes": 5655,
+      "sha256": "e167e50b9d57fc39bc420fb698c888fee332fd9d1eff3ec2871f8580b142e131"
+    },
+    {
+      "original_path": "git diff --binary; untracked new source files also copied under source/",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\source-changes.patch",
+      "bytes": 143197,
+      "sha256": "bde572d8a1341063c4c59b475bc40604c23cfc9cd302e0ed4cdb9f2682d9b172"
+    },
+    {
+      "original_path": "verified staged package",
+      "archive_path": "docs\\operations\\evidence\\SteeringTimeout_200ms_0_2_76_Flash.zip",
+      "bytes": 256340,
+      "sha256": "af16a7e9684557b56aea3963911c438b43a6b1ed83c06ab859d79a01f2fdaa63"
+    }
+  ]
+}

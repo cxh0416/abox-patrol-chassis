@@ -1,0 +1,172 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "created_at": "2026-10-22T09:39:24.617830+08:00",
+  "capture_closed": true,
+  "hardware_listen_only": true,
+  "target_reset_or_halted": false,
+  "driver_parameters_written": false,
+  "files": [
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\dual-can-20261022-092703-094437\\events.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\raw\\dual-can-20261022-092703-094437\\events.jsonl",
+      "bytes": 777073,
+      "sha256": "67244f9543ca71eb72184332ff4e10b783179a165e3825af46acf0f1c88c9d1d"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\dual-can-20261022-092703-094437\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\raw\\dual-can-20261022-092703-094437\\frames.jsonl",
+      "bytes": 24376291,
+      "sha256": "16eb6b0ad687c6d7b26a21bf61fd4571f8f1ffa5e698169125459e5afbd5c667"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\dual-can-20261022-092703-094437\\metadata.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\raw\\dual-can-20261022-092703-094437\\metadata.json",
+      "bytes": 1169,
+      "sha256": "75345346eeba3d3e2cfe993b00dda92a6bbc7121ae1cf7e4faa469de6514ef3b"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\dual-can-20261022-092703-094437\\sha256.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\raw\\dual-can-20261022-092703-094437\\sha256.json",
+      "bytes": 352,
+      "sha256": "d8663169f786dc938418d30a8d422f7ae4713be19fc8f90dcbc3e3d28d482fa0"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\dual-can-20261022-092703-094437\\summary.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\raw\\dual-can-20261022-092703-094437\\summary.json",
+      "bytes": 2727,
+      "sha256": "49879e8ef868d753cc092032bbab10ecc8c6c7d23f81c306e2e46e3fb6b38bd3"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\dual-can-20261022-092703-094437.stdout.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\raw\\dual-can-20261022-092703-094437.stdout.log",
+      "bytes": 319889,
+      "sha256": "09912303eee9fe6a01fa016fccbb9822e8bf7d0d689c839c3b46cc187e6b7169"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\dual-can-20261022-092703-094437.stderr.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\raw\\dual-can-20261022-092703-094437.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\stop-dual-can-20261022-092703-094437.flag",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\raw\\stop-dual-can-20261022-092703-094437.flag",
+      "bytes": 35,
+      "sha256": "bcae0340ff1e5d0123c4503a20d0aba3aa39950210339c21e2a4f25a92145bcc"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-093225-012526\\CAN1-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\swd\\2026-10-22-fault-stop-readonly-093225-012526\\CAN1-registers.bin",
+      "bytes": 32,
+      "sha256": "c681ea3f902822292aa42f76a52f6e500519b772d396d486d6b00d5da0a720e4"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-093225-012526\\CAN2-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\swd\\2026-10-22-fault-stop-readonly-093225-012526\\CAN2-registers.bin",
+      "bytes": 32,
+      "sha256": "3ae6446202eba1c94d3a3c7c2d82c41df7546f1a7a17a20af653c4ab074a04c1"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-093225-012526\\motion-fault.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\swd\\2026-10-22-fault-stop-readonly-093225-012526\\motion-fault.bin",
+      "bytes": 128,
+      "sha256": "b33d0fec6e0ce846f0d6c2279d6c8ef31d88c3cfc0eba801415a90e26bd26347"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-093225-012526\\snapshot.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\swd\\2026-10-22-fault-stop-readonly-093225-012526\\snapshot.json",
+      "bytes": 2490,
+      "sha256": "b80d0a173fb06b356eb1c58aba1ce67926e9d6365e29dfa09412c99ca906f3c2"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\dual-can-capture-current.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\analysis\\dual-can-capture-current.json",
+      "bytes": 586,
+      "sha256": "f3cc1da93355622c1ba6c25c4ba38c28b1d8eb27d976695b53f9fd8214e71933"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\dual-can-four-actions-final.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\analysis\\dual-can-four-actions-final.json",
+      "bytes": 5517,
+      "sha256": "f8f15a4b684156e1ec33346c47b356bbeb0990421485fb4ad235f1acdc9002f9"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\dual-can-four-actions.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\analysis\\dual-can-four-actions.json",
+      "bytes": 1683,
+      "sha256": "e041d95358d343c195d044e376c98fc6cf8c15882ca477ab36f592ffd9160d5c"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\dual-can-first-input-analysis.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\analysis\\dual-can-first-input-analysis.json",
+      "bytes": 3278,
+      "sha256": "1c4d90c84eebeecab1c5f5a98cd8d0eb1780b97f5ed4607ceb658f0a8fb34603"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\dual-can-listener-tests.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\analysis\\dual-can-listener-tests.log",
+      "bytes": 1971,
+      "sha256": "82bf4b60c7f396c66594fccd3cc5d3aa7f94102f64668d88342afaf0371a2ca2"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-stop-0276-readonly.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\analysis\\fault-stop-0276-readonly.py",
+      "bytes": 4701,
+      "sha256": "32af842000557142763a22ea2e0e9abf382ed48d83a62988660d7d7895159343"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-stop-0276-schema.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\analysis\\fault-stop-0276-schema.json",
+      "bytes": 9159,
+      "sha256": "7ef4c6d968ae3936f566fc1ad3b9d5da8180e407f7d8c7880751f354de55064c"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-stop-0276-t12-schema.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\analysis\\fault-stop-0276-t12-schema.json",
+      "bytes": 9885,
+      "sha256": "675a2e3a4827aa2be170f8c18ea818f896a82ae64ad747fa27645afa1afc69d4"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-stop-0276-t12-armed-schema.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\analysis\\fault-stop-0276-t12-armed-schema.json",
+      "bytes": 10267,
+      "sha256": "f2e91491cb215ff3f49ea495ad33813e911eb01de03456bed555030f589c0bf5"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\dual-can-t12-after-operation.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\analysis\\dual-can-t12-after-operation.log",
+      "bytes": 2615,
+      "sha256": "84495cc4463a2ef762d25d3e3ebfa9cfba671fccd3e5fa9615c45c9a3f40cf81"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\can1_bus_monitor.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\analysis\\can1_bus_monitor.py",
+      "bytes": 24222,
+      "sha256": "9153562c502ded759ff311ba94f43674b33c5aa57334a6dd25a2172e6a071e3a"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\test_can1_bus_monitor.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\analysis\\test_can1_bus_monitor.py",
+      "bytes": 12110,
+      "sha256": "f173d74bf3a3a41d2607430778426814610ab41794c46c224445c1078eea5d06"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\src\\patrol_phy_remote.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\source-at-analysis\\patrol_phy_remote.c",
+      "bytes": 7801,
+      "sha256": "b9e48f54d53ccd8b681fcb3d87c0e757ffe335eea375fa30d661bf64cb7fc131"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\Patrol_Vehicle_Chassis_App.map",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\source-at-analysis\\Patrol_Vehicle_Chassis_App.map",
+      "bytes": 663817,
+      "sha256": "d088b269beffd79b6da0bac0f4016cdb674d6e75d25f49d9c2d226d9723bd179"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\archive-dual-can-four-actions.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-dual-can-four-actions-093924-277589\\analysis\\archive-dual-can-four-actions.py",
+      "bytes": 7014,
+      "sha256": "13b11d1ea0e7b7e9b64167cdb2df3243c07d14269fbe1203721b653b58876ffa"
+    }
+  ]
+}

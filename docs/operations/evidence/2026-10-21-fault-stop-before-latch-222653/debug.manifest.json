@@ -1,0 +1,33 @@
+{
+  "kind": "online-debug",
+  "configuration": "Release",
+  "product": "patrol_vehicle_chassis",
+  "candidate": true,
+  "app_version": "patrol-chassis-0.2.75",
+  "boot_version": "abox-boot-2.3.0",
+  "app_offset": "0x00008000",
+  "initial_sp": "0x20010000",
+  "reset_vector": "0x800d44d",
+  "full_length": 185512,
+  "full_sha256": "f269d948c9e9fda0926b1429ed9a388cdbcade7d011cc5f190ea188a87d893f0",
+  "app_sha256": "bf129903c3fabe5acedbc413ff3e619e112c1b2e2c3ed7993e7be6f0e3deb654",
+  "boot_sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+  "board_flashed": false,
+  "includes_boot_state": false,
+  "includes_device_config": false,
+  "validation": {
+    "arm_release_build": true,
+    "stack_checks": true,
+    "flash_layout": true,
+    "frozen_boot": true,
+    "standalone_product_c_tests": true,
+    "fault_stop_production_regression": true,
+    "product_python_passed": 43,
+    "product_python_total": 44,
+    "known_existing_failure": "test_identity_and_safe_defaults: existing hot-reset recovery design; unchanged assertion",
+    "formal_publication": false,
+    "formal_blocker": "Existing Python failure and clean-worktree publication gate",
+    "hardware_motion_verified": false,
+    "board_flashed": false
+  }
+}

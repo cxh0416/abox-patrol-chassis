@@ -1,0 +1,96 @@
+{"elapsed_s": 0.016825999977299944, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.016964599984930828, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.027243099990300834, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.02765269999508746, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.029170900001190603, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 08 10 00 00 00 00 00"}
+{"elapsed_s": 0.031221999990521, "direction": "RX", "id": 1409, "data": "43 08 10 00 50 02 01 00"}
+{"elapsed_s": 0.11180049998802133, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.11191379997762851, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.11239489997387864, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.11262619998888113, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.11265029999776743, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.1126698000007309, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.11268869999912567, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 0.112707499996759, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.11272569998982362, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.11292669997783378, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.1129495999775827, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.1129681000020355, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.11298609999357723, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.1130039999843575, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.11302150000119582, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.1132676999841351, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 0.11541119997855276, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.11547849999624304, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.1273438999778591, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.12744139999267645, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.13234849998843856, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 09 10 00 00 00 00 00"}
+{"elapsed_s": 0.13385899999411777, "direction": "RX", "id": 1409, "data": "43 09 10 00 03 00 00 00"}
+{"elapsed_s": 0.21437169998534955, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.21445459997630678, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.21447919998900034, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.21479489997727796, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.21484030000283383, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.21486349997576326, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.21488200000021607, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 0.2149005999963265, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.21491839998634532, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.2151499000028707, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.21517539999331348, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.215193799987901, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.21521169997868128, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.21522909999475814, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.2152895999897737, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.2155493999889586, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 0.21557259999099188, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.21559089998481795, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.2253041999938432, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.22537369999918155, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.23436659999424592, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 0A 10 00 00 00 00 00"}
+{"elapsed_s": 0.23598969998420216, "direction": "RX", "id": 1409, "data": "43 0A 10 00 04 00 00 00"}
+{"elapsed_s": 0.31667689999449067, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.31676219997461885, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.3167859999812208, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.3168052999826614, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.31708399998024106, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.3171411999792326, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.31716799997957423, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 0.3171884999901522, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.3172074999893084, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.3172253999800887, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.31748219998553395, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.3175067999982275, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.3175254999950994, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.31754299998283386, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.3175603999989107, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.3175768999790307, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 0.31792159998440184, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.31797909998567775, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.3246307999943383, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.3247206999803893, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.3351492999936454, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.3355318999965675, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.33703809999860823, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 17 10 00 00 00 00 00"}
+{"elapsed_s": 0.3391172999981791, "direction": "RX", "id": 1409, "data": "4B 17 10 00 64 00"}
+{"elapsed_s": 0.41985559999011457, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.4199557999963872, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.4199825999967288, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.4202207999769598, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.4202486999856774, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.4202678999863565, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.4202860999794211, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 0.42030469997553155, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.42032340000150725, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.42066699999850243, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.42073419998632744, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.4207581999944523, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.4207773999951314, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.42079579998971894, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.4208142999850679, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.42107769998256117, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 0.4231224999821279, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.4231467999925371, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.4348353999957908, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.4349101999832783, "direction": "RX", "id": 641, "data": "AA 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.44001289998413995, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 01 10 00 00 00 00 00"}
+{"elapsed_s": 0.44218429998727515, "direction": "RX", "id": 1409, "data": "4F 01 10 00 00"}

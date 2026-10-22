@@ -1,0 +1,16 @@
+{
+  "test": "test_identity_and_safe_defaults",
+  "source_scope": [
+    "app/Core/User/system/src/patrol_rtos.c",
+    "app/Core/User/motion/src/center_calibration.c",
+    "app/Core/User/motion/src/patrol_runtime.c"
+  ],
+  "baseline_count": 2,
+  "working_count": 2,
+  "test_assertion_changed": false,
+  "product_python_passed": 43,
+  "product_python_total": 44,
+  "failed_tests": [
+    "test_identity_and_safe_defaults (test_patrol_scaffold.PatrolScaffoldTests.test_identity_and_safe_defaults)"
+  ]
+}

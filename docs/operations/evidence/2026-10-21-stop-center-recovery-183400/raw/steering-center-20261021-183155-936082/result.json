@@ -1,0 +1,28 @@
+{
+  "execute": false,
+  "physical_channel": 2,
+  "preflight": {
+    "sample": {
+      "tick_ms": 637238,
+      "encoder": 5,
+      "encoder_angle_deg": 0.09049773755656108,
+      "encoder_age_ms": 19,
+      "encoder_config_valid": 1,
+      "center": -14303,
+      "session": 0,
+      "enable": 0,
+      "power": 0
+    },
+    "position": -14042,
+    "center": -14303,
+    "driver_angle_deg": 0.09628154050464807,
+    "limits": [
+      -96982,
+      68376
+    ],
+    "status": "0x2231",
+    "fault": 0,
+    "mode": 1
+  },
+  "result": "inspection only"
+}

@@ -1,0 +1,4 @@
+Platform tuple reproduced: reason0, steer4/30/6, drive2/12/0, target1000, measured997/-1000
+Protection sets power command OFF and drive FAULT, sends no CAN zeros/shutdown; drive writing remains1000
+Matching 6081 response at 99 ms: phase=2 fault=0
+Matching 6081 response at 100 ms: phase=4 fault=6

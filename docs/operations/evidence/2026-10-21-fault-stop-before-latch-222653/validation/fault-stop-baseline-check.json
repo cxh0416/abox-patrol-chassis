@@ -1,0 +1,7 @@
+{
+  "test": "test_identity_and_safe_defaults",
+  "unchanged_baseline_violation": true,
+  "baseline_count": 2,
+  "working_count": 2,
+  "test_assertion_changed": false
+}

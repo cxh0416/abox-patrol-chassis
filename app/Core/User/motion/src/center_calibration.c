@@ -99,7 +99,7 @@ uint32_t CenterCalibration_GateMask(const PatrolDiagnosticsSnapshot* s,
     if (c->enable_request) mask |= CENTER_GATE_CONTROL_ENABLE_ACTIVE;
     if ((s->drive_status_word & 0x006FU) == 0x0027U)
         mask |= CENTER_GATE_DRIVE_OPERATION_ENABLED;
-    if (c->fault_latched) mask |= CENTER_GATE_FAULT_LATCHED;
+    if (c->fault_latched || c->fault_pending) mask |= CENTER_GATE_FAULT_LATCHED;
     if (ChassisControl_RuntimeSafetyReason(c, PatrolRuntimePort_Now()) != CHASSIS_STOP_NONE)
         mask |= CENTER_GATE_RUNTIME_UNSAFE;
     if (require_steering_disabled && (s->steering_status_word & 0x006FU) == 0x0027U)
@@ -205,7 +205,7 @@ void CenterCalibration_Fail(uint32_t fault, CenterCalibrationReason reason,
     SteeringCoordinate_Reset(&g_motion.coordinate);
     PatrolRuntimePort_Exit();
     RemoteService_ExecutionFault();
-    (void)VehiclePowerOutput_Set(0U);
+    if (!RemoteService_State()->fault_pending) (void)VehiclePowerOutput_Set(0U);
     APP_LOGE("CENTER_CAL", "fail phase=%u fault=%lu reason=%s gate=%lu bench=%u/%u/%lu enc=%u",
         (unsigned int)g_motion.center_cal.failure.phase, (unsigned long)fault,
         center_reason_name(g_motion.center_cal.failure.reason), (unsigned long)gate_mask,

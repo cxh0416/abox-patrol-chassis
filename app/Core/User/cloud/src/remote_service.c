@@ -13,16 +13,19 @@
 #include "patrol_config.h"
 #include "vehicle_power_output.h"
 #include "center_calibration.h"
+#include "patrol_runtime.h"
 #include <stdlib.h>
 #include "FreeRTOS.h"
 #include "task.h"
 
-typedef struct {
+/* 私有 RAM 缓存按 4 字节对齐，去除每槽尾部 4 字节填充；64 位时间、4 槽及 64 字符 requestId 均保留。 */
+typedef struct __attribute__((packed, aligned(4))) {
     uint64_t expires_at, protect_until, protect_mono;
     uint16_t code;
     uint8_t power_on;
     char request_id[65];
 } ABoxPowerReplay;
+_Static_assert(sizeof(ABoxPowerReplay) == 92U, "Power replay RAM budget changed");
 static ABoxPowerReplay g_power_replay[4];
 
 static uint8_t g_remote_initialized;
@@ -89,15 +92,18 @@ void RemoteService_LabSeedNetworkState(void)
     APP_LOGW("REMOTE", "lab-only non-actuating network state seeded");
 }
 #endif
-// 将运动执行失败传播为 MCU 锁存故障。先撤销会话和目标，再设置锁存；已有故障原因保留，避免执行器间派生故障覆盖首因。
+// 将执行失败交给先撤使能后锁存的统一流程；pending 阶段已拒绝新运动，既有首因不会被派生错误覆盖。
 void RemoteService_ExecutionFault(void)
 {
     taskENTER_CRITICAL();
-    RemoteService_Revoke();
-    if (!g_control.fault_latched) {
-        g_control.stop_reason = CHASSIS_STOP_EXECUTION_FAULT;
-    }
-    g_control.fault_latched = 1;
+    ChassisControl_RequestFault(&g_control, CHASSIS_STOP_EXECUTION_FAULT);
+    taskEXIT_CRITICAL();
+}
+// 由运行层在双节点撤使能完成或等待超期时正式锁存；本函数不发运动命令。
+void RemoteService_CompleteFaultStop(void)
+{
+    taskENTER_CRITICAL();
+    ChassisControl_CompleteFaultStop(&g_control);
     taskEXIT_CRITICAL();
 }
 // 初始化共享远控仲裁及请求缓存。根据 Config V5 填入标定有效性，保留内部行走禁用位并清空会话和重放记录；不会自动使能。
@@ -107,6 +113,7 @@ void RemoteService_Init(void)
     ChassisFeedback feedback = {0};
     uint8_t drive_brake = g_control.drive_brake;
     ChassisControl_Init(&g_control);
+    ChassisControl_SetFaultStopHandler(&g_control, PatrolRuntime_RequestFaultStop);
     /* Fault reset/reinitialization cannot release a physical brake switch. */
     ChassisControl_SetDriveBrake(&g_control, drive_brake);
     feedback.calibrated = cfg != 0 && cfg->calibrated && PatrolConfig_CalibrationCompatible();

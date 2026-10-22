@@ -1,0 +1,355 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.76",
+  "app_address": 134250496,
+  "app_bytes": 152744,
+  "app_sha256": "177efdb46df9a968755edcaf0007fac78768125fb2bad2a43e4ca7fa27d822b2",
+  "elf": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-22-steering-timeout-200ms-084214\\Patrol_Vehicle_Chassis_App.elf",
+  "elf_sha256": "0d65d7ce240636aa63225169bdb1141cd29d6a28ef56f56e65dd02e63c4dca39",
+  "source": "Offline ARM ABI probe using the actual compile flags and current headers; struct sizes checked against ELF symbols. No hardware access.",
+  "fields": {
+    "tick_ms": {
+      "address": 536871452,
+      "address_hex": "0x2000021c",
+      "bytes": 4,
+      "expression": "uwTick",
+      "signed": false
+    },
+    "power_command": {
+      "address": 536904744,
+      "address_hex": "0x20008428",
+      "bytes": 1,
+      "expression": "g_commanded_on",
+      "signed": false
+    },
+    "fault_pending": {
+      "address": 536903993,
+      "address_hex": "0x20008139",
+      "bytes": 1,
+      "expression": "g_control.fault_pending",
+      "signed": false
+    },
+    "fault_latched": {
+      "address": 536903990,
+      "address_hex": "0x20008136",
+      "bytes": 1,
+      "expression": "g_control.fault_latched",
+      "signed": false
+    },
+    "session_active": {
+      "address": 536903986,
+      "address_hex": "0x20008132",
+      "bytes": 1,
+      "expression": "g_control.session_active",
+      "signed": false
+    },
+    "enable_request": {
+      "address": 536903989,
+      "address_hex": "0x20008135",
+      "bytes": 1,
+      "expression": "g_control.enable_request",
+      "signed": false
+    },
+    "stop_reason": {
+      "address": 536903994,
+      "address_hex": "0x2000813a",
+      "bytes": 1,
+      "expression": "g_control.stop_reason",
+      "signed": false
+    },
+    "target_rpm": {
+      "address": 536903978,
+      "address_hex": "0x2000812a",
+      "bytes": 2,
+      "expression": "g_control.target_rpm",
+      "signed": true
+    },
+    "requested_rpm": {
+      "address": 536903976,
+      "address_hex": "0x20008128",
+      "bytes": 2,
+      "expression": "g_control.requested_rpm",
+      "signed": true
+    },
+    "feedback_gate_mask": {
+      "address": 536905384,
+      "address_hex": "0x200086a8",
+      "bytes": 2,
+      "expression": "g_motion.feedback_gate_mask",
+      "signed": false
+    },
+    "steering_phase": {
+      "address": 536905248,
+      "address_hex": "0x20008620",
+      "bytes": 1,
+      "expression": "g_motion.bench.phase",
+      "signed": false
+    },
+    "steering_step": {
+      "address": 536905249,
+      "address_hex": "0x20008621",
+      "bytes": 1,
+      "expression": "g_motion.bench.step",
+      "signed": false
+    },
+    "steering_fault": {
+      "address": 536905272,
+      "address_hex": "0x20008638",
+      "bytes": 4,
+      "expression": "g_motion.bench.fault",
+      "signed": false
+    },
+    "steering_index": {
+      "address": 536905258,
+      "address_hex": "0x2000862a",
+      "bytes": 2,
+      "expression": "g_motion.bench.index",
+      "signed": false
+    },
+    "steering_sent_ms": {
+      "address": 536905260,
+      "address_hex": "0x2000862c",
+      "bytes": 4,
+      "expression": "g_motion.bench.sent_ms",
+      "signed": false
+    },
+    "steering_pending": {
+      "address": 536905250,
+      "address_hex": "0x20008622",
+      "bytes": 1,
+      "expression": "g_motion.bench.pending",
+      "signed": false
+    },
+    "drive_phase": {
+      "address": 536905332,
+      "address_hex": "0x20008674",
+      "bytes": 1,
+      "expression": "g_motion.drive.phase",
+      "signed": false
+    },
+    "drive_step": {
+      "address": 536905333,
+      "address_hex": "0x20008675",
+      "bytes": 1,
+      "expression": "g_motion.drive.step",
+      "signed": false
+    },
+    "drive_fault": {
+      "address": 536905364,
+      "address_hex": "0x20008694",
+      "bytes": 4,
+      "expression": "g_motion.drive.fault",
+      "signed": false
+    },
+    "drive_index": {
+      "address": 536905340,
+      "address_hex": "0x2000867c",
+      "bytes": 2,
+      "expression": "g_motion.drive.index",
+      "signed": false
+    },
+    "drive_sent_ms": {
+      "address": 536905344,
+      "address_hex": "0x20008680",
+      "bytes": 4,
+      "expression": "g_motion.drive.sent_ms",
+      "signed": false
+    },
+    "drive_pending": {
+      "address": 536905334,
+      "address_hex": "0x20008676",
+      "bytes": 1,
+      "expression": "g_motion.drive.pending",
+      "signed": false
+    },
+    "steering_status": {
+      "address": 536905168,
+      "address_hex": "0x200085d0",
+      "bytes": 2,
+      "expression": "g_motion.diagnostics.steering_status_word",
+      "signed": false
+    },
+    "steering_status_ms": {
+      "address": 536905040,
+      "address_hex": "0x20008550",
+      "bytes": 4,
+      "expression": "g_motion.diagnostics.steering_status_ms",
+      "signed": false
+    },
+    "drive_status": {
+      "address": 536905170,
+      "address_hex": "0x200085d2",
+      "bytes": 2,
+      "expression": "g_motion.diagnostics.drive_status_word",
+      "signed": false
+    },
+    "drive_status_ms": {
+      "address": 536905044,
+      "address_hex": "0x20008554",
+      "bytes": 4,
+      "expression": "g_motion.diagnostics.drive_status_ms",
+      "signed": false
+    },
+    "left_actual_rpm": {
+      "address": 536905124,
+      "address_hex": "0x200085a4",
+      "bytes": 4,
+      "expression": "g_motion.diagnostics.left_actual_rpm",
+      "signed": true
+    },
+    "left_rpm_ms": {
+      "address": 536905052,
+      "address_hex": "0x2000855c",
+      "bytes": 4,
+      "expression": "g_motion.diagnostics.left_rpm_ms",
+      "signed": false
+    },
+    "right_actual_rpm": {
+      "address": 536905128,
+      "address_hex": "0x200085a8",
+      "bytes": 4,
+      "expression": "g_motion.diagnostics.right_actual_rpm",
+      "signed": true
+    },
+    "right_rpm_ms": {
+      "address": 536905056,
+      "address_hex": "0x20008560",
+      "bytes": 4,
+      "expression": "g_motion.diagnostics.right_rpm_ms",
+      "signed": false
+    },
+    "sdo_timeout_count": {
+      "address": 536905068,
+      "address_hex": "0x2000856c",
+      "bytes": 4,
+      "expression": "g_motion.diagnostics.sdo_timeout_count",
+      "signed": false
+    },
+    "sdo_abort_count": {
+      "address": 536905080,
+      "address_hex": "0x20008578",
+      "bytes": 4,
+      "expression": "g_motion.diagnostics.sdo_abort_count",
+      "signed": false
+    },
+    "last_sdo_abort": {
+      "address": 536905088,
+      "address_hex": "0x20008580",
+      "bytes": 4,
+      "expression": "g_motion.diagnostics.last_sdo_abort_code",
+      "signed": false
+    },
+    "rx_overflow": {
+      "address": 536905660,
+      "address_hex": "0x200087bc",
+      "bytes": 4,
+      "expression": "g_can_rx_overflow_count",
+      "signed": false
+    },
+    "can1_rx": {
+      "address": 536905652,
+      "address_hex": "0x200087b4",
+      "bytes": 4,
+      "expression": "g_can_raw_rx_count[0]",
+      "signed": false
+    },
+    "can2_rx": {
+      "address": 536905656,
+      "address_hex": "0x200087b8",
+      "bytes": 4,
+      "expression": "g_can_raw_rx_count[1]",
+      "signed": false
+    },
+    "can1_hal_error": {
+      "address": 536874964,
+      "address_hex": "0x20000fd4",
+      "bytes": 4,
+      "expression": "hcan1.ErrorCode",
+      "signed": false
+    },
+    "busoff_mask": {
+      "address": 536905649,
+      "address_hex": "0x200087b1",
+      "bytes": 1,
+      "expression": "g_can_bus_off_mask",
+      "signed": false
+    },
+    "busoff_seen": {
+      "address": 536905648,
+      "address_hex": "0x200087b0",
+      "bytes": 1,
+      "expression": "g_can_bus_off_seen_mask",
+      "signed": false
+    },
+    "fault_stop_active": {
+      "address": 536904890,
+      "address_hex": "0x200084ba",
+      "bytes": 1,
+      "expression": "fault_stop.active",
+      "signed": false
+    },
+    "fault_stop_latch_due": {
+      "address": 536904891,
+      "address_hex": "0x200084bb",
+      "bytes": 1,
+      "expression": "fault_stop.latch_due",
+      "signed": false
+    },
+    "fault_stop_required_mask": {
+      "address": 536904888,
+      "address_hex": "0x200084b8",
+      "bytes": 1,
+      "expression": "fault_stop.required_mask",
+      "signed": false
+    },
+    "fault_stop_disabled_mask": {
+      "address": 536904889,
+      "address_hex": "0x200084b9",
+      "bytes": 1,
+      "expression": "fault_stop.disabled_mask",
+      "signed": false
+    },
+    "fault_stop_started_ms": {
+      "address": 536904884,
+      "address_hex": "0x200084b4",
+      "bytes": 4,
+      "expression": "fault_stop.started_ms",
+      "signed": false
+    },
+    "last_fault": {
+      "address": 536904896,
+      "address_hex": "0x200084c0",
+      "bytes": 128,
+      "expression": "last_fault",
+      "signed": false
+    },
+    "t12_last_switch_ms": {
+      "address": 536897260,
+      "address_hex": "0x200066ec",
+      "bytes": 4,
+      "expression": "last_switch_ms",
+      "signed": false
+    },
+    "t12_last_enable": {
+      "address": 536897266,
+      "address_hex": "0x200066f2",
+      "bytes": 1,
+      "expression": "last_enable",
+      "signed": false
+    },
+    "t12_switch_seen": {
+      "address": 536897264,
+      "address_hex": "0x200066f0",
+      "bytes": 1,
+      "expression": "switch_seen",
+      "signed": false
+    },
+    "t12_powered_by_remote": {
+      "address": 536897265,
+      "address_hex": "0x200066f1",
+      "bytes": 1,
+      "expression": "powered_by_remote",
+      "signed": false
+    }
+  }
+}

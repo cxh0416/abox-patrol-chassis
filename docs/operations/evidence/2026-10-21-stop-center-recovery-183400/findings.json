@@ -1,0 +1,141 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "host_time": "2026-10-21T18:34:00.966636+08:00",
+  "operator_confirmation": "前轮已回正，整车停稳",
+  "physical_channel": 2,
+  "bitrate_kbps": 500,
+  "final_feedback": {
+    "driver_angle_deg": 0.09628154050464807,
+    "independent_encoder_angle_deg": 0.09049773755656108,
+    "steering_status": "0x2231",
+    "drive_status": "0x1011",
+    "left_rpm": 0,
+    "right_rpm": 0,
+    "steering_operation_enabled": false,
+    "drive_operation_enabled": false
+  },
+  "first_fault": {
+    "magic": 1296445489,
+    "sequence": 14,
+    "at_ms": 40841,
+    "source": 1,
+    "reason": 0,
+    "gates": 0,
+    "target_rpm": 1000,
+    "target_mdeg": 0,
+    "left_rpm": 997,
+    "right_rpm": -1000,
+    "driver_raw": 60790,
+    "encoder_raw": 793,
+    "steer_sw": 8759,
+    "drive_sw": 55,
+    "left_code": 0,
+    "right_code": 0,
+    "left_code_age": 490,
+    "right_code_age": 440,
+    "steer_age": 200,
+    "drive_age": 110,
+    "bench_phase": 4,
+    "bench_step": 30,
+    "bench_fault": 6,
+    "drive_phase": 2,
+    "drive_step": 12,
+    "drive_fault": 0,
+    "last_abort": 100794368,
+    "encoder_error": 0,
+    "center_phase": 0,
+    "reserved0": 0,
+    "reserved1": 0,
+    "checksum": 0
+  },
+  "reproduced_fault": {
+    "magic": 1296445489,
+    "sequence": 14,
+    "at_ms": 84361,
+    "source": 1,
+    "reason": 0,
+    "gates": 0,
+    "target_rpm": 924,
+    "target_mdeg": 0,
+    "left_rpm": 785,
+    "right_rpm": -793,
+    "driver_raw": -22426,
+    "encoder_raw": 3975,
+    "steer_sw": 8759,
+    "drive_sw": 55,
+    "left_code": 0,
+    "right_code": 0,
+    "left_code_age": 1670,
+    "right_code_age": 1660,
+    "steer_age": 190,
+    "drive_age": 150,
+    "bench_phase": 4,
+    "bench_step": 18,
+    "bench_fault": 6,
+    "drive_phase": 2,
+    "drive_step": 13,
+    "drive_fault": 0,
+    "last_abort": 100794368,
+    "encoder_error": 0,
+    "center_phase": 0,
+    "reserved0": 0,
+    "reserved1": 0,
+    "checksum": 0
+  },
+  "app_sha256": "b46d49d5c079a1e5285d62ac917c9528bdef1bc97635ae5f42c9d0e4676b2a97",
+  "journal": [
+    {
+      "slot": 0,
+      "sequence": 6,
+      "crc_valid": true
+    },
+    {
+      "slot": 1,
+      "sequence": 7,
+      "crc_valid": true
+    },
+    {
+      "slot": 2,
+      "sequence": 8,
+      "crc_valid": true
+    },
+    {
+      "slot": 3,
+      "sequence": 9,
+      "crc_valid": true
+    },
+    {
+      "slot": 4,
+      "sequence": 10,
+      "crc_valid": true
+    },
+    {
+      "slot": 5,
+      "sequence": 11,
+      "crc_valid": true
+    },
+    {
+      "slot": 6,
+      "sequence": 12,
+      "crc_valid": true
+    },
+    {
+      "slot": 7,
+      "sequence": 13,
+      "crc_valid": true
+    }
+  ],
+  "confirmed": [
+    "User confirms direct manual motor power bypassing OUT1-controlled contactor.",
+    "Production runtime host reproduction enters FAULT and power command OFF without issuing drive zero/shutdown on steering executor failure.",
+    "First fault steering step30/6081 read timed out at exactly 100ms; reproduced fault step18/6040 trigger also timed out at exactly 100ms.",
+    "Direct CAN stop zeros+shutdown stopped drive; user confirms. Low-speed CAN center and subsequent read-only verification confirm dual feedback near zero and disable; user confirms physical center/stop."
+  ],
+  "limitations": [
+    "No listener was running at the latest failure instant; the passive capture starts AFTER direct drive stop. It cannot establish the original SDO wire timing.",
+    "First read-only probe incorrectly required DLC8 for 6041/6061 replies. Its two timeout labels are measurement artifacts. Second probe accepts actual DLC and uses perf_counter.",
+    "First centering run reached 12s timeout and stopped at about7 degrees. Second centered, but immediate shutdown status read was too early; later read-only run independently confirms 0x2231 disable. Original error records preserved.",
+    "tools-at-archive scripts are final maintenance versions, not claimed identical to every earlier execution. Center script timeout changed12->45 seconds; healthy steering-only reenable added; final shutdown poll added after run.",
+    "Historical accumulated HAL CAN errors do not identify fault-time cause. No MCU reset/halt, Flash writes, fault clear, or drive enable was requested by these scripts."
+  ]
+}

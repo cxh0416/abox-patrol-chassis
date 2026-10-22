@@ -1,0 +1,26 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "started_at": "2026-10-21T18:26:15.502090+08:00",
+  "buses": {
+    "CAN1": 1
+  },
+  "physical_channels": {
+    "CAN1": 2
+  },
+  "bitrate_kbps": 500,
+  "hardware_listen_only": true,
+  "transmit_api_bound": false,
+  "dll": "E:\\canalyst-II-Driver\\CAN\\二次开发库文件\\x64(64bit)\\ControlCAN.dll",
+  "python_bits": 64,
+  "synthetic": false,
+  "script_sha256": "58f9a8679c469c4d6c82c9cc4dbd393d753cb0cd486928bf3700e1d4180cfccc",
+  "timing": "elapsed_s=host monotonic receive batch time; hardware timestamps raw, no unit/sync assumptions",
+  "limits": [
+    "CAN2 is not monitored; CAN1 alone cannot prove T12 reception by the MCU",
+    "CAN ID does not authenticate sender; isolate other masters",
+    "unchanged target may not be resent; target age is not a stop or timeout verdict",
+    "listen-only cannot measure MCU Bus-Off, internal latch or actual electrical/physical braking",
+    "capture loss/USB errors can resemble missing replies; no automatic hardware verdict"
+  ],
+  "dll_sha256": "6d151f92217983c39a6690ded76b41f86ebad7570bcc27fc9d13f7141425b1e3"
+}

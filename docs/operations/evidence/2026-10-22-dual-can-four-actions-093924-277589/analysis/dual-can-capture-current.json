@@ -1,0 +1,15 @@
+{
+  "started_at": "2026-10-22T09:27:03.1440848+08:00",
+  "pid": 11804,
+  "output": "E:\\1_work\\ChassisCar_test\\logs\\dual-can-20261022-092703-094437",
+  "stdout": "E:\\1_work\\ChassisCar_test\\logs\\dual-can-20261022-092703-094437.stdout.log",
+  "stderr": "E:\\1_work\\ChassisCar_test\\logs\\dual-can-20261022-092703-094437.stderr.log",
+  "stop_file": "E:\\1_work\\ChassisCar_test\\logs\\stop-dual-can-20261022-092703-094437.flag",
+  "duration_s": 1800,
+  "physical_channels": {
+    "CAN1": 2,
+    "CAN2": 1
+  },
+  "bitrate_kbps": 500,
+  "hardware_listen_only": true
+}

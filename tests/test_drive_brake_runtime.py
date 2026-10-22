@@ -15,7 +15,7 @@ class DriveBrakeRuntimeTests(unittest.TestCase):
         self.assertIsNotNone(gcc)
         sources = ['center_calibration.c', 'patrol_runtime.c', 'bench_steering.c',
                    'bench_drive.c', 'steering_angle.c', 'patrol_canopen.c',
-                   'patrol_auto_center.c', 'chassis_control.c']
+                   'patrol_auto_center.c', 'chassis_control.c', 'patrol_fault_stop.c']
         with tempfile.TemporaryDirectory(prefix='patrol-brake-host-') as directory:
             binary = Path(directory) / 'drive_brake.exe'
             command = [gcc, '-std=c11', '-Wall', '-Wextra', '-Werror', '-Wno-format',

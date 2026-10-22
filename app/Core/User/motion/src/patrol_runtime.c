@@ -8,6 +8,7 @@
 #include "patrol_can_status.h"
 #include "vehicle_power_output.h"
 #include "vehicle_steering_profile.h"
+#include "patrol_fault_stop.h"
 
 PatrolMotion g_motion;
 
@@ -23,6 +24,7 @@ PatrolMotion g_motion;
 
 static MotionFaultRecord last_fault;
 static uint8_t fault_captured, fault_dirty, fault_storage;
+static PatrolFaultStop fault_stop;
 // 复制最近一次运动故障记录。在临界区读取固定快照，记录是否存在由返回值表示；故障记录与实时反馈是不同证据。
 uint8_t PatrolRuntime_GetFault(MotionFaultRecord* record)
 {
@@ -63,9 +65,85 @@ void PatrolRuntime_CaptureFault(uint32_t source, uint32_t reason, uint32_t gates
     PatrolRuntimePort_Exit();
 }
 
+// 每次最多提交两条安全帧，使两个节点的 shutdown 均能优先进入邮箱；不等待某个节点 ACK，不发送普通诊断或运动命令。
+static void dispatch_fault_stop(uint32_t now)
+{
+    if (PatrolRuntimePort_CanBusOffActive()) return;
+    for (uint8_t count = 0U; count < 2U && PatrolRuntimePort_CanTxReady(); ++count) {
+        PatrolCanFrame frame;
+        if (!PatrolFaultStop_Take(&fault_stop, now, &frame)) break;
+        if (!PatrolRuntimePort_SendCan(&frame))
+            PatrolFaultStop_TxFailed(&fault_stop, (uint8_t)(frame.id - 0x600U), now);
+    }
+}
+
+// 在控制层正式锁存前接管 CAN 停机。冻结首因、撤销授权并中止旧目标，独立发送 6040=6；此处不依赖软件 OUT1 为开。
+uint8_t PatrolRuntime_RequestFaultStop(void)
+{
+    const uint8_t nodes = PATROL_CHASSIS_ACTUATION_ENABLED ?
+        (PATROL_STEERING_EXECUTOR_ENABLED ? PATROL_FAULT_STOP_STEERING : 0U) |
+        (PATROL_DRIVE_EXECUTOR_ENABLED ? PATROL_FAULT_STOP_DRIVE : 0U) : 0U;
+    if (!nodes) return 0U;
+    PatrolRuntimePort_Enter();
+    uint32_t now = PatrolRuntimePort_Now();
+    if (!fault_stop.active && !RemoteService_State()->fault_latched) {
+        PatrolFaultStop_Init(&fault_stop);
+        PatrolRuntime_CaptureFault(1U, (uint32_t)RemoteService_State()->stop_reason, g_motion.feedback_gate_mask);
+        RemoteService_Revoke();
+        PatrolAutoCenter_Cancel(&g_motion.auto_center);
+        PatrolRuntimePort_AbortCanTx();
+        g_motion.diagnostics.pending_valid = 0U;
+        BenchDrive_Stop(&g_motion.drive, now, 1U);
+        BenchSteering_Stop(&g_motion.bench, now, 1U);
+        g_motion.drive.pending = g_motion.bench.pending = 0U;
+        g_motion.drive.cut_power = g_motion.bench.cut_power = 0U;
+        g_motion.bench_transport_stopped = 1U;
+        PatrolFaultStop_Begin(&fault_stop, nodes, now);
+        dispatch_fault_stop(now);
+    }
+    uint8_t pending = fault_stop.active;
+    PatrolRuntimePort_Exit();
+    return pending;
+}
+
+// 优先推进独立故障停机。确认关闭后再锁存和下电；600 ms 未确认或活动 Bus-Off 时先锁存/下电，仍保留仅撤使能的重试。
+static uint8_t service_fault_stop(void)
+{
+    PatrolRuntimePort_Enter();
+    const ChassisControl* control = RemoteService_State();
+    if (!fault_stop.active && !control->fault_pending) { PatrolRuntimePort_Exit(); return 0U; }
+    /* 配置侧重新初始化服务也不能解除尚未完成的撤使能；恢复禁止标志但不重置停机起点。 */
+    if (fault_stop.active && !control->fault_pending && !control->fault_latched)
+        RemoteService_ExecutionFault();
+    uint32_t now = PatrolRuntimePort_Now();
+    PatrolFaultStop_Tick(&fault_stop, now);
+    if (PatrolRuntimePort_CanBusOffActive()) fault_stop.latch_due = 1U;
+    dispatch_fault_stop(now);
+    if (!fault_stop.active || fault_stop.latch_due) {
+        if (control->fault_pending) {
+            APP_LOGW("FAULTSTOP", "disable mask=%u/%u confirmed=%u; latch",
+                (unsigned)fault_stop.disabled_mask, (unsigned)fault_stop.required_mask,
+                (unsigned)!fault_stop.active);
+            RemoteService_CompleteFaultStop();
+        }
+        (void)VehiclePowerOutput_Set(0U);
+        SteeringCoordinate_Reset(&g_motion.coordinate);
+        g_motion.bench.limits_aligned = 0U;
+    }
+    g_motion.drive.cut_power = g_motion.bench.cut_power = 0U;
+    PatrolRuntimePort_Exit();
+    /* 故障快照先于停机冻结；Flash 仍只允许在输出关闭及 OTA 空闲时写入。 */
+    if (fault_dirty && !VehiclePowerOutput_IsOn() && !PatrolRuntimePort_OtaBusy()) {
+        fault_storage = OTA_Info_SaveMotionFault(&last_fault) ? 1U : 2U;
+        fault_dirty = 0U;
+    }
+    return 1U;
+}
+
 // 初始化运动诊断、执行器与标定运行上下文。载入既有故障证据并建立安全默认状态，不自动恢复遥控会话或发出运动目标。
 void PatrolRuntime_Init(void)
 {
+    PatrolFaultStop_Init(&fault_stop);
     PatrolDiagnostics_Init(&g_motion.diagnostics);
     PatrolAutoCenter_Cancel(&g_motion.auto_center);
     memset(&last_fault,0,sizeof(last_fault));
@@ -86,7 +164,8 @@ void PatrolRuntime_GetDiagnostics(PatrolDiagnosticsSnapshot* snapshot)
 uint8_t PatrolRuntime_ResetFault(void)
 {
     PatrolRuntimePort_Enter();
-    if (VehiclePowerOutput_IsOn() || PatrolRuntimePort_OtaBusy() || fault_dirty ||
+    if (VehiclePowerOutput_IsOn() || PatrolRuntimePort_OtaBusy() || fault_dirty || fault_stop.active ||
+        RemoteService_State()->fault_pending ||
         g_motion.center_cal.encoder_write_state==4U) { PatrolRuntimePort_Exit(); return 0; }
     RemoteService_Revoke(); PatrolRuntimePort_AbortCanTx();
     BenchSteering_Init(&g_motion.bench); BenchDrive_Init(&g_motion.drive);
@@ -97,6 +176,7 @@ uint8_t PatrolRuntime_ResetFault(void)
     g_motion.center_cal.encoder_write_state=0; g_motion.center_cal.fault=0;
     RemoteService_Init(); /* No permit, enable, target or previous session survives. */
     fault_captured=0;
+    PatrolFaultStop_Init(&fault_stop);
     PatrolRuntimePort_Exit(); return 1;
 }
 
@@ -104,6 +184,18 @@ uint8_t PatrolRuntime_ResetFault(void)
 void PatrolRuntime_OnCanFrame(const PatrolCanFrame* frame, uint32_t now)
 {
     PatrolRuntimePort_Enter();
+    if (PatrolFaultStop_OnFrame(&fault_stop, frame, now)) {
+        /* 原诊断事务已经取消；本流程的状态响应仍更新现场诊断时间和状态字。 */
+        PatrolDiagnostics_OnCanFrame(&g_motion.diagnostics, frame, now);
+        int32_t status; uint8_t width;
+        uint8_t node = (uint8_t)(frame->id - 0x580U);
+        if (PatrolCanopen_ParseSdoValue(frame, node, 0x6041U, 0U, &status, &width) && width == 2U) {
+            if (node == 1U) { g_motion.diagnostics.steering_status_word = (uint16_t)status; g_motion.diagnostics.steering_status_ms = now; }
+            else { g_motion.diagnostics.drive_status_word = (uint16_t)status; g_motion.diagnostics.drive_status_ms = now; }
+        }
+        PatrolRuntimePort_Exit();
+        return;
+    }
     /* Exactly one SDO owner; executor responses never satisfy a diagnostic request. */
     if ((frame->id == 0x701 || frame->id == 0x702) && frame->dlc == 1 && frame->data[0] == 0 &&
         (g_motion.coordinate.valid || CenterCalibration_IsActive()))
@@ -162,7 +254,9 @@ uint32_t PatrolRuntime_ApplyCut(uint32_t now)
     if (g_motion.bench.cut_power || g_motion.drive.cut_power) {
         PatrolRuntimePort_Enter();
         now = PatrolRuntimePort_Now();
-        PatrolRuntime_CaptureFault(1U, (uint32_t)RemoteService_State()->stop_reason, g_motion.feedback_gate_mask);
+        ChassisStopReason reason = RemoteService_State()->stop_reason;
+        PatrolRuntime_CaptureFault(1U, (uint32_t)(reason == CHASSIS_STOP_NONE ?
+            CHASSIS_STOP_EXECUTION_FAULT : reason), g_motion.feedback_gate_mask);
         /* Capture before cross-stopping the other executor and before
          * power-off turns healthy samples into secondary offline gates. */
         if (CenterCalibration_IsActive()) {
@@ -178,7 +272,7 @@ uint32_t PatrolRuntime_ApplyCut(uint32_t now)
         BenchSteering_Stop(&g_motion.bench, now, 1);
         g_motion.bench_fault_gate_mask = g_motion.feedback_gate_mask;
         RemoteService_ExecutionFault();
-        (void)VehiclePowerOutput_Set(0);
+        if (!fault_stop.active && !RemoteService_State()->fault_pending) (void)VehiclePowerOutput_Set(0);
         g_motion.bench.cut_power = 0; g_motion.drive.cut_power = 0;
         PatrolRuntimePort_Exit();
     }
@@ -388,6 +482,7 @@ void PatrolRuntime_Tick(void)
     uint8_t have_request = 0U;
     uint32_t now;
     uint8_t bench_frame = 0U;
+    if (service_fault_stop()) return;
     PatrolRuntimePort_Enter();
     now = PatrolRuntimePort_Now();
     {
@@ -482,6 +577,7 @@ void PatrolRuntime_Tick(void)
     }
     PatrolRuntimePort_Exit();
     now = PatrolRuntime_ApplyCut(now);
+    if (service_fault_stop()) return;
     /* Never write flash while powered or inside the safety critical section. */
     if (fault_dirty && !VehiclePowerOutput_IsOn() && !PatrolRuntimePort_OtaBusy()) {
         fault_storage=OTA_Info_SaveMotionFault(&last_fault) ? 1U : 2U;
@@ -516,6 +612,8 @@ void PatrolRuntime_Tick(void)
     if (have_request)
     {
         PatrolRuntimePort_Enter();
+        /* 高优先级安全任务可能在普通帧选出后启动故障停机；任何旧 owner 的帧都必须丢弃。 */
+        if (fault_stop.active || RemoteService_State()->fault_pending) have_request = 0U;
         /* A traction inhibit can arrive after frame selection. Discard an old drive
          * command and start its bounded zero/disable sequence, without touching
          * the steering executor or the shared session. */

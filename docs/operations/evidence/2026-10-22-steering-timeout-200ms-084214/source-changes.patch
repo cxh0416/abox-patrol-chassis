@@ -1,0 +1,1890 @@
+diff --git a/app/Core/User/cloud/include/remote_service.h b/app/Core/User/cloud/include/remote_service.h
+index e26412f..583b887 100644
+--- a/app/Core/User/cloud/include/remote_service.h
++++ b/app/Core/User/cloud/include/remote_service.h
+@@ -17,8 +17,10 @@ uint8_t RemoteService_FormatNetworkState(char *output, uint16_t size);
+ // 在专用实验构建中植入可检查的旧网络状态。用于验证网络切换是否清除会话、目标和重放缓存；仅受实验编译开关控制，不作为正常控制入口。
+ void RemoteService_LabSeedNetworkState(void);
+ #endif
+-// 将运动执行失败传播为 MCU 锁存故障。先撤销会话和目标，再设置锁存；已有故障原因保留，避免执行器间派生故障覆盖首因。
++// 将执行失败交给先撤使能后锁存流程；pending 阶段立即禁止新运动，已有首因保持不变。
+ void RemoteService_ExecutionFault(void);
++// 在撤使能确认或有界失败退路处理后锁存 MCU 故障；不恢复控制授权。
++void RemoteService_CompleteFaultStop(void);
+ // 初始化共享远控仲裁及请求缓存。根据 Config V5 填入标定有效性，保留内部行走禁用位并清空会话和重放记录；不会自动使能。
+ void RemoteService_Init(void);
+ // 在远控任务上下文中推进安全检查。未初始化时返回，实验保持状态受编译开关限制；正常路径持临界区调用安全周期处理。
+diff --git a/app/Core/User/cloud/src/remote_service.c b/app/Core/User/cloud/src/remote_service.c
+index 9a84ad1..60c587f 100644
+--- a/app/Core/User/cloud/src/remote_service.c
++++ b/app/Core/User/cloud/src/remote_service.c
+@@ -13,16 +13,19 @@
+ #include "patrol_config.h"
+ #include "vehicle_power_output.h"
+ #include "center_calibration.h"
++#include "patrol_runtime.h"
+ #include <stdlib.h>
+ #include "FreeRTOS.h"
+ #include "task.h"
+ 
+-typedef struct {
++/* 私有 RAM 缓存按 4 字节对齐，去除每槽尾部 4 字节填充；64 位时间、4 槽及 64 字符 requestId 均保留。 */
++typedef struct __attribute__((packed, aligned(4))) {
+     uint64_t expires_at, protect_until, protect_mono;
+     uint16_t code;
+     uint8_t power_on;
+     char request_id[65];
+ } ABoxPowerReplay;
++_Static_assert(sizeof(ABoxPowerReplay) == 92U, "Power replay RAM budget changed");
+ static ABoxPowerReplay g_power_replay[4];
+ 
+ static uint8_t g_remote_initialized;
+@@ -89,15 +92,18 @@ void RemoteService_LabSeedNetworkState(void)
+     APP_LOGW("REMOTE", "lab-only non-actuating network state seeded");
+ }
+ #endif
+-// 将运动执行失败传播为 MCU 锁存故障。先撤销会话和目标，再设置锁存；已有故障原因保留，避免执行器间派生故障覆盖首因。
++// 将执行失败交给先撤使能后锁存的统一流程；pending 阶段已拒绝新运动，既有首因不会被派生错误覆盖。
+ void RemoteService_ExecutionFault(void)
+ {
+     taskENTER_CRITICAL();
+-    RemoteService_Revoke();
+-    if (!g_control.fault_latched) {
+-        g_control.stop_reason = CHASSIS_STOP_EXECUTION_FAULT;
+-    }
+-    g_control.fault_latched = 1;
++    ChassisControl_RequestFault(&g_control, CHASSIS_STOP_EXECUTION_FAULT);
++    taskEXIT_CRITICAL();
++}
++// 由运行层在双节点撤使能完成或等待超期时正式锁存；本函数不发运动命令。
++void RemoteService_CompleteFaultStop(void)
++{
++    taskENTER_CRITICAL();
++    ChassisControl_CompleteFaultStop(&g_control);
+     taskEXIT_CRITICAL();
+ }
+ // 初始化共享远控仲裁及请求缓存。根据 Config V5 填入标定有效性，保留内部行走禁用位并清空会话和重放记录；不会自动使能。
+@@ -107,6 +113,7 @@ void RemoteService_Init(void)
+     ChassisFeedback feedback = {0};
+     uint8_t drive_brake = g_control.drive_brake;
+     ChassisControl_Init(&g_control);
++    ChassisControl_SetFaultStopHandler(&g_control, PatrolRuntime_RequestFaultStop);
+     /* Fault reset/reinitialization cannot release a physical brake switch. */
+     ChassisControl_SetDriveBrake(&g_control, drive_brake);
+     feedback.calibrated = cfg != 0 && cfg->calibrated && PatrolConfig_CalibrationCompatible();
+diff --git a/app/Core/User/modules.cmake b/app/Core/User/modules.cmake
+index 5757f38..c9daee6 100644
+--- a/app/Core/User/modules.cmake
++++ b/app/Core/User/modules.cmake
+@@ -29,6 +29,7 @@ set(PATROL_PRODUCT_SOURCES
+     Core/User/motion/src/steering_angle.c
+     Core/User/motion/src/bench_steering.c
+     Core/User/motion/src/bench_drive.c
++    Core/User/motion/src/patrol_fault_stop.c
+     Core/User/common/src/time_base.c
+     Core/User/common/src/time_sync.c
+     Core/User/board/src/vehicle_power_output.c
+diff --git a/app/Core/User/motion/include/chassis_control.h b/app/Core/User/motion/include/chassis_control.h
+index be40cde..5b60743 100644
+--- a/app/Core/User/motion/include/chassis_control.h
++++ b/app/Core/User/motion/include/chassis_control.h
+@@ -62,12 +62,20 @@ typedef struct {
+     uint8_t fault_latched;
+     uint8_t auto_center_inhibited; /* SAFETY_STOP parks until a new accepted command/power cycle. */
+     uint8_t drive_brake; /* Traction-only inhibit; steering/session stay authorized. */
++    uint8_t fault_pending; /* 已禁止运动，正在优先撤使能，尚未完成故障锁存。 */
+     ChassisStopReason stop_reason;
+     ChassisFeedback feedback;
++    uint8_t (*request_fault_stop)(void);
+ } ChassisControl;
+ 
+ // 初始化底盘控制上下文到未标定的安全默认状态。清空会话、目标、反馈和换向计数；初始化本身不会使能电机，后续仍须通过反馈安全门禁。
+ void ChassisControl_Init(ChassisControl* control);
++// 安装产品故障停机请求。回调返回非零表示异步撤使能；无执行器的独立控制测试可不安装并保持立即锁存。
++void ChassisControl_SetFaultStopHandler(ChassisControl* control, uint8_t (*handler)(void));
++// 首次故障立即禁止新运动并调用撤使能流程；保留首因，异步停机完成或达到有界期限后才正式锁存。
++void ChassisControl_RequestFault(ChassisControl* control, ChassisStopReason reason);
++// 完成故障锁存。调用方须先处理撤使能确认或超时退路；不会恢复任何会话、目标或使能。
++void ChassisControl_CompleteFaultStop(ChassisControl* control);
+ // 设置内部行走禁用状态，不撤销转向授权。激活时立即清零行走与待换向目标，保留最近非零方向以防解除后绕过换向检查；当前不绑定 T12 B 键。
+ void ChassisControl_SetDriveBrake(ChassisControl* control, uint8_t active);
+ // 返回阻止正常运动的首个安全原因。在运行期门禁基础上检查标定、编码器规格、量程、电源就绪和双角度偏差；偏差超过 2000 mdeg 即拒绝运动。
+@@ -80,7 +88,7 @@ void ChassisControl_SetFeedback(ChassisControl* control, const ChassisFeedback*
+ uint8_t ChassisControl_Apply(ChassisControl* control, const char* action, const char* session_id,
+                              uint32_t seq, uint32_t lease_ms, int16_t drive_rpm,
+                              int32_t steering_mdeg, uint32_t now_ms);
+-// 周期检查租约、安全门禁和换向停车确认。等待换向时保持零速，每个不同反馈时间戳最多计一次，两轮均不超过 20 rpm 连续三次才放行；超过当前代码的 2 秒期限撤使能并锁存故障。
++// 周期检查租约、安全门禁和换向停车确认。等待换向时保持零速，每个新反馈最多计一次；双轮不超过 20 rpm 连续三次才放行，6 秒期限后请求故障撤使能与锁存。
+ void ChassisControl_Tick(ChassisControl* control, uint32_t now_ms);
+ // 查询当前全部正常运动门禁是否通过。复用统一安全原因检查；通过仅表示软件条件允许，不代表驱动器已经执行目标或车辆已经运动。
+ uint8_t ChassisControl_SafetyReady(const ChassisControl* control, uint32_t now_ms);
+diff --git a/app/Core/User/motion/include/patrol_runtime.h b/app/Core/User/motion/include/patrol_runtime.h
+index bd0a04d..e0a97d2 100644
+--- a/app/Core/User/motion/include/patrol_runtime.h
++++ b/app/Core/User/motion/include/patrol_runtime.h
+@@ -4,6 +4,8 @@
+ #include "motion_fault.h"
+ // 在安全前提满足时申请清除 MCU 运动故障。复位路径检查输出、OTA、标定与执行器上下文；这是软件故障复位入口，不保证外部驱动器故障已消失。
+ uint8_t PatrolRuntime_ResetFault(void);
++// 请求独立故障停机并优先发送两节点撤使能；非零表示异步确认仍在进行，期间禁止普通运动发送。
++uint8_t PatrolRuntime_RequestFaultStop(void);
+ // 开启一个新的故障记录周期。仅重置本轮首故障捕获标志，后续首因由 CaptureFault 保存，不等同于清除驱动器故障。
+ void PatrolRuntime_BeginFaultEpisode(void);
+ // 在本轮首次故障时冻结运行上下文。记录来源、原因、门禁、双轮反馈和执行器状态并标记待存储；Flash 写入延后到断开输出且 OTA 不忙时。
+diff --git a/app/Core/User/motion/src/bench_steering.c b/app/Core/User/motion/src/bench_steering.c
+index b2ee720..62c967a 100644
+--- a/app/Core/User/motion/src/bench_steering.c
++++ b/app/Core/User/motion/src/bench_steering.c
+@@ -5,7 +5,7 @@
+ #include <string.h>
+ 
+ /* No write retries: a trigger whose acknowledgement was lost must never replay. */
+-#define TRANSACTION_MS 100U
++#define TRANSACTION_MS 200U
+ #define PREPARE_MS 5000U
+ /* PP shutdown acknowledges the write before deceleration releases enable.
+  * Vehicle status remained 0x2237 at 180 ms and reached 0x2231 at 357 ms.
+diff --git a/app/Core/User/motion/src/center_calibration.c b/app/Core/User/motion/src/center_calibration.c
+index e6ebff2..1b22630 100644
+--- a/app/Core/User/motion/src/center_calibration.c
++++ b/app/Core/User/motion/src/center_calibration.c
+@@ -99,7 +99,7 @@ uint32_t CenterCalibration_GateMask(const PatrolDiagnosticsSnapshot* s,
+     if (c->enable_request) mask |= CENTER_GATE_CONTROL_ENABLE_ACTIVE;
+     if ((s->drive_status_word & 0x006FU) == 0x0027U)
+         mask |= CENTER_GATE_DRIVE_OPERATION_ENABLED;
+-    if (c->fault_latched) mask |= CENTER_GATE_FAULT_LATCHED;
++    if (c->fault_latched || c->fault_pending) mask |= CENTER_GATE_FAULT_LATCHED;
+     if (ChassisControl_RuntimeSafetyReason(c, PatrolRuntimePort_Now()) != CHASSIS_STOP_NONE)
+         mask |= CENTER_GATE_RUNTIME_UNSAFE;
+     if (require_steering_disabled && (s->steering_status_word & 0x006FU) == 0x0027U)
+@@ -205,7 +205,7 @@ void CenterCalibration_Fail(uint32_t fault, CenterCalibrationReason reason,
+     SteeringCoordinate_Reset(&g_motion.coordinate);
+     PatrolRuntimePort_Exit();
+     RemoteService_ExecutionFault();
+-    (void)VehiclePowerOutput_Set(0U);
++    if (!RemoteService_State()->fault_pending) (void)VehiclePowerOutput_Set(0U);
+     APP_LOGE("CENTER_CAL", "fail phase=%u fault=%lu reason=%s gate=%lu bench=%u/%u/%lu enc=%u",
+         (unsigned int)g_motion.center_cal.failure.phase, (unsigned long)fault,
+         center_reason_name(g_motion.center_cal.failure.reason), (unsigned long)gate_mask,
+diff --git a/app/Core/User/motion/src/chassis_control.c b/app/Core/User/motion/src/chassis_control.c
+index 63adaaa..506ef31 100644
+--- a/app/Core/User/motion/src/chassis_control.c
++++ b/app/Core/User/motion/src/chassis_control.c
+@@ -15,16 +15,15 @@ static uint8_t stopped(const ChassisFeedback* feedback)
+ // 统一撤销运动目标并按原因更新停车状态。清除行走、转向、待换向请求和使能；保留已锁存的首个故障原因，按 release 决定是否释放会话。
+ static void force_stop(ChassisControl* control, ChassisStopReason reason, uint8_t release)
+ {
++    if (reason == CHASSIS_STOP_DIRECTION_TIMEOUT || reason == CHASSIS_STOP_ENCODER_RANGE ||
++        reason == CHASSIS_STOP_ENCODER_PROFILE) ChassisControl_RequestFault(control, reason);
+     control->target_rpm = 0;
+     control->target_steering_mdeg = 0;
+     control->requested_rpm = 0;
+     control->reversal_pending = 0U;
+     control->zero_confirmations = 0U;
+     control->enable_request = 0U;
+-    if (!control->fault_latched) control->stop_reason = reason;
+-    if (reason == CHASSIS_STOP_DIRECTION_TIMEOUT ||
+-        reason == CHASSIS_STOP_ENCODER_RANGE ||
+-        reason == CHASSIS_STOP_ENCODER_PROFILE) control->fault_latched = 1U;
++    if (!control->fault_latched && !control->fault_pending) control->stop_reason = reason;
+     if (release) {
+         control->session_active = 0U;
+         control->session_id[0] = '\0';
+@@ -38,6 +37,37 @@ void ChassisControl_Init(ChassisControl* control)
+     control->stop_reason = CHASSIS_STOP_UNCALIBRATED;
+ }
+ 
++// 把停机传输交给产品运行层，控制核心不直接访问 HAL、CAN 邮箱或驱动器参数。
++void ChassisControl_SetFaultStopHandler(ChassisControl* control, uint8_t (*handler)(void))
++{
++    control->request_fault_stop = handler;
++}
++
++// 在清零目标之前让运行层冻结首故障；pending 与 latched 一样禁止运动，避免等待撤使能时被遥控重新接管。
++void ChassisControl_RequestFault(ChassisControl* control, ChassisStopReason reason)
++{
++    if (!control->fault_latched && !control->fault_pending) {
++        control->stop_reason = reason;
++        control->fault_pending = 1U;
++        if (!control->request_fault_stop || !control->request_fault_stop())
++            ChassisControl_CompleteFaultStop(control);
++    }
++    control->target_rpm = control->requested_rpm = 0;
++    control->target_steering_mdeg = 0;
++    control->reversal_pending = control->zero_confirmations = 0U;
++    control->enable_request = control->session_active = 0U;
++    control->session_id[0] = '\0';
++    control->auto_center_inhibited = 1U;
++}
++
++// 只把待锁存变成已锁存，不清除首因；确认失败时同样锁存，保证通信故障不会使安全流程无限等待。
++void ChassisControl_CompleteFaultStop(ChassisControl* control)
++{
++    if (!control->fault_pending) return;
++    control->fault_pending = 0U;
++    control->fault_latched = 1U;
++}
++
+ // 设置内部行走禁用状态，不撤销转向授权。激活时立即清零行走与待换向目标，保留最近非零方向以防解除后绕过换向检查；当前不绑定 T12 B 键。
+ void ChassisControl_SetDriveBrake(ChassisControl* control, uint8_t active)
+ {
+@@ -93,7 +123,7 @@ uint8_t ChassisControl_SafetyReady(const ChassisControl* control, uint32_t now_m
+ ChassisStopReason ChassisControl_RuntimeSafetyReason(const ChassisControl* control, uint32_t now_ms)
+ {
+     const ChassisFeedback* f = &control->feedback;
+-    if (control->fault_latched) return control->stop_reason;
++    if (control->fault_latched || control->fault_pending) return control->stop_reason;
+     if (!f->steering_online || !f->drive_online) return CHASSIS_STOP_NODE_OFFLINE;
+     if (f->can_bus_off) return CHASSIS_STOP_CAN_BUS_OFF;
+     if (f->drive_fault) return CHASSIS_STOP_DRIVE_FAULT;
+@@ -131,6 +161,7 @@ uint8_t ChassisControl_Apply(ChassisControl* control, const char* action, const
+         return 1U;
+     }
+     if (strcmp(action, "acquire") != 0 && strcmp(action, "renew") != 0) return 0U;
++    if (control->fault_latched || control->fault_pending) return 0U;
+     if (lease_ms == 0U || lease_ms > CHASSIS_MAX_LEASE_MS || abs(drive_rpm) > CHASSIS_MAX_RPM ||
+         labs(steering_mdeg) > CHASSIS_MAX_STEERING_MDEG) return 0U;
+     if (strcmp(action, "acquire") == 0) {
+diff --git a/app/Core/User/motion/src/patrol_runtime.c b/app/Core/User/motion/src/patrol_runtime.c
+index 80f8e3a..2ed56be 100644
+--- a/app/Core/User/motion/src/patrol_runtime.c
++++ b/app/Core/User/motion/src/patrol_runtime.c
+@@ -8,6 +8,7 @@
+ #include "patrol_can_status.h"
+ #include "vehicle_power_output.h"
+ #include "vehicle_steering_profile.h"
++#include "patrol_fault_stop.h"
+ 
+ PatrolMotion g_motion;
+ 
+@@ -23,6 +24,7 @@ PatrolMotion g_motion;
+ 
+ static MotionFaultRecord last_fault;
+ static uint8_t fault_captured, fault_dirty, fault_storage;
++static PatrolFaultStop fault_stop;
+ // 复制最近一次运动故障记录。在临界区读取固定快照，记录是否存在由返回值表示；故障记录与实时反馈是不同证据。
+ uint8_t PatrolRuntime_GetFault(MotionFaultRecord* record)
+ {
+@@ -63,9 +65,85 @@ void PatrolRuntime_CaptureFault(uint32_t source, uint32_t reason, uint32_t gates
+     PatrolRuntimePort_Exit();
+ }
+ 
++// 每次最多提交两条安全帧，使两个节点的 shutdown 均能优先进入邮箱；不等待某个节点 ACK，不发送普通诊断或运动命令。
++static void dispatch_fault_stop(uint32_t now)
++{
++    if (PatrolRuntimePort_CanBusOffActive()) return;
++    for (uint8_t count = 0U; count < 2U && PatrolRuntimePort_CanTxReady(); ++count) {
++        PatrolCanFrame frame;
++        if (!PatrolFaultStop_Take(&fault_stop, now, &frame)) break;
++        if (!PatrolRuntimePort_SendCan(&frame))
++            PatrolFaultStop_TxFailed(&fault_stop, (uint8_t)(frame.id - 0x600U), now);
++    }
++}
++
++// 在控制层正式锁存前接管 CAN 停机。冻结首因、撤销授权并中止旧目标，独立发送 6040=6；此处不依赖软件 OUT1 为开。
++uint8_t PatrolRuntime_RequestFaultStop(void)
++{
++    const uint8_t nodes = PATROL_CHASSIS_ACTUATION_ENABLED ?
++        (PATROL_STEERING_EXECUTOR_ENABLED ? PATROL_FAULT_STOP_STEERING : 0U) |
++        (PATROL_DRIVE_EXECUTOR_ENABLED ? PATROL_FAULT_STOP_DRIVE : 0U) : 0U;
++    if (!nodes) return 0U;
++    PatrolRuntimePort_Enter();
++    uint32_t now = PatrolRuntimePort_Now();
++    if (!fault_stop.active && !RemoteService_State()->fault_latched) {
++        PatrolFaultStop_Init(&fault_stop);
++        PatrolRuntime_CaptureFault(1U, (uint32_t)RemoteService_State()->stop_reason, g_motion.feedback_gate_mask);
++        RemoteService_Revoke();
++        PatrolAutoCenter_Cancel(&g_motion.auto_center);
++        PatrolRuntimePort_AbortCanTx();
++        g_motion.diagnostics.pending_valid = 0U;
++        BenchDrive_Stop(&g_motion.drive, now, 1U);
++        BenchSteering_Stop(&g_motion.bench, now, 1U);
++        g_motion.drive.pending = g_motion.bench.pending = 0U;
++        g_motion.drive.cut_power = g_motion.bench.cut_power = 0U;
++        g_motion.bench_transport_stopped = 1U;
++        PatrolFaultStop_Begin(&fault_stop, nodes, now);
++        dispatch_fault_stop(now);
++    }
++    uint8_t pending = fault_stop.active;
++    PatrolRuntimePort_Exit();
++    return pending;
++}
++
++// 优先推进独立故障停机。确认关闭后再锁存和下电；600 ms 未确认或活动 Bus-Off 时先锁存/下电，仍保留仅撤使能的重试。
++static uint8_t service_fault_stop(void)
++{
++    PatrolRuntimePort_Enter();
++    const ChassisControl* control = RemoteService_State();
++    if (!fault_stop.active && !control->fault_pending) { PatrolRuntimePort_Exit(); return 0U; }
++    /* 配置侧重新初始化服务也不能解除尚未完成的撤使能；恢复禁止标志但不重置停机起点。 */
++    if (fault_stop.active && !control->fault_pending && !control->fault_latched)
++        RemoteService_ExecutionFault();
++    uint32_t now = PatrolRuntimePort_Now();
++    PatrolFaultStop_Tick(&fault_stop, now);
++    if (PatrolRuntimePort_CanBusOffActive()) fault_stop.latch_due = 1U;
++    dispatch_fault_stop(now);
++    if (!fault_stop.active || fault_stop.latch_due) {
++        if (control->fault_pending) {
++            APP_LOGW("FAULTSTOP", "disable mask=%u/%u confirmed=%u; latch",
++                (unsigned)fault_stop.disabled_mask, (unsigned)fault_stop.required_mask,
++                (unsigned)!fault_stop.active);
++            RemoteService_CompleteFaultStop();
++        }
++        (void)VehiclePowerOutput_Set(0U);
++        SteeringCoordinate_Reset(&g_motion.coordinate);
++        g_motion.bench.limits_aligned = 0U;
++    }
++    g_motion.drive.cut_power = g_motion.bench.cut_power = 0U;
++    PatrolRuntimePort_Exit();
++    /* 故障快照先于停机冻结；Flash 仍只允许在输出关闭及 OTA 空闲时写入。 */
++    if (fault_dirty && !VehiclePowerOutput_IsOn() && !PatrolRuntimePort_OtaBusy()) {
++        fault_storage = OTA_Info_SaveMotionFault(&last_fault) ? 1U : 2U;
++        fault_dirty = 0U;
++    }
++    return 1U;
++}
++
+ // 初始化运动诊断、执行器与标定运行上下文。载入既有故障证据并建立安全默认状态，不自动恢复遥控会话或发出运动目标。
+ void PatrolRuntime_Init(void)
+ {
++    PatrolFaultStop_Init(&fault_stop);
+     PatrolDiagnostics_Init(&g_motion.diagnostics);
+     PatrolAutoCenter_Cancel(&g_motion.auto_center);
+     memset(&last_fault,0,sizeof(last_fault));
+@@ -86,7 +164,8 @@ void PatrolRuntime_GetDiagnostics(PatrolDiagnosticsSnapshot* snapshot)
+ uint8_t PatrolRuntime_ResetFault(void)
+ {
+     PatrolRuntimePort_Enter();
+-    if (VehiclePowerOutput_IsOn() || PatrolRuntimePort_OtaBusy() || fault_dirty ||
++    if (VehiclePowerOutput_IsOn() || PatrolRuntimePort_OtaBusy() || fault_dirty || fault_stop.active ||
++        RemoteService_State()->fault_pending ||
+         g_motion.center_cal.encoder_write_state==4U) { PatrolRuntimePort_Exit(); return 0; }
+     RemoteService_Revoke(); PatrolRuntimePort_AbortCanTx();
+     BenchSteering_Init(&g_motion.bench); BenchDrive_Init(&g_motion.drive);
+@@ -97,6 +176,7 @@ uint8_t PatrolRuntime_ResetFault(void)
+     g_motion.center_cal.encoder_write_state=0; g_motion.center_cal.fault=0;
+     RemoteService_Init(); /* No permit, enable, target or previous session survives. */
+     fault_captured=0;
++    PatrolFaultStop_Init(&fault_stop);
+     PatrolRuntimePort_Exit(); return 1;
+ }
+ 
+@@ -104,6 +184,18 @@ uint8_t PatrolRuntime_ResetFault(void)
+ void PatrolRuntime_OnCanFrame(const PatrolCanFrame* frame, uint32_t now)
+ {
+     PatrolRuntimePort_Enter();
++    if (PatrolFaultStop_OnFrame(&fault_stop, frame, now)) {
++        /* 原诊断事务已经取消；本流程的状态响应仍更新现场诊断时间和状态字。 */
++        PatrolDiagnostics_OnCanFrame(&g_motion.diagnostics, frame, now);
++        int32_t status; uint8_t width;
++        uint8_t node = (uint8_t)(frame->id - 0x580U);
++        if (PatrolCanopen_ParseSdoValue(frame, node, 0x6041U, 0U, &status, &width) && width == 2U) {
++            if (node == 1U) { g_motion.diagnostics.steering_status_word = (uint16_t)status; g_motion.diagnostics.steering_status_ms = now; }
++            else { g_motion.diagnostics.drive_status_word = (uint16_t)status; g_motion.diagnostics.drive_status_ms = now; }
++        }
++        PatrolRuntimePort_Exit();
++        return;
++    }
+     /* Exactly one SDO owner; executor responses never satisfy a diagnostic request. */
+     if ((frame->id == 0x701 || frame->id == 0x702) && frame->dlc == 1 && frame->data[0] == 0 &&
+         (g_motion.coordinate.valid || CenterCalibration_IsActive()))
+@@ -162,7 +254,9 @@ uint32_t PatrolRuntime_ApplyCut(uint32_t now)
+     if (g_motion.bench.cut_power || g_motion.drive.cut_power) {
+         PatrolRuntimePort_Enter();
+         now = PatrolRuntimePort_Now();
+-        PatrolRuntime_CaptureFault(1U, (uint32_t)RemoteService_State()->stop_reason, g_motion.feedback_gate_mask);
++        ChassisStopReason reason = RemoteService_State()->stop_reason;
++        PatrolRuntime_CaptureFault(1U, (uint32_t)(reason == CHASSIS_STOP_NONE ?
++            CHASSIS_STOP_EXECUTION_FAULT : reason), g_motion.feedback_gate_mask);
+         /* Capture before cross-stopping the other executor and before
+          * power-off turns healthy samples into secondary offline gates. */
+         if (CenterCalibration_IsActive()) {
+@@ -178,7 +272,7 @@ uint32_t PatrolRuntime_ApplyCut(uint32_t now)
+         BenchSteering_Stop(&g_motion.bench, now, 1);
+         g_motion.bench_fault_gate_mask = g_motion.feedback_gate_mask;
+         RemoteService_ExecutionFault();
+-        (void)VehiclePowerOutput_Set(0);
++        if (!fault_stop.active && !RemoteService_State()->fault_pending) (void)VehiclePowerOutput_Set(0);
+         g_motion.bench.cut_power = 0; g_motion.drive.cut_power = 0;
+         PatrolRuntimePort_Exit();
+     }
+@@ -388,6 +482,7 @@ void PatrolRuntime_Tick(void)
+     uint8_t have_request = 0U;
+     uint32_t now;
+     uint8_t bench_frame = 0U;
++    if (service_fault_stop()) return;
+     PatrolRuntimePort_Enter();
+     now = PatrolRuntimePort_Now();
+     {
+@@ -482,6 +577,7 @@ void PatrolRuntime_Tick(void)
+     }
+     PatrolRuntimePort_Exit();
+     now = PatrolRuntime_ApplyCut(now);
++    if (service_fault_stop()) return;
+     /* Never write flash while powered or inside the safety critical section. */
+     if (fault_dirty && !VehiclePowerOutput_IsOn() && !PatrolRuntimePort_OtaBusy()) {
+         fault_storage=OTA_Info_SaveMotionFault(&last_fault) ? 1U : 2U;
+@@ -516,6 +612,8 @@ void PatrolRuntime_Tick(void)
+     if (have_request)
+     {
+         PatrolRuntimePort_Enter();
++        /* 高优先级安全任务可能在普通帧选出后启动故障停机；任何旧 owner 的帧都必须丢弃。 */
++        if (fault_stop.active || RemoteService_State()->fault_pending) have_request = 0U;
+         /* A traction inhibit can arrive after frame selection. Discard an old drive
+          * command and start its bounded zero/disable sequence, without touching
+          * the steering executor or the shared session. */
+diff --git a/docs/CURRENT.md b/docs/CURRENT.md
+index c1b3371..2169ea9 100644
+--- a/docs/CURRENT.md
++++ b/docs/CURRENT.md
+@@ -1,6 +1,22 @@
+ # 当前项目状态
+ 
+-2026-10-21 在当前提交 `8f6f33d`（判断延迟6S）基础上，将转向中速由 150 提高到 180 rpm、慢速由 75 提高到 90 rpm，最大值保持 300 rpm，角度分段和限位阈值不变。保留该提交已设置的控制层换向、行走执行器停车/换向 6000 ms，以及 1000 rpm 行走上限、A 键使能及 B 无功能。同步修正旧测试中的 2 秒期望，补充停车 5999/6000 ms 边界、连续续租仍按原换向起点计时、180/90 rpm SDO 写入及复读断言。相关 C、ARM Release、栈、布局、冻结 Boot 和实际 Boot State 主机验证通过；Python 42/43，唯一失败仍为既有热复位设计检查，正式 dist 不变。候选 `patrol-chassis-0.2.74`，App 151,016 字节，SHA256 `B46D49D5C079A1E5285D62AC917C9528BDEF1BC97635AE5F42C9D0E4676B2A97`。[配套烧录包](operations/evidence/SteeringSpeed_300_180_90_Flash.zip)直接放在指定 evidence 目录，[归档索引](operations/evidence/2026-10-21-steering-updated-163918/index.json)保存源码差异和验证记录。Full 写 `0x08000000`，State A/B 写 `0x0803E800`/`0x0803F000`，三项完成后再复位；保留恢复页 `0x0803E000` 和 Config V5 `0x0803F800`，不整片擦除。NORMAL State A/B 的 stable UFS 元数据明确未建立。本次未连接或烧录开发板，未做真实转向、停车或运动验收。下文旧参数均为历史记录。
++2026-10-21 22:26 源码已加入“先撤使能、后锁存”的独立故障停机流程：故障检测后立即进入 `fault_pending`、撤销会话和目标、取消旧 CAN 发送，优先给行走 Node 2 和转向 Node 1 发送 `6040=6`；两节点分别处理事务，随后清双轮零速并读取状态。只有新状态读取确认两节点均退出 Operation Enabled 后，才正式锁存并关闭软件输出。写 ACK 不等于撤使能确认；shutdown 已应答但状态延迟时只轮询状态。600 ms 未确认或活动 Bus-Off 时先锁存/下电，锁存后仍节流重试安全停机；软件输出关闭不再阻断这些帧，未确认前拒绝清锁。首因快照保持不变，正常 1000 rpm、转向 300/180/90 rpm、停车/换向 6 秒、A 功能和 B 无功能均保留，未改驱动器调参值。[长期实现说明](implementation/源码模块与依赖.md)和[执行约束](operations/CANopen执行约束.md)已同步。
++
++生产 RemoteService/ChassisControl/Runtime/双执行器联合主机回归覆盖 11 组场景：双 shutdown 先于锁存、DLC6 状态、单节点无响应、599/600 ms 边界、丢 ACK 后状态确认、Bus-Off 后恢复、软件输出关闭时停机、原 100 ms 转向超时、邮箱暂满/提交失败、32/16 位计时回绕、旧选帧抢占、仍使能时禁止假确认、换向/编码器故障、延迟撤使能不重复 shutdown、服务重初始化不取消停机等。产品 C、ARM Release、栈、布局、冻结 Boot 和实际 Boot State 解析/启动回归通过；Python **43/44**，唯一失败仍为已有热复位设计静态检查，基线和工作树均保留原两处恢复写入，未放宽检查。新增上下文为 16 字节，私有上电重放缓存仅消除填充、保留四槽及完整 64 位时间；固定故障邮箱、任务栈和 4 KiB RAM 保护区不变，RAM 覆盖仍为 **61,432 字节**。正式发布脚本因工作区未提交拒绝发布，正式 dist 及其清单哈希未变；候选不是正式发布或现场验收结果。
++
++候选 **patrol-chassis-0.2.75**：App **152,744 字节**，SHA256 `BF129903C3FABE5ACEDBC413FF3E619E112C1B2E2C3ED7993E7BE6F0E3DEB654`。经暂存校验和 `tools/artifact_store.py` 更新 `out/candidates/bench-drive/`、`out/debug/online/`；[配套烧录包](operations/evidence/FaultStopBeforeLatch_0_2_75_Flash.zip)及[源码、验证、哈希索引](operations/evidence/2026-10-21-fault-stop-before-latch-222653/index.json)已保存。Full、State A/B 分别写 `0x08000000`、`0x0803E800`、`0x0803F000`，三项完成后再复位，不混用旧 State；保留 `0x0803E000` 恢复页和 `0x0803F800` Config V5，不整片擦除。本包 State A/B 为离线生成的 NORMAL 配套记录，stable UFS 明确未建立，不冒充当前板状态读回。本次仅修改、主机验证和构建，未连接/烧录/复位开发板，也未做真实撤使能、停车距离或机械安全验收。以下为源码修复前的故障现场证据。
++
++2026-10-21 19:22 现场故障诊断与停机对照：已取得完整 CAN1 故障前后记录（CANalyst 物理 CH2，500 kbps，原始监听只听），共 188,293 帧。最后一条转向请求为 `0x601: 23 7A 60 00 9D 34 00 00`，写 Node 1 的 `607A=13469`；没有对应 `0x581` 应答。保留的 MCU 快照为转向 phase/step/fault `4/17/6`，432781→432881 ms，正好达到单事务 100 ms 期限。故障后独立只读回读 `607A=13469`，区别于此前已确认的目标 20398，证明驱动器已经接收并保存这次写入；不能把这次故障解释成主控没有发出目标。随后 26.922 秒仍有 5,429 帧 PDO/心跳，却没有任何 `0x601/0x602` 请求，包括行走零速/撤使能。[完整原始报文、快照、对照结果、脚本及 SHA256 索引](operations/evidence/2026-10-21-sdo-fault-comparison-192222/index.json)。
++
++操作者授权撤销转向使能、暂停 Node 1 PDO 再恢复通信；全程保持行走停机，未使能、清锁或重启主控。分析仪独立发送只读 SDO，主控不参与发控制请求：正常 Operational/PDO 上报的三组合计 **2386 次请求，2379 次成功、7 次无应答**；Pre-operational/PDO 暂停的两组合计 **2000 次全部成功**，原始日志确认后两组 PDO 帧数为零。恢复 PDO 后漏应答再次出现，因此问题已缩小到 Node 1 应答链路与周期上报并发的关联，不能仅归因于 MCU 的接收或解析代码。但 NMT 切换也改变驱动器内部状态，尚不能证明具体发送队列/固件缺陷；只读快照的 CAN1 HAL 累计错误从 `0x40` 增至 `0x58`（新增 Stuff/Form 标志），没有逐次发生时间，仍不能排除电气干扰、错误帧或分析仪丢帧。不能据此判定驱动器硬件已损坏，也不能将暂时暂停 PDO 当作已验收的修复。
++
++故障后不停机的原因已有源码、生产模块主机复现和现场总线三方面证据：`PatrolRuntime_ApplyCut` 调用紧急 `BenchDrive_Stop(..., 1)`，该分支只把执行器锁存为 FAULT；随后关闭软件 OUT1，未发送行走零速/撤使能，后续发送也被软件输出关闭门禁拦截。操作者确认驱动器手动直接供电、未经过 OUT1 接触器，因此这个切电请求不能真正切断动力，驱动器继续执行原速度目标。独立分析仪发送双轮零速及 `6040=6` 后，读回双轮 0 rpm，操作者确认“已停稳，保持故障现场”。这一停机路径缺陷尚未修复；增大停车/换向的 6 秒等待不会补出缺失的 SDO 应答或停车帧。
++
++19:22 最终只读核验：Node 1 心跳已恢复 `05`，转向 `0x2231`、行走 `0x1011` 均撤使能，连续三组双轮 0 rpm；主控无会话/使能请求、软件输出关闭、原故障锁存及时间不变，前后 CPU 状态未显示暂停。当前独立编码器角度约 **10.697°**，本次复现后没有再次回中。较早 18:31 的低速回中及操作者“前轮已回正，整车停稳”确认属于再现之前的状态，原始成功、等待超时和过早状态读取记录保留在[此前处置索引](operations/evidence/2026-10-21-stop-center-recovery-183400/index.json)，不得作为当前前轮已回正的依据。
++
++本次只读 SWD 取得的 App 与 `0.2.74` 候选逐字节一致，未修改或烧录固件，正式包不变。各次快照未见接收软件队列溢出或 Bus-Off 记录，但累计 CAN 错误不等于故障瞬间无总线错误。配置页尾故障日志 8 个槽位均为有效记录（sequence 6～13、CRC 正确），因此新 sequence14 无空槽可写，平台“保存失败或空间已满”已有日志已满的证据，未清除日志。完整 RAM/Flash 可能含凭据，仅保留于忽略目录 `out/flash/`；公开归档仅复制脱敏字段、CAN 原始记录，并索引受控原件路径及哈希。上述结果属于诊断证据，不代表固件修复或整车验收。
++
++2026-10-21 在当前提交 `8f6f33d`（判断延迟6S）基础上，将转向中速由 150 提高到 180 rpm、慢速由 75 提高到 90 rpm，最大值保持 300 rpm，角度分段和限位阈值不变。保留该提交已设置的控制层换向、行走执行器停车/换向 6000 ms，以及 1000 rpm 行走上限、A 键使能及 B 无功能。同步修正旧测试中的 2 秒期望，补充停车 5999/6000 ms 边界、连续续租仍按原换向起点计时、180/90 rpm SDO 写入及复读断言。相关 C、ARM Release、栈、布局、冻结 Boot 和实际 Boot State 主机验证通过；Python 42/43，唯一失败仍为既有热复位设计检查，正式 dist 不变。候选 `patrol-chassis-0.2.74`，App 151,016 字节，SHA256 `B46D49D5C079A1E5285D62AC917C9528BDEF1BC97635AE5F42C9D0E4676B2A97`。[配套烧录包](operations/evidence/2026-10-21-steering-updated-163918/SteeringSpeed_300_180_90_Flash.zip)直接放在指定 evidence 目录，[归档索引](operations/evidence/2026-10-21-steering-updated-163918/index.json)保存源码差异和验证记录。Full 写 `0x08000000`，State A/B 写 `0x0803E800`/`0x0803F000`，三项完成后再复位；保留恢复页 `0x0803E000` 和 Config V5 `0x0803F800`，不整片擦除。NORMAL State A/B 的 stable UFS 元数据明确未建立。本次未连接或烧录开发板，未做真实转向、停车或运动验收。下文旧参数均为历史记录。
+ 
+ 2026-10-21 取消 T12 B 键刹车：在“速度1000”恢复版本基础上移除 `0x10A.data[3]` 对行走禁用的绑定，B 的 0/1/2 状态及重复帧均无控制动作；行走 1000 rpm、转向速度、A 使能/关闭、租约、安全门禁及原换向保护不变。内部行走禁用接口保留，不绑定实体按键。新增生产模块联合主机回归覆盖 B 不改变正反转、转向、其他控制所有者和换向等待，以及 A 关闭、旧帧、失联和故障门禁。候选 `patrol-chassis-0.2.68`，App 151,008 字节，SHA256 `C68151DC92196752A5CF0086E887E7824C1DE846B97A32EA9FF6AD7BE8D9269A`；产品 C、ARM、栈、布局、冻结 Boot 和配套 Boot State 主机验证通过。Python 42/43，唯一失败仍为既有热复位设计检查，故正式 dist 保持 0.2.63。暂存校验后通过 artifact_store 更新候选和在线调试包，[本次索引](operations/evidence/2026-10-21-b-disabled-112548/index.json)及同目录 `B_Disabled_Flash.zip` 保存源码补丁、构建/测试记录与本次连接板配套状态文件。合并文件、State A/B 分别写 `0x08000000`、`0x0803E800`、`0x0803F000`，保留恢复页与 Config V5，三项完成后再复位；不与之前烧录包混用。本次仅只读检查开发板，未烧录、未复位、未进行实车运动验收。
+ 
+diff --git "a/docs/implementation/\346\272\220\347\240\201\346\250\241\345\235\227\344\270\216\344\276\235\350\265\226.md" "b/docs/implementation/\346\272\220\347\240\201\346\250\241\345\235\227\344\270\216\344\276\235\350\265\226.md"
+index 4e57744..d52e3dd 100644
+--- "a/docs/implementation/\346\272\220\347\240\201\346\250\241\345\235\227\344\270\216\344\276\235\350\265\226.md"
++++ "b/docs/implementation/\346\272\220\347\240\201\346\250\241\345\235\227\344\270\216\344\276\235\350\265\226.md"
+@@ -43,6 +43,7 @@ app/Core/User/
+ | `motion/src/patrol_runtime.c` | 反馈组装、坐标纪元、运动门禁、CANopen 执行/诊断仲裁 | 通过可替换端口读取时间、进入临界区、检查 Bus-Off/OTA 和提交 CAN 帧 |
+ | `motion/src/center_calibration.c` | 首次建标会话、点动、稳定样本、编码器写入确认、失败证据 | 公共 `CenterCalibration_*` 接口不暴露 HAL/FreeRTOS 类型 |
+ | `motion/src/bench_steering.c`、`bench_drive.c` | 厂商转向和双驱动执行状态机 | 步骤使用具名枚举；原有诊断数值和步骤顺序保持不变 |
++| `motion/src/patrol_fault_stop.c` | 故障锁存前的双节点撤使能、行走零速与状态确认 | 只允许 `6040=6`、双轮零速和状态读取；独立事务不被普通运动门禁或软件输出关闭阻断 |
+ | `cloud/src/cloud_service.c` | EC800/UART 生命周期、Topic 身份、OTA 任务推进 | 唯一 DMA/AT 字节入口；连接和接收状态由公共 transport 持有 |
+ | `cloud/src/cloud_commands.c` | 公共控制和内部运维命令的分发 | 公共控制继续交给 `RemoteService`；内部配置、标定和 OTA 响应独立处理 |
+ | `cloud/src/cloud_messages.c` | JSON 编码、心跳、状态、诊断、日志分包和响应构造 | 保留字段、Topic、QoS、整数序列化和长度限制 |
+@@ -50,6 +51,12 @@ app/Core/User/
+ 
+ ## 能力分层
+ 
++控制层收到需要锁存的故障时，先进入 `fault_pending`：冻结首因、撤销会话/目标并禁止任何重新接管，调用产品故障停机回调。运行层取消旧的 CAN 发送和 SDO 所有权，优先向行走 Node 2、转向 Node 1 提交 shutdown；两节点独立等待应答，随后清除双轮速度目标并读取状态。只有本流程发起的 `6041` 读取确认两节点 Operation Enabled 均清除，才完成正常锁存和软件下电；写 ACK 和旧诊断缓存都不能代替确认。已确认 shutdown 但状态尚未更新时，仅轮询状态，避免重复写入干扰驱动器正常退出过程。
++
++故障停机单事务为 40 ms，写命令最多连续尝试三次后转入确认；首个故障起 600 ms 仍未确认则锁存并尝试关闭 OUT1，活动 Bus-Off 直接进入该退路。锁存之后仍允许节流重试安全撤使能，软件输出关闭不会截断它；未完成确认时拒绝清锁。这里的 600 ms 与正常停车/换向的 6000 ms 相互独立，既有转向速度、行走上限和驱动器调参值不变。软件关闭 OUT1 不能替代手动供电车辆的物理断电。
++
++故障停机上下文固定占 16 字节：节点局部时刻使用 16 位差值，所有事务/重试间隔均不超过 100 ms，整体锁存期限保留 32 位计时；正常安全任务必须持续调度，未调度仍由既有看门狗处理。为保持固定故障邮箱和 RAM 保护区，远控私有离散上电重放槽仅去除尾部填充，保留四槽、完整 requestId 和全部 64 位时间字段；不改变持久格式或公共协议。
++
+ | 层次 | 当前能力 | 边界 |
+ | --- | --- | --- |
+ | ABox Platform | `ABoxEc800*`、`ABoxMqtt*`、`ABoxHttpsUfs_*`、`ABoxBootV2*` | 公共硬件、协议和状态机保持 ABox 命名；产品仓不建立第二套 Patrol MQTT runtime |
+diff --git "a/docs/operations/CANopen\346\211\247\350\241\214\347\272\246\346\235\237.md" "b/docs/operations/CANopen\346\211\247\350\241\214\347\272\246\346\235\237.md"
+index 5d19f40..b342408 100644
+--- "a/docs/operations/CANopen\346\211\247\350\241\214\347\272\246\346\235\237.md"
++++ "b/docs/operations/CANopen\346\211\247\350\241\214\347\272\246\346\235\237.md"
+@@ -35,4 +35,8 @@ Node 1 使用 SDO `0x601/0x581`、心跳 `0x701`；Node 2 使用 SDO `0x602/0x58
+ 
+ 未标定、安全配置不匹配、单圈范围异常、反馈过期、两路角度偏差大于 `2°`、节点离线、CAN Bus-Off、驱动故障或 OTA 忙时禁止运动。方向反转必须先发送左右零速，双写入完成后连续三次左右实测绝对值不超过 `20 rpm` 才可反向；每次必须为新反馈。当前用户设置为 6 秒超时，未完成停车确认则撤销使能并锁存故障。
+ 
++需要锁存时先进入禁止新运动的故障停机阶段，优先发送两节点 `6040=6`，再清行走双轮零速并读取 `6041`。两节点分别跟踪事务，转向漏应答不得阻塞行走撤使能；只接受对应状态读取确认，不能根据 shutdown ACK、旧状态或软件输出值认定完成。两节点确认后再正式锁存并关闭软件输出；600 ms 未确认或当前 Bus-Off 时先锁存/关闭输出，之后仍仅允许节流重试安全停机命令，未确认前不能清锁。正常定位触发和非零速度仍禁止重放，不改驱动器加减速、速度环、位置环或其他已调好的参数。
++
++软件命令与真实停车仍需区分：撤使能可能存在驱动器内部延迟；通信断开时也可能根本无法送达。特别是驱动器手动接电、未经过 OUT1 接触器时，软件下电不能切断动力。现场验证须另行检查双轮停稳、转向停止及物理急停，不能仅依据构建、ACK 或回读宣称整车安全验收通过。
++
+ 早期 ±300 rpm/±5° 阶段边界见 [历史首阶段需求与验收](history/首阶段需求与验收.md)。0.2.13 正式包行走限速为 50 rpm；不能用当前候选参数描述该历史正式包。
+diff --git a/out/candidates/bench-drive/Patrol_Vehicle_Chassis_App.bin b/out/candidates/bench-drive/Patrol_Vehicle_Chassis_App.bin
+index c78b8cb36777a78f4abae32aa79005846c1c8a20..36958e2bed4218dd28fb5e4cda9f9bb8e2cce231 100644
+GIT binary patch
+delta 27860
+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
+ZDVkbL`^^YLXCQi3p#c9H?mwOF{tq-3g7g3Y
+
+delta 26028
+zcmZs@33yXQ-#&ciBx%x>Zj@3=Nt03nEhPoSvIuE`L)x<Aqlk!Q5ep(zKt=R1ExRaM
+z7$7WyY+~6PYAppzQBiSyQb7e#K~!Qva0)HwWdH67@V?LcUH@L!-I+5pXV%}${I-*-
+zec^v?4X><LeY%XS9g^-iR~jZ3Ds-?mSsbL$iCVpwrO?IN6tS~HH){KeqEhp<_CvLJ
+zc^O?DWk67KIBJoY?DS|PW9g*QChfTIQ%Vg?6jMstu}?j8aJwzyiyrz@yA*Mjr{+$(
+zJd*Uao0pwf8q0`4no6eSHMC<NyK9EU1w?fWyAhyL;u%D?1#05kmy*~R)-@O=WtDDH
+zeSR*6bqUhdNvTL|7fRf$a(o}d!h`gKq?u9-I~U+3-_ib!lHUf(JBcRw!XZ~mNeufu
+zl(R`|YnyW<hMfxK-MR3N>&mR+(Z$7A9K`U6Ql1gRY65gxhYUjudnaJQ>&+Klb=}Rd
+z2Q<=x+3%nN3o57#(5emt(97on^lAqa`tx|8T<TMLLGv@3{#SseCF_wml(#y2tM)89
+z`A~q4PR_t9-2?Q6<nf3E{PgSO%(NKR?C0I?LWZ<$IUK{T_{%%ZFx|QE(bX9Cv!BLx
+zOp1?T{|OaICbqV66glIkc^%VGMV+5c>X?@o!#4ZXsA3DM7>)dOegU1obKyBu@dm0B
+zP2XL32Jsc4Qd?2WK$Noi>6ab1hfQ8C>P9Z7b5nju#?1J%(t^@yr79Mss=2<T-7aSg
+z`@lyhce09umeakR3}WBq^vh0Z2x_i%Vw#i}u$qQaCstD>sG5rI>^CNqlr_Y#+3uRw
+z^tnVls?Zt6K_XRZb{S`j>S#7ONMke4AaW;A^K)hnLF|bDjWI1lq+_6FqbVm`pTgP)
+zrk5J#Bn;bCI=zGzWHcHP3i=zaQ>7_P8=!yW7N}F$9}P7<dT-Q<z1%e)_n%3`*~@Es
+z44k48jh>p-gNrocyyf(Vp_9ag%WHZM>!FRBsw5hObW+ukO;%`W@xhEpcFHd>r%zye
+zg91D6)3Hj#fAZ_t*FnNEJzC~eXx>P3*ejSKiYXeIqfTb0f^^5o+2TSUjT$vp9l^eC
+zq$Q(%Mg|MiSVotKh@JG;>=|21#4}1w%=m)@DL?w?$q5;W$?Owfl2KJMh6T;K23>73
+zJK>{uCM=1!`GWE`Z`lYz5cGm5=>PhvX7$6#Bs<4j?I~xLaIw0qLC||$x>_B3Q_(dD
+z0<k8tc@09NHBQj;_@V~-?Z0x;ZhHh%^u>Q}$F7|JK?Iu;%#w&?kTh0dV<LOhPg5RA
+zQ75uD8))7mJrHU2)0vOx5y?MES3j~T`CX4-%=(w?5`?^3wKS&n%zPm|nJw_p0gt}f
+zbrWV`RjsHyfbcjF`$TuasU;+~Hp;4D7k!cVzn0#3v{%eU<my(4y7Q@mK57N+F)>H{
+z+CwKz+$7pOv~{A1jG>($>zXb21k)YotWY}|Ycd<-5%uaKb)ot|P#zSx<`Npupn?=s
+zq+3DfK6YIE!%cfkDix2o>H0|@+eW$dQo~=$TSA7%HAqrWTq9Hx!CE$=8(xWERUgLI
+zijrCqjh6I8YYh7}psN@3u?;GtL9(RBBIWylU}|%!L(kE8{szxCoI>b10?(h~`A;Va
+zJ!|pY5D@Z`8;SmBv~`Mp|9F?IhtSe=AhuS`z7MJ;HOusuIZ_?EL4O=2+2QBa%<PLZ
+zX`9q+KkYKPz4a@P-lTD=*;en}nsg0B?+Z<Lv=qSx_>xD8Qg<oYn!wh3*DHzrzHuC=
+zk6<~z)5>{}S`UOjBh2*CS0-oJ5`5hy46to;NdkM;OY|Dd-QVciqQQdRGE~sdy4Sgd
+z2zBV-6CPcIn&s51*=Hwo=&JpMAn0l}#Z*ZM(>tQrlb-vXx?4wCZQqf5sw3DXubN%(
+zuUC@#30V(1HEgE$m_x(nwezYEsigAs>>`uYfh`ZvoF`22BfV7)^<hi8YHODwGm=XK
+zwDgH=G1@~nKB0f)E6;i*xnJ_oQ%6np8rJBEbr9n+q!9ft_xim8ef<FV3|Ko%(4R-R
+z0Db?)ojp<`tyh)~imX|$EE%+3@ns|o?SzSS258ijg6u)wbIL3IPNfK@@QcaTD7>JN
+z^k`(RN9S0kba*6j<a*`x-n$(UteclEo{|&ahMM&&MV+rm(EpCOZY4cFrLQ>8L)jGl
+z&|%1#0Bo`d`ia>9;<{RqedKQVOJ@POpA4@L%6A&eM(ApNa{aw+s%wa?4a)O;oDj0<
+zgeUt?<(r15T?n4S3`e-DFmpe+E77rE+>5ZZYdqSK#!}vG-9-&M?KYu<OFcr{Y)gq*
+zUlQA}Fip@$u*Jt&?ec216qK`k$@M~}S<+Oq20dEYOm95d$<~1-`7P;2sWe&BQm#!Z
+z>cC?BMi6<Pl!&-46pt^`w44$;FoKe?MMg=}R$kVDd3>6-9Sii5NWW<o9@Vl4pO*FZ
+zsnb=J@3x#0OVPpt<wI9_zMwC~46Fe50jGgK09Gqxo)~$Et}N+1sRR4aKc=;O!kE@o
+z(*(MwZSA-{ZBwSJ+jM17><>j>f3WCKVNhP-8S~r0V(|$5ODn7dB3PTd|Nl^N7q_nd
+z-J)x*e1p2}_|&_Uz1d9zB~ub>-D`^16egFLr6`uAJUBms9dy&Oso7$8g>Ij!S9f5&
+z{Pg3gGkWWM12OVxMboVvm>7yrEt-b7&&$(Gil!odClr6Os04B5r4y$a!tUU>PxI39
+zX$ISP{}`)^Js;rz7X==||08}iQz@0oDx#||DiU0IRyF%7xL!%Xj?gs<nGsA;axseD
+zNFSpl*B2Bm!=C#4s+yg0_p}P^Nq2Jn;G!WI{~UKDI}?axR|663SA}%DyRk1Qf-!G2
+z-`t-y3+a7oN=_@2Ux;AeDni@hveU|<u-?U~g}tqNZ;dQSWS=OsV0yopAm*PRJ<2js
+zXI@2DOwY8<SS9NCGV$f&OLYn%UoN3Q(DNm;Amqzdj_?!*h`av{LD%(?pewv8=r-W}
+z{{U@(@ii<lHsHDAqHZFHum_%J0C^HAB887$U5YqwURN8210=rRKu3g)jZ*mTAd-j+
+zso|KefuBVDWwS#pRTXb35SvuiNH!3=MraiBh=uR2|C_h}|KvrmjAOdm2$mkISIyk@
+z{KQhT*S$KE&KaI}>L@XVofq`#;-#2xx_?G*ai^F5IwPaqi@tDnIhc+$AysNNoyI-Y
+zfuz&!PvsY6y4AQ$N!J@Lz2tWB{kaW8`5fSv+oGw0UWfg9(Z}!SNER8oH2As6FAF!0
+z?u!9>@Ts}BTkcawlliUOs74k3af05;Uj_bys@_LPtg-Cr<3i*8__llTp3TabB~m2o
+z@6||xNnk6=A1RDv4|&y+9;ws4T1oHFOXHE&hsTljm^UnxHX3Q&d0dLLu`%9c6e~iK
+z-dipSJ!d$rg(ej4=p9j5A@NwEcd3+tGQ&_N2Gv`U*3&DP9&zRuUQl8MkNm14n8q~a
+zAw3=GMb1Hmd9yt70;CRWG9xt!sY9H7W_4O5WDRs$kRo`G)l5Vvie8%XbPutcLZzpB
+zn3o?@OE0_jNe85zu2gG0n;vL!wRiANEK<fw9=Vq?ruEeHila$IV<ipy!%KHOtuOi&
+z6ZJcA9cTl5fO@s4djN<5;(=gr$k5IR1>9%+PE$aVL-71GPpjQlT`GlRchZQ`4<Fj)
+z31@?S8YGPJh2eiTcv(Ro&Ib9)C4w-|$NOL#slri5)B~m7xM{ypg!0%b4a=dbS+mqS
+zmglEsvyyETvvnqO;+TZXldL)x=967f*_x(W_m%iZ@SNiN#}%DD!5Y)VImRzD)zY{z
+zBS)d~sU~Spy^aY1ef{X-&s{q9sqZJ3<<{nSoUIQR7Uvhf+cvrkoF-=VrgJ9pulr5)
+zV_H4)hZYYg9BS?A5{$hil%?9)?ZrqBO`APToy3}hbmr{5)O~I>Tc(st0XZwE$<|6k
+znp8Nw)sl)cm&a%4*fwBF`1JVqiMsC*e;4>*rl6mT&;fi4oXQvU*ARAn9UKy{Xo{eJ
+z3}FTEBCrg2wlJ}(0~_I<Q<#cysJm8)>OH%#XVoF4+T4K+be9%Bfb<8EeysN)<?Gy_
+zJUTG8My<jLOJ_eLi68mt(PsvTe=GFnGa0&mf$>*W>_0)8GH3Fnu{ay~cumDwE){co
+z!z)$nrnl?J%+Xy&38v)6OpM0kH5B7EY)nP`CN_YI$)IBudnL$c_?u=`b@<j!U^%{N
+z)>L63M+h5}*!uzMoYVK=E$ICmjF^v{&ji2P4<fAz_zS2+y6a8kA<k#%={H1O&t^8_
+zXthR)lEPSrKv}(bK%hM&qohiI1zecgO(#D4rP$=58FS}|&v@v%xjDVYg2%qxlvEYY
+zMthPS9k=#jYSnpgB11gM^_E+5ys7xKt0QiL;T{HF%R>K|+ZD@L>8Hu_vWqfK++79V
+zbV2_L+UIBJzj1mj8Vz7Ib|Q`UpRXoAuQ?O+>QgwYk$xDs0C48$`Wy7kd3mTeIzYdi
+zHyV-a0h(Gi0Fi%ubW+(|!@4R_*M1GQ37`VPfN&rRXa~fvq1VbXC4TC~)~*0|(LTKt
+zlhEKX)vF5i;5D8MhE>Nl%mQm&c?1W4ZGtp1O;c!)gskMoj*>>=W8(5cUc;(d`p9#o
+zmbsXK#KN$uB*?b$TP?SO<FH%{VvDg%l0e%P#ahD-#Iv0^NUu11;4+T32IXBr!H_OR
+z;>`F%p@HX;B6wSRbT4%cO`G2@f>Y*$c$~h1PMJS)#u}VWzdDH?JK>d!E`Gn<?f>~u
+z|HY~>=E7YYT_~axFM=Q0@myq)uwFc%!*i84+^X9bl#c~14jmf&Kp|*agV;3X)X|9;
+zD{p(k8XB`8wRf5l-L~mvjWkh;g(z4q<vDmv>#1%Lbjgil7}1GrT`=oN)WIcE9;R)g
+zpH5y-qK;!l0eWh|D)FNLEn3)P<bgm%p@;)JC~xrFiuKa*7NK2Y<2b1!QhEk-Y(n6Y
+zQoVCQ5vTs~QusO@8ylDxqW>+Djtveh#s8@RU8RoAK)nkGCl2slQikokq?9=LD`(Mi
+ze=m)H-rQLev=(1d^c6gLf)q|wj0AbyiM>PUlh1eSdn-UfJvr>xOZnhMy8Bh^cPxhF
+zRI#4HyLmg1b~zy8VzM9=cir*lSJ=8@&-4NK{uzpJ8Bhy+3ETh%yd~-i0KT`zAglnQ
+z5GTNP#Q74PKsX4rA6JP}2g^1D;U~a(fUoghAc%Fog?-r`@1+4<Y9k=N659AeVMM>R
+zqV8c}%~~4&;^N}_kF$_u16~KpYQw;<UJVdq?8scu=Q3qZKf<2yFH@ck+n`A1Wy;)s
+z8<e34=k*I?Ke?AFWk@fiKfc(d{mFnaBwx(w7YQM;tRYt-tPhP`)T>*eKH|jE0^&@x
+z{^|;2+uZAwvVKbo<R;XlUyqu$6to~-NT)8!>RX9kYzGbi^#Bf+F^AeZ|9iF6L26$K
+zJ|v*V`TeGM=G?@}6`dXjwSMNNrxsaaH0<j@a{Zpd43Oz$4~==r6j`n$r(b!dN0rFl
+zq4_U$HNN2%OxK;s>4v%ekhUC8e>h)84U#9iWm)(jq*c_s_EI|{KCjR%i_;Q*_6{pv
+zuSl0U4P;6AMeEVWuNK?I_0Y(?oIUAhbnhI%NuICA4a9%6i@Hw{^2wEfsCA<5jSV=5
+z5dMMZ$q4VCp>q)Lz8*uxdgUP;1PlheI8|OwNx6j^G{zdiTEOH)A!J}%A`#xkt@cWe
+zICOo@=vP*V@k3GjRA3A623i=jo?d-*N+|gxk~lGZ63U{F*k<-=&j$G;A^6<yL)b=~
+zZjkrKg06HB&VGbugokI9WJib*WryiMwx?3Q!%|mF=3-+XhX8?d$soU66BOBPFP&SS
+zlHxrfvJ;A0^2^&pyTDl8@E5a)%=;nTRo+{4_~;MiJ>n!x4!<<`70MfVmc~_VBW8M}
+zqF1c>7^^*09Rt<|aySbH>CK8^YQk;=X}={Ih+GKLDN70xpF$P<b<Tf-Z??v<#}xYh
+zl1ws^UR*NNHbPlc52_26fN=`SQ#}NS4l$-#Pb)JXS*Dcsi(@;L9#W^m6udavLrif^
+zgsl#i;T;;BSbt7g)bDzVkQH`O({^pR`2oVpf)E`Z$!iFM)=4ncG-+5aWR_X|1k;hG
+z^-5``(4*Qp;#RM5=ad<l`%_laZA&{OZsOO|IU*?7ONmlvuu%tm^vu#6@dGzimcD8G
+z+AH*Iaay1f$pw!Y$EJBcXe*yr&fZ<3#>JT{S&Sy>&7wFq7Cg=`&LIZ96t-ErU9+t{
+z`@zeneu&vTOXwxA{pHIG6?rMBctDd$T3Q$mS#4=y80rjXes4vHgAHejx4f`Cly)0*
+zWR}7^v3Or>jTMDre9U1%sPZ{6UEyHTsD8O#T;`<(%eTi$-Yy2PxUuTCkILG!AzsRs
+zC-)tNIor{s+Im{4$_+zbEM_4?T@}Y(^K^6dM{gj7nJUqn2hp2};5@?FA}<}ZVxcYt
+zjfb-VUV3ar#`uNa2;*jGEBGDt5*Bnhz&Y2~5WWetVg?0)4H1OM{Eu-3uSePk?})lR
+z2oC|rfiHnyfIC3+CYrNSpZJyM=)K{824y;i%Kr4wX)9-n0T2ChWrpr$q=vJt9(reG
+zhWNdQrmh+-?sC&PtI}*eJ<k>{3C)tpGw0sS89lS_RhQ<Ob#D$kdY&%ShRP*+W)?0D
+z#oD3Tv8Xr)Jk5~ShYs_pHHG329_F3s6pH5_=2M*-if0|pLp&)I?|OKm6b{DEO`~30
+zHE51|$h}Fwib;RU-NkU8FTt%CeS0<qdHrXpZ{;99(fvbn7?I_Qz#b(^L=9}cn>t^!
+z6m{5yy99^^#sQ1|4hA1b_&o3yU<bAXM}QB3Pk}Fhn1kSM5&j5V2Ci?SlUApMeTbFt
+z@1u)X>(yFzAV{~bPC;Z>kbW47&>;P3b;=+uTZVh`j5FF`k`fDdj1Wv8gE>i;!di+1
+zE%uOLI__+TyqHkl`=PualugLn6r|?Y6LY$67Il4rd|(vtFJL<GBRI9PT3kb=QT0Th
+zaG6snc%1pKo5co&?s+|1oxm>p>ABZUq8+Ty>nWUNPI)5(eXI}Cf;S8)T6QjY-35*v
+z<o53fqU#58$p(ye`sy17TOvCd6nfrrE=a4v9=!RT341b}#VTB^bUDX^isO`V_trT|
+z8GDaLv`Pg^<=}|4N+Sz(IIYSd8HTg23Ku-Bk`-xfL2W3llfng0D<nwBDzLZ|Ncrg{
+zsX=*m5UbXXX%thv<<8E9CNL@Q`DxCYoa6+S;y>M-MyygVywiZX^N{&-kS<(ffPD2~
+zkZxJiqelX}>N749B{3`i)~Y_qje^k(1~F3V4}o#9UodTVo(F{_u(LjTb4`kkZ!azw
+za)FTxi(F{r0wWg^xv*%wH!oIcZJ{iGhr`ao+Etj*@XJ`fA+66IIR>`N);jBmS$YlK
+zl7g>coACVn;7V)`9vc)~fz82V4+fWEs(7q-aA~2c(yT$WXOO<}W)F;@caR=`b1Wjd
+zAdPuzG$NM*wB)Ua5rOgO*juOO@Kxd)o>TDx(7}s<4Oj()4hG9x7C{(%3b3q4+S`DC
+zKk|&Hnq&HugF)G$3^P}PVTr6SR|;bzyNk}4{-nEjo*2uKnu0s5Tq!WC%F0I2>dMt|
+zr7&x#r9}3yU&N_aXpW^f)(%iRDskcGt{Y0u)92Swo6!9kr_f`TGXbLfOlO|-FlK7A
+zXGi^d)bz3=7mT4Sul2y%aBF;cR61u^Tfs;zQ%0DHe#~WJXm#a*G-TNZUfATwlO)7n
+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
+
+diff --git a/out/candidates/bench-drive/candidate.manifest.json b/out/candidates/bench-drive/candidate.manifest.json
+index a1e8848..ff19ae2 100644
+--- a/out/candidates/bench-drive/candidate.manifest.json
++++ b/out/candidates/bench-drive/candidate.manifest.json
+@@ -1,172 +1,170 @@
+-{
+-  "product": "patrol_vehicle_chassis",
+-  "version": "patrol-chassis-0.2.74",
+-  "candidate": true,
+-  "startup_permit": false,
+-  "actuation_enabled": true,
+-  "steering_executor_compiled": true,
+-  "drive_executor_compiled": true,
+-  "active_car": 0,
+-  "physical_b_brake_enabled": false,
+-  "physical_a_enabled": true,
+-  "handset_power_control": true,
+-  "neutral_acquire_required": false,
+-  "handset_power_off_grace_ms": 3000,
+-  "drive_max_rpm": 1000,
+-  "steering_profile_rpm": {
+-    "maximum": 300,
+-    "medium": 180,
+-    "creep": 90
+-  },
+-  "direction_timeout_ms": 6000,
+-  "drive_stop_timeout_ms": 6000,
+-  "commit": "8f6f33dbcbcc5e80bd1a96338ac22af84a57e196",
+-  "dirty": true,
+-  "source_matches_commit": false,
+-  "firmware_rebuilt": true,
+-  "board_flashed": false,
+-  "platform_commit": "bc64f52b290521f53ececa626dc91765861845f8",
+-  "app_start": "0x08008000",
+-  "app_end": "0x0803DFFF",
+-  "config_recovery_page": "0x0803E000",
+-  "config_page": "0x0803F800",
+-  "size": 151016,
+-  "sha256": "b46d49d5c079a1e5285d62ac917c9528bdef1bc97635ae5f42c9d0e4676b2a97",
+-  "source_sha256": {
+-    "app/Core/Inc/can.h": "04826b6a031c6ead5a8d5e29592a962dbfd085b502b333c454b5d9ab0437c998",
+-    "app/Core/Inc/dma.h": "98296a74987518cb984b670cd48ac38de69d78f18ef6fbe242b000afe5bfaac7",
+-    "app/Core/Inc/FreeRTOSConfig.h": "f2b85a20b8a95b99fdd5d33de968ceb5041e97c9e9d26ff2b14572ef36f8beb9",
+-    "app/Core/Inc/gpio.h": "5d84d9203beb68396cb38ed90dd51f47af42ba7ea61d15b92ee17b574d59b183",
+-    "app/Core/Inc/iwdg.h": "ce8e728bebc18003952def756780be5324e2cc78ad64bf63542ba792d023f312",
+-    "app/Core/Inc/main.h": "30307248541bff72646c234f3354cb994434bb3289a2d5bf0949735828d247dc",
+-    "app/Core/Inc/stm32f1xx_hal_conf.h": "5108856306e331118c0c916da7ec4b80cdf1d4278063a17181b4ce8cc348bce8",
+-    "app/Core/Inc/stm32f1xx_it.h": "b6f211c62d71eb149206ec2a8dd726cc8f87f5dcffa39e58c26251cd1695f971",
+-    "app/Core/Inc/usart.h": "6daf2c4112f3d2af3fcdff5310a224bf2b32b46eadad6804bfb42095d705976f",
+-    "app/Core/Src/can.c": "ae1646a56f2315e58ba187d3c78676989e0277a1d68e900f4cf1ced8cdb5194f",
+-    "app/Core/Src/dma.c": "2a07e862bdcab0c71ed042280880b04f5d2460c10022e6436ea6bbc0677e976d",
+-    "app/Core/Src/freertos.c": "da11401530543ab37b7baf424f9e631244847ef135dc00d6d93a3d405caa5523",
+-    "app/Core/Src/gpio.c": "0f0b5ad49fd8bb80f3424daec698aa7059f6135a30bf4ffbff625b503df962ac",
+-    "app/Core/Src/iwdg.c": "05881c4d0b3b4e152d4070983a810e8a8cd0f0d85ea53f0fed3d9be00a62dcf9",
+-    "app/Core/Src/main.c": "eab667a6ecc0f6fc07c05cd351ec42229ae8835330609fad8b08c8b1fb340fb3",
+-    "app/Core/Src/stm32f1xx_hal_msp.c": "a305f9194913b305e3e47a4e5d12da577214f53db9e7dd9e8c975535762184a8",
+-    "app/Core/Src/stm32f1xx_hal_timebase_tim.c": "ad3a7fa5a65413c9f476027bd9b78a272660cd8da441fb78fb2263b11c441e30",
+-    "app/Core/Src/stm32f1xx_it.c": "b1bdbcc84b05e9fb4c05a0a2db31f69d504d452fe47758f666fc464dcec75f85",
+-    "app/Core/Src/syscalls.c": "b8cb963b2e2ef813d341d256a5be8e62975b295d24f7298b131ea7e30d31ff58",
+-    "app/Core/Src/sysmem.c": "0e1cd418d1b33e021dc0349db6a7eaea7a23be0ae9fbed54500c6fe5e8b88e6c",
+-    "app/Core/Src/system_stm32f1xx.c": "4663f9af144cc5477ba19e8978de6206caf66023e2f873e72a4c08a6ada38a43",
+-    "app/Core/Src/usart.c": "2eead8e6d6d2b50f22fb75180c2020cd72ad3864da6520ef1191f41c1b48f44b",
+-    "app/Core/User/board/include/vehicle_power_output.h": "2a0b9a064ceca7f4c0497d70016f13187bf28856c0fa6615da9dab3500cb7b04",
+-    "app/Core/User/board/include/vehicle_power_port.h": "4a6d0284c071bb87f56998192bacbdcfe5f3c022eedc94bb7828e7e9e3096588",
+-    "app/Core/User/board/src/vehicle_power_output.c": "1c97bb204ed06f265a3abd4cb8afafe1527962ed33f3f97fc8407fa46fe1736e",
+-    "app/Core/User/board/src/vehicle_power_port.c": "6fc1f746a7334a9a7ec9ffa2b8a4b0cfa75391a5169b96fa5b6ee763aea77b2c",
+-    "app/Core/User/cloud/include/chassis_cloud_protocol.h": "e3d9f7b8f3abf3bf7f042711ca84d6b029325f9933ecdd56af2094484b7adc59",
+-    "app/Core/User/cloud/include/cloud_protocol.h": "c8b17ab17d56ac4d48d9a12811107b4184ae9ccd688bbf6a334fccfad221731d",
+-    "app/Core/User/cloud/include/cloud_service.h": "8b32e32071e4bef5685c0a3559d32075be99a4e858427c5051e187637a1c5909",
+-    "app/Core/User/cloud/include/cloud_telemetry.h": "fb90673b099f780e80b377b1db8844e9aa233b700ef84f11c318466bd1bbd07d",
+-    "app/Core/User/cloud/include/patrol_enrollment.h": "a0500c8e6b2f0e34b021e0ef5b8a0b952e83ba8882655e99be895ff725f4de7c",
+-    "app/Core/User/cloud/include/patrol_mqtt_profile.h": "c1580f7917097a3a55ce1e8dd9496519928649a5df87ab51987f1149e8d5435e",
+-    "app/Core/User/cloud/include/remote_service.h": "51ca5b4a449d447896a330473064b1ec50c18872dbf31189e78d2b907d394664",
+-    "app/Core/User/cloud/private/cloud_internal.h": "d8f8da0b47a93f72dcbb72ffb74988448b2544b29b7fd55c32dac14b9540f1b9",
+-    "app/Core/User/cloud/src/chassis_cloud_protocol.c": "89445821b6632efb88b7316ad66dae47f36c7cb4aeb7b54c3c3bf928c55392a0",
+-    "app/Core/User/cloud/src/cloud_commands.c": "ae3d8cb60f2216d2a32997bb7898d99e30b01baca1a09c70b7c21d3bcf011b0d",
+-    "app/Core/User/cloud/src/cloud_messages.c": "8c39da5e87c8c008a644366f00a17ea754458a28bf3c6037326c1d16d5dc2ed8",
+-    "app/Core/User/cloud/src/cloud_protocol.c": "0f8588aa5abaa1c9ed0716d0b98d9e6b2230b793b56fd8e8f0b0a14c05c84b8c",
+-    "app/Core/User/cloud/src/cloud_service.c": "2776b3932e3fafef08e5d96c2b14a9343a2b1af5e8afacaa7759706c1eee2832",
+-    "app/Core/User/cloud/src/cloud_tx.c": "41cb2752cb790fff498787ac18b2e4c1d9d790540c34b994c74259977637a735",
+-    "app/Core/User/cloud/src/patrol_enrollment.c": "941b258f374aa563c50c4de0c64b4a5b1bfbb6893af3b9dd96f5b496e75507af",
+-    "app/Core/User/cloud/src/patrol_mqtt_profile.c": "5ded9f3e7b172829aaf920597a6831ba6301b33d70b41832fa3e61e7854f255d",
+-    "app/Core/User/cloud/src/remote_service.c": "beabf48b895876b7c2e91101411d740b19e5038f5b0a1ed5ce9942b2b2a20df6",
+-    "app/Core/User/common/include/app_log.h": "ce92f9947415a9751efc103ed37d49baaa2a9f66dbf90c08c626bbeb3f8f210e",
+-    "app/Core/User/common/include/fixed_point.h": "aefc8afc5f0ad8787868e4ea9f5cdb80dc30bfa135210c82dc3f0d668641f63e",
+-    "app/Core/User/common/include/time_base.h": "0a6f6a65674a406c60677699fae64e3bdf284b3c49069bfb48a254245ec2d499",
+-    "app/Core/User/common/include/time_sync.h": "bf51d208a6cba7e28d714a94a3de3b8b6cda1e4c7363853ca33849ce1007dfef",
+-    "app/Core/User/common/src/app_log.c": "3d08bbcecb6ae6c017a7e1d170e510161b5d006706ae800a665c6ea149ecbca1",
+-    "app/Core/User/common/src/fixed_point.c": "62f2efa03102f64f9236b59828d0505a50b2ed5727c082659817e686e4f319aa",
+-    "app/Core/User/common/src/time_base.c": "d1e1dfd2f1211665f54ff66f1af4d081051eadd7270fc7500753835d3431c608",
+-    "app/Core/User/common/src/time_sync.c": "c0a356fa63065a0c7a9624150ad1e12fd37699eb9a866abf0d96fa5088b60cb0",
+-    "app/Core/User/motion/include/absolute_encoder.h": "0d1b692a55e727be0b273145e40b74849092dc0e1c2f90d4bb2f98ff5d87c079",
+-    "app/Core/User/motion/include/bench_drive.h": "8f36708d4a3a28d9fbfd3a27d5ef32daf8c79f4cfc570d832e08a71fee27032d",
+-    "app/Core/User/motion/include/bench_steering.h": "e550a88a14983a7ce0d483614b7e8ca04ca024b719587c58cae4c39775a8b186",
+-    "app/Core/User/motion/include/center_calibration.h": "399bd0a164a37f4dcf41ea7e73f24cc809e15b8a3a61f7102760e1de5f735855",
+-    "app/Core/User/motion/include/chassis_control.h": "d3f96d20cc461d380e52986ead60d6ef5db377e169bfc4a5080aa2c645236f06",
+-    "app/Core/User/motion/include/patrol_auto_center.h": "f0fdbf5cfd995f891e0699477e23c0e8ff51f345bb62db78032b93a0b77d743b",
+-    "app/Core/User/motion/include/patrol_canopen.h": "6f825522a1c10296aa2e0f508cfcf0748b40571128629e9a170bad7aa70e345b",
+-    "app/Core/User/motion/include/patrol_can_remote.h": "0709fe743f141e98ab45d6d6643cfcdddc92e58a9e4ea19963cd3cddd77ad660",
+-    "app/Core/User/motion/include/patrol_diagnostics.h": "326717e29ded9bd59ced93ac53f9230c207b2ddaea323bc487ad639cad23a228",
+-    "app/Core/User/motion/include/patrol_phy_remote.h": "035e5b14cb3e91dded51dc279b0bf9a5cbb23329bc224b98c719d9cba40f697f",
+-    "app/Core/User/motion/include/patrol_runtime.h": "acafd7a6bf5c907f311350e68af887d17e6124e4f6c51fa762e8ed724e77218b",
+-    "app/Core/User/motion/include/patrol_runtime_port.h": "58d88979702e8d7ebd1228607bb44c80fbac3da5f377a871b32861104eb58396",
+-    "app/Core/User/motion/include/steering_angle.h": "832a689749dc350407b6b83025ec589a8d90c10e7d74bf3d8763b566ab39aafb",
+-    "app/Core/User/motion/include/vehicle_steering_profile.h": "6f2e508a993f6ae3a562accf8a0d1d9eeccc0c0c2a9fb3413b9d45ce51633eb6",
+-    "app/Core/User/motion/private/motion_internal.h": "28e692faef44df3d7852a0e4b36ededbce5a1ed1e747d048174535d1ec4eebd9",
+-    "app/Core/User/motion/src/absolute_encoder.c": "d86c1a77b57953dca44a884058e5a1ecdd36bae4b2ae2356edb7e42267f30cec",
+-    "app/Core/User/motion/src/bench_drive.c": "5702790505f7bb0a2c0b25a9753df20f774fedc2b2254c86770d606f0b2a800c",
+-    "app/Core/User/motion/src/bench_steering.c": "0a4fdcdea424b2af6337e635c12396cd4a2d43ddb8060475c5a86f977f344525",
+-    "app/Core/User/motion/src/center_calibration.c": "62270c7925d28d05395ba318cf2696f42e0840116570480462db46c06b787244",
+-    "app/Core/User/motion/src/chassis_control.c": "fe2b7b77a72a17f1488dfaf207055e5248725634a9e06e9b627e5f1172521aee",
+-    "app/Core/User/motion/src/patrol_auto_center.c": "3d9c6cdc0e367efbc6d503518751f3321e7c223a2cbd06f791c12c37201bc82e",
+-    "app/Core/User/motion/src/patrol_canopen.c": "5ffb4c396aad826d93083e167f755f166d50a8c000720d51135037403fe867bd",
+-    "app/Core/User/motion/src/patrol_can_remote.c": "7e56e2d29c42b638a64868d7a1cac405155809c19cf0d2a2759f24e6671d45fe",
+-    "app/Core/User/motion/src/patrol_diagnostics.c": "75f84ff764c9f15f0825b56bd75d94ff0949cb91cb81309ff8c7209c1939ebd2",
+-    "app/Core/User/motion/src/patrol_phy_remote.c": "b9e48f54d53ccd8b681fcb3d87c0e757ffe335eea375fa30d661bf64cb7fc131",
+-    "app/Core/User/motion/src/patrol_runtime.c": "4acb9116acf69d25aa58e07740e326179969671fcad2cd4f9fbd643efe81b7fd",
+-    "app/Core/User/motion/src/steering_angle.c": "412331b5571d72a83c557c19c6b17e0b6a71571284a19ed2b942cb3057dd8040",
+-    "app/Core/User/mqtt/include/ec800_at.h": "3454bcbb7122ddc16a776566df56f45e3173ce92a43ad6d6f5584df441e8730e",
+-    "app/Core/User/mqtt/include/mqtt_core.h": "352e61586188f9739292ebb3866073ab68a7145f904acd4235836d1affc979ff",
+-    "app/Core/User/mqtt/include/mqtt_runtime.h": "a39f6fd9c587725f61c409a19909619fcf7622440f4129da6d087f5e7a41896f",
+-    "app/Core/User/mqtt/include/mqtt_trial_manager.h": "df1f19d0e2c1ab27e74f410e49d9c1240fc0792821a2363cbd1b010a9d2e1ab9",
+-    "app/Core/User/mqtt/include/mqtt_trial_persistent.h": "9278d0fe83ccd8cae2e73412da53fd4ef42eaaf0d446f4a8b8dc3d21b150c17f",
+-    "app/Core/User/mqtt/src/mqtt_core_adapter.c": "042088df01f6bf717af8dd5b84889f387f12262f19d1ef3e316f84d9b5f4b579",
+-    "app/Core/User/mqtt/src/mqtt_runtime.c": "b5eb379ee63bbbe0657a8bcc6c0e8c32ea5f898b46b546d0ec74b034ba8309e5",
+-    "app/Core/User/mqtt/src/mqtt_trial_manager.c": "3e1c94f21dfafdd543b4b965d738b87917e203fbdb39abd5f6a517cbb728b8ef",
+-    "app/Core/User/ota/include/ota_ca_pem.h": "d6e7ba1cabd48689e520fec2570ac98ed8b85ff8c70e9aab8afd64ccae422319",
+-    "app/Core/User/ota/include/ota_service.h": "c18510de538c6496837867f5b1cb79a4268f775a546b363785715e4574321199",
+-    "app/Core/User/ota/src/ota_info.c": "e2440ff0f47d596e13b56868b0593a9e7e078054a65c6e03cef65b164db2920a",
+-    "app/Core/User/ota/src/ota_service.c": "f2d4fc8101135ae0f3edb4f8312d8f8141504c01d48aa54b6d61e9ef5d8eeae4",
+-    "app/Core/User/system/include/app_test.h": "548e6ace605ea8bb094472756091bd127e3a3def7b9e9ea7113d34a07fe7e266",
+-    "app/Core/User/system/include/app_version.h": "d08e292fd9175b8df528d34f1b0ae9588be8b617615b07b3d4cdb98c1fe04a14",
+-    "app/Core/User/system/include/mqtt_config_adapter.h": "4ab1c594380ad09a3d44af11212d1631d5d5269b7f37a5f2d2382c11c306cc42",
+-    "app/Core/User/system/include/patrol_can_recovery.h": "a9104d938ed3c0decf110bf9db116cd83be70136878539c24349c2c7e9d2473b",
+-    "app/Core/User/system/include/patrol_can_status.h": "d2ae6a8a5e9e76e8d8184dfa466be1d860474123da59a1e6e39a3cd5695d2863",
+-    "app/Core/User/system/include/patrol_config.h": "3fefccc1011898cc8329449811c36270c1ee4aa956bca16fb272ae3fd33ef829",
+-    "app/Core/User/system/include/patrol_diag_config.h": "09f40071944ffa117a19e37915d120ed38541744354a5d12b9f433050d19baa3",
+-    "app/Core/User/system/include/patrol_rtos.h": "0234d0a6a9685c51a4d78af8b492b0cd9a53623882631617310875dcb00da853",
+-    "app/Core/User/system/src/app_test.c": "4e1d2033cdf460af279bd93bf86c7b4509013d7bad9235102f729cea68c95b4b",
+-    "app/Core/User/system/src/app_version.c": "be180dfe22c044dd2e46f49b63ab82b1f333a0677e844ba5477aae86dfceb530",
+-    "app/Core/User/system/src/mqtt_config_adapter.c": "23e6012ac24de7cca30e5da666ef2826edc41b5ffb659dc7e2b4f6603874575b",
+-    "app/Core/User/system/src/patrol_config.c": "e9ad40a928315d89a5aab12bea7ff09eec226104cfb929d614292950b374f411",
+-    "app/Core/User/system/src/patrol_rtos.c": "3c644dbc089bf5dde27c39eb15eaa3c38572db1d681defd67f603b60ec0b6120",
+-    "shared/boot_state_compat.c": "c20fd4b0cabddd33158706ac96f48ba3721ec035df7e99756227639a4e20d8a3",
+-    "shared/fault_mailbox_compat.c": "2b40f69e33a18c69bb9181c2a77f14cd230d1f0c29c0e786af914a4d04ec23a3",
+-    "shared/include/boot_cfg.h": "f10f04b8bf016035f396bd4422b941bf21e5f9e0adf8e7ef0c645a9103ded90d",
+-    "shared/include/boot_state.h": "5665ad1e73191e1e275bca7da66590b051ec41d53069ea55351f2f0b22ede125",
+-    "shared/include/boot_test.h": "51416377fe104151bfeb8b140845e5cc9430201e60d8980cfc43453fbb68ce5a",
+-    "shared/include/boot_version.h": "e62ed2900b1dc1d97c147c1ab872cc69978ec644a5cd1fe90d2ae865b0ec66fc",
+-    "shared/include/fault_mailbox.h": "2d6fdf3f5c2c119d162033cf9fad533ef3e68b59c2cb42f7f83411a312a79370",
+-    "shared/include/motion_fault.h": "3b7b1bcf4050dbd73990bfd5fe6371933696fdea6921c2657cc0016460d50787",
+-    "shared/include/ota_image.h": "2984bf0cf70ad792eab9ddd475ce9ba20758bcba01e98f39b4a6ba1234405732",
+-    "shared/include/ota_info.h": "97db1833147e061ff0264b54e8d42838d796af97e06c1fb235fd4e63f9e1a947",
+-    "tests/bench_drive_test.c": "6a23b28e47dc07a74084cf5f4ce3c54ecbd347172bac201775e4699fcd983d51",
+-    "tests/chassis_safety_test.c": "eef440241ce13a17250f5443ff3f86d152e33c08d55fa644e44ea5f4829544e1",
+-    "tests/can_remote_test.c": "d0c63a3470ba83cf806ecd83a5290a8f0186f0e6801c257656ab8739f21e44cc",
+-    "tests/drive_brake_runtime_cases.c": "c4f85ab90addfcc12ad0c6a7d533a0339f8703dc7f1e1282f4db3040c8fc0084",
+-    "tests/bench_steering_test.c": "40ce5ce387a0b02692912adc99ea050d5955e471c650f5d9e54f1856463e6217"
+-  },
+-  "source_diff_sha256": "2d788fdea483307e4f56342e098afe2138a6be0a5db49df51fa785176d31221e",
+-  "verification": {
+-    "arm_release_build": true,
+-    "stack_checks": true,
+-    "flash_layout": true,
+-    "frozen_boot": true,
+-    "standalone_product_c_tests": true,
+-    "timeout_6s_boundary_regression": true,
+-    "steering_speed_regression": true,
+-    "existing_a_enable_stop_power_grace_regression": true,
+-    "ignored_b_regression": true,
+-    "product_python_passed": 42,
+-    "product_python_total": 43,
+-    "known_existing_failure": "test_identity_and_safe_defaults: existing user-confirmed hot-reset design",
+-    "boot_state_host_verification": true,
+-    "hardware_motion_verified": false
+-  }
+-}
++{
++  "product": "patrol_vehicle_chassis",
++  "version": "patrol-chassis-0.2.76",
++  "candidate": true,
++  "startup_permit": false,
++  "actuation_enabled": true,
++  "steering_executor_compiled": true,
++  "drive_executor_compiled": true,
++  "active_car": 0,
++  "commit": "2e601ce73d6d8634800b5cba3cf27fd7af208482",
++  "dirty": true,
++  "source_matches_commit": false,
++  "platform_commit": "bc64f52b290521f53ececa626dc91765861845f8",
++  "app_start": "0x08008000",
++  "app_end": "0x0803DFFF",
++  "config_recovery_page": "0x0803E000",
++  "config_page": "0x0803F800",
++  "size": 152744,
++  "sha256": "177efdb46df9a968755edcaf0007fac78768125fb2bad2a43e4ca7fa27d822b2",
++  "source_sha256": {
++    "app/Core/Inc/can.h": "04826b6a031c6ead5a8d5e29592a962dbfd085b502b333c454b5d9ab0437c998",
++    "app/Core/Inc/dma.h": "98296a74987518cb984b670cd48ac38de69d78f18ef6fbe242b000afe5bfaac7",
++    "app/Core/Inc/FreeRTOSConfig.h": "f2b85a20b8a95b99fdd5d33de968ceb5041e97c9e9d26ff2b14572ef36f8beb9",
++    "app/Core/Inc/gpio.h": "5d84d9203beb68396cb38ed90dd51f47af42ba7ea61d15b92ee17b574d59b183",
++    "app/Core/Inc/iwdg.h": "ce8e728bebc18003952def756780be5324e2cc78ad64bf63542ba792d023f312",
++    "app/Core/Inc/main.h": "30307248541bff72646c234f3354cb994434bb3289a2d5bf0949735828d247dc",
++    "app/Core/Inc/stm32f1xx_hal_conf.h": "5108856306e331118c0c916da7ec4b80cdf1d4278063a17181b4ce8cc348bce8",
++    "app/Core/Inc/stm32f1xx_it.h": "b6f211c62d71eb149206ec2a8dd726cc8f87f5dcffa39e58c26251cd1695f971",
++    "app/Core/Inc/usart.h": "6daf2c4112f3d2af3fcdff5310a224bf2b32b46eadad6804bfb42095d705976f",
++    "app/Core/Src/can.c": "ae1646a56f2315e58ba187d3c78676989e0277a1d68e900f4cf1ced8cdb5194f",
++    "app/Core/Src/dma.c": "2a07e862bdcab0c71ed042280880b04f5d2460c10022e6436ea6bbc0677e976d",
++    "app/Core/Src/freertos.c": "da11401530543ab37b7baf424f9e631244847ef135dc00d6d93a3d405caa5523",
++    "app/Core/Src/gpio.c": "0f0b5ad49fd8bb80f3424daec698aa7059f6135a30bf4ffbff625b503df962ac",
++    "app/Core/Src/iwdg.c": "05881c4d0b3b4e152d4070983a810e8a8cd0f0d85ea53f0fed3d9be00a62dcf9",
++    "app/Core/Src/main.c": "eab667a6ecc0f6fc07c05cd351ec42229ae8835330609fad8b08c8b1fb340fb3",
++    "app/Core/Src/stm32f1xx_hal_msp.c": "a305f9194913b305e3e47a4e5d12da577214f53db9e7dd9e8c975535762184a8",
++    "app/Core/Src/stm32f1xx_hal_timebase_tim.c": "ad3a7fa5a65413c9f476027bd9b78a272660cd8da441fb78fb2263b11c441e30",
++    "app/Core/Src/stm32f1xx_it.c": "b1bdbcc84b05e9fb4c05a0a2db31f69d504d452fe47758f666fc464dcec75f85",
++    "app/Core/Src/syscalls.c": "b8cb963b2e2ef813d341d256a5be8e62975b295d24f7298b131ea7e30d31ff58",
++    "app/Core/Src/sysmem.c": "0e1cd418d1b33e021dc0349db6a7eaea7a23be0ae9fbed54500c6fe5e8b88e6c",
++    "app/Core/Src/system_stm32f1xx.c": "4663f9af144cc5477ba19e8978de6206caf66023e2f873e72a4c08a6ada38a43",
++    "app/Core/Src/usart.c": "2eead8e6d6d2b50f22fb75180c2020cd72ad3864da6520ef1191f41c1b48f44b",
++    "app/Core/User/board/include/vehicle_power_output.h": "2a0b9a064ceca7f4c0497d70016f13187bf28856c0fa6615da9dab3500cb7b04",
++    "app/Core/User/board/include/vehicle_power_port.h": "4a6d0284c071bb87f56998192bacbdcfe5f3c022eedc94bb7828e7e9e3096588",
++    "app/Core/User/board/src/vehicle_power_output.c": "1c97bb204ed06f265a3abd4cb8afafe1527962ed33f3f97fc8407fa46fe1736e",
++    "app/Core/User/board/src/vehicle_power_port.c": "6fc1f746a7334a9a7ec9ffa2b8a4b0cfa75391a5169b96fa5b6ee763aea77b2c",
++    "app/Core/User/cloud/include/chassis_cloud_protocol.h": "e3d9f7b8f3abf3bf7f042711ca84d6b029325f9933ecdd56af2094484b7adc59",
++    "app/Core/User/cloud/include/cloud_protocol.h": "c8b17ab17d56ac4d48d9a12811107b4184ae9ccd688bbf6a334fccfad221731d",
++    "app/Core/User/cloud/include/cloud_service.h": "8b32e32071e4bef5685c0a3559d32075be99a4e858427c5051e187637a1c5909",
++    "app/Core/User/cloud/include/cloud_telemetry.h": "fb90673b099f780e80b377b1db8844e9aa233b700ef84f11c318466bd1bbd07d",
++    "app/Core/User/cloud/include/patrol_enrollment.h": "a0500c8e6b2f0e34b021e0ef5b8a0b952e83ba8882655e99be895ff725f4de7c",
++    "app/Core/User/cloud/include/patrol_mqtt_profile.h": "c1580f7917097a3a55ce1e8dd9496519928649a5df87ab51987f1149e8d5435e",
++    "app/Core/User/cloud/include/remote_service.h": "4e1d9e26cf40b5d9d5753381593fb7d165bf28d16790a79e506577def900996b",
++    "app/Core/User/cloud/private/cloud_internal.h": "d8f8da0b47a93f72dcbb72ffb74988448b2544b29b7fd55c32dac14b9540f1b9",
++    "app/Core/User/cloud/src/chassis_cloud_protocol.c": "89445821b6632efb88b7316ad66dae47f36c7cb4aeb7b54c3c3bf928c55392a0",
++    "app/Core/User/cloud/src/cloud_commands.c": "ae3d8cb60f2216d2a32997bb7898d99e30b01baca1a09c70b7c21d3bcf011b0d",
++    "app/Core/User/cloud/src/cloud_messages.c": "8c39da5e87c8c008a644366f00a17ea754458a28bf3c6037326c1d16d5dc2ed8",
++    "app/Core/User/cloud/src/cloud_protocol.c": "0f8588aa5abaa1c9ed0716d0b98d9e6b2230b793b56fd8e8f0b0a14c05c84b8c",
++    "app/Core/User/cloud/src/cloud_service.c": "2776b3932e3fafef08e5d96c2b14a9343a2b1af5e8afacaa7759706c1eee2832",
++    "app/Core/User/cloud/src/cloud_tx.c": "41cb2752cb790fff498787ac18b2e4c1d9d790540c34b994c74259977637a735",
++    "app/Core/User/cloud/src/patrol_enrollment.c": "941b258f374aa563c50c4de0c64b4a5b1bfbb6893af3b9dd96f5b496e75507af",
++    "app/Core/User/cloud/src/patrol_mqtt_profile.c": "5ded9f3e7b172829aaf920597a6831ba6301b33d70b41832fa3e61e7854f255d",
++    "app/Core/User/cloud/src/remote_service.c": "58d0b1ff6810f7f0a1f342137b3613a42ea14ca78660354fee471bbfbc3695ad",
++    "app/Core/User/common/include/app_log.h": "ce92f9947415a9751efc103ed37d49baaa2a9f66dbf90c08c626bbeb3f8f210e",
++    "app/Core/User/common/include/fixed_point.h": "aefc8afc5f0ad8787868e4ea9f5cdb80dc30bfa135210c82dc3f0d668641f63e",
++    "app/Core/User/common/include/time_base.h": "0a6f6a65674a406c60677699fae64e3bdf284b3c49069bfb48a254245ec2d499",
++    "app/Core/User/common/include/time_sync.h": "bf51d208a6cba7e28d714a94a3de3b8b6cda1e4c7363853ca33849ce1007dfef",
++    "app/Core/User/common/src/app_log.c": "3d08bbcecb6ae6c017a7e1d170e510161b5d006706ae800a665c6ea149ecbca1",
++    "app/Core/User/common/src/fixed_point.c": "62f2efa03102f64f9236b59828d0505a50b2ed5727c082659817e686e4f319aa",
++    "app/Core/User/common/src/time_base.c": "d1e1dfd2f1211665f54ff66f1af4d081051eadd7270fc7500753835d3431c608",
++    "app/Core/User/common/src/time_sync.c": "c0a356fa63065a0c7a9624150ad1e12fd37699eb9a866abf0d96fa5088b60cb0",
++    "app/Core/User/motion/include/absolute_encoder.h": "0d1b692a55e727be0b273145e40b74849092dc0e1c2f90d4bb2f98ff5d87c079",
++    "app/Core/User/motion/include/bench_drive.h": "8f36708d4a3a28d9fbfd3a27d5ef32daf8c79f4cfc570d832e08a71fee27032d",
++    "app/Core/User/motion/include/bench_steering.h": "e550a88a14983a7ce0d483614b7e8ca04ca024b719587c58cae4c39775a8b186",
++    "app/Core/User/motion/include/center_calibration.h": "399bd0a164a37f4dcf41ea7e73f24cc809e15b8a3a61f7102760e1de5f735855",
++    "app/Core/User/motion/include/chassis_control.h": "c966bb575db8e001c4261c01ebcba36184e30b9af47ef901057c5a168153e215",
++    "app/Core/User/motion/include/patrol_auto_center.h": "f0fdbf5cfd995f891e0699477e23c0e8ff51f345bb62db78032b93a0b77d743b",
++    "app/Core/User/motion/include/patrol_can_remote.h": "0709fe743f141e98ab45d6d6643cfcdddc92e58a9e4ea19963cd3cddd77ad660",
++    "app/Core/User/motion/include/patrol_canopen.h": "6f825522a1c10296aa2e0f508cfcf0748b40571128629e9a170bad7aa70e345b",
++    "app/Core/User/motion/include/patrol_diagnostics.h": "326717e29ded9bd59ced93ac53f9230c207b2ddaea323bc487ad639cad23a228",
++    "app/Core/User/motion/include/patrol_fault_stop.h": "a72bc565a39211a19cc22392159a5cb0cb1840b7b16e65407d32682b89b9da91",
++    "app/Core/User/motion/include/patrol_phy_remote.h": "035e5b14cb3e91dded51dc279b0bf9a5cbb23329bc224b98c719d9cba40f697f",
++    "app/Core/User/motion/include/patrol_runtime.h": "2ab977edcd0d707f597826c2b85555bea325ff9e86edd5beae6d8f24cd91be22",
++    "app/Core/User/motion/include/patrol_runtime_port.h": "58d88979702e8d7ebd1228607bb44c80fbac3da5f377a871b32861104eb58396",
++    "app/Core/User/motion/include/steering_angle.h": "832a689749dc350407b6b83025ec589a8d90c10e7d74bf3d8763b566ab39aafb",
++    "app/Core/User/motion/include/vehicle_steering_profile.h": "6f2e508a993f6ae3a562accf8a0d1d9eeccc0c0c2a9fb3413b9d45ce51633eb6",
++    "app/Core/User/motion/private/motion_internal.h": "28e692faef44df3d7852a0e4b36ededbce5a1ed1e747d048174535d1ec4eebd9",
++    "app/Core/User/motion/src/absolute_encoder.c": "d86c1a77b57953dca44a884058e5a1ecdd36bae4b2ae2356edb7e42267f30cec",
++    "app/Core/User/motion/src/bench_drive.c": "5702790505f7bb0a2c0b25a9753df20f774fedc2b2254c86770d606f0b2a800c",
++    "app/Core/User/motion/src/bench_steering.c": "a9136011cc7351b3bf377e9f1387d14d186e80b65a7055fd50de68b9fd0abbeb",
++    "app/Core/User/motion/src/center_calibration.c": "88b9de723a8f4771e996584265fe012d9a511264daabb4db8562bebc90299dce",
++    "app/Core/User/motion/src/chassis_control.c": "3d5666c548eb9a4d1ab54e1fd4ca5ab421cf940ce4f83c78ee28e5eff4732ab8",
++    "app/Core/User/motion/src/patrol_auto_center.c": "3d9c6cdc0e367efbc6d503518751f3321e7c223a2cbd06f791c12c37201bc82e",
++    "app/Core/User/motion/src/patrol_can_remote.c": "7e56e2d29c42b638a64868d7a1cac405155809c19cf0d2a2759f24e6671d45fe",
++    "app/Core/User/motion/src/patrol_canopen.c": "5ffb4c396aad826d93083e167f755f166d50a8c000720d51135037403fe867bd",
++    "app/Core/User/motion/src/patrol_diagnostics.c": "75f84ff764c9f15f0825b56bd75d94ff0949cb91cb81309ff8c7209c1939ebd2",
++    "app/Core/User/motion/src/patrol_fault_stop.c": "2c728d6a90eed92504d885c771eb30c163304a1afc3882593f221e084d05897a",
++    "app/Core/User/motion/src/patrol_phy_remote.c": "b9e48f54d53ccd8b681fcb3d87c0e757ffe335eea375fa30d661bf64cb7fc131",
++    "app/Core/User/motion/src/patrol_runtime.c": "8aab440a50e96b76ef80481d20c6fefcd2e3bb0f0385e8157cc06b103338f154",
++    "app/Core/User/motion/src/steering_angle.c": "412331b5571d72a83c557c19c6b17e0b6a71571284a19ed2b942cb3057dd8040",
++    "app/Core/User/mqtt/include/ec800_at.h": "3454bcbb7122ddc16a776566df56f45e3173ce92a43ad6d6f5584df441e8730e",
++    "app/Core/User/mqtt/include/mqtt_core.h": "352e61586188f9739292ebb3866073ab68a7145f904acd4235836d1affc979ff",
++    "app/Core/User/mqtt/include/mqtt_runtime.h": "a39f6fd9c587725f61c409a19909619fcf7622440f4129da6d087f5e7a41896f",
++    "app/Core/User/mqtt/include/mqtt_trial_manager.h": "df1f19d0e2c1ab27e74f410e49d9c1240fc0792821a2363cbd1b010a9d2e1ab9",
++    "app/Core/User/mqtt/include/mqtt_trial_persistent.h": "9278d0fe83ccd8cae2e73412da53fd4ef42eaaf0d446f4a8b8dc3d21b150c17f",
++    "app/Core/User/mqtt/src/mqtt_core_adapter.c": "042088df01f6bf717af8dd5b84889f387f12262f19d1ef3e316f84d9b5f4b579",
++    "app/Core/User/mqtt/src/mqtt_runtime.c": "b5eb379ee63bbbe0657a8bcc6c0e8c32ea5f898b46b546d0ec74b034ba8309e5",
++    "app/Core/User/mqtt/src/mqtt_trial_manager.c": "3e1c94f21dfafdd543b4b965d738b87917e203fbdb39abd5f6a517cbb728b8ef",
++    "app/Core/User/ota/include/ota_ca_pem.h": "d6e7ba1cabd48689e520fec2570ac98ed8b85ff8c70e9aab8afd64ccae422319",
++    "app/Core/User/ota/include/ota_service.h": "c18510de538c6496837867f5b1cb79a4268f775a546b363785715e4574321199",
++    "app/Core/User/ota/src/ota_info.c": "e2440ff0f47d596e13b56868b0593a9e7e078054a65c6e03cef65b164db2920a",
++    "app/Core/User/ota/src/ota_service.c": "f2d4fc8101135ae0f3edb4f8312d8f8141504c01d48aa54b6d61e9ef5d8eeae4",
++    "app/Core/User/system/include/app_test.h": "548e6ace605ea8bb094472756091bd127e3a3def7b9e9ea7113d34a07fe7e266",
++    "app/Core/User/system/include/app_version.h": "d08e292fd9175b8df528d34f1b0ae9588be8b617615b07b3d4cdb98c1fe04a14",
++    "app/Core/User/system/include/mqtt_config_adapter.h": "4ab1c594380ad09a3d44af11212d1631d5d5269b7f37a5f2d2382c11c306cc42",
++    "app/Core/User/system/include/patrol_can_recovery.h": "a9104d938ed3c0decf110bf9db116cd83be70136878539c24349c2c7e9d2473b",
++    "app/Core/User/system/include/patrol_can_status.h": "d2ae6a8a5e9e76e8d8184dfa466be1d860474123da59a1e6e39a3cd5695d2863",
++    "app/Core/User/system/include/patrol_config.h": "3fefccc1011898cc8329449811c36270c1ee4aa956bca16fb272ae3fd33ef829",
++    "app/Core/User/system/include/patrol_diag_config.h": "09f40071944ffa117a19e37915d120ed38541744354a5d12b9f433050d19baa3",
++    "app/Core/User/system/include/patrol_rtos.h": "0234d0a6a9685c51a4d78af8b492b0cd9a53623882631617310875dcb00da853",
++    "app/Core/User/system/src/app_test.c": "4e1d2033cdf460af279bd93bf86c7b4509013d7bad9235102f729cea68c95b4b",
++    "app/Core/User/system/src/app_version.c": "be180dfe22c044dd2e46f49b63ab82b1f333a0677e844ba5477aae86dfceb530",
++    "app/Core/User/system/src/mqtt_config_adapter.c": "23e6012ac24de7cca30e5da666ef2826edc41b5ffb659dc7e2b4f6603874575b",
++    "app/Core/User/system/src/patrol_config.c": "e9ad40a928315d89a5aab12bea7ff09eec226104cfb929d614292950b374f411",
++    "app/Core/User/system/src/patrol_rtos.c": "3c644dbc089bf5dde27c39eb15eaa3c38572db1d681defd67f603b60ec0b6120",
++    "platform_config/abox_product_config.h": "d1547d106fb8a21e8fb7e89b7f0d1933e977e117d30f51450cbe0c15b7e01d41",
++    "shared/include/boot_cfg.h": "f10f04b8bf016035f396bd4422b941bf21e5f9e0adf8e7ef0c645a9103ded90d",
++    "shared/include/boot_state.h": "5665ad1e73191e1e275bca7da66590b051ec41d53069ea55351f2f0b22ede125",
++    "shared/include/boot_test.h": "51416377fe104151bfeb8b140845e5cc9430201e60d8980cfc43453fbb68ce5a",
++    "shared/include/boot_version.h": "e62ed2900b1dc1d97c147c1ab872cc69978ec644a5cd1fe90d2ae865b0ec66fc",
++    "shared/include/fault_mailbox.h": "2d6fdf3f5c2c119d162033cf9fad533ef3e68b59c2cb42f7f83411a312a79370",
++    "shared/include/motion_fault.h": "3b7b1bcf4050dbd73990bfd5fe6371933696fdea6921c2657cc0016460d50787",
++    "shared/include/ota_image.h": "2984bf0cf70ad792eab9ddd475ce9ba20758bcba01e98f39b4a6ba1234405732",
++    "shared/include/ota_info.h": "97db1833147e061ff0264b54e8d42838d796af97e06c1fb235fd4e63f9e1a947",
++    "app/CMakeLists.txt": "ed9d8e407ee04a0f61cc6b818d4314d27738a5936cfedbbfb32313fad78983f2",
++    "app/Core/User/modules.cmake": "9a9de651269ad775271b30d93a06b6edb73ff861db1ece8e811c8646e746df04",
++    "app/STM32F105XX_FLASH.ld": "7effc9f510ff346063dc48d17ec9e4292cd26f3b273b2bbd47802aa2a3758ba4",
++    "VERSION": "e8d8e083055d7f27c1d031d03a5884e0cea0d70885868fac236bf37dec26e7c6"
++  },
++  "drive_max_rpm": 1000,
++  "steering_profile_rpm": {
++    "maximum": 300,
++    "medium": 180,
++    "creep": 90
++  },
++  "direction_timeout_ms": 6000,
++  "drive_stop_timeout_ms": 6000,
++  "fault_stop_latch_timeout_ms": 600,
++  "fault_stop_transaction_ms": 40,
++  "steering_transaction_timeout_ms": 200,
++  "physical_a_enabled": true,
++  "physical_b_brake_enabled": false,
++  "board_flashed": false,
++  "validation": {
++    "arm_release_build": true,
++    "stack_checks": true,
++    "flash_layout": true,
++    "frozen_boot": true,
++    "standalone_product_c_tests": true,
++    "fault_stop_production_regression": true,
++    "steering_199_200_ms_boundary": true,
++    "product_python_passed": 43,
++    "product_python_total": 44,
++    "known_existing_failure": "test_identity_and_safe_defaults: existing hot-reset recovery design; unchanged assertion",
++    "formal_publication": false,
++    "formal_blocker": "Existing Python failure and clean-worktree publication gate",
++    "hardware_motion_verified": false,
++    "board_flashed": false
++  }
++}
+diff --git a/tests/bench_steering_test.c b/tests/bench_steering_test.c
+index c37078e..72ee9c7 100644
+--- a/tests/bench_steering_test.c
++++ b/tests/bench_steering_test.c
+@@ -214,11 +214,22 @@ int main(void)
+     BenchSteering_OnFrame(&b,&r,11); assert(b.pending);
+     r=reply(&b,-111593); r.data[1]++;
+     assert(!BenchSteering_OnFrame(&b,&r,12)&&b.pending);
+-    BenchSteering_Tick(&b,111,1,1,0,0); assert(b.phase==BENCH_FAULT&&b.cut_power);
++    BenchSteering_Tick(&b,209,1,1,0,0); assert(b.pending&&b.phase!=BENCH_FAULT);
++    BenchSteering_Tick(&b,210,1,1,0,0); assert(b.phase==BENCH_FAULT&&b.cut_power);
+     assert(b.fault == 6U);
+-    BenchSteering_Stop(&b,112,1);
++    BenchSteering_Stop(&b,211,1);
+     assert(b.fault == 6U); /* emergency propagation preserves first timeout */
+-    assert(!BenchSteering_Take(&b,112,&f));
++    assert(!BenchSteering_Take(&b,211,&f));
++    /* A target-write ACK is accepted at 199 ms, but rejected at the 200 ms
++       deadline even when the periodic timeout check has not run yet. */
++    for (int expired=0;expired<2;expired++) {
++        BenchSteering_Init(&b); b.phase=BENCH_ACTIVE; b.step=17;
++        assert(BenchSteering_Take(&b,1000,&f)&&b.index==0x607A);
++        r=reply(&b,0);
++        assert(BenchSteering_OnFrame(&b,&r,expired?1200:1199));
++        if (expired) assert(b.phase==BENCH_FAULT&&b.fault==6U&&b.cut_power);
++        else assert(b.phase==BENCH_ACTIVE&&!b.pending&&!b.fault);
++    }
+     BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0); now=0;
+     while (b.step != 4) advance(&b,&now);
+     assert(BenchSteering_Take(&b,now,&f)); r=reply(&b,3);
+diff --git a/tests/can_remote_test.c b/tests/can_remote_test.c
+index b70a037..e796cd0 100644
+--- a/tests/can_remote_test.c
++++ b/tests/can_remote_test.c
+@@ -38,6 +38,8 @@ const PatrolRemoteConfigV5_t* PatrolConfig_Get(void) { return &config; }
+ uint8_t PatrolConfig_CalibrationCompatible(void) { return 1; }
+ uint8_t CenterCalibration_IsActive(void) { return center_active; }
+ uint8_t PatrolRuntimePort_OtaBusy(void) { return ota; }
++/* This protocol-only fixture compiles no motor transport. */
++uint8_t PatrolRuntime_RequestFaultStop(void) { return 0U; }
+ uint8_t PatrolRuntime_ResetFault(void)
+ {
+     if (VehiclePowerOutput_IsOn() || ota || !reset_allowed) return 0;
+diff --git a/tests/center_runtime_stubs.h b/tests/center_runtime_stubs.h
+index 402ae1b..099554e 100644
+--- a/tests/center_runtime_stubs.h
++++ b/tests/center_runtime_stubs.h
+@@ -23,9 +23,12 @@ ChassisControl mock_control;
+ PatrolRemoteConfigV5_t mock_config;
+ PatrolDiagnosticsSnapshot mock_snapshot;
+ uint32_t PatrolRuntimePort_Now(void) { return mock_now; }
++#ifndef FAULT_STOP_REAL_REMOTE
+ const ChassisControl* RemoteService_State(void) { return &mock_control; }
+ void RemoteService_Revoke(void) { mock_control.session_active = 0; mock_control.enable_request = 0; }
+ void RemoteService_ExecutionFault(void) { mock_control.fault_latched = 1; }
++void RemoteService_CompleteFaultStop(void) { mock_control.fault_pending = 0; mock_control.fault_latched = 1; }
++#endif
+ #ifndef CENTER_HOST_REAL_CONTROL
+ uint8_t ChassisControl_SafetyReady(const ChassisControl* c, uint32_t now)
+ { (void)now; return !c->fault_latched && c->feedback.calibrated && c->feedback.power_ready; }
+@@ -61,6 +64,7 @@ uint8_t PatrolConfig_SetCalibration(int32_t driver, uint32_t encoder, uint32_t d
+     int8_t dd, int8_t ed, uint16_t tolerance)
+ { (void)driver; (void)encoder; (void)dc; (void)ec; (void)dd; (void)ed; (void)tolerance; return 1; }
+ 
++#ifndef FAULT_STOP_CUSTOM_LOCKS
+ void PatrolRuntimePort_Enter(void) {}
+ #ifdef DRIVE_BRAKE_RUNTIME_TEST
+ uint8_t mock_brake_after_take;
+@@ -74,10 +78,14 @@ void PatrolRuntimePort_Exit(void)
+ #else
+ void PatrolRuntimePort_Exit(void) {}
+ #endif
++#endif
+ void AppLog_Printf(AppLogLevel_t level, const char* tag, const char* format, ...)
+ { (void)level; (void)tag; (void)format; }
+ uint8_t PatrolConfig_CalibrationCompatible(void) { return 1; }
++#ifndef FAULT_STOP_REAL_REMOTE
+ void RemoteService_UpdateFeedback(const ChassisFeedback* feedback) { mock_control.feedback = *feedback; }
++#endif
++#ifndef FAULT_STOP_CUSTOM_TRANSPORT
+ void PatrolRuntimePort_AbortCanTx(void) {}
+ uint8_t PatrolRuntimePort_CanTxReady(void)
+ {
+@@ -88,8 +96,11 @@ uint8_t PatrolRuntimePort_CanTxReady(void)
+ }
+ uint8_t PatrolRuntimePort_SendCan(const PatrolCanFrame* frame)
+ { mock_last_frame = *frame; mock_sent++; return 1; }
++#endif
+ 
+ uint8_t OTA_Info_LoadMotionFault(MotionFaultRecord* r) { (void)r; return 0; }
+ uint8_t OTA_Info_SaveMotionFault(const MotionFaultRecord* r) { (void)r; return 1; }
+ 
++#ifndef FAULT_STOP_REAL_REMOTE
+ void RemoteService_Init(void) { memset(&mock_control,0,sizeof(mock_control)); mock_permit=0; }
++#endif
+diff --git a/tests/control_config_session_test.c b/tests/control_config_session_test.c
+index d3baf8f..88426fc 100644
+--- a/tests/control_config_session_test.c
++++ b/tests/control_config_session_test.c
+@@ -22,6 +22,8 @@ static uint8_t time_trusted = 1U;
+ uint32_t HAL_GetTick(void) { return tick; }
+ /* This isolated config/session fixture has no calibration session. */
+ uint8_t CenterCalibration_IsActive(void) { return 0U; }
++/* This config-only fixture compiles no motor transport. */
++uint8_t PatrolRuntime_RequestFaultStop(void) { return 0U; }
+ ABoxClockSnapshot TimeBase_GetSnapshot(void) {
+  ABoxClockSnapshot s={utc_now, tick, 0U, 1U, ABOX_CLOCK_PLATFORM, time_trusted ? ABOX_CLOCK_SYNCHRONIZED : ABOX_CLOCK_UNTRUSTED}; return s;
+ }
+diff --git a/tests/test_auto_center_runtime.py b/tests/test_auto_center_runtime.py
+index 5db1f86..5ee7833 100644
+--- a/tests/test_auto_center_runtime.py
++++ b/tests/test_auto_center_runtime.py
+@@ -15,7 +15,7 @@ class AutoCenterRuntimeTests(unittest.TestCase):
+             binary = Path(directory) / "auto_center.exe"
+             sources = ["center_calibration.c", "patrol_runtime.c", "bench_steering.c",
+                        "bench_drive.c", "steering_angle.c", "patrol_canopen.c",
+-                       "chassis_control.c", "patrol_auto_center.c"]
++                       "chassis_control.c", "patrol_auto_center.c", "patrol_fault_stop.c"]
+             result = subprocess.run([
+                 shutil.which("gcc") or "gcc", "-std=c11", "-Wall", "-Wextra", "-Werror",
+                 "-Wno-format", "-ffunction-sections", "-fdata-sections", "-Wl,--gc-sections",
+diff --git a/tests/test_center_runtime.py b/tests/test_center_runtime.py
+index a962da6..d6ffc87 100644
+--- a/tests/test_center_runtime.py
++++ b/tests/test_center_runtime.py
+@@ -15,7 +15,7 @@ class CenterRuntimeTests(unittest.TestCase):
+         with tempfile.TemporaryDirectory(prefix="patrol-center-host-") as directory:
+             binary = Path(directory) / "center_runtime.exe"
+             sources = ["center_calibration.c", "patrol_runtime.c", "bench_steering.c",
+-                       "bench_drive.c", "steering_angle.c", "patrol_canopen.c", "patrol_auto_center.c"]
++                       "bench_drive.c", "steering_angle.c", "patrol_canopen.c", "patrol_auto_center.c", "patrol_fault_stop.c"]
+             command = [gcc, "-std=c11", "-Wall", "-Wextra", "-Werror", "-Wno-format",
+                        "-ffunction-sections", "-fdata-sections", "-Wl,--gc-sections",
+                        "-DPATROL_STEERING_EXECUTOR_ENABLED=1",
+diff --git a/tests/test_drive_brake_runtime.py b/tests/test_drive_brake_runtime.py
+index dc46ef9..5ff8a7b 100644
+--- a/tests/test_drive_brake_runtime.py
++++ b/tests/test_drive_brake_runtime.py
+@@ -15,7 +15,7 @@ class DriveBrakeRuntimeTests(unittest.TestCase):
+         self.assertIsNotNone(gcc)
+         sources = ['center_calibration.c', 'patrol_runtime.c', 'bench_steering.c',
+                    'bench_drive.c', 'steering_angle.c', 'patrol_canopen.c',
+-                   'patrol_auto_center.c', 'chassis_control.c']
++                   'patrol_auto_center.c', 'chassis_control.c', 'patrol_fault_stop.c']
+         with tempfile.TemporaryDirectory(prefix='patrol-brake-host-') as directory:
+             binary = Path(directory) / 'drive_brake.exe'
+             command = [gcc, '-std=c11', '-Wall', '-Wextra', '-Werror', '-Wno-format',
+diff --git a/tests/test_stop_scheduler.py b/tests/test_stop_scheduler.py
+index c7d8b9f..da8da69 100644
+--- a/tests/test_stop_scheduler.py
++++ b/tests/test_stop_scheduler.py
+@@ -14,7 +14,7 @@ class StopSchedulerTests(unittest.TestCase):
+             path = ROOT / 'tests/stop_scheduler_cases.c'
+             binary = Path(directory) / 'stop.exe'
+             sources = ['bench_steering.c', 'bench_drive.c', 'steering_angle.c',
+-                       'patrol_canopen.c', 'patrol_diagnostics.c', 'patrol_runtime.c', 'center_calibration.c', 'patrol_auto_center.c']
++                       'patrol_canopen.c', 'patrol_diagnostics.c', 'patrol_runtime.c', 'center_calibration.c', 'patrol_auto_center.c', 'patrol_fault_stop.c']
+             result = subprocess.run([shutil.which('gcc') or 'gcc', '-std=c11', '-Wall',
+                 '-Wextra', '-Werror', '-Wno-format', '-ffunction-sections', '-fdata-sections', '-Wl,--gc-sections',
+                 '-DPATROL_CHASSIS_ACTUATION_ENABLED=1', '-I' + str(ROOT / 'app/Core/User/motion/private'), '-I' + str(ROOT / 'shared/include'), *include_args(), str(path),
+diff --git a/tools/service_stack_budget.json b/tools/service_stack_budget.json
+index c71a5b1..afe6606 100644
+--- a/tools/service_stack_budget.json
++++ b/tools/service_stack_budget.json
+@@ -81,6 +81,21 @@
+       "MQTT_Core_PublishExTracked",
+       "ABoxMqttEc800_Publish"
+     ],
++    "public_control_fault_stop": [
++      "Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "app_cloud",
++      "ABoxMqttEc800Bridge_Poll", "ABoxMqttEc800_Poll", "ABoxMqttEc800Rx_Poll",
++      "message", "on_message", "CloudCommands_OnMessage", "handle_public_control",
++      "RemoteService_HandleControl", "ChassisControl_Apply", "force_stop",
++      "ChassisControl_RequestFault", "PatrolRuntime_RequestFaultStop", "dispatch_fault_stop",
++      "PatrolRuntimePort_SendCan", "HAL_CAN_AddTxMessage"
++    ],
++    "public_control_fault_capture": [
++      "Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "app_cloud",
++      "ABoxMqttEc800Bridge_Poll", "ABoxMqttEc800_Poll", "ABoxMqttEc800Rx_Poll",
++      "message", "on_message", "CloudCommands_OnMessage", "handle_public_control",
++      "RemoteService_HandleControl", "ChassisControl_Apply", "force_stop",
++      "ChassisControl_RequestFault", "PatrolRuntime_RequestFaultStop", "PatrolRuntime_CaptureFault"
++    ],
+     "at_ota_termination": [
+       "Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "ABoxEc800Rx_Drain", "ABoxEc800At_Feed", "emit_line", "ABoxEc800At_OnModemReset", "ABoxEc800At_Reset", "terminate_all", "command_done", "download_fail", "log_failure", "log_message", "adapter_log", "AppLog_Printf"
+     ],
+diff --git a/tools/verify_can2_stack.py b/tools/verify_can2_stack.py
+index 4434f6f..880546b 100644
+--- a/tools/verify_can2_stack.py
++++ b/tools/verify_can2_stack.py
+@@ -15,6 +15,7 @@ for path in build.rglob('*.su'):
+ source = (Path(__file__).resolve().parents[1] / 'app/Core/User/system/src/patrol_rtos.c').read_text()
+ rx_capacity = int(re.search(r'#define PATROL_CAN_RX_STACK_WORDS (\d+)U', source)[1]) * 4
+ safety_capacity = int(re.search(r'#define PATROL_SAFETY_STACK_WORDS (\d+)U', source)[1]) * 4
++canopen_capacity = int(re.search(r'#define PATROL_CANOPEN_STACK_WORDS (\d+)U', source)[1]) * 4
+ chains = {
+     'CAN2 target': (rx_capacity, ['Patrol_CanRxTask', 'PatrolCanRemote_OnFrame',
+                                 'RemoteService_ApplyLocal', 'ChassisControl_Apply']),
+@@ -31,6 +32,23 @@ chains = {
+                                      'RemoteService_ApplyLocal', 'ChassisControl_Apply']),
+     'handset lease stop': (safety_capacity, ['Patrol_SafetyControlTask', 'PatrolPhyRemote_Tick',
+                                            'RemoteService_ApplyLocal', 'ChassisControl_Apply']),
++    'fault capture from CAN2': (rx_capacity, ['Patrol_CanRxTask', 'PatrolPhyRemote_OnFrame',
++        'RemoteService_ApplyLocal', 'ChassisControl_Apply', 'force_stop',
++        'ChassisControl_RequestFault', 'PatrolRuntime_RequestFaultStop', 'PatrolRuntime_CaptureFault']),
++    'fault frame from CAN2': (rx_capacity, ['Patrol_CanRxTask', 'PatrolPhyRemote_OnFrame',
++        'RemoteService_ApplyLocal', 'ChassisControl_Apply', 'force_stop',
++        'ChassisControl_RequestFault', 'PatrolRuntime_RequestFaultStop', 'dispatch_fault_stop', 'PatrolFaultStop_Take']),
++    'fault transmit from CAN2': (rx_capacity, ['Patrol_CanRxTask', 'PatrolPhyRemote_OnFrame',
++        'RemoteService_ApplyLocal', 'ChassisControl_Apply', 'force_stop',
++        'ChassisControl_RequestFault', 'PatrolRuntime_RequestFaultStop', 'dispatch_fault_stop',
++        'PatrolRuntimePort_SendCan', 'HAL_CAN_AddTxMessage']),
++    'fault frame from safety': (safety_capacity, ['Patrol_SafetyControlTask', 'RemoteService_SafetyTick',
++        'ChassisControl_Tick', 'force_stop', 'ChassisControl_RequestFault',
++        'PatrolRuntime_RequestFaultStop', 'dispatch_fault_stop', 'PatrolFaultStop_Take']),
++    'fault latch log': (canopen_capacity, ['Patrol_CanopenTask', 'PatrolRuntime_Tick',
++        'service_fault_stop', 'AppLog_Printf']),
++    'fault stop retry': (canopen_capacity, ['Patrol_CanopenTask', 'PatrolRuntime_Tick',
++        'service_fault_stop', 'dispatch_fault_stop', 'PatrolFaultStop_Take']),
+ }
+ for label, (capacity, chain) in chains.items():
+     missing = [name for name in chain if name not in frames]

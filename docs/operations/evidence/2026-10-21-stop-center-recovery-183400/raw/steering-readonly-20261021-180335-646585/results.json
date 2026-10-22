@@ -1,0 +1,185 @@
+{
+  "physical_channel": 2,
+  "read_only": true,
+  "results": [
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 0.0
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 0.0
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 0.0
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 0.0
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 0.0
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 0.0
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 0.0
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 0.0
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 0.0
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 0.0
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 0.0
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 0.0
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 0.0
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 0.0
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 0.0
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 0.0
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 0.0
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 0.0
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 0.0
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 0.0
+    },
+    {
+      "index": "0x6080",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 300,
+      "host_roundtrip_ms": 0.0
+    },
+    {
+      "index": "0x6041",
+      "sent": true,
+      "status": "timeout"
+    },
+    {
+      "index": "0x6061",
+      "sent": true,
+      "status": "timeout"
+    }
+  ],
+  "limitations": "Host round trips after stop; not the original failing SDO timing or MCU receive timestamps."
+}

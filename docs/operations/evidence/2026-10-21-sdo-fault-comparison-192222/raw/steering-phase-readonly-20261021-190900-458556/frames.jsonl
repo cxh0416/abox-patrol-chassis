@@ -1,0 +1,1621 @@
+{"elapsed_s": 2.110164799989434, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 2.1290620999934617, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 2.2104102000012062, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 2.229907800006913, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 2.3117759999877308, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 2.33131740000681, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 2.4126049999904353, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 2.4322140000003856, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 2.5140683999925386, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 2.5328254000050947, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 2.6141606000019237, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 2.634336399991298, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 2.7158893999876454, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 2.7351027999829967, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 2.8163978999946266, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 2.8357991999946535, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 2.9173289999889676, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 2.936639899999136, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 3.018791799986502, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 3.0378575999930035, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 3.1192656999919564, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 3.138907599990489, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 3.2154157999902964, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 3.2166587999963667, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 3.2202477999962866, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 3.2398619999876246, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 3.3165325000009034, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 3.317383499990683, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 3.32201360000181, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 3.340897199988831, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 3.418679299997166, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 3.419782999990275, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 3.42324840000947, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 3.441828599985456, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 3.52031240001088, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 3.52112560000387, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 3.524031400011154, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 3.5425019999966025, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 3.6211813999980222, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 3.6222060000000056, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 3.625050500006182, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 3.6433576999988873, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 3.7224127000081353, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 3.723293499991996, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 3.725222599983681, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 3.7445853000099305, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 3.8228646999923512, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 3.8236514999880455, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 3.8264144999848213, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 3.8453534999862313, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 3.924472799990326, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 3.925699399987934, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 3.927220399986254, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 3.9463425999856554, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 4.025363399996422, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 4.026619899988873, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 4.028017400007229, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 4.048361699999077, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 4.126367399992887, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 4.12778999999864, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 4.1293307000014465, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 4.149378500005696, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 4.22799159999704, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 4.229283499997109, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 4.230286700010765, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 4.249660600005882, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 4.329250200011302, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 4.330067200004123, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 4.331620499986457, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 4.351121699990472, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 4.4306922999967355, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 4.431575900001917, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 4.431900700001279, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 4.451823100011097, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 4.531327500008047, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 4.532592500007013, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 4.532836500002304, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 4.552673500002129, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 4.632862300000852, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 4.634226499998476, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 4.634271599992644, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 4.653294899995672, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 4.734700800006976, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 4.735715399991022, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 4.735792399995262, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 4.754388500005007, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 4.836004999990109, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 4.837185599986697, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 4.8372958000109065, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 4.855536699993536, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 4.93685440000263, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 4.937582799990196, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 4.9388314000098035, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 4.956734799983678, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 5.037549100001343, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 5.0386222999950405, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 5.0386493999976665, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 5.059063299995614, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 5.1389008999976795, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 5.139659599983133, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 5.141085599985672, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 5.16008060000604, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 5.239986000000499, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 5.240225799992913, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 5.241710600006627, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 5.261475400009658, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 5.340905399993062, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 5.341577899991535, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 5.342430199991213, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 5.361541699996451, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 5.442044299998088, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 5.442712999996729, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 5.444027199991979, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 5.462669600005029, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 5.542775999987498, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 5.543974000000162, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 5.5447972000110894, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 5.563758800009964, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 5.643884099990828, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 5.645121000008658, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 5.646002299996326, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 5.666659999988042, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 5.744752200000221, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 5.746418700000504, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 5.747261799988337, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 5.767417399998521, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 5.845854099985445, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 5.847613599995384, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 5.848836299992399, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 5.868759600009071, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 5.946838800009573, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 5.948877299990272, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 5.950190100003965, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 5.969682900002226, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 6.047687899990706, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 6.0502097999851685, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 6.051078599994071, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 6.070225200004643, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 6.1488648999948055, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 6.151347999984864, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 6.152267099998426, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 6.171376499987673, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 6.250139299983857, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 6.252794200001517, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 6.253748099989025, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 6.273285800009035, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 6.351570200000424, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 6.3542145999963395, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 6.355223299993668, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 6.373409499996342, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 6.451872500008903, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 6.455873700004304, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 6.457217199989827, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 6.474397599988151, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 6.55360230000224, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 6.556339800008573, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 6.557186099991668, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 6.575096999993548, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 6.653814799996326, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 6.658234500006074, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 6.659124099998735, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 6.6766460000071675, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 6.755348700011382, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 6.758658899983857, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 6.759852199989837, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 6.77780999999959, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 6.856742400006624, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 6.860509399994044, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 6.861704999988433, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 6.878351199993631, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 6.956931699998677, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 6.9621293999953195, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 6.963374999992084, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 6.979407899983926, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 7.057841100002406, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 7.062883100006729, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 7.0637437000114005, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 7.080738099990413, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 7.159208099998068, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 7.164023399993312, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 7.165326999995159, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 7.181765799992718, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 7.25988789999974, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 7.26552799998899, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 7.266892499988899, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 7.282085699989693, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 7.356030099996133, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 7.357290299987653, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 7.360985500010429, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 7.3835254999867175, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 7.457501800003229, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 7.458748400007607, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 7.461866199999349, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 7.484360200003721, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 7.558681800001068, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 7.559901200002059, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 7.562583299994003, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 7.58533269999316, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 7.659543999994639, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 7.660727599984966, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 7.664014300011331, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 7.686294299986912, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 7.761267299996689, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 7.76253770000767, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 7.7645888999977615, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 7.787488900008611, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 7.862170200009132, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 7.863148200005526, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 7.866586299991468, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 7.888263100001495, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 7.964361599995755, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 7.965605000004871, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 7.96665230000508, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 7.989001999987522, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 8.064419100002851, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 8.065317600005073, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 8.068267299997387, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 8.090798199991696, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 8.166480799991405, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 8.167586499999743, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 8.16916280001169, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 8.191378499992425, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 8.267453000007663, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 8.269396199990297, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 8.269658500008518, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 8.292745199985802, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 8.368321999994805, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 8.369373099994846, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 8.370554099994479, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 8.39337340000202, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 8.469531999988249, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 8.470916099991882, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 8.472105299995746, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 8.493857699999353, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 8.571282899996731, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 8.572145899990574, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 8.572392500005662, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 8.59550749999471, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 8.671985599998152, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 8.67283480000333, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 8.673988800001098, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 8.696103099995526, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 8.773739700001897, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 8.774580600002082, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 8.774634200002765, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 8.79690610000398, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 8.874776099983137, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 8.876072199986083, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 8.876144499983639, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 8.898246400000062, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 8.976279299997259, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 8.977360899996711, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 8.977405299985548, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 8.998899099999107, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 9.077517800003989, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 9.078156400006264, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 9.0794607999851, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 9.10057740000775, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 9.178326299996115, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 9.179440999985673, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 9.179469099995913, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 9.200984600000083, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 9.279456799995387, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 9.280558099999325, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 9.281361000001198, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 9.301757999986876, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 9.380433699989226, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 9.38069719998748, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 9.381909599993378, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 9.4028849999886, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 9.481409900006838, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 9.482082500006072, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 9.483102400001371, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 9.504217000008794, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 9.582504799996968, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 9.583127399993828, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 9.584147299989127, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 9.605768499983242, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 9.683336199988844, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 9.684480700001586, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 9.685503099986818, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 9.706641600001603, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 9.784314699994866, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 9.785758699988946, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 9.787164400011534, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 9.807546299998648, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 9.88554329998442, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 9.886991200008197, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 9.88786329998402, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 9.90887610000209, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 9.986412900005234, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 9.988306099985493, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 9.989441199984867, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 10.008918699983042, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 10.087398200004827, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 10.089469200000167, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 10.090296200010926, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 10.109821199992439, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 10.188440900004935, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 10.190694499993697, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 10.192153699987102, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 10.211339400004363, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 10.289263999991817, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 10.292075600009412, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 10.2935112999985, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 10.312744800001383, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 10.39033369999379, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 10.392993699992076, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 10.393807699991157, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 10.413364000007277, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 10.491512799984775, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 10.494305300002452, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 10.495596499997191, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 10.514839299983578, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 10.593073900003219, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 10.595681400009198, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 10.596971799997846, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 10.615765399998054, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 10.69409689999884, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 10.697559299995191, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 10.699507299985271, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 10.715904399985448, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 10.794625599985011, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 10.798896499996772, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 10.800125899986597, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 10.817663699999684, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 10.896375899988925, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 10.899633900000481, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 10.900973299983889, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 10.918232700001681, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 10.997226000006776, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 11.001602600008482, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 11.002420900011202, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 11.019018699997105, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 11.097378800011938, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 11.102927500003716, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 11.103787000000011, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 11.120247199985897, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 11.198171299998648, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 11.203370100003667, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 11.20463860000018, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 11.220876799983671, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 11.30016740001156, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 11.30418279999867, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 11.305465099983849, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 11.321665399998892, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 11.400600699998904, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 11.407100099982927, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 11.408010099985404, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 11.423176399985095, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 11.49697889998788, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 11.498011699994095, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 11.50164770000265, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 11.524783600005321, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 11.59824550000485, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 11.599259300011909, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 11.602426299999934, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 11.625806600000942, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 11.699237199994968, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 11.700205400004052, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 11.704184800008079, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 11.725630100001581, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 11.801314499985892, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 11.802184200001648, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 11.804080000001704, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 11.826862399990205, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 11.90154029999394, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 11.902405100001488, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 11.905645399994683, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 11.927647200005595, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 12.003398600005312, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 12.004284900001949, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 12.007013700000243, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 12.028849099995568, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 12.104747200006386, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 12.1060795999947, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 12.10760129999835, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 12.130592400004389, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 12.20565550000174, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 12.207030199992005, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 12.208570599992527, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 12.231593600008637, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 12.306722699984675, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 12.307945200009272, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 12.309359000006225, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 12.332350599986967, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 12.407883000007132, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 12.409130299987737, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 12.410116199986078, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 12.433400300011272, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 12.508979700010968, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 12.509879699995508, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 12.511370699998224, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 12.533516199997393, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 12.61033419999876, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 12.611587199993664, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 12.61264469998423, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 12.63480920001166, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 12.711846099991817, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 12.713110699987737, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 12.71313220000593, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 12.735820600006264, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 12.812784000008833, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 12.814050399989355, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 12.814072400011355, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 12.836665799986804, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 12.91394160001073, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 12.914821699989261, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 12.915029900002992, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 12.937621199991554, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 13.015029300004244, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 13.015827800001716, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 13.016095500002848, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 13.039064599986887, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 13.116396700002952, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 13.117237600003136, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 13.117487199982861, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 13.1399134999956, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 13.217746599984821, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 13.21910879999632, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 13.21917029999895, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 13.241055799997412, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 13.319179499987513, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 13.319986999995308, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 13.32113890000619, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 13.342063199990662, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 13.420171800011303, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 13.42040060000727, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 13.421491599990986, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 13.442857499991078, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 13.521187700011069, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 13.521421899989946, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 13.522885699989274, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 13.54385019998881, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 13.622104100009892, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 13.62297589998343, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 13.623789200006286, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 13.64450009999564, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 13.722855400003027, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 13.723749299999326, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 13.724834399996325, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 13.745729999995092, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 13.823980099987239, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 13.824821899994276, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 13.826134800008731, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 13.846637499984354, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 13.924904199986486, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 13.926080800010823, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 13.927332999999635, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 13.948153100005584, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 14.025824499985902, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 14.027364000008674, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 14.028377200011164, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 14.049224599992158, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 14.126892500004033, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 14.12861359998351, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 14.129781299998285, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 14.149906000006013, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 14.227893200004473, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 14.229829099989729, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 14.23114779999014, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 14.25073619998875, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 14.328999399993336, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 14.331176300009247, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 14.33210249998956, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 14.352258099999744, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 14.430143200006569, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 14.43231659999583, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 14.43313059999491, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 14.452772599994205, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 14.53174360000412, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 14.533827700011898, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 14.5351221000019, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 14.554180799983442, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 14.632107999990694, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 14.635890100005781, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 14.63683669999591, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 14.655533599987393, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 14.732818899996346, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 14.736361899995245, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 14.737196500005666, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 14.75609660000191, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 14.834801699995296, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 14.837523800000781, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 14.838828999985708, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 14.856565299996873, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 14.935100000002421, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 14.939572600007523, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 14.94043529999908, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 14.95855300000403, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 15.036786499986192, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 15.039953800005605, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 15.041151499986881, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 15.058282699988922, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 15.137128100002883, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 15.141967800009297, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 15.14299639998353, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 15.160647899989272, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 15.23900559998583, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 15.242573499999708, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 15.243410399998538, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 15.261115800007246, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 15.33881260000635, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 15.344621099997312, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 15.345914999983506, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 15.362096500000916, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 15.439772399986396, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 15.444791599991731, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 15.445986700011417, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 15.462532600009581, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 15.541613599983975, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 15.546142899984261, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 15.547411999985343, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 15.563282399991294, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 15.637980800005607, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 15.638976399990497, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 15.641746100009186, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 15.664884600002551, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 15.738318499992602, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 15.739404699997976, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 15.742677500005811, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 15.765908000001218, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 15.839467899990268, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 15.840636699984316, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 15.844452899997123, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 15.867122700001346, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 15.941528800001834, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 15.94240319999517, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 15.94532299999264, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 15.968331799987936, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 16.042700299993157, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 16.043526399997063, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 16.04673860000912, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 16.068848099996103, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 16.14432809999562, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 16.145678300003055, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 16.14718540001195, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 16.17016059998423, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 16.24503819999518, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 16.245940499997232, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 16.249818199983565, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 16.271043999993708, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 16.347846499993466, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 16.348824699991383, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 16.34884580000653, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 16.371897400007583, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 16.447300200001337, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 16.44856879999861, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 16.449935399985407, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 16.47311130000162, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 16.54849389998708, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 16.54981910000788, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 16.551371300010942, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 16.57441609998932, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 16.650042699999176, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 16.6513580000028, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 16.65160310000647, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 16.67505859999801, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 16.750547200004803, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 16.75145209999755, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 16.75354089998291, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 16.775670200004242, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 16.8529916999978, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 16.854795899998862, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 16.85484690000885, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 16.876367399992887, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 16.953793900000164, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 16.95464969999739, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 16.954674300010083, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 16.978346399992006, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 17.05467049998697, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 17.055975700001, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 17.05599729999085, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 17.079007399996044, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 17.156259100011084, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 17.157514899998205, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 17.157542200002354, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 17.179497200006153, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 17.257566099986434, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 17.257795399986207, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 17.25927799998317, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 17.280575999990106, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 17.35815049998928, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 17.359426799986977, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 17.35945200000424, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 17.381848799996078, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 17.460496899991995, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 17.460708600003272, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 17.462239599990426, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 17.482380200002808, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 17.560525500011863, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 17.561416299984558, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 17.562653900007717, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 17.584037299995543, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 17.66148599999724, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 17.661711799999466, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 17.663226700009545, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 17.684682499995688, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 17.762526100006653, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 17.762990499992156, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 17.76434799999697, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 17.78534740000032, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 17.863611599983415, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 17.864244500000495, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 17.86505659998511, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 17.886156599997776, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 17.96451170000364, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 17.96564819998457, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 17.96671320000314, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 17.98791739999433, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 18.065438599995105, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 18.066674300003797, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 18.067687600007048, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 18.089126600010786, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 18.166587499988964, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 18.167861099995207, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 18.169135700009065, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 18.18976370000746, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 18.267507399985334, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 18.27009549998911, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 18.27149099999224, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 18.291011399996933, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 18.368519000010565, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 18.370644899987383, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 18.371988099999726, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 18.391401300003054, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 18.469517699995777, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 18.471697300003143, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 18.47297430000617, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 18.492609699984314, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 18.570568499999354, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 18.57289579999633, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 18.57370649999939, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 18.59360620001098, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 18.67201579999528, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 18.67431880001095, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 18.675198399985675, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 18.69476240000222, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 18.772883300000103, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 18.776249599992298, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 18.777477399999043, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 18.795518200000515, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 18.874041100003524, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 18.877167500002543, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 18.877970400004415, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 18.89648890000535, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 18.975047699990682, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 18.978412199998274, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 18.97974909999175, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 18.997097199986456, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 19.076016600010917, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 19.079617599985795, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 19.080676099983975, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 19.09831679999479, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 19.17698119999841, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 19.180939399986528, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 19.182172600005288, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 19.19982809998328, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 19.277416600001743, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 19.282232600002317, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 19.28336090000812, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 19.301149100007024, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 19.37864300000365, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 19.38300969998818, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 19.38386209998862, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 19.401257499994244, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 19.4798002000025, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 19.48427570000058, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 19.48557739998796, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 19.50230150000425, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 19.581266699999105, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 19.585909799992805, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 19.586766399996122, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 19.603024799987907, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 19.68193130000145, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 19.687412300001597, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 19.688834000000497, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 19.7042885000119, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 19.77815689999261, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 19.779344599985052, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 19.782415599998785, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 19.80567840000731, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 19.878945900010876, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 19.88010999999824, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 19.883867399999872, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 19.905919299984816, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 19.980807299987646, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 19.98214119998738, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 19.98429190000752, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 20.0072521000111, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 20.081237700011116, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 20.082093800010625, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 20.08545439998852, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 20.10816909998539, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 20.18261839999468, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 20.18369740000344, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 20.186619899992365, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 20.20933429998695, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 20.284066199994413, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 20.28507179999724, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 20.287779800011776, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 20.311240599985467, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 20.38553209998645, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 20.387140700011514, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 20.38945230000536, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 20.41197759998613, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 20.487436800001888, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 20.488675300002797, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 20.48983780000708, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 20.512307600001805, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 20.588065199990524, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 20.589322899992112, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 20.590413199999603, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 20.61305650000577, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 20.688991300005, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 20.68980669998564, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 20.691802499990445, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 20.71422170000733, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 20.790669399983017, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 20.791528300003847, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 20.79259130000719, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 20.81497790000867, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 20.891657300002407, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 20.89308819998405, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 20.893331500003114, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 20.916547600005288, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 20.992569800000638, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 20.994004000007408, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 20.994252800010145, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 21.017935699986992, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 21.094064500008244, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 21.095008800009964, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 21.095289399992907, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 21.11866499998723, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 21.19517530000303, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 21.196081400004914, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 21.196330899983877, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 21.218835600011516, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 21.296270499995444, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 21.2971194999991, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 21.297450699988985, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 21.320564099994954, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 21.397731900011422, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 21.398908700008178, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 21.398969800007762, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 21.421344500005944, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 21.49909800000023, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 21.49957909999648, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 21.50040339998668, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 21.52202999999281, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 21.599978399986867, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 21.600815799989505, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 21.60085779998917, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 21.624064200004796, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 21.70103550000931, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 21.70200119999936, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 21.703140199999325, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 21.723883400001796, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 21.80224369998905, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 21.802499099983834, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 21.80413529998623, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 21.824872900004266, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 21.90311240000301, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 21.903853399999207, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 21.904733100003796, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 21.926626500004204, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 22.004137799987802, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 22.004865199996857, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 22.00574220000999, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 22.02733869999065, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 22.1051781999995, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 22.10625599999912, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 22.107328899990534, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 22.128317900002003, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 22.206082199991215, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 22.207537399983266, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 22.208991399995284, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 22.228959800006123, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 22.306995899998583, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 22.30843790000654, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 22.309750499989605, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 22.330086100002518, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 22.408042600000044, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 22.409577699989313, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 22.410520500008715, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 22.43114400000195, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 22.509184900001856, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 22.510826299985638, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 22.51162390000536, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 22.53182289999677, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 22.61008809998748, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 22.612443299993174, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 22.61327390000224, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 22.63346380001167, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 22.710986899997806, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 22.713667100004386, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 22.714472999999998, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 22.733793399995193, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 22.812074899993604, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 22.814632900001016, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 22.81542639998952, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 22.83540899999207, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 22.913586499984376, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 22.91620859998511, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 22.917469300009543, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 22.93667729999288, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 23.01445029999013, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 23.01787089998834, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 23.018780199985486, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 23.03744749998441, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 23.11523440000019, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 23.118837699992582, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 23.120151399984024, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 23.137841999996454, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 23.21683829999529, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 23.219955799984746, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 23.2207602999988, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 23.239086499990663, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 23.317745599983027, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 23.321990900003584, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 23.323198300000513, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 23.34036929998547, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 23.41813859998365, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 23.422988300008, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 23.423859400005313, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 23.4413840000052, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 23.51965899998322, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 23.52342330000829, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 23.524656399997184, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 23.54199170001084, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 23.620638799999142, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 23.62537120000343, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 23.626204200001666, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 23.643728299997747, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 23.721038599993335, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 23.72654689999763, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 23.72781889999169, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 23.74362709998968, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 23.822139800002333, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 23.827211499999976, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 23.82807970000431, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 23.845016100007342, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 23.91828889999306, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 23.91978530000779, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 23.922806499991566, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 23.946636100008618, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 24.019304999994347, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 24.020169700001134, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 24.024339299998246, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 24.04671930000768, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 24.121272599993972, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 24.122517499985406, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 24.1256330999895, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 24.14802980000968, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 24.22266669999226, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 24.223546699999133, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 24.22656750000897, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 24.249114500009455, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 24.323820999998134, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 24.32469239999773, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 24.32698949999758, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 24.35020759998588, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 24.424394200003007, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 24.425308700010646, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 24.429080700007034, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 24.45097330000135, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 24.52698299998883, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 24.527836900000693, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 24.529333699989365, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 24.551786700001685, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 24.627333000011276, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 24.628916199988453, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 24.630142499983776, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 24.652787400002126, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 24.728264600009425, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 24.729564100009156, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 24.732044700009283, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 24.753993199992692, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 24.83048879998387, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 24.83174359999248, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 24.832042800000636, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 24.854888700006995, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 24.93077209999319, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 24.9322031000047, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 24.933785900007933, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 24.95659310001065, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 25.03285419999156, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 25.034141199983424, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 25.034171500010416, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 25.056532799993875, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 25.133583699993324, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 25.134481499990216, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 25.134839200007264, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 25.1574804999982, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 25.23428370000329, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 25.235488300008, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 25.235820900008548, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 25.25950469999225, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 25.335618499986595, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 25.336517499992624, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 25.336831799999345, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 25.360601199994562, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 25.43707389998599, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 25.43796010001097, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 25.43799899998703, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 25.46160539999255, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 25.538576699997066, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 25.539746099995682, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 25.539792099996703, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 25.56152889999794, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 25.639801099983742, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 25.640333499992266, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 25.641179199999897, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 25.663086599990493, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 25.740488000010373, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 25.74133079999592, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 25.74136489999364, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 25.764428099995712, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 25.841662999999244, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 25.842433599988, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 25.843659100006334, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 25.86551440000767, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 25.942602299997816, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 25.94448599999305, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 25.9445119999873, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 25.96603429998504, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 26.043702800001483, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 26.04597070001182, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 26.04720840000664, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 26.06687119998969, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 26.144687799998792, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 26.145318700000644, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 26.14657189999707, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 26.168280399986543, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 26.24586779999663, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 26.24672580001061, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 26.24809209999512, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 26.26946979999775, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 26.34666239999933, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 26.34805159998359, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 26.349157599994214, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 26.36991660000058, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 26.447728600003757, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 26.44914300000528, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 26.450389600009657, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 26.471071999985725, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 26.548624899995048, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 26.550546699989354, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 26.551805099996272, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 26.572090200003004, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 26.649632299988298, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 26.651710500009358, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 26.6526135999884, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 26.67279789998429, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 26.750640399986878, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 26.753125599992927, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 26.753995799983386, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 26.77435009999317, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 26.85153270000592, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 26.85427690000506, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 26.85557109999354, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 26.87441389999003, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 26.95266020001145, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 26.955195599992294, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 26.956465199997183, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 26.975820099993143, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 27.053465500008315, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 27.0566902999999, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 27.05808670000988, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 27.07686209998792, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 27.15486239999882, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 27.15767089999281, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 27.15896800000337, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 27.178458200010937, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 27.255655999993905, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 27.259496199985733, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 27.260462700010976, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 27.279428499983624, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 27.357290499989176, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 27.360273700003745, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 27.361472399992635, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 27.37981439998839, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 27.457831300009275, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 27.462540699983947, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 27.463809200009564, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 27.4803888000024, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 27.55844540000544, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 27.56304639999871, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 27.563867299992125, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 27.58203489999869, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 27.6599828999897, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 27.6639690999873, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 27.665224199998192, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 27.683362899988424, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 27.760563099989668, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 27.765755000000354, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 27.766565800004173, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 27.78412619998562, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 27.86238050000975, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 27.86661950001144, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 27.868091699987417, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 27.885079300001962, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 27.962724499986507, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 27.968782000010833, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 27.969707999989623, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 27.98541049999767, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 28.05887169999187, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 28.060112999984995, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 28.064222899993183, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 28.086749300011434, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 28.160705899994355, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 28.161547099996824, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 28.164889699983178, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 28.187745600007474, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 28.261682699987432, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 28.262969700008398, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 28.266146599984495, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 28.288520100002643, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 28.36327919998439, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 28.364509200007888, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 28.366837999987183, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 28.38999289998901, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 28.464057800010778, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 28.464900299994042, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 28.46792729999288, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 28.490817599988077, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 28.56542199998512, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 28.566735700005665, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 28.568351699999766, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 28.591446700011147, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 28.66579900000943, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 28.667013800004497, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 28.670254800003022, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 28.69227500000852, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 28.768479699996533, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 28.76973229998839, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 28.771346800000174, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 28.793199600011576, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 28.8700634999841, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 28.871429199993145, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 28.871480200003134, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 28.894923999992898, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 28.970445099985227, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 28.97129469999345, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 28.972362900007283, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 28.995669500000076, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 29.071167399990372, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 29.07257339998614, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 29.073666899988893, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 29.09624939999776, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 29.172683599987067, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 29.173527300008573, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 29.175057499989634, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 29.198076900007436, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 29.274666399986017, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 29.275678000005428, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 29.27574939999613, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 29.29885859999922, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 29.375188999983948, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 29.376447299990105, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 29.376469200011343, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 29.399654000008013, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 29.47668250001152, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 29.477977800008375, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 29.47801089999848, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 29.500123300007544, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 29.578022200003034, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 29.579313700000057, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 29.579344800004037, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 29.601249900006223, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 29.679274299996905, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 29.679798099998152, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 29.680664099985734, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 29.70227549999254, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 29.779903099988587, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 29.78075629999512, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 29.780813299992587, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 29.80361050000647, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 29.881263799994485, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 29.88149689999409, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 29.882854900002712, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 29.904483199992683, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 29.98225739999907, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 29.982491000002483, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 29.98410060000606, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 30.005168700008653, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 30.083359399985056, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 30.08360179999727, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 30.084737199998926, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 30.106988099985756, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 30.184213900007308, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 30.184988900000462, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 30.185836899996502, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 30.207790099986596, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 30.285330299986526, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 30.286222399998223, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 30.287099599983776, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 30.309142199985217, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 30.38626609998755, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 30.38735939998878, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 30.38863339999807, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 30.409627699991688, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 30.48725909998757, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 30.488517199992202, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 30.4897828999965, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 30.510206200007815, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 30.588182699983008, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 30.589968599990243, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 30.590907600009814, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 30.611501899984432, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 30.689303299994208, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 30.6911082000006, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 30.691989399987506, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 30.71279369998956, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 30.79011490000994, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 30.792313799989643, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 30.793132099992363, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 30.813137199991615, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 30.891107100003865, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 30.893468599999323, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 30.89477220000117, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 30.914077800000086, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 30.992505000001984, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 30.994866099994397, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 30.995666600007098, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 31.01606460000039, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 31.093708200001856, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 31.09631220001029, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 31.09750969999004, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 31.11675549999927, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 31.19480180001119, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 31.197967999993125, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 31.199252699996578, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 31.218162400007714, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 31.29581270000199, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 31.299184400006197, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 31.30006089998642, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 31.31866049999371, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 31.397072699997807, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 31.400431199988816, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 31.401340499985963, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 31.419602899986785, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 31.49762650000048, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 31.502007000002777, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 31.50289870001143, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 31.52099809999345, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 31.599076799990144, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 31.60277510000742, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 31.603616100008367, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 31.621744200005196, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 31.699102999991737, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 31.7043999999878, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 31.705649999988964, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 31.722096199984662, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 31.80027269999846, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 31.804555000009714, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 31.80547990000923, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 31.82389910001075, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 31.901308400003472, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 31.90605499999947, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 31.90734320000047, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 31.924291000002995, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 32.00279359999695, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 32.00725880000391, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 32.00807039998472, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 32.025781500007724, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 32.10310030000983, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 32.10908609998296, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 32.109885199985, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 32.12666270000045, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 32.19940129999304, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 32.20023590000346, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 32.20425670000259, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 32.227843700005906, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 32.3007959999959, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 32.30167899999651, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 32.30584159999853, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 32.328822000010405, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 32.40282940000179, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 32.4040546999895, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 32.40610039999592, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 32.42924500000663, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 32.503283500002, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 32.50454940000782, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 32.507303699996555, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 32.53024180000648, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 32.604680599994026, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 32.60600840000552, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 32.60838399999193, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 32.63148959999671, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 32.706028099986725, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 32.70730039998307, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 32.71007169998484, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 32.73194619998685, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 32.8076951999974, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 32.80879189999541, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 32.810743899986846, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 32.83282169999438, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 32.90886120000505, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 32.910111400007736, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 32.911192700004904, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 32.934772799984785, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 33.00935720000416, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 33.01021169999149, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 33.01305089998641, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 33.035608999984106, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 33.11152000000584, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 33.11230889998842, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 33.11381249999977, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 33.13644370000111, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 33.2126336999936, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 33.21399009999004, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 33.21401200001128, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 33.2379787999962, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 33.31341030000476, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 33.31425289998879, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 33.31531109998468, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 33.33784530000412, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 33.4147401000082, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 33.41561880000518, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 33.415909900009865, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 33.439655199996196, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 33.51562640001066, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 33.51650779999909, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 33.51761519999127, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 33.54068519998691, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 33.61744850000832, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 33.61839069999405, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 33.61844650001149, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 33.640901899983874, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 33.71832670000731, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 33.71946100000059, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 33.71953090000898, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 33.74239579998539, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 33.81974129998707, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 33.82057929999428, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 33.8206089999876, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 33.84364760000608, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 33.92098940000869, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 33.92123020000872, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 33.92230720000225, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 33.94443969998974, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 34.021954600000754, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 34.023293300007936, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 34.023374199983664, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 34.044785000005504, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 34.12279090000084, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 34.12428990000626, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 34.125155299989274, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 34.14604299998609, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 34.22387570000137, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 34.22408720001113, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 34.22508609999204, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 34.24687129998347, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 34.32468429999426, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 34.32551590001094, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 34.326769899984356, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 34.348572799994145, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 34.42581159999827, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 34.42647969999234, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 34.42773450000095, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 34.44985410000663, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 34.526810599985765, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 34.52785409998614, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 34.52914550001151, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 34.54981890000636, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 34.627722800010815, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 34.62916799998493, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 34.629976199998055, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 34.651511700008996, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 34.72882799999206, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 34.73029479998513, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 34.73158120000153, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 34.752570000011474, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 34.82963540000492, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 34.83162129999255, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 34.83287869999185, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 34.85320889999275, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 34.9308025999926, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 34.932763299992075, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 34.9335640000063, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 34.953885199996876, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 35.0317389999982, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 35.03398139998899, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 35.03482780000195, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 35.055289000010816, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 35.132670499995584, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 35.135292299994035, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 35.13664700000663, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 35.15566399999079, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 35.234333800006425, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 35.23661120000179, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 35.23788609998883, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 35.257394799991744, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 35.335616099997424, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 35.33841709999251, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 35.33929999999236, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 35.358247900003335, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 35.43571699998574, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 35.43976439998369, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 35.441080499993404, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 35.45965020000585, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 35.537074299994856, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 35.540037600003416, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 35.54082460000063, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 35.5597024000017, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 35.63786409999011, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 35.641723000007914, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 35.643083200004185, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 35.661455299996305, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 35.73905810000724, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 35.74281950001023, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 35.74413529998856, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 35.761886399996, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 35.83955400000559, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 35.84452690000762, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 35.84581379999872, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 35.863383899995824, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 35.941459199995734, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 35.945138899987796, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 35.94639170001028, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 35.963994099991396, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 36.0418345000071, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 36.04723259998718, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 36.048267400008626, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 36.064844000007724, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 36.14309850000427, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 36.14784240000881, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 36.149106400000164, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 36.1661586999835, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 36.24422950000735, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 36.24937649999629, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 36.25051839998923, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 36.26758059998974, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 36.34047140000621, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 36.34129489999032, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 36.34502360000624, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 36.36837250000099, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 36.44136170001002, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 36.44220089999726, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 36.44613130000653, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 36.46857989998534, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 36.543014399998356, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 36.5443682000041, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 36.54744880000362, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 36.56981899999664, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 36.64450950000901, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 36.64532809998491, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 36.648988600005396, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 36.67068089998793, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 36.7462344999949, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 36.747083700000076, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 36.74859840000863, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 36.772257700009504, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 36.8461277000024, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 36.84732589998748, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 36.849931300006574, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 36.87294619999011, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 36.94768829998793, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 36.948587699997006, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 36.95133039998473, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 36.97440169999027, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 37.04940670001088, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 37.050643700000364, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 37.051924600003986, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 37.07455809999374, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 37.15038300000015, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 37.15248550000251, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 37.15255510000861, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 37.17641509999521, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 37.25135509998654, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 37.252289299998665, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 37.25341869998374, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 37.277590999990935, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 37.35243810000247, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 37.35379059999832, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 37.35506040000473, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 37.37782409999636, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 37.45406049999292, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 37.4549956000119, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 37.45606580001186, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 37.478620599984424, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 37.55542250000872, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 37.556265999999596, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 37.55657230000361, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 37.579635800007964, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 37.65628419999848, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 37.65713459998369, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 37.657435600005556, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 37.680864199995995, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 37.75726109999232, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 37.75820189999649, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 37.75852420000592, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 37.78164820000529, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 37.85865209999611, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 37.85954010000569, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 37.85958389998996, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 37.8828688999929, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 37.9603383000067, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 37.96119979998912, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 37.96124340000097, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 37.98350840000785, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 38.06152479999582, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 38.06205489998683, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 38.06287439999869, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 38.08490739998524, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 38.162337299989304, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 38.16314950000378, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 38.16319669998484, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 38.18613529999857, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 38.263411399995675, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 38.26436599998851, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 38.26519800000824, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 38.28731429998879, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 38.36427640001057, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 38.36490149999736, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 38.36574079998536, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 38.387870200007455, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 38.46531599998707, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 38.465750600007595, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 38.466540699999314, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 38.48889219999546, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 38.566289599984884, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 38.567094400001224, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 38.56800299999304, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 38.59008829999948, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 38.667395500000566, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 38.66845649998868, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 38.6694867000042, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 38.69033009998384, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 38.768282600009115, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 38.76980010000989, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 38.771054999990156, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 38.792268799996236, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 38.86935729999095, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 38.870882199989865, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 38.87211719999323, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 38.89309120000689, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 38.97035899999901, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 38.97214269998949, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 38.972969499998726, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 38.994591700000456, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 39.07124280001153, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 39.07346580000012, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 39.07424909999827, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 39.09522859999561, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 39.17249719999381, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 39.17448409998906, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 39.17574649999733, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 39.196525699982885, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 39.27361299999757, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 39.27605559999938, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 39.277302600006806, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 39.29735999999684, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 39.37478959999862, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 39.37743069999851, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 39.378648699988844, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 39.39852180000162, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 39.47588439998799, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 39.47897249998641, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 39.48008380000829, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 39.4991611999867, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 39.57638829998905, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 39.580033300007926, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 39.58122259998345, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 39.600431800005026, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 39.67779660000815, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 39.681010100001004, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 39.68178879999323, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 39.70097879998502, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 39.779332700010855, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 39.7825351000065, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 39.78333420000854, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 39.801379299984546, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 39.87984599999618, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 39.88440849998733, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 39.88545780000277, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 39.90300719998777, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 39.98074500000803, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 39.985389300010866, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 39.98684930001036, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 40.00374859999283, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 40.081884299986996, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 40.08636909999768, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 40.08722889999626, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 40.10536990000401, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 40.18263009999646, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 40.18767149999621, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 40.18904339999426, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 40.206385900004534, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 40.28359149998869, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 40.28854469998623, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 40.28976939999848, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 40.30709260000731, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 40.384919300006004, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 40.38987189999898, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 40.3911497000081, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 40.40749529999448, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 40.48116029999801, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 40.48206290000235, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 40.48525530000916, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 40.509332499990705, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 40.58169729998917, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 40.58296870000777, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 40.58616790000815, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 40.610153699992225, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 40.683050799998455, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 40.683881700009806, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 40.68769409999368, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 40.710626699990826, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 40.784757999994326, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 40.78562109998893, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 40.78813739999896, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 40.8117946999846, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 40.885619000007864, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 40.88644440000644, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 40.88944050000282, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 40.9126081999857, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 40.98670259999926, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 40.98812570000882, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 40.9904780999932, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 41.01374629998463, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 41.08834990000469, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 41.0896276999847, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 41.091746799997054, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 41.11463170000934, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 41.18973059998825, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 41.19056550000096, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 41.19266120000975, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 41.21565510000801, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 41.290829100005794, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 41.292088699992746, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 41.29311339999549, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 41.31686510000145, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 41.391616200009594, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 41.39273970000795, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 41.39516109999386, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 41.41787549998844, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 41.49403629999142, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 41.495308599987766, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 41.49533410000731, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 41.51910400000634, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 41.59481869998854, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 41.595659099984914, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 41.59596420000889, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 41.6193105999846, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 41.69531400001142, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 41.69614240000374, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 41.69764219998615, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 41.720230500010075, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 41.79727829998592, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 41.79878660000395, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 41.79883929999778, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 41.821588499995414, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 41.899049400002696, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 41.900301399989985, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 41.90032680000877, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 41.92321010000887, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 42.00010050000856, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 42.000517799984664, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 42.00131789999432, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 42.023130999994464, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 42.100416100001894, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 42.101250100007746, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 42.10130680000293, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 42.124129300005734, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 42.20203980000224, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 42.202882399986265, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 42.20292260000133, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 42.22515419998672, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 42.30303680000361, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 42.303605099994456, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 42.3043478000036, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 42.327050699997926, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 42.40398380000261, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 42.404203999991296, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 42.40524190000724, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 42.42755069999839, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 42.505053200002294, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 42.50527460000012, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 42.50674589999835, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 42.52824809998856, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 42.60610119998455, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 42.606531299999915, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 42.60785520001082, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 42.629387599998154, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 42.707053799997084, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 42.707856699998956, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 42.70875510000042, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 42.730048800003715, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 42.80809859998408, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 42.80918159999419, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 42.810522899992066, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 42.831218500010436, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 42.90883549998398, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 42.91041660000337, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 42.911762800009456, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 42.93228619999718, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 43.01004809999722, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 43.011304799991194, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 43.0125534000108, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 43.03332190000219, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 43.11086280000745, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 43.11276139999973, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 43.11407499999041, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 43.13497929999721, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 43.21203520000563, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 43.2138505000039, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 43.21512639999855, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}
+{"elapsed_s": 43.23568159999559, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 43.312938599992776, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 43.315322200010996, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 43.316173100000015, "direction": "RX", "id": 1409, "data": "43 64 60 00 bd 4f 00 00"}
+{"elapsed_s": 43.33654379998916, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 43.414325299992925, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 43.41635439998936, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 43.41714619999402, "direction": "RX", "id": 1409, "data": "43 81 60 00 2c 01 00 00"}
+{"elapsed_s": 43.437408400001004, "direction": "RX", "id": 1794, "data": "7f"}
+{"elapsed_s": 43.514985699992394, "direction": "RX", "id": 1793, "data": "7f"}
+{"elapsed_s": 43.51826179999625, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 43.51945540000452, "direction": "RX", "id": 1409, "data": "4b 41 60 00 31 22"}

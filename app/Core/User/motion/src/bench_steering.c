@@ -5,7 +5,7 @@
 #include <string.h>
 
 /* No write retries: a trigger whose acknowledgement was lost must never replay. */
-#define TRANSACTION_MS 100U
+#define TRANSACTION_MS 200U
 #define PREPARE_MS 5000U
 /* PP shutdown acknowledges the write before deceleration releases enable.
  * Vehicle status remained 0x2237 at 180 ms and reached 0x2231 at 357 ms.

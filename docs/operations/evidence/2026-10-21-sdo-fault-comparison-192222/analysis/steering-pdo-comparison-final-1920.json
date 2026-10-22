@@ -1,0 +1,2908 @@
+[
+  {
+    "source": "E:\\1_work\\ChassisCar_test\\logs\\steering-phase-readonly-20261021-190528-267244",
+    "source_sha256": "2264b545c1a9ad59c1ad78efaad99d95a66915dda3812aa5bcac2397f7f95e93",
+    "expected_heartbeat_state": 5,
+    "sent": 398,
+    "statuses": {
+      "ok": 397,
+      "timeout": 1
+    },
+    "received_ids": {
+      "0x181": 3769,
+      "0x281": 3769,
+      "0x581": 397,
+      "0x701": 411,
+      "0x702": 410
+    },
+    "heartbeat_values": {
+      "05": 411
+    },
+    "pdo_frames": 7538,
+    "unexpected_other_master_requests": 0,
+    "other_transmissions": [],
+    "error": null,
+    "missing_windows": [
+      {
+        "sample": {
+          "index": 24705,
+          "at": 171774.9606379,
+          "elapsed_s": 42.21421449998161,
+          "offset_s": -0.00075,
+          "host_lateness_ms": 0.4144000122323632,
+          "status": "timeout"
+        },
+        "frames": [
+          {
+            "elapsed_s": 42.21437899998273,
+            "direction": "TX_READ_ONLY",
+            "id": 1537,
+            "data": "40 81 60 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.21520380000584,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.21521870000288,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.21544929998345,
+            "direction": "RX",
+            "id": 1793,
+            "data": "05"
+          },
+          {
+            "elapsed_s": 42.22077519999584,
+            "direction": "RX",
+            "id": 1794,
+            "data": "7f"
+          },
+          {
+            "elapsed_s": 42.22721129999263,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.227237399987644,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.237877799983835,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.237906599999405,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.248719600000186,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.24874609999824,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.26017399999546,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.26021099998616,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.27049279998755,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.27052910000202,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.28123689998756,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.281263199984096,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.29264470000635,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.29267870000331,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.30365990000428,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.303696899994975,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.313936799997464,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.31419669999741,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.315704099979484,
+            "direction": "RX",
+            "id": 1793,
+            "data": "05"
+          },
+          {
+            "elapsed_s": 42.32165769999847,
+            "direction": "RX",
+            "id": 1794,
+            "data": "7f"
+          },
+          {
+            "elapsed_s": 42.325421399989864,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.325451099983184,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.33615909999935,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.33619760000147,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.34776689999853,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.34780079999473,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.35820230000536,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.358237699983874,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.36889779998455,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.369264299981296,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.3807608000061,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.38079349999316,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.39181109998026,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.39184440000099,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.40232259998447,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.40236069998355,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.41293089999817,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.41317319998052,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.41772219998529,
+            "direction": "RX",
+            "id": 1793,
+            "data": "05"
+          },
+          {
+            "elapsed_s": 42.4225243999972,
+            "direction": "RX",
+            "id": 1794,
+            "data": "7f"
+          },
+          {
+            "elapsed_s": 42.42484789999435,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.42486749999807,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.43498009999166,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.43525419998332,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.445905999979004,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.446159399987664,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.45712849998381,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.457165100000566,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.468101100006606,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.46812669999781,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.4792741999845,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.47931349999271,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.49049090000335,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.49052510000183,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.50135999999475,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.50140859998646,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 42.51186199998483,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 42.51211969999713,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          }
+        ],
+        "frame_counts": {
+          "0x601": 1,
+          "0x181": 28,
+          "0x281": 28,
+          "0x701": 3,
+          "0x702": 3
+        }
+      }
+    ],
+    "limitation": "Host scheduling and USB reception timestamps do not measure exact bus phase; rare misses need adequate repetitions. NMT pre-operational changes driver state as well as disabling PDO."
+  },
+  {
+    "source": "E:\\1_work\\ChassisCar_test\\logs\\steering-phase-readonly-20261021-190900-458556",
+    "source_sha256": "986a70e6b281941f1251aaaa68f7082f11c5243e3f78b1128a5cc0170507f63e",
+    "expected_heartbeat_state": 127,
+    "sent": 400,
+    "statuses": {
+      "ok": 400
+    },
+    "received_ids": {
+      "0x581": 400,
+      "0x701": 411,
+      "0x702": 410
+    },
+    "heartbeat_values": {
+      "7f": 411
+    },
+    "pdo_frames": 0,
+    "unexpected_other_master_requests": 0,
+    "other_transmissions": [],
+    "error": null,
+    "missing_windows": [],
+    "limitation": "Host scheduling and USB reception timestamps do not measure exact bus phase; rare misses need adequate repetitions. NMT pre-operational changes driver state as well as disabling PDO."
+  },
+  {
+    "source": "E:\\1_work\\ChassisCar_test\\logs\\steering-phase-readonly-20261021-191005-657101",
+    "source_sha256": "6435bd0f0ea993e28cca3cd8ab7697b48a2bd15fe556c77551352ac79058b159",
+    "expected_heartbeat_state": 5,
+    "sent": 398,
+    "statuses": {
+      "ok": 397,
+      "timeout": 1
+    },
+    "received_ids": {
+      "0x181": 3771,
+      "0x281": 3771,
+      "0x581": 397,
+      "0x701": 411,
+      "0x702": 410
+    },
+    "heartbeat_values": {
+      "05": 411
+    },
+    "pdo_frames": 7542,
+    "unexpected_other_master_requests": 0,
+    "other_transmissions": [],
+    "error": null,
+    "missing_windows": [
+      {
+        "sample": {
+          "index": 24641,
+          "at": 172027.3330244,
+          "elapsed_s": 17.1967103999923,
+          "offset_s": -0.00125,
+          "host_lateness_ms": 0.2856499922927469,
+          "status": "timeout"
+        },
+        "frames": [
+          {
+            "elapsed_s": 17.196884100005263,
+            "direction": "TX_READ_ONLY",
+            "id": 1537,
+            "data": "40 41 60 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.19814639998367,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.198161500011338,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.198169899987988,
+            "direction": "RX",
+            "id": 1793,
+            "data": "05"
+          },
+          {
+            "elapsed_s": 17.209281499992358,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.209320199996,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.220411699992837,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.220448599982774,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.226137599995127,
+            "direction": "RX",
+            "id": 1794,
+            "data": "7f"
+          },
+          {
+            "elapsed_s": 17.231277999992017,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.23129609998432,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.241750099987257,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.24205470000743,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.252770299994154,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.25282470000093,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.264084599999478,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.264118999999482,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.274746000010055,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.274797199992463,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.286777000001166,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.28683239998645,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.296636899991427,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.29688539999188,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.299670599983074,
+            "direction": "RX",
+            "id": 1793,
+            "data": "05"
+          },
+          {
+            "elapsed_s": 17.307971000002,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.30801119998796,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.318849500006763,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.31888720000279,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.326700000005076,
+            "direction": "RX",
+            "id": 1794,
+            "data": "7f"
+          },
+          {
+            "elapsed_s": 17.330283199989935,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.330296600004658,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.341640900005586,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.341674099996453,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.351699199993163,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.352019399986602,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.36282000000938,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.362851599988062,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.373734900000272,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.374031199986348,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.3855387000076,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.38562779998756,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.396062499989057,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.396101399994222,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.399343500001123,
+            "direction": "RX",
+            "id": 1793,
+            "data": "05"
+          },
+          {
+            "elapsed_s": 17.406829199986532,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.406869400001597,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.41777460000594,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.41780500000459,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.428325699991547,
+            "direction": "RX",
+            "id": 1794,
+            "data": "7f"
+          },
+          {
+            "elapsed_s": 17.428669999993872,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.42890540001099,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.439562599989586,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.439824300003238,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.451236799999606,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.451287200005027,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.462293699994916,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.462346099986462,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.472739599994384,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.473064199992223,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.483604599983664,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.483920300001046,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 17.495070500008296,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 17.495109999988927,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          }
+        ],
+        "frame_counts": {
+          "0x601": 1,
+          "0x181": 28,
+          "0x281": 28,
+          "0x701": 3,
+          "0x702": 3
+        }
+      }
+    ],
+    "limitation": "Host scheduling and USB reception timestamps do not measure exact bus phase; rare misses need adequate repetitions. NMT pre-operational changes driver state as well as disabling PDO."
+  },
+  {
+    "source": "E:\\1_work\\ChassisCar_test\\logs\\steering-phase-readonly-20261021-191234-711515",
+    "source_sha256": "04263fd41942d208ecdb5b82828a203c53096b9f15bab6c4001b23f80b41986a",
+    "expected_heartbeat_state": 127,
+    "sent": 1600,
+    "statuses": {
+      "ok": 1600
+    },
+    "received_ids": {
+      "0x581": 1600,
+      "0x701": 1610,
+      "0x702": 1611
+    },
+    "heartbeat_values": {
+      "7f": 1610
+    },
+    "pdo_frames": 0,
+    "unexpected_other_master_requests": 0,
+    "other_transmissions": [],
+    "error": null,
+    "missing_windows": [],
+    "limitation": "Host scheduling and USB reception timestamps do not measure exact bus phase; rare misses need adequate repetitions. NMT pre-operational changes driver state as well as disabling PDO."
+  },
+  {
+    "source": "E:\\1_work\\ChassisCar_test\\logs\\steering-phase-readonly-20261021-191620-938663",
+    "source_sha256": "f2b2b98d861e0fd2b1457de55c7b3a94438127df90c0b544c03875ddd3dccdf6",
+    "expected_heartbeat_state": 5,
+    "sent": 1590,
+    "statuses": {
+      "ok": 1585,
+      "timeout": 5
+    },
+    "received_ids": {
+      "0x181": 14789,
+      "0x281": 14789,
+      "0x581": 1585,
+      "0x701": 1610,
+      "0x702": 1611
+    },
+    "heartbeat_values": {
+      "05": 1610
+    },
+    "pdo_frames": 29578,
+    "unexpected_other_master_requests": 0,
+    "other_transmissions": [],
+    "error": null,
+    "missing_windows": [
+      {
+        "sample": {
+          "index": 24705,
+          "at": 172431.5936957,
+          "elapsed_s": 46.174542299995665,
+          "offset_s": -0.00125,
+          "host_lateness_ms": 0.3427499905228615,
+          "status": "timeout"
+        },
+        "frames": [
+          {
+            "elapsed_s": 46.174728200014215,
+            "direction": "TX_READ_ONLY",
+            "id": 1537,
+            "data": "40 81 60 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.17555350001203,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.17556949998834,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.17580100000487,
+            "direction": "RX",
+            "id": 1793,
+            "data": "05"
+          },
+          {
+            "elapsed_s": 46.187280999991344,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.187325300008524,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.19793180000852,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.197966400010046,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.20888500000001,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.208919600001536,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.21990699999151,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.2199716999894,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.23054019999108,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.230578099988634,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.24134010000853,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.24159960000543,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.25272849999601,
+            "direction": "RX",
+            "id": 1794,
+            "data": "7f"
+          },
+          {
+            "elapsed_s": 46.25287659998867,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.25291139999172,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.26377469999716,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.26380539999809,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.274420000001555,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.27471960001276,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.27679760000319,
+            "direction": "RX",
+            "id": 1793,
+            "data": "05"
+          },
+          {
+            "elapsed_s": 46.28635330000543,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.28638249999494,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.2973670999927,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.29740020001191,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.30871209999896,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.308747400005814,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.31856770001468,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.318592499999795,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.33005260000937,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.330091999989236,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.3407167000114,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.34074730001157,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.35202849999769,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.35205970000243,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.35320430001593,
+            "direction": "RX",
+            "id": 1794,
+            "data": "7f"
+          },
+          {
+            "elapsed_s": 46.36275800000294,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.36278950000997,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.37395579999429,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.373992300010286,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.37697700000717,
+            "direction": "RX",
+            "id": 1793,
+            "data": "05"
+          },
+          {
+            "elapsed_s": 46.38483530000667,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.38486270001158,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.39511489999131,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.39537559999735,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.40655700000934,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.40660499999649,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.41786220000358,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.417893500009086,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.42821800001548,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.42847260000417,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.439761299989186,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.43979959998978,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.45047680000425,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.45050320000155,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.454370599996764,
+            "direction": "RX",
+            "id": 1794,
+            "data": "7f"
+          },
+          {
+            "elapsed_s": 46.46171370000229,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.46174140000949,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 46.47221370000625,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 46.472475199989276,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          }
+        ],
+        "frame_counts": {
+          "0x601": 1,
+          "0x181": 28,
+          "0x281": 28,
+          "0x701": 3,
+          "0x702": 3
+        }
+      },
+      {
+        "sample": {
+          "index": 24641,
+          "at": 172460.476286,
+          "elapsed_s": 75.05713259999175,
+          "offset_s": -0.0015,
+          "host_lateness_ms": 0.3104499774053693,
+          "status": "timeout"
+        },
+        "frames": [
+          {
+            "elapsed_s": 75.05729349999456,
+            "direction": "TX_READ_ONLY",
+            "id": 1537,
+            "data": "40 41 60 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.05825760000153,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.05849070000113,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.05875749999541,
+            "direction": "RX",
+            "id": 1793,
+            "data": "05"
+          },
+          {
+            "elapsed_s": 75.06940189999295,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.06969140001456,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.08016380001209,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.08168989999103,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.09181390001322,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.09184509998886,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.10285289998865,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.10289310000371,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.1139836999937,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.11401650001062,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.12529460000223,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.12533440001425,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.13542470001266,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.13577170000644,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.14171910000732,
+            "direction": "RX",
+            "id": 1794,
+            "data": "7f"
+          },
+          {
+            "elapsed_s": 75.14633660000982,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.14661779999733,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.15718080001534,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.15744340000674,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.15995609998936,
+            "direction": "RX",
+            "id": 1793,
+            "data": "05"
+          },
+          {
+            "elapsed_s": 75.16921829999774,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.16927519999444,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.17931589999353,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.17956970000523,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.1906367999909,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.19067060001544,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.20208590000402,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.20223749999423,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.21240300001227,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.21268180001061,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.22438900000998,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.22442680000677,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.23421960000996,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.23446830001194,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.24195369999507,
+            "direction": "RX",
+            "id": 1794,
+            "data": "7f"
+          },
+          {
+            "elapsed_s": 75.24586070000078,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.24587819998851,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.25626709999051,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.25652309998986,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.26021639999817,
+            "direction": "RX",
+            "id": 1793,
+            "data": "05"
+          },
+          {
+            "elapsed_s": 75.2673294999986,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.26753599999938,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.27929639999638,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.27932890001102,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.28934849999496,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.28938090000884,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.30019529999117,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.30049920000602,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.31148949998897,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.31151749999844,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.32322160000331,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.32325600000331,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.33353269999498,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.33358110001427,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.34343939999235,
+            "direction": "RX",
+            "id": 1794,
+            "data": "7f"
+          },
+          {
+            "elapsed_s": 75.34457089999341,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.34458639999502,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 75.35603399999673,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 75.35607290000189,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          }
+        ],
+        "frame_counts": {
+          "0x601": 1,
+          "0x181": 28,
+          "0x281": 28,
+          "0x701": 3,
+          "0x702": 3
+        }
+      },
+      {
+        "sample": {
+          "index": 24676,
+          "at": 172489.3592387,
+          "elapsed_s": 103.94008530001156,
+          "offset_s": -0.00175,
+          "host_lateness_ms": 0.2877000079024583,
+          "status": "timeout"
+        },
+        "frames": [
+          {
+            "elapsed_s": 103.94027739999001,
+            "direction": "TX_READ_ONLY",
+            "id": 1537,
+            "data": "40 64 60 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 103.94153050001478,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 103.94154759999947,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 103.94155749998754,
+            "direction": "RX",
+            "id": 1793,
+            "data": "05"
+          },
+          {
+            "elapsed_s": 103.95323049998842,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 103.95326650000061,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 103.96393649998936,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 103.9639589000144,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 103.97535650001373,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 103.97539060001145,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 103.98584499998833,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 103.98587850001059,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 103.99694380001165,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 103.99696950000362,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 104.00749240000732,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 104.00752590000047,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 104.01829860001453,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 104.01862690001144,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 104.02541070000734,
+            "direction": "RX",
+            "id": 1794,
+            "data": "7f"
+          },
+          {
+            "elapsed_s": 104.02935860000434,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 104.02937410000595,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 104.04026000000886,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 104.04051819999586,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 104.04267349999282,
+            "direction": "RX",
+            "id": 1793,
+            "data": "05"
+          },
+          {
+            "elapsed_s": 104.0519617999962,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 104.05200150000746,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 104.06308079999872,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 104.06310940001276,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 104.0735233000014,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 104.07355319999624,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 104.08469570000307,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 104.0847497000068,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 104.09534580001491,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 104.09559119999176,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 104.10628599999472,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 104.1065474000061,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 104.1180744000012,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 104.1181152999925,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 104.12634310001158,
+            "direction": "RX",
+            "id": 1794,
+            "data": "7f"
+          },
+          {
+            "elapsed_s": 104.12902849999955,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 104.12908179999795,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 104.13931759999832,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 104.1395504999964,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 104.14335590001428,
+            "direction": "RX",
+            "id": 1793,
+            "data": "05"
+          },
+          {
+            "elapsed_s": 104.15050230000634,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 104.15082290000282,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 104.16172679999727,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 104.16176379998797,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 104.17251520001446,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 104.17255399998976,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 104.18391049999627,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 104.1839469000115,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 104.19430900001316,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 104.19434620000538,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 104.20509540001513,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 104.2053816000116,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 104.21659809999983,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 104.21662160000415,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 104.22648270000354,
+            "direction": "RX",
+            "id": 1794,
+            "data": "7f"
+          },
+          {
+            "elapsed_s": 104.22800520001329,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 104.22802159999264,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 104.23905920001562,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 104.23908920001122,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          }
+        ],
+        "frame_counts": {
+          "0x601": 1,
+          "0x181": 28,
+          "0x281": 28,
+          "0x701": 3,
+          "0x702": 3
+        }
+      },
+      {
+        "sample": {
+          "index": 24641,
+          "at": 172493.8031554,
+          "elapsed_s": 108.38400200000615,
+          "offset_s": -0.001,
+          "host_lateness_ms": 0.38660000427626073,
+          "status": "timeout"
+        },
+        "frames": [
+          {
+            "elapsed_s": 108.38422219999484,
+            "direction": "TX_READ_ONLY",
+            "id": 1537,
+            "data": "40 41 60 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.38505640000221,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.38508549999096,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.38534199999413,
+            "direction": "RX",
+            "id": 1793,
+            "data": "05"
+          },
+          {
+            "elapsed_s": 108.39594009998837,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.3961896999972,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.40681780001614,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.40707650000695,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.41843039999367,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.41848459999892,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.42881839998881,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.42907660000492,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.4408662999922,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.44090620000497,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.4512970999931,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.45134120000876,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.46184890001314,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.46210689999862,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.47120729999733,
+            "direction": "RX",
+            "id": 1794,
+            "data": "7f"
+          },
+          {
+            "elapsed_s": 108.47354199999245,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.47357719999854,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.48390570000629,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.48422750001191,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.48576310000499,
+            "direction": "RX",
+            "id": 1793,
+            "data": "05"
+          },
+          {
+            "elapsed_s": 108.49572579999221,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.4957599999907,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.5059229999897,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.50595700001577,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.51815290001105,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.51820990000851,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.52785800001584,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.52809290000005,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.53884329998982,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.53909780000686,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.55071209999733,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.55075369999395,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.5608157000097,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.56109430000652,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.57245030000922,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.57248100001016,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.57249120000051,
+            "direction": "RX",
+            "id": 1794,
+            "data": "7f"
+          },
+          {
+            "elapsed_s": 108.58284899999853,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.58287750001182,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.58753389999038,
+            "direction": "RX",
+            "id": 1793,
+            "data": "05"
+          },
+          {
+            "elapsed_s": 108.59458520001499,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.59460320000653,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.60477909998735,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.6050465000153,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.61581019998994,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.61608020000858,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.62718879999011,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.62722699998994,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.63779800001066,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.63805090001551,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.64923109998927,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.64925620000577,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.6606635999924,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.66070999999647,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.67105870001251,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.67109680001158,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 108.6737179000047,
+            "direction": "RX",
+            "id": 1794,
+            "data": "7f"
+          },
+          {
+            "elapsed_s": 108.68233599999803,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 108.68236410000827,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          }
+        ],
+        "frame_counts": {
+          "0x601": 1,
+          "0x181": 28,
+          "0x281": 28,
+          "0x701": 3,
+          "0x702": 3
+        }
+      },
+      {
+        "sample": {
+          "index": 24641,
+          "at": 172510.4661921,
+          "elapsed_s": 125.04703869999503,
+          "offset_s": -0.00075,
+          "host_lateness_ms": 0.24539997684769332,
+          "status": "timeout"
+        },
+        "frames": [
+          {
+            "elapsed_s": 125.04714469998726,
+            "direction": "TX_READ_ONLY",
+            "id": 1537,
+            "data": "40 41 60 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.04830840000068,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.04832400000305,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.0483336999896,
+            "direction": "RX",
+            "id": 1793,
+            "data": "05"
+          },
+          {
+            "elapsed_s": 125.05918189999647,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.05921420000959,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.07050450000679,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.07054630000493,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.08120340001187,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.081254299992,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.09279580001021,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.0928328000009,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.10388209999655,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.1039340000134,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.11408490000758,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.11431480001193,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.1256815000088,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.12571980000939,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.13534780000919,
+            "direction": "RX",
+            "id": 1794,
+            "data": "7f"
+          },
+          {
+            "elapsed_s": 125.13693850001437,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.1369541999884,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.14697269999306,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.14720629999647,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.14876730000833,
+            "direction": "RX",
+            "id": 1793,
+            "data": "05"
+          },
+          {
+            "elapsed_s": 125.15863039999385,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.15866570000071,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.16911379998783,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.16971950000152,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.18033900001319,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.18038000000524,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.1915915000136,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.19162490000599,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.20256820000941,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.20260680001229,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.21376179999788,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.21379010000965,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.22481179999886,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.22485289999167,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.23593630001415,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.23596749998978,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.23597740000696,
+            "direction": "RX",
+            "id": 1794,
+            "data": "7f"
+          },
+          {
+            "elapsed_s": 125.24601450000773,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.24621730000945,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.25089399999706,
+            "direction": "RX",
+            "id": 1793,
+            "data": "05"
+          },
+          {
+            "elapsed_s": 125.25736069999402,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.25739429998794,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.26888590000453,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.26892490001046,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.28058019999298,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.28060090000508,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.29095719999168,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.29099460001453,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.30127110000467,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.30130590000772,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.31247340000118,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.31248970000888,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.32379850000143,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.32385960000101,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.33436549999169,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.33440590000828,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          },
+          {
+            "elapsed_s": 125.33769650000613,
+            "direction": "RX",
+            "id": 1794,
+            "data": "7f"
+          },
+          {
+            "elapsed_s": 125.3453515000001,
+            "direction": "RX",
+            "id": 385,
+            "data": "31 22 00 00 2d 00 01"
+          },
+          {
+            "elapsed_s": 125.34538089999114,
+            "direction": "RX",
+            "id": 641,
+            "data": "bd 4f 00 00 00 00 00 00"
+          }
+        ],
+        "frame_counts": {
+          "0x601": 1,
+          "0x181": 28,
+          "0x281": 28,
+          "0x701": 3,
+          "0x702": 3
+        }
+      }
+    ],
+    "limitation": "Host scheduling and USB reception timestamps do not measure exact bus phase; rare misses need adequate repetitions. NMT pre-operational changes driver state as well as disabling PDO."
+  }
+]

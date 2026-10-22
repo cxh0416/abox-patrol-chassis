@@ -15,6 +15,7 @@ for path in build.rglob('*.su'):
 source = (Path(__file__).resolve().parents[1] / 'app/Core/User/system/src/patrol_rtos.c').read_text()
 rx_capacity = int(re.search(r'#define PATROL_CAN_RX_STACK_WORDS (\d+)U', source)[1]) * 4
 safety_capacity = int(re.search(r'#define PATROL_SAFETY_STACK_WORDS (\d+)U', source)[1]) * 4
+canopen_capacity = int(re.search(r'#define PATROL_CANOPEN_STACK_WORDS (\d+)U', source)[1]) * 4
 chains = {
     'CAN2 target': (rx_capacity, ['Patrol_CanRxTask', 'PatrolCanRemote_OnFrame',
                                 'RemoteService_ApplyLocal', 'ChassisControl_Apply']),
@@ -31,6 +32,23 @@ chains = {
                                      'RemoteService_ApplyLocal', 'ChassisControl_Apply']),
     'handset lease stop': (safety_capacity, ['Patrol_SafetyControlTask', 'PatrolPhyRemote_Tick',
                                            'RemoteService_ApplyLocal', 'ChassisControl_Apply']),
+    'fault capture from CAN2': (rx_capacity, ['Patrol_CanRxTask', 'PatrolPhyRemote_OnFrame',
+        'RemoteService_ApplyLocal', 'ChassisControl_Apply', 'force_stop',
+        'ChassisControl_RequestFault', 'PatrolRuntime_RequestFaultStop', 'PatrolRuntime_CaptureFault']),
+    'fault frame from CAN2': (rx_capacity, ['Patrol_CanRxTask', 'PatrolPhyRemote_OnFrame',
+        'RemoteService_ApplyLocal', 'ChassisControl_Apply', 'force_stop',
+        'ChassisControl_RequestFault', 'PatrolRuntime_RequestFaultStop', 'dispatch_fault_stop', 'PatrolFaultStop_Take']),
+    'fault transmit from CAN2': (rx_capacity, ['Patrol_CanRxTask', 'PatrolPhyRemote_OnFrame',
+        'RemoteService_ApplyLocal', 'ChassisControl_Apply', 'force_stop',
+        'ChassisControl_RequestFault', 'PatrolRuntime_RequestFaultStop', 'dispatch_fault_stop',
+        'PatrolRuntimePort_SendCan', 'HAL_CAN_AddTxMessage']),
+    'fault frame from safety': (safety_capacity, ['Patrol_SafetyControlTask', 'RemoteService_SafetyTick',
+        'ChassisControl_Tick', 'force_stop', 'ChassisControl_RequestFault',
+        'PatrolRuntime_RequestFaultStop', 'dispatch_fault_stop', 'PatrolFaultStop_Take']),
+    'fault latch log': (canopen_capacity, ['Patrol_CanopenTask', 'PatrolRuntime_Tick',
+        'service_fault_stop', 'AppLog_Printf']),
+    'fault stop retry': (canopen_capacity, ['Patrol_CanopenTask', 'PatrolRuntime_Tick',
+        'service_fault_stop', 'dispatch_fault_stop', 'PatrolFaultStop_Take']),
 }
 for label, (capacity, chain) in chains.items():
     missing = [name for name in chain if name not in frames]

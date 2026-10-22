@@ -1,0 +1,45 @@
+{
+  "execute": true,
+  "physical_channel": 2,
+  "preflight": {
+    "sample": {
+      "tick_ms": 596617,
+      "encoder": 404,
+      "encoder_angle_deg": 7.3122171945701355,
+      "encoder_age_ms": 24,
+      "encoder_config_valid": 1,
+      "center": -14303,
+      "session": 0,
+      "enable": 0,
+      "power": 0
+    },
+    "position": 5412,
+    "center": -14303,
+    "driver_angle_deg": 7.272760808617382,
+    "limits": [
+      -96982,
+      68376
+    ],
+    "status": "0x2231",
+    "fault": 0,
+    "mode": 1
+  },
+  "feedback_centered": true,
+  "final": {
+    "position": -14053,
+    "driver_angle_deg": 0.09222369780138703,
+    "sample": {
+      "tick_ms": 601686,
+      "encoder": 10,
+      "encoder_angle_deg": 0.18099547511312217,
+      "encoder_age_ms": 98,
+      "encoder_config_valid": 1,
+      "center": -14303,
+      "session": 0,
+      "enable": 0,
+      "power": 0
+    },
+    "status": "0x2237"
+  },
+  "error": "steering disable not confirmed"
+}

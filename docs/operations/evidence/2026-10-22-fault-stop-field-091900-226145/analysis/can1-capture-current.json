@@ -1,0 +1,13 @@
+{
+  "started_at": "2026-10-22T08:58:46.6444891+08:00",
+  "pid": 11720,
+  "output": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261022-085846-595023",
+  "stdout": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261022-085846-595023.stdout.log",
+  "stderr": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261022-085846-595023.stderr.log",
+  "stop_file": "E:\\1_work\\ChassisCar_test\\logs\\stop-can1-20261022-085846-595023.flag",
+  "duration_s": 1800,
+  "physical_channel": 2,
+  "vehicle_bus": "CAN1",
+  "bitrate_kbps": 500,
+  "hardware_listen_only": true
+}

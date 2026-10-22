@@ -17,8 +17,10 @@ uint8_t RemoteService_FormatNetworkState(char *output, uint16_t size);
 // 在专用实验构建中植入可检查的旧网络状态。用于验证网络切换是否清除会话、目标和重放缓存；仅受实验编译开关控制，不作为正常控制入口。
 void RemoteService_LabSeedNetworkState(void);
 #endif
-// 将运动执行失败传播为 MCU 锁存故障。先撤销会话和目标，再设置锁存；已有故障原因保留，避免执行器间派生故障覆盖首因。
+// 将执行失败交给先撤使能后锁存流程；pending 阶段立即禁止新运动，已有首因保持不变。
 void RemoteService_ExecutionFault(void);
+// 在撤使能确认或有界失败退路处理后锁存 MCU 故障；不恢复控制授权。
+void RemoteService_CompleteFaultStop(void);
 // 初始化共享远控仲裁及请求缓存。根据 Config V5 填入标定有效性，保留内部行走禁用位并清空会话和重放记录；不会自动使能。
 void RemoteService_Init(void);
 // 在远控任务上下文中推进安全检查。未初始化时返回，实验保持状态受编译开关限制；正常路径持临界区调用安全周期处理。

@@ -14,7 +14,7 @@ class StopSchedulerTests(unittest.TestCase):
             path = ROOT / 'tests/stop_scheduler_cases.c'
             binary = Path(directory) / 'stop.exe'
             sources = ['bench_steering.c', 'bench_drive.c', 'steering_angle.c',
-                       'patrol_canopen.c', 'patrol_diagnostics.c', 'patrol_runtime.c', 'center_calibration.c', 'patrol_auto_center.c']
+                       'patrol_canopen.c', 'patrol_diagnostics.c', 'patrol_runtime.c', 'center_calibration.c', 'patrol_auto_center.c', 'patrol_fault_stop.c']
             result = subprocess.run([shutil.which('gcc') or 'gcc', '-std=c11', '-Wall',
                 '-Wextra', '-Werror', '-Wno-format', '-ffunction-sections', '-fdata-sections', '-Wl,--gc-sections',
                 '-DPATROL_CHASSIS_ACTUATION_ENABLED=1', '-I' + str(ROOT / 'app/Core/User/motion/private'), '-I' + str(ROOT / 'shared/include'), *include_args(), str(path),

@@ -15,16 +15,15 @@ static uint8_t stopped(const ChassisFeedback* feedback)
 // 统一撤销运动目标并按原因更新停车状态。清除行走、转向、待换向请求和使能；保留已锁存的首个故障原因，按 release 决定是否释放会话。
 static void force_stop(ChassisControl* control, ChassisStopReason reason, uint8_t release)
 {
+    if (reason == CHASSIS_STOP_DIRECTION_TIMEOUT || reason == CHASSIS_STOP_ENCODER_RANGE ||
+        reason == CHASSIS_STOP_ENCODER_PROFILE) ChassisControl_RequestFault(control, reason);
     control->target_rpm = 0;
     control->target_steering_mdeg = 0;
     control->requested_rpm = 0;
     control->reversal_pending = 0U;
     control->zero_confirmations = 0U;
     control->enable_request = 0U;
-    if (!control->fault_latched) control->stop_reason = reason;
-    if (reason == CHASSIS_STOP_DIRECTION_TIMEOUT ||
-        reason == CHASSIS_STOP_ENCODER_RANGE ||
-        reason == CHASSIS_STOP_ENCODER_PROFILE) control->fault_latched = 1U;
+    if (!control->fault_latched && !control->fault_pending) control->stop_reason = reason;
     if (release) {
         control->session_active = 0U;
         control->session_id[0] = '\0';
@@ -36,6 +35,37 @@ void ChassisControl_Init(ChassisControl* control)
 {
     memset(control, 0, sizeof(*control));
     control->stop_reason = CHASSIS_STOP_UNCALIBRATED;
+}
+
+// 把停机传输交给产品运行层，控制核心不直接访问 HAL、CAN 邮箱或驱动器参数。
+void ChassisControl_SetFaultStopHandler(ChassisControl* control, uint8_t (*handler)(void))
+{
+    control->request_fault_stop = handler;
+}
+
+// 在清零目标之前让运行层冻结首故障；pending 与 latched 一样禁止运动，避免等待撤使能时被遥控重新接管。
+void ChassisControl_RequestFault(ChassisControl* control, ChassisStopReason reason)
+{
+    if (!control->fault_latched && !control->fault_pending) {
+        control->stop_reason = reason;
+        control->fault_pending = 1U;
+        if (!control->request_fault_stop || !control->request_fault_stop())
+            ChassisControl_CompleteFaultStop(control);
+    }
+    control->target_rpm = control->requested_rpm = 0;
+    control->target_steering_mdeg = 0;
+    control->reversal_pending = control->zero_confirmations = 0U;
+    control->enable_request = control->session_active = 0U;
+    control->session_id[0] = '\0';
+    control->auto_center_inhibited = 1U;
+}
+
+// 只把待锁存变成已锁存，不清除首因；确认失败时同样锁存，保证通信故障不会使安全流程无限等待。
+void ChassisControl_CompleteFaultStop(ChassisControl* control)
+{
+    if (!control->fault_pending) return;
+    control->fault_pending = 0U;
+    control->fault_latched = 1U;
 }
 
 // 设置内部行走禁用状态，不撤销转向授权。激活时立即清零行走与待换向目标，保留最近非零方向以防解除后绕过换向检查；当前不绑定 T12 B 键。
@@ -93,7 +123,7 @@ uint8_t ChassisControl_SafetyReady(const ChassisControl* control, uint32_t now_m
 ChassisStopReason ChassisControl_RuntimeSafetyReason(const ChassisControl* control, uint32_t now_ms)
 {
     const ChassisFeedback* f = &control->feedback;
-    if (control->fault_latched) return control->stop_reason;
+    if (control->fault_latched || control->fault_pending) return control->stop_reason;
     if (!f->steering_online || !f->drive_online) return CHASSIS_STOP_NODE_OFFLINE;
     if (f->can_bus_off) return CHASSIS_STOP_CAN_BUS_OFF;
     if (f->drive_fault) return CHASSIS_STOP_DRIVE_FAULT;
@@ -131,6 +161,7 @@ uint8_t ChassisControl_Apply(ChassisControl* control, const char* action, const 
         return 1U;
     }
     if (strcmp(action, "acquire") != 0 && strcmp(action, "renew") != 0) return 0U;
+    if (control->fault_latched || control->fault_pending) return 0U;
     if (lease_ms == 0U || lease_ms > CHASSIS_MAX_LEASE_MS || abs(drive_rpm) > CHASSIS_MAX_RPM ||
         labs(steering_mdeg) > CHASSIS_MAX_STEERING_MDEG) return 0U;
     if (strcmp(action, "acquire") == 0) {

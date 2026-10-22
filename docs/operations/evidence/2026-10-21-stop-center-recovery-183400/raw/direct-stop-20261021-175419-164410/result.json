@@ -1,0 +1,45 @@
+{
+  "purpose": "operator requested stop",
+  "writes_allowed": [
+    "node2:60FF=0",
+    "node2:68FF=0",
+    "node2:6040=6"
+  ],
+  "motion_success": false,
+  "physical_channel": 2,
+  "latest": {
+    "0x6041": {
+      "channel": 2,
+      "at_s": 5.062000000005355,
+      "value": 4113
+    },
+    "0x6069": {
+      "channel": 2,
+      "at_s": 5.155999999988126,
+      "value": 0
+    },
+    "0x6869": {
+      "channel": 2,
+      "at_s": 5.25,
+      "value": 0
+    },
+    "0x60FF": {
+      "channel": 2,
+      "at_s": 5.342999999993481,
+      "value": 0
+    },
+    "0x68FF": {
+      "channel": 2,
+      "at_s": 4.967999999993481,
+      "value": 0
+    }
+  },
+  "result": "stop commands sent; inspect speed feedback and physical wheels",
+  "frame_counts": {
+    "CH2:0x181": 488,
+    "CH2:0x281": 488,
+    "CH2:0x702": 53,
+    "CH2:0x582": 63,
+    "CH2:0x701": 53
+  }
+}

@@ -1,0 +1,509 @@
+{"elapsed_s": 0.014295799977844581, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.014514499984215945, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.02450869997846894, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.0246006999805104, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.02940819997456856, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 0.03160709998337552, "direction": "RX", "id": 1409, "data": "43 81 60 00 B4 00 00 00"}
+{"elapsed_s": 0.11211369998636656, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.11227099999086931, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.11244430000078864, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.11271960000158288, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.11276619997806847, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 0.11279189999913797, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.11281349998898804, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.11283729999559, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.11285689999931492, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.11312109997379594, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.11316779998014681, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.11320059999707155, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.11322099997778423, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.11324039997998625, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.11325919997761957, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.11350619999575429, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 0.11358829998061992, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.11365369998384267, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.12451799999689683, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.12462170000071637, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.13307069998700172, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 0.13514949998352677, "direction": "RX", "id": 1409, "data": "43 81 60 00 B4 00 00 00"}
+{"elapsed_s": 0.21543829998699948, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.21554720000131056, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.21591349999653175, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.2159576999838464, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.21597949997521937, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 0.21627839998109266, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.2163210999860894, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.21634349998203106, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.21636559997568838, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.2163921999745071, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.21642029998474754, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.2167489999847021, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.21681939999689348, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.2168453999911435, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.21692849998362362, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.21695779997389764, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 0.2169815999804996, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.2172722999821417, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.22247689997311682, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.22252229999867268, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.2338095000013709, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.23388600000180304, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.23720389997470193, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 0.23947269999189302, "direction": "RX", "id": 1409, "data": "43 81 60 00 B4 00 00 00"}
+{"elapsed_s": 0.32017359999008477, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.3202525999804493, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.32027329999255016, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 0.32067869999445975, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.32076879998203367, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.32079199998406693, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.320810299977893, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.3208273999916855, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.32084479997865856, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.32111279998207465, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.3211560999916401, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.32117869998910464, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.321198399993591, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.3212156999798026, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 0.32123399997362867, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.32160269998712465, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.32164409998222254, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.32166619997587986, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.33290739997755736, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.3330030999786686, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.34040359998471104, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 0.34211739999591373, "direction": "RX", "id": 1409, "data": "43 81 60 00 B4 00 00 00"}
+{"elapsed_s": 0.4227275000012014, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.42280589998699725, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.4228284999844618, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 0.42307269998127595, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.4230972999939695, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.42311529998551123, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.42313309997553006, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.4231506999931298, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.42316829998162575, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.4235124999831896, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.42358669999521226, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.4236105000018142, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.4236289999971632, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.423645899980329, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 0.4236635999986902, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.4239093999785837, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.4239318999752868, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.423949599993648, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.4326617999759037, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.4327523999963887, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.4428361999744084, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 0.44325969999772497, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.4433126999938395, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.44498859997838736, "direction": "RX", "id": 1409, "data": "43 81 60 00 B4 00 00 00"}
+{"elapsed_s": 0.5256501999974716, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 0.5257762999972329, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.5258024999930058, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.5261284000007436, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.5262144999869633, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.5262411999865435, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.5262858999776654, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.5263055999821518, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.5263286999834236, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.5267195999913383, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.5267656999931205, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.526787399983732, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.526805899979081, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.5268228999921121, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 0.5268406999821309, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.5271549999888521, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.5306905999896117, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.5307314999809023, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.5422734999738168, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.5423756999953184, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.5456920999858994, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 0.5478072999976575, "direction": "RX", "id": 1409, "data": "43 81 60 00 B4 00 00 00"}
+{"elapsed_s": 0.6284987999824807, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.6285830999840982, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.6286069999914616, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 0.6289102000009734, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.6289555999974255, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.6289791999734007, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.629003299982287, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.6290251999744214, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.6290435999981128, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.629351499985205, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.6294036999752279, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.6294273999810684, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.6294468999840319, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.6294720000005327, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 0.6294915999751538, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.6297839999897406, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.6298407999856863, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.6298649999953341, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.641937299980782, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.6420634999813046, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.6486626999976579, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 0.6507444999879226, "direction": "RX", "id": 1409, "data": "43 81 60 00 B4 00 00 00"}
+{"elapsed_s": 0.7315645999915432, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.7316462000017054, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.7316685999976471, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 0.7319359999964945, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.7319607999816071, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.7319795999792404, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.7319978999730665, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.7320155999914277, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.7320332999806851, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.7322934999829158, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.7323172999895178, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.7323358999856282, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.7323537999764085, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.7323709999909624, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 0.7323887999809813, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.7326464999932796, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.7326691999915056, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.7326874999853317, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.7395471999770962, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.7395987999916542, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.7510755999828689, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.751166399975773, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.7532152999774553, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 0.7552886999910697, "direction": "RX", "id": 1409, "data": "43 81 60 00 B4 00 00 00"}
+{"elapsed_s": 0.8355727999878582, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 0.8359335999994073, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.8360169999941718, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.8360415999777615, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.8362894999736454, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.8363122000009753, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.8363298999902327, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.8363469999749213, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.8363643999909982, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.836382199981017, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.8366265999793541, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.8366474999929778, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 0.8366654999845196, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.8366826999990735, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.8366995999822393, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.8367165999952704, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.8385025999741629, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.8385483999736607, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.8503237999975681, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.8504123999737203, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.8572253999882378, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 0.8575280999939423, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 0.8594390999933239, "direction": "RX", "id": 1409, "data": "43 81 60 00 B4 00 00 00"}
+{"elapsed_s": 0.9401200999855064, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.9401972999912687, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.94021829997655, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.9404971999756526, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.9405206999799702, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.9405384999990929, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.9405555999837816, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.9405727999983355, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.9405896999815013, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.9408345999836456, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.9408560000010766, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 0.9408743999956641, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.9408918999833986, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.940909199998714, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.9409264999849256, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.9411653999995906, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.9411870999902021, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.9492524999950547, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.9493337999738287, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.958501699991757, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 0.9604770999867469, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 0.9608731999760494, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.9609027999977116, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 0.9625000999949407, "direction": "RX", "id": 1409, "data": "43 81 60 00 B4 00 00 00"}
+{"elapsed_s": 1.0432677999779116, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.0433604999852832, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.0433856999734417, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.0436582999827806, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.0436855999869294, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.0437046999868471, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.0437227999791503, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.0437409000005573, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.0437583999882918, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 1.0440189999935683, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.0440423999971244, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.044060799991712, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.0440786999824923, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.0440964000008535, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.0441140999901108, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.0480778999917675, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.0481591999996454, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.058991199999582, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 1.059099599980982, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.059135999996215, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.0644166999845766, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 1.0665046999929473, "direction": "RX", "id": 1409, "data": "43 81 60 00 B4 00 00 00"}
+{"elapsed_s": 1.1469778999744449, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.1470590999815613, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.147082399984356, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.1474539999908302, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.1474789999774657, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.147497999976622, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.1475186999887228, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.1475368999817874, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.147555299976375, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.1477989999984857, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.1478220999997575, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 1.1478409999981523, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.1478592999919783, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.14787729998352, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.1478951999743003, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.1481518999789841, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.1481750999810174, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.1577690999838524, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.1578353999939281, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.1598199000000022, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 1.1684537999972235, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 1.1687096999958158, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.1687367999984417, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.1705234999826644, "direction": "RX", "id": 1409, "data": "43 81 60 00 B4 00 00 00"}
+{"elapsed_s": 1.2509154999861494, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.2509919999865815, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.2510322000016458, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.251283699995838, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.2513074999733362, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.2513260999985505, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.2513447999954224, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.251362999988487, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.25138039997546, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 1.2516275999951176, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.2516504999948665, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.2516684999864083, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.2516863999771886, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.2517041999963112, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.2517220999870915, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.2574158999777865, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.2574430999811739, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.2609052999760024, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 1.2684028999938164, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.2684312999772374, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.27211169997463, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 1.2738241999759339, "direction": "RX", "id": 1409, "data": "43 81 60 00 B4 00 00 00"}
+{"elapsed_s": 1.354445399978431, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.3545226999849547, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.3545453999831807, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.3548098999890499, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.3548349999764469, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.3548534000001382, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.35487139999168, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.3548892999824602, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.3549063999962527, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 1.3551513999991585, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.3551743999996688, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.3551925999927334, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.3552104999835137, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.3552335999847855, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.3552543999976479, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.3555014999874402, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.3555242999864276, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.3612672000017483, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 1.3671608000004198, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.3672238999861293, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.3754806999932043, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 1.3771028999763075, "direction": "RX", "id": 1409, "data": "43 81 60 00 B4 00 00 00"}
+{"elapsed_s": 1.4576856999774463, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.4582214999827556, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.4583620999765117, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.4584059999906458, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.4587012999982107, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.4587575999903493, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.4587867999798618, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.4588129999756347, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.4588382999936584, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 1.4588679999869782, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.459198099997593, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.4592600999749266, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.4592831999761984, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.4593081999919377, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.4593422999896575, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.4593618999933824, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.4596740999841131, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.463251199980732, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 1.4665172999957576, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.4665458999807015, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.4769134999951348, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.4769978999975137, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.4788916999823414, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 1.4804473999829497, "direction": "RX", "id": 1409, "data": "43 81 60 00 B4 00 00 00"}
+{"elapsed_s": 1.5610163999954239, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.5610993999871425, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.561121999984607, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.5613966999808326, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.561421499995049, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.5614400999911595, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.5614571999758482, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 1.561475700000301, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.5614935999910813, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.5617663999728393, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.5617944999830797, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.5618127999769058, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.5618308999983128, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.5618485999875702, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.5618662999768276, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.5638398999872152, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 1.5640678999770898, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.5643091999809258, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.5759261999919545, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.5760347999748774, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.5817652999830898, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 1.583459799992852, "direction": "RX", "id": 1409, "data": "43 81 60 00 B4 00 00 00"}
+{"elapsed_s": 1.6642753999913111, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.6643549999862444, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.6643771999806631, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.6646406999789178, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.6646641999832354, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.6646823999763, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.6647003999969456, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.6647188999922946, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.664735300000757, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 1.6649552999879234, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.6649773999815807, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.664994899998419, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.6650117999815848, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.6650287999946158, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.6650458999793045, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.6653067999868654, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.6653281999751925, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.6653447999851778, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 1.6742940999974962, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.6743370999756735, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.6844339999952354, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 1.6865554999967571, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.6866145999811124, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.6866368999762926, "direction": "RX", "id": 1409, "data": "43 81 60 00 B4 00 00 00"}
+{"elapsed_s": 1.7671203999780118, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.767202199989697, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.7672246999864, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.767482299997937, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.7675065999792423, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.7675314999942202, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.7675519999756943, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 1.7675711999763735, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.7675894999993034, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.7678485999931581, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.7678720999974757, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.7678902999905404, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.7679081999813206, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.767925699998159, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.7679436999897007, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.7681861999735702, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 1.7735153999819886, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.7735821999958716, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.7846728999866173, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.7847487999824807, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.7882846999855246, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 1.7900505999859888, "direction": "RX", "id": 1409, "data": "43 81 60 00 B4 00 00 00"}
+{"elapsed_s": 1.8707014999818057, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.8707745999854524, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.870797199982917, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.8710443999734707, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.871082599973306, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.8711016999732237, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.8711194999923464, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 1.8711383999907412, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.8711640999827068, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.8715343999792822, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.871557499980554, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.8715758999751415, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.871593899995787, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.8716117999865673, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.8716296999773476, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.871870899980422, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 1.872117499995511, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.872400899999775, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.8835384999983944, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.8836259999952745, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.8907493999868166, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 1.8927833999914583, "direction": "RX", "id": 1409, "data": "43 81 60 00 B4 00 00 00"}
+{"elapsed_s": 1.9734297999821138, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.9735121999983676, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.9735350999981165, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.9738920999807306, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.9739401999977417, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.9739630999974906, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.9739814999920782, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 1.9739993999828584, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.9740174999751616, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.9743092999851797, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.9743774999806192, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.9744059999939054, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.9744255999976303, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.9744490000011865, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.9744684999750461, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.9747764999920037, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 1.9748465000011493, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.9748814999766182, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.983665599982487, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.9837515999970492, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.9932933999807574, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 1.9936089999973774, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 1.9936363000015263, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 1.9957188999978825, "direction": "RX", "id": 1409, "data": "43 81 60 00 B4 00 00 00"}
+{"elapsed_s": 2.07620019998285, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.076290600001812, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.076313300000038, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.0765647999942303, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.0765886000008322, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 2.0766078000015114, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.0766256999922916, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.0766432999807876, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.0766613999730907, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.0769041999883484, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.076926999987336, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.076945099979639, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.076962699997239, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.0769793999788817, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 2.07699689999572, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.0772598999901675, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.0826178999850526, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.0826601999870036, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.0926929999841377, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.092771499999799, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.0965490999806207, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 80 60 00 00 00 00 00"}
+{"elapsed_s": 2.098594899987802, "direction": "RX", "id": 1409, "data": "43 80 60 00 2C 01 00 00"}
+{"elapsed_s": 2.1791958999820054, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.1792765999853145, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.179298299975926, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.179635899985442, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.1796582999813836, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 2.179676699975971, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.1796943999943323, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.1797115999797825, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.179728699993575, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.180043200001819, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.1800701999745797, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.180088599998271, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.180106599989813, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.1801236999745015, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 2.1801412999921013, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.1804196999873966, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.180442699987907, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.180460999981733, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.191457199980505, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.1915414999821223, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.199817799992161, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 2.201888199982932, "direction": "RX", "id": 1409, "data": "4B 41 60 00 37 06"}
+{"elapsed_s": 2.282891599985305, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.2829671999788843, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.2829879999917466, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.283005699981004, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.2833030999754556, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.2833259999752045, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.283344199997373, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 2.2833619999873918, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.2833787999989, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.28339529997902, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.2836789999855682, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.2837003999738954, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.2837187999975868, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.2837352999777067, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.283751899987692, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.2837675999908242, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 2.284013699973002, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.284036199998809, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.2907874999800697, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.29084529998363, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.3014440999832004, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 2.3015004999761004, "direction": "RX", "id": 641, "data": "2D 66 00 00 00 00 00 00"}
+{"elapsed_s": 2.3036456999834627, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 61 60 00 00 00 00 00"}
+{"elapsed_s": 2.3057612999982666, "direction": "RX", "id": 1409, "data": "4F 61 60 00 01"}

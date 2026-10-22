@@ -1,0 +1,19 @@
+[1/16] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/main.c.obj
+[2/16] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_commands.c.obj
+[3/16] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_service.c.obj
+[4/16] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_messages.c.obj
+[5/16] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_tx.c.obj
+[6/16] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/chassis_cloud_protocol.c.obj
+[7/16] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/chassis_control.c.obj
+[8/16] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_can_remote.c.obj
+[9/16] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_phy_remote.c.obj
+[10/16] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_auto_center.c.obj
+[11/16] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/mqtt/src/mqtt_runtime.c.obj
+[12/16] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/remote_service.c.obj
+[13/16] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/center_calibration.c.obj
+[14/16] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_runtime.c.obj
+[15/16] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/system/src/patrol_rtos.c.obj
+[16/16] Linking C executable Patrol_Vehicle_Chassis_App.elf
+Memory region         Used Size  Region Size  %age Used
+             RAM:       61432 B        64 KB     93.74%
+           FLASH:      152744 B       216 KB     69.06%

@@ -38,6 +38,8 @@ const PatrolRemoteConfigV5_t* PatrolConfig_Get(void) { return &config; }
 uint8_t PatrolConfig_CalibrationCompatible(void) { return 1; }
 uint8_t CenterCalibration_IsActive(void) { return center_active; }
 uint8_t PatrolRuntimePort_OtaBusy(void) { return ota; }
+/* This protocol-only fixture compiles no motor transport. */
+uint8_t PatrolRuntime_RequestFaultStop(void) { return 0U; }
 uint8_t PatrolRuntime_ResetFault(void)
 {
     if (VehiclePowerOutput_IsOn() || ota || !reset_allowed) return 0;

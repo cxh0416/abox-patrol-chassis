@@ -4,6 +4,8 @@
 #include "motion_fault.h"
 // 在安全前提满足时申请清除 MCU 运动故障。复位路径检查输出、OTA、标定与执行器上下文；这是软件故障复位入口，不保证外部驱动器故障已消失。
 uint8_t PatrolRuntime_ResetFault(void);
+// 请求独立故障停机并优先发送两节点撤使能；非零表示异步确认仍在进行，期间禁止普通运动发送。
+uint8_t PatrolRuntime_RequestFaultStop(void);
 // 开启一个新的故障记录周期。仅重置本轮首故障捕获标志，后续首因由 CaptureFault 保存，不等同于清除驱动器故障。
 void PatrolRuntime_BeginFaultEpisode(void);
 // 在本轮首次故障时冻结运行上下文。记录来源、原因、门禁、双轮反馈和执行器状态并标记待存储；Flash 写入延后到断开输出且 OTA 不忙时。

@@ -1,0 +1,25 @@
+{
+  "requested": "preoperational",
+  "mcu": {
+    "tick_ms": 2045246,
+    "encoder": 591,
+    "encoder_angle_deg": 10.69683257918552,
+    "encoder_age_ms": 103,
+    "encoder_config_valid": 1,
+    "center": -8366,
+    "session": 0,
+    "enable": 0,
+    "power": 0
+  },
+  "initial_heartbeat": 5,
+  "initial_status": "0x2231",
+  "disabled_status": "0x2231",
+  "confirmed_heartbeat": 127,
+  "final_status": "0x2231",
+  "wheels": {
+    "left": 0,
+    "right": 0,
+    "status": "0x1011"
+  },
+  "result": "state confirmed; steering and drive remain disabled"
+}

@@ -1,0 +1,37 @@
+{
+  "read_only": true,
+  "physical_channel": 2,
+  "mcu": {
+    "tick_ms": 2626897,
+    "encoder": 591,
+    "encoder_angle_deg": 10.69683257918552,
+    "encoder_age_ms": 114,
+    "encoder_config_valid": 1,
+    "center": -8366,
+    "session": 0,
+    "enable": 0,
+    "power": 0
+  },
+  "heartbeat": 5,
+  "wheels": [
+    {
+      "left": 0,
+      "right": 0,
+      "status": "0x1011"
+    },
+    {
+      "left": 0,
+      "right": 0,
+      "status": "0x1011"
+    },
+    {
+      "left": 0,
+      "right": 0,
+      "status": "0x1011"
+    }
+  ],
+  "steering_status": "0x2231",
+  "steering_fault": 0,
+  "steering_actual": 20413,
+  "result": "Node 1 operational restored; both motors disabled; wheels zero; MCU owner/output off"
+}

@@ -214,11 +214,22 @@ int main(void)
     BenchSteering_OnFrame(&b,&r,11); assert(b.pending);
     r=reply(&b,-111593); r.data[1]++;
     assert(!BenchSteering_OnFrame(&b,&r,12)&&b.pending);
-    BenchSteering_Tick(&b,111,1,1,0,0); assert(b.phase==BENCH_FAULT&&b.cut_power);
+    BenchSteering_Tick(&b,209,1,1,0,0); assert(b.pending&&b.phase!=BENCH_FAULT);
+    BenchSteering_Tick(&b,210,1,1,0,0); assert(b.phase==BENCH_FAULT&&b.cut_power);
     assert(b.fault == 6U);
-    BenchSteering_Stop(&b,112,1);
+    BenchSteering_Stop(&b,211,1);
     assert(b.fault == 6U); /* emergency propagation preserves first timeout */
-    assert(!BenchSteering_Take(&b,112,&f));
+    assert(!BenchSteering_Take(&b,211,&f));
+    /* A target-write ACK is accepted at 199 ms, but rejected at the 200 ms
+       deadline even when the periodic timeout check has not run yet. */
+    for (int expired=0;expired<2;expired++) {
+        BenchSteering_Init(&b); b.phase=BENCH_ACTIVE; b.step=17;
+        assert(BenchSteering_Take(&b,1000,&f)&&b.index==0x607A);
+        r=reply(&b,0);
+        assert(BenchSteering_OnFrame(&b,&r,expired?1200:1199));
+        if (expired) assert(b.phase==BENCH_FAULT&&b.fault==6U&&b.cut_power);
+        else assert(b.phase==BENCH_ACTIVE&&!b.pending&&!b.fault);
+    }
     BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0); now=0;
     while (b.step != 4) advance(&b,&now);
     assert(BenchSteering_Take(&b,now,&f)); r=reply(&b,3);

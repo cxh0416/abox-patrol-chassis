@@ -22,6 +22,8 @@ static uint8_t time_trusted = 1U;
 uint32_t HAL_GetTick(void) { return tick; }
 /* This isolated config/session fixture has no calibration session. */
 uint8_t CenterCalibration_IsActive(void) { return 0U; }
+/* This config-only fixture compiles no motor transport. */
+uint8_t PatrolRuntime_RequestFaultStop(void) { return 0U; }
 ABoxClockSnapshot TimeBase_GetSnapshot(void) {
  ABoxClockSnapshot s={utc_now, tick, 0U, 1U, ABOX_CLOCK_PLATFORM, time_trusted ? ABOX_CLOCK_SYNCHRONIZED : ABOX_CLOCK_UNTRUSTED}; return s;
 }

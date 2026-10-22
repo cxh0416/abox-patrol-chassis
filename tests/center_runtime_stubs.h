@@ -23,9 +23,12 @@ ChassisControl mock_control;
 PatrolRemoteConfigV5_t mock_config;
 PatrolDiagnosticsSnapshot mock_snapshot;
 uint32_t PatrolRuntimePort_Now(void) { return mock_now; }
+#ifndef FAULT_STOP_REAL_REMOTE
 const ChassisControl* RemoteService_State(void) { return &mock_control; }
 void RemoteService_Revoke(void) { mock_control.session_active = 0; mock_control.enable_request = 0; }
 void RemoteService_ExecutionFault(void) { mock_control.fault_latched = 1; }
+void RemoteService_CompleteFaultStop(void) { mock_control.fault_pending = 0; mock_control.fault_latched = 1; }
+#endif
 #ifndef CENTER_HOST_REAL_CONTROL
 uint8_t ChassisControl_SafetyReady(const ChassisControl* c, uint32_t now)
 { (void)now; return !c->fault_latched && c->feedback.calibrated && c->feedback.power_ready; }
@@ -61,6 +64,7 @@ uint8_t PatrolConfig_SetCalibration(int32_t driver, uint32_t encoder, uint32_t d
     int8_t dd, int8_t ed, uint16_t tolerance)
 { (void)driver; (void)encoder; (void)dc; (void)ec; (void)dd; (void)ed; (void)tolerance; return 1; }
 
+#ifndef FAULT_STOP_CUSTOM_LOCKS
 void PatrolRuntimePort_Enter(void) {}
 #ifdef DRIVE_BRAKE_RUNTIME_TEST
 uint8_t mock_brake_after_take;
@@ -74,10 +78,14 @@ void PatrolRuntimePort_Exit(void)
 #else
 void PatrolRuntimePort_Exit(void) {}
 #endif
+#endif
 void AppLog_Printf(AppLogLevel_t level, const char* tag, const char* format, ...)
 { (void)level; (void)tag; (void)format; }
 uint8_t PatrolConfig_CalibrationCompatible(void) { return 1; }
+#ifndef FAULT_STOP_REAL_REMOTE
 void RemoteService_UpdateFeedback(const ChassisFeedback* feedback) { mock_control.feedback = *feedback; }
+#endif
+#ifndef FAULT_STOP_CUSTOM_TRANSPORT
 void PatrolRuntimePort_AbortCanTx(void) {}
 uint8_t PatrolRuntimePort_CanTxReady(void)
 {
@@ -88,8 +96,11 @@ uint8_t PatrolRuntimePort_CanTxReady(void)
 }
 uint8_t PatrolRuntimePort_SendCan(const PatrolCanFrame* frame)
 { mock_last_frame = *frame; mock_sent++; return 1; }
+#endif
 
 uint8_t OTA_Info_LoadMotionFault(MotionFaultRecord* r) { (void)r; return 0; }
 uint8_t OTA_Info_SaveMotionFault(const MotionFaultRecord* r) { (void)r; return 1; }
 
+#ifndef FAULT_STOP_REAL_REMOTE
 void RemoteService_Init(void) { memset(&mock_control,0,sizeof(mock_control)); mock_permit=0; }
+#endif

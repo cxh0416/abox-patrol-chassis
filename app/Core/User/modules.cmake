@@ -29,6 +29,7 @@ set(PATROL_PRODUCT_SOURCES
     Core/User/motion/src/steering_angle.c
     Core/User/motion/src/bench_steering.c
     Core/User/motion/src/bench_drive.c
+    Core/User/motion/src/patrol_fault_stop.c
     Core/User/common/src/time_base.c
     Core/User/common/src/time_sync.c
     Core/User/board/src/vehicle_power_output.c

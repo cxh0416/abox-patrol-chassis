@@ -1,0 +1,94 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "recorded_at": "2026-10-21T19:22:26.153877+08:00",
+  "physical_channel": 2,
+  "bitrate_kbps": 500,
+  "authorization": "Operator authorized steering shutdown and temporary Node 1 pre-operational/operational comparison, keeping all motors stopped; no enable/reset/fault clear.",
+  "captured_fault": {
+    "pending": {
+      "node": 1,
+      "index": "0x607a",
+      "request": {
+        "bus": "CAN1",
+        "adapter_channel": 1,
+        "elapsed_s": 537.6570000000065,
+        "id": 1537,
+        "dlc": 8,
+        "data": "23 7A 60 00 9D 34 00 00",
+        "extended": false,
+        "remote": false,
+        "hardware_timestamp_raw": 159541369,
+        "time_flag": 1,
+        "decoded": {
+          "kind": "sdo",
+          "node": 1,
+          "index": 24698,
+          "index_hex": "0x607A",
+          "subindex": 0,
+          "object": "steering_target_count",
+          "command": 35,
+          "action": "write_request",
+          "value": 13469
+        }
+      }
+    },
+    "post_request_span_s": 26.921999999991385,
+    "post_request_frames": 5429,
+    "post_request_sdo_requests": 0,
+    "post_request_ids": {
+      "0x181": 2448,
+      "0x281": 2448,
+      "0x701": 267,
+      "0x702": 266
+    },
+    "mcu_fault_at_ms": 432881,
+    "mcu_sent_at_ms": 432781,
+    "subsequent_readback_607a": 13469,
+    "previous_acknowledged_target_607a": 20398,
+    "conclusion": "Node 1 accepted final 607A write but matching SDO ACK is absent in full analyzer trace and MCU timed out at 100ms. PDO/heartbeat continue; no CAN stop follows for 26.9s."
+  },
+  "comparison": {
+    "5": {
+      "sent": 2386,
+      "statuses": {
+        "ok": 2379,
+        "timeout": 7
+      },
+      "pdo_frames": 44658
+    },
+    "127": {
+      "sent": 2000,
+      "statuses": {
+        "ok": 2000
+      },
+      "pdo_frames": 0
+    }
+  },
+  "stationary_reproduction": {
+    "source": "steering-phase-readonly-20261021-185337-062674",
+    "sent": 398,
+    "ok": 397,
+    "timeout": 1,
+    "note": "Earlier standalone analyzer read-only reproduction while stationary; steering was still enabled then. Not included in disabled comparison aggregate."
+  },
+  "final_switch": "operational; heartbeat05 restored, steering and drive disabled; see final NMT result and post snapshot",
+  "can_hal_accumulated_errors": {
+    "before": "0x40",
+    "after": "0x58",
+    "new_flags": [
+      "HAL_CAN_ERROR_STF 0x08",
+      "HAL_CAN_ERROR_FOR 0x10"
+    ],
+    "interpretation": "Additional stuff/form error flags appeared between snapshots; no per-event timestamps. They cannot be assigned to the missed SDO transactions or used to rule out electrical errors.",
+    "source": "app/Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_can.h"
+  },
+  "physical_confirmation": "Operator confirmed wheels stopped and fault scene retained after direct stop at 18:45. No new movement was requested during comparison.",
+  "confirmed_stop_defect": "Production ApplyCut emergency-stops executors into FAULT and turns software OUT1 off without sending drive zero/shutdown. Manual motor power bypasses OUT1 contactor, so last drive target persists.",
+  "limitations": [
+    "NMT pre-operational changes internal driver state as well as disabling PDO; association alone does not prove a specific driver mailbox/firmware defect.",
+    "Captures show usable CAN frames, not analog waveform or all error frames; cannot fully distinguish driver TX handling, transceiver/electrical corruption, and capture loss.",
+    "Independent MCU timeout and analyzer silence, target readback, and stationary analyzer-only misses narrow the failure beyond a pure MCU SDO parser problem.",
+    "Tools-at-archive files are the latest maintenance versions, not claimed identical to every older run. Extended phase probes embed their exact script hash.",
+    "Firmware, Flash, fault journal and main MCU execution were not modified/reset/halted. This is diagnosis, not a repaired firmware or vehicle acceptance result."
+  ]
+}
