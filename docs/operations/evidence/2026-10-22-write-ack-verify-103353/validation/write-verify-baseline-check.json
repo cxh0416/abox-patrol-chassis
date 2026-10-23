@@ -1,0 +1,8 @@
+{
+  "assertion": "test_identity_and_safe_defaults rejects any PatrolCanopen_SdoWrite in runtime sources",
+  "baseline_matches": 2,
+  "current_matches": 2,
+  "assertion_changed": false,
+  "source_default_version": "patrol-chassis-0.2.63",
+  "dist_manifest_sha256": "72f4f7d2b3cb156c0ae3c20b6005fefd6abc47aaec70b34760bb163bb8540836"
+}

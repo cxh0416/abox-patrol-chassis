@@ -119,7 +119,7 @@ int main(void)
     assert(BenchSteering_Start(&b,-83815,-85123,-85123,30000,now));
     for(int i=0;i<20;i++) advance(&b,&now);
     assert(b.phase==BENCH_ACTIVE);
-    for(int i=0;i<3;i++) advance(&b,&now);
+    for(int i=0;i<4;i++) advance(&b,&now);
     assert(b.applied==-82413 && b.step==16);
     /* A changed target during positioning must replace, not queue behind, the
        old target. Drop only new-set-point bit 4 after each acknowledged trigger. */
@@ -127,10 +127,12 @@ int main(void)
         BenchSteering_Tick(&b,now,1,1,angle,0);
         assert(BenchSteering_Take(&b,now,&f) && b.index==0x607A);
         r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+1));
-        assert(BenchSteering_Take(&b,now+2,&f) && b.index==0x6040 && f.data[4]==0x3F);
-        r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+3));
-        assert(BenchSteering_Take(&b,now+4,&f) && b.index==0x6040 && f.data[4]==0x2F);
+        assert(BenchSteering_Take(&b,now+2,&f) && b.index==0x6041 && b.read);
+        r=reply(&b,0x27); assert(BenchSteering_OnFrame(&b,&r,now+3));
+        assert(BenchSteering_Take(&b,now+4,&f) && b.index==0x6040 && f.data[4]==0x3F);
         r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+5));
+        assert(BenchSteering_Take(&b,now+6,&f) && b.index==0x6040 && f.data[4]==0x2F);
+        r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+7));
         assert(b.phase==BENCH_ACTIVE && b.step==16);
         now+=10;
     }
@@ -159,7 +161,9 @@ int main(void)
     assert(b.applied_profile_rpm==300);
     assert(BenchSteering_Take(&b,now+4,&f) && b.index==0x607A);
     r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+5));
-    assert(BenchSteering_Take(&b,now+6,&f) && b.index==0x6040 && f.data[4]==0x3F);
+    assert(BenchSteering_Take(&b,now+6,&f) && b.index==0x6041 && b.read);
+    r=reply(&b,0x27); assert(BenchSteering_OnFrame(&b,&r,now+6));
+    assert(BenchSteering_Take(&b,now+7,&f) && b.index==0x6040 && f.data[4]==0x3F);
     r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+7));
     assert(BenchSteering_Take(&b,now+8,&f) && b.index==0x6040 && f.data[4]==0x2F);
     r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+9));
@@ -220,14 +224,20 @@ int main(void)
     BenchSteering_Stop(&b,211,1);
     assert(b.fault == 6U); /* emergency propagation preserves first timeout */
     assert(!BenchSteering_Take(&b,211,&f));
-    /* A target-write ACK is accepted at 199 ms, but rejected at the 200 ms
-       deadline even when the periodic timeout check has not run yet. */
+    /* Motion ACKs at 39ms complete normally; at 40ms the result must instead
+       be read back, even if the periodic timeout check has not run yet. */
     for (int expired=0;expired<2;expired++) {
         BenchSteering_Init(&b); b.phase=BENCH_ACTIVE; b.step=17;
         assert(BenchSteering_Take(&b,1000,&f)&&b.index==0x607A);
         r=reply(&b,0);
-        assert(BenchSteering_OnFrame(&b,&r,expired?1200:1199));
-        if (expired) assert(b.phase==BENCH_FAULT&&b.fault==6U&&b.cut_power);
+        assert(BenchSteering_OnFrame(&b,&r,expired?1040:1039));
+        if (expired) {
+            assert(b.phase==BENCH_ACTIVE&&b.verify&&!b.pending&&!b.cut_power);
+            assert(BenchSteering_Take(&b,1041,&f)&&b.index==0x6041&&b.read);
+            assert(f.data[0]==0x40); /* lost ACK never causes a target write replay */
+            BenchSteering_Tick(&b,1081,1,1,0,0);
+            assert(b.phase==BENCH_FAULT&&b.cut_power);
+        }
         else assert(b.phase==BENCH_ACTIVE&&!b.pending&&!b.fault);
     }
     BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0); now=0;

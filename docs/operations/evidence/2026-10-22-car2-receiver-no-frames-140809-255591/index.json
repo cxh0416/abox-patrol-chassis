@@ -1,0 +1,198 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "created_at": "2026-10-22T14:08:09.672738+08:00",
+  "files": [
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-response-test-20261022-135758-292032\\events.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\capture\\car2-response-test-20261022-135758-292032\\events.jsonl",
+      "bytes": 187506,
+      "sha256": "1ee301af2a3027acd2c4f20d683450eb4dbcd5d58ec830903a664cd8967aadb4"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-response-test-20261022-135758-292032\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\capture\\car2-response-test-20261022-135758-292032\\frames.jsonl",
+      "bytes": 1124652,
+      "sha256": "082cd39f1b1a10f9e15732cca4a421523be24a46ef8a06574698e4a03ec8cf5c"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-response-test-20261022-135758-292032\\metadata.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\capture\\car2-response-test-20261022-135758-292032\\metadata.json",
+      "bytes": 1136,
+      "sha256": "0e2c033180733c811fe0bb36d16d0178054c2ddaf3f2a1c366656a30e3aa74cf"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-response-test-20261022-135758-292032\\sha256.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\capture\\car2-response-test-20261022-135758-292032\\sha256.json",
+      "bytes": 352,
+      "sha256": "fc9f3f2a3039326e0fd9c6196709b1780a2cdc877bcedd437edd25bae1689f08"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-response-test-20261022-135758-292032\\summary.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\capture\\car2-response-test-20261022-135758-292032\\summary.json",
+      "bytes": 1655,
+      "sha256": "5d82c869275844c1580441fb82505cb1f6b756f79248ad2ec9d6d5ab7c49a633"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-response-test-20261022-135758-292032.stdout.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\capture\\car2-response-test-20261022-135758-292032.stdout.log",
+      "bytes": 82012,
+      "sha256": "2f31e1fba50d98605dfed4d530891e502ff089ac004a14bba999ef5f6a544633"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-response-test-20261022-135758-292032.stderr.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\capture\\car2-response-test-20261022-135758-292032.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\stop-car2-response-test-20261022-135758-292032.flag",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\capture\\stop-car2-response-test-20261022-135758-292032.flag",
+      "bytes": 74,
+      "sha256": "ecab2c9074ef1b8a3c107b3ad14dc866762b83b7e9db86595248333eb51a3e35"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\car2-response-capture-current.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\handles\\car2-response-capture-current.json",
+      "bytes": 743,
+      "sha256": "2f05f25648c1ea0407c2d5490af646dd11e6a3a6659fc5a6a7d345fcbd735dc4"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-dual-20261022-140119-894165\\events.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\capture\\car2-receiver-dual-20261022-140119-894165\\events.jsonl",
+      "bytes": 170161,
+      "sha256": "da31596294f15d25e6ee783b321c6b11f4751b3851d68b2dd63497d9a0e5a1aa"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-dual-20261022-140119-894165\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\capture\\car2-receiver-dual-20261022-140119-894165\\frames.jsonl",
+      "bytes": 1110704,
+      "sha256": "61594be1fbdbc5e8b9b74d589661152224c73622655465ca9f5adebf23a6c6d2"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-dual-20261022-140119-894165\\metadata.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\capture\\car2-receiver-dual-20261022-140119-894165\\metadata.json",
+      "bytes": 1169,
+      "sha256": "01facca53253528abec2d3a6d7d361df75db1f6ffc0828034a53c8320fe0da01"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-dual-20261022-140119-894165\\sha256.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\capture\\car2-receiver-dual-20261022-140119-894165\\sha256.json",
+      "bytes": 352,
+      "sha256": "bb3e2b8edda43b6f673a40808323dafd5345e4279095c723d3b09db91e43f117"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-dual-20261022-140119-894165\\summary.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\capture\\car2-receiver-dual-20261022-140119-894165\\summary.json",
+      "bytes": 1182,
+      "sha256": "8d9db89c30139290572322f2748c5268edd8025551acac133fcba27ae992f735"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-dual-20261022-140119-894165.stdout.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\capture\\car2-receiver-dual-20261022-140119-894165.stdout.log",
+      "bytes": 89966,
+      "sha256": "4c4aea9a16c6c63868e06fb837c21bdcbc93a207e070846977bc2d486883715b"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-dual-20261022-140119-894165.stderr.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\capture\\car2-receiver-dual-20261022-140119-894165.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\stop-car2-receiver-dual-20261022-140119-894165.flag",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\capture\\stop-car2-receiver-dual-20261022-140119-894165.flag",
+      "bytes": 82,
+      "sha256": "ccf6462360aebae741ec234e8c5a58c50deaaef41959d2d1d2173aaa71641dc8"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\car2-receiver-capture-current.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\handles\\car2-receiver-capture-current.json",
+      "bytes": 686,
+      "sha256": "29291bbba212408d263d4a07dc85b66111255e0549e3566458877f3ec62ef2ba"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-bitrate-20261022-140546-772831\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\bitrate-scan\\frames.jsonl",
+      "bytes": 163700,
+      "sha256": "582a6df5f9884f405bda771f060b3fdbb4c4b1315dcda098d9e3d5fbd24700a9"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-bitrate-20261022-140546-772831\\sha256.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\bitrate-scan\\sha256.json",
+      "bytes": 177,
+      "sha256": "3750f145eb2c845a0f76bb58806e01ff4f6d47c502870e7902cac06f5e3a84b5"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-bitrate-20261022-140546-772831\\summary.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\bitrate-scan\\summary.json",
+      "bytes": 1798,
+      "sha256": "0089df1ba0a7b26dd38c457a23c118e803b15da17dc5ce6bbbecad69a428fb03"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-140018-712608\\CAN1-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\swd\\2026-10-22-fault-stop-readonly-140018-712608\\CAN1-registers.bin",
+      "bytes": 32,
+      "sha256": "3ae6446202eba1c94d3a3c7c2d82c41df7546f1a7a17a20af653c4ab074a04c1"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-140018-712608\\CAN2-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\swd\\2026-10-22-fault-stop-readonly-140018-712608\\CAN2-registers.bin",
+      "bytes": 32,
+      "sha256": "3ae6446202eba1c94d3a3c7c2d82c41df7546f1a7a17a20af653c4ab074a04c1"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-140018-712608\\motion-fault.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\swd\\2026-10-22-fault-stop-readonly-140018-712608\\motion-fault.bin",
+      "bytes": 128,
+      "sha256": "38723a2e5e8a17aa7950dc008209944e898f69a7bd10a23c839d341e935fd5ca"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-140018-712608\\snapshot.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\swd\\2026-10-22-fault-stop-readonly-140018-712608\\snapshot.json",
+      "bytes": 3858,
+      "sha256": "fee7837409f5e640565258d5f07a960195182b65708bed9c86f3c12d50dc0d13"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-140414-894843\\CAN1-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\swd\\2026-10-22-fault-stop-readonly-140414-894843\\CAN1-registers.bin",
+      "bytes": 32,
+      "sha256": "3ae6446202eba1c94d3a3c7c2d82c41df7546f1a7a17a20af653c4ab074a04c1"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-140414-894843\\CAN2-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\swd\\2026-10-22-fault-stop-readonly-140414-894843\\CAN2-registers.bin",
+      "bytes": 32,
+      "sha256": "3ae6446202eba1c94d3a3c7c2d82c41df7546f1a7a17a20af653c4ab074a04c1"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-140414-894843\\motion-fault.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\swd\\2026-10-22-fault-stop-readonly-140414-894843\\motion-fault.bin",
+      "bytes": 128,
+      "sha256": "38723a2e5e8a17aa7950dc008209944e898f69a7bd10a23c839d341e935fd5ca"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-140414-894843\\snapshot.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\swd\\2026-10-22-fault-stop-readonly-140414-894843\\snapshot.json",
+      "bytes": 3858,
+      "sha256": "c61cbbad78f97a9636be70ce7debb0fd9158047d82507ca37bcda590ec8615c0"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\car2-receiver-bitrate-listen.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\tools\\car2-receiver-bitrate-listen.py",
+      "bytes": 3588,
+      "sha256": "24a5c0285d3711a0e1770a2ed5a7a9cc2b71224341e348abc90c4468f7fdf1aa"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\archive-car2-receiver-no-frames.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\tools\\archive-car2-receiver-no-frames.py",
+      "bytes": 4899,
+      "sha256": "44f899ddcef6a5fe5409126d357cf6e22b51d3dec933527214d06463ffb61749"
+    },
+    {
+      "original_path": "Analysis of archived passive records and operator replies",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-receiver-no-frames-140809-255591\\result.json",
+      "bytes": 6131,
+      "sha256": "f41cf8758dc6a01f625bbb2b5669d7931380e09fc330c5d3fb3a43cc3248af7d"
+    }
+  ]
+}

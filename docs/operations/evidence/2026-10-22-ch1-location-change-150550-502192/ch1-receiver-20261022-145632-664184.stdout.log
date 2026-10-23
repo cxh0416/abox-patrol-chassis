@@ -1,0 +1,1457 @@
+只听采集，500 kbps；分析仪 CH1 -> RECEIVER
+输出：E:\1_work\ChassisCar_test\logs\ch1-receiver-20261022-145632-664184
+M 标记故障；Ctrl+C 结束。本次只听 RECEIVER。
+接收器原始 CAN 输出；A/T12 按当前固件 0x10A/0x10B 解析，其他 ID 保留原始数据。
+[    0.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[    1.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[    2.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[    3.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[    4.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[    5.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[    6.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[    7.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[    8.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[    9.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   10.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   11.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   12.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   13.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   14.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   15.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   16.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   17.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   18.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   19.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   20.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   21.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   22.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   23.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   24.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   25.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   26.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   27.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   28.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   29.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   30.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   31.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   32.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   33.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   34.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   35.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   36.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   37.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   38.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   39.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   40.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   41.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   42.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   43.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   44.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   45.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   46.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   47.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   48.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   49.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   50.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   51.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   52.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   53.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   54.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   55.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   56.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   57.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   58.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   59.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   60.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   61.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   62.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   63.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   64.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   65.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   66.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   67.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   68.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   69.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   70.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   71.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   72.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   73.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   74.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   75.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   76.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   77.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   78.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   79.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   80.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   81.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   82.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   83.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   84.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   85.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   86.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   87.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   88.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   89.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   90.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   91.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   92.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   93.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   94.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   95.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   96.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   97.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   98.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[   99.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  100.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  101.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  102.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  103.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  104.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  105.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  106.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  107.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  108.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  109.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  110.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  111.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  112.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  113.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  114.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  115.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  116.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  117.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  118.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  119.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  120.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  121.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  122.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  123.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  124.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  125.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  126.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  127.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  128.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  129.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  130.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  131.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  132.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  133.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  134.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  135.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  136.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  137.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  138.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  139.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  140.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  141.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  142.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  143.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  144.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  145.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  146.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  147.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  148.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  149.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  150.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  151.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  152.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  153.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  154.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  155.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  156.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  157.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  158.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  159.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  160.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  161.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  162.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  163.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  164.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  165.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  166.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  167.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  168.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  169.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  170.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  171.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  172.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  173.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  174.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  175.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  176.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  177.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  178.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  179.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  180.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  181.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  182.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  183.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  184.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  185.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  186.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  187.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  188.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  189.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  190.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  191.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  192.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  193.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  194.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  195.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  196.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  197.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  198.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  199.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  200.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  201.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  202.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  203.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  204.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  205.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  206.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  207.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  208.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  209.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  210.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  211.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  212.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  213.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  214.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  215.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  216.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  217.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  218.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  219.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  220.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  221.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  222.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  223.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  224.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  225.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  226.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  227.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  228.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  229.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  230.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  231.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  232.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  233.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  234.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  235.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  236.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  237.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  238.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  239.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  240.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  241.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  242.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  243.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  244.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  245.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  246.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  247.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  248.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  249.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  250.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  251.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  252.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  253.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  254.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  255.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  256.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  257.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  258.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  259.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  260.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  261.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  262.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  263.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  264.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  265.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  266.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  267.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  268.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  269.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  270.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  271.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  272.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  273.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  274.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  275.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  276.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  277.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  278.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  279.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  280.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  281.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  282.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  283.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  284.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  285.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  286.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  287.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  288.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  289.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  290.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  291.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  292.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  293.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  294.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  295.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  296.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  297.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  298.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  299.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  300.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  301.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  302.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  303.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  304.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  305.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  306.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  307.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  308.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  309.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  310.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  311.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  312.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  313.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  314.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  315.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  316.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  317.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  318.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  319.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  320.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  321.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  322.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  323.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  324.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  325.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  326.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  327.0s] RECEIVER帧数=0/age=未见 A=未见 T12=未见 | SDO未应答事件=0
+[  328.0s] RECEIVER帧数=4/age=750ms A=2(750ms) T12=+0/+0(766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=750ms max_gap=47.0ms
+[  329.0s] RECEIVER帧数=4/age=1750ms A=2(1750ms) T12=+0/+0(1766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=1766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=1750ms max_gap=47.0ms
+[  330.0s] RECEIVER帧数=4/age=2750ms A=2(2750ms) T12=+0/+0(2766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=2766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=2750ms max_gap=47.0ms
+[  331.0s] RECEIVER帧数=4/age=3750ms A=2(3750ms) T12=+0/+0(3766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=3766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=3750ms max_gap=47.0ms
+[  332.0s] RECEIVER帧数=4/age=4750ms A=2(4750ms) T12=+0/+0(4766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=4766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=4750ms max_gap=47.0ms
+[  333.0s] RECEIVER帧数=4/age=5750ms A=2(5750ms) T12=+0/+0(5766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=5766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=5750ms max_gap=47.0ms
+[  334.0s] RECEIVER帧数=4/age=6750ms A=2(6750ms) T12=+0/+0(6766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=6766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=6750ms max_gap=47.0ms
+[  335.0s] RECEIVER帧数=4/age=7750ms A=2(7750ms) T12=+0/+0(7766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=7766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=7750ms max_gap=47.0ms
+[  336.0s] RECEIVER帧数=4/age=8750ms A=2(8750ms) T12=+0/+0(8766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=8766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=8750ms max_gap=47.0ms
+[  337.0s] RECEIVER帧数=4/age=9750ms A=2(9750ms) T12=+0/+0(9766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=9766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=9750ms max_gap=47.0ms
+[  338.0s] RECEIVER帧数=4/age=10750ms A=2(10750ms) T12=+0/+0(10766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=10766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=10750ms max_gap=47.0ms
+[  339.0s] RECEIVER帧数=4/age=11750ms A=2(11750ms) T12=+0/+0(11766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=11766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=11750ms max_gap=47.0ms
+[  340.0s] RECEIVER帧数=4/age=12750ms A=2(12750ms) T12=+0/+0(12766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=12766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=12750ms max_gap=47.0ms
+[  341.0s] RECEIVER帧数=22/age=47ms A=2(13750ms) T12=+0/+0(13766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=13766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=13750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=9 age=78ms max_gap=109.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=9 age=47ms max_gap=110.0ms
+[  342.0s] RECEIVER帧数=42/age=47ms A=2(14750ms) T12=+0/+0(14766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=14766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=14750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=19 age=63ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=19 age=47ms max_gap=110.0ms
+[  343.0s] RECEIVER帧数=62/age=31ms A=2(15750ms) T12=+0/+0(15766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=15766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=15750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=29 age=47ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=29 age=31ms max_gap=110.0ms
+[  344.0s] RECEIVER帧数=82/age=31ms A=2(16750ms) T12=+0/+0(16766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=16766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=16750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=39 age=47ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=39 age=31ms max_gap=110.0ms
+[  345.0s] RECEIVER帧数=102/age=16ms A=2(17750ms) T12=+0/+0(17766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=17766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=17750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=49 age=31ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=49 age=16ms max_gap=110.0ms
+[  346.0s] RECEIVER帧数=121/age=31ms A=2(18750ms) T12=+0/+0(18766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=18766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=18750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=59 age=31ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=58 age=109ms max_gap=110.0ms
+[  347.0s] RECEIVER帧数=141/age=16ms A=2(19750ms) T12=+0/+0(19766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=19766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=19750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=69 age=16ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=68 age=94ms max_gap=110.0ms
+[  348.0s] RECEIVER帧数=160/age=78ms A=2(20750ms) T12=+0/+0(20766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=20766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=20750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=78 age=109ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=78 age=78ms max_gap=110.0ms
+[  349.0s] RECEIVER帧数=180/age=78ms A=2(21750ms) T12=+0/+0(21766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=21766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=21750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=88 age=94ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=88 age=78ms max_gap=110.0ms
+[  350.0s] RECEIVER帧数=200/age=63ms A=2(22750ms) T12=+0/+0(22766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=22766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=22750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=98 age=78ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=98 age=63ms max_gap=110.0ms
+[  351.0s] RECEIVER帧数=220/age=63ms A=2(23750ms) T12=+0/+0(23766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=23766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=23750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=108 age=78ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=108 age=63ms max_gap=110.0ms
+[  352.0s] RECEIVER帧数=240/age=47ms A=2(24750ms) T12=+0/+0(24766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=24766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=24750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=118 age=63ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=118 age=47ms max_gap=110.0ms
+[  353.0s] RECEIVER帧数=260/age=31ms A=2(25750ms) T12=+0/+0(25766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=25766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=25750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=128 age=47ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=128 age=31ms max_gap=110.0ms
+[  354.0s] RECEIVER帧数=280/age=31ms A=2(26750ms) T12=+0/+0(26766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=26766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=26750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=138 age=47ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=138 age=31ms max_gap=110.0ms
+[  355.0s] RECEIVER帧数=300/age=16ms A=2(27750ms) T12=+0/+0(27766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=27766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=27750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=148 age=31ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=148 age=16ms max_gap=110.0ms
+[  356.0s] RECEIVER帧数=320/age=0ms A=2(28750ms) T12=+0/+0(28766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=28766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=28750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=158 age=31ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=158 age=0ms max_gap=110.0ms
+[  357.0s] RECEIVER帧数=339/age=16ms A=2(29750ms) T12=+0/+0(29766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=29766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=29750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=168 age=16ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=167 age=94ms max_gap=110.0ms
+[  358.0s] RECEIVER帧数=359/age=0ms A=2(30750ms) T12=+0/+0(30766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=30766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=30750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=178 age=0ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=177 age=94ms max_gap=110.0ms
+[  359.0s] RECEIVER帧数=378/age=78ms A=2(31750ms) T12=+0/+0(31766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=31766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=31750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=187 age=94ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=187 age=78ms max_gap=110.0ms
+[  360.0s] RECEIVER帧数=398/age=63ms A=2(32750ms) T12=+0/+0(32766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=32766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=32750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=197 age=78ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=197 age=63ms max_gap=110.0ms
+[  361.0s] RECEIVER帧数=418/age=63ms A=2(33750ms) T12=+0/+0(33766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=33766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=33750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=207 age=78ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=207 age=63ms max_gap=110.0ms
+[  362.0s] RECEIVER帧数=438/age=47ms A=2(34750ms) T12=+0/+0(34766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=34766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=34750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=217 age=63ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=217 age=47ms max_gap=110.0ms
+[  363.0s] RECEIVER帧数=458/age=31ms A=2(35750ms) T12=+0/+0(35766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=35766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=35750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=227 age=63ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=227 age=31ms max_gap=110.0ms
+[  364.0s] RECEIVER帧数=478/age=31ms A=2(36750ms) T12=+0/+0(36766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=36766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=36750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=237 age=47ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=237 age=31ms max_gap=110.0ms
+[  365.0s] RECEIVER帧数=498/age=16ms A=2(37750ms) T12=+0/+0(37766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=37766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=37750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=247 age=31ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=247 age=16ms max_gap=110.0ms
+[  366.0s] RECEIVER帧数=518/age=0ms A=2(38750ms) T12=+0/+0(38766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=38766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=38750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=257 age=31ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=257 age=0ms max_gap=110.0ms
+[  367.0s] RECEIVER帧数=537/age=16ms A=2(39750ms) T12=+0/+0(39766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=39766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=39750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=267 age=16ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=266 age=94ms max_gap=110.0ms
+[  368.0s] RECEIVER帧数=557/age=0ms A=2(40750ms) T12=+0/+0(40766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=40766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=40750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=277 age=0ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=276 age=94ms max_gap=110.0ms
+[  369.0s] RECEIVER帧数=576/age=78ms A=2(41750ms) T12=+0/+0(41766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=41766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=41750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=286 age=94ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=286 age=78ms max_gap=110.0ms
+[  370.0s] RECEIVER帧数=596/age=63ms A=2(42750ms) T12=+0/+0(42766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=42766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=42750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=296 age=94ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=296 age=63ms max_gap=110.0ms
+[  371.0s] RECEIVER帧数=616/age=63ms A=2(43750ms) T12=+0/+0(43766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=43766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=43750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=306 age=78ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=306 age=63ms max_gap=110.0ms
+[  372.0s] RECEIVER帧数=636/age=47ms A=2(44750ms) T12=+0/+0(44766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=44766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=44750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=316 age=63ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=316 age=47ms max_gap=110.0ms
+[  373.0s] RECEIVER帧数=656/age=31ms A=2(45750ms) T12=+0/+0(45766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=45766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=45750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=326 age=63ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=326 age=31ms max_gap=110.0ms
+[  374.0s] RECEIVER帧数=676/age=31ms A=2(46750ms) T12=+0/+0(46766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=46766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=46750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=336 age=47ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=336 age=31ms max_gap=110.0ms
+[  375.0s] RECEIVER帧数=696/age=16ms A=2(47750ms) T12=+0/+0(47766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=47766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=47750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=346 age=31ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=346 age=16ms max_gap=110.0ms
+[  376.0s] RECEIVER帧数=716/age=16ms A=2(48750ms) T12=+0/+0(48766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=48766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=48750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=356 age=31ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=356 age=16ms max_gap=110.0ms
+[  377.0s] RECEIVER帧数=735/age=16ms A=2(49750ms) T12=+0/+0(49766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=49766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=49750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=366 age=16ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=365 age=94ms max_gap=110.0ms
+[  378.0s] RECEIVER帧数=755/age=16ms A=2(50750ms) T12=+0/+0(50766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=50766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=50750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=376 age=16ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=375 age=94ms max_gap=110.0ms
+[  379.0s] RECEIVER帧数=774/age=78ms A=2(51750ms) T12=+0/+0(51766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=51766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=51750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=385 age=94ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=385 age=78ms max_gap=110.0ms
+[  380.0s] RECEIVER帧数=794/age=78ms A=2(52750ms) T12=+0/+0(52766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=52766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=52750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=395 age=94ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=395 age=78ms max_gap=110.0ms
+[  381.0s] RECEIVER帧数=814/age=63ms A=2(53750ms) T12=+0/+0(53766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=53766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=53750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=405 age=78ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=405 age=63ms max_gap=110.0ms
+[  382.0s] RECEIVER帧数=834/age=47ms A=2(54750ms) T12=+0/+0(54766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=54766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=54750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=415 age=78ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=415 age=47ms max_gap=110.0ms
+[  383.0s] RECEIVER帧数=854/age=47ms A=2(55750ms) T12=+0/+0(55766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=55766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=55750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=425 age=63ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=425 age=47ms max_gap=110.0ms
+[  384.0s] RECEIVER帧数=874/age=31ms A=2(56750ms) T12=+0/+0(56766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=56766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=56750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=435 age=47ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=435 age=31ms max_gap=110.0ms
+[  385.0s] RECEIVER帧数=894/age=16ms A=2(57750ms) T12=+0/+0(57766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=57766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=57750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=445 age=47ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=445 age=16ms max_gap=110.0ms
+[  386.0s] RECEIVER帧数=914/age=16ms A=2(58750ms) T12=+0/+0(58766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=58766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=58750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=455 age=31ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=455 age=16ms max_gap=110.0ms
+[  387.0s] RECEIVER帧数=933/age=16ms A=2(59750ms) T12=+0/+0(59766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=59766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=59750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=465 age=16ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=464 age=94ms max_gap=110.0ms
+[  388.0s] RECEIVER帧数=953/age=16ms A=2(60750ms) T12=+0/+0(60766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=60766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=60750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=475 age=16ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=474 age=94ms max_gap=110.0ms
+[  389.0s] RECEIVER帧数=972/age=78ms A=2(61750ms) T12=+0/+0(61766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=61766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=61750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=484 age=109ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=484 age=78ms max_gap=110.0ms
+[  390.0s] RECEIVER帧数=992/age=78ms A=2(62750ms) T12=+0/+0(62766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=62766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=62750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=494 age=94ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=494 age=78ms max_gap=110.0ms
+[  391.0s] RECEIVER帧数=1012/age=63ms A=2(63750ms) T12=+0/+0(63766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=63766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=63750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=504 age=78ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=504 age=63ms max_gap=110.0ms
+[  392.0s] RECEIVER帧数=1032/age=47ms A=2(64750ms) T12=+0/+0(64766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=64766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=64750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=514 age=78ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=514 age=47ms max_gap=110.0ms
+[  393.0s] RECEIVER帧数=1052/age=47ms A=2(65750ms) T12=+0/+0(65766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=65766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=65750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=524 age=63ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=524 age=47ms max_gap=110.0ms
+[  394.0s] RECEIVER帧数=1072/age=31ms A=2(66750ms) T12=+0/+0(66766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=66766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=66750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=534 age=47ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=534 age=31ms max_gap=110.0ms
+[  395.0s] RECEIVER帧数=1092/age=16ms A=2(67750ms) T12=+0/+0(67766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=67766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=67750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=544 age=47ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=544 age=16ms max_gap=110.0ms
+[  396.0s] RECEIVER帧数=1112/age=16ms A=2(68750ms) T12=+0/+0(68766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=68766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=68750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=554 age=31ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=554 age=16ms max_gap=110.0ms
+[  397.0s] RECEIVER帧数=1131/age=16ms A=2(69750ms) T12=+0/+0(69766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=69766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=69750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=564 age=16ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=563 age=109ms max_gap=110.0ms
+[  398.0s] RECEIVER帧数=1151/age=16ms A=2(70750ms) T12=+0/+0(70766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=70766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=70750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=574 age=16ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=573 age=94ms max_gap=110.0ms
+[  399.0s] RECEIVER帧数=1170/age=78ms A=2(71750ms) T12=+0/+0(71766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=71766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=71750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=583 age=109ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=583 age=78ms max_gap=110.0ms
+[  400.0s] RECEIVER帧数=1190/age=78ms A=2(72750ms) T12=+0/+0(72766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=72766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=72750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=593 age=94ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=593 age=78ms max_gap=110.0ms
+[  401.0s] RECEIVER帧数=1210/age=63ms A=2(73750ms) T12=+0/+0(73766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=73766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=73750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=603 age=78ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=603 age=63ms max_gap=110.0ms
+[  402.0s] RECEIVER帧数=1230/age=47ms A=2(74750ms) T12=+0/+0(74766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=74766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=74750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=613 age=78ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=613 age=47ms max_gap=110.0ms
+[  403.0s] RECEIVER帧数=1250/age=47ms A=2(75750ms) T12=+0/+0(75766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=75766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=75750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=623 age=63ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=623 age=47ms max_gap=110.0ms
+[  404.0s] RECEIVER帧数=1270/age=31ms A=2(76750ms) T12=+0/+0(76766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=76766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=76750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=633 age=47ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=633 age=31ms max_gap=110.0ms
+[  405.0s] RECEIVER帧数=1290/age=31ms A=2(77750ms) T12=+0/+0(77766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=77766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=77750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=643 age=47ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=643 age=31ms max_gap=110.0ms
+[  406.0s] RECEIVER帧数=1310/age=16ms A=2(78750ms) T12=+0/+0(78766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=78766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=78750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=653 age=31ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=653 age=16ms max_gap=110.0ms
+[  407.0s] RECEIVER帧数=1329/age=31ms A=2(79750ms) T12=+0/+0(79766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=79766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=79750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=663 age=31ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=662 age=109ms max_gap=110.0ms
+[  408.0s] RECEIVER帧数=1349/age=16ms A=2(80750ms) T12=+0/+0(80766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=80766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=80750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=673 age=16ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=672 age=94ms max_gap=110.0ms
+[  409.0s] RECEIVER帧数=1369/age=0ms A=2(81750ms) T12=+0/+0(81766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=81766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=81750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=683 age=0ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=682 age=94ms max_gap=110.0ms
+[  410.0s] RECEIVER帧数=1388/age=78ms A=2(82750ms) T12=+0/+0(82766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=82766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=82750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=692 age=94ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=692 age=78ms max_gap=110.0ms
+[  411.0s] RECEIVER帧数=1408/age=63ms A=2(83750ms) T12=+0/+0(83766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=83766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=83750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=702 age=94ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=702 age=63ms max_gap=110.0ms
+[  412.0s] RECEIVER帧数=1428/age=63ms A=2(84750ms) T12=+0/+0(84766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=84766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=84750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=712 age=78ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=712 age=63ms max_gap=110.0ms
+[  413.0s] RECEIVER帧数=1448/age=47ms A=2(85750ms) T12=+0/+0(85766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=85766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=85750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=722 age=63ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=722 age=47ms max_gap=110.0ms
+[  414.0s] RECEIVER帧数=1468/age=31ms A=2(86750ms) T12=+0/+0(86766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=86766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=86750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=732 age=63ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=732 age=31ms max_gap=110.0ms
+[  415.0s] RECEIVER帧数=1488/age=31ms A=2(87750ms) T12=+0/+0(87766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=87766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=87750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=742 age=47ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=742 age=31ms max_gap=110.0ms
+[  416.0s] RECEIVER帧数=1508/age=16ms A=2(88750ms) T12=+0/+0(88766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=88766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=88750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=752 age=31ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=752 age=16ms max_gap=110.0ms
+[  417.0s] RECEIVER帧数=1528/age=16ms A=2(89750ms) T12=+0/+0(89766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=89766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=89750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=762 age=31ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=762 age=16ms max_gap=110.0ms
+[  418.0s] RECEIVER帧数=1547/age=16ms A=2(90750ms) T12=+0/+0(90766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=90766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=90750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=772 age=16ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=771 age=94ms max_gap=110.0ms
+[  419.0s] RECEIVER帧数=1567/age=0ms A=2(91750ms) T12=+0/+0(91766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=91766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=91750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=782 age=0ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=781 age=94ms max_gap=110.0ms
+[  420.0s] RECEIVER帧数=1586/age=78ms A=2(92750ms) T12=+0/+0(92766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=92766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=92750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=791 age=94ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=791 age=78ms max_gap=110.0ms
+[  421.0s] RECEIVER帧数=1606/age=63ms A=2(93750ms) T12=+0/+0(93766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=93766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=93750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=801 age=94ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=801 age=63ms max_gap=110.0ms
+[  422.0s] RECEIVER帧数=1626/age=63ms A=2(94750ms) T12=+0/+0(94766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=94766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=94750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=811 age=78ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=811 age=63ms max_gap=110.0ms
+[  423.0s] RECEIVER帧数=1646/age=47ms A=2(95750ms) T12=+0/+0(95766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=95766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=95750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=821 age=63ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=821 age=47ms max_gap=110.0ms
+[  424.0s] RECEIVER帧数=1666/age=31ms A=2(96750ms) T12=+0/+0(96766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=96766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=96750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=831 age=63ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=831 age=31ms max_gap=110.0ms
+[  425.0s] RECEIVER帧数=1686/age=31ms A=2(97750ms) T12=+0/+0(97766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=97766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=97750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=841 age=47ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=841 age=31ms max_gap=110.0ms
+[  426.0s] RECEIVER帧数=1706/age=16ms A=2(98750ms) T12=+0/+0(98766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=98766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=98750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=851 age=47ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=851 age=16ms max_gap=110.0ms
+[  427.0s] RECEIVER帧数=1726/age=0ms A=2(99750ms) T12=+0/+0(99766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=99766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=99750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=861 age=31ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=861 age=0ms max_gap=110.0ms
+[  428.0s] RECEIVER帧数=1745/age=16ms A=2(100750ms) T12=+0/+0(100766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=100766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=100750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=871 age=16ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=870 age=94ms max_gap=110.0ms
+[  429.0s] RECEIVER帧数=1765/age=16ms A=2(101750ms) T12=+0/+0(101766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=101766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=101750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=881 age=16ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=880 age=94ms max_gap=110.0ms
+[  430.0s] RECEIVER帧数=1784/age=78ms A=2(102750ms) T12=+0/+0(102766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=102766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=102750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=890 age=94ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=890 age=78ms max_gap=110.0ms
+[  431.0s] RECEIVER帧数=1804/age=63ms A=2(103750ms) T12=+0/+0(103766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=103766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=103750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=900 age=94ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=900 age=63ms max_gap=110.0ms
+[  432.0s] RECEIVER帧数=1824/age=63ms A=2(104750ms) T12=+0/+0(104766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=104766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=104750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=910 age=78ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=910 age=63ms max_gap=110.0ms
+[  433.0s] RECEIVER帧数=1844/age=47ms A=2(105750ms) T12=+0/+0(105766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=105766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=105750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=920 age=78ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=920 age=47ms max_gap=110.0ms
+[  434.0s] RECEIVER帧数=1864/age=47ms A=2(106750ms) T12=+0/+0(106766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=106766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=106750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=930 age=63ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=930 age=47ms max_gap=110.0ms
+[  435.0s] RECEIVER帧数=1884/age=31ms A=2(107750ms) T12=+0/+0(107766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=107766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=107750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=940 age=47ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=940 age=31ms max_gap=110.0ms
+[  436.0s] RECEIVER帧数=1904/age=16ms A=2(108750ms) T12=+0/+0(108766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=108766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=108750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=950 age=47ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=950 age=16ms max_gap=110.0ms
+[  437.0s] RECEIVER帧数=1924/age=16ms A=2(109750ms) T12=+0/+0(109766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=109766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=109750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=960 age=31ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=960 age=16ms max_gap=110.0ms
+[  438.0s] RECEIVER帧数=1943/age=16ms A=2(110750ms) T12=+0/+0(110766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=110766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=110750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=970 age=16ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=969 age=109ms max_gap=110.0ms
+[  439.0s] RECEIVER帧数=1963/age=16ms A=2(111750ms) T12=+0/+0(111766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=111766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=111750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=980 age=16ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=979 age=94ms max_gap=110.0ms
+[  440.0s] RECEIVER帧数=1982/age=78ms A=2(112750ms) T12=+0/+0(112766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=112766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=112750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=989 age=109ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=989 age=78ms max_gap=110.0ms
+[  441.0s] RECEIVER帧数=2002/age=78ms A=2(113750ms) T12=+0/+0(113766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=113766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=113750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=999 age=94ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=999 age=78ms max_gap=110.0ms
+[  442.0s] RECEIVER帧数=2022/age=63ms A=2(114750ms) T12=+0/+0(114766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=114766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=114750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1009 age=78ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1009 age=63ms max_gap=110.0ms
+[  443.0s] RECEIVER帧数=2042/age=47ms A=2(115750ms) T12=+0/+0(115766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=115766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=115750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1019 age=78ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1019 age=47ms max_gap=110.0ms
+[  444.0s] RECEIVER帧数=2062/age=47ms A=2(116750ms) T12=+0/+0(116766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=116766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=116750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1029 age=63ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1029 age=47ms max_gap=110.0ms
+[  445.0s] RECEIVER帧数=2082/age=31ms A=2(117750ms) T12=+0/+0(117766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=117766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=117750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1039 age=47ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1039 age=31ms max_gap=110.0ms
+[  446.0s] RECEIVER帧数=2102/age=16ms A=2(118750ms) T12=+0/+0(118766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=118766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=118750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1049 age=47ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1049 age=16ms max_gap=110.0ms
+[  447.0s] RECEIVER帧数=2122/age=16ms A=2(119750ms) T12=+0/+0(119766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=119766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=119750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1059 age=31ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1059 age=16ms max_gap=110.0ms
+[  448.0s] RECEIVER帧数=2141/age=16ms A=2(120750ms) T12=+0/+0(120766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=120766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=120750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1069 age=16ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1068 age=109ms max_gap=110.0ms
+[  449.0s] RECEIVER帧数=2161/age=16ms A=2(121750ms) T12=+0/+0(121766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=121766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=121750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1079 age=16ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1078 age=94ms max_gap=110.0ms
+[  450.0s] RECEIVER帧数=2180/age=78ms A=2(122750ms) T12=+0/+0(122766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=122766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=122750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1088 age=109ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1088 age=78ms max_gap=110.0ms
+[  451.0s] RECEIVER帧数=2200/age=78ms A=2(123750ms) T12=+0/+0(123766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=123766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=123750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1098 age=94ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1098 age=78ms max_gap=110.0ms
+[  452.0s] RECEIVER帧数=2220/age=63ms A=2(124750ms) T12=+0/+0(124766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=124766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=124750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1108 age=78ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1108 age=63ms max_gap=110.0ms
+[  453.0s] RECEIVER帧数=2240/age=47ms A=2(125750ms) T12=+0/+0(125766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=125766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=125750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1118 age=78ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1118 age=47ms max_gap=110.0ms
+[  454.0s] RECEIVER帧数=2260/age=47ms A=2(126750ms) T12=+0/+0(126766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=126766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=126750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1128 age=63ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1128 age=47ms max_gap=110.0ms
+[  455.0s] RECEIVER帧数=2280/age=31ms A=2(127750ms) T12=+0/+0(127766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=127766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=127750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1138 age=47ms max_gap=110.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1138 age=31ms max_gap=110.0ms
+[  456.0s] RECEIVER帧数=2300/age=16ms A=2(128750ms) T12=+0/+0(128766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=128766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=128750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1148 age=16ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1148 age=16ms max_gap=110.0ms
+[  457.0s] RECEIVER帧数=2320/age=16ms A=2(129750ms) T12=+0/+0(129766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=129766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=129750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1158 age=31ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1158 age=16ms max_gap=110.0ms
+[  458.0s] RECEIVER帧数=2339/age=31ms A=2(130750ms) T12=+0/+0(130766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=130766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=130750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1168 age=31ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1167 age=109ms max_gap=110.0ms
+[  459.0s] RECEIVER帧数=2359/age=16ms A=2(131750ms) T12=+0/+0(131766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=131766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=131750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1178 age=16ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1177 age=94ms max_gap=110.0ms
+[  460.0s] RECEIVER帧数=2379/age=0ms A=2(132750ms) T12=+0/+0(132766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=132766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=132750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1188 age=0ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1187 age=78ms max_gap=110.0ms
+[  461.0s] RECEIVER帧数=2398/age=78ms A=2(133750ms) T12=+0/+0(133766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=133766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=133750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1197 age=94ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1197 age=78ms max_gap=110.0ms
+[  462.0s] RECEIVER帧数=2418/age=63ms A=2(134750ms) T12=+0/+0(134766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=134766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=134750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1207 age=78ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1207 age=63ms max_gap=110.0ms
+[  463.0s] RECEIVER帧数=2438/age=63ms A=2(135750ms) T12=+0/+0(135766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=135766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=135750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1217 age=78ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1217 age=63ms max_gap=110.0ms
+[  464.0s] RECEIVER帧数=2458/age=47ms A=2(136750ms) T12=+0/+0(136766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=136766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=136750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1227 age=63ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1227 age=47ms max_gap=110.0ms
+[  465.0s] RECEIVER帧数=2478/age=31ms A=2(137750ms) T12=+0/+0(137766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=137766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=137750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1237 age=63ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1237 age=31ms max_gap=110.0ms
+[  466.0s] RECEIVER帧数=2498/age=31ms A=2(138750ms) T12=+0/+0(138766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=138766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=138750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1247 age=47ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1247 age=31ms max_gap=110.0ms
+[  467.0s] RECEIVER帧数=2518/age=16ms A=2(139750ms) T12=+0/+0(139766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=139766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=139750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1257 age=31ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1257 age=16ms max_gap=110.0ms
+[  468.0s] RECEIVER帧数=2538/age=0ms A=2(140750ms) T12=+0/+0(140766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=140766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=140750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1267 age=31ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1267 age=0ms max_gap=110.0ms
+[  469.0s] RECEIVER帧数=2557/age=16ms A=2(141750ms) T12=+0/+0(141766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=141766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=141750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1277 age=16ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1276 age=94ms max_gap=110.0ms
+[  470.0s] RECEIVER帧数=2577/age=16ms A=2(142750ms) T12=+0/+0(142766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=142766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=142750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1287 age=16ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1286 age=94ms max_gap=110.0ms
+[  471.0s] RECEIVER帧数=2596/age=78ms A=2(143750ms) T12=+0/+0(143766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=143766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=143750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1296 age=94ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1296 age=78ms max_gap=110.0ms
+[  472.0s] RECEIVER帧数=2616/age=63ms A=2(144750ms) T12=+0/+0(144766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=144766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=144750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1306 age=94ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1306 age=63ms max_gap=110.0ms
+[  473.0s] RECEIVER帧数=2636/age=63ms A=2(145750ms) T12=+0/+0(145766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=145766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=145750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1316 age=78ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1316 age=63ms max_gap=110.0ms
+[  474.0s] RECEIVER帧数=2656/age=47ms A=2(146750ms) T12=+0/+0(146766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=146766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=146750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1326 age=63ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1326 age=47ms max_gap=110.0ms
+[  475.0s] RECEIVER帧数=2676/age=31ms A=2(147750ms) T12=+0/+0(147766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=147766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=147750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1336 age=63ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1336 age=31ms max_gap=110.0ms
+[  476.0s] RECEIVER帧数=2696/age=31ms A=2(148750ms) T12=+0/+0(148766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=148766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=148750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1346 age=47ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1346 age=31ms max_gap=110.0ms
+[  477.0s] RECEIVER帧数=2716/age=16ms A=2(149750ms) T12=+0/+0(149766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=149766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=149750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1356 age=31ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1356 age=16ms max_gap=110.0ms
+[  478.0s] RECEIVER帧数=2736/age=0ms A=2(150750ms) T12=+0/+0(150766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=150766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=150750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1366 age=31ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1366 age=0ms max_gap=110.0ms
+[  479.0s] RECEIVER帧数=2755/age=16ms A=2(151750ms) T12=+0/+0(151766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=151766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=151750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1376 age=16ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1375 age=94ms max_gap=110.0ms
+[  480.0s] RECEIVER帧数=2775/age=16ms A=2(152750ms) T12=+0/+0(152766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=152766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=152750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1386 age=16ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1385 age=94ms max_gap=110.0ms
+[  481.0s] RECEIVER帧数=2794/age=78ms A=2(153750ms) T12=+0/+0(153766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=153766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=153750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1395 age=94ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1395 age=78ms max_gap=110.0ms
+[  482.0s] RECEIVER帧数=2814/age=63ms A=2(154750ms) T12=+0/+0(154766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=154766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=154750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1405 age=94ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1405 age=63ms max_gap=110.0ms
+[  483.0s] RECEIVER帧数=2834/age=63ms A=2(155750ms) T12=+0/+0(155766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=155766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=155750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1415 age=78ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1415 age=63ms max_gap=110.0ms
+[  484.0s] RECEIVER帧数=2854/age=47ms A=2(156750ms) T12=+0/+0(156766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=156766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=156750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1425 age=78ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1425 age=47ms max_gap=110.0ms
+[  485.0s] RECEIVER帧数=2874/age=47ms A=2(157750ms) T12=+0/+0(157766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=157766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=157750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1435 age=63ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1435 age=47ms max_gap=110.0ms
+[  486.0s] RECEIVER帧数=2894/age=31ms A=2(158750ms) T12=+0/+0(158766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=158766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=158750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1445 age=47ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1445 age=31ms max_gap=110.0ms
+[  487.0s] RECEIVER帧数=2914/age=16ms A=2(159750ms) T12=+0/+0(159766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=159766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=159750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1455 age=47ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1455 age=16ms max_gap=110.0ms
+[  488.0s] RECEIVER帧数=2934/age=16ms A=2(160750ms) T12=+0/+0(160766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=160766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=160750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1465 age=31ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1465 age=16ms max_gap=110.0ms
+[  489.0s] RECEIVER帧数=2953/age=16ms A=2(161750ms) T12=+0/+0(161766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=161766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=161750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1475 age=16ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1474 age=94ms max_gap=110.0ms
+[  490.0s] RECEIVER帧数=2973/age=16ms A=2(162750ms) T12=+0/+0(162766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=162766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=162750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1485 age=16ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1484 age=94ms max_gap=110.0ms
+[  491.0s] RECEIVER帧数=2992/age=78ms A=2(163750ms) T12=+0/+0(163766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=163766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=163750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1494 age=94ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1494 age=78ms max_gap=110.0ms
+[  492.0s] RECEIVER帧数=3012/age=63ms A=2(164750ms) T12=+0/+0(164766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=164766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=164750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1504 age=94ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1504 age=63ms max_gap=110.0ms
+[  493.0s] RECEIVER帧数=3032/age=63ms A=2(165750ms) T12=+0/+0(165766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=165766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=165750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1514 age=78ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1514 age=63ms max_gap=110.0ms
+[  494.0s] RECEIVER帧数=3052/age=47ms A=2(166750ms) T12=+0/+0(166766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=166766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=166750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1524 age=78ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1524 age=47ms max_gap=110.0ms
+[  495.0s] RECEIVER帧数=3072/age=47ms A=2(167750ms) T12=+0/+0(167766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=167766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=167750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1534 age=63ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1534 age=47ms max_gap=110.0ms
+[  496.0s] RECEIVER帧数=3092/age=31ms A=2(168750ms) T12=+0/+0(168766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=168766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=168750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1544 age=47ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1544 age=31ms max_gap=110.0ms
+[  497.0s] RECEIVER帧数=3112/age=16ms A=2(169750ms) T12=+0/+0(169766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=169766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=169750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1554 age=47ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1554 age=16ms max_gap=110.0ms
+[  498.0s] RECEIVER帧数=3132/age=16ms A=2(170750ms) T12=+0/+0(170766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=170766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=170750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1564 age=31ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1564 age=16ms max_gap=110.0ms
+[  499.0s] RECEIVER帧数=3151/age=31ms A=2(171750ms) T12=+0/+0(171766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=171766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=171750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1574 age=31ms max_gap=125.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1573 age=109ms max_gap=110.0ms
+[  500.0s] RECEIVER帧数=3171/age=16ms A=2(172750ms) T12=+0/+0(172766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=172766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=172750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1584 age=16ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1583 age=94ms max_gap=110.0ms
+[  501.0s] RECEIVER帧数=3190/age=78ms A=2(173750ms) T12=+0/+0(173766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=173766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=173750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1593 age=109ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1593 age=78ms max_gap=110.0ms
+[  502.0s] RECEIVER帧数=3210/age=78ms A=2(174750ms) T12=+0/+0(174766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=174766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=174750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1603 age=94ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1603 age=78ms max_gap=110.0ms
+[  503.0s] RECEIVER帧数=3230/age=63ms A=2(175750ms) T12=+0/+0(175766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=175766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=175750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1613 age=78ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1613 age=63ms max_gap=110.0ms
+[  504.0s] RECEIVER帧数=3244/age=359ms A=2(176750ms) T12=+0/+0(176766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=176766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=176750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=359ms max_gap=110.0ms
+[  505.0s] RECEIVER帧数=3244/age=1359ms A=2(177750ms) T12=+0/+0(177766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=177766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=177750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=1375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=1359ms max_gap=110.0ms
+[  506.0s] RECEIVER帧数=3244/age=2359ms A=2(178750ms) T12=+0/+0(178766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=178766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=178750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=2375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=2359ms max_gap=110.0ms
+[  507.0s] RECEIVER帧数=3244/age=3359ms A=2(179750ms) T12=+0/+0(179766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=179766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=179750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=3375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=3359ms max_gap=110.0ms
+[  508.0s] RECEIVER帧数=3244/age=4359ms A=2(180750ms) T12=+0/+0(180766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=180766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=180750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=4375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=4359ms max_gap=110.0ms
+[  509.0s] RECEIVER帧数=3244/age=5359ms A=2(181750ms) T12=+0/+0(181766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=181766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=181750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=5375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=5359ms max_gap=110.0ms
+[  510.0s] RECEIVER帧数=3244/age=6359ms A=2(182750ms) T12=+0/+0(182766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=182766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=182750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=6375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=6359ms max_gap=110.0ms
+[  511.0s] RECEIVER帧数=3244/age=7359ms A=2(183750ms) T12=+0/+0(183766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=183766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=183750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=7375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=7359ms max_gap=110.0ms
+[  512.0s] RECEIVER帧数=3244/age=8359ms A=2(184750ms) T12=+0/+0(184766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=184766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=184750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=8375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=8359ms max_gap=110.0ms
+[  513.0s] RECEIVER帧数=3244/age=9359ms A=2(185750ms) T12=+0/+0(185766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=185766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=185750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=9375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=9359ms max_gap=110.0ms
+[  514.0s] RECEIVER帧数=3244/age=10359ms A=2(186750ms) T12=+0/+0(186766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=186766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=186750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=10375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=10359ms max_gap=110.0ms
+[  515.0s] RECEIVER帧数=3244/age=11359ms A=2(187750ms) T12=+0/+0(187766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=187766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=187750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=11375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=11359ms max_gap=110.0ms
+[  516.0s] RECEIVER帧数=3244/age=12359ms A=2(188750ms) T12=+0/+0(188766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=188766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=188750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=12375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=12359ms max_gap=110.0ms
+[  517.0s] RECEIVER帧数=3244/age=13359ms A=2(189750ms) T12=+0/+0(189766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=189766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=189750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=13375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=13359ms max_gap=110.0ms
+[  518.0s] RECEIVER帧数=3244/age=14359ms A=2(190750ms) T12=+0/+0(190766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=190766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=190750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=14375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=14359ms max_gap=110.0ms
+[  519.0s] RECEIVER帧数=3244/age=15359ms A=2(191750ms) T12=+0/+0(191766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=191766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=191750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=15375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=15359ms max_gap=110.0ms
+[  520.0s] RECEIVER帧数=3244/age=16359ms A=2(192750ms) T12=+0/+0(192766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=192766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=192750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=16375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=16359ms max_gap=110.0ms
+[  521.0s] RECEIVER帧数=3244/age=17359ms A=2(193750ms) T12=+0/+0(193766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=193766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=193750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=17375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=17359ms max_gap=110.0ms
+[  522.0s] RECEIVER帧数=3244/age=18359ms A=2(194750ms) T12=+0/+0(194766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=194766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=194750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=18375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=18359ms max_gap=110.0ms
+[  523.0s] RECEIVER帧数=3244/age=19359ms A=2(195750ms) T12=+0/+0(195766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=195766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=195750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=19375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=19359ms max_gap=110.0ms
+[  524.0s] RECEIVER帧数=3244/age=20359ms A=2(196750ms) T12=+0/+0(196766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=196766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=196750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=20375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=20359ms max_gap=110.0ms
+[  525.0s] RECEIVER帧数=3244/age=21359ms A=2(197750ms) T12=+0/+0(197766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=197766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=197750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=21375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=21359ms max_gap=110.0ms
+[  526.0s] RECEIVER帧数=3244/age=22359ms A=2(198750ms) T12=+0/+0(198766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=198766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=198750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=22375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=22359ms max_gap=110.0ms
+[  527.0s] RECEIVER帧数=3244/age=23359ms A=2(199750ms) T12=+0/+0(199766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=199766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=199750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=23375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=23359ms max_gap=110.0ms
+[  528.0s] RECEIVER帧数=3244/age=24359ms A=2(200750ms) T12=+0/+0(200766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=200766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=200750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=24375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=24359ms max_gap=110.0ms
+[  529.0s] RECEIVER帧数=3244/age=25359ms A=2(201750ms) T12=+0/+0(201766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=201766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=201750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=25375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=25359ms max_gap=110.0ms
+[  530.0s] RECEIVER帧数=3244/age=26359ms A=2(202750ms) T12=+0/+0(202766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=202766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=202750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=26375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=26359ms max_gap=110.0ms
+[  531.0s] RECEIVER帧数=3244/age=27359ms A=2(203750ms) T12=+0/+0(203766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=203766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=203750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=27375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=27359ms max_gap=110.0ms
+[  532.0s] RECEIVER帧数=3244/age=28359ms A=2(204750ms) T12=+0/+0(204766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=204766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=204750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=28375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=28359ms max_gap=110.0ms
+[  533.0s] RECEIVER帧数=3244/age=29359ms A=2(205750ms) T12=+0/+0(205766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=205766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=205750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=29375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=29359ms max_gap=110.0ms
+[  534.0s] RECEIVER帧数=3244/age=30359ms A=2(206750ms) T12=+0/+0(206766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=206766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=206750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=30375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=30359ms max_gap=110.0ms
+[  535.0s] RECEIVER帧数=3244/age=31359ms A=2(207750ms) T12=+0/+0(207766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=207766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=207750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=31375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=31359ms max_gap=110.0ms
+[  536.0s] RECEIVER帧数=3244/age=32359ms A=2(208750ms) T12=+0/+0(208766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=208766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=208750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=32375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=32359ms max_gap=110.0ms
+[  537.0s] RECEIVER帧数=3244/age=33359ms A=2(209750ms) T12=+0/+0(209766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=209766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=209750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=33375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=33359ms max_gap=110.0ms
+[  538.0s] RECEIVER帧数=3244/age=34359ms A=2(210750ms) T12=+0/+0(210766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=210766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=210750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=34375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=34359ms max_gap=110.0ms
+[  539.0s] RECEIVER帧数=3244/age=35359ms A=2(211750ms) T12=+0/+0(211766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=211766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=211750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=35375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=35359ms max_gap=110.0ms
+[  540.0s] RECEIVER帧数=3244/age=36359ms A=2(212750ms) T12=+0/+0(212766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=212766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=212750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=36375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=36359ms max_gap=110.0ms
+[  541.0s] RECEIVER帧数=3244/age=37359ms A=2(213750ms) T12=+0/+0(213766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=213766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=213750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=37375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=37359ms max_gap=110.0ms
+[  542.0s] RECEIVER帧数=3244/age=38359ms A=2(214750ms) T12=+0/+0(214766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=214766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=214750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=38375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=38359ms max_gap=110.0ms
+[  543.0s] RECEIVER帧数=3244/age=39359ms A=2(215750ms) T12=+0/+0(215766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=215766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=215750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=39375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=39359ms max_gap=110.0ms
+[  544.0s] RECEIVER帧数=3244/age=40359ms A=2(216750ms) T12=+0/+0(216766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=216766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=216750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=40375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=40359ms max_gap=110.0ms
+[  545.0s] RECEIVER帧数=3244/age=41359ms A=2(217750ms) T12=+0/+0(217766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=217766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=217750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=41375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=41359ms max_gap=110.0ms
+[  546.0s] RECEIVER帧数=3244/age=42359ms A=2(218750ms) T12=+0/+0(218766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=218766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=218750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=42375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=42359ms max_gap=110.0ms
+[  547.0s] RECEIVER帧数=3244/age=43359ms A=2(219750ms) T12=+0/+0(219766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=219766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=219750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=43375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=43359ms max_gap=110.0ms
+[  548.0s] RECEIVER帧数=3244/age=44359ms A=2(220750ms) T12=+0/+0(220766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=220766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=220750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=44375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=44359ms max_gap=110.0ms
+[  549.0s] RECEIVER帧数=3244/age=45359ms A=2(221750ms) T12=+0/+0(221766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=221766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=221750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=45375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=45359ms max_gap=110.0ms
+[  550.0s] RECEIVER帧数=3244/age=46359ms A=2(222750ms) T12=+0/+0(222766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=222766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=222750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=46375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=46359ms max_gap=110.0ms
+[  551.0s] RECEIVER帧数=3244/age=47359ms A=2(223750ms) T12=+0/+0(223766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=223766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=223750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=47375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=47359ms max_gap=110.0ms
+[  552.0s] RECEIVER帧数=3244/age=48359ms A=2(224750ms) T12=+0/+0(224766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=224766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=224750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=48375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=48359ms max_gap=110.0ms
+[  553.0s] RECEIVER帧数=3244/age=49359ms A=2(225750ms) T12=+0/+0(225766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=225766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=225750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=49375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=49359ms max_gap=110.0ms
+[  554.0s] RECEIVER帧数=3244/age=50359ms A=2(226750ms) T12=+0/+0(226766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=226766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=226750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=50375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=50359ms max_gap=110.0ms
+[  555.0s] RECEIVER帧数=3244/age=51359ms A=2(227750ms) T12=+0/+0(227766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=227766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=227750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=51375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=51359ms max_gap=110.0ms
+[  556.0s] RECEIVER帧数=3244/age=52359ms A=2(228750ms) T12=+0/+0(228766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=228766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=228750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=52375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=52359ms max_gap=110.0ms
+[  557.0s] RECEIVER帧数=3244/age=53359ms A=2(229750ms) T12=+0/+0(229766ms) | SDO未应答事件=0
+  RECEIVER.STD.0x10B     DLC=8 DATA=00 00 00 00 00 00 00 00 count=2 age=229766ms max_gap=47.0ms
+  RECEIVER.STD.0x10A     DLC=8 DATA=01 01 02 00 00 00 00 00 count=2 age=229750ms max_gap=47.0ms
+  RECEIVER.STD.0x701     DLC=1 DATA=7F                      count=1620 age=53375ms max_gap=140.0ms
+  RECEIVER.STD.0x702     DLC=1 DATA=7F                      count=1620 age=53359ms max_gap=110.0ms
+采集结束：operator_stop_file；原始记录：E:\1_work\ChassisCar_test\logs\ch1-receiver-20261022-145632-664184\frames.jsonl

@@ -1,0 +1,60 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "reason": "Operator switched to CANTest; passive listener closed normally and SDK device released.",
+  "files": [
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-watch-20261022-140844-569953\\events.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-watch-closed-for-cantest-141339-477651\\events.jsonl",
+      "bytes": 202740,
+      "sha256": "23d230e9153a7745e089dfc665fc5ea792e2ea2b0246a7efd689a95fc56d9fa9"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-watch-20261022-140844-569953\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-watch-closed-for-cantest-141339-477651\\frames.jsonl",
+      "bytes": 1324107,
+      "sha256": "26c81f530dbef3ad7fe3be7e72f99dd3663d00c332651d8efeb01e16a3efcfc7"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-watch-20261022-140844-569953\\metadata.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-watch-closed-for-cantest-141339-477651\\metadata.json",
+      "bytes": 1169,
+      "sha256": "2201f29b78586c50554967361872e0000d2dbcfbf867d60e201b6416ae1f0537"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-watch-20261022-140844-569953\\sha256.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-watch-closed-for-cantest-141339-477651\\sha256.json",
+      "bytes": 352,
+      "sha256": "8e1327b3c79efcdd1d3bdec2a174f06252d2df114b15bd5b256120bdf82e48c2"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-watch-20261022-140844-569953\\summary.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-watch-closed-for-cantest-141339-477651\\summary.json",
+      "bytes": 1179,
+      "sha256": "31abd78119e86d091e1f8d247233c0ce4e398d1d1df66dec9fd54490981020d0"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-watch-20261022-140844-569953.stdout.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-watch-closed-for-cantest-141339-477651\\car2-receiver-watch-20261022-140844-569953.stdout.log",
+      "bytes": 107149,
+      "sha256": "d86734360243a2858a3133afd77c45561704966d1fa6c67c0ad25a56329c91e2"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-watch-20261022-140844-569953.stderr.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-watch-closed-for-cantest-141339-477651\\car2-receiver-watch-20261022-140844-569953.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\stop-car2-receiver-watch-20261022-140844-569953.flag",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-watch-closed-for-cantest-141339-477651\\stop-car2-receiver-watch-20261022-140844-569953.flag",
+      "bytes": 74,
+      "sha256": "f3d5c639915565cb00a9c28c3ff8026990db87fbec68148eeaebdd54a20a20aa"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\car2-receiver-capture-current.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-watch-closed-for-cantest-141339-477651\\car2-receiver-capture-current.json",
+      "bytes": 690,
+      "sha256": "d0bdc1e890fb87719c81e576b35d100d11d536d87290dba45c6b0b8c1ef8ce4d"
+    }
+  ]
+}

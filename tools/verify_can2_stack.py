@@ -49,6 +49,17 @@ chains = {
         'service_fault_stop', 'AppLog_Printf']),
     'fault stop retry': (canopen_capacity, ['Patrol_CanopenTask', 'PatrolRuntime_Tick',
         'service_fault_stop', 'dispatch_fault_stop', 'PatrolFaultStop_Take']),
+    'diagnostic timeout log': (canopen_capacity, ['Patrol_CanopenTask', 'PatrolRuntime_Tick',
+        'PatrolRuntime_Take', 'AppLog_Printf']),
+    'write verification log': (canopen_capacity, ['Patrol_CanopenTask', 'PatrolRuntime_Tick', 'AppLog_Printf']),
+    'steering verification read': (canopen_capacity, ['Patrol_CanopenTask', 'PatrolRuntime_Tick',
+        'PatrolRuntime_Take', 'BenchSteering_Take', 'PatrolCanopen_SdoRead']),
+    'drive verification read': (canopen_capacity, ['Patrol_CanopenTask', 'PatrolRuntime_Tick',
+        'PatrolRuntime_Take', 'BenchDrive_Take', 'PatrolCanopen_SdoRead']),
+    'steering verification reply': (rx_capacity, ['Patrol_CanRxTask', 'PatrolRuntime_OnCanFrame',
+        'BenchSteering_OnFrame', 'PatrolCanopen_ParseSdoValue']),
+    'drive verification reply': (rx_capacity, ['Patrol_CanRxTask', 'PatrolRuntime_OnCanFrame',
+        'BenchDrive_OnFrame', 'PatrolCanopen_ParseSdoValue']),
 }
 for label, (capacity, chain) in chains.items():
     missing = [name for name in chain if name not in frames]

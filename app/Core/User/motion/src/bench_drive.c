@@ -27,12 +27,15 @@ typedef enum
     DRIVE_STEP_STOP_COMPLETE = 25,
 } BenchDriveStep;
 
+enum { VERIFY_NONE, VERIFY_STATUS, VERIFY_MODE, VERIFY_LEFT, VERIFY_RIGHT };
+
 // 锁存行走执行器首个故障并请求切断动力输出。清除在途事务、进入 BENCH_FAULT；已故障时直接返回，不用后续派生错误覆盖首因。
 static void fail(BenchDrive *b, uint32_t fault)
 {
     if (b->phase == BENCH_FAULT)
         return;
     b->pending = 0;
+    b->verify = 0U;
     b->fault = fault;
     b->cut_power = 1;
     b->phase = BENCH_FAULT;
@@ -41,6 +44,42 @@ static void fail(BenchDrive *b, uint32_t fault)
 static int8_t direction(int16_t rpm)
 {
     return (rpm > 0) - (rpm < 0);
+}
+
+// 正常 ACK 和只读核验共用步骤推进。只有左右零目标均确认后才建立停车采样起点；半对目标核验后若新请求已变化，回到最新目标仲裁。
+static void complete_step(BenchDrive* b, uint32_t now, uint8_t verified)
+{
+    b->pending = b->verify = 0U;
+    if (b->step == DRIVE_STEP_READ_ENABLED) {
+        b->step = DRIVE_STEP_ACTIVE;
+        b->phase = BENCH_ACTIVE;
+    } else if (verified && b->step == DRIVE_STEP_TARGET_LEFT && !b->reversing && b->desired != b->writing) {
+        b->applied = INT16_MIN; /* Force the latest pair even if desired equals the older applied pair. */
+        b->step = DRIVE_STEP_ACTIVE;
+    } else if (b->step == DRIVE_STEP_TARGET_RIGHT) {
+        b->step = DRIVE_STEP_ACTIVE;
+        b->applied = b->writing;
+        if (b->writing) b->direction = direction(b->writing);
+        if (b->reversing) b->zero_ms = b->left_ms = b->right_ms = now;
+    } else {
+        b->step++;
+        if (b->step == DRIVE_STEP_WAIT_ZERO) b->zero_ms = b->left_ms = b->right_ms = now;
+    }
+}
+
+// 只对活动期双轮目标写入核验；zero_ms 在未进入停车反馈确认之前保存绝对核验起点，不改变换向总期限。
+static void begin_verify(BenchDrive* b, uint32_t now)
+{
+    b->pending = 0U;
+    b->verify = VERIFY_STATUS;
+    b->zero_ms = now;
+}
+
+// 判断当前在途请求是否为可核验的活动运动写入；准备使能、模式写入和停机命令不经此路径自动恢复。
+static uint8_t motion_write(const BenchDrive* b)
+{
+    return b->phase == BENCH_ACTIVE && !b->read &&
+        (b->step == DRIVE_STEP_TARGET_LEFT || b->step == DRIVE_STEP_TARGET_RIGHT);
 }
 // 清空行走执行器状态并回到空闲阶段。重置握手、目标、方向和停车计数；仅修改 RAM，不发送 CAN 报文。
 void BenchDrive_Init(BenchDrive *b)
@@ -69,6 +108,7 @@ void BenchDrive_Stop(BenchDrive *b, uint32_t now, uint8_t emergency)
         return;
     /* Cancel pending motion; no write is retried after a lost acknowledgement. */
     b->pending = 0;
+    b->verify = 0U;
     b->phase = BENCH_STOPPING;
     b->started_ms = now;
     b->step = DRIVE_STEP_STOP_LEFT;
@@ -94,7 +134,14 @@ void BenchDrive_Tick(BenchDrive *b, uint32_t now, uint8_t requested, uint8_t saf
     }
     if (!requested)
         BenchDrive_Stop(b, now, 0);
-    if (b->pending && now - b->sent_ms >= 100U)
+    if (b->verify)
+    {
+        if (now - b->zero_ms >= BENCH_WRITE_VERIFY_MS ||
+            (b->pending && now - b->sent_ms >= BENCH_VERIFY_READ_MS)) { fail(b, 11U); return; }
+    }
+    else if (b->pending && motion_write(b) && now - b->sent_ms >= BENCH_WRITE_ACK_WAIT_MS)
+        begin_verify(b, now);
+    else if (b->pending && now - b->sent_ms >= 100U)
     {
         fail(b, 4);
         return;
@@ -170,6 +217,26 @@ uint8_t BenchDrive_Take(BenchDrive *b, uint32_t now, PatrolCanFrame *f)
     if (b->pending || b->phase == BENCH_IDLE || b->phase == BENCH_FAULT || b->step == DRIVE_STEP_ACTIVE ||
         b->step == DRIVE_STEP_WAIT_ZERO)
         return 0;
+    if (b->verify) {
+        if (now - b->zero_ms >= BENCH_WRITE_VERIFY_MS) { fail(b, 11U); return 0U; }
+        b->index = b->verify == VERIFY_STATUS ? 0x6041U : b->verify == VERIFY_MODE ? 0x6061U :
+            b->verify == VERIFY_LEFT ? 0x60FFU : 0x68FFU;
+        b->read = 1U;
+        b->width = b->verify == VERIFY_STATUS ? 2U : b->verify == VERIFY_MODE ? 1U : 4U;
+        *f = PatrolCanopen_SdoRead(2U, b->index, 0U);
+        b->pending = 1U;
+        b->sent_ms = now;
+        return 1U;
+    }
+    /* The other axis may have held the bus while this pair was queued. A
+     * superseding request must go through direction/zero-speed arbitration
+     * again, including when only the old left target had already been sent. */
+    if (b->phase == BENCH_ACTIVE && !b->reversing && b->desired != b->writing &&
+        (b->step == DRIVE_STEP_TARGET_LEFT || b->step == DRIVE_STEP_TARGET_RIGHT)) {
+        b->applied = INT16_MIN;
+        b->step = DRIVE_STEP_ACTIVE;
+        return 0U;
+    }
     if (b->step == DRIVE_STEP_PREOP || b->step == DRIVE_STEP_STOP_COMPLETE)
     {
         /* Vendor dual-drive examples select Pre-Operational for SDO control.
@@ -261,6 +328,35 @@ uint8_t BenchDrive_OnFrame(BenchDrive *b, const PatrolCanFrame *f, uint32_t now)
     if (!b->pending || f->id != 0x582 || f->dlc < 4 || f->dlc > 8 || f->data[1] != (uint8_t)b->index ||
         f->data[2] != (uint8_t)(b->index >> 8) || f->data[3])
         return 0;
+    if (b->verify) {
+        if (now - b->zero_ms >= BENCH_WRITE_VERIFY_MS || now - b->sent_ms >= BENCH_VERIFY_READ_MS) {
+            fail(b, 11U); return 1U;
+        }
+        if (f->data[0] == 0x80U) {
+            if (f->dlc == 8U) fail(b, 11U);
+            return 1U;
+        }
+        if (!PatrolCanopen_ParseSdoValue(f, 2U, b->index, 0U, &value, &width) || width != b->width) return 1U;
+        b->pending = 0U;
+        if (b->verify == VERIFY_STATUS) {
+            if ((value & 0x4FU) != 7U || (value & 8U)) { fail(b, 11U); return 1U; }
+            b->verify = VERIFY_MODE;
+        } else if (b->verify == VERIFY_MODE) {
+            if (value != 3) { fail(b, 11U); return 1U; }
+            b->verify = VERIFY_LEFT;
+        } else {
+            int32_t expected = b->verify == VERIFY_LEFT ? b->writing :
+                b->step == DRIVE_STEP_TARGET_LEFT ? -(int32_t)b->applied : -(int32_t)b->writing;
+            if (value != expected) { fail(b, 11U); return 1U; }
+            if (b->verify == VERIFY_LEFT) b->verify = VERIFY_RIGHT;
+            else complete_step(b, now, 1U);
+        }
+        return 1U;
+    }
+    if (motion_write(b) && now - b->sent_ms >= BENCH_WRITE_ACK_WAIT_MS && f->data[0] != 0x80U) {
+        begin_verify(b, now);
+        return 1U;
+    }
     if (now - b->sent_ms >= 100U)
     {
         fail(b, 4);
@@ -297,34 +393,6 @@ uint8_t BenchDrive_OnFrame(BenchDrive *b, const PatrolCanFrame *f, uint32_t now)
     }
     else if (f->data[0] != 0x60)
         return 1;
-    b->pending = 0;
-    if (b->step == DRIVE_STEP_READ_ENABLED)
-    {
-        b->step = DRIVE_STEP_ACTIVE;
-        b->phase = BENCH_ACTIVE;
-    }
-    else if (b->step == DRIVE_STEP_TARGET_RIGHT)
-    {
-        b->step = DRIVE_STEP_ACTIVE;
-        b->applied = b->writing;
-        if (b->writing)
-            b->direction = direction(b->writing);
-        if (b->reversing)
-        {
-            b->zero_ms = now;
-            b->left_ms = now;
-            b->right_ms = now;
-        }
-    }
-    else
-    {
-        b->step++;
-        if (b->step == DRIVE_STEP_WAIT_ZERO)
-        {
-            b->zero_ms = now;
-            b->left_ms = now;
-            b->right_ms = now;
-        }
-    }
+    complete_step(b, now, 0U);
     return 1;
 }

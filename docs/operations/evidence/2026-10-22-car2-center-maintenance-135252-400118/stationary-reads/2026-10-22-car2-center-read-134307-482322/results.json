@@ -1,0 +1,93 @@
+{
+  "stationary_before": [
+    {
+      "node": 1,
+      "index": "0x6041",
+      "value": 5712
+    },
+    {
+      "node": 2,
+      "index": "0x6041",
+      "value": 8272
+    },
+    {
+      "node": 2,
+      "index": "0x6069",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6869",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6069",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6869",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6069",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6869",
+      "value": 0
+    }
+  ],
+  "driver_position_samples": [
+    -83815,
+    -83815,
+    -83815
+  ],
+  "stationary_after": [
+    {
+      "node": 1,
+      "index": "0x6041",
+      "value": 5712
+    },
+    {
+      "node": 2,
+      "index": "0x6041",
+      "value": 8272
+    },
+    {
+      "node": 2,
+      "index": "0x6069",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6869",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6069",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6869",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6069",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6869",
+      "value": 0
+    }
+  ],
+  "operator_confirmed_mechanical_center": true,
+  "read_only": true
+}

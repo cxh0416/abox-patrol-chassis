@@ -1,0 +1,15 @@
+{
+  "started_at": "2026-10-22T14:49:35.9568995+08:00",
+  "pid": 27984,
+  "output": "E:\\1_work\\ChassisCar_test\\logs\\ch1-receiver-20261022-144935-935137",
+  "stdout": "E:\\1_work\\ChassisCar_test\\logs\\ch1-receiver-20261022-144935-935137.stdout.log",
+  "stderr": "E:\\1_work\\ChassisCar_test\\logs\\ch1-receiver-20261022-144935-935137.stderr.log",
+  "stop_file": "E:\\1_work\\ChassisCar_test\\logs\\stop-ch1-receiver-20261022-144935-935137.flag",
+  "duration_s": 1800,
+  "physical_channel": 1,
+  "adapter_channel": 0,
+  "bus_label": "RECEIVER",
+  "bitrate_kbps": 500,
+  "hardware_listen_only": true,
+  "wiring_basis": "Last operator confirmation: CH1 at receiver CAN output"
+}

@@ -283,6 +283,14 @@ uint32_t PatrolRuntime_ApplyCut(uint32_t now)
 uint8_t PatrolRuntime_Take(uint32_t now, PatrolCanFrame* request, uint8_t* owner)
 {
     uint8_t have_request = 0, bench_frame = 0;
+    /* While a motion write has an unknown outcome, only its bounded uploads
+     * may progress. Do not send either axis' queued movement in the meantime. */
+    if (g_motion.bench.verify || g_motion.drive.verify) {
+        if (g_motion.diagnostics.pending_valid || g_motion.bench.pending || g_motion.drive.pending) return 0U;
+        *owner = g_motion.bench.verify ? 1U : 2U;
+        return *owner == 1U ? BenchSteering_Take(&g_motion.bench, now, request) :
+            BenchDrive_Take(&g_motion.drive, now, request);
+    }
     /* Alternate execution and diagnostics, never overlap pending transactions. */
     g_motion.diagnostics.stop_priority = g_motion.bench.phase == BENCH_STOPPING;
     if (!g_motion.diagnostics.pending_valid && !g_motion.bench.pending && !g_motion.drive.pending &&
@@ -302,7 +310,16 @@ uint8_t PatrolRuntime_Take(uint32_t now, PatrolCanFrame* request, uint8_t* owner
         if (have_request) g_motion.bench_turn = 0;
     }
     if (!have_request && !g_motion.bench.pending && !g_motion.drive.pending) {
-        have_request = PatrolDiagnostics_TakeSdoRead(&g_motion.diagnostics, now, request);
+        const ChassisControl* control = RemoteService_State();
+        uint8_t allow_retry = ChassisControl_SafetyReady(control, now) &&
+            VehiclePowerOutput_IsOn() && !PatrolRuntimePort_CanBusOffActive() &&
+            !PatrolRuntimePort_OtaBusy();
+        uint32_t before_timeouts = g_motion.diagnostics.sdo_timeout_count;
+        have_request = PatrolDiagnostics_TakeSdoRead(&g_motion.diagnostics, now, request, allow_retry);
+        if (g_motion.diagnostics.sdo_timeout_count != before_timeouts)
+            APP_LOGW("SDOREAD", "timeout entry=%u retry=%u pending=%u total=%lu",
+                (unsigned)g_motion.diagnostics.pending_entry, (unsigned)g_motion.diagnostics.pending_retry,
+                (unsigned)g_motion.diagnostics.pending_valid, (unsigned long)g_motion.diagnostics.sdo_timeout_count);
         if (have_request) g_motion.bench_turn = 1;
     }
     if (!have_request && !g_motion.diagnostics.pending_valid && !g_motion.bench.pending && !g_motion.drive.pending) {
@@ -553,6 +570,8 @@ void PatrolRuntime_Tick(void)
         if (PATROL_CHASSIS_ACTUATION_ENABLED && PATROL_DRIVE_EXECUTOR_ENABLED && drive_requested && safe &&
             g_motion.bench.phase == BENCH_ACTIVE && g_motion.drive.phase == BENCH_IDLE)
             BenchDrive_Start(&g_motion.drive, now);
+        uint8_t drive_was_verifying = g_motion.drive.verify;
+        uint8_t steer_was_verifying = g_motion.bench.verify;
         BenchDrive_Tick(&g_motion.drive, now, drive_requested, safe,
             c->target_rpm, g_motion.diagnostics.left_actual_rpm, g_motion.diagnostics.right_actual_rpm,
             g_motion.diagnostics.left_rpm_ms, g_motion.diagnostics.right_rpm_ms);
@@ -560,6 +579,12 @@ void PatrolRuntime_Tick(void)
             center_executor_active && g_motion.center_cal.phase == CENTER_CAL_STOPPING ?
                 stop_transport_safe : safe,
             requested_angle, c->feedback.steering_actual_mdeg);
+        if (!drive_was_verifying && g_motion.drive.verify == 1U)
+            APP_LOGW("ACKVERIFY", "drive step=%u: lost write ACK; uploads only, limit=%u ms",
+                (unsigned)g_motion.drive.step, (unsigned)BENCH_WRITE_VERIFY_MS);
+        if (!steer_was_verifying && g_motion.bench.verify == 1U)
+            APP_LOGW("ACKVERIFY", "steer step=%u: lost write ACK; uploads only, limit=%u ms",
+                (unsigned)g_motion.bench.step, (unsigned)BENCH_WRITE_VERIFY_MS);
         g_motion.diagnostics.motion_priority = CenterCalibration_IsActive() ||
             (g_motion.bench.phase != BENCH_IDLE && g_motion.bench.phase != BENCH_FAULT) ||
             (g_motion.drive.phase != BENCH_IDLE && g_motion.drive.phase != BENCH_FAULT);

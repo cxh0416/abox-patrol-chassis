@@ -48,8 +48,8 @@ void PatrolDiagnostics_Snapshot(const PatrolDiagnostics* d, uint32_t now, Patrol
 void PatrolDiagnostics_Init(PatrolDiagnostics* d) { memset(d, 0, sizeof(*d)); }
 void PatrolDiagnostics_OnCanFrame(PatrolDiagnostics* d, const PatrolCanFrame* f, uint32_t now)
 { (void)d; (void)f; (void)now; }
-uint8_t PatrolDiagnostics_TakeSdoRead(PatrolDiagnostics* d, uint32_t now, PatrolCanFrame* f)
-{ (void)d; (void)now; (void)f; return 0; }
+uint8_t PatrolDiagnostics_TakeSdoRead(PatrolDiagnostics* d, uint32_t now, PatrolCanFrame* f, uint8_t allow_retry)
+{ (void)d; (void)now; (void)f; (void)allow_retry; return 0; }
 void PatrolDiagnostics_OnSdoTxError(PatrolDiagnostics* d, uint32_t now) { (void)d; (void)now; }
 void PatrolDiagnostics_OnEncoderConfig(PatrolDiagnostics* d, const uint16_t* r, uint32_t now)
 { (void)d; (void)r; (void)now; }

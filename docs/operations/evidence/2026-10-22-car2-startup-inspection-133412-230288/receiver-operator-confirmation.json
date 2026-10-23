@@ -1,0 +1,10 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "recorded_at": "2026-10-22T13:35:13.685955+08:00",
+  "vehicle": "CAR2",
+  "operator_reply_verbatim": "还未接好或未上电",
+  "question_context": "Whether T12 receiver is wired to new ABOX CAN2 and receiver/handset are powered.",
+  "interpretation": "Zero CAN2/T12 counters are consistent with the operator-confirmed incomplete or unpowered receiver setup. This does not diagnose receiver/ABOX receive failure.",
+  "related_index": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\index.json",
+  "related_index_sha256": "ad8f17cf6245ad91bafdb56f1bb605d2fe8a90faf17df401705635b15eac5635"
+}

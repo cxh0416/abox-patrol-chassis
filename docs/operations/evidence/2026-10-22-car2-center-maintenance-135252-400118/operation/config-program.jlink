@@ -1,0 +1,14 @@
+exec DisableAutoUpdateFW
+exec SuppressGUI 1
+exec InhibitConnectRetries = 1
+exec ForceAttachTarget = 1
+device STM32F105RC
+si SWD
+speed 1000
+connect
+h
+loadbin "E:/1_work/ChassisCar/abox-patrol-vehicle-chassis-firmware/out/flash/2026-10-22-car2-center-maintenance-134810-154304/ConfigV5_CAR2_Center.bin", 0x0803F800
+verifybin "E:/1_work/ChassisCar/abox-patrol-vehicle-chassis-firmware/out/flash/2026-10-22-car2-center-maintenance-134810-154304/ConfigV5_CAR2_Center.bin", 0x0803F800
+r
+g
+qc

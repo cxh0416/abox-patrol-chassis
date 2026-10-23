@@ -1,0 +1,77 @@
+{
+  "created_at": "2026-10-22T14:06:26.781421+08:00",
+  "hardware_listen_only": true,
+  "transmit_api_bound": false,
+  "results": [
+    {
+      "CAN2_bitrate_kbps": 500,
+      "CAN1_bitrate_kbps": 500,
+      "hardware_listen_only": true,
+      "window_host_s": 8.0,
+      "counts": {
+        "CAN1": 158
+      },
+      "ids": {
+        "CAN1:0x701": 79,
+        "CAN1:0x702": 79
+      }
+    },
+    {
+      "CAN2_bitrate_kbps": 250,
+      "CAN1_bitrate_kbps": 500,
+      "hardware_listen_only": true,
+      "window_host_s": 8.0,
+      "counts": {
+        "CAN1": 158
+      },
+      "ids": {
+        "CAN1:0x701": 79,
+        "CAN1:0x702": 79
+      }
+    },
+    {
+      "CAN2_bitrate_kbps": 125,
+      "CAN1_bitrate_kbps": 500,
+      "hardware_listen_only": true,
+      "window_host_s": 8.0,
+      "counts": {
+        "CAN1": 159
+      },
+      "ids": {
+        "CAN1:0x701": 80,
+        "CAN1:0x702": 79
+      }
+    },
+    {
+      "CAN2_bitrate_kbps": 1000,
+      "CAN1_bitrate_kbps": 500,
+      "hardware_listen_only": true,
+      "window_host_s": 8.0,
+      "counts": {
+        "CAN1": 158
+      },
+      "ids": {
+        "CAN1:0x702": 79,
+        "CAN1:0x701": 79
+      }
+    },
+    {
+      "CAN2_bitrate_kbps": 500,
+      "CAN1_bitrate_kbps": 500,
+      "hardware_listen_only": true,
+      "window_host_s": 8.0,
+      "counts": {
+        "CAN1": 158
+      },
+      "ids": {
+        "CAN1:0x701": 79,
+        "CAN1:0x702": 79
+      }
+    }
+  ],
+  "error": null,
+  "limits": [
+    "Short listen-only windows do not exclude all bitrates, invalid/error frames, wiring failures or a transmitter already bus-off.",
+    "Wireless link indicator does not establish CAN output; no active CAN probe or driver/motor writes."
+  ]
+}

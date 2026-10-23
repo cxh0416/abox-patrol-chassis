@@ -10,10 +10,12 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class FaultStopRuntimeTests(unittest.TestCase):
-    def test_real_fault_stop_before_latch(self):
+    def run_runtime_case(self, fixture, real_diagnostics=False):
         sources = ['patrol_runtime.c', 'patrol_fault_stop.c', 'center_calibration.c',
                    'chassis_control.c', 'bench_steering.c', 'bench_drive.c',
                    'steering_angle.c', 'patrol_canopen.c', 'patrol_auto_center.c']
+        if real_diagnostics:
+            sources.append('patrol_diagnostics.c')
         with tempfile.TemporaryDirectory(prefix='patrol-fault-stop-') as directory:
             binary = Path(directory) / 'fault_stop.exe'
             command = [shutil.which('gcc') or 'gcc', '-std=c11', '-Wall', '-Wextra',
@@ -23,7 +25,7 @@ class FaultStopRuntimeTests(unittest.TestCase):
                        *include_args(private=('motion',)), '-I'+str(ROOT/'tests/bench_stubs'),
                        '-I'+str(ROOT/'shared/include'), '-I'+str(ROOT/'platform/components/cjson'),
                        *['-I'+str(p) for p in (ROOT/'platform/components').glob('*/include')],
-                       str(ROOT/'tests/fault_stop_runtime_cases.c'),
+                       str(ROOT/'tests'/fixture),
                        *[str(ROOT/'app/Core/User/motion/src'/name) for name in sources],
                        str(ROOT/'app/Core/User/cloud/src/remote_service.c'),
                        str(ROOT/'app/Core/User/cloud/src/cloud_protocol.c'),
@@ -41,3 +43,9 @@ class FaultStopRuntimeTests(unittest.TestCase):
             result = subprocess.run([str(binary)], capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stdout+result.stderr)
             print(result.stdout, end='')
+
+    def test_real_fault_stop_before_latch(self):
+        self.run_runtime_case('fault_stop_runtime_cases.c')
+
+    def test_lost_write_ack_read_only_verification(self):
+        self.run_runtime_case('write_verify_runtime_cases.c', real_diagnostics=True)

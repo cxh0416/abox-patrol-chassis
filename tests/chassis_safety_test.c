@@ -45,18 +45,18 @@ static int test_sdo_safety_priority(void)
     d.steering_heartbeat_state = d.drive_heartbeat_state = 0x7f;
     d.steering_heartbeat_ms = d.drive_heartbeat_ms = 100;
     d.next_sdo_entry = 11; /* optional object must not precede due feedback */
-    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 100, &f));
+    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 100, &f, 1U));
     CHECK(d.pending_entry < 5);
     d.pending_valid = 0;
     for (unsigned i = 0; i < 5; ++i) d.sdo_due_ms[i] = 200;
-    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 101, &f));
+    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 101, &f, 1U));
     CHECK(d.pending_entry >= 5); /* low-rate reads retain spare capacity */
     d.pending_valid = 0;
     d.motion_priority = 1;
     for (unsigned i = 0; i < 7; ++i) d.sdo_due_ms[i] = 200;
-    CHECK(!PatrolDiagnostics_TakeSdoRead(&d, 102, &f));
+    CHECK(!PatrolDiagnostics_TakeSdoRead(&d, 102, &f, 1U));
     d.sdo_due_ms[5] = 100; /* drive fault registers are never excluded */
-    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 103, &f) && d.pending_entry == 5);
+    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 103, &f, 1U) && d.pending_entry == 5);
     return 0;
 }
 
@@ -66,24 +66,24 @@ static int test_sdo_waits_for_node(void)
     PatrolCanFrame f = {0}, request;
     PatrolDiagnostics_Init(&d);
     for (uint32_t now = 0; now < 10000; now += 10)
-        CHECK(!PatrolDiagnostics_TakeSdoRead(&d, now, &request));
+        CHECK(!PatrolDiagnostics_TakeSdoRead(&d, now, &request, 1U));
     CHECK(d.sdo_timeout_count == 0 && !d.pending_valid);
     f.id = 0x702; f.dlc = 1; f.data[0] = 0;
     PatrolDiagnostics_OnCanFrame(&d, &f, 10000);
-    CHECK(!PatrolDiagnostics_TakeSdoRead(&d, 10001, &request));
+    CHECK(!PatrolDiagnostics_TakeSdoRead(&d, 10001, &request, 1U));
     f.data[0] = 4; /* NMT Stopped does not provide an SDO service. */
     PatrolDiagnostics_OnCanFrame(&d, &f, 10002);
-    CHECK(!PatrolDiagnostics_TakeSdoRead(&d, 10003, &request));
+    CHECK(!PatrolDiagnostics_TakeSdoRead(&d, 10003, &request, 1U));
     f.data[0] = 0x7F;
     PatrolDiagnostics_OnCanFrame(&d, &f, 10004);
-    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 10005, &request));
+    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 10005, &request, 1U));
     CHECK(request.id == 0x602 && request.data[1] == 0x41 && request.data[2] == 0x60);
-    CHECK(!PatrolDiagnostics_TakeSdoRead(&d, 14000, &request));
+    CHECK(!PatrolDiagnostics_TakeSdoRead(&d, 14000, &request, 1U));
     CHECK(!d.pending_valid && d.sdo_timeout_count == 0);
-    CHECK(!PatrolDiagnostics_TakeSdoRead(&d, 14010, &request));
+    CHECK(!PatrolDiagnostics_TakeSdoRead(&d, 14010, &request, 1U));
     f.id = 0x701; f.data[0] = 5;
     PatrolDiagnostics_OnCanFrame(&d, &f, 14011);
-    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 14012, &request));
+    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 14012, &request, 1U));
     CHECK(request.id == 0x601);
     return 0;
 }
@@ -114,7 +114,7 @@ static int test_field_sdo_replies(void)
     response.id = 0x702;
     PatrolDiagnostics_OnCanFrame(&d, &response, 1);
     for (uint8_t i = 0; i < 12; i++) {
-        CHECK(PatrolDiagnostics_TakeSdoRead(&d, 10 + 5 * i, &request));
+        CHECK(PatrolDiagnostics_TakeSdoRead(&d, 10 + 5 * i, &request, 1U));
         response.id = request.id - 0x80;
         response.dlc = lengths[i];
         memcpy(response.data, reply_data[i], 8);
@@ -167,12 +167,116 @@ static int test_field_sdo_replies(void)
     return 0;
 }
 
+// 建立真实且新鲜的诊断采样起点；重试测试不能靠默认零值冒充状态或反馈有效。
+static void retry_fixture(PatrolDiagnostics* d, uint32_t now)
+{
+    PatrolDiagnostics_Init(d);
+    d->steering_heartbeat_seen = d->drive_heartbeat_seen = 1U;
+    d->steering_heartbeat_state = d->drive_heartbeat_state = 5U;
+    d->steering_heartbeat_ms = d->drive_heartbeat_ms = now;
+    d->steering_status_word = d->drive_status_word = 0x27U;
+    d->steering_status_ms = d->drive_status_ms = now;
+    d->steering_position_seen = d->left_rpm_seen = d->right_rpm_seen = d->encoder_seen = 1U;
+    d->steering_position_ms = d->left_rpm_ms = d->right_rpm_ms = d->encoder_ms = now;
+    d->encoder_config_valid = 1U;
+    d->next_sdo_entry = 1U; /* steering position upload */
+    for (unsigned i = 0U; i < PATROL_DIAG_SDO_ENTRY_COUNT; ++i) d->sdo_due_ms[i] = now;
+}
+
+// 丢失首个诊断响应只重读一次；59/60ms 边界、匹配检查、迟到无关帧及计时回绕均不产生写帧或伪造新样本。
+static int test_diagnostic_read_retry(void)
+{
+    for (unsigned wrap = 0; wrap < 2U; ++wrap) {
+        uint32_t start = wrap ? UINT32_MAX - 20U : 1000U;
+        PatrolDiagnostics d;
+        PatrolCanFrame first, retry, response;
+        PatrolDiagnosticsSnapshot s;
+        retry_fixture(&d, start);
+        CHECK(PatrolDiagnostics_TakeSdoRead(&d, start, &first, 1U));
+        CHECK(first.id == 0x601U && first.data[0] == 0x40U && first.data[1] == 0x64U);
+        CHECK(!PatrolDiagnostics_TakeSdoRead(&d, start + 59U, &retry, 1U));
+        CHECK(d.sdo_timeout_count == 0U && d.pending_retry == 0U);
+        CHECK(PatrolDiagnostics_TakeSdoRead(&d, start + 60U, &retry, 1U));
+        CHECK(!memcmp(&first, &retry, sizeof(first)) && d.pending_retry == 1U);
+        CHECK(d.sdo_timeout_count == 1U && d.steering_position_ms == start);
+        response = retry; response.id = 0x582U; response.data[0] = 0x43U;
+        PatrolDiagnostics_OnCanFrame(&d, &response, start + 61U);
+        CHECK(d.pending_valid && d.steering_position_ms == start);
+        response.id = 0x581U; response.data[4] = 123U;
+        PatrolDiagnostics_OnCanFrame(&d, &response, start + 62U);
+        PatrolDiagnostics_Snapshot(&d, start + 62U, &s);
+        CHECK(!d.pending_valid && d.pending_retry == 0U && s.sdo_timeout_count == 1U);
+        CHECK(s.sdo_success_count == 1U && s.steering_feedback_fresh && s.drive_feedback_fresh);
+        CHECK(d.steering_position_count == 123 && d.steering_position_ms == start + 62U);
+    }
+    return 0;
+}
+
+// 重试也无响应时释放总线给其他反馈；错误计数可上报，旧反馈仍会按真实时间过期，不因重试被延寿。
+static int test_diagnostic_retry_exhausted(void)
+{
+    PatrolDiagnostics d;
+    PatrolDiagnosticsSnapshot s;
+    PatrolCanFrame first, frame;
+    char json[900];
+    retry_fixture(&d, 1000U);
+    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 1000U, &first, 1U));
+    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 1060U, &frame, 1U));
+    CHECK(!PatrolDiagnostics_TakeSdoRead(&d, 1119U, &frame, 1U));
+    CHECK(!PatrolDiagnostics_TakeSdoRead(&d, 1120U, &frame, 1U));
+    CHECK(!d.pending_valid && d.sdo_timeout_count == 2U && d.steering_position_ms == 1000U);
+    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 1121U, &frame, 1U));
+    CHECK(frame.data[0] == 0x40U && frame.id == 0x602U && frame.data[1] == 0x41U);
+    PatrolDiagnostics_Snapshot(&d, 1251U, &s);
+    CHECK(!s.steering_feedback_fresh && !s.drive_feedback_fresh);
+    CHECK(PatrolDiagnostics_FormatCanJson(&s, 0U, 0U, 0U, 0U, 0U, json, sizeof(json)));
+    CHECK(strstr(json, "\"sdoTimeouts\":2") != NULL);
+    return 0;
+}
+
+// 反馈缺失、故障、时效余量不足或上层拒绝时不重试；不能为容错掩盖 OTA、Bus-Off、锁存等上层门禁。
+static int test_diagnostic_retry_gate(void)
+{
+    for (unsigned reason = 0; reason < 12U; ++reason) {
+        PatrolDiagnostics d;
+        PatrolCanFrame frame;
+        retry_fixture(&d, 1000U);
+        CHECK(PatrolDiagnostics_TakeSdoRead(&d, 1000U, &frame, 1U));
+        switch (reason) {
+        case 0: d.steering_status_ms = 889U; break; /* 171ms old: reserve is insufficient */
+        case 1: d.drive_status_ms = 889U; break;
+        case 2: d.steering_position_ms = 889U; break;
+        case 3: d.left_rpm_ms = 889U; break;
+        case 4: d.right_rpm_ms = 889U; break;
+        case 5: d.encoder_ms = 889U; break;
+        case 6: d.steering_status_word |= 8U; break;
+        case 7: d.drive_status_word |= 8U; break;
+        case 8: d.drive_objects[0] = 1; break;
+        case 9: d.drive_objects[1] = 1; break;
+        case 10: d.encoder_seen = 0U; break;
+        default: break; /* caller reports another safety gate */
+        }
+        CHECK(!PatrolDiagnostics_TakeSdoRead(&d, 1060U, &frame, reason != 11U));
+        CHECK(!d.pending_valid && d.sdo_timeout_count == 1U && d.steering_position_ms != 1060U);
+    }
+    PatrolDiagnostics d;
+    PatrolCanFrame frame;
+    retry_fixture(&d, 1000U);
+    d.steering_status_ms = 890U; /* exactly 170ms at retry: 60ms + 20ms remain */
+    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 1000U, &frame, 1U));
+    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 1060U, &frame, 1U));
+    return 0;
+}
+
 int main(void)
 {
     CHECK(test_sdo_waits_for_node() == 0);
     CHECK(test_status_snapshot_age() == 0);
     CHECK(test_sdo_safety_priority() == 0);
     CHECK(test_field_sdo_replies() == 0);
+    CHECK(test_diagnostic_read_retry() == 0);
+    CHECK(test_diagnostic_retry_exhausted() == 0);
+    CHECK(test_diagnostic_retry_gate() == 0);
     ChassisControl control;
     ChassisFeedback feedback = {0};
     PatrolCanFrame frame;
@@ -274,8 +378,8 @@ int main(void)
     for (uint8_t sample = 0U; sample < 5U; sample++)
     {
         PatrolCanFrame response_frame;
-        int32_t value = sample == 1U ? 1000 : (sample == 3U ? -12 : (sample == 4U ? 15 : 0));
-        CHECK(PatrolDiagnostics_TakeSdoRead(&diagnostics, 110U + sample, &frame));
+        int32_t value = sample == 1U ? 1000 : (sample == 3U ? -12 : (sample == 4U ? 15 : 0x21));
+        CHECK(PatrolDiagnostics_TakeSdoRead(&diagnostics, 110U + sample, &frame, 1U));
         CHECK((frame.id == 0x601U || frame.id == 0x602U) && frame.data[0] == 0x40U);
         memset(&response_frame, 0, sizeof(response_frame));
         response_frame.id = (uint16_t)(frame.id - 0x80U);
@@ -304,9 +408,9 @@ int main(void)
     CHECK(diagnostic_snapshot.encoder_crc_error_count == 1U);
     CHECK(diagnostic_snapshot.encoder_transport_error_count == 1U);
     CHECK(diagnostic_snapshot.last_encoder_error == PATROL_ENCODER_ERROR_TRANSPORT);
-    CHECK(PatrolDiagnostics_TakeSdoRead(&diagnostics, 200U, &frame));
-    CHECK(!PatrolDiagnostics_TakeSdoRead(&diagnostics, 250U, &frame));
-    CHECK(PatrolDiagnostics_TakeSdoRead(&diagnostics, 260U, &frame));
+    CHECK(PatrolDiagnostics_TakeSdoRead(&diagnostics, 200U, &frame, 1U));
+    CHECK(!PatrolDiagnostics_TakeSdoRead(&diagnostics, 250U, &frame, 1U));
+    CHECK(PatrolDiagnostics_TakeSdoRead(&diagnostics, 260U, &frame, 1U));
     CHECK(frame.data[0] == 0x40U);
 
     ChassisControl_Init(&control);

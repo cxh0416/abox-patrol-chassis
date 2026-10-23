@@ -1,0 +1,67 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "uid_raw_hex": "6fab4a393932361146423230",
+  "app_version": "0.2.77",
+  "calibration_committed": false,
+  "actuation_or_zero_writes": false,
+  "latest_drive_online": true,
+  "latest_wheel_rpm": [
+    0,
+    0
+  ],
+  "latest_steering_position_count": -8122,
+  "encoder_position_seen": false,
+  "encoder_format_errors_observed": 742,
+  "encoder_configuration_registers_observed": [
+    5,
+    1,
+    1
+  ],
+  "next_step": "Passive RS485 capture between independent encoder and ABOX; awaiting operator wiring confirmation",
+  "limits": [
+    "Repeated 0x701/00 while MCU temporarily unavailable does not alone prove repeated driver resets",
+    "UART register snapshot included a data register read; do not use it as nonintrusive proof of the original serial traffic or repeat it"
+  ],
+  "files": [
+    {
+      "source": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-164350-483186\\snapshot.json",
+      "archived": "00-snapshot.json",
+      "sha256": "54d602f717bb7d2acf4d0919aae3df940cfddd2eff3965c2dadd8c6843990db3"
+    },
+    {
+      "source": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-164601-230477\\snapshot.json",
+      "archived": "01-snapshot.json",
+      "sha256": "4f0641d6f6e2052df644ad29a42cc04809998d6c5a9f870c57405c9440357df0"
+    },
+    {
+      "source": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-164636-419433\\snapshot.json",
+      "archived": "02-snapshot.json",
+      "sha256": "7c2bdae0cf9201322a71a40fb2742ecac021311b684d5a30792a69c494cf69d0"
+    },
+    {
+      "source": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261022-164511-817760\\events.jsonl",
+      "archived": "03-events.jsonl",
+      "sha256": "867e4c9ecf052ad60e30e5d5787acfff7b03d9b1edca300d6bce2268da693db5"
+    },
+    {
+      "source": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261022-164511-817760\\frames.jsonl",
+      "archived": "04-frames.jsonl",
+      "sha256": "3b6a2c16bc9a456465af08c26bac6d125db1b5eecd1eb86166ebf9eba9c3cb45"
+    },
+    {
+      "source": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261022-164511-817760\\metadata.json",
+      "archived": "05-metadata.json",
+      "sha256": "77c54fd0c45944ae1a53904f5ac6670fa1fa40bad9af62c4e09cf0ffefd430b8"
+    },
+    {
+      "source": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261022-164511-817760\\sha256.json",
+      "archived": "06-sha256.json",
+      "sha256": "83b0d554cb0fc6934c406ed60719d9e8d8b67422e35bf0ea4dd0ba01167fa73a"
+    },
+    {
+      "source": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261022-164511-817760\\summary.json",
+      "archived": "07-summary.json",
+      "sha256": "b482e42209a1e0ffd216b6d7125778c0b516f5cbb4a619ea830dd785b41bc472"
+    }
+  ]
+}

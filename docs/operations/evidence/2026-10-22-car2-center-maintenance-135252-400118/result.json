@@ -1,0 +1,96 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "vehicle_operator_selected": "CAR2",
+  "created_at": "2026-10-22T13:52:52.735743+08:00",
+  "operator_confirmation_verbatim": "当前转向轮就在中位，直接读取当前的值然后以该值进行标定",
+  "uid_raw_hex": "36ffd205534d383840251443",
+  "app_sha256": "ced4fd110f4c02b1108a99cc3c2c2eb0d8d948e07232aaa04441741a219ec020",
+  "driver_center_measured_now": -83815,
+  "encoder_before": 3963,
+  "encoder_zero_verified_samples": [
+    {
+      "sample_ms": 1162298,
+      "count": 0,
+      "write_state": 2
+    },
+    {
+      "sample_ms": 1162409,
+      "count": 0,
+      "write_state": 2
+    },
+    {
+      "sample_ms": 1162520,
+      "count": 0,
+      "write_state": 2
+    }
+  ],
+  "config_address": "0x0803F800",
+  "config_record_offset_within_page": 148,
+  "config_page_sha256": "0018bc79b02cbeb2df60a4b97149f4ac7966c07cfb94f405bc4c23c428d83615",
+  "post_reset_loaded": true,
+  "calibrated": true,
+  "encoder_profile_ready": true,
+  "method": "Offline per-board maintenance, not an online start/commit calibration session. After exact-image/UID checks, no active control or OTA, disabled driver statuses and three fresh wheel-zero pairs, request the existing encoder task zero once through its verified ABI mailbox. Verify three new encoder zero samples, stage official Config V5 with checksum, preserve all other page bytes, program and read back only the 2KiB config page, reset MCU and verify loaded config plus independent stationary reads.",
+  "target_mutations": [
+    "one-byte zero request at exact-version mailbox 0x20008754",
+    "one Config V5 page at 0x0803F800",
+    "halt/program/reset/run for configuration load"
+  ],
+  "motor_enable_or_motion_commands": false,
+  "motor_driver_tuning_or_limits_changed": false,
+  "boot_app_state_pages_and_recovery_unchanged": true,
+  "original_car_profile_source_changed": false,
+  "zero_write_replayed": false,
+  "verification_interruption": "First zero verification rejected an unsigned time-age result 4294967291 from sequential running SWD sampling. Only read verification was resumed after bounded clock resampling; the encoder-zero command was NOT replayed. Firmware write status was 2 (validated echo).",
+  "scope": [
+    "Mechanical center confirmed by operator; no independent mechanical angle measurement.",
+    "MCU restart persistence verified; complete motor/encoder power-off persistence not tested.",
+    "CAN2 receiver still not connected/powered; no steering/traction movement acceptance performed.",
+    "Network identity and credentials were not provisioned; existing RAM defaults were preserved.",
+    "This version-specific maintenance sequence is evidence, not a reusable live procedure; never reuse its RAM address or per-board config on another image/vehicle."
+  ],
+  "protected_backups": [
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-maintenance-134810-154304\\config-after.bin",
+      "bytes": 2048,
+      "sha256": "0018bc79b02cbeb2df60a4b97149f4ac7966c07cfb94f405bc4c23c428d83615",
+      "reason": "Full per-device page or RAM config kept in ignored protected local backup; not for another car."
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-maintenance-134810-154304\\config-before.bin",
+      "bytes": 2048,
+      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8",
+      "reason": "Full per-device page or RAM config kept in ignored protected local backup; not for another car."
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-maintenance-134810-154304\\ConfigV5_CAR2_Center.bin",
+      "bytes": 2048,
+      "sha256": "0018bc79b02cbeb2df60a4b97149f4ac7966c07cfb94f405bc4c23c428d83615",
+      "reason": "Full per-device page or RAM config kept in ignored protected local backup; not for another car."
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-maintenance-134810-154304\\ram-config-before.bin",
+      "bytes": 400,
+      "sha256": "5a173081fa8d79dff1c2040e84d62c687a61052c29fdb43fa1ce884c6b2728e6",
+      "reason": "Full per-device page or RAM config kept in ignored protected local backup; not for another car."
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-maintenance-134810-154304\\recovery-before.bin",
+      "bytes": 2048,
+      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8",
+      "reason": "Full per-device page or RAM config kept in ignored protected local backup; not for another car."
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-maintenance-134810-154304\\state-a-before.bin",
+      "bytes": 2048,
+      "sha256": "1f1040bd55d1d3980bbd1f7f4a6d0990290d8887acfeed125b256298c39b3337",
+      "reason": "Full per-device page or RAM config kept in ignored protected local backup; not for another car."
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-maintenance-134810-154304\\state-b-before.bin",
+      "bytes": 2048,
+      "sha256": "35bfac3c79e2bdeb539d1deaae5b097e18ad27aec6b1bc3988f89deeb08b17c0",
+      "reason": "Full per-device page or RAM config kept in ignored protected local backup; not for another car."
+    }
+  ]
+}

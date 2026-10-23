@@ -1,0 +1,266 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "created_at": "2026-10-22T13:52:52.735743+08:00",
+  "files": [
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-maintenance-134810-154304\\config-program.jlink",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\operation\\config-program.jlink",
+      "bytes": 500,
+      "sha256": "7ddbfc5c3f5f4129c95737c312ed5f2bdd91a9b02cc5ac2e47ced0c400eb239d"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-maintenance-134810-154304\\config-program.stderr.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\operation\\config-program.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-maintenance-134810-154304\\config-program.stdout.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\operation\\config-program.stdout.log",
+      "bytes": 4272,
+      "sha256": "2d5b9705c9cad711dda4665103cc37b44ebdf49ddbb7cf3f1dd5866d726fc4e7"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-maintenance-134810-154304\\plan.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\operation\\plan.json",
+      "bytes": 1223,
+      "sha256": "914c561d22a6b7e95bf2ca1bbf5b89cf4d405cb0feb8a7e8cc4bcfc3c81989ef"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-maintenance-134810-154304\\staged-summary.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\operation\\staged-summary.json",
+      "bytes": 214,
+      "sha256": "3f861ed3e6fe6c1e54decb9a4ab5b69fa858f80a977a82e2de6b07ea98c6a556"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-maintenance-134810-154304\\verified.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\operation\\verified.json",
+      "bytes": 833,
+      "sha256": "7148033841d0af8d72a1194e6e86e7a8b661c5aa234c460da09f2a14f99bb9a6"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-maintenance-134810-154304\\zero-request.jlink",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\operation\\zero-request.jlink",
+      "bytes": 177,
+      "sha256": "e89406d50be4b4d13108f45f5527fee2b3f02bdf16ee2b99dea09f8dfbb96a43"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-maintenance-134810-154304\\zero-request.stderr.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\operation\\zero-request.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-maintenance-134810-154304\\zero-request.stdout.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\operation\\zero-request.stdout.log",
+      "bytes": 1902,
+      "sha256": "f5c32933827d2bf1b32decbc359b8c0e22d981d30f9439b734d73fbc64e502db"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-maintenance-134810-154304\\zero-verified.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\operation\\zero-verified.json",
+      "bytes": 457,
+      "sha256": "1a0e78ef6b617b02a2bb882e014da5833673aa025f157b0b50cf5d723b3a51d1"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-read-134307-482322\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\stationary-reads\\2026-10-22-car2-center-read-134307-482322\\frames.jsonl",
+      "bytes": 4624,
+      "sha256": "e186f390aba0acb42f28fb358bab4ee12193816e9b79c969289f13acb5302292"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-read-134307-482322\\results.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\stationary-reads\\2026-10-22-car2-center-read-134307-482322\\results.json",
+      "bytes": 1455,
+      "sha256": "d8dfe9898f359a5dac5df1a7143bf22a711f1bc274c0d3431556baf73c6dde07"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-read-134810-374649\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\stationary-reads\\2026-10-22-car2-center-read-134810-374649\\frames.jsonl",
+      "bytes": 4616,
+      "sha256": "b022c46de938f365d52e993f7907b31195bdc1a11499ee87b020c1f96d093845"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-read-134810-374649\\results.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\stationary-reads\\2026-10-22-car2-center-read-134810-374649\\results.json",
+      "bytes": 1455,
+      "sha256": "d8dfe9898f359a5dac5df1a7143bf22a711f1bc274c0d3431556baf73c6dde07"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-read-134837-309121\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\stationary-reads\\2026-10-22-car2-center-read-134837-309121\\frames.jsonl",
+      "bytes": 4694,
+      "sha256": "789aa5826c8ffda9fe53a634c79f2eb0815752fadb2b90ab791b39522f924b04"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-read-134837-309121\\results.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\stationary-reads\\2026-10-22-car2-center-read-134837-309121\\results.json",
+      "bytes": 1455,
+      "sha256": "d8dfe9898f359a5dac5df1a7143bf22a711f1bc274c0d3431556baf73c6dde07"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-read-135003-627496\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\stationary-reads\\2026-10-22-car2-center-read-135003-627496\\frames.jsonl",
+      "bytes": 4625,
+      "sha256": "bacfc3173e4e7a9f038e0d48e71a40ccbd526fd742c3f5171e33d4b70a037b14"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-read-135003-627496\\results.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\stationary-reads\\2026-10-22-car2-center-read-135003-627496\\results.json",
+      "bytes": 1455,
+      "sha256": "d8dfe9898f359a5dac5df1a7143bf22a711f1bc274c0d3431556baf73c6dde07"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-read-135008-797772\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\stationary-reads\\2026-10-22-car2-center-read-135008-797772\\frames.jsonl",
+      "bytes": 4702,
+      "sha256": "711cb867ec2aa1af84109859323a32de3e1fb0f535655faf46176416751b5bd2"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-read-135008-797772\\results.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\stationary-reads\\2026-10-22-car2-center-read-135008-797772\\results.json",
+      "bytes": 1455,
+      "sha256": "d8dfe9898f359a5dac5df1a7143bf22a711f1bc274c0d3431556baf73c6dde07"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-read-135024-462579\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\stationary-reads\\2026-10-22-car2-center-read-135024-462579\\frames.jsonl",
+      "bytes": 4701,
+      "sha256": "7d90a854acbf3b80e3f510695fd2438646c3218ee8b891a7a4f6b1f3d7d82ed4"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-read-135024-462579\\results.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\stationary-reads\\2026-10-22-car2-center-read-135024-462579\\results.json",
+      "bytes": 1455,
+      "sha256": "d8dfe9898f359a5dac5df1a7143bf22a711f1bc274c0d3431556baf73c6dde07"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-read-135042-696751\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\stationary-reads\\2026-10-22-car2-center-read-135042-696751\\frames.jsonl",
+      "bytes": 4702,
+      "sha256": "fe5308efc07c708b1b63444543441b832f8de0feb17932d8361cbc4a02b9bdea"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-read-135042-696751\\results.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\stationary-reads\\2026-10-22-car2-center-read-135042-696751\\results.json",
+      "bytes": 1455,
+      "sha256": "d8dfe9898f359a5dac5df1a7143bf22a711f1bc274c0d3431556baf73c6dde07"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-135043-351792\\CAN1-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\post-reset-swd\\CAN1-registers.bin",
+      "bytes": 32,
+      "sha256": "3ae6446202eba1c94d3a3c7c2d82c41df7546f1a7a17a20af653c4ab074a04c1"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-135043-351792\\CAN2-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\post-reset-swd\\CAN2-registers.bin",
+      "bytes": 32,
+      "sha256": "3ae6446202eba1c94d3a3c7c2d82c41df7546f1a7a17a20af653c4ab074a04c1"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-135043-351792\\motion-fault.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\post-reset-swd\\motion-fault.bin",
+      "bytes": 128,
+      "sha256": "38723a2e5e8a17aa7950dc008209944e898f69a7bd10a23c839d341e935fd5ca"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-135043-351792\\snapshot.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\post-reset-swd\\snapshot.json",
+      "bytes": 3851,
+      "sha256": "ad72d52a044f7ff7271991934a5a0a292b4e335bf892381e66c585e553a256db"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\car2-center-maintenance.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\tools-at-operation\\car2-center-maintenance.py",
+      "bytes": 14932,
+      "sha256": "7faa2af64ece1152b98c40c2522187388d3127a87afd99cbe8ff7f05c508e1ce"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\car2-center-read.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\tools-at-operation\\car2-center-read.py",
+      "bytes": 3290,
+      "sha256": "80a561367705d04b5fcf6736de37550c9d5955f5e502e40a5088dda8f93a9817"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\car2-center-mailbox.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\tools-at-operation\\car2-center-mailbox.json",
+      "bytes": 285,
+      "sha256": "f182b440429abcf760f368ae53329a1200bebe6e8e329524a6f7211207726d27"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\car2-center-maintenance-abi.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\tools-at-operation\\car2-center-maintenance-abi.c",
+      "bytes": 278,
+      "sha256": "bb1ffd28b9923de877a7c575298bea41d37f23911c048a3bacd3dba23e8e1fed"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\car2-center-maintenance-abi.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\tools-at-operation\\car2-center-maintenance-abi.bin",
+      "bytes": 12,
+      "sha256": "4b96a6d9262a142079c3b156443eb71c59c4d597abbedb2befd88ed3b02d50b1"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\car2-0277-schema.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\tools-at-operation\\car2-0277-schema.json",
+      "bytes": 18854,
+      "sha256": "b2b4c66681f75d826353b195e5b9e46a19220e9ad3261218a9787dbe27496419"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\archive-car2-center-maintenance.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\tools-at-operation\\archive-car2-center-maintenance.py",
+      "bytes": 6420,
+      "sha256": "4fc033773d1605c26a39b03641138c445a77f3feac6c5b0a4e8bc40492e1bfe3"
+    },
+    {
+      "original_path": "Current operation result assembled from verified records",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-center-maintenance-135252-400118\\result.json",
+      "bytes": 5671,
+      "sha256": "158bab3b4c65fb3cfd58254bccfc28c721bcc7c56ceeea44f57e60f5d5d0816b"
+    }
+  ],
+  "protected_backups": [
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-maintenance-134810-154304\\config-after.bin",
+      "bytes": 2048,
+      "sha256": "0018bc79b02cbeb2df60a4b97149f4ac7966c07cfb94f405bc4c23c428d83615",
+      "reason": "Full per-device page or RAM config kept in ignored protected local backup; not for another car."
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-maintenance-134810-154304\\config-before.bin",
+      "bytes": 2048,
+      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8",
+      "reason": "Full per-device page or RAM config kept in ignored protected local backup; not for another car."
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-maintenance-134810-154304\\ConfigV5_CAR2_Center.bin",
+      "bytes": 2048,
+      "sha256": "0018bc79b02cbeb2df60a4b97149f4ac7966c07cfb94f405bc4c23c428d83615",
+      "reason": "Full per-device page or RAM config kept in ignored protected local backup; not for another car."
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-maintenance-134810-154304\\ram-config-before.bin",
+      "bytes": 400,
+      "sha256": "5a173081fa8d79dff1c2040e84d62c687a61052c29fdb43fa1ce884c6b2728e6",
+      "reason": "Full per-device page or RAM config kept in ignored protected local backup; not for another car."
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-maintenance-134810-154304\\recovery-before.bin",
+      "bytes": 2048,
+      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8",
+      "reason": "Full per-device page or RAM config kept in ignored protected local backup; not for another car."
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-maintenance-134810-154304\\state-a-before.bin",
+      "bytes": 2048,
+      "sha256": "1f1040bd55d1d3980bbd1f7f4a6d0990290d8887acfeed125b256298c39b3337",
+      "reason": "Full per-device page or RAM config kept in ignored protected local backup; not for another car."
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-maintenance-134810-154304\\state-b-before.bin",
+      "bytes": 2048,
+      "sha256": "35bfac3c79e2bdeb539d1deaae5b097e18ad27aec6b1bc3988f89deeb08b17c0",
+      "reason": "Full per-device page or RAM config kept in ignored protected local backup; not for another car."
+    }
+  ]
+}

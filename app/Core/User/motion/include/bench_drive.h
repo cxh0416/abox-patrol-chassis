@@ -6,6 +6,7 @@
 typedef struct {
     BenchPhase phase;
     uint8_t step, pending, read, width, cut_power, confirmations, reversing;
+    uint8_t verify; /* Occupies former padding; verification never replays a write. */
     uint16_t index;
     uint32_t sent_ms, started_ms, zero_ms, left_ms, right_ms, fault;
     int32_t expected;

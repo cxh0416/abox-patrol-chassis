@@ -5,6 +5,10 @@
 
 #define PATROL_DIAG_SDO_TIMEOUT_MS 60U
 #define PATROL_DIAG_SDO_RETRY_COUNT 1U
+/* A retry must fit before any safety sample expires, including two 10ms task
+ * turns for response processing and resuming the other feedback reads. */
+#define PATROL_DIAG_RETRY_FEEDBACK_MAX_AGE_MS \
+    (PATROL_DIAG_FEEDBACK_TIMEOUT_MS - PATROL_DIAG_SDO_TIMEOUT_MS - 20U)
 
 typedef struct {
     uint8_t node;
@@ -50,6 +54,21 @@ static uint8_t sdo_node_ready(const PatrolDiagnostics* d, uint8_t node, uint32_t
      * An unpowered bus cannot ACK a request; do not queue retransmissions. */
     return (uint8_t)(fresh(seen, stamp, now_ms, PATROL_DIAG_HEARTBEAT_TIMEOUT_MS) &&
                      (state == 0x7FU || state == 0x05U));
+}
+
+// 为一次只读重试核对双节点、状态、双轮、转角及编码器的真实样本。预留完整事务和调度余量；不能用重发时间延长旧反馈，也不能在驱动故障时消耗恢复时间。
+static uint8_t retry_feedback_ready(const PatrolDiagnostics* d, uint32_t now_ms)
+{
+    const uint32_t limit = PATROL_DIAG_RETRY_FEEDBACK_MAX_AGE_MS;
+    return (uint8_t)(sdo_node_ready(d, 1U, now_ms) && sdo_node_ready(d, 2U, now_ms) &&
+        !((d->steering_status_word | d->drive_status_word) & 8U) &&
+        !d->drive_objects[0] && !d->drive_objects[1] &&
+        fresh(d->steering_status_word != 0U, d->steering_status_ms, now_ms, limit) &&
+        fresh(d->drive_status_word != 0U, d->drive_status_ms, now_ms, limit) &&
+        fresh(d->steering_position_seen, d->steering_position_ms, now_ms, limit) &&
+        fresh(d->left_rpm_seen, d->left_rpm_ms, now_ms, limit) &&
+        fresh(d->right_rpm_seen, d->right_rpm_ms, now_ms, limit) &&
+        fresh(d->encoder_seen, d->encoder_ms, now_ms, limit));
 }
 
 // 结束当前诊断 SDO 事务并安排后续轮询。清理在途标志及相关时间状态，避免旧响应阻塞后续安全反馈读取。
@@ -173,9 +192,9 @@ void PatrolDiagnostics_OnCanFrame(PatrolDiagnostics* diagnostics, const PatrolCa
     }
 }
 
-// 在允许轮询时取出下一条只读 SDO 请求。遵守节点状态、单事务和运动优先级限制；返回零时无需发送，取出后由发送方报告发送错误。
+// 取出只读 SDO 并处理有限重试。一次超时保留计数；只有调用方安全门禁和本模块真实反馈余量均允许时才重读，耗尽后释放事务服务其他对象，由既有安全门禁判断是否停车。
 uint8_t PatrolDiagnostics_TakeSdoRead(PatrolDiagnostics* diagnostics, uint32_t now_ms,
-                                     PatrolCanFrame* frame)
+                                     PatrolCanFrame* frame, uint8_t allow_retry)
 {
     uint8_t offset;
     if (diagnostics == 0 || frame == 0) return 0U;
@@ -189,7 +208,8 @@ uint8_t PatrolDiagnostics_TakeSdoRead(PatrolDiagnostics* diagnostics, uint32_t n
         }
         if ((now_ms - diagnostics->pending_sent_ms) < PATROL_DIAG_SDO_TIMEOUT_MS) return 0U;
         diagnostics->sdo_timeout_count++;
-        if (diagnostics->pending_retry >= PATROL_DIAG_SDO_RETRY_COUNT)
+        if (diagnostics->pending_retry >= PATROL_DIAG_SDO_RETRY_COUNT ||
+            !allow_retry || !retry_feedback_ready(diagnostics, now_ms))
         {
             finish_pending(diagnostics, now_ms);
             return 0U;

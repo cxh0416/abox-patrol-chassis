@@ -1,0 +1,72 @@
+{
+  "stop_reason": "operator_stop_file",
+  "error": null,
+  "kind": "snapshot",
+  "elapsed_s": 172.781,
+  "latest": {
+    "CAN1.heartbeat.node2": {
+      "age_ms": 63.0,
+      "at_s": 172.71799999999348,
+      "decoded": {
+        "kind": "heartbeat",
+        "node": 2,
+        "state": 127,
+        "bootup": false
+      }
+    },
+    "CAN1.heartbeat.node1": {
+      "age_ms": 94.0,
+      "at_s": 172.68700000000536,
+      "decoded": {
+        "kind": "heartbeat",
+        "node": 1,
+        "state": 127,
+        "bootup": false
+      }
+    },
+    "CAN1.emcy.node2": {
+      "age_ms": 163781.0,
+      "at_s": 9.0,
+      "decoded": {
+        "kind": "emcy",
+        "node": 2,
+        "error_code": 16,
+        "error_register": 1
+      }
+    }
+  },
+  "ids": {
+    "CAN1.STD.0x702": {
+      "age_ms": 63.0,
+      "count": 2548,
+      "first_s": 7.812000000005355,
+      "last_s": 172.71799999999348,
+      "max_host_gap_ms": 171.99999999138527,
+      "last_data": "7F",
+      "dlc": 1
+    },
+    "CAN1.STD.0x701": {
+      "age_ms": 94.0,
+      "count": 1627,
+      "first_s": 7.937000000005355,
+      "last_s": 172.68700000000536,
+      "max_host_gap_ms": 1342.9999999934807,
+      "last_data": "7F",
+      "dlc": 1
+    },
+    "CAN1.STD.0x82": {
+      "age_ms": 163781.0,
+      "count": 2,
+      "first_s": 8.10899999999674,
+      "last_s": 9.0,
+      "max_host_gap_ms": 891.0000000032596,
+      "last_data": "10 00 01 00 00 00 00 00",
+      "dlc": 8
+    }
+  },
+  "unanswered_sdo_events": 0,
+  "sdo_completed": 0,
+  "sdo_aborts": 0,
+  "pending_sdo": 0,
+  "max_observed_reply_ms": 0
+}

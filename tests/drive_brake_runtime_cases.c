@@ -87,6 +87,9 @@ int main(void)
     /* B arrives after either nonzero wheel command was already selected. */
     for(unsigned step=13;step<=14;step++) {
         fixture(); g_motion.drive.step=(uint8_t)step; g_motion.drive.writing=100;
+        /* Keep the selected command current; obsolete targets are now dropped
+         * before selection, so they cannot exercise this after-take race. */
+        assert(ChassisControl_Apply(&mock_control,"renew","remote",2,1000,100,5000,mock_now));
         g_motion.drive_turn=g_motion.bench_turn=1;
         mock_brake_after_take=1;
         PatrolRuntime_Tick();

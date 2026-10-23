@@ -1,0 +1,53 @@
+{
+  "stop_reason": "operator_stop_file",
+  "error": null,
+  "kind": "snapshot",
+  "elapsed_s": 130.406,
+  "latest": {
+    "CAN1.heartbeat.node2": {
+      "age_ms": 62.0,
+      "at_s": 130.34399999998277,
+      "decoded": {
+        "kind": "heartbeat",
+        "node": 2,
+        "state": 127,
+        "bootup": false
+      }
+    },
+    "CAN1.heartbeat.node1": {
+      "age_ms": 31.0,
+      "at_s": 130.375,
+      "decoded": {
+        "kind": "heartbeat",
+        "node": 1,
+        "state": 127,
+        "bootup": false
+      }
+    }
+  },
+  "ids": {
+    "CAN1.STD.0x702": {
+      "age_ms": 62.0,
+      "count": 1291,
+      "first_s": 0.0629999999946449,
+      "last_s": 130.34399999998277,
+      "max_host_gap_ms": 110.00000001513399,
+      "last_data": "7F",
+      "dlc": 1
+    },
+    "CAN1.STD.0x701": {
+      "age_ms": 31.0,
+      "count": 1291,
+      "first_s": 0.09399999998277053,
+      "last_s": 130.375,
+      "max_host_gap_ms": 110.00000001513399,
+      "last_data": "7F",
+      "dlc": 1
+    }
+  },
+  "unanswered_sdo_events": 0,
+  "sdo_completed": 0,
+  "sdo_aborts": 0,
+  "pending_sdo": 0,
+  "max_observed_reply_ms": 0
+}

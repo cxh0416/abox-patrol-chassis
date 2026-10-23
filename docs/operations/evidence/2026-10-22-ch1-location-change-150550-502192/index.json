@@ -1,0 +1,65 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "files": [
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\ch1-receiver-20261022-145632-664184\\events.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-ch1-location-change-150550-502192\\events.jsonl",
+      "bytes": 406441,
+      "sha256": "eaf80c8069665458ce3ee71e0601f68c200df7f25d13d19020fa9b0a9a91afcf"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\ch1-receiver-20261022-145632-664184\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-ch1-location-change-150550-502192\\frames.jsonl",
+      "bytes": 886600,
+      "sha256": "97eaac2d71dcf616cc89c5f5d9f8a25b3b30c3197cde7713fdf78bcec9464024"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\ch1-receiver-20261022-145632-664184\\metadata.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-ch1-location-change-150550-502192\\metadata.json",
+      "bytes": 1144,
+      "sha256": "90ce7045927254d2efd35f61a49f197ca4a1e025042694d26727a7256c36acea"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\ch1-receiver-20261022-145632-664184\\sha256.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-ch1-location-change-150550-502192\\sha256.json",
+      "bytes": 352,
+      "sha256": "f1ca53324a08bc001da9032ba98a08efa1a062db8bbbb449fc5304449fec1e11"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\ch1-receiver-20261022-145632-664184\\summary.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-ch1-location-change-150550-502192\\summary.json",
+      "bytes": 2230,
+      "sha256": "fdcb42dad8da2f5cb379ce21147a73df39c6714f16abb7201e4fb1a0f16b7917"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\ch1-receiver-20261022-145632-664184.stdout.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-ch1-location-change-150550-502192\\ch1-receiver-20261022-145632-664184.stdout.log",
+      "bytes": 136621,
+      "sha256": "4168aa55438d9508fb80226618ea6c0e2fd28b622534b1f33e1075d3ea54d8b7"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\ch1-receiver-20261022-145632-664184.stderr.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-ch1-location-change-150550-502192\\ch1-receiver-20261022-145632-664184.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\stop-ch1-receiver-20261022-145632-664184.flag",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-ch1-location-change-150550-502192\\stop-ch1-receiver-20261022-145632-664184.flag",
+      "bytes": 104,
+      "sha256": "928d6c891e725af4dd5945f5602c2e68c427197ea04896bbea5166cb6f58a4a3"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\ch1-receiver-capture-current.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-ch1-location-change-150550-502192\\ch1-receiver-capture-current.json",
+      "bytes": 693,
+      "sha256": "1e069fae8dfbe2e4c99bad195a387f37215fe71bd444a427b102364af79a4598"
+    },
+    {
+      "original_path": "Operator confirmation and current analysis",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-ch1-location-change-150550-502192\\interpretation.json",
+      "bytes": 4245,
+      "sha256": "3a65706d40b7bac81e4ca7ae891d293270bb0b470796b879a3d7a021aa23219a"
+    }
+  ]
+}

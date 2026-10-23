@@ -1,0 +1,39 @@
+{
+  "created_at": "2026-10-22T13:48:13.149215+08:00",
+  "vehicle": "CAR2",
+  "operator_confirmed_mechanical_center": true,
+  "uid_raw_hex": "36ffd205534d383840251443",
+  "app_sha256": "ced4fd110f4c02b1108a99cc3c2c2eb0d8d948e07232aaa04441741a219ec020",
+  "driver_center": -83815,
+  "stationary_read": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-read-134810-374649",
+  "encoder_before": 3963,
+  "mailbox_address": 536905556,
+  "calibration_flash_address": "0x0803F800",
+  "calibration_flash_size": 2048,
+  "writes_allowed": [
+    "one byte encoder-zero request at verified ABI mailbox",
+    "Config V5 page only"
+  ],
+  "preflight": {
+    "tick_ms": 1046993,
+    "power_command": 0,
+    "fault_pending": 0,
+    "fault_latched": 0,
+    "session_active": 0,
+    "enable_request": 0,
+    "target_rpm": 0,
+    "requested_rpm": 0,
+    "busoff_mask": 0,
+    "busoff_seen": 0,
+    "feedback_ota_busy": 0,
+    "can2_rx": 0,
+    "t12_switch_seen": 0,
+    "config_calibrated": 0,
+    "center_cal_phase": 0,
+    "steering_phase": 0,
+    "drive_phase": 0,
+    "encoder_ms": 1046939,
+    "encoder_count": 3963,
+    "encoder_config_valid": 1
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "started_at": "2026-10-22T14:32:34.3685303+08:00",
+  "pid": 15532,
+  "output": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-direct-20261022-143234-348238",
+  "stdout": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-direct-20261022-143234-348238.stdout.log",
+  "stderr": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-direct-20261022-143234-348238.stderr.log",
+  "stop_file": "E:\\1_work\\ChassisCar_test\\logs\\stop-car2-receiver-direct-20261022-143234-348238.flag",
+  "duration_s": 60,
+  "physical_channels": {
+    "CAN2": 1,
+    "CAN1": 2
+  },
+  "bitrate_kbps": 500,
+  "hardware_listen_only": true,
+  "vehicle": "CAR2",
+  "operator_wiring_confirmation": "CH1 directly at receiver CAN output; receiver to ABOX CAN2 retained; CH2 at CAN1"
+}

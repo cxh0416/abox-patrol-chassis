@@ -1,0 +1,33 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "operator_statement": "现在485分析仪直接接在了编码器上",
+  "baud": 19200,
+  "format": "8N1",
+  "duration_s": 15,
+  "rx_bytes": 0,
+  "tx_bytes": 0,
+  "mcu_encoder_seen": 0,
+  "calibration_committed": false,
+  "wiring_pending": "Whether encoder remains connected to ABOX as polling master, and actual analyzer receive terminals/mode",
+  "limits": [
+    "Silence in passive capture does not prove encoder failure",
+    "Cached steering position and wheel speeds are stale while power command is off; not current standstill evidence"
+  ],
+  "files": [
+    {
+      "source": "E:\\1_work\\ChassisCar_test\\logs\\encoder-passive-20261022-172350-593945\\bytes.jsonl",
+      "archived": "bytes.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "E:\\1_work\\ChassisCar_test\\logs\\encoder-passive-20261022-172350-593945\\summary.json",
+      "archived": "summary.json",
+      "sha256": "eba3c3bfcce52d90d70b2f64d7e12d4eb3400fda010b4cb32f7ea9b6f7bf3fa4"
+    },
+    {
+      "source": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-172350-779836\\snapshot.json",
+      "archived": "snapshot.json",
+      "sha256": "8617b05f4d59803c67ce56e9d34522838758ce147dca244968a57a4617ad385b"
+    }
+  ]
+}

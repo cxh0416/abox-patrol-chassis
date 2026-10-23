@@ -51,6 +51,50 @@ typedef enum
     STEER_STEP_PROFILE_SPEED_ACTIVE_COMPLETE = 31,
 } BenchSteeringStep;
 
+enum { VERIFY_NONE, VERIFY_STATUS, VERIFY_MODE, VERIFY_TARGET, VERIFY_OBJECT, VERIFY_ACK_LOW };
+
+// 仅活动期目标、轮廓速度和定位触发允许失应答核验；准备、限位、使能和停机握手继续使用原有失败路径。
+static uint8_t motion_write(const BenchSteering* b)
+{
+    return b->phase == BENCH_ACTIVE && !b->read &&
+        (b->step == STEER_STEP_TARGET || b->step == STEER_STEP_TRIGGER ||
+         b->step == STEER_STEP_CLEAR_TRIGGER || b->step == STEER_STEP_WRITE_PROFILE_SPEED_ACTIVE);
+}
+
+// 结束当前已确认步骤。核验与正常 ACK 共用相同推进规则，保留单个最新目标，不建立补发运动指令队列。
+static void complete_step(BenchSteering* b, uint32_t now)
+{
+    b->pending = b->verify = 0U;
+    b->step++;
+    if (b->step == STEER_STEP_TRIGGER) b->pp_ack_low = 0U;
+    if (b->phase == BENCH_STOPPING && b->step == STEER_STEP_STOP_COMPLETE && !b->stop_confirmed)
+        b->stop_ms = now;
+    if (b->step == STEER_STEP_LIMITS_COMPLETE) {
+        b->limits_aligned = 1U;
+        b->cached_minimum = b->minimum;
+        b->cached_maximum = b->maximum;
+        b->step = STEER_STEP_WRITE_MODE;
+    }
+    if (b->step == STEER_STEP_READ_PROFILE_SPEED + 1U ||
+        b->step == STEER_STEP_PROFILE_SPEED_ACTIVE_COMPLETE) {
+        b->applied_profile_rpm = b->speed_write_rpm;
+        if (b->step == STEER_STEP_PROFILE_SPEED_ACTIVE_COMPLETE)
+            b->step = b->target_pending ? STEER_STEP_TARGET : STEER_STEP_ACTIVE;
+    }
+    if (b->step == STEER_STEP_ACTIVE || b->step == STEER_STEP_TARGET_COMPLETE) {
+        b->phase = BENCH_ACTIVE;
+        b->step = STEER_STEP_ACTIVE;
+    }
+}
+
+// 将运动写入的未知结果转为限时只读核验。保留原步骤和已发送值，绝不重发丢 ACK 的写入；stop_ms 在活动期临时保存核验起点。
+static void begin_verify(BenchSteering* b, uint32_t now)
+{
+    b->pending = 0U;
+    b->verify = VERIFY_STATUS;
+    b->stop_ms = now;
+}
+
 // 检查请求的转向软限位是否属于已支持档位。只接受代码中明确列举的毫度档位，避免未验证的幅度直接进入定位流程。
 static uint8_t valid_limit(uint16_t limit)
 {
@@ -83,6 +127,7 @@ static void fail(BenchSteering *b, uint32_t reason)
     if (b->phase == BENCH_FAULT)
         return;
     b->pending = 0;
+    b->verify = 0U;
     b->fault = reason;
     b->cut_power = 1;
     b->phase = BENCH_FAULT;
@@ -151,6 +196,7 @@ void BenchSteering_Stop(BenchSteering *b, uint32_t now, uint8_t cut_power)
         return;
     }
     b->pending = 0;
+    b->verify = b->pp_ack_low = 0U;
     b->phase = BENCH_STOPPING;
     b->step = STEER_STEP_STOP;
     b->stop_ms = now;
@@ -203,7 +249,12 @@ void BenchSteering_Tick(BenchSteering *b, uint32_t now, uint8_t requested, uint8
                 b->step = STEER_STEP_TARGET;
         }
     }
-    if (b->pending && now - b->sent_ms >= TRANSACTION_MS)
+    if (b->verify) {
+        if (now - b->stop_ms >= BENCH_WRITE_VERIFY_MS ||
+            (b->pending && now - b->sent_ms >= BENCH_VERIFY_READ_MS)) fail(b, 12U);
+    } else if (b->pending && motion_write(b) && now - b->sent_ms >= BENCH_WRITE_ACK_WAIT_MS)
+        begin_verify(b, now);
+    else if (b->pending && now - b->sent_ms >= TRANSACTION_MS)
         fail(b, 6U);
 }
 
@@ -213,6 +264,32 @@ uint8_t BenchSteering_Take(BenchSteering *b, uint32_t now, PatrolCanFrame *f)
     int32_t value = 0;
     if (b->pending || b->phase == BENCH_IDLE || b->phase == BENCH_FAULT || b->step == STEER_STEP_ACTIVE)
         return 0;
+    /* A target written before an ACK wait may already have been superseded.
+     * Replace that untriggered target, rather than triggering the old value. */
+    if (b->step == STEER_STEP_TRIGGER && b->desired != b->applied &&
+        (b->verify == VERIFY_NONE || b->verify == VERIFY_ACK_LOW)) {
+        b->verify = b->pp_ack_low = 0U;
+        b->step = STEER_STEP_TARGET;
+    }
+    if (!b->verify && b->step == STEER_STEP_TRIGGER && !b->pp_ack_low) {
+        b->verify = VERIFY_ACK_LOW;
+        b->stop_ms = now;
+    }
+    if (b->verify) {
+        if (now - b->stop_ms >= BENCH_WRITE_VERIFY_MS) { fail(b, 12U); return 0U; }
+        b->index = b->verify == VERIFY_MODE ? 0x6061U :
+            b->verify == VERIFY_TARGET ? 0x607AU :
+            b->verify == VERIFY_OBJECT ? (b->step == STEER_STEP_WRITE_PROFILE_SPEED_ACTIVE ? 0x6081U : 0x6040U) : 0x6041U;
+        b->subindex = 0U;
+        b->read = 1U;
+        b->width = b->index == 0x6061U ? 1U :
+            (b->index == 0x607AU || b->index == 0x6081U ? 4U : 2U);
+        b->expected = 0x27U;
+        *f = PatrolCanopen_SdoRead(1U, b->index, 0U);
+        b->pending = 1U;
+        b->sent_ms = now;
+        return 1U;
+    }
     if (b->step == STEER_STEP_START_NODE || b->step == STEER_STEP_STOP_COMPLETE)
     {
         memset(f, 0, sizeof(*f));
@@ -367,6 +444,45 @@ uint8_t BenchSteering_OnFrame(BenchSteering *b, const PatrolCanFrame *f, uint32_
     if (!b->pending || f->id != 0x581 || f->dlc < 4 || f->dlc > 8 || f->data[1] != (uint8_t)b->index ||
         f->data[2] != (uint8_t)(b->index >> 8) || f->data[3] != b->subindex)
         return 0;
+    if (b->verify) {
+        if (now - b->stop_ms >= BENCH_WRITE_VERIFY_MS || now - b->sent_ms >= BENCH_VERIFY_READ_MS) {
+            fail(b, 12U); return 1U;
+        }
+        if (f->data[0] == 0x80U) {
+            if (f->dlc == 8U) fail(b, 12U);
+            return 1U;
+        }
+        if (!PatrolCanopen_ParseSdoValue(f, 1U, b->index, 0U, &value, &width) || width != b->width) return 1U;
+        b->pending = 0U;
+        if (b->verify == VERIFY_STATUS || b->verify == VERIFY_ACK_LOW) {
+            if ((value & 0x6FU) != 0x27U || (value & 8U)) { fail(b, 12U); return 1U; }
+            if (b->verify == VERIFY_ACK_LOW) {
+                if (!(value & 0x1000U)) { b->pp_ack_low = 1U; b->verify = 0U; }
+                return 1U; /* Poll a previous high ACK only within the absolute bound. */
+            }
+            if (b->step == STEER_STEP_TRIGGER && (!b->pp_ack_low || !(value & 0x1000U))) return 1U;
+            if (b->step == STEER_STEP_CLEAR_TRIGGER && (value & 0x1000U)) return 1U;
+            b->verify = VERIFY_MODE;
+        } else if (b->verify == VERIFY_MODE) {
+            if (value != 1) { fail(b, 12U); return 1U; }
+            b->verify = VERIFY_TARGET;
+        } else if (b->verify == VERIFY_TARGET) {
+            int32_t target = b->applied == INT32_MIN ? b->hold : b->applied;
+            if (value != target) { fail(b, 12U); return 1U; }
+            if (b->step == STEER_STEP_TARGET) complete_step(b, now);
+            else b->verify = VERIFY_OBJECT;
+        } else {
+            int32_t expected = b->step == STEER_STEP_WRITE_PROFILE_SPEED_ACTIVE ? b->speed_write_rpm :
+                b->step == STEER_STEP_TRIGGER ? 0x3F : 0x2F;
+            if (value != expected) { fail(b, 12U); return 1U; }
+            complete_step(b, now);
+        }
+        return 1U;
+    }
+    if (motion_write(b) && now - b->sent_ms >= BENCH_WRITE_ACK_WAIT_MS && f->data[0] != 0x80U) {
+        begin_verify(b, now);
+        return 1U;
+    }
     if (now - b->sent_ms >= TRANSACTION_MS)
     {
         fail(b, 6U);
@@ -489,29 +605,7 @@ uint8_t BenchSteering_OnFrame(BenchSteering *b, const PatrolCanFrame *f, uint32_
     }
     else if (f->data[0] != 0x60)
         return 1;
-    b->pending = 0;
-    b->step++;
-    if (b->phase == BENCH_STOPPING && b->step == STEER_STEP_STOP_COMPLETE && !b->stop_confirmed)
-        b->stop_ms = now; /* Disabled: separately bound NMT housekeeping. */
-    if (b->step == STEER_STEP_LIMITS_COMPLETE)
-    {
-        b->limits_aligned = 1;
-        b->cached_minimum = b->minimum;
-        b->cached_maximum = b->maximum;
-        b->step = STEER_STEP_WRITE_MODE;
-    }
-    if (b->step == STEER_STEP_READ_PROFILE_SPEED + 1U ||
-        b->step == STEER_STEP_PROFILE_SPEED_ACTIVE_COMPLETE)
-    {
-        b->applied_profile_rpm = b->speed_write_rpm;
-        if (b->step == STEER_STEP_PROFILE_SPEED_ACTIVE_COMPLETE)
-            b->step = b->target_pending ? STEER_STEP_TARGET : STEER_STEP_ACTIVE;
-    }
-    if (b->step == STEER_STEP_ACTIVE || b->step == STEER_STEP_TARGET_COMPLETE)
-    {
-        b->phase = BENCH_ACTIVE;
-        b->step = STEER_STEP_ACTIVE;
-    }
+    complete_step(b, now);
     return 1;
 }
 

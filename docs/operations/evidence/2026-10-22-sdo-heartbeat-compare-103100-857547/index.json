@@ -1,0 +1,49 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "capture_closed": true,
+  "upload_only": true,
+  "files": [
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-timing-compare-20261022-094120-255108\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-sdo-heartbeat-compare-103100-857547\\raw\\frames.jsonl",
+      "bytes": 3487321,
+      "sha256": "2a185f468d003d1f03c89efefeadfc081c35866a4622455667191052595b8158"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-timing-compare-20261022-094120-255108\\results.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-sdo-heartbeat-compare-103100-857547\\raw\\results.json",
+      "bytes": 436041,
+      "sha256": "de6ce13606a9044a92577ae6b25789f0984aec48500efe02749e94d749bd362d"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\sdo-timing-after-heartbeat-B.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-sdo-heartbeat-compare-103100-857547\\analysis\\sdo-timing-after-heartbeat-B.log",
+      "bytes": 2606,
+      "sha256": "6ea4eeba31a390c6cfd165a9cfbd1e27b224cb2ed332fbbbaa25289163df49b7"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\steering_sdo_timing_compare.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-sdo-heartbeat-compare-103100-857547\\analysis\\steering_sdo_timing_compare.py",
+      "bytes": 10622,
+      "sha256": "a601065f0c4021bdbd8ca10e9840c8ab796443f27933704b9226582bf7f10a3f"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\can_adapter_status_readonly.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-sdo-heartbeat-compare-103100-857547\\analysis\\can_adapter_status_readonly.py",
+      "bytes": 2414,
+      "sha256": "453dd600d8a23c28656fd3e0a5e931c3711e26df59f19c098ee4e0c8991379be"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\archive-heartbeat-read-compare.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-sdo-heartbeat-compare-103100-857547\\analysis\\archive-heartbeat-read-compare.py",
+      "bytes": 3768,
+      "sha256": "bb25145f931c548130750a7f8ed357b7dea7a7cd0bdfc171ab08376b1ca602e6"
+    },
+    {
+      "original_path": "analysis derived from original raw and independently archived baseline",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-sdo-heartbeat-compare-103100-857547\\findings.json",
+      "bytes": 2235,
+      "sha256": "d583135461b7adebe40c07d5487ef3b4e71299fcf47ce469bb9b0a8c0817fb41"
+    }
+  ]
+}

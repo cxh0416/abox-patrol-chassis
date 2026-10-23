@@ -1,0 +1,12 @@
+{
+  "host_started_at": "2026-10-22T13:22:17.785041+08:00",
+  "mode": "SWD attach/read only; no halt/reset/go/target writes",
+  "schema": "image-only; no RAM ABI interpretation",
+  "expected_app_sha256": "ced4fd110f4c02b1108a99cc3c2c2eb0d8d948e07232aaa04441741a219ec020",
+  "probe_serial": 59406895,
+  "dhcsr_before": "0x1010001",
+  "observed_app_sha256": "ced4fd110f4c02b1108a99cc3c2c2eb0d8d948e07232aaa04441741a219ec020",
+  "dhcsr_after": "0x1010001",
+  "verified_image": "patrol-chassis-0.2.77",
+  "host_finished_at": "2026-10-22T13:22:20.041811+08:00"
+}

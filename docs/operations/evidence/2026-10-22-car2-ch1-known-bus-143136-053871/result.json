@@ -1,0 +1,91 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "created_at": "2026-10-22T14:31:36.108334+08:00",
+  "operator_confirmation_verbatim": "已接",
+  "wiring_context": "Physical CH1 moved from CAN2 to known-good CAN1; CH2 unchanged. CH1 termination requested off.",
+  "duration_s": 20.0,
+  "counts": {
+    "0x702": 198,
+    "0x701": 198
+  },
+  "first_frames": {
+    "0x702": {
+      "bus": "CAN1",
+      "adapter_channel": 0,
+      "elapsed_s": 0.046999999991385266,
+      "id": 1794,
+      "dlc": 1,
+      "data": "7F",
+      "extended": false,
+      "remote": false,
+      "hardware_timestamp_raw": 55077360,
+      "time_flag": 1,
+      "decoded": {
+        "kind": "heartbeat",
+        "node": 2,
+        "state": 127,
+        "bootup": false
+      }
+    },
+    "0x701": {
+      "bus": "CAN1",
+      "adapter_channel": 0,
+      "elapsed_s": 0.07800000000861473,
+      "id": 1793,
+      "dlc": 1,
+      "data": "7F",
+      "extended": false,
+      "remote": false,
+      "hardware_timestamp_raw": 55077616,
+      "time_flag": 1,
+      "decoded": {
+        "kind": "heartbeat",
+        "node": 1,
+        "state": 127,
+        "bootup": false
+      }
+    }
+  },
+  "last_frames": {
+    "0x702": {
+      "bus": "CAN1",
+      "adapter_channel": 0,
+      "elapsed_s": 19.953000000008615,
+      "id": 1794,
+      "dlc": 1,
+      "data": "7F",
+      "extended": false,
+      "remote": false,
+      "hardware_timestamp_raw": 55276071,
+      "time_flag": 1,
+      "decoded": {
+        "kind": "heartbeat",
+        "node": 2,
+        "state": 127,
+        "bootup": false
+      }
+    },
+    "0x701": {
+      "bus": "CAN1",
+      "adapter_channel": 0,
+      "elapsed_s": 19.96899999998277,
+      "id": 1793,
+      "dlc": 1,
+      "data": "7F",
+      "extended": false,
+      "remote": false,
+      "hardware_timestamp_raw": 55276321,
+      "time_flag": 1,
+      "decoded": {
+        "kind": "heartbeat",
+        "node": 1,
+        "state": 127,
+        "bootup": false
+      }
+    }
+  },
+  "conclusion": "Physical CH1 received both known CAN1 heartbeats at 500kbps in hardware listen-only. CH1 receive capability in this configuration is confirmed. Prior zero-frame CAN2 observations narrow attention to receiver CAN output/configuration and the original wiring, but do not establish receiver hardware damage.",
+  "transmit_api_bound": false,
+  "hardware_changes_by_agent": false,
+  "next_step": "Await operator returning CH1 directly to receiver CAN output while preserving receiver-to-ABOX CAN2 connection; not listening until wiring confirmed."
+}

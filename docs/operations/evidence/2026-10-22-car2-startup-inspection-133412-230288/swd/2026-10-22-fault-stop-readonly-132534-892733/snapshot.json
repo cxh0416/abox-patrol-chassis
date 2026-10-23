@@ -1,0 +1,80 @@
+{
+  "host_started_at": "2026-10-22T13:25:34.894240+08:00",
+  "mode": "SWD attach/read only; no halt/reset/go/target writes",
+  "schema": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\car2-0277-schema.json",
+  "expected_app_sha256": "ced4fd110f4c02b1108a99cc3c2c2eb0d8d948e07232aaa04441741a219ec020",
+  "probe_serial": 59406895,
+  "dhcsr_before": "0x1010001",
+  "observed_app_sha256": "ced4fd110f4c02b1108a99cc3c2c2eb0d8d948e07232aaa04441741a219ec020",
+  "regions": {
+    "cpuid": {
+      "address": "0xe000ed00",
+      "bytes": 4,
+      "hex": "31c21f41"
+    },
+    "vtor": {
+      "address": "0xe000ed08",
+      "bytes": 4,
+      "hex": "00000000"
+    },
+    "scb_faults": {
+      "address": "0xe000ed24",
+      "bytes": 40,
+      "hex": "00000000000100000000004000000000245653422456534200000000300000000002000000001000"
+    },
+    "dbg_id": {
+      "address": "0xe0042000",
+      "bytes": 4,
+      "hex": "18640110"
+    },
+    "flash_size": {
+      "address": "0x1ffff7e0",
+      "bytes": 4,
+      "hex": "0001ffff"
+    },
+    "uid": {
+      "address": "0x1ffff7e8",
+      "bytes": 12,
+      "hex": "36ffd205534d383840251443"
+    },
+    "sram_start": {
+      "address": "0x20000000",
+      "bytes": 64,
+      "hex": "00be000080b500f076f9352000f007fa59480068400708d4584845f2555101600621416040f6ff718160012002bd70b50d00044616460cd056f8041b204600f0"
+    },
+    "flash_start": {
+      "address": "0x8000000",
+      "bytes": 64,
+      "hex": "00000120f11d0008211d0008231d0008251d0008271d0008291d0008000000000000000000000000000000002b1d00082d1d0008000000002f1d0008311d0008"
+    },
+    "ram_tick": {
+      "address": "0x2000021c",
+      "bytes": 16,
+      "hex": "04d0f4d3032f13d00bd3f0e7370400eb"
+    },
+    "flash_tick_offset": {
+      "address": "0x800021c",
+      "bytes": 16,
+      "hex": "11f8013b012a28bf9a42f7d0d01a7047"
+    },
+    "rcc": {
+      "address": "0x40021000",
+      "bytes": 40,
+      "hex": "83640000000000000000000000000000000000001400000000000000000000000000000000000014"
+    },
+    "systick": {
+      "address": "0xe000e010",
+      "bytes": 16,
+      "hex": "00000000000000000000000028230040"
+    },
+    "config_calibration_only": {
+      "address": "0x803f96c",
+      "bytes": 36,
+      "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+    }
+  },
+  "dhcsr_after": "0x1010001",
+  "verified_image": "patrol-chassis-0.2.77",
+  "ram_decoding_valid": false,
+  "host_finished_at": "2026-10-22T13:25:37.022340+08:00"
+}

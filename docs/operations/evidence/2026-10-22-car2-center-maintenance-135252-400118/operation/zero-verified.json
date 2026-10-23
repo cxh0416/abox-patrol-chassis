@@ -1,0 +1,21 @@
+{
+  "samples": [
+    {
+      "sample_ms": 1162298,
+      "count": 0,
+      "write_state": 2
+    },
+    {
+      "sample_ms": 1162409,
+      "count": 0,
+      "write_state": 2
+    },
+    {
+      "sample_ms": 1162520,
+      "count": 0,
+      "write_state": 2
+    }
+  ],
+  "stationary_after": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-read-135008-797772",
+  "command_replayed": false
+}
