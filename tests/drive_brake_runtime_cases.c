@@ -28,13 +28,13 @@ static void fixture(void)
     g_motion.coordinate.valid=1;
     PatrolRuntime_Init();
     g_motion.drive.phase=BENCH_ACTIVE; g_motion.drive.step=12;
-    g_motion.drive.applied=1000; g_motion.drive.direction=1;
+    g_motion.drive.applied=2000; g_motion.drive.direction=1;
     g_motion.bench.phase=BENCH_ACTIVE; g_motion.bench.step=16;
     g_motion.bench.center=0; g_motion.bench.limit_mdeg=30000;
     g_motion.bench.minimum=-82680; g_motion.bench.maximum=82680;
     g_motion.bench.applied=13554; g_motion.bench.applied_profile_rpm=VEHICLE_STEERING_PROFILE_CREEP_RPM;
     PatrolRuntime_UpdateFeedback(mock_now);
-    assert(ChassisControl_Apply(&mock_control,"acquire","remote",1,1000,1000,5000,mock_now));
+    assert(ChassisControl_Apply(&mock_control,"acquire","remote",1,1000,2000,5000,mock_now));
 }
 static void next_sample(void)
 {

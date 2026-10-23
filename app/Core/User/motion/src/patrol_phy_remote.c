@@ -50,7 +50,7 @@ static int32_t map_steering(int16_t raw)
     return value;
 }
 
-// 将 T12 油门摇杆量换算为车体目标转速。按满量程 450 映射到 CHASSIS_MAX_RPM，输出钳位于当前正负 1000 rpm 上限。
+// 将 T12 油门摇杆量换算为车体目标转速。按满量程 450 映射到 CHASSIS_MAX_RPM，输出钳位于当前正负 2000 rpm 上限。
 static int16_t map_rpm(int16_t raw)
 {
     int32_t value = ((int32_t)raw * PATROL_PHY_REMOTE_MAX_RPM) /

@@ -492,7 +492,33 @@ int main(void)
     CHECK(ChassisCloud_Parse(power_bad_params, (uint16_t)strlen(power_bad_params), &command) ==
           CHASSIS_CLOUD_INVALID);
     CHECK(ChassisCloud_Parse(over_limit, (uint16_t)strlen(over_limit), &command) == CHASSIS_CLOUD_INVALID);
-    CHECK(ChassisCloud_Parse(over_rpm, (uint16_t)strlen(over_rpm), &command) == CHASSIS_CLOUD_INVALID);
+    /* The old 1001-rpm rejection case is now inside the expanded range. */
+    CHECK(ChassisCloud_Parse(over_rpm, (uint16_t)strlen(over_rpm), &command) == CHASSIS_CLOUD_OK);
+    for (int sign = -1; sign <= 1; sign += 2) {
+        ChassisControl boundary_control;
+        ChassisFeedback boundary_feedback = {0};
+        char boundary[512];
+        boundary_feedback.calibrated = boundary_feedback.encoder_range_valid = 1;
+        boundary_feedback.encoder_profile_ready = boundary_feedback.power_ready = 1;
+        boundary_feedback.steering_online = boundary_feedback.drive_online = 1;
+        boundary_feedback.feedback_ms = 100;
+        ChassisControl_Init(&boundary_control);
+        ChassisControl_SetFeedback(&boundary_control, &boundary_feedback);
+        for (int magnitude = 2000; magnitude <= 2001; ++magnitude) {
+            int rpm = sign * magnitude;
+            snprintf(boundary, sizeof(boundary),
+                "{\"version\":\"4.0\",\"timestamp\":1788838333000,\"data\":{"
+                "\"requestId\":\"speed-boundary\",\"command\":\"chassis_control\",\"params\":{"
+                "\"action\":\"acquire\",\"sessionId\":\"speed\",\"seq\":1,\"leaseMs\":1000,"
+                "\"driveRpm\":%d,\"steeringDeg\":0}}}", rpm);
+            CHECK(ChassisCloud_Parse(boundary, (uint16_t)strlen(boundary), &command) ==
+                  (magnitude == 2000 ? CHASSIS_CLOUD_OK : CHASSIS_CLOUD_INVALID));
+            if (magnitude == 2000) CHECK(command.drive_rpm == rpm);
+            CHECK(ChassisControl_Apply(&boundary_control, "acquire", "speed", magnitude,
+                  1000, (int16_t)rpm, 0, 100) == (magnitude == 2000));
+            CHECK(boundary_control.target_rpm == sign * 2000);
+        }
+    }
     CHECK(ChassisCloud_Parse(fractional_rpm, (uint16_t)strlen(fractional_rpm), &command) == CHASSIS_CLOUD_INVALID);
     CHECK(ChassisCloud_Parse(fractional_lease, (uint16_t)strlen(fractional_lease), &command) == CHASSIS_CLOUD_INVALID);
     CHECK(ChassisCloud_Parse(sub_mdeg_steering, (uint16_t)strlen(sub_mdeg_steering), &command) == CHASSIS_CLOUD_INVALID);

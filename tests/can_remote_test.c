@@ -100,13 +100,13 @@ static void physical_b_ignored_cases(void)
         uint32_t deadline=state()->lease_deadline_ms;
         for (unsigned n=0; n<5; n++) {
             now+=10; healthy(); switches(1,(uint8_t)b);
-            assert(!state()->drive_brake && state()->target_rpm==1000);
+            assert(!state()->drive_brake && state()->target_rpm==2000);
             assert(state()->target_steering_mdeg==10000 && state()->enable_request);
             assert(state()->session_active && state()->lease_deadline_ms==deadline);
             assert(VehiclePowerOutput_IsOn());
         }
         joystick(225,-180);
-        assert(state()->target_rpm==500 && state()->target_steering_mdeg==-10000);
+        assert(state()->target_rpm==1000 && state()->target_steering_mdeg==-10000);
         joystick(0,0); assert(state()->target_rpm==0);
     }
     /* B cannot cancel or bypass the existing three-sample reversal gate. */
@@ -114,12 +114,12 @@ static void physical_b_ignored_cases(void)
     assert(state()->reversal_pending && state()->target_rpm==0);
     for (unsigned b=0; b<=2; b++) {
         now+=10; healthy(); switches(1,(uint8_t)b);
-        assert(state()->reversal_pending && state()->requested_rpm==-1000);
+        assert(state()->reversal_pending && state()->requested_rpm==-2000);
         RemoteService_SafetyTick(now);
         if (b<2) assert(state()->target_rpm==0);
     }
-    assert(!state()->reversal_pending && state()->target_rpm==-1000);
-    switches(1,1); assert(state()->target_rpm==-1000);
+    assert(!state()->reversal_pending && state()->target_rpm==-2000);
+    switches(1,1); assert(state()->target_rpm==-2000);
 
     /* B also has no effect on another transport's motion or enable. */
     init(); assert(RemoteService_ApplyLocal("acquire","other-owner",1,300,200,8000,now));
@@ -129,7 +129,7 @@ static void physical_b_ignored_cases(void)
 
     /* A off, stale switches and missing switch traffic still stop with B lit. */
     init(); VehiclePowerOutput_Set(0); switches(1,1); healthy(); joystick(450,180);
-    assert(VehiclePowerOutput_IsOn() && state()->target_rpm==1000);
+    assert(VehiclePowerOutput_IsOn() && state()->target_rpm==2000);
     PatrolCanFrame f={PATROL_PHY_REMOTE_SWITCH_ID,7,{0}};
     assert(PatrolPhyRemote_OnFrame(&f,now,now) && state()->enable_request);
     f.dlc=8;
@@ -158,20 +158,20 @@ static void drive_speed_cases(void)
 {
     for (int sign=-1; sign<=1; sign+=2) {
         init(); switches(1,0); joystick(sign*225,sign*450);
-        assert(state()->target_rpm==sign*500 && state()->target_steering_mdeg==sign*25000);
+        assert(state()->target_rpm==sign*1000 && state()->target_steering_mdeg==sign*25000);
         joystick(sign*450,sign*450);
-        assert(state()->target_rpm==sign*1000 && state()->target_steering_mdeg==sign*25000);
+        assert(state()->target_rpm==sign*2000 && state()->target_steering_mdeg==sign*25000);
         joystick(sign*32767,sign*32767);
-        assert(state()->target_rpm==sign*1000 && state()->target_steering_mdeg==sign*25000);
+        assert(state()->target_rpm==sign*2000 && state()->target_steering_mdeg==sign*25000);
 
         init(); assert(send(PATROL_CAN_ARM,1,0,0)==PATROL_CAN_OK);
-        assert(send(PATROL_CAN_TARGET,2,sign*1000,sign*30000)==PATROL_CAN_OK);
-        assert(state()->target_rpm==sign*1000 && state()->target_steering_mdeg==sign*30000);
+        assert(send(PATROL_CAN_TARGET,2,sign*2000,sign*30000)==PATROL_CAN_OK);
+        assert(state()->target_rpm==sign*2000 && state()->target_steering_mdeg==sign*30000);
         uint32_t deadline=state()->lease_deadline_ms;
-        assert(send(PATROL_CAN_TARGET,3,sign*1001,0)==PATROL_CAN_INVALID);
-        assert(state()->target_rpm==sign*1000 && state()->lease_deadline_ms==deadline);
-        assert(!RemoteService_ApplyLocal("renew","can2-keyboard",100,300,sign*1001,0,now));
-        assert(state()->target_rpm==sign*1000);
+        assert(send(PATROL_CAN_TARGET,3,sign*2001,0)==PATROL_CAN_INVALID);
+        assert(state()->target_rpm==sign*2000 && state()->lease_deadline_ms==deadline);
+        assert(!RemoteService_ApplyLocal("renew","can2-keyboard",100,300,sign*2001,0,now));
+        assert(state()->target_rpm==sign*2000);
     }
 }
 int main(void)

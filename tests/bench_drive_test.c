@@ -61,10 +61,10 @@ int main(void)
     assert(b.phase==BENCH_FAULT && b.cut_power);
     /* Full-scale targets reach both motor SDOs with the correct wheel signs. */
     for (int sign=-1; sign<=1; sign+=2) {
-        active(&b,&now); BenchDrive_Tick(&b,now,1,1,sign*1000,0,0,now,now);
-        transact(&b,&now); transact(&b,&now); assert(b.applied==sign*1000);
+        active(&b,&now); BenchDrive_Tick(&b,now,1,1,sign*2000,0,0,now,now);
+        transact(&b,&now); transact(&b,&now); assert(b.applied==sign*2000);
         BenchDrive_Stop(&b,now,1);
-        active(&b,&now); BenchDrive_Tick(&b,now,1,1,sign*1001,0,0,now,now);
+        active(&b,&now); BenchDrive_Tick(&b,now,1,1,sign*2001,0,0,now,now);
         assert(b.phase==BENCH_FAULT && b.cut_power);
     }
     active(&b,&now); BenchDrive_Tick(&b,now,1,0,0,0,0,now,now); assert(b.cut_power);
