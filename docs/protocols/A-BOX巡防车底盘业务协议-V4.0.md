@@ -7,7 +7,7 @@
 | 报文版本 | `4.0` |
 | Profile 名称及版本 | `vehicle_chassis 1.0` |
 | 文档属性 | 业务接口规范 |
-| 依赖协议 | [A-BOX 设备公共 MQTT 协议 V4.0](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md) |
+| 依赖协议 | [A-BOX 设备公共 MQTT 协议 V4.0](https://github.com/cxh0416/abox-platform/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md) |
 
 ## 目录
 
@@ -35,11 +35,11 @@
 
 本文定义巡防车底盘在 A-BOX MQTT V4 下的业务 Profile，包括车辆上下电、租约式底盘控制、完整底盘状态和业务安全语义。
 
-公共通信及兼容规则遵循 [A-BOX 设备公共 MQTT 协议 V4.0](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md)；本文件补充底盘 Profile 与产品接口语义。
+公共通信及兼容规则遵循 [A-BOX 设备公共 MQTT 协议 V4.0](https://github.com/cxh0416/abox-platform/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md)；本文件补充底盘 Profile 与产品接口语义。
 
 局部 JSON 示例按标题所示字段嵌入公共报文。
 
-公共规则索引：[Topic / QoS / Retain](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md#21-topicqosretain)、[数值、未知字段及枚举](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md#32-数值扩展及非法报文)、[有效期与校验顺序](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md#43-有效期与校验顺序)、[幂等保护窗口](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md#44-请求一致性与保护窗口)、[公共响应码](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md#46-公共响应码与异常响应)、[状态同步](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md#6-完整状态与-sync_state)、[Profile 版本兼容](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md#74-profile-版本兼容)、[首次接入与 Manifest 主动获取](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md#75-平台首次接入与恢复流程)、[公共兼容性](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md#9-平台处理与-v4-兼容性)。
+公共规则索引：[Topic / QoS / Retain](https://github.com/cxh0416/abox-platform/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md#21-topicqosretain)、[数值、未知字段及枚举](https://github.com/cxh0416/abox-platform/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md#32-数值扩展及非法报文)、[有效期与校验顺序](https://github.com/cxh0416/abox-platform/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md#43-有效期与校验顺序)、[幂等保护窗口](https://github.com/cxh0416/abox-platform/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md#44-请求一致性与保护窗口)、[公共响应码](https://github.com/cxh0416/abox-platform/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md#46-公共响应码与异常响应)、[状态同步](https://github.com/cxh0416/abox-platform/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md#6-完整状态与-sync_state)、[Profile 版本兼容](https://github.com/cxh0416/abox-platform/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md#74-profile-版本兼容)、[首次接入与 Manifest 主动获取](https://github.com/cxh0416/abox-platform/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md#75-平台首次接入与恢复流程)、[公共兼容性](https://github.com/cxh0416/abox-platform/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md#9-平台处理与-v4-兼容性)。
 
 ## 2. 通信约定与能力声明
 
@@ -61,7 +61,7 @@ Manifest Profile 条目固定为：
 
 ### 2.2 接入流程
 
-按公共[第 7.5 节](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md#75-平台首次接入与恢复流程)从 Manifest Topic 识别 `deviceId`，匹配平台支持主版本的 `vehicle_chassis`，并按公共第 7.3 节与当前心跳确认能力后使用命令。
+按公共[第 7.5 节](https://github.com/cxh0416/abox-platform/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md#75-平台首次接入与恢复流程)从 Manifest Topic 识别 `deviceId`，匹配平台支持主版本的 `vehicle_chassis`，并按公共第 7.3 节与当前心跳确认能力后使用命令。
 
 完整状态及同步集合见[5.1](#51-chassis_status)、[4.4](#44-sync_state)。响应按 `deviceId` 和原 `requestId` 关联；控制会话按设备分别维护，`sessionId`、`seq`、`leaseMs` 不能由 `requestId` 替代。
 

@@ -12,7 +12,7 @@
 
 ## 公共依赖与协议维护
 
-首次检出后，在仓库根目录执行 `git submodule update --init --recursive`，取得本产品已固定提交的 [A-BOX 公共平台](https://github.com/cxh0416/abox-platform-firmware)。该命令不会把平台升级到最新提交；构建使用 `platform/` 中的固定版本。
+首次检出后，在仓库根目录执行 `git submodule update --init --recursive`，取得本产品已固定提交的 [A-BOX 公共平台](https://github.com/cxh0416/abox-platform)。该命令不会把平台升级到最新提交；构建使用 `platform/` 中的固定版本。
 
 公共固件组件、Boot 和公共 MQTT 规则在平台仓库维护；产品业务、硬件适配及产品协议在本仓库维护。[内部协议文档中心](https://github.com/cxh0416/protocol-docs) 只同步与发布已登记协议，协议原文仍在各源仓库修改。
 
@@ -30,7 +30,7 @@ python tools/clean_workspace.py --build
 ## 文档入口
 
 1. [CURRENT](docs/CURRENT.md)：唯一当前状态、冻结测试基线、当前 blocker、下一步和权威文档入口。
-2. [公共 MQTT V4](https://github.com/cxh0416/abox-platform-firmware/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md)与[底盘业务 Profile](docs/protocols/A-BOX巡防车底盘业务协议-V4.0.md)：对外业务开发只需这两份协议，首次订阅、主动 Manifest、能力确认和消息归属见公共第 7.5 节及产品第 3.2 节。
+2. [公共 MQTT V4](https://github.com/cxh0416/abox-platform/blob/main/docs/protocols/A-BOX设备公共MQTT协议-V4.0.md)与[底盘业务 Profile](docs/protocols/A-BOX巡防车底盘业务协议-V4.0.md)：对外业务开发只需这两份协议，首次订阅、主动 Manifest、能力确认和消息归属见公共第 7.5 节及产品第 3.2 节。
 3. [源码模块与依赖](docs/implementation/源码模块与依赖.md)与[硬件与安全边界](docs/hardware/硬件与安全边界.md)：当前实现和安全边界。
 4. [当前运维说明](docs/operations/)与[巡防车底盘内部运维协议 V2.3](docs/protocols/A-BOX巡防车底盘内部运维协议-V2.3.md)：内部标定、CANopen、台架和维护流程。Profile 1.0、内部报文 2.0 和 Config V5 分别是不同的版本。
 5. [Evidence 索引](docs/operations/evidence/README.md)：需要证明结论时再进入原始证据。
