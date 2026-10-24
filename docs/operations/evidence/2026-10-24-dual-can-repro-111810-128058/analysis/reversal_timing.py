@@ -32,7 +32,7 @@ def main() -> int:
 
     transitions = []
     previous_direction = 0
-    last_same_direction: float | None = None
+    last_nonzero_s: float | None = None
     zeros: list[float] = []
     for elapsed, value in commands:
         current_direction = (value > 0) - (value < 0)
@@ -42,20 +42,38 @@ def main() -> int:
         if previous_direction and current_direction != previous_direction:
             transitions.append(
                 {
-                    "last_old_direction_s": last_same_direction,
-                    "first_zero_s": min(zeros) if zeros else None,
+                    "last_old_direction_s": last_nonzero_s,
+                    "first_zero_s": zeros[0] if zeros else None,
                     "first_new_direction_s": elapsed,
                     "old_direction": previous_direction,
                     "new_direction": current_direction,
                     "direction_to_direction_s": (
-                        elapsed - last_same_direction if last_same_direction is not None else None
+                        elapsed - last_nonzero_s if last_nonzero_s is not None else None
                     ),
                 }
             )
-        if current_direction != previous_direction or last_same_direction is None:
-            zeros = []
-            last_same_direction = elapsed
+        zeros = []
+        last_nonzero_s = elapsed
         previous_direction = current_direction
+
+    for item in transitions:
+        zero_s = item["first_zero_s"]
+        end_s = item["first_new_direction_s"]
+        if zero_s is None:
+            item["both_le_20_s"] = None
+            continue
+        latest = [None, None]
+        stopped_s = None
+        for elapsed, value, wheel in rpm_samples:
+            if elapsed < zero_s:
+                continue
+            if elapsed >= end_s:
+                break
+            latest[wheel] = value
+            if latest[0] is not None and latest[1] is not None and abs(latest[0]) <= 20 and abs(latest[1]) <= 20:
+                stopped_s = elapsed
+                break
+        item["both_le_20_s"] = stopped_s
 
     print(f"drive target writes: {len(commands)}")
     print(f"direction reversals: {len(transitions)}")
@@ -65,7 +83,8 @@ def main() -> int:
             f"last {item['last_old_direction_s']:.3f}s zero {zero_text} "
             f"opposite {item['first_new_direction_s']:.3f}s "
             f"{item['old_direction']:+d}->{item['new_direction']:+d} "
-            f"total {item['direction_to_direction_s']:.3f}s"
+            f"total {item['direction_to_direction_s']:.3f}s "
+            f"both_le_20={item['both_le_20_s']}"
         )
     return 0
 
