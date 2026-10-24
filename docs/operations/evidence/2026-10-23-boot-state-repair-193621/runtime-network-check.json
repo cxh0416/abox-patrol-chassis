@@ -1,0 +1,22 @@
+{
+  "checked_at": "2026-10-23T19:37:34+08:00",
+  "app_version": "patrol-chassis-0.2.83",
+  "app_sha256": "86c79df4f076a9a52be67c3877a9aa56643199e5cf91573332d32bfb329ed6b7",
+  "fault_latched": false,
+  "power_output_on": false,
+  "stop_reason": 3,
+  "can_bus_off": false,
+  "can1_raw_rx": 3808,
+  "can2_raw_rx": 0,
+  "can2_passive_capture_seconds": 6,
+  "can2_frames_during_capture": 0,
+  "mqtt_tls_state": "READY",
+  "mqtt_state_code": 29,
+  "mqtt_connected_and_subscribed": true,
+  "heartbeat_publish_observed": true,
+  "status_report_publish_observed": true,
+  "server_time_response_observed": true,
+  "ota_busy": false,
+  "ota_state": "CONFIRMED",
+  "interpretation": "App and 4G are running. Vehicle remains safely disarmed with power output off. No CAN2 receiver/controller-command traffic was present during the six-second passive capture."
+}

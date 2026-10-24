@@ -1,0 +1,40 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.83",
+  "capture_seconds": 518.704,
+  "physical_mapping": {
+    "CH1": "CAN2 receiver/A-BOX",
+    "CH2": "CAN1 A-BOX/drives"
+  },
+  "motion_sdo_stopped_at_s": 120.563,
+  "can2_last_frame_at_s": 164.188,
+  "fault": {
+    "reason": 13,
+    "gates": 0,
+    "steering_phase": 4,
+    "steering_step": 18,
+    "steering_fault": 12,
+    "steer_status_word": 8759,
+    "drive_status_word": 55,
+    "steer_age_ms": 7,
+    "drive_age_ms": 90,
+    "encoder_error": 0,
+    "sdo_timeout_count": 7,
+    "sdo_abort_count": 13,
+    "last_sdo_abort": 100794368
+  },
+  "runtime_log": [
+    "SDOREAD timeout entry=0 retry=1 pending=1 total=5",
+    "SDOREAD timeout entry=1 retry=1 pending=1 total=6",
+    "SDOREAD timeout entry=1 retry=0 pending=0 total=7",
+    "FAULTSTOP disable mask=0/3 confirmed=0; latch"
+  ],
+  "wire_observation": {
+    "write_ack_max_gap_ms": 16,
+    "no_bus_off_observed": true,
+    "last_steering_status_request_before_stop_s": 119.657,
+    "next_steering_status_response_s": 119.704,
+    "response_gap_ms": 47
+  },
+  "interpretation": "The steering executor failed its 40 ms write-result verification after a delayed steering status response. The resulting execution fault initiated the two-axis stop and hard latch. Physical driver lack of ACK is not supported by this capture."
+}

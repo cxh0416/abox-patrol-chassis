@@ -1,0 +1,20 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "files": [
+    {
+      "archive_path": "docs\\operations\\evidence\\2026-10-23-steering-fault-readonly-193404-175263\\result.json",
+      "bytes": 510,
+      "sha256": "e2e3947f8238b1af6d221214a6970cb13d33d092574bb4a5a48488d640adf4ed"
+    },
+    {
+      "archive_path": "docs\\operations\\evidence\\2026-10-23-steering-fault-readonly-193404-175263\\schema.json",
+      "bytes": 17210,
+      "sha256": "50a1c03bc52afa430bd6160848872ea7311df9d1bb93e8427cb702d35c00a9b9"
+    },
+    {
+      "archive_path": "docs\\operations\\evidence\\2026-10-23-steering-fault-readonly-193404-175263\\steering-fault-current-readonly.py",
+      "bytes": 7541,
+      "sha256": "aa426e5273509d31f63394999377a2580ed86798076a3e8eb809ec210a66bcd9"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+patrol_vehicle_chassis / patrol-chassis-0.2.82
+仅编译打包，按操作者要求未运行测试或检测，未烧录开发板，未经实车验收。
+当前设置：转向三档600/600/600 rpm，行走上限±2000 rpm；active_car=0，使用板上有效逐车配置。
+
+烧录以下同包文件，全部写入后再复位：
+Patrol_Vehicle_Chassis_Full.bin -> 0x08000000 (187032 bytes, Boot+App)
+BootState_A.bin -> 0x0803E800 (2048 bytes)
+BootState_B.bin -> 0x0803F000 (2048 bytes)
+
+Full已经包含Boot与App，不需要另外重复烧录。
+若只更新App，独立Patrol_Vehicle_Chassis_App.bin地址为0x08008000，仍使用本包State A/B。
+不整片擦除；保留0x0803E000恢复页和0x0803F800配置页。
+本包不包含逐车配置。此前已整片擦除且尚未恢复配置时，需要另行恢复本板本车Config V5到0x0803F800，或重新配置、标定。
+State A/B为离线NORMAL记录，未进行Boot解析/启动检测，不声明UFS旧稳定槽可用。
+本次不替换dist、受管理候选或在线调试目录。

@@ -1,0 +1,18 @@
+-- The C compiler identification is GNU 14.2.1
+-- The CXX compiler identification is GNU 14.2.1
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: E:/Tools/arm-gcc-14.2/bin/arm-none-eabi-gcc.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: E:/Tools/arm-gcc-14.2/bin/arm-none-eabi-g++.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+Build type: Release
+-- The ASM compiler identification is GNU
+-- Found assembler: E:/Tools/arm-gcc-14.2/bin/arm-none-eabi-gcc.exe
+-- Configuring done (2.1s)
+-- Generating done (0.4s)
+-- Build files have been written to: E:/1_work/ChassisCar/abox-patrol-vehicle-chassis-firmware/app/build/Steering800

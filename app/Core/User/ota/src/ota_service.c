@@ -37,7 +37,8 @@ static void adapter_log(void *context, uint8_t level, const char *message)
 void OtaService_Init(Ec800AtCore_t *at)
 {
     static ABoxBootV2AppPort port;
-    static ABoxBootV2AppConfig config;
+    /* ABoxBootV2App_Init copies the configuration into its own context. */
+    ABoxBootV2AppConfig config;
     static const ABoxBootV2Layout layout = {
         BOOT_STATE_A_ADDR, BOOT_STATE_B_ADDR, BOOT_STATE_PAGE_SIZE,
         APP_START_ADDR, APP_END_ADDR, 0x20000000U, 0x20010000U

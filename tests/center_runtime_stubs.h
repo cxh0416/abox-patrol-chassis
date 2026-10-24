@@ -46,6 +46,8 @@ uint8_t PatrolRuntimePort_OtaBusy(void) { return mock_ota; }
 void PatrolDiagnostics_Snapshot(const PatrolDiagnostics* d, uint32_t now, PatrolDiagnosticsSnapshot* s)
 { (void)d; (void)now; *s = mock_snapshot; }
 void PatrolDiagnostics_Init(PatrolDiagnostics* d) { memset(d, 0, sizeof(*d)); }
+uint8_t PatrolDiagnostics_OnTpdoFrame(PatrolDiagnostics* d, const PatrolCanFrame* f, uint32_t now)
+{ (void)d; (void)f; (void)now; return 0U; }
 void PatrolDiagnostics_OnCanFrame(PatrolDiagnostics* d, const PatrolCanFrame* f, uint32_t now)
 { (void)d; (void)f; (void)now; }
 uint8_t PatrolDiagnostics_TakeSdoRead(PatrolDiagnostics* d, uint32_t now, PatrolCanFrame* f, uint8_t allow_retry)

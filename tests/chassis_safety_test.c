@@ -30,6 +30,61 @@ static int test_status_snapshot_age(void)
     CHECK(!s.steering_status_fresh && !s.drive_status_fresh);
     return 0;
 }
+
+static int test_steering_tpdo_freshness(void)
+{
+    PatrolDiagnostics d;
+    PatrolDiagnosticsSnapshot s;
+    PatrolCanFrame frame = {0};
+
+    PatrolDiagnostics_Init(&d);
+    d.steering_status_word = 0x0631U;
+    d.steering_status_ms = 1U;
+    d.steering_position_count = 100;
+    d.steering_position_ms = 1U;
+    d.steering_position_seen = 1U;
+
+    frame.id = 0x181U;
+    frame.dlc = 7U;
+    frame.data[0] = 0x37U;
+    frame.data[1] = 0x22U;
+    frame.data[2] = 0x00U;
+    frame.data[3] = 0x00U;
+    frame.data[4] = 0x2DU;
+    frame.data[5] = 0x00U;
+    frame.data[6] = 0x01U;
+    CHECK(PatrolDiagnostics_OnTpdoFrame(&d, &frame, 300U));
+    CHECK(d.steering_status_word == 0x2237U && d.steering_status_ms == 300U);
+
+    frame.id = 0x281U;
+    frame.dlc = 8U;
+    frame.data[0] = 0xC1U;
+    frame.data[1] = 0xB4U;
+    frame.data[2] = 0x00U;
+    frame.data[3] = 0x00U;
+    CHECK(PatrolDiagnostics_OnTpdoFrame(&d, &frame, 550U));
+    CHECK(d.steering_position_count == 0xB4C1 && d.steering_position_ms == 550U &&
+          d.steering_position_seen);
+
+    PatrolDiagnostics_Snapshot(&d, 550U, &s);
+    CHECK(s.steering_status_fresh && s.steering_feedback_fresh);
+    PatrolDiagnostics_Snapshot(&d, 551U, &s);
+    CHECK(!s.steering_status_fresh && s.steering_feedback_fresh);
+
+    frame.id = 0x181U;
+    frame.dlc = 1U;
+    CHECK(!PatrolDiagnostics_OnTpdoFrame(&d, &frame, 600U));
+    CHECK(d.steering_status_ms == 300U);
+    frame.id = 0x281U;
+    frame.dlc = 3U;
+    CHECK(!PatrolDiagnostics_OnTpdoFrame(&d, &frame, 600U));
+    CHECK(d.steering_position_ms == 550U);
+    frame.id = 0x182U;
+    frame.dlc = 7U;
+    CHECK(!PatrolDiagnostics_OnTpdoFrame(&d, &frame, 600U));
+    return 0;
+}
+
 static uint8_t test_power_write(uint8_t on)
 {
     g_power_level = on ? 1U : 0U;
@@ -272,6 +327,7 @@ int main(void)
 {
     CHECK(test_sdo_waits_for_node() == 0);
     CHECK(test_status_snapshot_age() == 0);
+    CHECK(test_steering_tpdo_freshness() == 0);
     CHECK(test_sdo_safety_priority() == 0);
     CHECK(test_field_sdo_replies() == 0);
     CHECK(test_diagnostic_read_retry() == 0);

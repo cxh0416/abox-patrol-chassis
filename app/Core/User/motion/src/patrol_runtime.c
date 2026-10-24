@@ -184,6 +184,9 @@ uint8_t PatrolRuntime_ResetFault(void)
 void PatrolRuntime_OnCanFrame(const PatrolCanFrame* frame, uint32_t now)
 {
     PatrolRuntimePort_Enter();
+    /* The steering driver broadcasts its validated status/position mapping.
+     * Consume those TPDOs independently of SDO ownership and stop arbitration. */
+    uint8_t steering_tpdo = PatrolDiagnostics_OnTpdoFrame(&g_motion.diagnostics, frame, now);
     if (PatrolFaultStop_OnFrame(&fault_stop, frame, now)) {
         /* 原诊断事务已经取消；本流程的状态响应仍更新现场诊断时间和状态字。 */
         PatrolDiagnostics_OnCanFrame(&g_motion.diagnostics, frame, now);
@@ -202,8 +205,10 @@ void PatrolRuntime_OnCanFrame(const PatrolCanFrame* frame, uint32_t now)
         g_motion.coordinate_reset_requested = 1;
     uint8_t execution = BenchSteering_OnFrame(&g_motion.bench, frame, now) ? 1 :
         BenchDrive_OnFrame(&g_motion.drive, frame, now) ? 2 : 0;
-    if (!execution)
+    if (!execution && !steering_tpdo)
         PatrolDiagnostics_OnCanFrame(&g_motion.diagnostics, frame, now);
+    else if (steering_tpdo)
+        g_motion.diagnostics.can_rx_count++;
     else {
         int32_t status; uint8_t width;
         g_motion.diagnostics.can_rx_count++;

@@ -1,0 +1,14 @@
+device STM32F105RC
+exec InhibitConnectRetries = 1
+exec ForceAttachTarget = 1
+if SWD
+speed 1000
+connect
+h
+loadbin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-23-boot-state-repair-193621\BootState_A.bin", 0x0803E800
+verifybin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-23-boot-state-repair-193621\BootState_A.bin", 0x0803E800
+loadbin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-23-boot-state-repair-193621\BootState_B.bin", 0x0803F000
+verifybin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-23-boot-state-repair-193621\BootState_B.bin", 0x0803F000
+r
+g
+qc

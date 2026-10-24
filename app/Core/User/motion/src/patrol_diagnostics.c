@@ -126,6 +126,29 @@ void PatrolDiagnostics_Init(PatrolDiagnostics* diagnostics)
     memset(diagnostics, 0, sizeof(*diagnostics));
 }
 
+// 消费转向驱动器已核验映射的 TPDO1/TPDO2。状态字和位置由驱动器主动周期发送，
+// 不应因执行器占用 SDO 或单次诊断读超时而错误过期。
+uint8_t PatrolDiagnostics_OnTpdoFrame(PatrolDiagnostics* diagnostics,
+                                      const PatrolCanFrame* frame, uint32_t now_ms)
+{
+    if (diagnostics == 0 || frame == 0) return 0U;
+    if (frame->id == 0x181U && frame->dlc >= 7U) {
+        diagnostics->steering_status_word = (uint16_t)frame->data[0] |
+            (uint16_t)frame->data[1] << 8;
+        diagnostics->steering_status_ms = now_ms;
+        return 1U;
+    }
+    if (frame->id == 0x281U && frame->dlc >= 4U) {
+        diagnostics->steering_position_count = (int32_t)((uint32_t)frame->data[0] |
+            (uint32_t)frame->data[1] << 8 | (uint32_t)frame->data[2] << 16 |
+            (uint32_t)frame->data[3] << 24);
+        diagnostics->steering_position_ms = now_ms;
+        diagnostics->steering_position_seen = 1U;
+        return 1U;
+    }
+    return 0U;
+}
+
 // 解析节点心跳、PDO 和匹配的诊断 SDO 响应。根据有效报文更新对应缓存与时间戳，保留 Abort 和协议错误证据，不把无关帧算作目标对象响应。
 void PatrolDiagnostics_OnCanFrame(PatrolDiagnostics* diagnostics, const PatrolCanFrame* frame,
                                   uint32_t now_ms)

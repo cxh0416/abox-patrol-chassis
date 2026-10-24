@@ -1,0 +1,161 @@
+[1/158] Building C object abox_platform_build/components/ec800/CMakeFiles/abox_ec800_ufs.dir/src/abox_ec800_ufs.c.obj
+[2/158] Building C object abox_platform_build/components/ec800/CMakeFiles/abox_ec800.dir/src/abox_ec800_at_legacy.c.obj
+[3/158] Building C object abox_platform_build/components/ec800/CMakeFiles/abox_ec800.dir/src/abox_ec800_rx.c.obj
+[4/158] Building C object abox_platform_build/components/ec800/CMakeFiles/abox_ec800.dir/src/abox_ec800_iccid.c.obj
+[5/158] Building C object abox_platform_build/components/ec800/CMakeFiles/abox_ec800.dir/src/abox_ec800_diagnostics.c.obj
+[6/158] Linking C static library abox_platform_build\components\ec800\libabox_ec800_ufs.a
+[7/158] Building C object abox_platform_build/components/ec800/CMakeFiles/abox_ec800.dir/src/abox_ec800_at.c.obj
+[8/158] Building C object abox_platform_build/components/ec800/CMakeFiles/abox_ec800_tls.dir/src/abox_tls_secret_record.c.obj
+[9/158] Building C object abox_platform_build/components/core/CMakeFiles/abox_core.dir/src/abox_platform_config.c.obj
+[10/158] Building C object abox_platform_build/components/ec800/CMakeFiles/abox_ec800_tls.dir/src/abox_ec800_tls.c.obj
+[11/158] Building C object abox_platform_build/components/core/CMakeFiles/abox_core.dir/src/abox_platform_port.c.obj
+[12/158] Building C object abox_platform_build/components/core/CMakeFiles/abox_core.dir/src/abox_config_store.c.obj
+[13/158] Building C object abox_platform_build/components/core/CMakeFiles/abox_core.dir/src/abox_time_sync.c.obj
+[14/158] Building C object abox_platform_build/components/core/CMakeFiles/abox_core.dir/src/abox_clock.c.obj
+[15/158] Linking C static library abox_platform_build\components\ec800\libabox_ec800.a
+[16/158] Linking C static library abox_platform_build\components\ec800\libabox_ec800_tls.a
+[17/158] Building C object abox_platform_build/components/ec800/CMakeFiles/abox_ec800_command_port.dir/src/abox_ec800_command_port.c.obj
+[18/158] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_tls.dir/src/abox_mqtt_tls.c.obj
+[19/158] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_ec800_rx.dir/src/abox_mqtt_ec800_rx.c.obj
+[20/158] Linking C static library abox_platform_build\components\core\libabox_core.a
+[21/158] Linking C static library abox_platform_build\components\ec800\libabox_ec800_command_port.a
+[22/158] Linking C static library abox_platform_build\components\mqtt\libabox_mqtt_ec800_rx.a
+[23/158] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_ec800.dir/src/abox_mqtt_receipt.c.obj
+[24/158] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_ec800.dir/src/abox_mqtt_ec800_bridge.c.obj
+[25/158] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_ec800.dir/src/abox_mqtt_ec800.c.obj
+[26/158] Linking C static library abox_platform_build\components\mqtt\libabox_mqtt_tls.a
+[27/158] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_runtime.dir/src/abox_mqtt_runtime_core_port.c.obj
+[28/158] Building C object abox_platform_build/components/cjson/CMakeFiles/abox_cjson.dir/cJSON.c.obj
+[29/158] Building C object abox_platform_build/components/boot_v2/CMakeFiles/abox_boot_v2_common.dir/src/abox_boot_v2_descriptor.c.obj
+[30/158] Building C object abox_platform_build/components/ota/CMakeFiles/abox_https_ufs_downloader.dir/src/abox_https_ufs_downloader.c.obj
+[31/158] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_runtime.dir/src/abox_mqtt_runtime.c.obj
+[32/158] Building C object abox_platform_build/components/boot_v2/CMakeFiles/abox_boot_v2_common.dir/src/abox_boot_v2_state.c.obj
+[33/158] Building C object abox_platform_build/components/boot_v2/CMakeFiles/abox_boot_v2_common.dir/src/abox_boot_v2_image.c.obj
+[34/158] Building C object abox_platform_build/components/boot_v2/CMakeFiles/abox_boot_v2_common.dir/src/abox_boot_v2_fault.c.obj
+[35/158] Building C object abox_platform_build/components/ec_power/CMakeFiles/abox_ec_power.dir/src/ec_power.c.obj
+[36/158] Linking C static library abox_platform_build\components\cjson\libabox_cjson.a
+[37/158] Building C object abox_platform_build/components/ec_power/CMakeFiles/abox_ec_power.dir/src/abox_ec800_recovery.c.obj
+[38/158] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_v4.dir/src/abox_sha256.c.obj
+[39/158] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_v4.dir/src/abox_mqtt_v4.c.obj
+[40/158] Linking C static library abox_platform_build\components\mqtt\libabox_mqtt_ec800.a
+[41/158] Linking C static library abox_platform_build\components\mqtt\libabox_mqtt_runtime.a
+[42/158] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_trial.dir/src/abox_mqtt_trial_executor.c.obj
+[43/158] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_trial.dir/src/abox_mqtt_trial.c.obj
+[44/158] Building C object abox_platform_build/components/enrollment/CMakeFiles/abox_enrollment.dir/src/abox_enrollment_identity.c.obj
+[45/158] Linking C static library abox_platform_build\components\ota\libabox_https_ufs_downloader.a
+[46/158] Building C object abox_platform_build/components/enrollment/CMakeFiles/abox_enrollment.dir/src/abox_enrollment.c.obj
+[47/158] Linking C static library abox_platform_build\components\boot_v2\libabox_boot_v2_common.a
+[48/158] Building C object abox_platform_build/components/boot_v2/CMakeFiles/abox_boot_v2_app.dir/src/abox_boot_v2_ec800_port.c.obj
+[49/158] Building C object abox_platform_build/components/boot_v2/CMakeFiles/abox_boot_v2_app.dir/src/abox_boot_v2_services.c.obj
+[50/158] Building C object abox_platform_build/components/board_io/CMakeFiles/abox_board_io.dir/src/abox_board_io.c.obj
+[51/158] Linking C static library abox_platform_build\components\mqtt\libabox_mqtt_v4.a
+[52/158] Linking C static library abox_platform_build\components\ec_power\libabox_ec_power.a
+[53/158] Building C object abox_platform_build/components/boot_v2/CMakeFiles/abox_boot_v2_app.dir/src/abox_boot_v2_app.c.obj
+[54/158] Linking C static library abox_platform_build\components\mqtt\libabox_mqtt_trial.a
+[55/158] Linking C static library abox_platform_build\components\enrollment\libabox_enrollment.a
+[56/158] Building C object abox_platform_build/components/enrollment/CMakeFiles/abox_enrollment_ec800_http.dir/src/abox_enrollment_ec800_http.c.obj
+[57/158] Building C object abox_platform_build/components/enrollment/CMakeFiles/abox_enrollment_ec800_http.dir/src/abox_enrollment_service.c.obj
+[58/158] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_digest.dir/src/abox_mqtt_digest.c.obj
+[59/158] Linking C static library abox_platform_build\components\boot_v2\libabox_boot_v2_app.a
+[60/158] Building C object abox_platform_build/components/cloud/CMakeFiles/abox_cloud_service.dir/src/abox_cloud_response.c.obj
+[61/158] Building C object abox_platform_build/components/cloud/CMakeFiles/abox_cloud_service.dir/src/abox_cloud_internal_v2.c.obj
+[62/158] Building C object abox_platform_build/components/cloud/CMakeFiles/abox_cloud_service.dir/src/abox_cloud_dispatch.c.obj
+[63/158] Building C object abox_platform_build/components/cloud/CMakeFiles/abox_cloud_service.dir/src/abox_cloud_service.c.obj
+[64/158] Building C object abox_platform_build/components/cloud/CMakeFiles/abox_cloud_service.dir/src/abox_cloud_queue.c.obj
+[65/158] Building C object abox_platform_build/components/cloud/CMakeFiles/abox_maintenance_service.dir/src/abox_maintenance_service.c.obj
+[66/158] Building C object abox_platform_build/components/cloud/CMakeFiles/abox_app_service.dir/src/abox_app_service.c.obj
+[67/158] Building C object abox_platform_build/components/log/CMakeFiles/abox_log_ring.dir/src/abox_log_ring.c.obj
+[68/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/gpio.c.obj
+[69/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/main.c.obj
+[70/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/freertos.c.obj
+[71/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/dma.c.obj
+[72/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/can.c.obj
+[73/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/iwdg.c.obj
+[74/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/usart.c.obj
+[75/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/stm32f1xx_hal_msp.c.obj
+[76/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/stm32f1xx_it.c.obj
+[77/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/stm32f1xx_hal_timebase_tim.c.obj
+[78/158] Building ASM object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/startup_stm32f105xc.s.obj
+[79/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/sysmem.c.obj
+[80/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/syscalls.c.obj
+[81/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/absolute_encoder.c.obj
+[82/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/common/src/app_log.c.obj
+[83/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/system/src/patrol_config.c.obj
+[84/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/system/src/app_version.c.obj
+[85/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/system/src/mqtt_config_adapter.c.obj
+[86/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/patrol_enrollment.c.obj
+[87/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_service.c.obj
+[88/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_commands.c.obj
+[89/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/patrol_mqtt_profile.c.obj
+[90/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_messages.c.obj
+[91/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_tx.c.obj
+[92/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_protocol.c.obj
+[93/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/chassis_cloud_protocol.c.obj
+[94/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/chassis_control.c.obj
+[95/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_can_remote.c.obj
+[96/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_phy_remote.c.obj
+[97/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/common/src/fixed_point.c.obj
+[98/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_auto_center.c.obj
+[99/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/mqtt/src/mqtt_runtime.c.obj
+[100/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/mqtt/src/mqtt_core_adapter.c.obj
+[101/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/ota/src/ota_info.c.obj
+[102/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/mqtt/src/mqtt_trial_manager.c.obj
+[103/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_canopen.c.obj
+[104/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/ota/src/ota_service.c.obj
+[105/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_diagnostics.c.obj
+[106/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/steering_angle.c.obj
+[107/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/remote_service.c.obj
+[108/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/bench_steering.c.obj
+[109/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/bench_drive.c.obj
+[110/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_fault_stop.c.obj
+[111/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/common/src/time_base.c.obj
+[112/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/board/src/vehicle_power_output.c.obj
+[113/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/board/src/vehicle_power_port.c.obj
+[114/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/common/src/time_sync.c.obj
+[115/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/E_/1_work/ChassisCar/abox-patrol-vehicle-chassis-firmware/shared/boot_state_compat.c.obj
+[116/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/center_calibration.c.obj
+[117/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_runtime.c.obj
+[118/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/system/src/patrol_rtos.c.obj
+[119/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/E_/1_work/ChassisCar/abox-patrol-vehicle-chassis-firmware/shared/fault_mailbox_compat.c.obj
+[120/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/E_/1_work/ChassisCar/abox-patrol-vehicle-chassis-firmware/platform/targets/stm32f105_ec800_v1/monotonic_stm32f105.c.obj
+[121/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/E_/1_work/ChassisCar/abox-patrol-vehicle-chassis-firmware/platform/targets/stm32f105_ec800_v1/board_io_stm32f105.c.obj
+[122/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/2d64aca0cab8af564137970789a6b572/platform/targets/stm32f105_ec800_v1/enrollment_identity_stm32f105.c.obj
+[123/158] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/E_/1_work/ChassisCar/abox-patrol-vehicle-chassis-firmware/platform/targets/stm32f105_ec800_v1/platform_port_stm32f105.c.obj
+[124/158] Linking C static library abox_platform_build\components\board_io\libabox_board_io.a
+[125/158] Linking C static library abox_platform_build\components\mqtt\libabox_mqtt_digest.a
+[126/158] Linking C static library abox_platform_build\components\enrollment\libabox_enrollment_ec800_http.a
+[127/158] Linking C static library abox_platform_build\components\cloud\libabox_cloud_service.a
+[128/158] Linking C static library abox_platform_build\components\cloud\libabox_maintenance_service.a
+[129/158] Linking C static library abox_platform_build\components\cloud\libabox_app_service.a
+[130/158] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Core/Src/system_stm32f1xx.c.obj
+[131/158] Linking C static library abox_platform_build\components\log\libabox_log_ring.a
+[132/158] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c.obj
+[133/158] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_can.c.obj
+[134/158] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c.obj
+[135/158] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c.obj
+[136/158] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c.obj
+[137/158] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.c.obj
+[138/158] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c.obj
+[139/158] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c.obj
+[140/158] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_iwdg.c.obj
+[141/158] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c.obj
+[142/158] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c.obj
+[143/158] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.c.obj
+[144/158] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c.obj
+[145/158] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c.obj
+[146/158] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/croutine.c.obj
+[147/158] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.c.obj
+[148/158] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/event_groups.c.obj
+[149/158] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/list.c.obj
+[150/158] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c.obj
+[151/158] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/queue.c.obj
+[152/158] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c.obj
+[153/158] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c.obj
+[154/158] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/tasks.c.obj
+[155/158] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/timers.c.obj
+[156/158] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3/port.c.obj
+[157/158] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c.obj
+[158/158] Linking C executable Patrol_Vehicle_Chassis_App.elf
+Memory region         Used Size  Region Size  %age Used
+             RAM:       61432 B        64 KB     93.74%
+           FLASH:      154264 B       216 KB     69.74%

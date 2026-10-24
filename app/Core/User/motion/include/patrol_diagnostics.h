@@ -112,6 +112,9 @@ typedef struct {
 
 // 初始化只读运动诊断状态与轮询进度。清空在线、反馈、错误和在途事务，不发送写对象请求。
 void PatrolDiagnostics_Init(PatrolDiagnostics* diagnostics);
+// 解析已核验的 Node 1 TPDO：0x181 持续提供状态字，0x281 持续提供转向位置。返回非零表示该帧已作为实时反馈消费。
+uint8_t PatrolDiagnostics_OnTpdoFrame(PatrolDiagnostics* diagnostics,
+                                      const PatrolCanFrame* frame, uint32_t now_ms);
 // 解析节点心跳、PDO 和匹配的诊断 SDO 响应。根据有效报文更新对应缓存与时间戳，保留 Abort 和协议错误证据，不把无关帧算作目标对象响应。
 void PatrolDiagnostics_OnCanFrame(PatrolDiagnostics* diagnostics, const PatrolCanFrame* frame,
                                   uint32_t now_ms);

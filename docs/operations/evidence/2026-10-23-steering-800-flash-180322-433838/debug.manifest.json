@@ -1,0 +1,32 @@
+{
+  "kind": "online-debug",
+  "configuration": "Release",
+  "product": "patrol_vehicle_chassis",
+  "candidate": true,
+  "app_version": "patrol-chassis-0.2.81",
+  "boot_version": "abox-boot-2.3.0",
+  "app_offset": "0x00008000",
+  "full_length": 187032,
+  "full_sha256": "a693965d3078fb1c00782fc6f5a4bcd676ec9e748ce7bf57cb2e2dec4e2e67f2",
+  "app_sha256": "104d4c21eeffc235c9bcdac4fcdd0b80037d7d04e891e7bf753c67bb156cf7ad",
+  "boot_sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+  "includes_boot_state": false,
+  "includes_device_config": false,
+  "validation": {
+    "arm_release_build": true,
+    "stack_checks": true,
+    "flash_layout": true,
+    "frozen_boot": true,
+    "product_python_total": 45,
+    "product_python_passed": 43,
+    "failed_tests": [
+      "test_lost_write_ack_read_only_verification (test_fault_stop_runtime.FaultStopRuntimeTests.test_lost_write_ack_read_only_verification)",
+      "test_identity_and_safe_defaults (test_patrol_scaffold.PatrolScaffoldTests.test_identity_and_safe_defaults)"
+    ],
+    "current_800_rpm_bench_variant": true,
+    "board_flashed": false,
+    "hardware_motion_verified": false,
+    "formal_publication": false,
+    "formal_blocker": "Two repository test failures: legacy hot-reset static check and old 90-rpm profile expectation"
+  }
+}
