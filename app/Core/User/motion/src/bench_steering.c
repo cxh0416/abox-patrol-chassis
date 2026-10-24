@@ -51,7 +51,7 @@ typedef enum
     STEER_STEP_PROFILE_SPEED_ACTIVE_COMPLETE = 31,
 } BenchSteeringStep;
 
-enum { VERIFY_NONE, VERIFY_STATUS, VERIFY_MODE, VERIFY_TARGET, VERIFY_OBJECT, VERIFY_ACK_LOW };
+enum { VERIFY_NONE, VERIFY_STATUS, VERIFY_MODE, VERIFY_TARGET, VERIFY_OBJECT, VERIFY_ACK_LOW, VERIFY_DRAIN };
 
 // 仅活动期目标、轮廓速度和定位触发允许失应答核验；准备、限位、使能和停机握手继续使用原有失败路径。
 static uint8_t motion_write(const BenchSteering* b)
@@ -220,6 +220,19 @@ void BenchSteering_Tick(BenchSteering *b, uint32_t now, uint8_t requested, uint8
     }
     if (!requested)
         BenchSteering_Stop(b, now, 0U);
+    if (b->verify)
+    {
+        if (now - b->stop_ms >= BENCH_WRITE_VERIFY_MS) {
+            fail(b, 12U);
+        } else if (b->verify != VERIFY_DRAIN && b->pending &&
+                   now - b->sent_ms >= BENCH_VERIFY_READ_MS) {
+            /* Do not reuse the timed-out object. Keep sole SDO ownership while
+             * draining so a late response cannot satisfy a newer request. */
+            b->pending = 0U;
+            b->verify = VERIFY_DRAIN;
+        }
+        return;
+    }
     if (b->phase == BENCH_STOPPING)
     {
         if (now - b->stop_ms >= (b->stop_confirmed || b->step == STEER_STEP_STOP_COMPLETE ? STOP_FINISH_MS : STOP_MS))
@@ -249,10 +262,7 @@ void BenchSteering_Tick(BenchSteering *b, uint32_t now, uint8_t requested, uint8
                 b->step = STEER_STEP_TARGET;
         }
     }
-    if (b->verify) {
-        if (now - b->stop_ms >= BENCH_WRITE_VERIFY_MS ||
-            (b->pending && now - b->sent_ms >= BENCH_VERIFY_READ_MS)) fail(b, 12U);
-    } else if (b->pending && motion_write(b) && now - b->sent_ms >= BENCH_WRITE_ACK_WAIT_MS)
+    if (b->pending && motion_write(b) && now - b->sent_ms >= BENCH_WRITE_ACK_WAIT_MS)
         begin_verify(b, now);
     else if (b->pending && now - b->sent_ms >= TRANSACTION_MS)
         fail(b, 6U);
@@ -262,7 +272,8 @@ void BenchSteering_Tick(BenchSteering *b, uint32_t now, uint8_t requested, uint8
 uint8_t BenchSteering_Take(BenchSteering *b, uint32_t now, PatrolCanFrame *f)
 {
     int32_t value = 0;
-    if (b->pending || b->phase == BENCH_IDLE || b->phase == BENCH_FAULT || b->step == STEER_STEP_ACTIVE)
+    if (b->pending || b->phase == BENCH_IDLE || b->phase == BENCH_FAULT ||
+        b->verify == VERIFY_DRAIN || b->step == STEER_STEP_ACTIVE)
         return 0;
     /* A target written before an ACK wait may already have been superseded.
      * Replace that untriggered target, rather than triggering the old value. */
@@ -441,12 +452,25 @@ uint8_t BenchSteering_OnFrame(BenchSteering *b, const PatrolCanFrame *f, uint32_
         }
         return 1;
     }
+    if (b->verify == VERIFY_DRAIN) {
+        /* The read was abandoned; consume only its matching late response.
+         * No new request is emitted until the absolute verification expires. */
+        return (uint8_t)(f->id == 0x581U && f->dlc >= 4U && f->dlc <= 8U &&
+                         f->data[1] == (uint8_t)b->index &&
+                         f->data[2] == (uint8_t)(b->index >> 8) &&
+                         f->data[3] == b->subindex);
+    }
     if (!b->pending || f->id != 0x581 || f->dlc < 4 || f->dlc > 8 || f->data[1] != (uint8_t)b->index ||
         f->data[2] != (uint8_t)(b->index >> 8) || f->data[3] != b->subindex)
         return 0;
     if (b->verify) {
-        if (now - b->stop_ms >= BENCH_WRITE_VERIFY_MS || now - b->sent_ms >= BENCH_VERIFY_READ_MS) {
+        if (now - b->stop_ms >= BENCH_WRITE_VERIFY_MS) {
             fail(b, 12U); return 1U;
+        }
+        if (b->pending && now - b->sent_ms >= BENCH_VERIFY_READ_MS) {
+            b->pending = 0U;
+            b->verify = VERIFY_DRAIN;
+            return 1U;
         }
         if (f->data[0] == 0x80U) {
             if (f->dlc == 8U) fail(b, 12U);

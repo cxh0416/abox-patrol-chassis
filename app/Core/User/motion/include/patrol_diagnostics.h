@@ -26,6 +26,7 @@ typedef struct {
     uint32_t steering_status_ms;
     uint32_t drive_status_ms;
     uint32_t steering_position_ms;
+    uint32_t steering_tpdo_position_ms;
     uint32_t left_rpm_ms;
     uint32_t right_rpm_ms;
     uint32_t encoder_ms;

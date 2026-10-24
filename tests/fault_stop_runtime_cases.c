@@ -154,6 +154,26 @@ static void test_confirm_before_latch(void)
     puts("PASS both shutdowns before latch; fresh DLC6 status; first cause preserved");
 }
 
+// Abort 没有事务号；核验超时后迟到的旧 upload Abort 不能被当作 shutdown 已处理。
+static void test_late_abort_retries_same_safe_write(void)
+{
+    PatrolFaultStop stop;
+    PatrolCanFrame frame;
+    PatrolFaultStop_Init(&stop);
+    PatrolFaultStop_Begin(&stop, PATROL_FAULT_STOP_STEERING, 1000U);
+    assert(PatrolFaultStop_Take(&stop,1000U,&frame));
+    assert_safe_frame(&frame);
+    PatrolCanFrame late_abort = {
+        .id = 0x581U, .dlc = 8U, .data = {0x80U,0x40U,0x60U,0U,0U,0U,0U,0U}
+    };
+    assert(PatrolFaultStop_OnFrame(&stop,&late_abort,1001U));
+    assert(!PatrolFaultStop_Take(&stop,1010U,&frame));
+    assert(PatrolFaultStop_Take(&stop,1011U,&frame));
+    assert_safe_frame(&frame);
+    assert(frame.data[0] == 0x2BU && frame.data[4] == 6U);
+    puts("PASS late Abort retries shutdown instead of advancing the safe sequence");
+}
+
 // 丢弃转向全部响应时，行走仍应先撤使能。599 ms 不提前锁存，600 ms 进入失败退路，后续只重试安全命令。
 static void test_missing_node_and_deadline(void)
 {
@@ -350,6 +370,7 @@ static void test_service_reinit_during_stop(void)
 int main(void)
 {
     test_confirm_before_latch();
+    test_late_abort_retries_same_safe_write();
     test_missing_node_and_deadline();
     test_lost_shutdown_ack();
     test_bus_off_and_manual_power();

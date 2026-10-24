@@ -27,7 +27,7 @@ typedef enum
     DRIVE_STEP_STOP_COMPLETE = 25,
 } BenchDriveStep;
 
-enum { VERIFY_NONE, VERIFY_STATUS, VERIFY_MODE, VERIFY_LEFT, VERIFY_RIGHT };
+enum { VERIFY_NONE, VERIFY_STATUS, VERIFY_MODE, VERIFY_LEFT, VERIFY_RIGHT, VERIFY_DRAIN };
 
 // 锁存行走执行器首个故障并请求切断动力输出。清除在途事务、进入 BENCH_FAULT；已故障时直接返回，不用后续派生错误覆盖首因。
 static void fail(BenchDrive *b, uint32_t fault)
@@ -136,10 +136,16 @@ void BenchDrive_Tick(BenchDrive *b, uint32_t now, uint8_t requested, uint8_t saf
         BenchDrive_Stop(b, now, 0);
     if (b->verify)
     {
-        if (now - b->zero_ms >= BENCH_WRITE_VERIFY_MS ||
-            (b->pending && now - b->sent_ms >= BENCH_VERIFY_READ_MS)) { fail(b, 11U); return; }
+        if (now - b->zero_ms >= BENCH_WRITE_VERIFY_MS) {
+            fail(b, 11U);
+        } else if (b->verify != VERIFY_DRAIN && b->pending &&
+                   now - b->sent_ms >= BENCH_VERIFY_READ_MS) {
+            b->pending = 0U;
+            b->verify = VERIFY_DRAIN;
+        }
+        return;
     }
-    else if (b->pending && motion_write(b) && now - b->sent_ms >= BENCH_WRITE_ACK_WAIT_MS)
+    if (b->pending && motion_write(b) && now - b->sent_ms >= BENCH_WRITE_ACK_WAIT_MS)
         begin_verify(b, now);
     else if (b->pending && now - b->sent_ms >= 100U)
     {
@@ -214,7 +220,8 @@ void BenchDrive_Tick(BenchDrive *b, uint32_t now, uint8_t requested, uint8_t saf
 uint8_t BenchDrive_Take(BenchDrive *b, uint32_t now, PatrolCanFrame *f)
 {
     int32_t value = 0;
-    if (b->pending || b->phase == BENCH_IDLE || b->phase == BENCH_FAULT || b->step == DRIVE_STEP_ACTIVE ||
+    if (b->pending || b->phase == BENCH_IDLE || b->phase == BENCH_FAULT ||
+        b->verify == VERIFY_DRAIN || b->step == DRIVE_STEP_ACTIVE ||
         b->step == DRIVE_STEP_WAIT_ZERO)
         return 0;
     if (b->verify) {
@@ -325,12 +332,22 @@ uint8_t BenchDrive_OnFrame(BenchDrive *b, const PatrolCanFrame *f, uint32_t now)
 {
     int32_t value;
     uint8_t width;
+    if (b->verify == VERIFY_DRAIN) {
+        return (uint8_t)(f->id == 0x582U && f->dlc >= 4U && f->dlc <= 8U &&
+                         f->data[1] == (uint8_t)b->index &&
+                         f->data[2] == (uint8_t)(b->index >> 8) && f->data[3] == 0U);
+    }
     if (!b->pending || f->id != 0x582 || f->dlc < 4 || f->dlc > 8 || f->data[1] != (uint8_t)b->index ||
         f->data[2] != (uint8_t)(b->index >> 8) || f->data[3])
         return 0;
     if (b->verify) {
-        if (now - b->zero_ms >= BENCH_WRITE_VERIFY_MS || now - b->sent_ms >= BENCH_VERIFY_READ_MS) {
+        if (now - b->zero_ms >= BENCH_WRITE_VERIFY_MS) {
             fail(b, 11U); return 1U;
+        }
+        if (b->pending && now - b->sent_ms >= BENCH_VERIFY_READ_MS) {
+            b->pending = 0U;
+            b->verify = VERIFY_DRAIN;
+            return 1U;
         }
         if (f->data[0] == 0x80U) {
             if (f->dlc == 8U) fail(b, 11U);

@@ -6,9 +6,9 @@
 typedef enum { BENCH_IDLE, BENCH_PREPARING, BENCH_ACTIVE, BENCH_STOPPING, BENCH_FAULT } BenchPhase;
 /* Motion-write ACK loss is investigated early, inside the unchanged feedback
  * freshness gate. Verification sends uploads only and has an absolute bound. */
-#define BENCH_WRITE_ACK_WAIT_MS 40U
-#define BENCH_WRITE_VERIFY_MS 80U
-#define BENCH_VERIFY_READ_MS 40U
+#define BENCH_WRITE_ACK_WAIT_MS 60U
+#define BENCH_WRITE_VERIFY_MS 200U
+#define BENCH_VERIFY_READ_MS 80U
 typedef struct {
     BenchPhase phase;
     uint8_t step, pending, read, width, cut_power, limits_aligned, upper_first, preserve_limits;

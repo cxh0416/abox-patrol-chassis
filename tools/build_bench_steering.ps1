@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param([string]$AppVersion = '', [switch]$Drive, [switch]$EnableActuation,
-       [ValidateRange(1,4)] [int]$ActiveCar = 2)
+       [ValidateRange(0,4)] [int]$ActiveCar = 2)
 $ErrorActionPreference = 'Stop'
 if ($EnableActuation -and -not $Drive) { throw 'Motion-enabled candidate requires -Drive.' }
 $product = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
@@ -19,7 +19,7 @@ try {
 if ($LASTEXITCODE -ne 0) { throw 'Bench configure failed' }
 & cmake --build $build --parallel 4
 if ($LASTEXITCODE -ne 0) { throw 'Bench build failed' }
-& python (Join-Path $PSScriptRoot 'verify_bench_stack.py') $build
+& python -X utf8 (Join-Path $PSScriptRoot 'verify_bench_stack.py') $build
 if ($LASTEXITCODE -ne 0) { throw 'Bench stack validation failed' }
 New-Item -ItemType Directory -Force -Path $output | Out-Null
 $source = Join-Path $build 'Patrol_Vehicle_Chassis_App.bin'
@@ -38,7 +38,7 @@ $candidateManifest = [ordered]@{
 }
 $manifestJson = ($candidateManifest | ConvertTo-Json).Replace("`r`n", "`n") + "`n"
 [IO.File]::WriteAllText((Join-Path $output 'candidate.manifest.json'), $manifestJson, [Text.UTF8Encoding]::new($false))
-& python (Join-Path $PSScriptRoot 'artifact_store.py') --root $product --stage $output --destination $destination
+& python -X utf8 (Join-Path $PSScriptRoot 'artifact_store.py') --root $product --stage $output --destination $destination
 if ($LASTEXITCODE -ne 0) { throw 'Bench publication failed; inspect rollback/backup before retrying.' }
 Write-Host "Bench candidate: $(Join-Path $product $destination)"
 }

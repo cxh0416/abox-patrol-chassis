@@ -85,6 +85,46 @@ static int test_steering_tpdo_freshness(void)
     return 0;
 }
 
+static int test_steering_position_sdo_fallback(void)
+{
+    PatrolDiagnostics d;
+    PatrolCanFrame frame;
+    PatrolDiagnostics_Init(&d);
+    d.steering_heartbeat_seen = 1U;
+    d.steering_heartbeat_state = 5U;
+    d.steering_heartbeat_ms = 1000U;
+    d.steering_position_seen = 1U;
+    d.steering_position_ms = 1000U;
+    d.steering_tpdo_position_ms = 1000U;
+    for (unsigned i = 0U; i < PATROL_DIAG_SDO_ENTRY_COUNT; ++i)
+        d.sdo_due_ms[i] = 2000U;
+    d.next_sdo_entry = 1U;
+
+    CHECK(!PatrolDiagnostics_TakeSdoRead(&d, 1090U, &frame, 1U));
+    d.sdo_due_ms[1] = 1000U;
+    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 1100U, &frame, 1U));
+    CHECK(frame.id == 0x601U && frame.data[1] == 0x64U && frame.data[2] == 0x60U);
+    frame.id = 0x581U;
+    frame.data[0] = 0x43U;
+    frame.data[4] = 0x11U;
+    frame.data[5] = 0x22U;
+    frame.data[6] = 0x33U;
+    frame.data[7] = 0x44U;
+    PatrolDiagnostics_OnCanFrame(&d, &frame, 1100U);
+    CHECK(d.sdo_due_ms[1] == 1350U);
+
+    d.sdo_due_ms[1] = 1350U;
+    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 1101U, &frame, 1U));
+    CHECK(frame.id == 0x601U && frame.data[1] == 0x64U);
+    d.pending_valid = 0U;
+    d.steering_tpdo_position_ms = 1000U;
+    d.sdo_due_ms[1] = 1350U;
+    d.next_sdo_entry = 1U;
+    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 1101U, &frame, 1U));
+    CHECK(frame.id == 0x601U && frame.data[1] == 0x64U);
+    return 0;
+}
+
 static uint8_t test_power_write(uint8_t on)
 {
     g_power_level = on ? 1U : 0U;
@@ -328,6 +368,7 @@ int main(void)
     CHECK(test_sdo_waits_for_node() == 0);
     CHECK(test_status_snapshot_age() == 0);
     CHECK(test_steering_tpdo_freshness() == 0);
+    CHECK(test_steering_position_sdo_fallback() == 0);
     CHECK(test_sdo_safety_priority() == 0);
     CHECK(test_field_sdo_replies() == 0);
     CHECK(test_diagnostic_read_retry() == 0);

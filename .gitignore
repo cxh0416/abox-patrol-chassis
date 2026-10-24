@@ -21,3 +21,6 @@ tmp/
 outputs/
 __pycache__/
 *.py[cod]
+
+# Uncompressed evidence is retained locally; tracked gzip archive is lossless.
+/docs/operations/evidence/2026-10-24-dual-can-repro-111810-128058/frames.jsonl

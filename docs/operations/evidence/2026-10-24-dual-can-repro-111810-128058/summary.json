@@ -1,0 +1,1200 @@
+{
+  "stop_reason": "operator_ctrl_c",
+  "error": null,
+  "kind": "snapshot",
+  "elapsed_s": 1677.0,
+  "latest": {
+    "CAN2.t12_joystick": {
+      "age_ms": 31.0,
+      "at_s": 1676.9689999999973,
+      "decoded": {
+        "kind": "t12_joystick",
+        "steer_raw": 0,
+        "throttle_raw": 0,
+        "reference_rpm": 0
+      }
+    },
+    "CAN2.t12_switch": {
+      "age_ms": 16.0,
+      "at_s": 1676.9839999999967,
+      "decoded": {
+        "kind": "t12_switch",
+        "a": 2,
+        "a_enabled": true,
+        "b": 0,
+        "b_action": "none"
+      }
+    },
+    "CAN1.heartbeat.node1": {
+      "age_ms": 16.0,
+      "at_s": 1676.9839999999967,
+      "decoded": {
+        "kind": "heartbeat",
+        "node": 1,
+        "state": 5,
+        "bootup": false
+      }
+    },
+    "CAN1.heartbeat.node2": {
+      "age_ms": 47.0,
+      "at_s": 1676.9530000000086,
+      "decoded": {
+        "kind": "heartbeat",
+        "node": 2,
+        "state": 127,
+        "bootup": false
+      }
+    },
+    "CAN1.emcy.node1": {
+      "age_ms": 1575078.0,
+      "at_s": 101.92200000000594,
+      "decoded": {
+        "kind": "emcy",
+        "node": 1,
+        "error_code": 16,
+        "error_register": 1
+      }
+    },
+    "CAN1.emcy.node2": {
+      "age_ms": 1556531.0,
+      "at_s": 120.46899999999732,
+      "decoded": {
+        "kind": "emcy",
+        "node": 2,
+        "error_code": 16,
+        "error_register": 1
+      }
+    },
+    "CAN1.node1.read_request.statusword:0": {
+      "age_ms": 78.0,
+      "at_s": 1676.922000000006,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24641,
+        "index_hex": "0x6041",
+        "subindex": 0,
+        "object": "statusword",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node1.read_response.statusword:0": {
+      "age_ms": 78.0,
+      "at_s": 1676.922000000006,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24641,
+        "index_hex": "0x6041",
+        "subindex": 0,
+        "object": "statusword",
+        "command": 75,
+        "action": "read_response",
+        "value": 1591,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node1.read_request.steering_actual_count:0": {
+      "age_ms": 31.0,
+      "at_s": 1676.9689999999973,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24676,
+        "index_hex": "0x6064",
+        "subindex": 0,
+        "object": "steering_actual_count",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node1.read_response.steering_actual_count:0": {
+      "age_ms": 31.0,
+      "at_s": 1676.9689999999973,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24676,
+        "index_hex": "0x6064",
+        "subindex": 0,
+        "object": "steering_actual_count",
+        "command": 67,
+        "action": "read_response",
+        "value": 45703,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node2.read_request.statusword:0": {
+      "age_ms": 78.0,
+      "at_s": 1676.922000000006,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 24641,
+        "index_hex": "0x6041",
+        "subindex": 0,
+        "object": "statusword",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node2.read_response.statusword:0": {
+      "age_ms": 78.0,
+      "at_s": 1676.922000000006,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 24641,
+        "index_hex": "0x6041",
+        "subindex": 0,
+        "object": "statusword",
+        "command": 75,
+        "action": "read_response",
+        "value": 4151,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node2.read_request.left_actual_rpm:0": {
+      "age_ms": 16.0,
+      "at_s": 1676.9839999999967,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 24681,
+        "index_hex": "0x6069",
+        "subindex": 0,
+        "object": "left_actual_rpm",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node2.read_response.left_actual_rpm:0": {
+      "age_ms": 16.0,
+      "at_s": 1676.9839999999967,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 24681,
+        "index_hex": "0x6069",
+        "subindex": 0,
+        "object": "left_actual_rpm",
+        "command": 67,
+        "action": "read_response",
+        "value": 0,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node2.read_request.right_actual_rpm:0": {
+      "age_ms": 0.0,
+      "at_s": 1677.0,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 26729,
+        "index_hex": "0x6869",
+        "subindex": 0,
+        "object": "right_actual_rpm",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node2.read_response.right_actual_rpm:0": {
+      "age_ms": 0.0,
+      "at_s": 1677.0,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 26729,
+        "index_hex": "0x6869",
+        "subindex": 0,
+        "object": "right_actual_rpm",
+        "command": 67,
+        "action": "read_response",
+        "value": 0,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node2.read_request.left_vendor_fault:0": {
+      "age_ms": 578.0,
+      "at_s": 1676.422000000006,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 8192,
+        "index_hex": "0x2000",
+        "subindex": 0,
+        "object": "left_vendor_fault",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node2.read_response.left_vendor_fault:0": {
+      "age_ms": 578.0,
+      "at_s": 1676.422000000006,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 8192,
+        "index_hex": "0x2000",
+        "subindex": 0,
+        "object": "left_vendor_fault",
+        "command": 75,
+        "action": "read_response",
+        "value": 0,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node2.read_request.right_vendor_fault:0": {
+      "age_ms": 156.0,
+      "at_s": 1676.8439999999973,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 8193,
+        "index_hex": "0x2001",
+        "subindex": 0,
+        "object": "right_vendor_fault",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node2.read_response.right_vendor_fault:0": {
+      "age_ms": 156.0,
+      "at_s": 1676.8439999999973,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 8193,
+        "index_hex": "0x2001",
+        "subindex": 0,
+        "object": "right_vendor_fault",
+        "command": 75,
+        "action": "read_response",
+        "value": 0,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node2.read_request.0x2002:0": {
+      "age_ms": 1546375.0,
+      "at_s": 130.625,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 8194,
+        "index_hex": "0x2002",
+        "subindex": 0,
+        "object": "unknown",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node2.read_response.0x2002:0": {
+      "age_ms": 1546375.0,
+      "at_s": 130.625,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 8194,
+        "index_hex": "0x2002",
+        "subindex": 0,
+        "object": "unknown",
+        "command": 75,
+        "action": "read_response",
+        "value": 5,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node2.read_request.0x2003:0": {
+      "age_ms": 1546344.0,
+      "at_s": 130.65600000000268,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 8195,
+        "index_hex": "0x2003",
+        "subindex": 0,
+        "object": "unknown",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node2.read_response.0x2003:0": {
+      "age_ms": 1546344.0,
+      "at_s": 130.65600000000268,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 8195,
+        "index_hex": "0x2003",
+        "subindex": 0,
+        "object": "unknown",
+        "command": 75,
+        "action": "read_response",
+        "value": 12,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node2.read_request.0x2004:0": {
+      "age_ms": 1546266.0,
+      "at_s": 130.73399999999674,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 8196,
+        "index_hex": "0x2004",
+        "subindex": 0,
+        "object": "unknown",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node2.read_response.0x2004:0": {
+      "age_ms": 1546266.0,
+      "at_s": 130.73399999999674,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 8196,
+        "index_hex": "0x2004",
+        "subindex": 0,
+        "object": "unknown",
+        "command": 75,
+        "action": "read_response",
+        "value": 28,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node2.read_request.0x2005:0": {
+      "age_ms": 1546250.0,
+      "at_s": 130.75,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 8197,
+        "index_hex": "0x2005",
+        "subindex": 0,
+        "object": "unknown",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node2.read_response.0x2005:0": {
+      "age_ms": 1546250.0,
+      "at_s": 130.75,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 8197,
+        "index_hex": "0x2005",
+        "subindex": 0,
+        "object": "unknown",
+        "command": 75,
+        "action": "read_response",
+        "value": 65496,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node2.read_request.0x2006:0": {
+      "age_ms": 1546172.0,
+      "at_s": 130.82800000000861,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 8198,
+        "index_hex": "0x2006",
+        "subindex": 0,
+        "object": "unknown",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node2.abort.0x2006:0": {
+      "age_ms": 1546172.0,
+      "at_s": 130.82800000000861,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 8198,
+        "index_hex": "0x2006",
+        "subindex": 0,
+        "object": "unknown",
+        "command": 128,
+        "action": "abort",
+        "abort_code": "0x06020000",
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.nmt.node1": {
+      "age_ms": 554672.0,
+      "at_s": 1122.3280000000086,
+      "decoded": {
+        "kind": "nmt",
+        "command": 1,
+        "node": 1
+      }
+    },
+    "CAN1.node1.read_request.0x201A:0": {
+      "age_ms": 554656.0,
+      "at_s": 1122.3439999999973,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 8218,
+        "index_hex": "0x201A",
+        "subindex": 0,
+        "object": "unknown",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node1.read_response.0x201A:0": {
+      "age_ms": 554656.0,
+      "at_s": 1122.3439999999973,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 8218,
+        "index_hex": "0x201A",
+        "subindex": 0,
+        "object": "unknown",
+        "command": 67,
+        "action": "read_response",
+        "value": 4294930321,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node1.read_request.0x2019:0": {
+      "age_ms": 554641.0,
+      "at_s": 1122.3589999999967,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 8217,
+        "index_hex": "0x2019",
+        "subindex": 0,
+        "object": "unknown",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node1.read_response.0x2019:0": {
+      "age_ms": 554641.0,
+      "at_s": 1122.3589999999967,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 8217,
+        "index_hex": "0x2019",
+        "subindex": 0,
+        "object": "unknown",
+        "command": 67,
+        "action": "read_response",
+        "value": 128383,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node1.write_request.0x201A:0": {
+      "age_ms": 1546063.0,
+      "at_s": 130.93700000000536,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 8218,
+        "index_hex": "0x201A",
+        "subindex": 0,
+        "object": "unknown",
+        "command": 35,
+        "action": "write_request",
+        "value": 4294930321
+      }
+    },
+    "CAN1.node1.write_ack.0x201A:0": {
+      "age_ms": 1546063.0,
+      "at_s": 130.93700000000536,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 8218,
+        "index_hex": "0x201A",
+        "subindex": 0,
+        "object": "unknown",
+        "command": 96,
+        "action": "write_ack",
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node1.write_request.0x2019:0": {
+      "age_ms": 1546016.0,
+      "at_s": 130.98399999999674,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 8217,
+        "index_hex": "0x2019",
+        "subindex": 0,
+        "object": "unknown",
+        "command": 35,
+        "action": "write_request",
+        "value": 128383
+      }
+    },
+    "CAN1.node1.write_ack.0x2019:0": {
+      "age_ms": 1546016.0,
+      "at_s": 130.98399999999674,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 8217,
+        "index_hex": "0x2019",
+        "subindex": 0,
+        "object": "unknown",
+        "command": 96,
+        "action": "write_ack",
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node1.read_request.0x1800:1": {
+      "age_ms": 554625.0,
+      "at_s": 1122.375,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 6144,
+        "index_hex": "0x1800",
+        "subindex": 1,
+        "object": "unknown",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node1.read_response.0x1800:1": {
+      "age_ms": 554625.0,
+      "at_s": 1122.375,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 6144,
+        "index_hex": "0x1800",
+        "subindex": 1,
+        "object": "unknown",
+        "command": 67,
+        "action": "read_response",
+        "value": 385,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node1.read_request.0x1A00:1": {
+      "age_ms": 554594.0,
+      "at_s": 1122.4060000000027,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 6656,
+        "index_hex": "0x1A00",
+        "subindex": 1,
+        "object": "unknown",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node1.read_response.0x1A00:1": {
+      "age_ms": 554594.0,
+      "at_s": 1122.4060000000027,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 6656,
+        "index_hex": "0x1A00",
+        "subindex": 1,
+        "object": "unknown",
+        "command": 67,
+        "action": "read_response",
+        "value": 1614872592,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node1.write_request.mode:0": {
+      "age_ms": 554578.0,
+      "at_s": 1122.422000000006,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24672,
+        "index_hex": "0x6060",
+        "subindex": 0,
+        "object": "mode",
+        "command": 47,
+        "action": "write_request",
+        "value": 1
+      }
+    },
+    "CAN1.node1.write_ack.mode:0": {
+      "age_ms": 554578.0,
+      "at_s": 1122.422000000006,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24672,
+        "index_hex": "0x6060",
+        "subindex": 0,
+        "object": "mode",
+        "command": 96,
+        "action": "write_ack",
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node1.read_request.mode_display:0": {
+      "age_ms": 554563.0,
+      "at_s": 1122.4370000000054,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24673,
+        "index_hex": "0x6061",
+        "subindex": 0,
+        "object": "mode_display",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node1.read_response.mode_display:0": {
+      "age_ms": 554563.0,
+      "at_s": 1122.4370000000054,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24673,
+        "index_hex": "0x6061",
+        "subindex": 0,
+        "object": "mode_display",
+        "command": 79,
+        "action": "read_response",
+        "value": 1,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node1.write_request.steering_max_rpm:0": {
+      "age_ms": 554547.0,
+      "at_s": 1122.4530000000086,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24704,
+        "index_hex": "0x6080",
+        "subindex": 0,
+        "object": "steering_max_rpm",
+        "command": 35,
+        "action": "write_request",
+        "value": 600
+      }
+    },
+    "CAN1.node1.write_ack.steering_max_rpm:0": {
+      "age_ms": 554531.0,
+      "at_s": 1122.4689999999973,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24704,
+        "index_hex": "0x6080",
+        "subindex": 0,
+        "object": "steering_max_rpm",
+        "command": 96,
+        "action": "write_ack",
+        "observed_reply_ms": 16.0
+      }
+    },
+    "CAN1.node1.read_request.steering_max_rpm:0": {
+      "age_ms": 554516.0,
+      "at_s": 1122.4839999999967,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24704,
+        "index_hex": "0x6080",
+        "subindex": 0,
+        "object": "steering_max_rpm",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node1.read_response.steering_max_rpm:0": {
+      "age_ms": 554516.0,
+      "at_s": 1122.4839999999967,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24704,
+        "index_hex": "0x6080",
+        "subindex": 0,
+        "object": "steering_max_rpm",
+        "command": 67,
+        "action": "read_response",
+        "value": 600,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node1.write_request.steering_profile_rpm:0": {
+      "age_ms": 554500.0,
+      "at_s": 1122.5,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24705,
+        "index_hex": "0x6081",
+        "subindex": 0,
+        "object": "steering_profile_rpm",
+        "command": 35,
+        "action": "write_request",
+        "value": 600
+      }
+    },
+    "CAN1.node1.write_ack.steering_profile_rpm:0": {
+      "age_ms": 554500.0,
+      "at_s": 1122.5,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24705,
+        "index_hex": "0x6081",
+        "subindex": 0,
+        "object": "steering_profile_rpm",
+        "command": 96,
+        "action": "write_ack",
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node1.read_request.steering_profile_rpm:0": {
+      "age_ms": 554484.0,
+      "at_s": 1122.5160000000033,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24705,
+        "index_hex": "0x6081",
+        "subindex": 0,
+        "object": "steering_profile_rpm",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node1.read_response.steering_profile_rpm:0": {
+      "age_ms": 554484.0,
+      "at_s": 1122.5160000000033,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24705,
+        "index_hex": "0x6081",
+        "subindex": 0,
+        "object": "steering_profile_rpm",
+        "command": 67,
+        "action": "read_response",
+        "value": 600,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node1.write_request.steering_target_count:0": {
+      "age_ms": 547219.0,
+      "at_s": 1129.7810000000027,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24698,
+        "index_hex": "0x607A",
+        "subindex": 0,
+        "object": "steering_target_count",
+        "command": 35,
+        "action": "write_request",
+        "value": 45704
+      }
+    },
+    "CAN1.node1.write_ack.steering_target_count:0": {
+      "age_ms": 547219.0,
+      "at_s": 1129.7810000000027,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24698,
+        "index_hex": "0x607A",
+        "subindex": 0,
+        "object": "steering_target_count",
+        "command": 96,
+        "action": "write_ack",
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node1.write_request.controlword:0": {
+      "age_ms": 547156.0,
+      "at_s": 1129.8439999999973,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24640,
+        "index_hex": "0x6040",
+        "subindex": 0,
+        "object": "controlword",
+        "command": 43,
+        "action": "write_request",
+        "value": 47
+      }
+    },
+    "CAN1.node1.write_ack.controlword:0": {
+      "age_ms": 547156.0,
+      "at_s": 1129.8439999999973,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24640,
+        "index_hex": "0x6040",
+        "subindex": 0,
+        "object": "controlword",
+        "command": 96,
+        "action": "write_ack",
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.nmt.node2": {
+      "age_ms": 554313.0,
+      "at_s": 1122.6870000000054,
+      "decoded": {
+        "kind": "nmt",
+        "command": 128,
+        "node": 2
+      }
+    },
+    "CAN1.node2.write_request.mode:0": {
+      "age_ms": 554281.0,
+      "at_s": 1122.7189999999973,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 24672,
+        "index_hex": "0x6060",
+        "subindex": 0,
+        "object": "mode",
+        "command": 47,
+        "action": "write_request",
+        "value": 3
+      }
+    },
+    "CAN1.node2.write_ack.mode:0": {
+      "age_ms": 554281.0,
+      "at_s": 1122.7189999999973,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 24672,
+        "index_hex": "0x6060",
+        "subindex": 0,
+        "object": "mode",
+        "command": 96,
+        "action": "write_ack",
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node2.read_request.mode_display:0": {
+      "age_ms": 554234.0,
+      "at_s": 1122.7660000000033,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 24673,
+        "index_hex": "0x6061",
+        "subindex": 0,
+        "object": "mode_display",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node2.read_response.mode_display:0": {
+      "age_ms": 554234.0,
+      "at_s": 1122.7660000000033,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 24673,
+        "index_hex": "0x6061",
+        "subindex": 0,
+        "object": "mode_display",
+        "command": 79,
+        "action": "read_response",
+        "value": 3,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node2.write_request.left_target_rpm:0": {
+      "age_ms": 64188.0,
+      "at_s": 1612.8120000000054,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 24831,
+        "index_hex": "0x60FF",
+        "subindex": 0,
+        "object": "left_target_rpm",
+        "command": 35,
+        "action": "write_request",
+        "value": 0
+      }
+    },
+    "CAN1.node2.write_ack.left_target_rpm:0": {
+      "age_ms": 64188.0,
+      "at_s": 1612.8120000000054,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 24831,
+        "index_hex": "0x60FF",
+        "subindex": 0,
+        "object": "left_target_rpm",
+        "command": 96,
+        "action": "write_ack",
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node2.write_request.right_target_rpm:0": {
+      "age_ms": 64172.0,
+      "at_s": 1612.8280000000086,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 26879,
+        "index_hex": "0x68FF",
+        "subindex": 0,
+        "object": "right_target_rpm",
+        "command": 35,
+        "action": "write_request",
+        "value": 0
+      }
+    },
+    "CAN1.node2.write_ack.right_target_rpm:0": {
+      "age_ms": 64172.0,
+      "at_s": 1612.8280000000086,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 26879,
+        "index_hex": "0x68FF",
+        "subindex": 0,
+        "object": "right_target_rpm",
+        "command": 96,
+        "action": "write_ack",
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node2.write_request.controlword:0": {
+      "age_ms": 554063.0,
+      "at_s": 1122.9370000000054,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 24640,
+        "index_hex": "0x6040",
+        "subindex": 0,
+        "object": "controlword",
+        "command": 43,
+        "action": "write_request",
+        "value": 15
+      }
+    },
+    "CAN1.node2.write_ack.controlword:0": {
+      "age_ms": 554063.0,
+      "at_s": 1122.9370000000054,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 24640,
+        "index_hex": "0x6040",
+        "subindex": 0,
+        "object": "controlword",
+        "command": 96,
+        "action": "write_ack",
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node1.read_request.steering_target_count:0": {
+      "age_ms": 1420656.0,
+      "at_s": 256.3439999999973,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24698,
+        "index_hex": "0x607A",
+        "subindex": 0,
+        "object": "steering_target_count",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node1.read_response.steering_target_count:0": {
+      "age_ms": 1420656.0,
+      "at_s": 256.3439999999973,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24698,
+        "index_hex": "0x607A",
+        "subindex": 0,
+        "object": "steering_target_count",
+        "command": 67,
+        "action": "read_response",
+        "value": -21762,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node1.read_request.controlword:0": {
+      "age_ms": 1420641.0,
+      "at_s": 256.35899999999674,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24640,
+        "index_hex": "0x6040",
+        "subindex": 0,
+        "object": "controlword",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node1.read_response.controlword:0": {
+      "age_ms": 1420641.0,
+      "at_s": 256.35899999999674,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24640,
+        "index_hex": "0x6040",
+        "subindex": 0,
+        "object": "controlword",
+        "command": 75,
+        "action": "read_response",
+        "value": 63
+      }
+    }
+  },
+  "ids": {
+    "CAN1.STD.0x181": {
+      "age_ms": 0.0,
+      "count": 119166,
+      "first_s": 0.01600000000325963,
+      "last_s": 1677.0,
+      "max_host_gap_ms": 337203.0000000086,
+      "last_data": "37 06 00 00 BF 00 01",
+      "dlc": 7
+    },
+    "CAN1.STD.0x281": {
+      "age_ms": 0.0,
+      "count": 119132,
+      "first_s": 0.01600000000325963,
+      "last_s": 1677.0,
+      "max_host_gap_ms": 337203.0000000086,
+      "last_data": "87 B2 00 00 00 00 00 00",
+      "dlc": 8
+    },
+    "CAN2.STD.0x10B": {
+      "age_ms": 31.0,
+      "count": 32774,
+      "first_s": 0.01600000000325963,
+      "last_s": 1676.9689999999973,
+      "max_host_gap_ms": 337500.0,
+      "last_data": "00 00 00 00 00 00 00 00",
+      "dlc": 8
+    },
+    "CAN2.STD.0x10A": {
+      "age_ms": 16.0,
+      "count": 32775,
+      "first_s": 0.031000000002677552,
+      "last_s": 1676.9839999999967,
+      "max_host_gap_ms": 337500.0,
+      "last_data": "01 01 02 00 00 00 00 00",
+      "dlc": 8
+    },
+    "CAN1.STD.0x701": {
+      "age_ms": 16.0,
+      "count": 16429,
+      "first_s": 0.062000000005355105,
+      "last_s": 1676.9839999999967,
+      "max_host_gap_ms": 17422.000000005937,
+      "last_data": "05",
+      "dlc": 1
+    },
+    "CAN1.STD.0x702": {
+      "age_ms": 47.0,
+      "count": 17301,
+      "first_s": 0.09399999999732245,
+      "last_s": 1676.9530000000086,
+      "max_host_gap_ms": 17375.0,
+      "last_data": "7F",
+      "dlc": 1
+    },
+    "CAN1.STD.0x81": {
+      "age_ms": 1575078.0,
+      "count": 1,
+      "first_s": 101.92200000000594,
+      "last_s": 101.92200000000594,
+      "max_host_gap_ms": 0,
+      "last_data": "10 00 01 00 01 00 00 00",
+      "dlc": 8
+    },
+    "CAN1.STD.0x82": {
+      "age_ms": 1556531.0,
+      "count": 3,
+      "first_s": 101.92200000000594,
+      "last_s": 120.46899999999732,
+      "max_host_gap_ms": 17639.999999999418,
+      "last_data": "10 00 01 00 00 00 00 00",
+      "dlc": 8
+    },
+    "CAN1.STD.0x601": {
+      "age_ms": 31.0,
+      "count": 41344,
+      "first_s": 130.48399999999674,
+      "last_s": 1676.9689999999973,
+      "max_host_gap_ms": 156.00000000267755,
+      "last_data": "40 64 60 00 00 00 00 00",
+      "dlc": 8
+    },
+    "CAN1.STD.0x581": {
+      "age_ms": 31.0,
+      "count": 41335,
+      "first_s": 130.48399999999674,
+      "last_s": 1676.9689999999973,
+      "max_host_gap_ms": 172.00000000593718,
+      "last_data": "43 64 60 00 87 B2 00 00",
+      "dlc": 8
+    },
+    "CAN1.STD.0x602": {
+      "age_ms": 0.0,
+      "count": 76395,
+      "first_s": 130.5,
+      "last_s": 1677.0,
+      "max_host_gap_ms": 108.99999999674037,
+      "last_data": "40 69 68 00 00 00 00 00",
+      "dlc": 8
+    },
+    "CAN1.STD.0x582": {
+      "age_ms": 0.0,
+      "count": 76395,
+      "first_s": 130.5,
+      "last_s": 1677.0,
+      "max_host_gap_ms": 108.99999999674037,
+      "last_data": "43 69 68 00 00 00 00 00",
+      "dlc": 8
+    },
+    "CAN1.STD.0x0": {
+      "age_ms": 554313.0,
+      "count": 10,
+      "first_s": 130.875,
+      "last_s": 1122.6870000000054,
+      "max_host_gap_ms": 652406.999999992,
+      "last_data": "80 02",
+      "dlc": 2
+    }
+  },
+  "unanswered_sdo_events": 1,
+  "sdo_completed": 117729,
+  "sdo_aborts": 1,
+  "pending_sdo": 0,
+  "max_observed_reply_ms": 16.0
+}

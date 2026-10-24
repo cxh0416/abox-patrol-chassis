@@ -224,18 +224,28 @@ int main(void)
     BenchSteering_Stop(&b,211,1);
     assert(b.fault == 6U); /* emergency propagation preserves first timeout */
     assert(!BenchSteering_Take(&b,211,&f));
-    /* Motion ACKs at 39ms complete normally; at 40ms the result must instead
-       be read back, even if the periodic timeout check has not run yet. */
+    /* Motion ACKs at 59ms complete normally; at 60ms the result must instead
+       be read back. Verification has an 80ms read deadline followed by a
+       bounded drain window ending at 200ms. */
     for (int expired=0;expired<2;expired++) {
         BenchSteering_Init(&b); b.phase=BENCH_ACTIVE; b.step=17;
         assert(BenchSteering_Take(&b,1000,&f)&&b.index==0x607A);
         r=reply(&b,0);
-        assert(BenchSteering_OnFrame(&b,&r,expired?1040:1039));
+        assert(BenchSteering_OnFrame(&b,&r,expired?1060:1059));
         if (expired) {
             assert(b.phase==BENCH_ACTIVE&&b.verify&&!b.pending&&!b.cut_power);
-            assert(BenchSteering_Take(&b,1041,&f)&&b.index==0x6041&&b.read);
+            assert(BenchSteering_Take(&b,1060,&f)&&b.index==0x6041&&b.read);
             assert(f.data[0]==0x40); /* lost ACK never causes a target write replay */
-            BenchSteering_Tick(&b,1081,1,1,0,0);
+            BenchSteering_Tick(&b,1139,1,1,0,0);
+            assert(b.verify&&b.pending&&b.phase!=BENCH_FAULT);
+            BenchSteering_Tick(&b,1140,1,1,0,0);
+            assert(b.verify&&!b.pending&&b.phase!=BENCH_FAULT);
+            r=reply(&b,0x2237);
+            assert(BenchSteering_OnFrame(&b,&r,1150)); /* late reply is drained */
+            assert(!BenchSteering_Take(&b,1150,&f));
+            BenchSteering_Tick(&b,1259,1,1,0,0);
+            assert(b.phase!=BENCH_FAULT);
+            BenchSteering_Tick(&b,1260,1,1,0,0);
             assert(b.phase==BENCH_FAULT&&b.cut_power);
         }
         else assert(b.phase==BENCH_ACTIVE&&!b.pending&&!b.fault);

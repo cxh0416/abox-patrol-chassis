@@ -282,8 +282,9 @@ static void test_profile_lost_ack(void)
 {
     fixture(); drop_node = 1U; drop_index = 0x6081U;
     for (uint32_t t=1010U; t<1600U; t+=10U) tick(t);
-    assert(dropped && !RemoteService_State()->fault_latched && profile == 90 && !triggers);
-    assert(writes(1U,0x6081U,90) == 1U);
+    assert(dropped && !RemoteService_State()->fault_latched &&
+           profile == VEHICLE_STEERING_PROFILE_MAX_RPM && !triggers);
+    assert(writes(1U,0x6081U,VEHICLE_STEERING_PROFILE_MAX_RPM) == 1U);
     puts("PASS active profile write ACK loss verified without motion replay");
 }
 
@@ -320,7 +321,8 @@ static void drive_reply(BenchDrive* b, PatrolCanFrame f, int32_t value, uint32_t
     assert(BenchDrive_OnFrame(b,&f,now));
 }
 
-// 39/40ms ACK 边界、79/80ms 核验总期限和毫秒回绕都不能被新响应续期或转成假成功。
+// 59/60ms ACK 边界、79/80ms 单次读取、200ms 总期限、迟到应答排空和毫秒回绕
+// 都不能被新响应续期或转成假成功。
 static void test_verification_deadlines(void)
 {
     for (unsigned wrap=0U; wrap<2U; ++wrap) {
@@ -328,18 +330,41 @@ static void test_verification_deadlines(void)
         BenchDrive b; PatrolCanFrame f;
         BenchDrive_Init(&b); b.phase=BENCH_ACTIVE; b.step=13U; b.writing=b.desired=600; b.applied=300;
         assert(BenchDrive_Take(&b,base,&f));
-        BenchDrive_Tick(&b,base+39U,1U,1U,600,300,-300,base,base);
+        BenchDrive_Tick(&b,base+59U,1U,1U,600,300,-300,base,base);
         assert(b.pending && !b.verify && b.phase==BENCH_ACTIVE);
-        BenchDrive_Tick(&b,base+40U,1U,1U,600,300,-300,base,base);
+        BenchDrive_Tick(&b,base+60U,1U,1U,600,300,-300,base,base);
         assert(b.verify && !b.pending);
-        assert(BenchDrive_Take(&b,base+40U,&f)); drive_reply(&b,f,0x37,base+69U);
-        assert(BenchDrive_Take(&b,base+70U,&f)); drive_reply(&b,f,3,base+99U);
-        assert(BenchDrive_Take(&b,base+100U,&f)); drive_reply(&b,f,600,base+119U);
-        assert(b.phase==BENCH_ACTIVE && b.verify);
-        assert(!BenchDrive_Take(&b,base+120U,&f));
+        assert(BenchDrive_Take(&b,base+60U,&f));
+        drive_reply(&b,f,0x37,base+139U); /* 79ms accepted */
+        assert(b.verify && !b.pending && b.phase==BENCH_ACTIVE);
+        assert(BenchDrive_Take(&b,base+140U,&f));
+        drive_reply(&b,f,3,base+199U);
+        assert(b.verify && !b.pending && b.phase==BENCH_ACTIVE);
+        assert(BenchDrive_Take(&b,base+200U,&f));
+        BenchDrive_Tick(&b,base+259U,1U,1U,600,300,-300,base,base);
+        assert(b.verify && b.pending && b.phase==BENCH_ACTIVE);
+        BenchDrive_Tick(&b,base+260U,1U,1U,600,300,-300,base,base);
+        assert(b.phase==BENCH_FAULT && b.cut_power);
+
+        /* A response after the 80ms read timeout is consumed only by the
+           drain state and cannot complete a new transaction. */
+        BenchDrive_Init(&b); b.phase=BENCH_ACTIVE; b.step=13U; b.writing=b.desired=600; b.applied=300;
+        assert(BenchDrive_Take(&b,base,&f));
+        BenchDrive_Tick(&b,base+60U,1U,1U,600,300,-300,base,base);
+        assert(BenchDrive_Take(&b,base+60U,&f));
+        BenchDrive_Tick(&b,base+139U,1U,1U,600,300,-300,base,base);
+        assert(b.pending && b.verify && b.phase==BENCH_ACTIVE);
+        BenchDrive_Tick(&b,base+140U,1U,1U,600,300,-300,base,base);
+        assert(!b.pending && b.verify && b.phase==BENCH_ACTIVE);
+        drive_reply(&b,(PatrolCanFrame){.id=0x582U,.dlc=6U,.data={0x4B,0x41,0x60,0,0x37,0}},0,base+150U);
+        assert(b.verify && !b.pending && b.phase==BENCH_ACTIVE);
+        assert(!BenchDrive_Take(&b,base+150U,&f));
+        BenchDrive_Tick(&b,base+259U,1U,1U,600,300,-300,base,base);
+        assert(b.phase==BENCH_ACTIVE);
+        BenchDrive_Tick(&b,base+260U,1U,1U,600,300,-300,base,base);
         assert(b.phase==BENCH_FAULT && b.cut_power);
     }
-    puts("PASS ACK 39/40ms and verification 79/80ms boundaries across wrap");
+    puts("PASS ACK 59/60ms, read 79/80ms, total 200ms and drain boundaries across wrap");
 }
 
 // 丢零速写 ACK 的换向流程仍须确认双零目标之后的三组新低速反馈，旧零速缓存不能跳过刹车。
@@ -349,20 +374,44 @@ static void test_reversal_after_verified_zero(void)
     BenchDrive_Init(&b); b.phase=BENCH_ACTIVE; b.step=12U; b.applied=b.writing=300; b.direction=1;
     BenchDrive_Tick(&b,1000U,1U,1U,-300,300,-300,1000U,1000U);
     assert(b.reversing && !b.writing && BenchDrive_Take(&b,1000U,&f));
-    BenchDrive_Tick(&b,1040U,1U,1U,-300,0,0,1000U,1000U);
-    assert(BenchDrive_Take(&b,1041U,&f)); drive_reply(&b,f,0x37,1042U);
-    assert(BenchDrive_Take(&b,1043U,&f)); drive_reply(&b,f,3,1044U);
-    assert(BenchDrive_Take(&b,1045U,&f)); drive_reply(&b,f,0,1046U);
-    assert(BenchDrive_Take(&b,1047U,&f)); drive_reply(&b,f,-300,1048U);
-    assert(BenchDrive_Take(&b,1049U,&f) && f.data[1]==0xFFU && f.data[2]==0x68U);
+    BenchDrive_Tick(&b,1059U,1U,1U,-300,0,0,1000U,1000U);
+    assert(b.pending && !b.verify);
+    BenchDrive_Tick(&b,1060U,1U,1U,-300,0,0,1000U,1000U);
+    assert(BenchDrive_Take(&b,1060U,&f)); drive_reply(&b,f,0x37,1061U);
+    assert(BenchDrive_Take(&b,1062U,&f)); drive_reply(&b,f,3,1063U);
+    assert(BenchDrive_Take(&b,1064U,&f)); drive_reply(&b,f,0,1065U);
+    assert(BenchDrive_Take(&b,1066U,&f)); drive_reply(&b,f,-300,1067U);
+    assert(BenchDrive_Take(&b,1068U,&f) && f.data[1]==0xFFU && f.data[2]==0x68U);
     f.id=0x582U; f.data[0]=0x60U;
-    assert(BenchDrive_OnFrame(&b,&f,1050U));
-    BenchDrive_Tick(&b,1051U,1U,1U,-300,0,0,1050U,1050U);
+    assert(BenchDrive_OnFrame(&b,&f,1069U));
+    BenchDrive_Tick(&b,1070U,1U,1U,-300,0,0,1069U,1069U);
     assert(b.reversing && b.confirmations==0U);
-    for (uint32_t sample=1052U; sample<=1054U; ++sample)
+    for (uint32_t sample=1071U; sample<=1073U; ++sample)
         BenchDrive_Tick(&b,sample,1U,1U,-300,0,0,sample,sample);
     assert(!b.reversing && b.writing==-300 && b.step==13U);
     puts("PASS verified zero does not bypass three fresh stopped feedback pairs");
+}
+
+// 操作者撤销使能时不能等待 200 ms 核验完成；旧的同对象 upload 也不能变成零速写 ACK。
+static void test_disarm_abandons_verification(void)
+{
+    BenchDrive b; PatrolCanFrame f;
+    BenchDrive_Init(&b); b.phase=BENCH_ACTIVE; b.step=13U; b.writing=b.desired=600; b.applied=300;
+    assert(BenchDrive_Take(&b,1000U,&f));
+    BenchDrive_Tick(&b,1060U,1U,1U,600,300,-300,1000U,1000U);
+    assert(b.verify && !b.pending);
+    assert(BenchDrive_Take(&b,1060U,&f)); drive_reply(&b,f,0x37,1061U);
+    assert(BenchDrive_Take(&b,1062U,&f)); drive_reply(&b,f,3,1063U);
+    assert(BenchDrive_Take(&b,1064U,&f) && f.data[1]==0xFFU && f.data[2]==0x60U);
+    BenchDrive_Tick(&b,1065U,0U,1U,0,0,0,1000U,1000U);
+    assert(b.phase==BENCH_STOPPING && !b.verify && !b.pending);
+    assert(BenchDrive_Take(&b,1065U,&f) && f.data[1]==0xFFU && f.data[2]==0x60U);
+    PatrolCanFrame late_upload = {
+        .id = 0x582U, .dlc = 8U, .data = {0x43U,0xFFU,0x60U,0U,0x58U,0x02U,0U,0U}
+    };
+    assert(BenchDrive_OnFrame(&b,&late_upload,1066U));
+    assert(b.pending && b.phase==BENCH_STOPPING);
+    puts("PASS disarm abandons verification and a late upload cannot ACK zero speed");
 }
 
 // 执行生产路径的成功、未知执行结果、最新目标和安全退路场景。
@@ -382,5 +431,6 @@ int main(void)
     for (unsigned kind=0U; kind<3U; ++kind) test_safety_gate_during_verify(kind);
     test_verification_deadlines();
     test_reversal_after_verified_zero();
+    test_disarm_abandons_verification();
     return 0;
 }

@@ -5,6 +5,8 @@
 
 #define PATROL_DIAG_SDO_TIMEOUT_MS 60U
 #define PATROL_DIAG_SDO_RETRY_COUNT 1U
+#define PATROL_STEERING_TPDO_FRESH_MS 100U
+#define PATROL_STEERING_POSITION_FALLBACK_MS 250U
 /* A retry must fit before any safety sample expires, including two 10ms task
  * turns for response processing and resuming the other feedback reads. */
 #define PATROL_DIAG_RETRY_FEEDBACK_MAX_AGE_MS \
@@ -44,6 +46,19 @@ static uint8_t fresh(uint8_t seen, uint32_t sample_ms, uint32_t now_ms, uint32_t
     return (uint8_t)(seen && (now_ms - sample_ms) <= timeout_ms);
 }
 
+// 选择对象下一次读取周期。Node 1 的 0x281 TPDO 正常时，0x6064 SDO
+// 只做低频兜底；TPDO 中断后恢复 50 ms 快速轮询。
+static uint32_t sdo_period_ms(const PatrolDiagnostics* diagnostics,
+                              const PatrolSdoEntry* entry, uint32_t now_ms)
+{
+    if (entry->node == 1U && entry->index == 0x6064U &&
+        diagnostics->steering_tpdo_position_ms != 0U &&
+        fresh(1U, diagnostics->steering_tpdo_position_ms, now_ms,
+              PATROL_STEERING_TPDO_FRESH_MS))
+        return PATROL_STEERING_POSITION_FALLBACK_MS;
+    return entry->period_ms;
+}
+
 // 检查节点在线及当前时间下的诊断读取资格。供只读轮询选择节点使用，不代表节点已取得运动使能。
 static uint8_t sdo_node_ready(const PatrolDiagnostics* d, uint8_t node, uint32_t now_ms)
 {
@@ -75,7 +90,8 @@ static uint8_t retry_feedback_ready(const PatrolDiagnostics* d, uint32_t now_ms)
 static void finish_pending(PatrolDiagnostics* diagnostics, uint32_t now_ms)
 {
     uint8_t entry = diagnostics->pending_entry;
-    diagnostics->sdo_due_ms[entry] = now_ms + g_sdo_entries[entry].period_ms;
+    diagnostics->sdo_due_ms[entry] =
+        now_ms + sdo_period_ms(diagnostics, &g_sdo_entries[entry], now_ms);
     diagnostics->pending_valid = 0U;
     diagnostics->pending_retry = 0U;
 }
@@ -143,6 +159,7 @@ uint8_t PatrolDiagnostics_OnTpdoFrame(PatrolDiagnostics* diagnostics,
             (uint32_t)frame->data[1] << 8 | (uint32_t)frame->data[2] << 16 |
             (uint32_t)frame->data[3] << 24);
         diagnostics->steering_position_ms = now_ms;
+        diagnostics->steering_tpdo_position_ms = now_ms;
         diagnostics->steering_position_seen = 1U;
         return 1U;
     }
@@ -270,7 +287,11 @@ uint8_t PatrolDiagnostics_TakeSdoRead(PatrolDiagnostics* diagnostics, uint32_t n
         if (diagnostics->motion_priority && index >= 7U) continue;
         const PatrolSdoEntry* entry = &g_sdo_entries[index];
         if (!sdo_node_ready(diagnostics, entry->node, now_ms)) continue;
-        if (!due(now_ms, diagnostics->sdo_due_ms[index])) continue;
+        uint8_t gated = (uint8_t)(index == 1U &&
+            diagnostics->steering_tpdo_position_ms != 0U &&
+            !fresh(1U, diagnostics->steering_tpdo_position_ms, now_ms,
+                   PATROL_STEERING_TPDO_FRESH_MS));
+        if (!gated && !due(now_ms, diagnostics->sdo_due_ms[index])) continue;
         diagnostics->pending_valid = 1U;
         diagnostics->pending_entry = index;
         diagnostics->pending_retry = 0U;

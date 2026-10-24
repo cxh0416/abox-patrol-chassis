@@ -97,8 +97,19 @@ uint8_t PatrolFaultStop_OnFrame(PatrolFaultStop* stop, const PatrolCanFrame* fra
         frame->data[3] != 0U) return 0U;
     if (frame->data[0] == 0x80U && frame->dlc == 8U) {
         n->pending = 0U;
-        if (n->step != STOP_READ_STATUS) advance_write(n, number, now);
-        else { n->step = STOP_SHUTDOWN; n->attempts = 0U; n->at_ms = (uint16_t)(now + 40U); }
+        if (n->step == STOP_READ_STATUS) {
+            n->step = STOP_SHUTDOWN;
+            n->attempts = 0U;
+            n->at_ms = (uint16_t)(now + 40U);
+        } else if (n->attempts >= 3U) {
+            /* A repeated Abort is not proof that the safe write reached the
+             * controller. Advance only after the bounded retry budget. */
+            advance_write(n, number, now);
+        } else {
+            /* Standard SDO Abort has no transaction ID. A late Abort from an
+             * old upload with the same object must not acknowledge this write. */
+            n->at_ms = (uint16_t)(now + 10U);
+        }
         return 1U;
     }
     if (n->step != STOP_READ_STATUS) {
