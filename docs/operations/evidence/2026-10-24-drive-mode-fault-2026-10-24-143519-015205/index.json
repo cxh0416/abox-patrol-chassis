@@ -1,0 +1,39 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "date": "2026-10-24",
+  "title": "Drive operation-mode mismatch caused execution fault latch",
+  "app_sha256": "84590b4bbe63f16a917409d611137669c712c6ea68e21c4de3c2247bd1043968",
+  "motion": {
+    "flags": 10,
+    "stop_reason": 13
+  },
+  "node2": {
+    "operationModeDisplay6061": 1,
+    "operationModeCommand6060": 3,
+    "statusWord6041": 80
+  },
+  "firmware_expected_6061": 3,
+  "fault": {
+    "drive_phase": 4,
+    "drive_step": 2,
+    "drive_fault": 10
+  },
+  "fault_latch_cleared": false,
+  "files": [
+    {
+      "path": "drive-mode-readonly.json",
+      "bytes": 535,
+      "sha256": "76f749c18337d0bf163e4d404cc532d051b6e9ed746e3dd5602eb49b6619cd8b"
+    },
+    {
+      "path": "fault-record.json",
+      "bytes": 1147,
+      "sha256": "0df75cd87c075cebb2ad5e73febe25e2a63452a8ac47430467b2606da1fcfe2c"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2065,
+      "sha256": "b225711929038fe4e0700696a65ff097f5299f4ecdff951103d4cbb527fdd790"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "config-page.bin": "59dc59c2bd2cb74e75f10eb9a3c83c2350b865b5c5d6608269cdd4c0482de865",
+  "config-values.json": "6e8ace7fdbe951c9e2ed3e184159151e456c669efac414d31bc18c6edf64b4e3",
+  "index.json": "bce6bb1b583370e23f1c5ba74be2bb7ae4ea89a1d14e5819349385767161cae1",
+  "jlink-readonly.log": "22458339684155bf55c7e10d64e842e63ca8330cb1df0f657eecdbb811367f81",
+  "README.md": "ba770b254398615fdf75250929a5d34c4eae9023db19f3638eeef555286aa75e",
+  "status-after-commit.json": "f829482ed399e5b418ae22f509c108c380159e2c6f816cb40c453f49eaf83bd3",
+  "status-after-mcu-reset.json": "edd7d009f6e57f67b0c7241e7bb7554672c5f3166c41f3e9470b3a1c7c36e5bf"
+}

@@ -1,0 +1,16 @@
+{
+  "result": 0,
+  "sequence": 1,
+  "phase": 0,
+  "reason": 0,
+  "token": 0,
+  "driver_raw": -8122,
+  "encoder_raw": 1642,
+  "saved_center": -83815,
+  "active": false,
+  "calibrated": true,
+  "power_on": false,
+  "phase_name": "IDLE",
+  "reason_name": "NONE",
+  "result_name": "OK"
+}

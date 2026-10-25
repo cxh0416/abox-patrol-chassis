@@ -1,0 +1,21 @@
+{
+  "ABox_Boot.bin": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+  "BootState_A.bin": "413b7343fd3b816ba3ac843e36ad6429464654e442cb6c0fc33ba3571b69cf56",
+  "BootState_B.bin": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8",
+  "FLASH_ADDRESSES.txt": "683087424a228b8f2c01c869775fef0d3471d1882ed82ff6572a1f43ac4f1a0a",
+  "flash.manifest.json": "bcd003eda070634f731c35ab025d944fedccc23802534da36f83a210ec896c5c",
+  "index.json": "5423b590488632b74515d77e67315fd05ba27c79391438f9d9f6a94da9cc964c",
+  "Patrol_Vehicle_Chassis_App.bin": "2757cbc80c20e0952be8ba0182534c3408d6564ca261a8c915d84300b957d814",
+  "Patrol_Vehicle_Chassis_App.elf": "1a308c6048b97e33fe0bd0416cd7592664de367cc1b266c743371daae117f418",
+  "Patrol_Vehicle_Chassis_App.map": "f41c38c5e4d44324fb70fb6814f08d85d2893f50fda7226654d1d7b54999de0e",
+  "Patrol_Vehicle_Chassis_Full.bin": "2f746716d5a447c274471e270700813aa7413f39414886ed37cda9ba6b4a1c96",
+  "README.md": "80ab8aafc18d30d5139f0c18ee5b8bf2e9748c1b178c92ec528a2723128b3f3e",
+  "validation/arm-size.log": "c3358b3477ccf6024bca3aea3bffec1c73b2eb0a014f4fc48886428440d97561",
+  "validation/bench-stack.log": "242ff0a9cca66a5dda4819bfc2e6c4a43ea84e10da011a6216a4e2d66dedeca7",
+  "validation/boot-state.log": "585c91c68ecf70d8475b12f4495a49cc0954b1baa48c93bfb168be8bcca13941",
+  "validation/can2-stack.log": "32fbc9434dd99aa44d7abce9de0de60ae24cb2957407ad4ad54691186f52ebf6",
+  "validation/package-can2-center-0.2.87.py": "aae2dffeed40746d3a73a9b340b6e909dea01b43a6f1d8843994ebf619206f95",
+  "validation/product-python-tests.log": "d8cefb13386bbf20ed9bdcc1d0f852ab2ebe58acfe1a9fa43ac5a8634bb5fb0e",
+  "validation/verify-boot-state.c": "451f76939f3dcc3b1784b19d0ab0740c8f4026eb86cc73a336ddfcc22fbe6edd",
+  "validation/verify-boot-state.exe": "62a93c9cd015ec957e4fbe55492ab53f6206e682b65f236f2eaf9afb46205678"
+}

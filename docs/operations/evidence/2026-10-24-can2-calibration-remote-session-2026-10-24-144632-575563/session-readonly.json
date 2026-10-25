@@ -1,0 +1,30 @@
+{
+  "read_mode": "SWD attach/read only; no reset, halt, write, or erase",
+  "app_sha256": "84590b4bbe63f16a917409d611137669c712c6ea68e21c4de3c2247bd1043968",
+  "motion_flags": 39,
+  "motion_flags_hex": "0x27",
+  "motion_flags_decoded": [
+    "power output command on",
+    "calibrated",
+    "motion ready",
+    "control session active"
+  ],
+  "control_session": {
+    "session_id": "phy-remote",
+    "session_active": 1,
+    "enable_request": 1,
+    "requested_rpm": 0,
+    "target_rpm": 0,
+    "target_steering_mdeg": 0,
+    "fault_latched": 0,
+    "fault_pending": 0
+  },
+  "center_query": {
+    "driver_raw": -88686,
+    "encoder_raw": 4076,
+    "saved_center": -83815,
+    "calibration_phase": 0,
+    "calibration_active": false
+  },
+  "interpretation": "The T12 physical remote still owns the shared control session, so START would fail the control-session gate. The calibration process had not started."
+}

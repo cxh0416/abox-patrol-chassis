@@ -5,6 +5,7 @@
 #include "patrol_can_remote.h"
 #include "patrol_phy_remote.h"
 #include "remote_service.h"
+#include "center_calibration.h"
 #include "patrol_config.h"
 #include "vehicle_power_output.h"
 #include "time_base.h"
@@ -32,11 +33,49 @@ uint64_t ABoxMqttV4_IdempotencyProtectUntil(uint64_t e UNUSED)
 
 static uint32_t now;
 static uint8_t center_active, ota, reset_allowed;
+static uint8_t cal_phase, cal_reason;
+static int32_t cal_driver_raw=-1464, cal_saved_center=-1464, cal_jog_offset;
+static char cal_session[40];
 static PatrolRemoteConfigV5_t config;
 uint32_t HAL_GetTick(void) { return now; }
 const PatrolRemoteConfigV5_t* PatrolConfig_Get(void) { return &config; }
 uint8_t PatrolConfig_CalibrationCompatible(void) { return 1; }
 uint8_t CenterCalibration_IsActive(void) { return center_active; }
+const char* CenterCalibration_SessionId(void) { return cal_session; }
+uint8_t CenterCalibration_Start(void)
+{
+    if (center_active) return 0U;
+    center_active=1U; cal_phase=9U; cal_reason=0U;
+    strcpy(cal_session,"can2-local-test");
+    return 1U;
+}
+uint8_t CenterCalibration_GetStatus(CenterCalibrationStatus* status)
+{
+    if (!status) return 0U;
+    memset(status,0,sizeof(*status));
+    status->phase=cal_phase; status->reason=cal_reason; status->active=center_active;
+    status->calibrated=config.calibrated; status->driver_raw=cal_driver_raw;
+    status->encoder_raw=0U; status->jog_offset_mdeg=cal_jog_offset;
+    status->saved_center_count=cal_saved_center;
+    return 1U;
+}
+uint8_t CenterCalibration_KeepAlive(const char* id)
+{ return center_active && id && !strcmp(id,cal_session); }
+uint8_t CenterCalibration_Jog(const char* id, int16_t delta)
+{
+    if (!center_active || !id || strcmp(id,cal_session)) return 0U;
+    cal_phase=1U; cal_jog_offset+=delta; return 1U;
+}
+uint8_t CenterCalibration_Commit(const char* id)
+{
+    if (!center_active || !id || strcmp(id,cal_session)) return 0U;
+    cal_phase=4U; return 1U;
+}
+uint8_t CenterCalibration_Cancel(const char* id)
+{
+    if (!center_active || !id || strcmp(id,cal_session)) return 0U;
+    center_active=0U; cal_phase=0U; return 1U;
+}
 uint8_t PatrolRuntimePort_OtaBusy(void) { return ota; }
 /* This protocol-only fixture compiles no motor transport. */
 uint8_t PatrolRuntime_RequestFaultStop(void) { return 0U; }
@@ -77,6 +116,38 @@ static uint8_t command(uint8_t op,uint16_t seq,int16_t rpm,int16_t angle,uint32_
 }
 static uint8_t send(uint8_t op,uint16_t seq,int16_t rpm,int16_t angle)
 { return command(op,seq,rpm,angle,now); }
+
+typedef struct {
+    uint8_t result, phase, reason, flags;
+    uint16_t token, encoder;
+    int32_t driver, saved;
+} CalibrationReply;
+
+static CalibrationReply calibration_command(uint8_t op,uint16_t seq,uint16_t token,
+                                            int16_t argument,uint32_t received)
+{
+    PatrolCanFrame f={PATROL_CAN_CAL_COMMAND,8,
+        {PATROL_CAN_CAL_VERSION,0,0,0,0,0,0,0}},r[3];
+    f.data[1]=op;
+    f.data[2]=(uint8_t)seq; f.data[3]=(uint8_t)(seq>>8);
+    f.data[4]=(uint8_t)token; f.data[5]=(uint8_t)(token>>8);
+    f.data[6]=(uint8_t)argument; f.data[7]=(uint8_t)((uint16_t)argument>>8);
+    PatrolCanRemote_OnFrame(&f,received,now);
+    assert(PatrolCanRemote_TakeReply(r,now));
+    assert(r[0].id==0x531 && r[1].id==0x532 && r[2].id==0x533);
+    assert(r[0].data[2]==(uint8_t)seq && r[0].data[3]==(uint8_t)(seq>>8));
+    assert(r[1].data[0]==(uint8_t)seq && r[2].data[0]==(uint8_t)seq);
+    return (CalibrationReply){
+        .result=r[0].data[1],.phase=r[0].data[4],.reason=r[0].data[5],
+        .flags=r[2].data[6],
+        .token=(uint16_t)(r[0].data[6] | (uint16_t)r[0].data[7]<<8),
+        .encoder=(uint16_t)(r[1].data[6] | (uint16_t)r[1].data[7]<<8),
+        .driver=(int32_t)((uint32_t)r[1].data[2] | (uint32_t)r[1].data[3]<<8 |
+                          (uint32_t)r[1].data[4]<<16 | (uint32_t)r[1].data[5]<<24),
+        .saved=(int32_t)((uint32_t)r[2].data[2] | (uint32_t)r[2].data[3]<<8 |
+                         (uint32_t)r[2].data[4]<<16 | (uint32_t)r[2].data[5]<<24)
+    };
+}
 static const ChassisControl* state(void) { return RemoteService_State(); }
 
 static void switches(uint8_t a, uint8_t b)
@@ -174,6 +245,44 @@ static void drive_speed_cases(void)
         assert(state()->target_rpm==sign*2000);
     }
 }
+
+static void calibration_cases(void)
+{
+    CalibrationReply r;
+    init();
+    r=calibration_command(PATROL_CAN_CAL_QUERY,1,0,0,now);
+    assert(r.result==PATROL_CAN_CAL_OK && r.token==0U && r.driver==-1464);
+    assert(!PatrolCanRemote_CalibrationPrepareActive());
+    assert(calibration_command(PATROL_CAN_CAL_START,2,0,0,now).result==PATROL_CAN_CAL_SAFETY);
+    assert(calibration_command(PATROL_CAN_CAL_PREPARE,3,0,0,now).result==PATROL_CAN_CAL_OK);
+    assert(PatrolCanRemote_CalibrationPrepareActive());
+    r=calibration_command(PATROL_CAN_CAL_START,4,0,0,now);
+    assert(r.result==PATROL_CAN_CAL_OK && r.token!=0U && r.phase==9U);
+    assert(!PatrolCanRemote_CalibrationPrepareActive());
+    uint16_t token=r.token;
+    assert(calibration_command(PATROL_CAN_CAL_JOG,5,0,200,now).result==PATROL_CAN_CAL_TOKEN);
+    r=calibration_command(PATROL_CAN_CAL_JOG,5,token,200,now);
+    assert(r.result==PATROL_CAN_CAL_OK && r.phase==1U);
+    assert(calibration_command(PATROL_CAN_CAL_JOG,5,token,-200,now).result==PATROL_CAN_CAL_SEQUENCE);
+    assert(calibration_command(PATROL_CAN_CAL_COMMIT,6,token,0,now).result==PATROL_CAN_CAL_OK);
+    assert(calibration_command(PATROL_CAN_CAL_QUERY,7,token,0,now).result==PATROL_CAN_CAL_OK);
+    assert(calibration_command(PATROL_CAN_CAL_CANCEL,8,token,0,now).result==PATROL_CAN_CAL_OK);
+    assert(!center_active);
+
+    init(); center_active=1U;
+    strcpy(cal_session,"web-session");
+    PatrolCanRemote_Tick(now+PATROL_CAN_CAL_LEASE_MS,0U);
+    assert(center_active);
+    cal_session[0]='\0';
+    assert(calibration_command(PATROL_CAN_CAL_START,10,0,0,now).result==PATROL_CAN_CAL_SAFETY);
+    center_active=0U;
+    assert(calibration_command(PATROL_CAN_CAL_PREPARE,11,0,0,now).result==PATROL_CAN_CAL_OK);
+    r=calibration_command(PATROL_CAN_CAL_START,12,0,0,now);
+    assert(r.result==PATROL_CAN_CAL_OK);
+    token=r.token; now+=PATROL_CAN_CAL_LEASE_MS;
+    PatrolCanRemote_Tick(now,0U);
+    assert(!center_active);
+}
 int main(void)
 {
     init(); assert(send(PATROL_CAN_QUERY,1,0,0)==PATROL_CAN_OK); assert(!state()->enable_request);
@@ -252,6 +361,7 @@ int main(void)
     assert(!state()->enable_request);
     drive_speed_cases();
     physical_b_ignored_cases();
-    puts("CAN2 and ignored B button, A stop, reversal, freshness, owners and faults: PASS");
+    calibration_cases();
+    puts("CAN2 motion and native center-calibration bridge: PASS");
     return 0;
 }

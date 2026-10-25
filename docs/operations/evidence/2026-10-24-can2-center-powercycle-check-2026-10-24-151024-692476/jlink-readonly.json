@@ -1,0 +1,32 @@
+{
+  "mode": "SWD attach/read only; no halt, reset, or target write",
+  "app_version": "patrol-chassis-0.2.87",
+  "tick_ms": 147262,
+  "control": {
+    "session_id": "",
+    "session_active": 0,
+    "enable_request": 0,
+    "fault_latched": 0,
+    "fault_pending": 0
+  },
+  "fault_storage": 1,
+  "fault_dirty": 0,
+  "last_fault": {
+    "sequence": 8,
+    "at_ms": 12919,
+    "source": 1,
+    "reason": 12,
+    "reason_name": "CHASSIS_STOP_DIRECTION_TIMEOUT",
+    "target_rpm": 1000,
+    "left_rpm": 736,
+    "right_rpm": -271,
+    "drive_fault": 3,
+    "active": false
+  },
+  "boot_log": [
+    "CFG loaded vid=PATROL-CHASSIS-000",
+    "PWR vehicle output commanded=0 result=0",
+    "REMOTE initialized calibrated=1; outputs gated",
+    "BOOT version=patrol-chassis-0.2.87 app=0x08008000"
+  ]
+}

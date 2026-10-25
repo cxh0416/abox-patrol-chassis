@@ -1,0 +1,27 @@
+{
+  "wiring": "CANalyst physical CH2 to A-BOX CAN1",
+  "node": 2,
+  "operationModeDisplay": {
+    "object": "0x6061",
+    "raw": "01",
+    "value": 1
+  },
+  "operationModeCommand": {
+    "object": "0x6060",
+    "raw": "03",
+    "value": 3
+  },
+  "statusWord": {
+    "object": "0x6041",
+    "raw": "5000",
+    "value": 80
+  },
+  "firmware_expected_display_mode": 3,
+  "mismatch": true,
+  "commands_sent": [
+    "SDO upload Node 2 0x6061:00",
+    "SDO upload Node 2 0x6060:00",
+    "SDO upload Node 2 0x6041:00"
+  ],
+  "writes": false
+}

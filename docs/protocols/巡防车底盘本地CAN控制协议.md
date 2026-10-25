@@ -60,3 +60,92 @@ stopReason：0 无，1 保留，2 未标定，3 反馈过期，4 双转角不一
 字节 0–1 为 sequence；2–3 为 int16 左轮 rpm；4–5 为 int16 右轮 rpm，均按车辆前进方向为正；6 为换向停车等待标志；7 为运动使能请求标志。
 
 运动目标接受后仍由设备持续检查标定、反馈时效、双角度、节点、驱动故障及维护状态。方向改变由设备执行停车确认。上位机失焦、异常退出或停止控制时应发送 STOP，并在结束使用时发送 POWER_OFF；不能依赖上位机退出动作替代设备租约。无效或过期反馈不用于确认实际动作，转角在无效状态下不保证可表示。
+
+## CAN2 本地中位标定
+
+本入口用于设备无法连接运维平台时执行与平台相同的中位标定状态机，不作为绕过安全门禁的直接驱动参数写入通道。所有帧均为标准数据帧，DLC 固定为 8，多字节字段采用小端序。
+
+### 请求：`0x530`
+
+| 字节 | 字段 |
+|---|---|
+| 0 | version，固定为 1 |
+| 1 | operation |
+| 2–3 | sequence，uint16 |
+| 4–5 | sessionToken，uint16；START 时为 0，其余操作使用 START 返回的令牌 |
+| 6–7 | argument，int16；仅 JOG 使用，单位 mdeg，其余操作必须为 0 |
+
+| operation | 操作 |
+|---|---|
+| 0 | QUERY，查询状态；令牌为 0 时只做无会话查询 |
+| 1 | START，建立独占中位标定会话 |
+| 2 | JOG，按 argument 请求一次受限点动 |
+| 3 | COMMIT，把当前已确认的机械中位提交为正式标定 |
+| 4 | CANCEL，取消当前本地标定并执行安全退出 |
+| 5 | PREPARE，上电前抑制自动回中，准备建立本地标定会话 |
+
+PREPARE 必须在 START 前发送，本身不上电、不运动、不创建标定会话；它只保持 3 秒的自动回中抑制窗口，供紧随其后的 POWER_ON 和 START 使用。START 要求存在有效 PREPARE，成功后清除该窗口。
+
+START 后的 QUERY/JOG/COMMIT/CANCEL 必须携带相同令牌，且 sequence 相对上一成功命令严格递增。活动会话每 3 秒至少需要一次匹配的 QUERY 或操作命令；超时、CAN2 Bus-Off 或 OTA 开始会请求取消标定。
+
+### 响应
+
+设备对每个合法 `0x530` 请求生成同一 sequence 的三帧响应。
+
+`0x531` ACK：
+
+| 字节 | 字段 |
+|---|---|
+| 0 | version=1 |
+| 1 | result |
+| 2–3 | 原请求 sequence |
+| 4 | phase |
+| 5 | reason |
+| 6–7 | sessionToken；START 成功时返回新令牌 |
+
+`0x532` DATA：
+
+| 字节 | 字段 |
+|---|---|
+| 0–1 | sequence |
+| 2–5 | int32，当前转向驱动器 `0x6064` 原始计数 |
+| 6–7 | uint16，独立绝对编码器当前原始计数 |
+
+`0x533` STATUS：
+
+| 字节 | 字段 |
+|---|---|
+| 0–1 | sequence |
+| 2–5 | int32，Config V5 当前保存的驱动器中位 |
+| 6 | flags：bit 0 标定会话活动，bit 1 `calibrated=true`，bit 2 车辆电源输出命令开启 |
+| 7 | 保留，固定为 0 |
+
+result：
+
+| 值 | 含义 |
+|---|---|
+| 0 | 接受 |
+| 1 | 帧参数无效 |
+| 2 | 安全门禁拒绝 |
+| 3 | 标定令牌无效或不属于当前会话 |
+| 4 | sequence 重复或倒退 |
+| 5 | 输入帧已过期 |
+| 6 | 当前标定阶段不接受该操作 |
+
+phase：
+
+| 值 | 状态 |
+|---|---|
+| 0 | IDLE |
+| 1 | READY |
+| 2 | JOGGING |
+| 3 | STOPPING |
+| 4 | COMMIT_STABLE |
+| 5 | ENCODER_WRITE |
+| 6 | ENCODER_VERIFY |
+| 7 | COMPLETE |
+| 8 | FAILED |
+| 9 | START_STABLE |
+| 10 | EXPIRED |
+
+`START` 后须轮询至 phase=READY，再按现场机械位置选择 JOG 或直接 COMMIT。`COMMIT` 接受后仍须轮询至 phase=COMPLETE；只有 `calibrated=true` 且 Config V5 保存中位读回一致才表示完成。任一失败状态均不得重放不确定的编码器写入。

@@ -1,0 +1,114 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "date": "2026-10-24",
+  "version": "patrol-chassis-0.2.86",
+  "candidate": true,
+  "purpose": "CAN2 local center calibration using the same firmware state machine as cloud maintenance",
+  "board_flashed": false,
+  "field_center_calibration_verified": false,
+  "app_sha256": "84590b4bbe63f16a917409d611137669c712c6ea68e21c4de3c2247bd1043968",
+  "full_sha256": "a3218985380b0c9b36c39ca0fd34beed3572800ac45ea5959946518009567c22",
+  "validation": {
+    "arm_release_build": true,
+    "can2_stack": true,
+    "bench_stack": true,
+    "boot_state_parser": true,
+    "can2_protocol_host_tests": true,
+    "can2_center_script_tests": true,
+    "product_python_passed": 46,
+    "product_python_total": 47,
+    "known_existing_failure": "test_identity_and_safe_defaults: pre-existing PatrolCanopen_SdoWrite static assertion"
+  },
+  "files": [
+    {
+      "path": "ABox_Boot.bin",
+      "bytes": 32768,
+      "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+    },
+    {
+      "path": "BootState_A.bin",
+      "bytes": 2048,
+      "sha256": "e84acb832671f5edcc6cf49a909e20882818605e0f4a33caee08f8399b553e53"
+    },
+    {
+      "path": "BootState_B.bin",
+      "bytes": 2048,
+      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+    },
+    {
+      "path": "FLASH_ADDRESSES.txt",
+      "bytes": 645,
+      "sha256": "b860f774b3ed1126109e204be9aae89998d3d8f4919cbef1abcb104465bdeff2"
+    },
+    {
+      "path": "flash.manifest.json",
+      "bytes": 1347,
+      "sha256": "96fd82a387392de61feb7d46638415b5acf69f06836d83df64c6383f81a11233"
+    },
+    {
+      "path": "Patrol_Vehicle_Chassis_App.bin",
+      "bytes": 155600,
+      "sha256": "84590b4bbe63f16a917409d611137669c712c6ea68e21c4de3c2247bd1043968"
+    },
+    {
+      "path": "Patrol_Vehicle_Chassis_App.elf",
+      "bytes": 264304,
+      "sha256": "5d4c324ec7f22595f0dfcb7528f6da1c33e104205a57a4da767c20be175dfdeb"
+    },
+    {
+      "path": "Patrol_Vehicle_Chassis_App.map",
+      "bytes": 665322,
+      "sha256": "5c26123d21cf54479a6d45695acc39bc2d7ff61c4afd3c042426b0aa21cec67b"
+    },
+    {
+      "path": "Patrol_Vehicle_Chassis_Full.bin",
+      "bytes": 188368,
+      "sha256": "a3218985380b0c9b36c39ca0fd34beed3572800ac45ea5959946518009567c22"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2348,
+      "sha256": "2993ef8fbda6277abb534356eb02b23a143ee13329f259943f042a80e7a78b8b"
+    },
+    {
+      "path": "validation/arm-size.log",
+      "bytes": 156,
+      "sha256": "57f9baaa494beadfb594f521cbad5db53581f1b0875776fd1f2ed05d03115f9e"
+    },
+    {
+      "path": "validation/bench-stack.log",
+      "bytes": 298,
+      "sha256": "242ff0a9cca66a5dda4819bfc2e6c4a43ea84e10da011a6216a4e2d66dedeca7"
+    },
+    {
+      "path": "validation/boot-state.log",
+      "bytes": 83,
+      "sha256": "585c91c68ecf70d8475b12f4495a49cc0954b1baa48c93bfb168be8bcca13941"
+    },
+    {
+      "path": "validation/can2-stack.log",
+      "bytes": 1122,
+      "sha256": "32fbc9434dd99aa44d7abce9de0de60ae24cb2957407ad4ad54691186f52ebf6"
+    },
+    {
+      "path": "validation/package-can2-center-0.2.86.py",
+      "bytes": 6893,
+      "sha256": "f7c2aa2181fd81d0b0bf8e22c2bfcdf7376868ab14769f4a92b2c1976bb7c56b"
+    },
+    {
+      "path": "validation/product-python-tests.log",
+      "bytes": 120314,
+      "sha256": "f47271f8cccf877488bdcb4690b1e2f10a494dabff202e696425ca8669c01a07"
+    },
+    {
+      "path": "validation/verify-boot-state.c",
+      "bytes": 4004,
+      "sha256": "7082f44e6ecb12f896c24ecd076c81bc0d5c856ac38cb54355f4120c0351c4df"
+    },
+    {
+      "path": "validation/verify-boot-state.exe",
+      "bytes": 69742,
+      "sha256": "358c62c816830dbb6bbe596819c34c3181be9b17e2baf447d7caf65c17ede2de"
+    }
+  ]
+}

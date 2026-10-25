@@ -18,6 +18,7 @@ uint32_t mock_now;
 uint8_t mock_power, mock_bus_off, mock_ota, mock_permit, mock_profile_ready;
 uint8_t mock_can_ready, mock_revoke_before_send, mock_sent;
 uint8_t mock_inhibit_before_send;
+uint8_t mock_cal_prepare;
 PatrolCanFrame mock_last_frame;
 ChassisControl mock_control;
 PatrolRemoteConfigV5_t mock_config;
@@ -42,6 +43,7 @@ uint8_t PatrolRuntimePort_CanBusOffActive(void) { return mock_bus_off; }
 void PatrolRtos_ObserveCanRecovery(uint32_t sample_ms, uint8_t healthy)
 { (void)sample_ms; (void)healthy; }
 uint8_t PatrolRuntimePort_OtaBusy(void) { return mock_ota; }
+uint8_t PatrolCanRemote_CalibrationPrepareActive(void) { return mock_cal_prepare; }
 #ifndef CENTER_HOST_REAL_DIAGNOSTICS
 void PatrolDiagnostics_Snapshot(const PatrolDiagnostics* d, uint32_t now, PatrolDiagnosticsSnapshot* s)
 { (void)d; (void)now; *s = mock_snapshot; }

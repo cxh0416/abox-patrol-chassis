@@ -1,0 +1,36 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "date": "2026-10-24",
+  "version": "patrol-chassis-0.2.87",
+  "verified_after_power_cycle": true,
+  "saved_center": -8122,
+  "direct_driver_position_6064": -8122,
+  "encoder_raw": 0,
+  "node2_mode_6061": 3,
+  "fault_latched": false,
+  "session_active": false,
+  "power_on": false,
+  "full_motion_verified": false,
+  "files": [
+    {
+      "path": "can1-readonly.json",
+      "bytes": 297,
+      "sha256": "e879e7132429c404e89614f8016fa958c2ef19e693e77442c6a0a67f75929804"
+    },
+    {
+      "path": "jlink-readonly.json",
+      "bytes": 793,
+      "sha256": "9188c3a16d233a8f0a21297cfd087bfb2714b88bd26db0bd83d043183372515c"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1529,
+      "sha256": "206a5bbf60739c964c757c0fdaa65988c73c00076bfa0b3c5262ade1f864929b"
+    },
+    {
+      "path": "status-after-power-cycle.json",
+      "bytes": 570,
+      "sha256": "135a71f3812b8701f52dc34c666aba01e0ecef38efc114340e3fd0a10368ecd6"
+    }
+  ]
+}

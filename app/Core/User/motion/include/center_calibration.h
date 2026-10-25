@@ -2,6 +2,17 @@
 #define CENTER_CALIBRATION_H
 #include <stdint.h>
 
+typedef struct {
+    uint8_t phase;
+    uint8_t reason;
+    uint8_t active;
+    uint8_t calibrated;
+    int32_t driver_raw;
+    uint32_t encoder_raw;
+    int32_t jog_offset_mdeg;
+    int32_t saved_center_count;
+} CenterCalibrationStatus;
+
 /* Session API; no HAL or RTOS types cross this boundary. */
 // 在全部前置门禁通过后建立新的中位标定会话。拒绝已有活动标定或执行器占用，记录起始双传感器坐标和会话期限；此时尚未完成永久标定。
 uint8_t CenterCalibration_Start(void);
@@ -19,6 +30,10 @@ uint8_t CenterCalibration_Cancel(const char* session_id);
 uint8_t CenterCalibration_Format(char* out, uint16_t size);
 // 输出标定内部诊断及最近失败证据。使用有界缓冲区给出门禁、阶段、相对角度和错误，不改变标定状态。
 uint8_t CenterCalibration_FormatDiagnostics(char* out, uint16_t size);
+// 返回当前会话标识的只读指针。调用方必须在运行临界区内立即使用，不能跨任务保存或释放。
+const char* CenterCalibration_SessionId(void);
+// 取得只读标定快照。数值来自同一运行上下文，仅用于状态显示和本地维护响应，不构成标定完成或许可证明。
+uint8_t CenterCalibration_GetStatus(CenterCalibrationStatus* status);
 // 推进标定超时、停车、编码器校验及保存阶段。持续监督门禁与双反馈一致性，仅在所需确认全部成立后推进提交，失败走统一证据捕获与安全退出。
 void CenterCalibration_Tick(uint32_t now);
 #endif

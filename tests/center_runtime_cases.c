@@ -10,6 +10,7 @@ static void reset_fixture(void)
     BenchSteering_Init(&g_motion.bench); BenchDrive_Init(&g_motion.drive);
     SteeringCoordinate_Reset(&g_motion.coordinate);
     g_motion.coordinate_reset_requested = mock_bus_off = mock_ota = mock_permit = 0;
+    mock_cal_prepare = 0;
     g_motion.feedback_gate_mask = g_motion.bench_fault_gate_mask = 0;
     mock_can_ready = mock_revoke_before_send = mock_sent = 0;
     mock_power = 1; mock_now = 1000;

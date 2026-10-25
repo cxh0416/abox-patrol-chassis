@@ -6,6 +6,7 @@
 #include "remote_service.h"
 #include "patrol_config.h"
 #include "patrol_can_status.h"
+#include "patrol_can_remote.h"
 #include "vehicle_power_output.h"
 #include "vehicle_steering_profile.h"
 #include "patrol_fault_stop.h"
@@ -539,7 +540,7 @@ void PatrolRuntime_Tick(void)
         uint8_t safe = center_executor_active ? center_safe : normal_safe;
         uint8_t local_safe = auto_center_safe(c, now);
         uint8_t local_moving = 0U;
-        if (remote_requested || CenterCalibration_IsActive())
+        if (remote_requested || CenterCalibration_IsActive() || PatrolCanRemote_CalibrationPrepareActive())
             PatrolAutoCenter_Cancel(&g_motion.auto_center);
         else {
             /* A lost lease revokes remote targets. Local centering owns only

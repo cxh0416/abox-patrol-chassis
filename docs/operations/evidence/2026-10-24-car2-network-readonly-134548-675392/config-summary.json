@@ -1,0 +1,39 @@
+{
+  "page_sha256": "35c498a30f1ae7cdb71d5000badbb3f6253e50a1c2ae9683b9829fddeb9d08ce",
+  "config": {
+    "valid": true,
+    "magic": "0x56435543",
+    "version": 5,
+    "length": 400,
+    "checksum_match": true,
+    "vid": "PATROL-CHASSIS-000",
+    "mqtt_host_present": false,
+    "mqtt_port": 0,
+    "mqtt_username_present": false,
+    "mqtt_password_present": false,
+    "mqtt_tls_enabled": 1,
+    "mqtt_tls_profile_id": 0,
+    "calibrated": 1,
+    "steering_center_count": -83815,
+    "absolute_center_count": 0,
+    "steering_counts_per_degree_milli": 2710800,
+    "absolute_counts_per_degree_milli": 55250,
+    "steering_direction": 1,
+    "absolute_direction": 1,
+    "steering_tolerance_mdeg": 2000,
+    "diag_log_enabled": 0,
+    "diag_log_level": 2,
+    "diag_log_port": 30080,
+    "ota_origin_present": true
+  },
+  "tls_credentials": {
+    "record_erased": true,
+    "record_valid": false,
+    "record_magic": "0xFFFFFFFF",
+    "checksum_match": false,
+    "auth_mode": 255,
+    "generation_nonzero": true,
+    "identity_present": true,
+    "secret_present": true
+  }
+}
