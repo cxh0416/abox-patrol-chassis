@@ -8,6 +8,7 @@
 #define ABS_ENCODER_RESPONSE_SIZE 9U
 #define ABS_ENCODER_CONFIG_RESPONSE_SIZE 11U
 #define ABS_ENCODER_WRITE_RESPONSE_SIZE 8U
+#define ABS_ENCODER_RX_BUFFER_SIZE 32U
 
 // 计算绝对编码器 Modbus RTU 报文的 CRC16。对给定字节区间逐字节计算，字节排列由构造和解析函数按协议处理。
 uint16_t AbsoluteEncoder_Crc16(const uint8_t* data, uint16_t length);
@@ -19,7 +20,10 @@ void AbsoluteEncoder_BuildReadRequest(uint8_t request[ABS_ENCODER_REQUEST_SIZE])
 // 校验保持寄存器读取响应并提取寄存器值。检查站号、功能码、字节数、帧长度及 CRC，失败时不把无效响应当成新反馈。
 uint8_t AbsoluteEncoder_ParseHoldingResponse(const uint8_t* response, uint16_t length,
                                              uint16_t* registers, uint16_t register_count);
-// 解析编码器位置响应为完整计数。先校验寄存器响应，再按设备寄存器组合规则输出计数，返回解析成功标志。
+// 在整段 UART 接收数据中查找一个完整有效的保持寄存器响应。允许前面存在请求回显或无效字节，但仍严格核对站号、功能码、长度和 CRC。
+uint8_t AbsoluteEncoder_ParseHoldingResponseAnywhere(const uint8_t* bytes, uint16_t length,
+                                                     uint16_t* registers, uint16_t register_count);
+// 解析编码器位置响应为完整计数。可在包含请求回显的接收缓冲区中定位有效响应，再按设备寄存器组合规则输出计数。
 uint8_t AbsoluteEncoder_ParseResponse(const uint8_t* response, uint16_t length, uint32_t* count);
 // 构造单个保持寄存器写入请求。使用 RTU 单写功能码并附 CRC，不能据构造成功认为编码器已保存参数。
 void AbsoluteEncoder_BuildWriteSingleRequest(uint16_t register_offset, uint16_t value,

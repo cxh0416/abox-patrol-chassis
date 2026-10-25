@@ -86,6 +86,75 @@ static uint8_t retry_feedback_ready(const PatrolDiagnostics* d, uint32_t now_ms)
         fresh(d->encoder_seen, d->encoder_ms, now_ms, limit));
 }
 
+// 返回关键反馈样本的年龄；未见样本视为无限旧，不能由默认零值伪造新鲜度。
+static uint32_t feedback_age(const PatrolDiagnostics* diagnostics, uint8_t entry, uint32_t now_ms)
+{
+    uint8_t seen;
+    uint32_t stamp;
+    switch (entry) {
+    case 0U:
+        seen = diagnostics->steering_status_word != 0U;
+        stamp = diagnostics->steering_status_ms;
+        break;
+    case 1U:
+        seen = diagnostics->steering_position_seen;
+        stamp = diagnostics->steering_position_ms;
+        break;
+    case 2U:
+        seen = diagnostics->drive_status_word != 0U;
+        stamp = diagnostics->drive_status_ms;
+        break;
+    case 3U:
+        seen = diagnostics->left_rpm_seen;
+        stamp = diagnostics->left_rpm_ms;
+        break;
+    case 4U:
+        seen = diagnostics->right_rpm_seen;
+        stamp = diagnostics->right_rpm_ms;
+        break;
+    default:
+        return 0U;
+    }
+    return seen ? now_ms - stamp : UINT32_MAX;
+}
+
+// 选择年龄最大的关键反馈对象；转向位置仍由新鲜 TPDO 优先供给，避免无意义的 SDO 抢占。
+static uint8_t urgent_feedback_entry(const PatrolDiagnostics* diagnostics, uint32_t now_ms)
+{
+    uint8_t selected = UINT8_MAX;
+    uint32_t oldest = 0U;
+    for (uint8_t entry = 0U; entry < 5U; entry++) {
+        const PatrolSdoEntry* sdo = &g_sdo_entries[entry];
+        uint32_t age;
+        if (!sdo_node_ready(diagnostics, sdo->node, now_ms)) continue;
+        if (!due(now_ms, diagnostics->sdo_due_ms[entry])) continue;
+        if (entry == 1U && diagnostics->steering_tpdo_position_ms != 0U &&
+            fresh(1U, diagnostics->steering_tpdo_position_ms, now_ms,
+                  PATROL_STEERING_TPDO_FRESH_MS)) continue;
+        age = feedback_age(diagnostics, entry, now_ms);
+        if (age < PATROL_DIAG_FEEDBACK_PRIORITY_MS) continue;
+        if (selected == UINT8_MAX || age > oldest) {
+            selected = entry;
+            oldest = age;
+        }
+    }
+    return selected;
+}
+
+// 启动一个指定诊断对象的事务。调用方已确认节点可用且当前没有其他 SDO 所有者。
+static uint8_t take_entry(PatrolDiagnostics* diagnostics, uint8_t entry,
+                          uint32_t now_ms, PatrolCanFrame* frame)
+{
+    const PatrolSdoEntry* sdo = &g_sdo_entries[entry];
+    diagnostics->pending_valid = 1U;
+    diagnostics->pending_entry = entry;
+    diagnostics->pending_retry = 0U;
+    diagnostics->pending_sent_ms = now_ms;
+    diagnostics->next_sdo_entry = (uint8_t)((entry + 1U) % PATROL_DIAG_SDO_ENTRY_COUNT);
+    *frame = PatrolCanopen_SdoRead(sdo->node, sdo->index, sdo->subindex);
+    return 1U;
+}
+
 // 结束当前诊断 SDO 事务并安排后续轮询。清理在途标志及相关时间状态，避免旧响应阻塞后续安全反馈读取。
 static void finish_pending(PatrolDiagnostics* diagnostics, uint32_t now_ms)
 {
@@ -301,6 +370,44 @@ uint8_t PatrolDiagnostics_TakeSdoRead(PatrolDiagnostics* diagnostics, uint32_t n
         return 1U;
     }
     return 0U;
+}
+
+uint8_t PatrolDiagnostics_HasUrgentFeedback(const PatrolDiagnostics* diagnostics, uint32_t now_ms)
+{
+    if (diagnostics == 0) return 0U;
+    if (diagnostics->pending_valid && diagnostics->pending_entry < 5U &&
+        feedback_age(diagnostics, diagnostics->pending_entry, now_ms) >=
+            PATROL_DIAG_FEEDBACK_PRIORITY_MS)
+        return 1U;
+    return (uint8_t)(urgent_feedback_entry(diagnostics, now_ms) != UINT8_MAX);
+}
+
+uint8_t PatrolDiagnostics_TakeSdoReadUrgent(PatrolDiagnostics* diagnostics, uint32_t now_ms,
+                                            PatrolCanFrame* frame, uint8_t allow_retry)
+{
+    uint8_t urgent;
+    if (diagnostics == 0 || frame == 0) return 0U;
+    urgent = urgent_feedback_entry(diagnostics, now_ms);
+    if (diagnostics->pending_valid) {
+        const PatrolSdoEntry* entry = &g_sdo_entries[diagnostics->pending_entry];
+        if (!sdo_node_ready(diagnostics, entry->node, now_ms)) {
+            finish_pending(diagnostics, now_ms);
+        } else {
+            if ((now_ms - diagnostics->pending_sent_ms) < PATROL_DIAG_SDO_TIMEOUT_MS) return 0U;
+            diagnostics->sdo_timeout_count++;
+            if (diagnostics->pending_entry < 5U &&
+                diagnostics->pending_retry < PATROL_DIAG_SDO_RETRY_COUNT &&
+                allow_retry && retry_feedback_ready(diagnostics, now_ms)) {
+                diagnostics->pending_retry++;
+                diagnostics->pending_sent_ms = now_ms;
+                *frame = PatrolCanopen_SdoRead(entry->node, entry->index, entry->subindex);
+                return 1U;
+            }
+            finish_pending(diagnostics, now_ms);
+        }
+        urgent = urgent_feedback_entry(diagnostics, now_ms);
+    }
+    return urgent == UINT8_MAX ? 0U : take_entry(diagnostics, urgent, now_ms, frame);
 }
 
 // 记录诊断读请求未能提交到 CAN。清理在途事务并维护发送失败统计，允许后续按调度重试。

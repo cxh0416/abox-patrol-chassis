@@ -18,9 +18,10 @@ import struct
 import sys
 import time
 from dataclasses import asdict, dataclass
-from typing import Iterable
+from typing import Callable, Iterable
 
 
+SCRIPT_VERSION = "1.1.0"
 VCI_USBCAN2 = 4
 MOTION_COMMAND = 0x520
 MOTION_ACK = 0x521
@@ -101,6 +102,25 @@ RESULT_NAMES = {
 
 class Can2CalibrationError(RuntimeError):
     pass
+
+
+class Can2ResponseTimeout(Can2CalibrationError):
+    """A CAN2 command was sent, but its correlated reply group was incomplete."""
+
+    def __init__(self, sequence: int, expected: set[int], found: set[int],
+                 mismatched_sequences: set[int]):
+        self.sequence = sequence
+        self.expected = expected
+        self.found = found
+        self.missing = expected - found
+        self.mismatched_sequences = mismatched_sequences
+        found_text = ", ".join(f"0x{can_id:03X}" for can_id in sorted(found)) or "none"
+        missing_text = ", ".join(f"0x{can_id:03X}" for can_id in sorted(self.missing)) or "none"
+        super().__init__(
+            f"Incomplete reply for sequence {sequence}: expected "
+            f"{sorted(f'0x{x:03X}' for x in expected)}, received [{found_text}], "
+            f"missing [{missing_text}]"
+        )
 
 
 class VciCanObj(ctypes.Structure):
@@ -308,10 +328,20 @@ class CalibrationStatus:
 
 
 class Can2CalibrationClient:
-    def __init__(self, bus):
+    def __init__(self, bus, response_timeout: float = 1.0, query_retries: int = 3,
+                 retry_delay_s: float = 0.05):
+        if response_timeout <= 0:
+            raise ValueError("response_timeout must be positive")
+        if query_retries < 1:
+            raise ValueError("query_retries must be at least 1")
+        if retry_delay_s < 0:
+            raise ValueError("retry_delay_s must not be negative")
         self.bus = bus
         self.motion_sequence = 0
         self.cal_sequence = 0
+        self.response_timeout = response_timeout
+        self.query_retries = query_retries
+        self.retry_delay_s = retry_delay_s
 
     @staticmethod
     def _u16(data: bytes, offset: int) -> int:
@@ -333,12 +363,19 @@ class Can2CalibrationClient:
             self.cal_sequence = 1
         return self.cal_sequence
 
-    def _wait_frames(self, expected: Iterable[int], sequence: int, timeout: float):
+    def _wait_frames(self, expected: Iterable[int], sequence: int,
+                     timeout: float | None = None):
         expected = set(expected)
         found = {}
+        mismatched_sequences = set()
+        if timeout is None:
+            timeout = self.response_timeout
         deadline = time.monotonic() + timeout
         while time.monotonic() < deadline:
-            frame = self.bus.receive(max(1, min(50, int((deadline - time.monotonic()) * 1000))))
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                break
+            frame = self.bus.receive(max(1, min(50, int(remaining * 1000))))
             if frame is None:
                 continue
             can_id, data = frame
@@ -349,16 +386,28 @@ class Can2CalibrationClient:
             else:
                 response_sequence = self._u16(data, 2)
             if response_sequence != sequence:
+                mismatched_sequences.add(response_sequence)
                 continue
             found[can_id] = data
-            if found.keys() == expected:
+            if set(found) == expected:
                 return found
-        raise Can2CalibrationError(
-            f"Timeout waiting for sequence {sequence}, IDs {sorted(f'0x{x:03X}' for x in expected)}"
+        raise Can2ResponseTimeout(
+            sequence, expected, set(found), mismatched_sequences
         )
 
+    def _retry_read(self, exchange: Callable[[], object], attempts: int | None = None):
+        count = self.query_retries if attempts is None else max(1, attempts)
+        for attempt in range(count):
+            try:
+                return exchange()
+            except Can2ResponseTimeout:
+                if attempt + 1 >= count:
+                    raise
+                time.sleep(self.retry_delay_s)
+        raise AssertionError("unreachable")
+
     def motion(self, operation: int, rpm: int = 0, steering_mdeg: int = 0,
-               timeout: float = 1.0) -> MotionStatus:
+               timeout: float | None = None) -> MotionStatus:
         sequence = self._next_motion_sequence()
         payload = struct.pack("<BBHhh", 1, operation, sequence, rpm, steering_mdeg)
         self.bus.transmit(MOTION_COMMAND, payload)
@@ -376,8 +425,8 @@ class Can2CalibrationClient:
             right_rpm=struct.unpack_from("<h", wheels, 4)[0],
         )
 
-    def motion_status(self) -> MotionStatus:
-        return self.motion(MOTION_QUERY)
+    def motion_status(self, attempts: int | None = None) -> MotionStatus:
+        return self._retry_read(lambda: self.motion(MOTION_QUERY), attempts)
 
     def power_on(self) -> MotionStatus:
         return self.motion(MOTION_POWER_ON)
@@ -389,7 +438,7 @@ class Can2CalibrationClient:
         return self.motion(MOTION_RESET_FAULT)
 
     def calibration(self, operation: int, token: int = 0, argument_mdeg: int = 0,
-                    timeout: float = 1.0) -> CalibrationStatus:
+                    timeout: float | None = None) -> CalibrationStatus:
         sequence = self._next_cal_sequence()
         payload = struct.pack("<BBHHh", 1, operation, sequence, token, argument_mdeg)
         self.bus.transmit(CAL_COMMAND, payload)
@@ -410,8 +459,10 @@ class Can2CalibrationClient:
             power_on=bool(flags & 0x04),
         )
 
-    def query(self, token: int = 0) -> CalibrationStatus:
-        return self.calibration(CAL_QUERY, token=token)
+    def query(self, token: int = 0, attempts: int | None = None) -> CalibrationStatus:
+        return self._retry_read(
+            lambda: self.calibration(CAL_QUERY, token=token), attempts
+        )
 
 
 def _require_ok(status: CalibrationStatus, action: str):
@@ -442,6 +493,64 @@ def _wait_phase(client: Can2CalibrationClient, token: int, wanted: int, timeout_
         time.sleep(0.1)
     state = last.phase_name if last else "NO_RESPONSE"
     raise Can2CalibrationError(f"Timeout waiting for {PHASE_NAMES[wanted]}; current phase={state}")
+
+
+def _prepare_calibration(client: Can2CalibrationClient):
+    """PREPARE is idempotent, so an incomplete reply may be retried safely."""
+    prepared = client._retry_read(
+        lambda: client.calibration(CAL_PREPARE), client.query_retries
+    )
+    _require_ok(prepared, "PREPARE")
+    return prepared
+
+
+def _start_calibration(client: Can2CalibrationClient, deadline: float):
+    """START is non-idempotent; recover its token through a read-only query."""
+    while True:
+        try:
+            started = client.calibration(CAL_START)
+        except Can2ResponseTimeout as exc:
+            print(f"WARNING: START reply incomplete ({exc}); checking session state")
+            observed = client.query()
+            if observed.token:
+                print(f"Recovered START session token: {observed.token}")
+                return observed
+            started = None
+        if started is not None and started.result == CAL_OK:
+            return started
+        motion = client.motion_status()
+        if motion.fault_latched:
+            raise Can2CalibrationError("A motion fault became latched before calibration START")
+        if motion.session_active:
+            raise Can2CalibrationError("Another control session became active before calibration START")
+        if time.monotonic() >= deadline:
+            if started is None:
+                raise Can2CalibrationError("START result could not be recovered")
+            _require_ok(started, "START")
+        time.sleep(0.1)
+
+
+def _commit_calibration(client: Can2CalibrationClient, token: int):
+    """COMMIT is never replayed; recover only by observing the state machine."""
+    try:
+        committed = client.calibration(CAL_COMMIT, token=token)
+    except Can2ResponseTimeout as exc:
+        print(f"WARNING: COMMIT reply incomplete ({exc}); checking calibration state")
+        observed = client.query(token)
+        if observed.phase == 1:
+            raise Can2CalibrationError(
+                "COMMIT reply was incomplete and the state remains READY; "
+                "do not replay COMMIT automatically. Check the vehicle and rerun explicitly."
+            ) from exc
+        if observed.phase not in (4, 5, 6, 7):
+            raise Can2CalibrationError(
+                f"COMMIT reply was incomplete; unexpected phase "
+                f"{observed.phase_name}. Do not replay COMMIT automatically."
+            ) from exc
+        print(f"Recovered COMMIT from calibration phase {observed.phase_name}")
+        return observed, True
+    _require_ok(committed, "COMMIT")
+    return committed, False
 
 
 def calibrate_current(client: Can2CalibrationClient, reset_fault: bool, assume_yes: bool):
@@ -480,26 +589,13 @@ def calibrate_current(client: Can2CalibrationClient, reset_fault: bool, assume_y
             if answer != "YES":
                 raise Can2CalibrationError("Operator did not confirm mechanical center")
 
-        prepared = client.calibration(CAL_PREPARE)
-        _require_ok(prepared, "PREPARE")
+        _prepare_calibration(client)
         if not motion.power_on:
             powered = client.power_on()
             if powered.result != 0 or not powered.power_on:
                 raise Can2CalibrationError(f"POWER_ON rejected: result={powered.result}")
 
-        deadline = time.monotonic() + 3.0
-        while True:
-            started = client.calibration(CAL_START)
-            if started.result == CAL_OK:
-                break
-            motion = client.motion_status()
-            if motion.fault_latched:
-                raise Can2CalibrationError("A motion fault became latched before calibration START")
-            if motion.session_active:
-                raise Can2CalibrationError("Another control session became active before calibration START")
-            if time.monotonic() >= deadline:
-                _require_ok(started, "START")
-            time.sleep(0.1)
+        started = _start_calibration(client, time.monotonic() + 3.0)
         if started.token == 0:
             raise Can2CalibrationError("START succeeded without a session token")
         token = started.token
@@ -508,8 +604,7 @@ def calibrate_current(client: Can2CalibrationClient, reset_fault: bool, assume_y
         captured = ready.driver_raw
         print(f"READY: current 0x6064={captured}, encoder={ready.encoder_raw}. Committing...")
 
-        committed = client.calibration(CAL_COMMIT, token=token)
-        _require_ok(committed, "COMMIT")
+        _, commit_reply_recovered = _commit_calibration(client, token)
         completed = _wait_phase(client, token, 7, 20.0)
         final = client.query()
         _require_ok(final, "Final status")
@@ -529,6 +624,8 @@ def calibrate_current(client: Can2CalibrationClient, reset_fault: bool, assume_y
             "calibrated": final.calibrated,
             "phase": final.phase_name,
             "result": final.result_name,
+            "commit_reply_recovered": commit_reply_recovered,
+            "script_version": SCRIPT_VERSION,
         }
         print(json.dumps(summary, ensure_ascii=False, indent=2))
         return summary
@@ -623,6 +720,10 @@ def build_parser():
                         help="CANalyst-II physical channel: 0=CH1 (default for current CAN2 wiring), 1=CH2")
     parser.add_argument("--device-index", type=int, default=0)
     parser.add_argument("--dll", help="path to ControlCAN.dll")
+    parser.add_argument("--response-timeout", type=float, default=1.0,
+                        help="seconds to wait for one complete three-frame reply (default: 1.0)")
+    parser.add_argument("--query-retries", type=int, default=3,
+                        help="read-only query attempts when a reply is incomplete (default: 3)")
     sub = parser.add_subparsers(dest="command", required=True)
 
     sub.add_parser("status", help="query calibration and current 0x6064 values")
@@ -640,8 +741,16 @@ def main() -> int:
     args = build_parser().parse_args()
     if args.channel not in (0, 1):
         raise SystemExit("--channel must be 0 (CH1) or 1 (CH2)")
+    if args.response_timeout <= 0:
+        raise SystemExit("--response-timeout must be positive")
+    if args.query_retries < 1:
+        raise SystemExit("--query-retries must be at least 1")
     bus = Canalyst(args.channel, args.dll, args.device_index)
-    client = Can2CalibrationClient(bus)
+    client = Can2CalibrationClient(
+        bus,
+        response_timeout=args.response_timeout,
+        query_retries=args.query_retries,
+    )
     try:
         bus.open()
         if args.command == "status":

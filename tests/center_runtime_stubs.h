@@ -54,6 +54,11 @@ void PatrolDiagnostics_OnCanFrame(PatrolDiagnostics* d, const PatrolCanFrame* f,
 { (void)d; (void)f; (void)now; }
 uint8_t PatrolDiagnostics_TakeSdoRead(PatrolDiagnostics* d, uint32_t now, PatrolCanFrame* f, uint8_t allow_retry)
 { (void)d; (void)now; (void)f; (void)allow_retry; return 0; }
+uint8_t PatrolDiagnostics_HasUrgentFeedback(const PatrolDiagnostics* d, uint32_t now)
+{ (void)d; (void)now; return 0; }
+uint8_t PatrolDiagnostics_TakeSdoReadUrgent(PatrolDiagnostics* d, uint32_t now,
+                                            PatrolCanFrame* f, uint8_t allow_retry)
+{ (void)d; (void)now; (void)f; (void)allow_retry; return 0; }
 void PatrolDiagnostics_OnSdoTxError(PatrolDiagnostics* d, uint32_t now) { (void)d; (void)now; }
 void PatrolDiagnostics_OnEncoderConfig(PatrolDiagnostics* d, const uint16_t* r, uint32_t now)
 { (void)d; (void)r; (void)now; }

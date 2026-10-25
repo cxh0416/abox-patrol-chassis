@@ -47,6 +47,31 @@ static void reply(PatrolCanFrame f, uint32_t now, uint8_t never_disable)
 int main(void)
 {
     PatrolCanFrame f;
+    /* Near-expiry feedback wins the next CAN slot over queued motion writes. */
+    reset_fixture();
+    g_motion.bench.phase = BENCH_ACTIVE;
+    g_motion.bench.step = 16U;
+    g_motion.drive.phase = BENCH_ACTIVE;
+    g_motion.drive.step = 12U;
+    g_motion.bench_turn = g_motion.drive_turn = 1U;
+    assert(take(1000, &f));
+    assert(f.id == 0x602 && f.data[0] == 0x40 && f.data[1] == 0x41 && f.data[2] == 0x60);
+    /*
+     * A timed-out low-priority diagnostic transaction must release the next
+     * bus slot to the urgent feedback read, not to a queued actuator write.
+     */
+    reset_fixture();
+    g_motion.bench.phase = BENCH_ACTIVE;
+    g_motion.bench.step = 16U;
+    g_motion.drive.phase = BENCH_ACTIVE;
+    g_motion.drive.step = 12U;
+    g_motion.bench_turn = g_motion.drive_turn = 1U;
+    g_motion.diagnostics.pending_valid = 1U;
+    g_motion.diagnostics.pending_entry = 5U;
+    g_motion.diagnostics.pending_sent_ms = 1000U;
+    assert(!take(1059, &f));
+    assert(take(1061, &f));
+    assert(f.id == 0x602 && f.data[0] == 0x40 && f.data[1] == 0x41 && f.data[2] == 0x60);
     reset_fixture();
     assert(take(1000, &f));
     assert(f.id == 0x601 && f.data[1] == 0x40 && f.data[2] == 0x60 && f.data[4] == 6);
@@ -95,6 +120,56 @@ int main(void)
     assert(!s.drive_status_fresh);
     BenchSteering_Tick(&g_motion.bench, 1051, 0, 0, 0, 0);
     assert(g_motion.bench.phase == BENCH_FAULT && g_motion.bench.cut_power);
+    /*
+     * A single temporarily stale feedback source must first request the
+     * normal bounded stop sequence, not classify the drive actuator as failed.
+     */
+    reset_fixture();
+    mock_power = 1U;
+    mock_can_ready = 1U;
+    mock_now = 1000U;
+    g_motion.coordinate.valid = 1U;
+    g_motion.bench.phase = BENCH_ACTIVE;
+    g_motion.bench.step = 16U;
+    g_motion.drive.phase = BENCH_ACTIVE;
+    g_motion.drive.step = 12U;
+    g_motion.feedback_gate_mask = 16U;
+    mock_control.feedback.calibrated = 1U;
+    mock_control.feedback.encoder_profile_ready = 1U;
+    mock_control.feedback.encoder_range_valid = 1U;
+    mock_control.feedback.steering_online = 1U;
+    mock_control.feedback.drive_online = 1U;
+    mock_control.feedback.power_ready = 0U;
+    mock_control.feedback.feedback_ms = mock_now;
+    mock_control.session_active = mock_control.enable_request = 1U;
+    mock_control.lease_deadline_ms = mock_now + 1000U;
+    PatrolRuntime_Tick();
+    assert(g_motion.bench.phase == BENCH_STOPPING);
+    assert(g_motion.drive.phase == BENCH_STOPPING);
+    assert(!g_motion.bench.cut_power && !g_motion.drive.cut_power);
+    assert(!mock_control.fault_latched && !mock_control.fault_pending);
+    /*
+     * The first tick revokes the remote session while the bounded stop is
+     * still active. Subsequent ticks must keep the same stop classification,
+     * otherwise the now-inactive session would turn the same stale feedback
+     * into an immediate actuator fault.
+     */
+    assert(!mock_control.session_active);
+    mock_now += 10U;
+    PatrolRuntime_Tick();
+    assert(g_motion.bench.phase == BENCH_STOPPING);
+    assert(g_motion.drive.phase == BENCH_STOPPING);
+    assert(!g_motion.bench.cut_power && !g_motion.drive.cut_power);
+    assert(!mock_control.fault_latched && !mock_control.fault_pending);
+    /* Once feedback is fresh, the same stop still completes without latching. */
+    g_motion.feedback_gate_mask = 0U;
+    mock_control.feedback.power_ready = 1U;
+    mock_now += 10U;
+    PatrolRuntime_Tick();
+    assert(g_motion.bench.phase == BENCH_STOPPING);
+    assert(g_motion.drive.phase == BENCH_STOPPING);
+    assert(!g_motion.bench.cut_power && !g_motion.drive.cut_power);
+    assert(!mock_control.fault_latched && !mock_control.fault_pending);
     /* Reset cannot energize outputs and must preserve the original evidence. */
     PatrolRuntime_Init(); mock_now=2000;
     g_motion.diagnostics.drive_status_word=0xBF;

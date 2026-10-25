@@ -59,11 +59,31 @@ uint8_t AbsoluteEncoder_ParseHoldingResponse(const uint8_t* response, uint16_t l
     return 1U;
 }
 
+// 在接收缓冲区中搜索有效保持寄存器响应，兼容半双工总线把请求回显放在响应之前的情况。
+uint8_t AbsoluteEncoder_ParseHoldingResponseAnywhere(const uint8_t* bytes, uint16_t length,
+                                                     uint16_t* registers, uint16_t register_count)
+{
+    uint16_t expected_length;
+    uint16_t offset;
+    if (bytes == 0 || registers == 0 || register_count == 0U) return 0U;
+    expected_length = (uint16_t)(5U + register_count * 2U);
+    if (length < expected_length) return 0U;
+    for (offset = 0U; offset <= (uint16_t)(length - expected_length); offset++) {
+        if (bytes[offset] == ABS_ENCODER_ADDRESS && bytes[offset + 1U] == 0x03U &&
+            bytes[offset + 2U] == (uint8_t)(register_count * 2U) &&
+            AbsoluteEncoder_ParseHoldingResponse(bytes + offset, expected_length,
+                                                  registers, register_count))
+            return 1U;
+    }
+    return 0U;
+}
+
 // 解析编码器位置响应为完整计数。先校验寄存器响应，再按设备寄存器组合规则输出计数，返回解析成功标志。
 uint8_t AbsoluteEncoder_ParseResponse(const uint8_t* response, uint16_t length, uint32_t* count)
 {
     uint16_t registers[2];
-    if (count == 0 || !AbsoluteEncoder_ParseHoldingResponse(response, length, registers, 2U)) return 0U;
+    if (count == 0 ||
+        !AbsoluteEncoder_ParseHoldingResponseAnywhere(response, length, registers, 2U)) return 0U;
     *count = (uint32_t)registers[0] | (uint32_t)registers[1] << 16;
     return 1U;
 }
@@ -89,7 +109,17 @@ uint8_t AbsoluteEncoder_ParseWriteSingleResponse(const uint8_t* response, uint16
                                                  uint16_t register_offset, uint16_t value)
 {
     uint8_t expected[ABS_ENCODER_REQUEST_SIZE];
-    if (response == 0 || length != ABS_ENCODER_WRITE_RESPONSE_SIZE) return 0U;
+    uint16_t offset;
+    if (response == 0 || length < ABS_ENCODER_WRITE_RESPONSE_SIZE) return 0U;
     AbsoluteEncoder_BuildWriteSingleRequest(register_offset, value, expected);
-    return memcmp(response, expected, ABS_ENCODER_WRITE_RESPONSE_SIZE) == 0 ? 1U : 0U;
+    if (length == ABS_ENCODER_WRITE_RESPONSE_SIZE)
+        return memcmp(response, expected, ABS_ENCODER_WRITE_RESPONSE_SIZE) == 0 ? 1U : 0U;
+    /* A write echo can contain the identical request twice. Only a matching
+     * frame after the leading request proves that the device answered. */
+    for (offset = ABS_ENCODER_REQUEST_SIZE;
+         offset <= (uint16_t)(length - ABS_ENCODER_WRITE_RESPONSE_SIZE); offset++) {
+        if (memcmp(response + offset, expected, ABS_ENCODER_WRITE_RESPONSE_SIZE) == 0)
+            return 1U;
+    }
+    return 0U;
 }

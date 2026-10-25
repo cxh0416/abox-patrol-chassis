@@ -29,6 +29,7 @@ class FakeBus:
         self.session_active = False
         self.calibration_prepared = False
         self.transmitted = []
+        self.cal_reply_drop_once = {}
 
     def transmit(self, can_id, data):
         self.transmitted.append((can_id, data))
@@ -93,12 +94,17 @@ class FakeBus:
             bytes([sequence & 0xFF, sequence >> 8])
             + struct.pack("<iBB", self.saved, flags, 0)
         )
-        self._frames((MODULE.CAL_ACK, MODULE.CAL_DATA, MODULE.CAL_STATUS),
-                     ack, data_frame, status)
+        drop_ids = self.cal_reply_drop_once.pop(operation, set())
+        self._frames(
+            (MODULE.CAL_ACK, MODULE.CAL_DATA, MODULE.CAL_STATUS),
+            ack, data_frame, status, drop_ids=drop_ids,
+        )
 
-    def _frames(self, identifiers, *frames):
+    def _frames(self, identifiers, *frames, drop_ids=None):
+        drop_ids = drop_ids or set()
         for can_id, frame in zip(identifiers, frames):
-            self.rx.append((can_id, frame))
+            if can_id not in drop_ids:
+                self.rx.append((can_id, frame))
 
     def receive(self, timeout_ms):
         del timeout_ms
@@ -137,6 +143,17 @@ class Can2CenterCalibrationTests(unittest.TestCase):
     def test_default_channel_matches_current_can2_wiring(self):
         args = MODULE.build_parser().parse_args(["status"])
         self.assertEqual(args.channel, 0)
+
+    def test_python_direct_options_use_documented_order(self):
+        args = MODULE.build_parser().parse_args([
+            "--channel", "1",
+            "--response-timeout", "1.5",
+            "--query-retries", "4",
+            "status",
+        ])
+        self.assertEqual(args.channel, 1)
+        self.assertEqual(args.response_timeout, 1.5)
+        self.assertEqual(args.query_retries, 4)
 
     def test_reset_fault_is_a_separate_non_calibration_command(self):
         bus = FakeBus()
@@ -177,6 +194,57 @@ class Can2CenterCalibrationTests(unittest.TestCase):
         with self.assertRaisesRegex(MODULE.Can2CalibrationError, "does not match captured center"):
             MODULE.calibrate_current(client, reset_fault=False, assume_yes=True)
         self.assertFalse(bus.power)
+
+    def test_query_retries_without_repeating_mutation(self):
+        bus = FakeBus()
+        bus.cal_reply_drop_once = {MODULE.CAL_QUERY: {MODULE.CAL_DATA}}
+        client = MODULE.Can2CalibrationClient(bus, retry_delay_s=0)
+        status = client.query()
+        self.assertEqual(status.saved_center, -1464)
+        operations = [
+            struct.unpack("<BBHHh", data)[1]
+            for can_id, data in bus.transmitted if can_id == MODULE.CAL_COMMAND
+        ]
+        self.assertEqual(operations, [MODULE.CAL_QUERY, MODULE.CAL_QUERY])
+
+    def test_commit_reply_loss_is_recovered_from_state(self):
+        bus = FakeBus()
+        bus.cal_reply_drop_once = {MODULE.CAL_COMMIT: {MODULE.CAL_STATUS}}
+        client = MODULE.Can2CalibrationClient(bus, retry_delay_s=0)
+        result = MODULE.calibrate_current(client, reset_fault=False, assume_yes=True)
+        self.assertTrue(result["commit_reply_recovered"])
+        self.assertEqual(result["saved_driver_center"], -1464)
+        self.assertEqual(result["encoder_raw"], 0)
+        self.assertTrue(result["calibrated"])
+        self.assertFalse(bus.power)
+        operations = [
+            struct.unpack("<BBHHh", data)[1]
+            for can_id, data in bus.transmitted if can_id == MODULE.CAL_COMMAND
+        ]
+        self.assertEqual(operations.count(MODULE.CAL_COMMIT), 1)
+
+    def test_start_reply_loss_is_recovered_from_session_token(self):
+        bus = FakeBus()
+        bus.cal_reply_drop_once = {MODULE.CAL_START: {MODULE.CAL_STATUS}}
+        client = MODULE.Can2CalibrationClient(bus, retry_delay_s=0)
+        result = MODULE.calibrate_current(client, reset_fault=False, assume_yes=True)
+        self.assertEqual(result["captured_driver_center"], -1464)
+        operations = [
+            struct.unpack("<BBHHh", data)[1]
+            for can_id, data in bus.transmitted if can_id == MODULE.CAL_COMMAND
+        ]
+        self.assertEqual(operations.count(MODULE.CAL_START), 1)
+
+    def test_incomplete_reply_reports_missing_frame(self):
+        bus = FakeBus()
+        bus.cal_reply_drop_once = {MODULE.CAL_QUERY: {MODULE.CAL_STATUS}}
+        client = MODULE.Can2CalibrationClient(
+            bus, response_timeout=0.01, query_retries=1, retry_delay_s=0
+        )
+        with self.assertRaisesRegex(
+            MODULE.Can2ResponseTimeout, r"missing \[0x533\]"
+        ):
+            client.query()
 
 
 if __name__ == "__main__":

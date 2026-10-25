@@ -288,7 +288,7 @@ uint32_t PatrolRuntime_ApplyCut(uint32_t now)
 // 在执行器和只读诊断之间仲裁下一个 CAN 请求。通过 owner 标识报文归属，维持运动期间事务优先级与交替读取；返回报文仅表示选中，真正发送前仍须复核授权。
 uint8_t PatrolRuntime_Take(uint32_t now, PatrolCanFrame* request, uint8_t* owner)
 {
-    uint8_t have_request = 0, bench_frame = 0;
+    uint8_t have_request = 0, bench_frame = 0, allow_retry;
     /* While a motion write has an unknown outcome, only its bounded uploads
      * may progress. Do not send either axis' queued movement in the meantime. */
     if (g_motion.bench.verify || g_motion.drive.verify) {
@@ -296,6 +296,28 @@ uint8_t PatrolRuntime_Take(uint32_t now, PatrolCanFrame* request, uint8_t* owner
         *owner = g_motion.bench.verify ? 1U : 2U;
         return *owner == 1U ? BenchSteering_Take(&g_motion.bench, now, request) :
             BenchDrive_Take(&g_motion.drive, now, request);
+    }
+    /* Reserve the bus for feedback that is approaching its 250 ms expiry.
+     * Steering position updates can otherwise keep issuing PP target writes
+     * while a Node 2 status upload is still due. */
+    if (!g_motion.bench.pending && !g_motion.drive.pending &&
+        g_motion.bench.phase != BENCH_STOPPING &&
+        g_motion.drive.phase != BENCH_STOPPING &&
+        PatrolDiagnostics_HasUrgentFeedback(&g_motion.diagnostics, now)) {
+        const ChassisControl* control = RemoteService_State();
+        allow_retry = ChassisControl_SafetyReady(control, now) &&
+            VehiclePowerOutput_IsOn() && !PatrolRuntimePort_CanBusOffActive() &&
+            !PatrolRuntimePort_OtaBusy();
+        have_request = PatrolDiagnostics_TakeSdoReadUrgent(
+            &g_motion.diagnostics, now, request, allow_retry);
+        if (have_request) g_motion.bench_turn = 1U;
+        *owner = 0U;
+        /*
+         * If an existing low-priority SDO has not yet reached its bounded
+         * timeout, keep the actuator writes off the bus until the urgent
+         * read can be selected.
+         */
+        return have_request;
     }
     /* Alternate execution and diagnostics, never overlap pending transactions. */
     g_motion.diagnostics.stop_priority = g_motion.bench.phase == BENCH_STOPPING;
@@ -317,7 +339,7 @@ uint8_t PatrolRuntime_Take(uint32_t now, PatrolCanFrame* request, uint8_t* owner
     }
     if (!have_request && !g_motion.bench.pending && !g_motion.drive.pending) {
         const ChassisControl* control = RemoteService_State();
-        uint8_t allow_retry = ChassisControl_SafetyReady(control, now) &&
+        allow_retry = ChassisControl_SafetyReady(control, now) &&
             VehiclePowerOutput_IsOn() && !PatrolRuntimePort_CanBusOffActive() &&
             !PatrolRuntimePort_OtaBusy();
         uint32_t before_timeouts = g_motion.diagnostics.sdo_timeout_count;
@@ -511,11 +533,30 @@ void PatrolRuntime_Tick(void)
     {
         const ChassisControl* c = RemoteService_State();
         const PatrolRemoteConfigV5_t* cfg = PatrolConfig_Get();
+        uint8_t controlled_feedback_stop;
         PatrolRuntime_ApplyReset(now);
         uint8_t normal_safe = g_motion.coordinate.valid && VehiclePowerOutput_IsOn() &&
             !PatrolRuntimePort_CanBusOffActive() && ChassisControl_SafetyReady(c, now);
         uint8_t remote_requested = c->session_active && c->enable_request &&
             (int32_t)(now - c->lease_deadline_ms) < 0;
+        /*
+         * A single delayed status upload is a transport-scheduling event, not
+         * proof that the drive actuator rejected a write. Stop through the
+         * normal bounded zero/disable path and let a genuine stop failure
+         * decide whether to latch. Node, bus, OTA and drive faults retain the
+         * immediate fault path below.
+         */
+        controlled_feedback_stop = (uint8_t)(
+            !c->fault_latched && !c->fault_pending &&
+            (c->session_active || g_motion.bench.phase == BENCH_STOPPING ||
+             g_motion.drive.phase == BENCH_STOPPING) &&
+            VehiclePowerOutput_IsOn() && !c->feedback.can_bus_off &&
+            !PatrolRuntimePort_CanBusOffActive() &&
+            !PatrolRuntimePort_OtaBusy() && c->feedback.steering_online &&
+            c->feedback.drive_online && !c->feedback.drive_fault &&
+            (g_motion.feedback_gate_mask & (1U | 2U | 8U | 16U)) != 0U &&
+            (g_motion.bench.phase != BENCH_IDLE || g_motion.drive.phase != BENCH_IDLE));
+        if (controlled_feedback_stop) remote_requested = 0U;
         uint8_t center_requested = g_motion.center_cal.phase == CENTER_CAL_JOGGING;
         uint8_t center_executor_active = center_requested ||
             g_motion.center_cal.phase == CENTER_CAL_STOPPING;
@@ -559,6 +600,8 @@ void PatrolRuntime_Tick(void)
         }
         uint8_t local_requested = g_motion.auto_center.requested && local_safe;
         uint8_t requested = remote_requested || center_requested || local_requested;
+        uint8_t executor_safe = (uint8_t)(safe || controlled_feedback_stop);
+        uint8_t executor_requested = (uint8_t)(requested && !controlled_feedback_stop);
         int32_t requested_angle = center_requested ? g_motion.center_cal.target_mdeg :
             local_requested ? (local_moving ? 0 : g_motion.auto_center.hold_mdeg) : c->target_steering_mdeg;
         if (PATROL_CHASSIS_ACTUATION_ENABLED && PATROL_STEERING_EXECUTOR_ENABLED &&
@@ -572,18 +615,19 @@ void PatrolRuntime_Tick(void)
                     CHASSIS_MAX_STEERING_MDEG, now);
         }
         safe = safe && !c->fault_latched;
-        uint8_t drive_requested = remote_requested && !c->drive_brake;
-        if (PATROL_CHASSIS_ACTUATION_ENABLED && PATROL_DRIVE_EXECUTOR_ENABLED && drive_requested && safe &&
+        uint8_t drive_requested = executor_requested && remote_requested && !c->drive_brake;
+        if (PATROL_CHASSIS_ACTUATION_ENABLED && PATROL_DRIVE_EXECUTOR_ENABLED && drive_requested && executor_safe &&
             g_motion.bench.phase == BENCH_ACTIVE && g_motion.drive.phase == BENCH_IDLE)
             BenchDrive_Start(&g_motion.drive, now);
         uint8_t drive_was_verifying = g_motion.drive.verify;
         uint8_t steer_was_verifying = g_motion.bench.verify;
-        BenchDrive_Tick(&g_motion.drive, now, drive_requested, safe,
+        BenchDrive_Tick(&g_motion.drive, now, drive_requested, executor_safe,
             c->target_rpm, g_motion.diagnostics.left_actual_rpm, g_motion.diagnostics.right_actual_rpm,
             g_motion.diagnostics.left_rpm_ms, g_motion.diagnostics.right_rpm_ms);
-        BenchSteering_Tick(&g_motion.bench, now, requested && g_motion.drive.phase != BENCH_FAULT,
+        BenchSteering_Tick(&g_motion.bench, now,
+            executor_requested && g_motion.drive.phase != BENCH_FAULT,
             center_executor_active && g_motion.center_cal.phase == CENTER_CAL_STOPPING ?
-                stop_transport_safe : safe,
+                stop_transport_safe : executor_safe,
             requested_angle, c->feedback.steering_actual_mdeg);
         if (!drive_was_verifying && g_motion.drive.verify == 1U)
             APP_LOGW("ACKVERIFY", "drive step=%u: lost write ACK; uploads only, limit=%u ms",

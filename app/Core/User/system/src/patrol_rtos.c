@@ -434,11 +434,12 @@ static void Patrol_EncoderTask(void *argument)
     {
 #if PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED
         uint8_t request[ABS_ENCODER_REQUEST_SIZE];
-        uint8_t response[16] = {0};
+        uint8_t response[ABS_ENCODER_RX_BUFFER_SIZE] = {0};
         uint16_t registers[3];
         uint16_t response_length = 0U;
         uint16_t register_count;
         uint8_t read_config;
+        uint8_t response_ok = 0U;
         HAL_StatusTypeDef status;
         PatrolDiagnosticsSnapshot snapshot;
         uint32_t now;
@@ -474,11 +475,27 @@ static void Patrol_EncoderTask(void *argument)
         (void)HAL_UART_AbortReceive(&huart5);
         __HAL_UART_FLUSH_DRREGISTER(&huart5);
         status = HAL_UART_Transmit(&huart5, request, sizeof(request), 30U);
-        if (status == HAL_OK)
-            status = HAL_UARTEx_ReceiveToIdle(&huart5, response, sizeof(response), &response_length, 40U);
+        if (status == HAL_OK) {
+            /* A half-duplex adapter may deliver the request echo and the
+             * encoder reply as separate idle-delimited chunks. Collect at
+             * most two chunks, then search the combined buffer for a valid
+             * Modbus response. */
+            for (uint8_t chunk = 0U; chunk < 2U && response_length < sizeof(response); chunk++) {
+                uint16_t received = 0U;
+                status = HAL_UARTEx_ReceiveToIdle(
+                    &huart5, response + response_length,
+                    (uint16_t)(sizeof(response) - response_length), &received, 40U);
+                response_length += received;
+                if (status == HAL_OK && AbsoluteEncoder_ParseHoldingResponseAnywhere(
+                        response, response_length, registers, register_count)) {
+                    response_ok = 1U;
+                    break;
+                }
+                if (received == 0U) break;
+            }
+        }
         taskENTER_CRITICAL();
-        if (status == HAL_OK && AbsoluteEncoder_ParseHoldingResponse(response, response_length,
-                                                                     registers, register_count))
+        if (response_ok)
         {
             if (read_config)
                 PatrolRuntime_OnEncoderConfig(registers, now);

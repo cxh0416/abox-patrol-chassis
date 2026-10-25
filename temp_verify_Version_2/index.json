@@ -1,0 +1,45 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "date": "2026-10-25",
+  "version": "patrol-chassis-0.2.90",
+  "candidate": true,
+  "purpose": "Assemble up to two idle-delimited UART chunks per encoder read so request echo and the valid position response can be parsed independently of board timing",
+  "app_sha256": "7b3df11f507f95adcf05acdce7681cf000894455d7f2a367b777beb6a77ecf4e",
+  "full_sha256": "de6c94365cb171ee738ae64a4c4082b0402aa8c201aadb54ab1e7c68a8491f23",
+  "app_crc32": "B3D4129F",
+  "validation": {
+    "arm_release_build": true,
+    "chassis_safety_test": true,
+    "encoder_chunk_reassembly_test": true,
+    "can_remote_host_test": true,
+    "can2_stack": true,
+    "diff_check": true,
+    "full_boot_prefix": true,
+    "full_app_suffix": true,
+    "boot_state_a_bound": true,
+    "boot_state_b_erased": true
+  },
+  "known_full_suite_failures": [
+    "test_identity_and_safe_defaults: pre-existing static assertion",
+    "test_document_links_and_archived_evidence_references: existing CURRENT.md links to removed evidence directories"
+  ],
+  "board_flashed": false,
+  "field_verified": false,
+  "files": [
+    "ABox_Boot.bin",
+    "BootState_A.bin",
+    "BootState_B.bin",
+    "Patrol_Vehicle_Chassis_App.bin",
+    "Patrol_Vehicle_Chassis_App.elf",
+    "Patrol_Vehicle_Chassis_App.map",
+    "Patrol_Vehicle_Chassis_Full.bin",
+    "FLASH_ADDRESSES.txt",
+    "README.md",
+    "flash.manifest.json",
+    "source-change.patch",
+    "validation/chassis-safety-test.log",
+    "validation/can-remote-test.log",
+    "validation/can2-stack.log",
+    "validation/diff-check.log"
+  ]
+}

@@ -21,6 +21,9 @@
 - 2026-09-15：0.2.31 转向速度与自适应验证，见 [index](2026-09-15-031-steering-speed/index.md)。
 - 2026-09-27：wyse3040 被动 CAN 抓包与两次上电故障复现，见 [index](2026-09-27-wyse-can-powerup/index.json)。
 - 2026-09-28：Bus-Off 恢复候选单车 OTA 与零速上电复验，见 [index](2026-09-28-busoff-recovery/index.json)。
+- 2026-10-25：`0.2.91` 在关键反馈接近 250 ms 时效前预留 SDO 优先级，并在单次反馈过期时先执行有界受控停车；候选构建、相关主机回归和烧录包校验通过，见 [index](2026-10-25-feedback-priority-flash-2026-10-25-172803-318591/index.json)；尚未烧录和实车验证。
+- 2026-10-25：`0.2.90` 兼容绝对编码器请求回显与位置响应被 UART IDLE 分为两个数据块的情况，拼接最多两个分块后重新同步有效 Modbus 响应；编码器主机回归和 ARM Release 通过，见 [index](2026-10-25-encoder-chunk-reassembly-flash-2026-10-25-151438-155107/index.json)；尚未烧录和实车验证。
+- 2026-10-25：`0.2.89` 将绝对编码器接收缓冲区扩大到 32 字节，并在请求回显或无效前缀后重新同步有效 Modbus 响应；编码器主机回归和 ARM Release 通过，见 [index](2026-10-25-encoder-echo-resync-flash-2026-10-25-144921-677136/index.json)；尚未烧录和实车验证。
 - 2026-10-24：`0.2.88` 将 CAN2 三帧应答改为逐帧有界重试，修复新板只返回 `0x531/0x521` 而丢失 `0x532/0x533/0x522/0x523` 的问题；ARM Release、CAN2 栈、协议主机回归和镜像布局检查通过，见 [index](2026-10-24-can2-multiframe-reply-fix-2026-10-24-175251-657970/index.json)；尚未烧录和实车验证。
 - 2026-10-24：`0.2.86` CAN2 本地中位标定候选、协议/脚本主机验证及 Full/State 烧录包，见 [index](2026-10-24-can2-center-calibration-2026-10-24-141359-455116/index.json)；尚未烧录和现场标定。
 - 2026-10-24：CAN2 标定脚本首次运行超时定位为 CANalyst 通道选错；只读 SWD 确认板载 `0.2.86`，物理 CH1 的 `0x530` 查询正常，见 [index](2026-10-24-can2-calibration-channel-fix-2026-10-24-143034-166434/index.json)。

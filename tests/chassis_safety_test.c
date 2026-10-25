@@ -155,6 +155,39 @@ static int test_sdo_safety_priority(void)
     return 0;
 }
 
+static int test_urgent_feedback_priority(void)
+{
+    PatrolDiagnostics d;
+    PatrolCanFrame f;
+    PatrolDiagnostics_Init(&d);
+    d.steering_heartbeat_seen = d.drive_heartbeat_seen = 1U;
+    d.steering_heartbeat_state = d.drive_heartbeat_state = 0x7FU;
+    d.steering_heartbeat_ms = d.drive_heartbeat_ms = 1000U;
+    d.steering_status_word = 0x0637U;
+    d.steering_status_ms = 1100U;
+    d.steering_position_seen = 1U;
+    d.steering_position_ms = 1100U;
+    d.steering_tpdo_position_ms = 1100U;
+    d.drive_status_word = 0x1037U;
+    d.drive_status_ms = 1000U;
+    d.left_rpm_seen = d.right_rpm_seen = 1U;
+    d.left_rpm_ms = d.right_rpm_ms = 1000U;
+
+    CHECK(!PatrolDiagnostics_HasUrgentFeedback(&d, 1149U));
+    CHECK(PatrolDiagnostics_HasUrgentFeedback(&d, 1150U));
+    CHECK(PatrolDiagnostics_TakeSdoReadUrgent(&d, 1150U, &f, 1U));
+    CHECK(d.pending_entry == 2U && f.id == 0x602U && f.data[1] == 0x41U &&
+          f.data[2] == 0x60U);
+    d.pending_valid = 0U;
+
+    /* A fresh Node 1 TPDO must not be displaced by its slower SDO fallback. */
+    d.steering_tpdo_position_ms = 1140U;
+    d.left_rpm_ms = d.right_rpm_ms = 1100U;
+    d.drive_status_ms = 1050U;
+    CHECK(!PatrolDiagnostics_HasUrgentFeedback(&d, 1150U));
+    return 0;
+}
+
 static int test_sdo_waits_for_node(void)
 {
     PatrolDiagnostics d;
@@ -369,6 +402,7 @@ int main(void)
     CHECK(test_status_snapshot_age() == 0);
     CHECK(test_steering_tpdo_freshness() == 0);
     CHECK(test_steering_position_sdo_fallback() == 0);
+    CHECK(test_urgent_feedback_priority() == 0);
     CHECK(test_sdo_safety_priority() == 0);
     CHECK(test_field_sdo_replies() == 0);
     CHECK(test_diagnostic_read_retry() == 0);
@@ -380,6 +414,12 @@ int main(void)
     uint8_t request[8];
     uint8_t write_response[8];
     uint8_t response[9] = {1, 3, 4, 0x12, 0x34, 0x56, 0x78, 0, 0};
+    uint8_t combined[ABS_ENCODER_RX_BUFFER_SIZE] = {0};
+    uint8_t field_echo_reply[17] = {
+        0x01, 0x03, 0x00, 0x03, 0x00, 0x02, 0x34, 0x0B,
+        0x01, 0x03, 0x04, 0x0C, 0x14, 0x00, 0x00, 0xB9, 0x67
+    };
+    uint8_t config_request[8];
     uint16_t crc;
     uint32_t count;
     uint16_t config_values[3];
@@ -451,15 +491,43 @@ int main(void)
     response[7] = (uint8_t)crc; response[8] = (uint8_t)(crc >> 8);
     CHECK(AbsoluteEncoder_ParseResponse(response, sizeof(response), &count));
     CHECK(count == 0x56781234U);
+    memcpy(combined, request, sizeof(request));
+    memcpy(combined + sizeof(request), response, sizeof(response));
+    CHECK(AbsoluteEncoder_ParseResponse(combined, sizeof(request) + sizeof(response), &count));
+    CHECK(count == 0x56781234U);
+    CHECK(!AbsoluteEncoder_ParseResponse(combined, sizeof(request), &count));
+    CHECK(AbsoluteEncoder_ParseResponse(combined, sizeof(request) + sizeof(response), &count));
+    CHECK(count == 0x56781234U);
+    CHECK(AbsoluteEncoder_ParseResponse(field_echo_reply, sizeof(field_echo_reply), &count));
+    CHECK(count == 3092U);
+    combined[sizeof(request) + 8U] ^= 0x01U;
+    CHECK(!AbsoluteEncoder_ParseResponse(combined, sizeof(request) + sizeof(response), &count));
+    memcpy(combined + sizeof(request), response, sizeof(response));
+    combined[0] = 0xA5U;
+    combined[1] = 0x5AU;
+    CHECK(AbsoluteEncoder_ParseResponse(combined, sizeof(request) + sizeof(response), &count));
+    CHECK(count == 0x56781234U);
     AbsoluteEncoder_BuildWriteSingleRequest(3U, 15U, write_response);
     CHECK(write_response[0] == 1U && write_response[1] == 6U && write_response[3] == 3U &&
           write_response[4] == 0U && write_response[5] == 15U);
     CHECK(AbsoluteEncoder_ParseWriteSingleResponse(write_response, sizeof(write_response), 3U, 15U));
+    memset(combined, 0, sizeof(combined));
+    memcpy(combined, write_response, sizeof(write_response));
+    memcpy(combined + sizeof(write_response), write_response, sizeof(write_response));
+    CHECK(AbsoluteEncoder_ParseWriteSingleResponse(combined, sizeof(write_response) * 2U, 3U, 15U));
+    combined[sizeof(write_response) + 5U] = 1U;
+    CHECK(!AbsoluteEncoder_ParseWriteSingleResponse(combined, sizeof(write_response) * 2U, 3U, 15U));
     write_response[5] = 1U;
     CHECK(!AbsoluteEncoder_ParseWriteSingleResponse(write_response, sizeof(write_response), 3U, 15U));
     crc = AbsoluteEncoder_Crc16(config_response, 9);
     config_response[9] = (uint8_t)crc; config_response[10] = (uint8_t)(crc >> 8);
     CHECK(AbsoluteEncoder_ParseHoldingResponse(config_response, sizeof(config_response), config_values, 3U));
+    CHECK(config_values[0] == 1U && config_values[1] == 3U && config_values[2] == 0x4B00U);
+    AbsoluteEncoder_BuildReadHoldingRequest(0U, 3U, config_request);
+    memcpy(combined, config_request, sizeof(config_request));
+    memcpy(combined + sizeof(config_request), config_response, sizeof(config_response));
+    CHECK(AbsoluteEncoder_ParseHoldingResponseAnywhere(
+        combined, sizeof(config_request) + sizeof(config_response), config_values, 3U));
     CHECK(config_values[0] == 1U && config_values[1] == 3U && config_values[2] == 0x4B00U);
 
     CHECK(FixedPoint_FormatMilli(fixed, sizeof(fixed), 0) && strcmp(fixed, "0.000") == 0);

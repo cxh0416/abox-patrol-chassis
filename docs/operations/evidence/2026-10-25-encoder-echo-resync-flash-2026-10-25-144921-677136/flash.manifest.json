@@ -1,0 +1,65 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.89",
+  "candidate": true,
+  "configuration": "Release",
+  "active_car": 0,
+  "actuation_enabled": true,
+  "steering_executor_compiled": true,
+  "drive_executor_compiled": true,
+  "app": {
+    "file": "Patrol_Vehicle_Chassis_App.bin",
+    "address": "0x08008000",
+    "size": 155952,
+    "initial_sp": "0x20010000",
+    "reset_vector": "0x0800D44D",
+    "crc32": "BFF73E53",
+    "sha256": "6ba7073193bc0a43d9ea240b46ce4bcc67f91d87d6eb7b0afa3be8288fa5b7cb"
+  },
+  "boot": {
+    "file": "ABox_Boot.bin",
+    "address": "0x08000000",
+    "size": 32768,
+    "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+  },
+  "full": {
+    "file": "Patrol_Vehicle_Chassis_Full.bin",
+    "address": "0x08000000",
+    "size": 188720,
+    "sha256": "770fccd9a6d47ddd2ba58405610d5e455080b93fc50ada65fa4b9dd8669222b1"
+  },
+  "states": [
+    {
+      "file": "BootState_A.bin",
+      "address": "0x0803E800",
+      "sequence": 1,
+      "state": "CONFIRMED",
+      "size": 2048,
+      "sha256": "0f3ff4f9e6e5977da25fb23fe27571512eb0a71d6dc3795c3df29210c7727fd7",
+      "app_size": 155952,
+      "app_crc32": "BFF73E53"
+    },
+    {
+      "file": "BootState_B.bin",
+      "address": "0x0803F000",
+      "state": "ERASED",
+      "size": 2048,
+      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+    }
+  ],
+  "verification": {
+    "boot_artifact": true,
+    "full_boot_prefix": true,
+    "full_app_suffix": true,
+    "version_marker": true,
+    "vectors_valid": true,
+    "state_a_bound": true,
+    "state_b_erased": true,
+    "encoder_echo_resync_test": true,
+    "can_remote_host_test": true,
+    "can2_stack": true,
+    "diff_check": true
+  },
+  "board_flashed": false,
+  "field_verified": false
+}

@@ -9,6 +9,8 @@
 #define PATROL_DIAG_ENCODER_CONFIG_REGS 3U
 #define PATROL_DIAG_HEARTBEAT_TIMEOUT_MS 3000U
 #define PATROL_DIAG_FEEDBACK_TIMEOUT_MS 250U
+/* 在反馈真正过期前预留一个 SDO 超时窗口，避免运动事务长期占用总线。 */
+#define PATROL_DIAG_FEEDBACK_PRIORITY_MS 150U
 
 typedef enum {
     PATROL_ENCODER_ERROR_TIMEOUT = 1,
@@ -122,6 +124,11 @@ void PatrolDiagnostics_OnCanFrame(PatrolDiagnostics* diagnostics, const PatrolCa
 // 取出下一条只读 SDO 请求。allow_retry 必须由调用方按当前安全门禁给出；超时只计数，反馈有足够时效余量且无其他故障时至多重读一次，不刷新旧样本或自行锁存。
 uint8_t PatrolDiagnostics_TakeSdoRead(PatrolDiagnostics* diagnostics, uint32_t now_ms,
                                      PatrolCanFrame* frame, uint8_t allow_retry);
+// 查询关键运动反馈是否已接近过期，调用方可据此拒绝执行器继续抢占 CAN1 发送机会。
+uint8_t PatrolDiagnostics_HasUrgentFeedback(const PatrolDiagnostics* diagnostics, uint32_t now_ms);
+// 优先取得一条临近过期的关键反馈读取；不改变 250 ms 安全时效，只提高读取调度优先级。
+uint8_t PatrolDiagnostics_TakeSdoReadUrgent(PatrolDiagnostics* diagnostics, uint32_t now_ms,
+                                            PatrolCanFrame* frame, uint8_t allow_retry);
 // 记录诊断读请求未能提交到 CAN。清理在途事务并维护发送失败统计，允许后续按调度重试。
 void PatrolDiagnostics_OnSdoTxError(PatrolDiagnostics* diagnostics, uint32_t now_ms);
 // 登记编码器规格寄存器与成功读取时间。用于区分编码器在线、规格合法和正式标定兼容，不能只凭位置计数认定配置正确。

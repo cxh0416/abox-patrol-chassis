@@ -1,0 +1,46 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "date": "2026-10-25",
+  "version": "patrol-chassis-0.2.89",
+  "candidate": true,
+  "purpose": "Resynchronize absolute-encoder Modbus RTU replies inside a 32-byte UART stream so a leading request echo cannot hide the valid encoder response",
+  "root_cause": "UART5 received the 8-byte request echo and 9-byte position reply as a 17-byte stream; the previous 16-byte buffer and offset-zero parser rejected every position response as a format error",
+  "app_sha256": "6ba7073193bc0a43d9ea240b46ce4bcc67f91d87d6eb7b0afa3be8288fa5b7cb",
+  "full_sha256": "770fccd9a6d47ddd2ba58405610d5e455080b93fc50ada65fa4b9dd8669222b1",
+  "app_crc32": "BFF73E53",
+  "validation": {
+    "arm_release_build": true,
+    "chassis_safety_test": true,
+    "encoder_echo_resync_test": true,
+    "can_remote_host_test": true,
+    "can2_stack": true,
+    "diff_check": true,
+    "full_boot_prefix": true,
+    "full_app_suffix": true,
+    "boot_state_a_bound": true,
+    "boot_state_b_erased": true
+  },
+  "known_full_suite_failures": [
+    "test_identity_and_safe_defaults: pre-existing static assertion",
+    "test_document_links_and_archived_evidence_references: existing CURRENT.md links to removed evidence directories"
+  ],
+  "board_flashed": false,
+  "field_verified": false,
+  "files": [
+    "ABox_Boot.bin",
+    "BootState_A.bin",
+    "BootState_B.bin",
+    "Patrol_Vehicle_Chassis_App.bin",
+    "Patrol_Vehicle_Chassis_App.elf",
+    "Patrol_Vehicle_Chassis_App.map",
+    "Patrol_Vehicle_Chassis_Full.bin",
+    "FLASH_ADDRESSES.txt",
+    "README.md",
+    "flash.manifest.json",
+    "source-change.patch",
+    "validation/chassis-safety-test.log",
+    "validation/can-remote-test.log",
+    "validation/can2-stack.log",
+    "validation/diff-check.log"
+  ]
+}

@@ -2,7 +2,9 @@
 
 本目录用于没有 4G/网页平台时，通过 CAN2 调用 A-BOX 内与网页完全相同的中位标定状态机。脚本只发送 MCU 的 `0x520/0x530` 维护协议，不直接访问驱动器 CAN1，不写电机参数，也不伪造 Config V5。
 
-配套固件候选为 `patrol-chassis-0.2.88`。源码候选位于 `out/candidates/bench-drive/`；完整烧录包位于本次 `docs/operations/evidence/2026-10-24-can2-multiframe-reply-fix-*` 证据目录。没有该 CAN2 标定通道的旧固件会表现为 `0x530` 无响应；`0.2.88` 修复了发送邮箱暂时繁忙时丢失 `0x532/0x533` 或 `0x522/0x523` 后续帧的问题。
+配套固件候选为 `patrol-chassis-0.2.91`。源码候选位于 `out/candidates/bench-drive/`；完整烧录包位于本次 `docs/operations/evidence/2026-10-25-feedback-priority-flash-*` 证据目录。没有该 CAN2 标定通道的旧固件会表现为 `0x530` 无响应；`0.2.88` 修复发送邮箱暂时繁忙时丢失后续帧，`0.2.89` 增加编码器接收流内的有效帧重同步，`0.2.90` 兼容请求回显和响应被 UART IDLE 分成两个数据块，`0.2.91` 增加临近过期反馈优先级和单次过期后的受控停车。
+
+本目录主机脚本版本为 `1.1.0`。脚本接受三帧乱序、重复和迟到应答；只读查询缺帧时使用新序号重试。`PREPARE` 可安全重试，`START/COMMIT` 不属于幂等操作，不会盲目重发，而是通过只读状态查询恢复会话令牌或确认提交阶段。提交结束后仍以 `COMPLETE`、`calibrated=true`、保存中位与捕获中位一致作为成功依据。
 
 ## 接线
 
@@ -12,6 +14,15 @@
 - 关闭其他占用同一 CANalyst-II 的设备或软件。
 
 包装脚本默认选择分析仪 CH1。若实际接线改为物理 CH2，请显式增加 `-Channel 2`。
+
+如现场总线负载较高，可在不修改源码的情况下增加单次三帧应答等待时间或只读查询次数：
+
+```powershell
+.\can2_center_calibration\run_center_calibration.ps1 status `
+  -ResponseTimeout 1.5 -QueryRetries 4
+```
+
+`-ResponseTimeout` 允许范围为 `0.2～10.0` 秒，`-QueryRetries` 允许范围为 `1～10` 次。增加的是只读恢复机会，不会让脚本自动重发 `START`、`COMMIT` 或运动命令。
 
 ## 前置条件
 
@@ -35,10 +46,12 @@
 
 ```powershell
 python .\can2_center_calibration\can2_center_calibration.py `
-  calibrate-current `
   --channel 0 `
-  --dll "E:\canalyst-II-Driver\CAN\二次开发库文件\x64(64bit)\ControlCAN.dll"
+  --dll "E:\canalyst-II-Driver\CAN\二次开发库文件\x64(64bit)\ControlCAN.dll" `
+  calibrate-current
 ```
+
+直接调用 Python 时，`--channel`、`--dll`、`--response-timeout` 和 `--query-retries` 放在子命令之前；PowerShell 包装脚本不受此顺序影响。
 
 脚本会依次执行：
 
@@ -52,6 +65,8 @@ python .\can2_center_calibration\can2_center_calibration.py `
 8. 等待编码器三次零点确认及 Config V5 保存、读回；
 9. 只有状态达到 `COMPLETE` 且 `calibrated=true` 才算成功；
 10. 最后发送 `POWER_OFF`。
+
+如果 `COMMIT` 的三帧应答不完整，脚本会立即查询状态机：阶段已经离开 `READY` 并进入 `COMMIT_STABLE/ENCODER_WRITE/ENCODER_VERIFY/COMPLETE` 时继续完成读回校验；仍停留在 `READY` 时明确报错，并要求人工检查后重新执行，不会自动重复提交。
 
 需要由操作者输入 `YES` 确认机械中位。自动化和已经完成双人确认时可加 `--yes`。
 
@@ -74,8 +89,9 @@ python .\can2_center_calibration\can2_center_calibration.py `
 ## 查询
 
 ```powershell
-python .\can2_center_calibration\can2_center_calibration.py status --channel 0 `
-  --dll "E:\canalyst-II-Driver\CAN\二次开发库文件\x64(64bit)\ControlCAN.dll"
+python .\can2_center_calibration\can2_center_calibration.py --channel 0 `
+  --dll "E:\canalyst-II-Driver\CAN\二次开发库文件\x64(64bit)\ControlCAN.dll" `
+  status
 ```
 
 重点查看：
@@ -94,8 +110,9 @@ python .\can2_center_calibration\can2_center_calibration.py status --channel 0 `
 如果车轮尚未在机械中位，可运行交互模式：
 
 ```powershell
-python .\can2_center_calibration\can2_center_calibration.py interactive --channel 0 `
-  --dll "E:\canalyst-II-Driver\CAN\二次开发库文件\x64(64bit)\ControlCAN.dll"
+python .\can2_center_calibration\can2_center_calibration.py --channel 0 `
+  --dll "E:\canalyst-II-Driver\CAN\二次开发库文件\x64(64bit)\ControlCAN.dll" `
+  interactive
 ```
 
 交互命令：
