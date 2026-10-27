@@ -195,7 +195,7 @@ static void test_steering_lost_ack(uint16_t index, int32_t value)
     printf("PASS steering missing ACK 0x%04X: read-only proof; no trigger replay\n", index);
 }
 
-// 未触发的旧转角在核验期间被更新时直接换成最新目标；不能恢复后补发积压旧定位。
+// 核验中的目标先完成本轮触发；期间收到的唯一最新目标在随后一轮执行，不补发中间值。
 static void test_latest_steering(void)
 {
     fixture(); drop_node = 1U; drop_index = 0x607AU;
@@ -208,9 +208,10 @@ static void test_latest_steering(void)
     }
     int32_t latest;
     assert(SteeringAngle_ToControllerCount(8000,0,VEHICLE_STEERING_COUNTS_MILLI,1,-82680,82680,&latest));
-    assert(changed && dropped && triggers == 1U && trigger_targets[0] == latest);
+    assert(changed && dropped && triggers == 2U);
+    assert(trigger_targets[0] != latest && trigger_targets[1] == latest);
     assert(!RemoteService_State()->fault_latched && target == latest);
-    puts("PASS latest steering replaces superseded untriggered goal after verification");
+    puts("PASS committed steering goal completes before the single latest target runs");
 }
 
 // 行走左右目标分别丢 ACK，必须核对完整目标对和驱动状态；核验后采用最新遥控速度。
@@ -417,7 +418,8 @@ static void test_disarm_abandons_verification(void)
 // 执行生产路径的成功、未知执行结果、最新目标和安全退路场景。
 int main(void)
 {
-    _Static_assert(sizeof(BenchSteering)==88U && sizeof(BenchDrive)==52U,"verification must use former padding");
+    _Static_assert(sizeof(BenchSteering)==92U && sizeof(BenchDrive)==52U,
+        "steering trigger spacing consumes one bounded uint32 slot");
     test_single_diagnostic_loss();
     test_steering_lost_ack(0x607AU,0);
     test_steering_lost_ack(0x6040U,0x3F);

@@ -1,0 +1,19 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.102",
+  "candidate": true,
+  "steering_executor_compiled": true,
+  "drive_executor_compiled": true,
+  "startup_permit": false,
+  "actuation_enabled": true,
+  "steering_profile_rpm": 1000,
+  "active_car": 0,
+  "commit": "5e7717bc921d5ff028168ccfb9a03f92a272bf0c",
+  "dirty": true,
+  "app_start": "0x08008000",
+  "app_end": "0x0803DFFF",
+  "config_recovery_page": "0x0803E000",
+  "config_page": "0x0803F800",
+  "size": 156828,
+  "sha256": "4E9B3572E43A3DEE3FA3BECD6CFF6EEA674F8B0E0F73CC3474BEC1E9F97F8A15"
+}

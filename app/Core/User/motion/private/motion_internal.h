@@ -132,6 +132,7 @@ typedef struct {
     uint8_t drive_turn;
     uint8_t bench_turn;
     uint8_t bench_transport_stopped;
+    uint8_t feedback_stop_mask; /* bit 0 steering, bit 1 drive: bounded stop owned by feedback loss. */
     uint16_t feedback_gate_mask, bench_fault_gate_mask;
     SteeringCoordinate coordinate;
     uint8_t coordinate_reset_requested;

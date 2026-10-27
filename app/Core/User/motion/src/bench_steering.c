@@ -120,6 +120,12 @@ static uint16_t profile_speed(int32_t target_mdeg, int32_t actual_mdeg)
     return VEHICLE_STEERING_PROFILE_MAX_RPM;
 }
 
+// 两个已发送定位触发之间至少间隔固定周期，避免持续摇杆输入把每次任务机会都变成触发事务。
+static uint8_t trigger_interval_ready(const BenchSteering* b, uint32_t now_ms)
+{
+    return (uint32_t)(now_ms - b->last_trigger_ms) >= BENCH_STEERING_TRIGGER_INTERVAL_MS ? 1U : 0U;
+}
+
 // 锁存转向执行器首个故障并置切电请求。撤销待响应事务并进入故障阶段；重复故障不会覆盖最初的故障编号。
 static void fail(BenchSteering *b, uint32_t reason)
 {
@@ -152,6 +158,7 @@ uint8_t BenchSteering_Start(BenchSteering *b, int32_t actual, int32_t center, in
     b->calibration_center = calibration_center;
     b->phase = BENCH_PREPARING;
     b->started_ms = now;
+    b->last_trigger_ms = now - BENCH_STEERING_TRIGGER_INTERVAL_MS;
     b->center = center;
     b->hold = actual;
     b->minimum = INT32_MIN;
@@ -171,6 +178,7 @@ uint8_t BenchSteering_StartCommissioning(BenchSteering *b, int32_t actual, int32
     b->calibration_center = center;
     b->phase = BENCH_PREPARING;
     b->started_ms = now;
+    b->last_trigger_ms = now - BENCH_STEERING_TRIGGER_INTERVAL_MS;
     b->center = center;
     b->hold = actual;
     b->minimum = INT32_MIN;
@@ -189,14 +197,10 @@ void BenchSteering_Stop(BenchSteering *b, uint32_t now, uint8_t cut_power)
     }
     if (b->phase == BENCH_IDLE || b->phase == BENCH_FAULT || b->phase == BENCH_STOPPING)
         return;
-    /* A partially rewritten limit pair must be restored by a power cycle. */
-    if (b->phase == BENCH_PREPARING && !b->limits_aligned)
-    {
-        fail(b, 11U);
-        return;
-    }
+    /* PREPARING can be aborted with shutdown even before limits are aligned.
+       A later start must re-read and rewrite the complete limit pair. */
     b->pending = 0;
-    b->verify = b->pp_ack_low = 0U;
+    b->verify = b->pp_ack_low = b->target_pending = 0U;
     b->phase = BENCH_STOPPING;
     b->step = STEER_STEP_STOP;
     b->stop_ms = now;
@@ -258,7 +262,7 @@ void BenchSteering_Tick(BenchSteering *b, uint32_t now, uint8_t requested, uint8
             b->target_pending = b->desired != b->applied;
             if (b->profile_rpm != b->applied_profile_rpm)
                 b->step = STEER_STEP_WRITE_PROFILE_SPEED_ACTIVE;
-            else if (b->target_pending)
+            else if (b->target_pending && trigger_interval_ready(b, now))
                 b->step = STEER_STEP_TARGET;
         }
     }
@@ -275,13 +279,6 @@ uint8_t BenchSteering_Take(BenchSteering *b, uint32_t now, PatrolCanFrame *f)
     if (b->pending || b->phase == BENCH_IDLE || b->phase == BENCH_FAULT ||
         b->verify == VERIFY_DRAIN || b->step == STEER_STEP_ACTIVE)
         return 0;
-    /* A target written before an ACK wait may already have been superseded.
-     * Replace that untriggered target, rather than triggering the old value. */
-    if (b->step == STEER_STEP_TRIGGER && b->desired != b->applied &&
-        (b->verify == VERIFY_NONE || b->verify == VERIFY_ACK_LOW)) {
-        b->verify = b->pp_ack_low = 0U;
-        b->step = STEER_STEP_TARGET;
-    }
     if (!b->verify && b->step == STEER_STEP_TRIGGER && !b->pp_ack_low) {
         b->verify = VERIFY_ACK_LOW;
         b->stop_ms = now;
@@ -396,6 +393,7 @@ uint8_t BenchSteering_Take(BenchSteering *b, uint32_t now, PatrolCanFrame *f)
         /* Vendor PP control bit 5 replaces the active set-point immediately.
            Queued positioning (0x1F) delays boundary retreat and return-to-center. */
         value = b->step == STEER_STEP_TRIGGER ? 0x3F : 0x2F;
+        if (b->step == STEER_STEP_TRIGGER) b->last_trigger_ms = now;
         break;
     case STEER_STEP_STOP:
         b->index = 0x6040;

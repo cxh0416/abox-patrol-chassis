@@ -121,21 +121,37 @@ int main(void)
     assert(b.phase==BENCH_ACTIVE);
     for(int i=0;i<4;i++) advance(&b,&now);
     assert(b.applied==-82413 && b.step==16);
-    /* A changed target during positioning must replace, not queue behind, the
-       old target. Drop only new-set-point bit 4 after each acknowledged trigger. */
-    for (int angle=500; angle>=0; angle-=500) {
-        BenchSteering_Tick(&b,now,1,1,angle,0);
-        assert(BenchSteering_Take(&b,now,&f) && b.index==0x607A);
-        r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+1));
-        assert(BenchSteering_Take(&b,now+2,&f) && b.index==0x6041 && b.read);
-        r=reply(&b,0x27); assert(BenchSteering_OnFrame(&b,&r,now+3));
-        assert(BenchSteering_Take(&b,now+4,&f) && b.index==0x6040 && f.data[4]==0x3F);
-        r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+5));
-        assert(BenchSteering_Take(&b,now+6,&f) && b.index==0x6040 && f.data[4]==0x2F);
-        r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+7));
-        assert(b.phase==BENCH_ACTIVE && b.step==16);
-        now+=10;
-    }
+    /* Once 0x607A has been written, a newer remote target waits in the single
+       desired slot until this trigger/clear cycle finishes. */
+    now=b.last_trigger_ms+BENCH_STEERING_TRIGGER_INTERVAL_MS;
+    BenchSteering_Tick(&b,now,1,1,500,0);
+    assert(BenchSteering_Take(&b,now,&f) && b.index==0x607A);
+    int32_t committed=b.applied;
+    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+1));
+    BenchSteering_Tick(&b,now+2,1,1,0,0);
+    assert(b.desired!=committed && b.applied==committed && b.step==18);
+    assert(BenchSteering_Take(&b,now+2,&f) && b.index==0x6041 && b.read);
+    r=reply(&b,0x27); assert(BenchSteering_OnFrame(&b,&r,now+3));
+    assert(BenchSteering_Take(&b,now+4,&f) && b.index==0x6040 && f.data[4]==0x3F);
+    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+5));
+    assert(BenchSteering_Take(&b,now+6,&f) && b.index==0x6040 && f.data[4]==0x2F);
+    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+7));
+    assert(b.phase==BENCH_ACTIVE && b.step==16 && b.desired==b.center);
+
+    /* Start-to-start trigger spacing is at least 100 ms. */
+    BenchSteering_Tick(&b,now+8,1,1,0,0);
+    assert(b.step==16 && !BenchSteering_Take(&b,now+8,&f));
+    now=b.last_trigger_ms+BENCH_STEERING_TRIGGER_INTERVAL_MS;
+    BenchSteering_Tick(&b,now,1,1,0,0);
+    assert(BenchSteering_Take(&b,now,&f) && b.index==0x607A);
+    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+1));
+    assert(BenchSteering_Take(&b,now+2,&f) && b.index==0x6041 && b.read);
+    r=reply(&b,0x27); assert(BenchSteering_OnFrame(&b,&r,now+3));
+    assert(BenchSteering_Take(&b,now+4,&f) && b.index==0x6040 && f.data[4]==0x3F);
+    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+5));
+    assert(BenchSteering_Take(&b,now+6,&f) && b.index==0x6040 && f.data[4]==0x2F);
+    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+7));
+    assert(b.phase==BENCH_ACTIVE && b.step==16);
     BenchSteering_Tick(&b,now,0,1,0,0);
     assert(b.phase==BENCH_STOPPING);
     assert(BenchSteering_Take(&b,now,&f) && b.index==0x6040 && f.data[4]==6);
@@ -146,45 +162,29 @@ int main(void)
     assert(b.phase==BENCH_IDLE); /* stop emitted no target position */
     assert(b.limits_aligned && b.minimum==-167802 && b.maximum==-2444);
 
-    /* 0x6080 is a fixed 300 rpm ceiling.  An active profile starts at creep
-       speed for a near target, then only receives a target after its selected
-       0x6081 value has been read back. */
+    /* Current MAX/MID/CREEP profiles are equal, so runtime target changes do
+       not require repeated 0x6081 writes. */
     BenchSteering_Init(&b); now=0;
     assert(BenchSteering_Start(&b,-83815,-85123,-85123,30000,now));
     for(int i=0;i<20;i++) advance(&b,&now);
-    assert(b.phase==BENCH_ACTIVE && b.applied_profile_rpm==90);
+    assert(b.phase==BENCH_ACTIVE && b.applied_profile_rpm==1000);
+    now=b.last_trigger_ms+BENCH_STEERING_TRIGGER_INTERVAL_MS;
     BenchSteering_Tick(&b,now,1,1,30000,0);
-    assert(BenchSteering_Take(&b,now,&f) && b.index==0x6081);
-    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+1));
-    assert(BenchSteering_Take(&b,now+2,&f) && b.index==0x6081 && b.read);
-    r=reply(&b,300); assert(BenchSteering_OnFrame(&b,&r,now+3));
-    assert(b.applied_profile_rpm==300);
-    assert(BenchSteering_Take(&b,now+4,&f) && b.index==0x607A);
+    assert(BenchSteering_Take(&b,now,&f) && b.index==0x607A);
     r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+5));
-    assert(BenchSteering_Take(&b,now+6,&f) && b.index==0x6041 && b.read);
-    r=reply(&b,0x27); assert(BenchSteering_OnFrame(&b,&r,now+6));
-    assert(BenchSteering_Take(&b,now+7,&f) && b.index==0x6040 && f.data[4]==0x3F);
-    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+7));
-    assert(BenchSteering_Take(&b,now+8,&f) && b.index==0x6040 && f.data[4]==0x2F);
-    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+9));
+    assert(BenchSteering_Take(&b,now+1,&f) && b.index==0x6041 && b.read);
+    r=reply(&b,0x27); assert(BenchSteering_OnFrame(&b,&r,now+2));
+    assert(BenchSteering_Take(&b,now+3,&f) && b.index==0x6040 && f.data[4]==0x3F);
+    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+4));
+    assert(BenchSteering_Take(&b,now+5,&f) && b.index==0x6040 && f.data[4]==0x2F);
+    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+6));
     assert(b.phase==BENCH_ACTIVE && b.step==16);
-    /* At 27 degrees, even a full-scale command must fall back to creep before
-       it can consume the 30.0 to 30.5 degree fault margin. */
-    BenchSteering_Tick(&b,now+10,1,1,30000,27000);
-    assert(BenchSteering_Take(&b,now+10,&f) && b.index==0x6081);
-    assert(f.data[4]==90 && f.data[5]==0 && f.data[6]==0 && f.data[7]==0);
-    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+11));
-    assert(BenchSteering_Take(&b,now+12,&f) && b.index==0x6081 && b.read);
-    r=reply(&b,90); assert(BenchSteering_OnFrame(&b,&r,now+13));
-    assert(b.applied_profile_rpm==90 && b.step==16);
-    /* At 24 degrees the mid profile is written and verified before proceeding. */
-    BenchSteering_Tick(&b,now+20,1,1,30000,24000);
-    assert(BenchSteering_Take(&b,now+20,&f) && b.index==0x6081);
-    assert(f.data[4]==180 && f.data[5]==0 && f.data[6]==0 && f.data[7]==0);
-    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+21));
-    assert(BenchSteering_Take(&b,now+22,&f) && b.index==0x6081 && b.read);
-    r=reply(&b,180); assert(BenchSteering_OnFrame(&b,&r,now+23));
-    assert(b.applied_profile_rpm==180 && b.phase==BENCH_ACTIVE && b.step==16);
+    BenchSteering_Tick(&b,now+7,1,1,30000,27000);
+    assert(b.applied_profile_rpm==1000 && b.step==16);
+    assert(!BenchSteering_Take(&b,now+7,&f));
+    BenchSteering_Tick(&b,now+8,1,1,30000,24000);
+    assert(b.applied_profile_rpm==1000 && b.step==16);
+    assert(!BenchSteering_Take(&b,now+8,&f));
 
     BenchSteering_Init(&b);
     assert(BenchSteering_Start(&b,-83815,-72187,-85123,30000,0)); now=0;
@@ -267,6 +267,19 @@ int main(void)
     BenchSteering_OnFrame(&b,&r,now+1); assert(b.phase==BENCH_FAULT&&b.cut_power);
     BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0);
     BenchSteering_Tick(&b,1,1,0,0,0); assert(b.phase==BENCH_FAULT&&b.cut_power);
+    /* PREPARING can be aborted through shutdown before limits are aligned. */
+    BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0);
+    assert(b.phase==BENCH_PREPARING && !b.limits_aligned);
+    BenchSteering_Stop(&b,10,0);
+    assert(b.phase==BENCH_STOPPING && b.fault==0 && !b.cut_power);
+    BenchSteering_Tick(&b,10,0,1,0,0);
+    assert(BenchSteering_Take(&b,10,&f) && b.index==0x6040 && f.data[4]==6);
+    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,11));
+    assert(BenchSteering_Take(&b,12,&f) && b.index==0x6041 && b.read);
+    r=reply(&b,0x21); assert(BenchSteering_OnFrame(&b,&r,13));
+    assert(BenchSteering_Take(&b,14,&f) && f.id==0 && f.data[0]==0x80);
+    assert(b.phase==BENCH_IDLE && !b.cut_power);
+    /* A shutdown that never completes still trips the bounded stop deadline. */
     BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0);
     BenchSteering_Stop(&b,10,0); BenchSteering_Tick(&b,510,0,1,0,0);
     assert(b.phase==BENCH_FAULT&&b.cut_power);

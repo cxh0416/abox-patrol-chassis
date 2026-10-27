@@ -9,13 +9,17 @@ typedef enum { BENCH_IDLE, BENCH_PREPARING, BENCH_ACTIVE, BENCH_STOPPING, BENCH_
 #define BENCH_WRITE_ACK_WAIT_MS 60U
 #define BENCH_WRITE_VERIFY_MS 200U
 #define BENCH_VERIFY_READ_MS 80U
+#define BENCH_STEERING_TRIGGER_INTERVAL_MS 100U
 typedef struct {
     BenchPhase phase;
     uint8_t step, pending, read, width, cut_power, limits_aligned, upper_first, preserve_limits;
     uint16_t index;
     uint8_t verify, pp_ack_low; /* Occupies former padding; no RAM-size increase. */
-    uint32_t sent_ms, started_ms, stop_ms, fault;
-    int32_t minimum, maximum, center, hold, desired, applied, expected;
+    uint32_t sent_ms, started_ms, stop_ms, last_trigger_ms, fault;
+    int32_t minimum, maximum, center, hold;
+    int32_t desired; /* Single latest-target slot. */
+    int32_t applied; /* Target committed by the current 0x607A write. */
+    int32_t expected;
     int32_t calibration_center, cached_minimum, cached_maximum, previous_minimum;
     uint16_t limit_mdeg;
     uint16_t profile_rpm, applied_profile_rpm, speed_write_rpm;

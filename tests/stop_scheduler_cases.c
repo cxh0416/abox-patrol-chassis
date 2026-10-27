@@ -133,7 +133,7 @@ int main(void)
     g_motion.bench.step = 16U;
     g_motion.drive.phase = BENCH_ACTIVE;
     g_motion.drive.step = 12U;
-    g_motion.feedback_gate_mask = 16U;
+    g_motion.feedback_gate_mask = 0U;
     mock_control.feedback.calibrated = 1U;
     mock_control.feedback.encoder_profile_ready = 1U;
     mock_control.feedback.encoder_range_valid = 1U;
@@ -141,19 +141,20 @@ int main(void)
     mock_control.feedback.drive_online = 1U;
     mock_control.feedback.power_ready = 0U;
     mock_control.feedback.feedback_ms = mock_now;
-    mock_control.session_active = mock_control.enable_request = 1U;
-    mock_control.lease_deadline_ms = mock_now + 1000U;
+    /*
+     * An explicit stop releases the session before the executor necessarily
+     * enters STOPPING. A released session must not turn the ordered stop into
+     * BenchDrive fault 3.
+     */
+    mock_control.session_active = mock_control.enable_request = 0U;
+    mock_control.stop_reason = CHASSIS_STOP_EXPLICIT;
+    mock_control.lease_deadline_ms = 0U;
     PatrolRuntime_Tick();
     assert(g_motion.bench.phase == BENCH_STOPPING);
     assert(g_motion.drive.phase == BENCH_STOPPING);
     assert(!g_motion.bench.cut_power && !g_motion.drive.cut_power);
     assert(!mock_control.fault_latched && !mock_control.fault_pending);
-    /*
-     * The first tick revokes the remote session while the bounded stop is
-     * still active. Subsequent ticks must keep the same stop classification,
-     * otherwise the now-inactive session would turn the same stale feedback
-     * into an immediate actuator fault.
-     */
+    /* Subsequent ticks must keep the same stop classification. */
     assert(!mock_control.session_active);
     mock_now += 10U;
     PatrolRuntime_Tick();
@@ -170,6 +171,52 @@ int main(void)
     assert(g_motion.drive.phase == BENCH_STOPPING);
     assert(!g_motion.bench.cut_power && !g_motion.drive.cut_power);
     assert(!mock_control.fault_latched && !mock_control.fault_pending);
+    /* A transient feedback gate also starts the same per-axis bounded stop. */
+    reset_fixture();
+    mock_power = 1U;
+    mock_can_ready = 1U;
+    mock_now = 1000U;
+    g_motion.coordinate.valid = 1U;
+    g_motion.bench.phase = BENCH_ACTIVE;
+    g_motion.bench.step = 16U;
+    g_motion.drive.phase = BENCH_ACTIVE;
+    g_motion.drive.step = 12U;
+    g_motion.feedback_gate_mask = 16U;
+    mock_control.feedback.calibrated = 1U;
+    mock_control.feedback.encoder_profile_ready = 1U;
+    mock_control.feedback.encoder_range_valid = 1U;
+    mock_control.feedback.steering_online = 1U;
+    mock_control.feedback.drive_online = 1U;
+    mock_control.feedback.power_ready = 0U;
+    mock_control.feedback.feedback_ms = mock_now;
+    mock_control.session_active = mock_control.enable_request = 1U;
+    mock_control.stop_reason = CHASSIS_STOP_NONE;
+    mock_control.lease_deadline_ms = mock_now + 1000U;
+    PatrolRuntime_Tick();
+    assert(g_motion.bench.phase == BENCH_STOPPING);
+    assert(g_motion.drive.phase == BENCH_STOPPING);
+    assert(!mock_control.fault_latched && !mock_control.fault_pending);
+    g_motion.feedback_gate_mask = 0U;
+    mock_now += 10U;
+    PatrolRuntime_Tick();
+    assert(g_motion.bench.phase == BENCH_STOPPING);
+    assert(g_motion.drive.phase == BENCH_STOPPING);
+    assert(!mock_control.fault_latched && !mock_control.fault_pending);
+    /* Node loss remains a terminal fault and must bypass the ordered stop. */
+    reset_fixture();
+    mock_power = 1U;
+    mock_now = 1000U;
+    g_motion.bench.phase = BENCH_ACTIVE;
+    g_motion.drive.phase = BENCH_ACTIVE;
+    g_motion.feedback_gate_mask = 16U;
+    mock_control.feedback.steering_online = 1U;
+    mock_control.feedback.drive_online = 0U;
+    mock_control.feedback.power_ready = 0U;
+    mock_control.session_active = mock_control.enable_request = 0U;
+    PatrolRuntime_Tick();
+    assert(g_motion.bench.phase == BENCH_FAULT);
+    assert(g_motion.drive.phase == BENCH_FAULT);
+    assert(mock_control.fault_latched && !mock_power);
     /* Reset cannot energize outputs and must preserve the original evidence. */
     PatrolRuntime_Init(); mock_now=2000;
     g_motion.diagnostics.drive_status_word=0xBF;

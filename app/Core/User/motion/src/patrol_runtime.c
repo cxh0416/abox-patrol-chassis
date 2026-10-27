@@ -368,6 +368,14 @@ uint8_t PatrolRuntime_Take(uint32_t now, PatrolCanFrame* request, uint8_t* owner
     return have_request;
 }
 
+// Stop responsibility follows executor state; session ownership only grants new targets.
+enum { FEEDBACK_STOP_STEERING = 1U, FEEDBACK_STOP_DRIVE = 2U };
+
+static uint8_t executor_requires_stop(BenchPhase phase)
+{
+    return (phase == BENCH_PREPARING || phase == BENCH_ACTIVE || phase == BENCH_STOPPING) ? 1U : 0U;
+}
+
 static uint32_t feedback_due;
 
 /* >>>>> DRIVE-RECOVERY: START >>>>> */
@@ -554,19 +562,36 @@ void PatrolRuntime_Tick(void)
          * A single delayed status upload is a transport-scheduling event, not
          * proof that the drive actuator rejected a write. Stop through the
          * normal bounded zero/disable path and let a genuine stop failure
-         * decide whether to latch. Node, bus, OTA and drive faults retain the
-         * immediate fault path below.
+         * decide whether to latch. Stop responsibility follows executor state,
+         * not session ownership: an explicit stop releases the session before
+         * either executor has necessarily entered STOPPING. Node, bus and
+         * drive faults retain the immediate fault path below.
          */
+        uint8_t transient_feedback = (uint8_t)(
+            (g_motion.feedback_gate_mask & (1U | 2U | 8U | 16U)) != 0U);
+        uint8_t explicit_stop = (uint8_t)(
+            c->stop_reason == CHASSIS_STOP_EXPLICIT);
+        uint8_t feedback_stop_transport_ready = (uint8_t)(
+            !CenterCalibration_IsActive() && VehiclePowerOutput_IsOn() &&
+            !c->feedback.can_bus_off && !PatrolRuntimePort_CanBusOffActive() &&
+            c->feedback.steering_online && c->feedback.drive_online &&
+            !c->feedback.drive_fault);
+        if (!executor_requires_stop(g_motion.bench.phase))
+            g_motion.feedback_stop_mask &= (uint8_t)~FEEDBACK_STOP_STEERING;
+        if (!executor_requires_stop(g_motion.drive.phase))
+            g_motion.feedback_stop_mask &= (uint8_t)~FEEDBACK_STOP_DRIVE;
+        if (CenterCalibration_IsActive())
+            g_motion.feedback_stop_mask = 0U;
+        else if ((transient_feedback || explicit_stop) && feedback_stop_transport_ready) {
+            if (executor_requires_stop(g_motion.bench.phase))
+                g_motion.feedback_stop_mask |= FEEDBACK_STOP_STEERING;
+            if (executor_requires_stop(g_motion.drive.phase))
+                g_motion.feedback_stop_mask |= FEEDBACK_STOP_DRIVE;
+        }
         controlled_feedback_stop = (uint8_t)(
             !c->fault_latched && !c->fault_pending &&
-            (c->session_active || g_motion.bench.phase == BENCH_STOPPING ||
-             g_motion.drive.phase == BENCH_STOPPING) &&
-            VehiclePowerOutput_IsOn() && !c->feedback.can_bus_off &&
-            !PatrolRuntimePort_CanBusOffActive() &&
-            !PatrolRuntimePort_OtaBusy() && c->feedback.steering_online &&
-            c->feedback.drive_online && !c->feedback.drive_fault &&
-            (g_motion.feedback_gate_mask & (1U | 2U | 8U | 16U)) != 0U &&
-            (g_motion.bench.phase != BENCH_IDLE || g_motion.drive.phase != BENCH_IDLE));
+            g_motion.feedback_stop_mask != 0U &&
+            feedback_stop_transport_ready);
         if (controlled_feedback_stop) remote_requested = 0U;
         uint8_t center_requested = g_motion.center_cal.phase == CENTER_CAL_JOGGING;
         uint8_t center_executor_active = center_requested ||

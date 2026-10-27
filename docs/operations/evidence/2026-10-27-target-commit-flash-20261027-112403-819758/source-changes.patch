@@ -1,0 +1,1560 @@
+diff --git "a/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/FLASH_ADDRESSES.txt" "b/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/FLASH_ADDRESSES.txt"
+deleted file mode 100644
+index 0f23eca..0000000
+--- "a/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/FLASH_ADDRESSES.txt"
++++ /dev/null
+@@ -1,19 +0,0 @@
+-patrol_vehicle_chassis / patrol-chassis-0.2.91 / FEEDBACK PRIORITY AND CONTROLLED STOP
+-
+-推荐完整安装，写完三个文件后再复位：
+-1. Patrol_Vehicle_Chassis_Full.bin -> 0x08000000 (189504 bytes)
+-2. BootState_A.bin -> 0x0803E800 (2048 bytes)
+-3. BootState_B.bin -> 0x0803F000 (2048 bytes)
+-
+-Full 已包含 32 KiB 冻结 Boot 和 App，不要同时重复烧录独立 App/Boot。
+-已有匹配冻结 Boot 时，可使用：
+-Patrol_Vehicle_Chassis_App.bin -> 0x08008000 (156736 bytes)
+-但仍必须写入本包配套 BootState_A/B。
+-
+-禁止整片擦除。保留：
+-- 0x0803E000..0x0803E7FF 配置恢复页
+-- 0x0803F800..0x0803FFFF Config V5 与故障日志页
+-
+-App CRC32: B98E6B15
+-App SHA256: FA95F31778CABFA5314E052CC3F7FBFFA3BDD0EF4CF0E34140F72B11F1EABCB5
+-Full SHA256: 2D53FA603AF050B7578D7B219F25491AF765880373BFFB0B3C8EA2231F486838
+diff --git "a/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/README.md" "b/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/README.md"
+deleted file mode 100644
+index 08c33f9..0000000
+--- "a/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/README.md"
++++ /dev/null
+@@ -1,74 +0,0 @@
+-# 运动反馈优先级与受控停车修复
+-
+-日期：2026-10-25  
+-候选版本：`patrol-chassis-0.2.91`
+-
+-## 问题
+-
+-现场双路监听显示，转向目标写入连续占用 CAN1 后，Node 2 行驶状态反馈从
+-最后一次正常 `0x6041=0x37` 到下一次响应约间隔 297 ms。Node 1 的一次
+-`0x6041` 响应迟至约 187 ms 才返回，超过诊断单次事务期限，导致行驶状态
+-超过 250 ms 安全时效。原逻辑随即把本次反馈延迟解释为执行故障并永久锁存。
+-
+-该次记录中总线并没有超过 250 ms 的 SDO 未应答或 Abort；问题是串行事务
+-和运动写入的调度顺序，而不是驱动器已明确拒绝动作。
+-
+-## 修改
+-
+-- 关键反馈样本达到 150 ms 时提前进入紧急状态，预留一次 60 ms SDO 事务
+-  和响应处理时间。
+-- 紧急读取按真实样本年龄选择；新鲜 Node 1 位置 TPDO `0x281` 仍优先，
+-  不为已有实时位置额外发送 `0x6064`。
+-- 若低频诊断事务尚未超时，保留其唯一 SDO 所有权；事务超时释放后，下一条
+-  总线机会必须给紧急反馈，不能先发送排队的运动写入。
+-- 单次反馈过期时，先取消新目标并进入现有零速、三组低速确认、撤使能流程。
+-  会话在停车期间撤销后，受控停车状态仍持续到两个执行器完成停车。
+-- 250 ms 反馈安全时效没有放宽。节点离线、Bus-Off、OTA 忙、驱动器故障、
+-  停车超时或 CAN 发送失败仍进入原故障锁存和下电路径。
+-
+-## 验证
+-
+-- `test_stop_scheduler.py`：通过，包括紧急反馈抢占、低频事务超时释放、
+-  会话撤销后的多周期停车和反馈恢复后的正常收尾。
+-- `test_center_runtime.py`、`test_auto_center_runtime.py`：通过。
+-- `test_can2_center_calibration.py`：11/11 通过。
+-- `chassis_safety_test`、`bench_drive_test`：通过。
+-- ARM Release 构建、栈预算、CAN2 栈、冻结 Boot、版本标记、Full 拼接和
+-  Boot State A/B 绑定通过。
+-
+-仍存在的完整套件失败：
+-
+-- `test_identity_and_safe_defaults`：工作树既有热复位 SDO 写与静态断言冲突。
+-- `test_document_links_and_archived_evidence_references`：现有文档链接指向已
+-  不在当前工作区的旧证据目录。
+-- `bench_steering_test`：既有断言仍要求已淘汰的 `90 rpm` 轮廓速度，与当前
+-  `600/600/600 rpm` 配置不一致。
+-
+-这些失败均未放宽断言，也不涉及本次反馈调度行为。
+-
+-## 烧录
+-
+-推荐完整安装：
+-
+-1. `Patrol_Vehicle_Chassis_Full.bin` → `0x08000000`
+-2. `BootState_A.bin` → `0x0803E800`
+-3. `BootState_B.bin` → `0x0803F000`
+-
+-已有匹配冻结 Boot 时，可改为：
+-
+-`Patrol_Vehicle_Chassis_App.bin` → `0x08008000`
+-
+-但仍必须同时写入本包 `BootState_A/B`。禁止整片擦除，保留：
+-
+-- `0x0803E000..0x0803E7FF` 配置恢复页
+-- `0x0803F800..0x0803FFFF` Config V5 与故障日志页
+-
+-## 验证边界
+-
+-本包尚未烧录，不能替代实车验收。烧录全部配套文件后再复位，并在架空或具备
+-急停的条件下复测：
+-
+-- 高频转向时 Node 2 状态、双轮速度和 Node 1 状态仍持续刷新。
+-- 接近 150 ms 的关键反馈读取优先于运动写入。
+-- 单次反馈过期时车辆先有序停车，不立即锁存。
+-- 若停车本身超时、发送失败或驱动器 Abort，系统仍锁存并撤电。
+diff --git "a/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/flash.manifest.json" "b/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/flash.manifest.json"
+deleted file mode 100644
+index c69064c..0000000
+--- "a/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/flash.manifest.json"
++++ /dev/null
+@@ -1,51 +0,0 @@
+-{
+-  "product": "patrol_vehicle_chassis",
+-  "version": "patrol-chassis-0.2.91",
+-  "candidate": true,
+-  "configuration": "Release",
+-  "active_car": 0,
+-  "actuation_enabled": true,
+-  "steering_executor_compiled": true,
+-  "drive_executor_compiled": true,
+-  "app": {
+-    "file": "Patrol_Vehicle_Chassis_App.bin",
+-    "address": "0x08008000",
+-    "size": 156736,
+-    "initial_sp": "0x20010000",
+-    "reset_vector": "0x0800D44D",
+-    "crc32": "B98E6B15",
+-    "sha256": "FA95F31778CABFA5314E052CC3F7FBFFA3BDD0EF4CF0E34140F72B11F1EABCB5"
+-  },
+-  "boot": {
+-    "file": "ABox_Boot.bin",
+-    "address": "0x08000000",
+-    "size": 32768,
+-    "crc32": "F36320C9",
+-    "sha256": "981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63"
+-  },
+-  "full": {
+-    "file": "Patrol_Vehicle_Chassis_Full.bin",
+-    "address": "0x08000000",
+-    "size": 189504,
+-    "crc32": "A18B2FF2",
+-    "sha256": "2D53FA603AF050B7578D7B219F25491AF765880373BFFB0B3C8EA2231F486838"
+-  },
+-  "states": [
+-    {
+-      "file": "BootState_A.bin",
+-      "address": "0x0803E800",
+-      "size": 2048,
+-      "record_crc32": "6FD2DA89",
+-      "sha256": "07B1E53F519C93B4A98EAEBC4240D4C2B236B47D33362CF47DFC71AC4EC3A0D8"
+-    },
+-    {
+-      "file": "BootState_B.bin",
+-      "address": "0x0803F000",
+-      "size": 2048,
+-      "erased": true,
+-      "sha256": "D0FF1B294B5288D1AE1421EADF5B2D38A8752B76D472FF30BED9028E25B1C5B8"
+-    }
+-  ],
+-  "board_flashed": false,
+-  "field_verified": false
+-}
+diff --git "a/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/index.json" "b/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/index.json"
+deleted file mode 100644
+index 0f9e414..0000000
+--- "a/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/index.json"
++++ /dev/null
+@@ -1,48 +0,0 @@
+-{
+-  "product": "patrol_vehicle_chassis",
+-  "date": "2026-10-25",
+-  "version": "patrol-chassis-0.2.91",
+-  "candidate": true,
+-  "purpose": "Prioritize feedback approaching its 250 ms safety deadline and use the existing bounded stop sequence instead of immediately latching a fault after one delayed status upload",
+-  "root_cause": "A Node 1 SDO response arrived about 187 ms after its request while steering writes occupied CAN1; Node 2 drive status was not sampled again for about 297 ms, exceeded the 250 ms feedback gate, and the executor classified the transport scheduling delay as a permanent execution fault",
+-  "app_sha256": "fa95f31778cabfa5314e052cc3f7fbffa3bdd0ef4cf0e34140f72b11f1eabcb5",
+-  "full_sha256": "2d53fa603af050b7578d7b219f25491af765880373bffb0b3c8ea2231f486838",
+-  "app_crc32": "B98E6B15",
+-  "validation": {
+-    "arm_release_build": true,
+-    "feedback_priority": true,
+-    "low_priority_timeout_release": true,
+-    "controlled_stop_after_session_revoke": true,
+-    "center_runtime": true,
+-    "auto_center_runtime": true,
+-    "can2_center_calibration": true,
+-    "chassis_safety_test": true,
+-    "bench_drive_test": true,
+-    "can2_stack": true,
+-    "full_boot_prefix": true,
+-    "full_app_suffix": true,
+-    "boot_state_a_bound": true,
+-    "boot_state_b_erased": true
+-  },
+-  "known_full_suite_failures": [
+-    "test_identity_and_safe_defaults: pre-existing static assertion",
+-    "test_document_links_and_archived_evidence_references: existing CURRENT.md links to removed evidence directories",
+-    "bench_steering_test: pre-existing assertion still expects the retired 90 rpm profile speed"
+-  ],
+-  "board_flashed": false,
+-  "field_verified": false,
+-  "files": [
+-    "ABox_Boot.bin",
+-    "BootState_A.bin",
+-    "BootState_B.bin",
+-    "Patrol_Vehicle_Chassis_App.bin",
+-    "Patrol_Vehicle_Chassis_App.elf",
+-    "Patrol_Vehicle_Chassis_App.map",
+-    "Patrol_Vehicle_Chassis_Full.bin",
+-    "FLASH_ADDRESSES.txt",
+-    "README.md",
+-    "flash.manifest.json",
+-    "index.json",
+-    "sha256.json"
+-  ]
+-}
+diff --git "a/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/sha256.json" "b/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/sha256.json"
+deleted file mode 100644
+index 01a07a0..0000000
+--- "a/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/sha256.json"
++++ /dev/null
+@@ -1,9 +0,0 @@
+-{
+-  "ABox_Boot.bin": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+-  "BootState_A.bin": "07b1e53f519c93b4a98eaebc4240d4c2b236b47d33362cf47dfc71ac4ec3a0d8",
+-  "BootState_B.bin": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8",
+-  "Patrol_Vehicle_Chassis_App.bin": "fa95f31778cabfa5314e052cc3f7fbffa3bdd0ef4cf0e34140f72b11f1eabcb5",
+-  "Patrol_Vehicle_Chassis_App.elf": "12484997f9fbacdecdfbfc8ff55cba1fcd035873376de3405ae68bc1bd482773",
+-  "Patrol_Vehicle_Chassis_App.map": "d83e5534b9e48d9edb5ab2b6227c8c5a1904939b8917890e4d35dcc31f14b8b2",
+-  "Patrol_Vehicle_Chassis_Full.bin": "2d53fa603af050b7578d7b219f25491af765880373bffb0b3c8ea2231f486838"
+-}
+diff --git a/VERSION b/VERSION
+index d41baf5..eb6668e 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-patrol-chassis-0.2.101
++patrol-chassis-0.2.102
+diff --git a/app/Core/User/motion/include/bench_steering.h b/app/Core/User/motion/include/bench_steering.h
+index fbd821a..7b18e30 100644
+--- a/app/Core/User/motion/include/bench_steering.h
++++ b/app/Core/User/motion/include/bench_steering.h
+@@ -9,13 +9,17 @@ typedef enum { BENCH_IDLE, BENCH_PREPARING, BENCH_ACTIVE, BENCH_STOPPING, BENCH_
+ #define BENCH_WRITE_ACK_WAIT_MS 60U
+ #define BENCH_WRITE_VERIFY_MS 200U
+ #define BENCH_VERIFY_READ_MS 80U
++#define BENCH_STEERING_TRIGGER_INTERVAL_MS 100U
+ typedef struct {
+     BenchPhase phase;
+     uint8_t step, pending, read, width, cut_power, limits_aligned, upper_first, preserve_limits;
+     uint16_t index;
+     uint8_t verify, pp_ack_low; /* Occupies former padding; no RAM-size increase. */
+-    uint32_t sent_ms, started_ms, stop_ms, fault;
+-    int32_t minimum, maximum, center, hold, desired, applied, expected;
++    uint32_t sent_ms, started_ms, stop_ms, last_trigger_ms, fault;
++    int32_t minimum, maximum, center, hold;
++    int32_t desired; /* Single latest-target slot. */
++    int32_t applied; /* Target committed by the current 0x607A write. */
++    int32_t expected;
+     int32_t calibration_center, cached_minimum, cached_maximum, previous_minimum;
+     uint16_t limit_mdeg;
+     uint16_t profile_rpm, applied_profile_rpm, speed_write_rpm;
+diff --git a/app/Core/User/motion/src/bench_steering.c b/app/Core/User/motion/src/bench_steering.c
+index 7e3295f..4754b40 100644
+--- a/app/Core/User/motion/src/bench_steering.c
++++ b/app/Core/User/motion/src/bench_steering.c
+@@ -120,6 +120,12 @@ static uint16_t profile_speed(int32_t target_mdeg, int32_t actual_mdeg)
+     return VEHICLE_STEERING_PROFILE_MAX_RPM;
+ }
+ 
++// 两个已发送定位触发之间至少间隔固定周期，避免持续摇杆输入把每次任务机会都变成触发事务。
++static uint8_t trigger_interval_ready(const BenchSteering* b, uint32_t now_ms)
++{
++    return (uint32_t)(now_ms - b->last_trigger_ms) >= BENCH_STEERING_TRIGGER_INTERVAL_MS ? 1U : 0U;
++}
++
+ // 锁存转向执行器首个故障并置切电请求。撤销待响应事务并进入故障阶段；重复故障不会覆盖最初的故障编号。
+ static void fail(BenchSteering *b, uint32_t reason)
+ {
+@@ -152,6 +158,7 @@ uint8_t BenchSteering_Start(BenchSteering *b, int32_t actual, int32_t center, in
+     b->calibration_center = calibration_center;
+     b->phase = BENCH_PREPARING;
+     b->started_ms = now;
++    b->last_trigger_ms = now - BENCH_STEERING_TRIGGER_INTERVAL_MS;
+     b->center = center;
+     b->hold = actual;
+     b->minimum = INT32_MIN;
+@@ -171,6 +178,7 @@ uint8_t BenchSteering_StartCommissioning(BenchSteering *b, int32_t actual, int32
+     b->calibration_center = center;
+     b->phase = BENCH_PREPARING;
+     b->started_ms = now;
++    b->last_trigger_ms = now - BENCH_STEERING_TRIGGER_INTERVAL_MS;
+     b->center = center;
+     b->hold = actual;
+     b->minimum = INT32_MIN;
+@@ -258,7 +266,7 @@ void BenchSteering_Tick(BenchSteering *b, uint32_t now, uint8_t requested, uint8
+             b->target_pending = b->desired != b->applied;
+             if (b->profile_rpm != b->applied_profile_rpm)
+                 b->step = STEER_STEP_WRITE_PROFILE_SPEED_ACTIVE;
+-            else if (b->target_pending)
++            else if (b->target_pending && trigger_interval_ready(b, now))
+                 b->step = STEER_STEP_TARGET;
+         }
+     }
+@@ -275,13 +283,6 @@ uint8_t BenchSteering_Take(BenchSteering *b, uint32_t now, PatrolCanFrame *f)
+     if (b->pending || b->phase == BENCH_IDLE || b->phase == BENCH_FAULT ||
+         b->verify == VERIFY_DRAIN || b->step == STEER_STEP_ACTIVE)
+         return 0;
+-    /* A target written before an ACK wait may already have been superseded.
+-     * Replace that untriggered target, rather than triggering the old value. */
+-    if (b->step == STEER_STEP_TRIGGER && b->desired != b->applied &&
+-        (b->verify == VERIFY_NONE || b->verify == VERIFY_ACK_LOW)) {
+-        b->verify = b->pp_ack_low = 0U;
+-        b->step = STEER_STEP_TARGET;
+-    }
+     if (!b->verify && b->step == STEER_STEP_TRIGGER && !b->pp_ack_low) {
+         b->verify = VERIFY_ACK_LOW;
+         b->stop_ms = now;
+@@ -396,6 +397,7 @@ uint8_t BenchSteering_Take(BenchSteering *b, uint32_t now, PatrolCanFrame *f)
+         /* Vendor PP control bit 5 replaces the active set-point immediately.
+            Queued positioning (0x1F) delays boundary retreat and return-to-center. */
+         value = b->step == STEER_STEP_TRIGGER ? 0x3F : 0x2F;
++        if (b->step == STEER_STEP_TRIGGER) b->last_trigger_ms = now;
+         break;
+     case STEER_STEP_STOP:
+         b->index = 0x6040;
+diff --git a/temp_verify_Version/FLASH_ADDRESSES.txt b/temp_verify_Version/FLASH_ADDRESSES.txt
+deleted file mode 100644
+index a2ed9f8..0000000
+--- a/temp_verify_Version/FLASH_ADDRESSES.txt
++++ /dev/null
+@@ -1,26 +0,0 @@
+-﻿patrol_vehicle_chassis / patrol-chassis-0.2.85 / CANDIDATE
+-
+-推荐完整安装，写完三个文件后再复位：
+-1. Patrol_Vehicle_Chassis_Full.bin -> 0x08000000 (187480 bytes)
+-2. BootState_A.bin -> 0x0803E800 (2048 bytes)
+-3. BootState_B.bin -> 0x0803F000 (2048 bytes)
+-
+-Full 已包含 32 KiB 冻结 Boot 和 App，不要同时重复烧录独立 App/Boot。
+-已有匹配冻结 Boot 时，可用：
+-Patrol_Vehicle_Chassis_App.bin -> 0x08008000 (154712 bytes)
+-但仍必须写入本包配套 BootState_A/B。
+-
+-禁止整片擦除。保留：
+-- 0x0803E000..0x0803E7FF 配置恢复页
+-- 0x0803F800..0x0803FFFF Config V5 与故障日志页
+-
+-构建配置：
+-- active_car=0，使用板上 Config V5 标定
+-- steering/drive executor enabled
+-- actuation enabled
+-
+-验证：
+-- ARM Release、栈、CAN2 栈和 Flash/RAM 布局通过
+-- 写后核验与故障停机专项回归通过
+-- State A 已按本 App 大小、CRC 和版本生成；State B 为擦除页
+-- 未烧录，未进行实车运动验收
+diff --git a/temp_verify_Version/README.md b/temp_verify_Version/README.md
+deleted file mode 100644
+index 5c6543d..0000000
+--- a/temp_verify_Version/README.md
++++ /dev/null
+@@ -1,37 +0,0 @@
+-# 写后核验 60/80/200 ms 烧录包
+-
+-版本：`patrol-chassis-0.2.85`
+-
+-本包包含：
+-
+-- `Patrol_Vehicle_Chassis_Full.bin`：冻结 Boot + App
+-- `BootState_A.bin`：与本 App 匹配的 Boot State V3
+-- `BootState_B.bin`：擦除页
+-- `Patrol_Vehicle_Chassis_App.bin`：可在已核对 Boot 时单独烧写
+-- `ABox_Boot.bin`：冻结 Boot，供组成和核对 Full 使用
+-
+-烧录：
+-
+-- `Patrol_Vehicle_Chassis_Full.bin -> 0x08000000`
+-- `BootState_A.bin -> 0x0803E800`
+-- `BootState_B.bin -> 0x0803F000`
+-
+-已有匹配冻结 Boot 时，可改为：
+-
+-- `Patrol_Vehicle_Chassis_App.bin -> 0x08008000`
+-- 仍必须同时烧写本包的 `BootState_A.bin` 和 `BootState_B.bin`
+-
+-不要整片擦除。保留 `0x0803E000..0x0803E7FF` 配置恢复页和
+-`0x0803F800..0x0803FFFF` Config V5/故障日志页。
+-
+-校验：
+-
+-- App 大小 `154712` 字节，CRC32 `0x95355B90`
+-- Full 大小 `187480` 字节；偏移 `0x8000` 处向量与独立 App 一致
+-- State A 大小 `2048` 字节，绑定 App `154712 / 0x95355B90 / patrol-chassis-0.2.85`
+-- State B 大小 `2048` 字节，内容为擦除态 `0xFF`
+-- 实际 Boot State V3 解析器、匹配启动、损坏 State/App 拒绝启动检查通过
+-- ARM Release、栈、CAN2 栈和 Flash/RAM 布局检查通过
+-- 写后核验与故障停机专项回归通过
+-
+-完整哈希见 `sha256.json` 和 `flash.manifest.json`。本包尚未烧录，尚未做实车运动验收。
+diff --git a/temp_verify_Version/flash.manifest.json b/temp_verify_Version/flash.manifest.json
+deleted file mode 100644
+index cb725f8..0000000
+--- a/temp_verify_Version/flash.manifest.json
++++ /dev/null
+@@ -1,53 +0,0 @@
+-{
+-  "product": "patrol_vehicle_chassis",
+-  "version": "patrol-chassis-0.2.85",
+-  "candidate": true,
+-  "configuration": "Release",
+-  "active_car": 0,
+-  "actuation_enabled": true,
+-  "steering_executor_compiled": true,
+-  "drive_executor_compiled": true,
+-  "app": {
+-    "file": "Patrol_Vehicle_Chassis_App.bin",
+-    "address": "0x08008000",
+-    "size": 154712,
+-    "initial_sp": "0x20010000",
+-    "reset_vector": "0x0800D44D",
+-    "crc32": "95355B90",
+-    "sha256": "563cc515eca87caa15764355c031f7c0ea530a4cd09f6430c0230d1f72b8f3f9"
+-  },
+-  "boot": {
+-    "file": "ABox_Boot.bin",
+-    "address": "0x08000000",
+-    "size": 32768,
+-    "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+-  },
+-  "full": {
+-    "file": "Patrol_Vehicle_Chassis_Full.bin",
+-    "address": "0x08000000",
+-    "size": 187480,
+-    "sha256": "8112d46288d8480c4701cead508ac261b97baccd2b43a8b24207cfa4841fc203"
+-  },
+-  "states": [
+-    {
+-      "file": "BootState_A.bin",
+-      "address": "0x0803E800",
+-      "sequence": 1,
+-      "state": "CONFIRMED",
+-      "size": 2048,
+-      "sha256": "29b31b9e12c389adae3c3298a682582158b8f5ce89c28b019ce5349b43ab24e2",
+-      "app_size": 154712,
+-      "app_crc32": "95355B90"
+-    },
+-    {
+-      "file": "BootState_B.bin",
+-      "address": "0x0803F000",
+-      "state": "ERASED",
+-      "size": 2048,
+-      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+-    }
+-  ],
+-  "boot_state_parser_verification": true,
+-  "board_flashed": false,
+-  "field_motion_verified": false
+-}
+diff --git a/temp_verify_Version/index.json b/temp_verify_Version/index.json
+deleted file mode 100644
+index 55c98a8..0000000
+--- a/temp_verify_Version/index.json
++++ /dev/null
+@@ -1,120 +0,0 @@
+-{
+-  "product": "patrol_vehicle_chassis",
+-  "version": "patrol-chassis-0.2.85",
+-  "created_at": "2026-10-24T11:02:36+08:00",
+-  "candidate": true,
+-  "configuration": "Release",
+-  "active_car": 0,
+-  "actuation_enabled": true,
+-  "steering_executor_compiled": true,
+-  "drive_executor_compiled": true,
+-  "flash": {
+-    "recommended_full": {
+-      "file": "Patrol_Vehicle_Chassis_Full.bin",
+-      "address": "0x08000000",
+-      "bytes": 187480,
+-      "sha256": "8112d46288d8480c4701cead508ac261b97baccd2b43a8b24207cfa4841fc203"
+-    },
+-    "state_a": {
+-      "file": "BootState_A.bin",
+-      "address": "0x0803E800",
+-      "bytes": 2048,
+-      "sha256": "29b31b9e12c389adae3c3298a682582158b8f5ce89c28b019ce5349b43ab24e2"
+-    },
+-    "state_b": {
+-      "file": "BootState_B.bin",
+-      "address": "0x0803F000",
+-      "bytes": 2048,
+-      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+-    },
+-    "optional_app": {
+-      "file": "Patrol_Vehicle_Chassis_App.bin",
+-      "address": "0x08008000",
+-      "bytes": 154712,
+-      "crc32": "95355B90",
+-      "sha256": "563cc515eca87caa15764355c031f7c0ea530a4cd09f6430c0230d1f72b8f3f9"
+-    }
+-  },
+-  "validation": {
+-    "arm_release_build": true,
+-    "bench_stack": true,
+-    "can2_stack": true,
+-    "flash_ram_layout": true,
+-    "targeted_write_verify_and_fault_stop_tests": true,
+-    "boot_state_parser": true,
+-    "full_app_offset_vectors": true,
+-    "product_python_passed": 44,
+-    "product_python_total": 45,
+-    "known_existing_failure": "test_identity_and_safe_defaults: existing hot-reset recovery design; unchanged assertion"
+-  },
+-  "files": [
+-    {
+-      "path": "ABox_Boot.bin",
+-      "bytes": 32768,
+-      "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+-    },
+-    {
+-      "path": "BootState_A.bin",
+-      "bytes": 2048,
+-      "sha256": "29b31b9e12c389adae3c3298a682582158b8f5ce89c28b019ce5349b43ab24e2"
+-    },
+-    {
+-      "path": "BootState_B.bin",
+-      "bytes": 2048,
+-      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+-    },
+-    {
+-      "path": "FLASH_ADDRESSES.txt",
+-      "bytes": 989,
+-      "sha256": "b94d8436d2d6108196bea7912a8f42af2bbf52366a6a86c4c41395ded1c01a01"
+-    },
+-    {
+-      "path": "flash.manifest.json",
+-      "bytes": 1515,
+-      "sha256": "a1faad3c7c34e632ce6757f8dfd1a4e9fae400fe8ed532de00ffa1ea7f38fc1b"
+-    },
+-    {
+-      "path": "Patrol_Vehicle_Chassis_App.bin",
+-      "bytes": 154712,
+-      "sha256": "563cc515eca87caa15764355c031f7c0ea530a4cd09f6430c0230d1f72b8f3f9"
+-    },
+-    {
+-      "path": "Patrol_Vehicle_Chassis_App.elf",
+-      "bytes": 263880,
+-      "sha256": "31383f509bd773f73d6828495a6cc5843069e391fe6a36092620667bf469b962"
+-    },
+-    {
+-      "path": "Patrol_Vehicle_Chassis_App.map",
+-      "bytes": 665383,
+-      "sha256": "8413b0739e9cadd38a1fbfa2cea129ff607ec83c1f0e0d4537ae3d375a249ff5"
+-    },
+-    {
+-      "path": "Patrol_Vehicle_Chassis_Full.bin",
+-      "bytes": 187480,
+-      "sha256": "8112d46288d8480c4701cead508ac261b97baccd2b43a8b24207cfa4841fc203"
+-    },
+-    {
+-      "path": "README.md",
+-      "bytes": 1401,
+-      "sha256": "b181f3cfdc8490bc726c3501e94c760cac57e713c6154d5dc7838a646c002c71"
+-    },
+-    {
+-      "path": "sha256.json",
+-      "bytes": 477,
+-      "sha256": "1ea1fc3b435a4c768537b3d57049b9902a00a516b5c665d59008b84f2e644754"
+-    },
+-    {
+-      "path": "validation/package-flash.py",
+-      "bytes": 7089,
+-      "sha256": "6f7b8ad557245f6ed3b4ceae4848a3e9d76f27184edddfcf4c57350bb8671a82d"
+-    },
+-    {
+-      "path": "validation/verify-boot-state.c",
+-      "bytes": 3917,
+-      "sha256": "cf41f6a6f8f5108bdc55d6ec0549da494c15aa9aeaec890f9384222be02aae01"
+-    }
+-  ],
+-  "board_flashed": false,
+-  "field_motion_verified": false,
+-  "formal_release": false
+-}
+diff --git a/temp_verify_Version/sha256.json b/temp_verify_Version/sha256.json
+deleted file mode 100644
+index 48807b3..0000000
+--- a/temp_verify_Version/sha256.json
++++ /dev/null
+@@ -1,7 +0,0 @@
+-{
+-  "ABox_Boot.bin": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+-  "BootState_A.bin": "29b31b9e12c389adae3c3298a682582158b8f5ce89c28b019ce5349b43ab24e2",
+-  "BootState_B.bin": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8",
+-  "Patrol_Vehicle_Chassis_App.bin": "563cc515eca87caa15764355c031f7c0ea530a4cd09f6430c0230d1f72b8f3f9",
+-  "Patrol_Vehicle_Chassis_Full.bin": "8112d46288d8480c4701cead508ac261b97baccd2b43a8b24207cfa4841fc203"
+-}
+diff --git a/temp_verify_Version/validation/package-flash.py b/temp_verify_Version/validation/package-flash.py
+deleted file mode 100644
+index 3b2950c..0000000
+--- a/temp_verify_Version/validation/package-flash.py
++++ /dev/null
+@@ -1,210 +0,0 @@
+-#!/usr/bin/env python3
+-"""Build and verify the 0.2.85 Full/App/BootState flash bundle."""
+-
+-from __future__ import annotations
+-
+-import hashlib
+-import json
+-import shutil
+-import struct
+-import subprocess
+-import sys
+-import zlib
+-from pathlib import Path
+-
+-
+-ROOT = Path(__file__).resolve().parents[5]
+-EVIDENCE = Path(__file__).resolve().parents[1]
+-VERSION = "patrol-chassis-0.2.85"
+-APP = ROOT / "out/candidates/bench-drive/Patrol_Vehicle_Chassis_App.bin"
+-ELF = ROOT / "app/build/BenchSteering/Patrol_Vehicle_Chassis_App.elf"
+-MAP = ROOT / "app/build/BenchSteering/Patrol_Vehicle_Chassis_App.map"
+-BOOT = ROOT / "platform/targets/stm32f105_abox_boot/dist/ABox_Boot.bin"
+-CANDIDATE = ROOT / "out/candidates/bench-drive/candidate.manifest.json"
+-APP_START = 0x08008000
+-BOOT_SIZE = 0x8000
+-STATE_PAGE_SIZE = 0x800
+-BOOT_SHA256 = "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+-
+-
+-def sha256(data: bytes) -> str:
+-    return hashlib.sha256(data).hexdigest()
+-
+-
+-def write_json(path: Path, value: object) -> None:
+-    path.write_text(
+-        json.dumps(value, ensure_ascii=False, indent=2) + "\n",
+-        encoding="utf-8",
+-        newline="\n",
+-    )
+-
+-
+-def main() -> int:
+-    app = APP.read_bytes()
+-    boot = BOOT.read_bytes()
+-    elf = ELF.read_bytes()
+-    map_file = MAP.read_bytes()
+-    candidate = json.loads(CANDIDATE.read_text(encoding="utf-8"))
+-
+-    assert candidate["version"] == VERSION
+-    assert candidate["actuation_enabled"] is True
+-    assert candidate["active_car"] == 0
+-    assert candidate["size"] == len(app)
+-    assert candidate["sha256"].lower() == sha256(app)
+-    assert len(app) <= 0x36000
+-    assert len(boot) == BOOT_SIZE
+-    assert sha256(boot) == BOOT_SHA256
+-    assert f"PATROL_VEHICLE_CHASSIS_FW_VERSION={VERSION}".encode("ascii") in app
+-
+-    initial_sp, reset_vector = struct.unpack_from("<II", app)
+-    assert 0x20000000 <= initial_sp <= 0x20010000
+-    assert reset_vector & 1 and APP_START <= reset_vector <= 0x0803DFFF
+-
+-    full = boot + app
+-    assert len(full) == BOOT_SIZE + len(app)
+-    assert struct.unpack_from("<II", full, BOOT_SIZE) == (initial_sp, reset_vector)
+-
+-    destinations = {
+-        "Patrol_Vehicle_Chassis_App.bin": app,
+-        "Patrol_Vehicle_Chassis_App.elf": elf,
+-        "Patrol_Vehicle_Chassis_App.map": map_file,
+-        "ABox_Boot.bin": boot,
+-        "Patrol_Vehicle_Chassis_Full.bin": full,
+-    }
+-    for name, data in destinations.items():
+-        path = EVIDENCE / name
+-        if path.exists():
+-            raise RuntimeError(f"Refusing to overwrite existing evidence file: {path}")
+-        path.write_bytes(data)
+-
+-    subprocess.run(
+-        [
+-            sys.executable,
+-            "-X",
+-            "utf8",
+-            str(ROOT / "tools/make_bootstate_image.py"),
+-            "--app",
+-            str(APP),
+-            "--version",
+-            VERSION,
+-            "--state-a",
+-            str(EVIDENCE / "BootState_A.bin"),
+-            "--state-b",
+-            str(EVIDENCE / "BootState_B.bin"),
+-        ],
+-        cwd=ROOT,
+-        check=True,
+-    )
+-
+-    state_a = (EVIDENCE / "BootState_A.bin").read_bytes()
+-    state_b = (EVIDENCE / "BootState_B.bin").read_bytes()
+-    state_format = "<IHHIIBBBBII32sII32sIBB2sI"
+-    state = struct.unpack(state_format, state_a[: struct.calcsize(state_format)])
+-    assert len(state_a) == len(state_b) == STATE_PAGE_SIZE
+-    assert state[:3] == (0x42535632, 3, struct.calcsize(state_format))
+-    assert state[9:12] == (len(app), zlib.crc32(app) & 0xFFFFFFFF, VERSION.encode().ljust(32, b"\0"))
+-    assert zlib.crc32(state_a[:108]) & 0xFFFFFFFF == state[-1]
+-    assert state_b == b"\xff" * STATE_PAGE_SIZE
+-
+-    app_crc = f"{zlib.crc32(app) & 0xFFFFFFFF:08X}"
+-    addresses = f"""patrol_vehicle_chassis / {VERSION} / CANDIDATE
+-
+-推荐完整安装，写完三个文件后再复位：
+-1. Patrol_Vehicle_Chassis_Full.bin -> 0x08000000 ({len(full)} bytes)
+-2. BootState_A.bin -> 0x0803E800 ({len(state_a)} bytes)
+-3. BootState_B.bin -> 0x0803F000 ({len(state_b)} bytes)
+-
+-Full 已包含 32 KiB 冻结 Boot 和 App，不要同时重复烧录独立 App/Boot。
+-已有匹配冻结 Boot 时，可用：
+-Patrol_Vehicle_Chassis_App.bin -> 0x08008000 ({len(app)} bytes)
+-但仍必须写入本包配套 BootState_A/B。
+-
+-禁止整片擦除。保留：
+-- 0x0803E000..0x0803E7FF 配置恢复页
+-- 0x0803F800..0x0803FFFF Config V5 与故障日志页
+-
+-构建配置：
+-- active_car=0，使用板上 Config V5 标定
+-- steering/drive executor enabled
+-- actuation enabled
+-
+-验证：
+-- ARM Release、栈、CAN2 栈和 Flash/RAM 布局通过
+-- 写后核验与故障停机专项回归通过
+-- State A 已按本 App 大小、CRC 和版本生成；State B 为擦除页
+-- 未烧录，未进行实车运动验收
+-"""
+-    (EVIDENCE / "FLASH_ADDRESSES.txt").write_text(
+-        addresses, encoding="utf-8-sig", newline="\n"
+-    )
+-
+-    files = [
+-        "ABox_Boot.bin",
+-        "BootState_A.bin",
+-        "BootState_B.bin",
+-        "Patrol_Vehicle_Chassis_App.bin",
+-        "Patrol_Vehicle_Chassis_Full.bin",
+-    ]
+-    hashes = {name: sha256((EVIDENCE / name).read_bytes()) for name in files}
+-    write_json(EVIDENCE / "sha256.json", hashes)
+-
+-    manifest = {
+-        "product": "patrol_vehicle_chassis",
+-        "version": VERSION,
+-        "candidate": True,
+-        "configuration": "Release",
+-        "active_car": 0,
+-        "actuation_enabled": True,
+-        "steering_executor_compiled": True,
+-        "drive_executor_compiled": True,
+-        "app": {
+-            "file": "Patrol_Vehicle_Chassis_App.bin",
+-            "address": "0x08008000",
+-            "size": len(app),
+-            "initial_sp": f"0x{initial_sp:08X}",
+-            "reset_vector": f"0x{reset_vector:08X}",
+-            "crc32": app_crc,
+-            "sha256": hashes["Patrol_Vehicle_Chassis_App.bin"],
+-        },
+-        "boot": {
+-            "file": "ABox_Boot.bin",
+-            "address": "0x08000000",
+-            "size": len(boot),
+-            "sha256": hashes["ABox_Boot.bin"],
+-        },
+-        "full": {
+-            "file": "Patrol_Vehicle_Chassis_Full.bin",
+-            "address": "0x08000000",
+-            "size": len(full),
+-            "sha256": hashes["Patrol_Vehicle_Chassis_Full.bin"],
+-        },
+-        "states": [
+-            {
+-                "file": "BootState_A.bin",
+-                "address": "0x0803E800",
+-                "sequence": 1,
+-                "state": "CONFIRMED",
+-                "size": len(state_a),
+-                "sha256": hashes["BootState_A.bin"],
+-                "app_size": len(app),
+-                "app_crc32": app_crc,
+-            },
+-            {
+-                "file": "BootState_B.bin",
+-                "address": "0x0803F000",
+-                "state": "ERASED",
+-                "size": len(state_b),
+-                "sha256": hashes["BootState_B.bin"],
+-            },
+-        ],
+-        "boot_state_parser_verification": True,
+-        "board_flashed": False,
+-        "field_motion_verified": False,
+-    }
+-    write_json(EVIDENCE / "flash.manifest.json", manifest)
+-    print(json.dumps(manifest, ensure_ascii=False, indent=2))
+-    return 0
+-
+-
+-if __name__ == "__main__":
+-    raise SystemExit(main())
+diff --git a/temp_verify_Version/validation/verify-boot-state.c b/temp_verify_Version/validation/verify-boot-state.c
+deleted file mode 100644
+index e8eb460..0000000
+--- a/temp_verify_Version/validation/verify-boot-state.c
++++ /dev/null
+@@ -1,109 +0,0 @@
+-#include <assert.h>
+-#include <stdio.h>
+-#include <stdint.h>
+-#include <string.h>
+-#include "abox_boot_v2.h"
+-#include "abox_boot_v2_boot.h"
+-
+-static uint8_t pages[4096], app[0x36000];
+-static uint32_t app_size;
+-static unsigned jumps, installs, writes;
+-
+-void ABoxBootV2_ImageBindLayoutInternal(const ABoxBootV2Layout *layout) { (void)layout; }
+-int ABox_PortFlashRead(uint32_t address, uint8_t *data, uint32_t length)
+-{
+-    if (address < 0x0803e800U || address + length > 0x0803f800U) return 0;
+-    memcpy(data, pages + address - 0x0803e800U, length);
+-    return 1;
+-}
+-int ABox_PortFlashBegin(void) { writes++; return 0; }
+-int ABox_PortFlashWrite(uint32_t address, const uint8_t *data, uint32_t length)
+-{
+-    (void)address; (void)data; (void)length; writes++; return 0;
+-}
+-int ABox_PortFlashErasePage(uint32_t address) { (void)address; writes++; return 0; }
+-void ABox_PortFlashEnd(void) {}
+-int ABoxBootV2_FaultValid(void) { return 0; }
+-void ABoxBootV2_FaultClear(void) { assert(!"confirmed image must not enter trial recovery"); }
+-
+-static uint8_t valid_image(void *context, uint32_t size, uint32_t crc)
+-{
+-    uint32_t sp, reset;
+-    (void)context;
+-    memcpy(&sp, app, 4);
+-    memcpy(&reset, app + 4, 4);
+-    return size == app_size && crc == ABoxBootV2_Crc32(app, app_size) &&
+-        sp >= 0x20000000U && sp <= 0x20010000U && (reset & 1U) &&
+-        (reset & ~1U) >= 0x08008000U && (reset & ~1U) < 0x08008000U + app_size;
+-}
+-static uint8_t app_vector_valid(void *context) { (void)context; return 1U; }
+-static ABoxBootV2InstallResult install(void *context, uint8_t slot, uint32_t size, uint32_t crc)
+-{
+-    (void)context; (void)slot; (void)size; (void)crc; installs++;
+-    return ABOX_BOOT_V2_INSTALL_FAILED;
+-}
+-static void jump(void *context) { (void)context; jumps++; }
+-static uint8_t reason(void *context) { (void)context; return 0U; }
+-static void load(const char *name, uint8_t *data, size_t size)
+-{
+-    FILE *file = fopen(name, "rb");
+-    assert(file);
+-    assert(fread(data, 1, size, file) == size);
+-    assert(fgetc(file) == EOF);
+-    fclose(file);
+-}
+-
+-int main(int argc, char **argv)
+-{
+-    ABoxBootV2Layout layout = {
+-        0x0803e800U, 0x0803f000U, 0x800U, 0x08008000U, 0x0803dfffU,
+-        0x20000000U, 0x20010000U
+-    };
+-    ABoxBootV2BootPort port = {0};
+-    ABoxBootV2Record record;
+-    ABoxBootV2Diagnostics diagnostics;
+-    uint8_t saved[4096];
+-    FILE *file;
+-
+-    assert(argc == 4);
+-    load(argv[1], pages, 2048);
+-    load(argv[2], pages + 2048, 2048);
+-    file = fopen(argv[3], "rb");
+-    assert(file);
+-    app_size = (uint32_t)fread(app, 1, sizeof(app), file);
+-    assert(feof(file));
+-    fclose(file);
+-    assert(app_size == 154712U);
+-    memcpy(saved, pages, sizeof(pages));
+-
+-    port.flash_image_valid = valid_image;
+-    port.install_slot = install;
+-    port.app_vector_valid = app_vector_valid;
+-    port.jump_to_app = jump;
+-    port.reset_reason = reason;
+-    assert(ABoxBootV2_StateBindLayout(&layout));
+-    assert(ABoxBootV2Boot_Init(&port));
+-    assert(ABoxBootV2_StateLoad(&record));
+-    assert(ABoxBootV2_StateDiagnostics(&diagnostics));
+-    assert(diagnostics.page_a_valid == 1U && diagnostics.page_b_valid == 0U);
+-    assert(diagnostics.selected_page == 0U && diagnostics.selected_sequence == 1U);
+-    assert(record.sequence == 1U && record.state == ABOX_BOOT_V2_CONFIRMED);
+-    assert(record.image_size == app_size);
+-    assert(record.image_crc32 == ABoxBootV2_Crc32(app, app_size));
+-    assert(!strcmp(record.image_version, "patrol-chassis-0.2.85"));
+-
+-    jumps = 0U;
+-    ABoxBootV2Boot_Task();
+-    assert(jumps == 1U && installs == 0U && writes == 0U);
+-
+-    app[32] ^= 1U;
+-    jumps = 0U;
+-    ABoxBootV2Boot_Task();
+-    assert(jumps == 0U && installs == 0U && writes == 0U);
+-
+-    memcpy(pages, saved, sizeof(pages));
+-    pages[108] ^= 1U;
+-    assert(!ABoxBootV2_StateLoad(&record));
+-    puts("PASS Boot State A matches App size/CRC/version; corrupted A or App does not jump.");
+-    return 0;
+-}
+diff --git a/temp_verify_Version_2/FLASH_ADDRESSES.txt b/temp_verify_Version_2/FLASH_ADDRESSES.txt
+deleted file mode 100644
+index 8ae2001..0000000
+--- a/temp_verify_Version_2/FLASH_ADDRESSES.txt
++++ /dev/null
+@@ -1,15 +0,0 @@
+-patrol_vehicle_chassis / patrol-chassis-0.2.90 / ENCODER CHUNK REASSEMBLY
+-
+-推荐完整安装，写完三个文件后再复位：
+-1. Patrol_Vehicle_Chassis_Full.bin -> 0x08000000 (188800 bytes)
+-2. BootState_A.bin -> 0x0803E800 (2048 bytes)
+-3. BootState_B.bin -> 0x0803F000 (2048 bytes)
+-
+-Full 已包含 32 KiB 冻结 Boot 和 App，不要同时重复烧录独立 App/Boot。
+-已有匹配冻结 Boot 时，可使用：
+-Patrol_Vehicle_Chassis_App.bin -> 0x08008000 (156032 bytes)
+-但仍必须写入本包配套 BootState_A/B。
+-
+-禁止整片擦除。保留：
+-- 0x0803E000..0x0803E7FF 配置恢复页
+-- 0x0803F800..0x0803FFFF Config V5 与故障日志页
+diff --git a/temp_verify_Version_2/README.md b/temp_verify_Version_2/README.md
+deleted file mode 100644
+index 2194ead..0000000
+--- a/temp_verify_Version_2/README.md
++++ /dev/null
+@@ -1,54 +0,0 @@
+-# 绝对编码器分段接收修复
+-
+-日期：2026-10-25  
+-候选版本：`patrol-chassis-0.2.90`
+-
+-## 问题
+-
+-`0.2.89` 已允许在接收缓冲区中搜索有效 Modbus 响应，并将缓冲区扩大到 32 字节。
+-J-Link 实机复测仍观察到格式错误持续增长，说明 UART5 的请求回显和编码器响应
+-可能被 `HAL_UARTEx_ReceiveToIdle` 分成两个独立的 IDLE 数据块返回。
+-
+-原逻辑每个轮询仅调用一次接收，因此只拿到第一块便进入解析；如果第一块是
+-8 字节请求回显，就会结束本次事务，真正的位置响应没有被接收。
+-
+-## 修复
+-
+-- 每次读取最多接收两个连续 IDLE 数据块。
+-- 两块数据追加到同一个 32 字节缓冲区。
+-- 每收到一块都重新搜索地址、功能码、长度和 CRC 均有效的响应。
+-- 已收到有效响应时立即停止，不增加固定等待。
+-- 保持原有错误分类、轮询周期和超时值。
+-
+-## 验证
+-
+-- ARM Release 构建通过。
+-- `chassis_safety_test` 通过。
+-- 使用现场真实报文验证：仅含 8 字节请求时解析失败；增加 9 字节有效位置响应后解析成功。
+-- CAN2 协议回归通过。
+-- CAN2 栈检查通过。
+-- Full、App、State A/B 和版本绑定检查通过。
+-
+-## 烧录
+-
+-1. `Patrol_Vehicle_Chassis_Full.bin` → `0x08000000`
+-2. `BootState_A.bin` → `0x0803E800`
+-3. `BootState_B.bin` → `0x0803F000`
+-
+-可选独立 App：
+-
+-`Patrol_Vehicle_Chassis_App.bin` → `0x08008000`
+-
+-禁止整片擦除，保留 `0x0803E000..0x0803E7FF` 和
+-`0x0803F800..0x0803FFFF`。
+-
+-## 烧录后验证
+-
+-通过 J-Link 观察 `g_motion.diagnostics`：
+-
+-- `encoder_seen=1`
+-- 旋转编码器时 `encoder_count` 变化
+-- `encoder_ms` 持续更新
+-- 无格式、CRC、超时错误继续增长
+-
+-本包尚未烧录和实车验证。
+diff --git a/temp_verify_Version_2/flash.manifest.json b/temp_verify_Version_2/flash.manifest.json
+deleted file mode 100644
+index 22db46a..0000000
+--- a/temp_verify_Version_2/flash.manifest.json
++++ /dev/null
+@@ -1,65 +0,0 @@
+-{
+-  "product": "patrol_vehicle_chassis",
+-  "version": "patrol-chassis-0.2.90",
+-  "candidate": true,
+-  "configuration": "Release",
+-  "active_car": 0,
+-  "actuation_enabled": true,
+-  "steering_executor_compiled": true,
+-  "drive_executor_compiled": true,
+-  "app": {
+-    "file": "Patrol_Vehicle_Chassis_App.bin",
+-    "address": "0x08008000",
+-    "size": 156032,
+-    "initial_sp": "0x20010000",
+-    "reset_vector": "0x0800D44D",
+-    "crc32": "B3D4129F",
+-    "sha256": "7b3df11f507f95adcf05acdce7681cf000894455d7f2a367b777beb6a77ecf4e"
+-  },
+-  "boot": {
+-    "file": "ABox_Boot.bin",
+-    "address": "0x08000000",
+-    "size": 32768,
+-    "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+-  },
+-  "full": {
+-    "file": "Patrol_Vehicle_Chassis_Full.bin",
+-    "address": "0x08000000",
+-    "size": 188800,
+-    "sha256": "de6c94365cb171ee738ae64a4c4082b0402aa8c201aadb54ab1e7c68a8491f23"
+-  },
+-  "states": [
+-    {
+-      "file": "BootState_A.bin",
+-      "address": "0x0803E800",
+-      "sequence": 1,
+-      "state": "CONFIRMED",
+-      "size": 2048,
+-      "sha256": "ca322dcb5ed0d22a264312993416ecc76c8506c5ca6908984bbafb181d3a0015",
+-      "app_size": 156032,
+-      "app_crc32": "B3D4129F"
+-    },
+-    {
+-      "file": "BootState_B.bin",
+-      "address": "0x0803F000",
+-      "state": "ERASED",
+-      "size": 2048,
+-      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+-    }
+-  ],
+-  "verification": {
+-    "boot_artifact": true,
+-    "full_boot_prefix": true,
+-    "full_app_suffix": true,
+-    "version_marker": true,
+-    "vectors_valid": true,
+-    "state_a_bound": true,
+-    "state_b_erased": true,
+-    "encoder_chunk_reassembly_test": true,
+-    "can_remote_host_test": true,
+-    "can2_stack": true,
+-    "diff_check": true
+-  },
+-  "board_flashed": false,
+-  "field_verified": false
+-}
+diff --git a/temp_verify_Version_2/index.json b/temp_verify_Version_2/index.json
+deleted file mode 100644
+index 99e37d8..0000000
+--- a/temp_verify_Version_2/index.json
++++ /dev/null
+@@ -1,45 +0,0 @@
+-{
+-  "product": "patrol_vehicle_chassis",
+-  "date": "2026-10-25",
+-  "version": "patrol-chassis-0.2.90",
+-  "candidate": true,
+-  "purpose": "Assemble up to two idle-delimited UART chunks per encoder read so request echo and the valid position response can be parsed independently of board timing",
+-  "app_sha256": "7b3df11f507f95adcf05acdce7681cf000894455d7f2a367b777beb6a77ecf4e",
+-  "full_sha256": "de6c94365cb171ee738ae64a4c4082b0402aa8c201aadb54ab1e7c68a8491f23",
+-  "app_crc32": "B3D4129F",
+-  "validation": {
+-    "arm_release_build": true,
+-    "chassis_safety_test": true,
+-    "encoder_chunk_reassembly_test": true,
+-    "can_remote_host_test": true,
+-    "can2_stack": true,
+-    "diff_check": true,
+-    "full_boot_prefix": true,
+-    "full_app_suffix": true,
+-    "boot_state_a_bound": true,
+-    "boot_state_b_erased": true
+-  },
+-  "known_full_suite_failures": [
+-    "test_identity_and_safe_defaults: pre-existing static assertion",
+-    "test_document_links_and_archived_evidence_references: existing CURRENT.md links to removed evidence directories"
+-  ],
+-  "board_flashed": false,
+-  "field_verified": false,
+-  "files": [
+-    "ABox_Boot.bin",
+-    "BootState_A.bin",
+-    "BootState_B.bin",
+-    "Patrol_Vehicle_Chassis_App.bin",
+-    "Patrol_Vehicle_Chassis_App.elf",
+-    "Patrol_Vehicle_Chassis_App.map",
+-    "Patrol_Vehicle_Chassis_Full.bin",
+-    "FLASH_ADDRESSES.txt",
+-    "README.md",
+-    "flash.manifest.json",
+-    "source-change.patch",
+-    "validation/chassis-safety-test.log",
+-    "validation/can-remote-test.log",
+-    "validation/can2-stack.log",
+-    "validation/diff-check.log"
+-  ]
+-}
+diff --git a/temp_verify_Version_2/sha256.json b/temp_verify_Version_2/sha256.json
+deleted file mode 100644
+index 9d23709..0000000
+--- a/temp_verify_Version_2/sha256.json
++++ /dev/null
+@@ -1,19 +0,0 @@
+-{
+-  "ABox_Boot.bin": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+-  "BootState_A.bin": "ca322dcb5ed0d22a264312993416ecc76c8506c5ca6908984bbafb181d3a0015",
+-  "BootState_B.bin": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8",
+-  "FLASH_ADDRESSES.txt": "bf252d373c099cbcdc34d73acd08d115512144a060efcbafda9091e1fafbc7f8",
+-  "flash.manifest.json": "e0dc879b31633504185d3776c5063c21e55689a8e824867a3101f4f806d3cc16",
+-  "index.json": "5ae86ffaa78ce3d9d8f09e61faa7deb6055d449109d1124976be6a75945cb327",
+-  "Patrol_Vehicle_Chassis_App.bin": "7b3df11f507f95adcf05acdce7681cf000894455d7f2a367b777beb6a77ecf4e",
+-  "Patrol_Vehicle_Chassis_App.elf": "d0c8d8a090bc6fc0efa90f12819994e1cb7b3dbe88632cf90f6c741e79d2378f",
+-  "Patrol_Vehicle_Chassis_App.map": "7085ed6dc29fc0cea5b58f07553e1f97142f416c44998dcb90fc973b7d1efb2b",
+-  "Patrol_Vehicle_Chassis_Full.bin": "de6c94365cb171ee738ae64a4c4082b0402aa8c201aadb54ab1e7c68a8491f23",
+-  "README.md": "d338730929e9e9170ec1b3cdd812c4b3c0c46d21c390d1c2e1a39501352279dd",
+-  "source-change.patch": "6c1605f21dfeac22a39cd130cbce102bdc1c04342acbb65bb60a076f9bde7642",
+-  "validation/can-remote-test.log": "7caf42d60656e19680555d4b8dd76aa1c1b68573b5450bf5e079412edd6d61e2",
+-  "validation/can2-stack.log": "e996626726cd9287bf1ebed554af1d303551a34b619f553290a299b0a20e547f",
+-  "validation/chassis-safety-test.log": "0102503a5c0dfc4467eb2a223ab07e6eeba8f93376db3d89a454553407287baf",
+-  "validation/diff-check.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+-}
+-
+diff --git a/temp_verify_Version_2/source-change.patch b/temp_verify_Version_2/source-change.patch
+deleted file mode 100644
+index 143575c..0000000
+--- a/temp_verify_Version_2/source-change.patch
++++ /dev/null
+@@ -1,193 +0,0 @@
+-diff --git a/app/Core/User/motion/include/absolute_encoder.h b/app/Core/User/motion/include/absolute_encoder.h
+-index 5ad59a1..9984cab 100644
+---- a/app/Core/User/motion/include/absolute_encoder.h
+-+++ b/app/Core/User/motion/include/absolute_encoder.h
+-@@ -8,6 +8,7 @@
+- #define ABS_ENCODER_RESPONSE_SIZE 9U
+- #define ABS_ENCODER_CONFIG_RESPONSE_SIZE 11U
+- #define ABS_ENCODER_WRITE_RESPONSE_SIZE 8U
+-+#define ABS_ENCODER_RX_BUFFER_SIZE 32U
+- 
+- // 计算绝对编码器 Modbus RTU 报文的 CRC16。对给定字节区间逐字节计算，字节排列由构造和解析函数按协议处理。
+- uint16_t AbsoluteEncoder_Crc16(const uint8_t* data, uint16_t length);
+-@@ -19,7 +20,10 @@ void AbsoluteEncoder_BuildReadRequest(uint8_t request[ABS_ENCODER_REQUEST_SIZE])
+- // 校验保持寄存器读取响应并提取寄存器值。检查站号、功能码、字节数、帧长度及 CRC，失败时不把无效响应当成新反馈。
+- uint8_t AbsoluteEncoder_ParseHoldingResponse(const uint8_t* response, uint16_t length,
+-                                              uint16_t* registers, uint16_t register_count);
+--// 解析编码器位置响应为完整计数。先校验寄存器响应，再按设备寄存器组合规则输出计数，返回解析成功标志。
+-+// 在整段 UART 接收数据中查找一个完整有效的保持寄存器响应。允许前面存在请求回显或无效字节，但仍严格核对站号、功能码、长度和 CRC。
+-+uint8_t AbsoluteEncoder_ParseHoldingResponseAnywhere(const uint8_t* bytes, uint16_t length,
+-+                                                     uint16_t* registers, uint16_t register_count);
+-+// 解析编码器位置响应为完整计数。可在包含请求回显的接收缓冲区中定位有效响应，再按设备寄存器组合规则输出计数。
+- uint8_t AbsoluteEncoder_ParseResponse(const uint8_t* response, uint16_t length, uint32_t* count);
+- // 构造单个保持寄存器写入请求。使用 RTU 单写功能码并附 CRC，不能据构造成功认为编码器已保存参数。
+- void AbsoluteEncoder_BuildWriteSingleRequest(uint16_t register_offset, uint16_t value,
+-diff --git a/app/Core/User/motion/src/absolute_encoder.c b/app/Core/User/motion/src/absolute_encoder.c
+-index e6f41dd..e2c1c13 100644
+---- a/app/Core/User/motion/src/absolute_encoder.c
+-+++ b/app/Core/User/motion/src/absolute_encoder.c
+-@@ -59,11 +59,31 @@ uint8_t AbsoluteEncoder_ParseHoldingResponse(const uint8_t* response, uint16_t l
+-     return 1U;
+- }
+- 
+-+// 在接收缓冲区中搜索有效保持寄存器响应，兼容半双工总线把请求回显放在响应之前的情况。
+-+uint8_t AbsoluteEncoder_ParseHoldingResponseAnywhere(const uint8_t* bytes, uint16_t length,
+-+                                                     uint16_t* registers, uint16_t register_count)
+-+{
+-+    uint16_t expected_length;
+-+    uint16_t offset;
+-+    if (bytes == 0 || registers == 0 || register_count == 0U) return 0U;
+-+    expected_length = (uint16_t)(5U + register_count * 2U);
+-+    if (length < expected_length) return 0U;
+-+    for (offset = 0U; offset <= (uint16_t)(length - expected_length); offset++) {
+-+        if (bytes[offset] == ABS_ENCODER_ADDRESS && bytes[offset + 1U] == 0x03U &&
+-+            bytes[offset + 2U] == (uint8_t)(register_count * 2U) &&
+-+            AbsoluteEncoder_ParseHoldingResponse(bytes + offset, expected_length,
+-+                                                  registers, register_count))
+-+            return 1U;
+-+    }
+-+    return 0U;
+-+}
+-+
+- // 解析编码器位置响应为完整计数。先校验寄存器响应，再按设备寄存器组合规则输出计数，返回解析成功标志。
+- uint8_t AbsoluteEncoder_ParseResponse(const uint8_t* response, uint16_t length, uint32_t* count)
+- {
+-     uint16_t registers[2];
+--    if (count == 0 || !AbsoluteEncoder_ParseHoldingResponse(response, length, registers, 2U)) return 0U;
+-+    if (count == 0 ||
+-+        !AbsoluteEncoder_ParseHoldingResponseAnywhere(response, length, registers, 2U)) return 0U;
+-     *count = (uint32_t)registers[0] | (uint32_t)registers[1] << 16;
+-     return 1U;
+- }
+-@@ -89,7 +109,17 @@ uint8_t AbsoluteEncoder_ParseWriteSingleResponse(const uint8_t* response, uint16
+-                                                  uint16_t register_offset, uint16_t value)
+- {
+-     uint8_t expected[ABS_ENCODER_REQUEST_SIZE];
+--    if (response == 0 || length != ABS_ENCODER_WRITE_RESPONSE_SIZE) return 0U;
+-+    uint16_t offset;
+-+    if (response == 0 || length < ABS_ENCODER_WRITE_RESPONSE_SIZE) return 0U;
+-     AbsoluteEncoder_BuildWriteSingleRequest(register_offset, value, expected);
+--    return memcmp(response, expected, ABS_ENCODER_WRITE_RESPONSE_SIZE) == 0 ? 1U : 0U;
+-+    if (length == ABS_ENCODER_WRITE_RESPONSE_SIZE)
+-+        return memcmp(response, expected, ABS_ENCODER_WRITE_RESPONSE_SIZE) == 0 ? 1U : 0U;
+-+    /* A write echo can contain the identical request twice. Only a matching
+-+     * frame after the leading request proves that the device answered. */
+-+    for (offset = ABS_ENCODER_REQUEST_SIZE;
+-+         offset <= (uint16_t)(length - ABS_ENCODER_WRITE_RESPONSE_SIZE); offset++) {
+-+        if (memcmp(response + offset, expected, ABS_ENCODER_WRITE_RESPONSE_SIZE) == 0)
+-+            return 1U;
+-+    }
+-+    return 0U;
+- }
+-diff --git a/app/Core/User/system/src/patrol_rtos.c b/app/Core/User/system/src/patrol_rtos.c
+-index 674bdc0..725f513 100644
+---- a/app/Core/User/system/src/patrol_rtos.c
+-+++ b/app/Core/User/system/src/patrol_rtos.c
+-@@ -434,11 +434,12 @@ static void Patrol_EncoderTask(void *argument)
+-     {
+- #if PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED
+-         uint8_t request[ABS_ENCODER_REQUEST_SIZE];
+--        uint8_t response[16] = {0};
+-+        uint8_t response[ABS_ENCODER_RX_BUFFER_SIZE] = {0};
+-         uint16_t registers[3];
+-         uint16_t response_length = 0U;
+-         uint16_t register_count;
+-         uint8_t read_config;
+-+        uint8_t response_ok = 0U;
+-         HAL_StatusTypeDef status;
+-         PatrolDiagnosticsSnapshot snapshot;
+-         uint32_t now;
+-@@ -474,11 +475,27 @@ static void Patrol_EncoderTask(void *argument)
+-         (void)HAL_UART_AbortReceive(&huart5);
+-         __HAL_UART_FLUSH_DRREGISTER(&huart5);
+-         status = HAL_UART_Transmit(&huart5, request, sizeof(request), 30U);
+--        if (status == HAL_OK)
+--            status = HAL_UARTEx_ReceiveToIdle(&huart5, response, sizeof(response), &response_length, 40U);
+-+        if (status == HAL_OK) {
+-+            /* A half-duplex adapter may deliver the request echo and the
+-+             * encoder reply as separate idle-delimited chunks. Collect at
+-+             * most two chunks, then search the combined buffer for a valid
+-+             * Modbus response. */
+-+            for (uint8_t chunk = 0U; chunk < 2U && response_length < sizeof(response); chunk++) {
+-+                uint16_t received = 0U;
+-+                status = HAL_UARTEx_ReceiveToIdle(
+-+                    &huart5, response + response_length,
+-+                    (uint16_t)(sizeof(response) - response_length), &received, 40U);
+-+                response_length += received;
+-+                if (status == HAL_OK && AbsoluteEncoder_ParseHoldingResponseAnywhere(
+-+                        response, response_length, registers, register_count)) {
+-+                    response_ok = 1U;
+-+                    break;
+-+                }
+-+                if (received == 0U) break;
+-+            }
+-+        }
+-         taskENTER_CRITICAL();
+--        if (status == HAL_OK && AbsoluteEncoder_ParseHoldingResponse(response, response_length,
+--                                                                     registers, register_count))
+-+        if (response_ok)
+-         {
+-             if (read_config)
+-                 PatrolRuntime_OnEncoderConfig(registers, now);
+-diff --git a/tests/chassis_safety_test.c b/tests/chassis_safety_test.c
+-index 48abeb5..ac852f8 100644
+---- a/tests/chassis_safety_test.c
+-+++ b/tests/chassis_safety_test.c
+-@@ -380,6 +380,12 @@ int main(void)
+-     uint8_t request[8];
+-     uint8_t write_response[8];
+-     uint8_t response[9] = {1, 3, 4, 0x12, 0x34, 0x56, 0x78, 0, 0};
+-+    uint8_t combined[ABS_ENCODER_RX_BUFFER_SIZE] = {0};
+-+    uint8_t field_echo_reply[17] = {
+-+        0x01, 0x03, 0x00, 0x03, 0x00, 0x02, 0x34, 0x0B,
+-+        0x01, 0x03, 0x04, 0x0C, 0x14, 0x00, 0x00, 0xB9, 0x67
+-+    };
+-+    uint8_t config_request[8];
+-     uint16_t crc;
+-     uint32_t count;
+-     uint16_t config_values[3];
+-@@ -451,16 +457,44 @@ int main(void)
+-     response[7] = (uint8_t)crc; response[8] = (uint8_t)(crc >> 8);
+-     CHECK(AbsoluteEncoder_ParseResponse(response, sizeof(response), &count));
+-     CHECK(count == 0x56781234U);
+-+    memcpy(combined, request, sizeof(request));
+-+    memcpy(combined + sizeof(request), response, sizeof(response));
+-+    CHECK(AbsoluteEncoder_ParseResponse(combined, sizeof(request) + sizeof(response), &count));
+-+    CHECK(count == 0x56781234U);
+-+    CHECK(!AbsoluteEncoder_ParseResponse(combined, sizeof(request), &count));
+-+    CHECK(AbsoluteEncoder_ParseResponse(combined, sizeof(request) + sizeof(response), &count));
+-+    CHECK(count == 0x56781234U);
+-+    CHECK(AbsoluteEncoder_ParseResponse(field_echo_reply, sizeof(field_echo_reply), &count));
+-+    CHECK(count == 3092U);
+-+    combined[sizeof(request) + 8U] ^= 0x01U;
+-+    CHECK(!AbsoluteEncoder_ParseResponse(combined, sizeof(request) + sizeof(response), &count));
+-+    memcpy(combined + sizeof(request), response, sizeof(response));
+-+    combined[0] = 0xA5U;
+-+    combined[1] = 0x5AU;
+-+    CHECK(AbsoluteEncoder_ParseResponse(combined, sizeof(request) + sizeof(response), &count));
+-+    CHECK(count == 0x56781234U);
+-     AbsoluteEncoder_BuildWriteSingleRequest(3U, 15U, write_response);
+-     CHECK(write_response[0] == 1U && write_response[1] == 6U && write_response[3] == 3U &&
+-           write_response[4] == 0U && write_response[5] == 15U);
+-     CHECK(AbsoluteEncoder_ParseWriteSingleResponse(write_response, sizeof(write_response), 3U, 15U));
+-+    memset(combined, 0, sizeof(combined));
+-+    memcpy(combined, write_response, sizeof(write_response));
+-+    memcpy(combined + sizeof(write_response), write_response, sizeof(write_response));
+-+    CHECK(AbsoluteEncoder_ParseWriteSingleResponse(combined, sizeof(write_response) * 2U, 3U, 15U));
+-+    combined[sizeof(write_response) + 5U] = 1U;
+-+    CHECK(!AbsoluteEncoder_ParseWriteSingleResponse(combined, sizeof(write_response) * 2U, 3U, 15U));
+-     write_response[5] = 1U;
+-     CHECK(!AbsoluteEncoder_ParseWriteSingleResponse(write_response, sizeof(write_response), 3U, 15U));
+-     crc = AbsoluteEncoder_Crc16(config_response, 9);
+-     config_response[9] = (uint8_t)crc; config_response[10] = (uint8_t)(crc >> 8);
+-     CHECK(AbsoluteEncoder_ParseHoldingResponse(config_response, sizeof(config_response), config_values, 3U));
+-     CHECK(config_values[0] == 1U && config_values[1] == 3U && config_values[2] == 0x4B00U);
+-+    AbsoluteEncoder_BuildReadHoldingRequest(0U, 3U, config_request);
+-+    memcpy(combined, config_request, sizeof(config_request));
+-+    memcpy(combined + sizeof(config_request), config_response, sizeof(config_response));
+-+    CHECK(AbsoluteEncoder_ParseHoldingResponseAnywhere(
+-+        combined, sizeof(config_request) + sizeof(config_response), config_values, 3U));
+-+    CHECK(config_values[0] == 1U && config_values[1] == 3U && config_values[2] == 0x4B00U);
+- 
+-     CHECK(FixedPoint_FormatMilli(fixed, sizeof(fixed), 0) && strcmp(fixed, "0.000") == 0);
+-     CHECK(FixedPoint_FormatMilli(fixed, sizeof(fixed), -1) && strcmp(fixed, "-0.001") == 0);
+diff --git a/temp_verify_Version_2/validation/can-remote-test.log b/temp_verify_Version_2/validation/can-remote-test.log
+deleted file mode 100644
+index cd5453c..0000000
+--- a/temp_verify_Version_2/validation/can-remote-test.log
++++ /dev/null
+@@ -1,6 +0,0 @@
+-test_real_can2_and_control_service (test_can_remote.CanRemoteTests.test_real_can2_and_control_service) ... ok
+-
+-----------------------------------------------------------------------
+-Ran 1 test in 1.261s
+-
+-OK
+diff --git a/temp_verify_Version_2/validation/can2-stack.log b/temp_verify_Version_2/validation/can2-stack.log
+deleted file mode 100644
+index 34737a6..0000000
+--- a/temp_verify_Version_2/validation/can2-stack.log
++++ /dev/null
+@@ -1,19 +0,0 @@
+-PASS CAN2 target: known 320 + reserve 512 <= 1024
+-PASS CAN2 reset: known 392 + reserve 512 <= 1024
+-PASS CAN2 reply: known 224 + reserve 512 <= 1024
+-PASS CAN2 lease stop: known 136 + reserve 512 <= 1024
+-PASS handset A switch: known 272 + reserve 512 <= 1024
+-PASS handset joystick: known 272 + reserve 512 <= 1024
+-PASS handset lease stop: known 128 + reserve 512 <= 1024
+-PASS fault capture from CAN2: known 368 + reserve 512 <= 1024
+-PASS fault frame from CAN2: known 400 + reserve 512 <= 1024
+-PASS fault transmit from CAN2: known 412 + reserve 512 <= 1024
+-PASS fault frame from safety: known 168 + reserve 512 <= 1024
+-PASS fault latch log: known 264 + reserve 512 <= 1024
+-PASS fault stop retry: known 240 + reserve 512 <= 1024
+-PASS diagnostic timeout log: known 296 + reserve 512 <= 1024
+-PASS write verification log: known 240 + reserve 512 <= 1024
+-PASS steering verification read: known 256 + reserve 512 <= 1024
+-PASS drive verification read: known 256 + reserve 512 <= 1024
+-PASS steering verification reply: known 260 + reserve 512 <= 1024
+-PASS drive verification reply: known 244 + reserve 512 <= 1024
+diff --git a/temp_verify_Version_2/validation/chassis-safety-test.log b/temp_verify_Version_2/validation/chassis-safety-test.log
+deleted file mode 100644
+index d4898c6..0000000
+--- a/temp_verify_Version_2/validation/chassis-safety-test.log
++++ /dev/null
+@@ -1 +0,0 @@
+-PASS: chassis_safety_test exit=0; includes split-chunk reassembly and real echo+reply frame
+diff --git a/temp_verify_Version_2/validation/diff-check.log b/temp_verify_Version_2/validation/diff-check.log
+deleted file mode 100644
+index e69de29..0000000
+diff --git a/tests/bench_steering_test.c b/tests/bench_steering_test.c
+index 2c34120..95d201a 100644
+--- a/tests/bench_steering_test.c
++++ b/tests/bench_steering_test.c
+@@ -121,21 +121,37 @@ int main(void)
+     assert(b.phase==BENCH_ACTIVE);
+     for(int i=0;i<4;i++) advance(&b,&now);
+     assert(b.applied==-82413 && b.step==16);
+-    /* A changed target during positioning must replace, not queue behind, the
+-       old target. Drop only new-set-point bit 4 after each acknowledged trigger. */
+-    for (int angle=500; angle>=0; angle-=500) {
+-        BenchSteering_Tick(&b,now,1,1,angle,0);
+-        assert(BenchSteering_Take(&b,now,&f) && b.index==0x607A);
+-        r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+1));
+-        assert(BenchSteering_Take(&b,now+2,&f) && b.index==0x6041 && b.read);
+-        r=reply(&b,0x27); assert(BenchSteering_OnFrame(&b,&r,now+3));
+-        assert(BenchSteering_Take(&b,now+4,&f) && b.index==0x6040 && f.data[4]==0x3F);
+-        r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+5));
+-        assert(BenchSteering_Take(&b,now+6,&f) && b.index==0x6040 && f.data[4]==0x2F);
+-        r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+7));
+-        assert(b.phase==BENCH_ACTIVE && b.step==16);
+-        now+=10;
+-    }
++    /* Once 0x607A has been written, a newer remote target waits in the single
++       desired slot until this trigger/clear cycle finishes. */
++    now=b.last_trigger_ms+BENCH_STEERING_TRIGGER_INTERVAL_MS;
++    BenchSteering_Tick(&b,now,1,1,500,0);
++    assert(BenchSteering_Take(&b,now,&f) && b.index==0x607A);
++    int32_t committed=b.applied;
++    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+1));
++    BenchSteering_Tick(&b,now+2,1,1,0,0);
++    assert(b.desired!=committed && b.applied==committed && b.step==18);
++    assert(BenchSteering_Take(&b,now+2,&f) && b.index==0x6041 && b.read);
++    r=reply(&b,0x27); assert(BenchSteering_OnFrame(&b,&r,now+3));
++    assert(BenchSteering_Take(&b,now+4,&f) && b.index==0x6040 && f.data[4]==0x3F);
++    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+5));
++    assert(BenchSteering_Take(&b,now+6,&f) && b.index==0x6040 && f.data[4]==0x2F);
++    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+7));
++    assert(b.phase==BENCH_ACTIVE && b.step==16 && b.desired==b.center);
++
++    /* Start-to-start trigger spacing is at least 100 ms. */
++    BenchSteering_Tick(&b,now+8,1,1,0,0);
++    assert(b.step==16 && !BenchSteering_Take(&b,now+8,&f));
++    now=b.last_trigger_ms+BENCH_STEERING_TRIGGER_INTERVAL_MS;
++    BenchSteering_Tick(&b,now,1,1,0,0);
++    assert(BenchSteering_Take(&b,now,&f) && b.index==0x607A);
++    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+1));
++    assert(BenchSteering_Take(&b,now+2,&f) && b.index==0x6041 && b.read);
++    r=reply(&b,0x27); assert(BenchSteering_OnFrame(&b,&r,now+3));
++    assert(BenchSteering_Take(&b,now+4,&f) && b.index==0x6040 && f.data[4]==0x3F);
++    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+5));
++    assert(BenchSteering_Take(&b,now+6,&f) && b.index==0x6040 && f.data[4]==0x2F);
++    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+7));
++    assert(b.phase==BENCH_ACTIVE && b.step==16);
+     BenchSteering_Tick(&b,now,0,1,0,0);
+     assert(b.phase==BENCH_STOPPING);
+     assert(BenchSteering_Take(&b,now,&f) && b.index==0x6040 && f.data[4]==6);
+@@ -146,45 +162,29 @@ int main(void)
+     assert(b.phase==BENCH_IDLE); /* stop emitted no target position */
+     assert(b.limits_aligned && b.minimum==-167802 && b.maximum==-2444);
+ 
+-    /* 0x6080 is a fixed 300 rpm ceiling.  An active profile starts at creep
+-       speed for a near target, then only receives a target after its selected
+-       0x6081 value has been read back. */
++    /* Current MAX/MID/CREEP profiles are equal, so runtime target changes do
++       not require repeated 0x6081 writes. */
+     BenchSteering_Init(&b); now=0;
+     assert(BenchSteering_Start(&b,-83815,-85123,-85123,30000,now));
+     for(int i=0;i<20;i++) advance(&b,&now);
+-    assert(b.phase==BENCH_ACTIVE && b.applied_profile_rpm==90);
++    assert(b.phase==BENCH_ACTIVE && b.applied_profile_rpm==1000);
++    now=b.last_trigger_ms+BENCH_STEERING_TRIGGER_INTERVAL_MS;
+     BenchSteering_Tick(&b,now,1,1,30000,0);
+-    assert(BenchSteering_Take(&b,now,&f) && b.index==0x6081);
+-    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+1));
+-    assert(BenchSteering_Take(&b,now+2,&f) && b.index==0x6081 && b.read);
+-    r=reply(&b,300); assert(BenchSteering_OnFrame(&b,&r,now+3));
+-    assert(b.applied_profile_rpm==300);
+-    assert(BenchSteering_Take(&b,now+4,&f) && b.index==0x607A);
++    assert(BenchSteering_Take(&b,now,&f) && b.index==0x607A);
+     r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+5));
+-    assert(BenchSteering_Take(&b,now+6,&f) && b.index==0x6041 && b.read);
+-    r=reply(&b,0x27); assert(BenchSteering_OnFrame(&b,&r,now+6));
+-    assert(BenchSteering_Take(&b,now+7,&f) && b.index==0x6040 && f.data[4]==0x3F);
+-    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+7));
+-    assert(BenchSteering_Take(&b,now+8,&f) && b.index==0x6040 && f.data[4]==0x2F);
+-    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+9));
++    assert(BenchSteering_Take(&b,now+1,&f) && b.index==0x6041 && b.read);
++    r=reply(&b,0x27); assert(BenchSteering_OnFrame(&b,&r,now+2));
++    assert(BenchSteering_Take(&b,now+3,&f) && b.index==0x6040 && f.data[4]==0x3F);
++    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+4));
++    assert(BenchSteering_Take(&b,now+5,&f) && b.index==0x6040 && f.data[4]==0x2F);
++    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+6));
+     assert(b.phase==BENCH_ACTIVE && b.step==16);
+-    /* At 27 degrees, even a full-scale command must fall back to creep before
+-       it can consume the 30.0 to 30.5 degree fault margin. */
+-    BenchSteering_Tick(&b,now+10,1,1,30000,27000);
+-    assert(BenchSteering_Take(&b,now+10,&f) && b.index==0x6081);
+-    assert(f.data[4]==90 && f.data[5]==0 && f.data[6]==0 && f.data[7]==0);
+-    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+11));
+-    assert(BenchSteering_Take(&b,now+12,&f) && b.index==0x6081 && b.read);
+-    r=reply(&b,90); assert(BenchSteering_OnFrame(&b,&r,now+13));
+-    assert(b.applied_profile_rpm==90 && b.step==16);
+-    /* At 24 degrees the mid profile is written and verified before proceeding. */
+-    BenchSteering_Tick(&b,now+20,1,1,30000,24000);
+-    assert(BenchSteering_Take(&b,now+20,&f) && b.index==0x6081);
+-    assert(f.data[4]==180 && f.data[5]==0 && f.data[6]==0 && f.data[7]==0);
+-    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+21));
+-    assert(BenchSteering_Take(&b,now+22,&f) && b.index==0x6081 && b.read);
+-    r=reply(&b,180); assert(BenchSteering_OnFrame(&b,&r,now+23));
+-    assert(b.applied_profile_rpm==180 && b.phase==BENCH_ACTIVE && b.step==16);
++    BenchSteering_Tick(&b,now+7,1,1,30000,27000);
++    assert(b.applied_profile_rpm==1000 && b.step==16);
++    assert(!BenchSteering_Take(&b,now+7,&f));
++    BenchSteering_Tick(&b,now+8,1,1,30000,24000);
++    assert(b.applied_profile_rpm==1000 && b.step==16);
++    assert(!BenchSteering_Take(&b,now+8,&f));
+ 
+     BenchSteering_Init(&b);
+     assert(BenchSteering_Start(&b,-83815,-72187,-85123,30000,0)); now=0;
+diff --git a/tests/write_verify_runtime_cases.c b/tests/write_verify_runtime_cases.c
+index b89f6a3..895c2d5 100644
+--- a/tests/write_verify_runtime_cases.c
++++ b/tests/write_verify_runtime_cases.c
+@@ -195,7 +195,7 @@ static void test_steering_lost_ack(uint16_t index, int32_t value)
+     printf("PASS steering missing ACK 0x%04X: read-only proof; no trigger replay\n", index);
+ }
+ 
+-// 未触发的旧转角在核验期间被更新时直接换成最新目标；不能恢复后补发积压旧定位。
++// 核验中的目标先完成本轮触发；期间收到的唯一最新目标在随后一轮执行，不补发中间值。
+ static void test_latest_steering(void)
+ {
+     fixture(); drop_node = 1U; drop_index = 0x607AU;
+@@ -208,9 +208,10 @@ static void test_latest_steering(void)
+     }
+     int32_t latest;
+     assert(SteeringAngle_ToControllerCount(8000,0,VEHICLE_STEERING_COUNTS_MILLI,1,-82680,82680,&latest));
+-    assert(changed && dropped && triggers == 1U && trigger_targets[0] == latest);
++    assert(changed && dropped && triggers == 2U);
++    assert(trigger_targets[0] != latest && trigger_targets[1] == latest);
+     assert(!RemoteService_State()->fault_latched && target == latest);
+-    puts("PASS latest steering replaces superseded untriggered goal after verification");
++    puts("PASS committed steering goal completes before the single latest target runs");
+ }
+ 
+ // 行走左右目标分别丢 ACK，必须核对完整目标对和驱动状态；核验后采用最新遥控速度。
+@@ -417,7 +418,8 @@ static void test_disarm_abandons_verification(void)
+ // 执行生产路径的成功、未知执行结果、最新目标和安全退路场景。
+ int main(void)
+ {
+-    _Static_assert(sizeof(BenchSteering)==88U && sizeof(BenchDrive)==52U,"verification must use former padding");
++    _Static_assert(sizeof(BenchSteering)==92U && sizeof(BenchDrive)==52U,
++        "steering trigger spacing consumes one bounded uint32 slot");
+     test_single_diagnostic_loss();
+     test_steering_lost_ack(0x607AU,0);
+     test_steering_lost_ack(0x6040U,0x3F);
