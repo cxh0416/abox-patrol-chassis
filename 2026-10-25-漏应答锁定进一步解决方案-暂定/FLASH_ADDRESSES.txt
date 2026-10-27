@@ -1,0 +1,19 @@
+patrol_vehicle_chassis / patrol-chassis-0.2.91 / FEEDBACK PRIORITY AND CONTROLLED STOP
+
+推荐完整安装，写完三个文件后再复位：
+1. Patrol_Vehicle_Chassis_Full.bin -> 0x08000000 (189504 bytes)
+2. BootState_A.bin -> 0x0803E800 (2048 bytes)
+3. BootState_B.bin -> 0x0803F000 (2048 bytes)
+
+Full 已包含 32 KiB 冻结 Boot 和 App，不要同时重复烧录独立 App/Boot。
+已有匹配冻结 Boot 时，可使用：
+Patrol_Vehicle_Chassis_App.bin -> 0x08008000 (156736 bytes)
+但仍必须写入本包配套 BootState_A/B。
+
+禁止整片擦除。保留：
+- 0x0803E000..0x0803E7FF 配置恢复页
+- 0x0803F800..0x0803FFFF Config V5 与故障日志页
+
+App CRC32: B98E6B15
+App SHA256: FA95F31778CABFA5314E052CC3F7FBFFA3BDD0EF4CF0E34140F72B11F1EABCB5
+Full SHA256: 2D53FA603AF050B7578D7B219F25491AF765880373BFFB0B3C8EA2231F486838

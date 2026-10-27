@@ -68,6 +68,7 @@ static int test_steering_tpdo_freshness(void)
 
     PatrolDiagnostics_Snapshot(&d, 550U, &s);
     CHECK(s.steering_status_fresh && s.steering_feedback_fresh);
+    CHECK(s.steering_position_ms == 550U);
     PatrolDiagnostics_Snapshot(&d, 551U, &s);
     CHECK(!s.steering_status_fresh && s.steering_feedback_fresh);
 
@@ -396,8 +397,42 @@ static int test_diagnostic_retry_gate(void)
     return 0;
 }
 
+static int test_normal_motion_without_dual_angle_gate(void)
+{
+    const int32_t differences[] = {1999, 2000, 2001, 3000};
+    for (int sign = -1; sign <= 1; sign += 2) {
+        for (unsigned i = 0; i < sizeof(differences) / sizeof(differences[0]); ++i) {
+            ChassisControl c;
+            ChassisFeedback f = {0};
+            f.calibrated = f.encoder_profile_ready = f.encoder_range_valid = 1U;
+            f.steering_online = f.drive_online = f.power_ready = 1U;
+            f.feedback_ms = 100U;
+            f.steering_actual_mdeg = sign * 10000;
+            f.encoder_actual_mdeg = sign * (10000 + differences[i]);
+            /* No paired samples are required by ordinary remote motion. */
+            ChassisControl_Init(&c);
+            ChassisControl_SetFeedback(&c, &f);
+            CHECK(ChassisControl_SafetyReason(&c, 100U) == CHASSIS_STOP_NONE);
+            CHECK(ChassisControl_Apply(&c, "acquire", "angle", 1U, 1000U, 100, 10000, 100U));
+            ChassisControl_Tick(&c, 110U);
+            CHECK(c.enable_request && c.target_rpm == 100 && !c.fault_latched && !c.fault_pending);
+            CHECK(ChassisControl_Apply(&c, "renew", "angle", 2U, 1000U, 150, -10000, 120U));
+            CHECK(c.target_rpm == 150 && c.target_steering_mdeg == -10000);
+            CHECK(ChassisControl_SafetyReason(&c, 351U) == CHASSIS_STOP_FEEDBACK_STALE);
+            f.encoder_range_valid = 0U;
+            ChassisControl_SetFeedback(&c, &f);
+            CHECK(ChassisControl_SafetyReason(&c, 120U) == CHASSIS_STOP_ENCODER_RANGE);
+            f.encoder_range_valid = 1U; f.encoder_profile_ready = 0U;
+            ChassisControl_SetFeedback(&c, &f);
+            CHECK(ChassisControl_SafetyReason(&c, 120U) == CHASSIS_STOP_ENCODER_PROFILE);
+        }
+    }
+    return 0;
+}
+
 int main(void)
 {
+    CHECK(test_normal_motion_without_dual_angle_gate() == 0);
     CHECK(test_sdo_waits_for_node() == 0);
     CHECK(test_status_snapshot_age() == 0);
     CHECK(test_steering_tpdo_freshness() == 0);

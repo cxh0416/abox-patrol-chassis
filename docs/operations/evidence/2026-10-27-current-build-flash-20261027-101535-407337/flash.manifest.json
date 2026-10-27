@@ -1,0 +1,74 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.101",
+  "candidate": true,
+  "configuration": "Release",
+  "active_car": 0,
+  "actuation_enabled": true,
+  "steering_executor_compiled": true,
+  "drive_executor_compiled": true,
+  "startup_motion_permit": false,
+  "steering_profile_rpm": {
+    "max": 1000,
+    "mid": 1000,
+    "creep": 1000
+  },
+  "app": {
+    "file": "Patrol_Vehicle_Chassis_App.bin",
+    "address": "0x08008000",
+    "size": 156844,
+    "initial_sp": "0x20010000",
+    "reset_vector": "0x800d44d",
+    "crc32": "29E5BDE0",
+    "sha256": "944de4a7a16f8e539fd58f6ec23cdb509afc175db38f830e016949a7a30bde7e"
+  },
+  "boot": {
+    "file": "ABox_Boot.bin",
+    "address": "0x08000000",
+    "size": 32768,
+    "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+  },
+  "full": {
+    "file": "Patrol_Vehicle_Chassis_Full.bin",
+    "address": "0x08000000",
+    "size": 189612,
+    "crc32": "5EF34678",
+    "sha256": "e0eb1f7f6479dfa541c41d30f21721cc97f84aa180b186a19f885e396380d694"
+  },
+  "states": [
+    {
+      "file": "BootState_A.bin",
+      "address": "0x0803E800",
+      "size": 2048,
+      "record_crc32": "1B9D46C1",
+      "sha256": "5964ed541764e68e89ddd5dd58db0fbe54c22ab70eb6eefd234e9cf05c639c87"
+    },
+    {
+      "file": "BootState_B.bin",
+      "address": "0x0803F000",
+      "size": 2048,
+      "erased": true,
+      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+    }
+  ],
+  "verification": {
+    "arm_release_build": true,
+    "can2_stack": true,
+    "bench_stack": true,
+    "full_boot_prefix": true,
+    "full_app_suffix": true,
+    "version_marker": true,
+    "vectors_valid": true,
+    "state_a_bound": true,
+    "state_b_erased": true,
+    "product_python_passed": 47,
+    "product_python_total": 56,
+    "known_failures": 9,
+    "known_failure_summary": "1 static identity rule, 7 historical document links, and test_production_stop_arbitration"
+  },
+  "source_commit": "2ba035d730849cb798ef89d4fb18b04848fbcaeb",
+  "platform_commit": "4db1579dfb3cc7505acf2b1d1a8d147c587ea217",
+  "product_dirty": true,
+  "board_flashed": false,
+  "field_verified": false
+}

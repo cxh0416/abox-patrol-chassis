@@ -1,0 +1,52 @@
+[
+  {
+    "file": "ABox_Boot.bin",
+    "size": 32768,
+    "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+  },
+  {
+    "file": "BootState_A.bin",
+    "size": 2048,
+    "sha256": "20d379d3c866a51d218e068b1963a7de1ee514ca7cdd1a286f2a4da39c6a77e0"
+  },
+  {
+    "file": "BootState_B.bin",
+    "size": 2048,
+    "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+  },
+  {
+    "file": "FLASH_ADDRESSES.txt",
+    "size": 1199,
+    "sha256": "6c6f2a73ed4846a390b26e286704e0fc8a7b23bfac00ac9b5d39c0b04d306985"
+  },
+  {
+    "file": "flash.manifest.json",
+    "size": 1670,
+    "sha256": "dba0aa1cceab858d5a23b50fd88ef08f6b5842b6df75a841305b546d8d74664c"
+  },
+  {
+    "file": "Patrol_Vehicle_Chassis_App.bin",
+    "size": 157008,
+    "sha256": "92de4329d9951a86d617eb842ee52df18e3f73c3ada19e3512bef332181a25d3"
+  },
+  {
+    "file": "Patrol_Vehicle_Chassis_App.elf",
+    "size": 269028,
+    "sha256": "53f89846ac7aaa3c33a7f9dc03d4fd63d7906f313f5c42b537e5c331aa97add0"
+  },
+  {
+    "file": "Patrol_Vehicle_Chassis_App.map",
+    "size": 667375,
+    "sha256": "7b48646d8c0877974c7f8d9a4f52ea489e3d888bc8f39c30c457ac55ed2698b9"
+  },
+  {
+    "file": "Patrol_Vehicle_Chassis_Full.bin",
+    "size": 189776,
+    "sha256": "13b9907f5d7ac50e1a705fa097ca4aa24ee559c08ecd5fbed7d7a5c5c16e90ff"
+  },
+  {
+    "file": "README.md",
+    "size": 1946,
+    "sha256": "5c20b83053b106ec1be9b2fc1d2937fdd33128d77ce65197fc327ac93b38e0c0"
+  }
+]

@@ -99,6 +99,12 @@ void RemoteService_ExecutionFault(void)
     ChassisControl_RequestFault(&g_control, CHASSIS_STOP_EXECUTION_FAULT);
     taskEXIT_CRITICAL();
 }
+void RemoteService_SafetyFault(ChassisStopReason reason)
+{
+    taskENTER_CRITICAL();
+    ChassisControl_RequestFault(&g_control, reason);
+    taskEXIT_CRITICAL();
+}
 // 由运行层在双节点撤使能完成或等待超期时正式锁存；本函数不发运动命令。
 void RemoteService_CompleteFaultStop(void)
 {

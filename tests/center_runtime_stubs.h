@@ -28,6 +28,15 @@ uint32_t PatrolRuntimePort_Now(void) { return mock_now; }
 const ChassisControl* RemoteService_State(void) { return &mock_control; }
 void RemoteService_Revoke(void) { mock_control.session_active = 0; mock_control.enable_request = 0; }
 void RemoteService_ExecutionFault(void) { mock_control.fault_latched = 1; }
+void RemoteService_SafetyFault(ChassisStopReason reason)
+{
+#ifdef CENTER_HOST_REAL_CONTROL
+    ChassisControl_RequestFault(&mock_control, reason);
+#else
+    mock_control.stop_reason = reason;
+    mock_control.fault_latched = 1U;
+#endif
+}
 void RemoteService_CompleteFaultStop(void) { mock_control.fault_pending = 0; mock_control.fault_latched = 1; }
 #endif
 #ifndef CENTER_HOST_REAL_CONTROL

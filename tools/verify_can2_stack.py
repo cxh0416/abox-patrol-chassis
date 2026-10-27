@@ -17,6 +17,15 @@ rx_capacity = int(re.search(r'#define PATROL_CAN_RX_STACK_WORDS (\d+)U', source)
 safety_capacity = int(re.search(r'#define PATROL_SAFETY_STACK_WORDS (\d+)U', source)[1]) * 4
 canopen_capacity = int(re.search(r'#define PATROL_CANOPEN_STACK_WORDS (\d+)U', source)[1]) * 4
 chains = {
+    'centering boundary fault capture': (canopen_capacity, ['Patrol_CanopenTask', 'PatrolRuntime_Tick',
+        'RemoteService_SafetyFault', 'ChassisControl_RequestFault',
+        'PatrolRuntime_RequestFaultStop', 'PatrolRuntime_CaptureFault']),
+    'centering boundary fault transmit': (canopen_capacity, ['Patrol_CanopenTask', 'PatrolRuntime_Tick',
+        'RemoteService_SafetyFault', 'ChassisControl_RequestFault', 'PatrolRuntime_RequestFaultStop',
+        'dispatch_fault_stop', 'PatrolFaultStop_Take', 'PatrolRuntimePort_SendCan']),
+    'centering boundary stop log': (canopen_capacity, ['Patrol_CanopenTask', 'PatrolRuntime_Tick',
+        'RemoteService_SafetyFault', 'ChassisControl_RequestFault', 'PatrolRuntime_RequestFaultStop',
+        'BenchSteering_Stop', 'AppLog_Printf']),
     'CAN2 target': (rx_capacity, ['Patrol_CanRxTask', 'PatrolCanRemote_OnFrame',
                                 'RemoteService_ApplyLocal', 'ChassisControl_Apply']),
     'CAN2 reset': (rx_capacity, ['Patrol_CanRxTask', 'PatrolCanRemote_OnFrame',

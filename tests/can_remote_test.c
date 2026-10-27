@@ -309,18 +309,27 @@ int main(void)
     assert(send(PATROL_CAN_POWER_ON,2,0,0)==PATROL_CAN_SAFETY);
     center_active=0; ota=1; assert(send(PATROL_CAN_ARM,3,0,0)==PATROL_CAN_SAFETY);
     ota=0;
-    for (unsigned gate=0;gate<9;gate++) {
+    for (unsigned gate=0;gate<8;gate++) {
         healthy(); ChassisFeedback f=state()->feedback;
         switch(gate) {
         case 0:f.calibrated=0;break; case 1:f.steering_online=0;break;
         case 2:f.drive_online=0;break; case 3:f.feedback_ms=now-251;break;
         case 4:f.drive_fault=1;break; case 5:f.can_bus_off=1;break;
         case 6:f.encoder_profile_ready=0;break; case 7:f.encoder_range_valid=0;break;
-        case 8:f.encoder_actual_mdeg=2001;break;
         }
         RemoteService_UpdateFeedback(&f);
         assert(send(PATROL_CAN_ARM,(uint16_t)(10+gate),0,0)==PATROL_CAN_SAFETY);
         assert(!state()->session_active && !state()->enable_request);
+    }
+    healthy();
+    {
+        ChassisFeedback f=state()->feedback;
+        f.steering_actual_mdeg=10000; f.encoder_actual_mdeg=13000;
+        RemoteService_UpdateFeedback(&f);
+        assert(send(PATROL_CAN_ARM,30,0,0)==PATROL_CAN_OK);
+        assert(send(PATROL_CAN_TARGET,31,100,10000)==PATROL_CAN_OK);
+        assert(state()->enable_request && state()->target_rpm==100);
+        assert(send(PATROL_CAN_STOP,32,0,0)==PATROL_CAN_OK);
     }
     healthy(); assert(RemoteService_ApplyLocal("acquire","other-owner",1,300,0,0,now));
     assert(send(PATROL_CAN_ARM,50,0,0)==PATROL_CAN_OWNER);
@@ -359,6 +368,18 @@ int main(void)
     }
     assert(state()->fault_latched && state()->stop_reason==CHASSIS_STOP_DIRECTION_TIMEOUT);
     assert(!state()->enable_request);
+    /* The physical T12 path also retains its session/target at 3 degrees. */
+    init();
+    {
+        ChassisFeedback f=state()->feedback;
+        f.steering_actual_mdeg=10000; f.encoder_actual_mdeg=13000;
+        RemoteService_UpdateFeedback(&f);
+        switches(1,0); joystick(225,180);
+        now+=10U; RemoteService_SafetyTick(now); PatrolPhyRemote_Tick(now,1U);
+        assert(state()->enable_request && state()->session_active && state()->target_rpm==1000);
+        assert(state()->target_steering_mdeg==10000 && !state()->fault_latched);
+        assert(!strcmp(state()->session_id,"phy-remote"));
+    }
     drive_speed_cases();
     physical_b_ignored_cases();
     calibration_cases();

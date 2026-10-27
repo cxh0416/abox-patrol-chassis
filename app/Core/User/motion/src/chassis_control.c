@@ -132,7 +132,7 @@ ChassisStopReason ChassisControl_RuntimeSafetyReason(const ChassisControl* contr
     return CHASSIS_STOP_NONE;
 }
 
-// 返回阻止正常运动的首个安全原因。在运行期门禁基础上检查标定、编码器规格、量程、电源就绪和双角度偏差；偏差超过 2000 mdeg 即拒绝运动。
+// 返回阻止正常运动的首个安全原因。保留标定、反馈时效、编码器规格及范围门禁；双角差仅在标定和自动回中边界检查。
 ChassisStopReason ChassisControl_SafetyReason(const ChassisControl* control, uint32_t now_ms)
 {
     const ChassisFeedback* f = &control->feedback;
@@ -142,7 +142,6 @@ ChassisStopReason ChassisControl_SafetyReason(const ChassisControl* control, uin
     if (!f->encoder_profile_ready) return CHASSIS_STOP_ENCODER_PROFILE;
     if (!f->encoder_range_valid || !steering_hard_range(f)) return CHASSIS_STOP_ENCODER_RANGE;
     if (!f->power_ready) return CHASSIS_STOP_POWER_NOT_READY;
-    if (llabs((int64_t)f->steering_actual_mdeg - f->encoder_actual_mdeg) > 2000L) return CHASSIS_STOP_ANGLE_MISMATCH;
     return CHASSIS_STOP_NONE;
 }
 

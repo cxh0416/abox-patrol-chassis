@@ -43,7 +43,10 @@ uint8_t PatrolAutoCenter_Tick(PatrolAutoCenter* center, uint32_t now,
     }
     if (feedback->feedback_ms != center->last_sample_ms) {
         center->last_sample_ms = feedback->feedback_ms;
-        if (llabs((int64_t)feedback->steering_actual_mdeg) <= PATROL_AUTO_CENTER_TOLERANCE_MDEG &&
+        /* Completion keeps the existing three dual-center samples, with
+         * comparable timestamps; transient skew never stops the return. */
+        if (feedback->angle_pair_valid &&
+            llabs((int64_t)feedback->steering_actual_mdeg) <= PATROL_AUTO_CENTER_TOLERANCE_MDEG &&
             llabs((int64_t)feedback->encoder_actual_mdeg) <= PATROL_AUTO_CENTER_TOLERANCE_MDEG)
             ++center->centered_samples;
         else

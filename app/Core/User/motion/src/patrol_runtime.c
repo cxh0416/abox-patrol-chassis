@@ -399,7 +399,15 @@ uint8_t PatrolRuntime_AutoCenterActive(void)
     return active;
 }
 
-// 检查无遥控会话时本地自动回中可用条件。同时约束抑制标志、标定、坐标、供电、CAN、OTA 和统一安全门禁，不能绕过正常故障锁存。
+// 计算两个新鲜样本的最短时间差，兼容毫秒计数自然回绕。
+static uint32_t angle_sample_skew(uint32_t first, uint32_t second)
+{
+    uint32_t forward = first - second;
+    uint32_t backward = second - first;
+    return forward < backward ? forward : backward;
+}
+
+// 检查无遥控会话时本地自动回中可用条件。双角差只在启动前核对，执行中继续监督其他安全门禁。
 static uint8_t auto_center_safe(const ChassisControl* control, uint32_t now)
 {
     return PATROL_CHASSIS_ACTUATION_ENABLED && PATROL_STEERING_EXECUTOR_ENABLED &&
@@ -486,6 +494,9 @@ void PatrolRuntime_UpdateFeedback(uint32_t now)
      * Raw controller sign remains available in get_can_diag. */
     feedback.right_actual_rpm = snapshot.right_actual_rpm > 32768 ? -32768 :
         (snapshot.right_actual_rpm < -32767 ? 32767 : (int16_t)-snapshot.right_actual_rpm);
+    feedback.angle_pair_valid = (uint8_t)(snapshot.steering_feedback_fresh && snapshot.encoder_online &&
+        angle_sample_skew(snapshot.steering_position_ms, snapshot.encoder_sample_ms) <=
+            CHASSIS_STEERING_PAIR_SKEW_MS);
     if (feedback.calibrated)
     {
         feedback.steering_actual_mdeg = SteeringAngle_FromControllerCount(
@@ -590,7 +601,18 @@ void PatrolRuntime_Tick(void)
             if (!g_motion.auto_center.requested && !g_motion.auto_center.failed && local_safe &&
                 (labs(c->feedback.steering_actual_mdeg) > PATROL_AUTO_CENTER_TOLERANCE_MDEG ||
                  labs(c->feedback.encoder_actual_mdeg) > PATROL_AUTO_CENTER_TOLERANCE_MDEG))
-                PatrolAutoCenter_Request(&g_motion.auto_center, now, c->feedback.steering_actual_mdeg);
+            {
+                /* Wait for comparable samples before starting. A normal remote
+                 * target never passes through this centering-only check. */
+                if (c->feedback.angle_pair_valid &&
+                    llabs((int64_t)c->feedback.steering_actual_mdeg -
+                          c->feedback.encoder_actual_mdeg) > VEHICLE_STEERING_TOLERANCE_MDEG) {
+                    RemoteService_SafetyFault(CHASSIS_STOP_ANGLE_MISMATCH);
+                    normal_safe = safe = local_safe = 0U;
+                } else if (c->feedback.angle_pair_valid) {
+                    PatrolAutoCenter_Request(&g_motion.auto_center, now, c->feedback.steering_actual_mdeg);
+                }
+            }
             local_moving = PatrolAutoCenter_Tick(&g_motion.auto_center, now, local_safe,
                 g_motion.drive.phase == BENCH_IDLE, &c->feedback);
             if (g_motion.auto_center.failed) {

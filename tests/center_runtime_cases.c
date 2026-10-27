@@ -83,6 +83,19 @@ int main(void)
         assert(strstr(diagnostics, "\"detailReason\":\"gate_not_ready\""));
     }
 
+    /* Calibration keeps its relative two-degree guard after normal-motion
+     * comparison is removed. The raw jump is valid but disagrees by ~3 deg. */
+    reset_fixture(); start_ready();
+    assert(CenterCalibration_Jog(g_motion.center_cal.session_id, 1000));
+    mock_now += 20U;
+    mock_snapshot.encoder_count += 166U;
+    mock_snapshot.encoder_sample_ms = mock_snapshot.coherent_feedback_ms = mock_now;
+    CenterCalibration_UpdateRelative(&mock_snapshot);
+    assert(!g_motion.center_cal.relative_valid);
+    CenterCalibration_Tick(mock_now);
+    assert(g_motion.center_cal.phase == CENTER_CAL_STOPPING ||
+           g_motion.center_cal.phase == CENTER_CAL_FAILED);
+
     reset_fixture(); start_ready();
     assert(CenterCalibration_Jog(g_motion.center_cal.session_id, 1000));
     g_motion.bench.phase = BENCH_ACTIVE; g_motion.bench.step = 17;

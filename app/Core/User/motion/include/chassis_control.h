@@ -7,6 +7,7 @@
 #define CHASSIS_MAX_STEERING_MDEG 30000
 #define CHASSIS_MAX_LEASE_MS 1000U
 #define CHASSIS_FEEDBACK_TIMEOUT_MS 250U
+#define CHASSIS_STEERING_PAIR_SKEW_MS 30U
 
 typedef enum {
     CHASSIS_STOP_NONE = 0,
@@ -37,6 +38,7 @@ typedef struct {
     uint8_t power_ready;
     uint8_t encoder_range_valid;
     uint8_t encoder_profile_ready;
+    uint8_t angle_pair_valid; /* Time-aligned samples for centering boundaries, not a normal-motion gate. */
     int16_t left_actual_rpm;
     int16_t right_actual_rpm;
     int32_t steering_actual_mdeg;

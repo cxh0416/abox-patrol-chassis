@@ -1,0 +1,24 @@
+patrol_vehicle_chassis / patrol-chassis-0.2.94 / STEERING TPDO ONLY
+
+推荐完整安装，写完三个文件后再复位：
+1. Patrol_Vehicle_Chassis_Full.bin -> 0x08000000 (189528 bytes)
+2. BootState_A.bin -> 0x0803E800 (2048 bytes)
+3. BootState_B.bin -> 0x0803F000 (2048 bytes)
+
+Full 已包含 32 KiB 冻结 Boot 和 App，不要同时重复烧录独立 App/Boot。
+已有匹配冻结 Boot 时，可使用：
+Patrol_Vehicle_Chassis_App.bin -> 0x08008000 (156760 bytes)
+但仍必须写入本包配套 BootState_A/B。
+
+禁止整片擦除。保留：
+- 0x0803E000..0x0803E7FF 配置恢复页
+- 0x0803F800..0x0803FFFF Config V5 与故障日志页
+
+转向实时状态和位置只使用 0x181/0x281 TPDO；
+删除运行期间对 0x6041/0x6064 的周期 SDO 读取及 SDO 兜底。
+配置寄存器读取阶段仍保持 500 ms。
+本包尚未烧录，尚未完成现场验证。
+
+App CRC32: 341DD177
+App SHA256: EDC1F4F99EF2F59F9FDC236693F7C59043904B848FF15685CF5213A6E2FA8A6E
+Full SHA256: 8e2101616553d70f70dede1e4e8c722671074f242f173d2aab5b6df855ad8e2c

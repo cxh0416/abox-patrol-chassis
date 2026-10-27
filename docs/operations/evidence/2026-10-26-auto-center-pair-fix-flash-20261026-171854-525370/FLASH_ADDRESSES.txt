@@ -1,0 +1,28 @@
+patrol_vehicle_chassis / patrol-chassis-0.2.99 / AUTO-CENTER PAIR-GATING FIX
+
+推荐完整安装，写完三个文件后再复位：
+1. Patrol_Vehicle_Chassis_Full.bin -> 0x08000000 (190400 bytes)
+2. BootState_A.bin -> 0x0803E800 (2048 bytes)
+3. BootState_B.bin -> 0x0803F000 (2048 bytes)
+
+Full 已包含 32 KiB 冻结 Boot 和 App，不要同时重复烧录独立 App/Boot。
+已有匹配冻结 Boot 时，可使用：
+Patrol_Vehicle_Chassis_App.bin -> 0x08008000 (157632 bytes)
+但仍必须写入本包配套 BootState_A/B。
+
+禁止整片擦除。保留：
+- 0x0803E000..0x0803E7FF 配置恢复页
+- 0x0803F800..0x0803FFFF Config V5 与故障日志页
+
+转向目标斜率：12000 mdeg/s
+大幅反向门限：5000 mdeg
+中位稳定范围：+/-1000 mdeg，连续 3 帧
+双路反馈配对窗口：30 ms
+配对失败：阻止新运动和新的自动回中，不触发整机紧急故障
+保留双转角硬门禁：2000 mdeg
+
+App CRC32: B198BCC5
+App SHA256: B430A729D61A1A87A9EC62962DF15DDB2C37EBE8AAD25922AAA943D025B367C4
+Full SHA256: C5284D973EDCB02995057B73D9E68BFF552BBEBC60FDC340AF21B92055537FCD
+BootState_A SHA256: 3E160EA20F280D41CA86DEC1466B5D965538978372CE3B8F896943A3CFF7F93E
+BootState_B SHA256: D0FF1B294B5288D1AE1421EADF5B2D38A8752B76D472FF30BED9028E25B1C5B8

@@ -19,6 +19,8 @@ void RemoteService_LabSeedNetworkState(void);
 #endif
 // 将执行失败交给先撤使能后锁存流程；pending 阶段立即禁止新运动，已有首因保持不变。
 void RemoteService_ExecutionFault(void);
+// 按明确首因请求统一故障停车；不把边界角度异常改记为通用执行失败。
+void RemoteService_SafetyFault(ChassisStopReason reason);
 // 在撤使能确认或有界失败退路处理后锁存 MCU 故障；不恢复控制授权。
 void RemoteService_CompleteFaultStop(void);
 // 初始化共享远控仲裁及请求缓存。根据 Config V5 填入标定有效性，保留内部行走禁用位并清空会话和重放记录；不会自动使能。

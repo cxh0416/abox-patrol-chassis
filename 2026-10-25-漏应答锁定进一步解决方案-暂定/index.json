@@ -1,0 +1,48 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "date": "2026-10-25",
+  "version": "patrol-chassis-0.2.91",
+  "candidate": true,
+  "purpose": "Prioritize feedback approaching its 250 ms safety deadline and use the existing bounded stop sequence instead of immediately latching a fault after one delayed status upload",
+  "root_cause": "A Node 1 SDO response arrived about 187 ms after its request while steering writes occupied CAN1; Node 2 drive status was not sampled again for about 297 ms, exceeded the 250 ms feedback gate, and the executor classified the transport scheduling delay as a permanent execution fault",
+  "app_sha256": "fa95f31778cabfa5314e052cc3f7fbffa3bdd0ef4cf0e34140f72b11f1eabcb5",
+  "full_sha256": "2d53fa603af050b7578d7b219f25491af765880373bffb0b3c8ea2231f486838",
+  "app_crc32": "B98E6B15",
+  "validation": {
+    "arm_release_build": true,
+    "feedback_priority": true,
+    "low_priority_timeout_release": true,
+    "controlled_stop_after_session_revoke": true,
+    "center_runtime": true,
+    "auto_center_runtime": true,
+    "can2_center_calibration": true,
+    "chassis_safety_test": true,
+    "bench_drive_test": true,
+    "can2_stack": true,
+    "full_boot_prefix": true,
+    "full_app_suffix": true,
+    "boot_state_a_bound": true,
+    "boot_state_b_erased": true
+  },
+  "known_full_suite_failures": [
+    "test_identity_and_safe_defaults: pre-existing static assertion",
+    "test_document_links_and_archived_evidence_references: existing CURRENT.md links to removed evidence directories",
+    "bench_steering_test: pre-existing assertion still expects the retired 90 rpm profile speed"
+  ],
+  "board_flashed": false,
+  "field_verified": false,
+  "files": [
+    "ABox_Boot.bin",
+    "BootState_A.bin",
+    "BootState_B.bin",
+    "Patrol_Vehicle_Chassis_App.bin",
+    "Patrol_Vehicle_Chassis_App.elf",
+    "Patrol_Vehicle_Chassis_App.map",
+    "Patrol_Vehicle_Chassis_Full.bin",
+    "FLASH_ADDRESSES.txt",
+    "README.md",
+    "flash.manifest.json",
+    "index.json",
+    "sha256.json"
+  ]
+}

@@ -1,0 +1,25 @@
+patrol_vehicle_chassis / patrol-chassis-0.2.96 / PAIRED STARTUP BOOTSTRAP
+
+推荐完整安装，写完三个文件后再复位：
+1. Patrol_Vehicle_Chassis_Full.bin -> 0x08000000 (189776 bytes)
+2. BootState_A.bin -> 0x0803E800 (2048 bytes)
+3. BootState_B.bin -> 0x0803F000 (2048 bytes)
+
+Full 已包含 32 KiB 冻结 Boot 和 App，不要同时重复烧录独立 App/Boot。
+已有匹配冻结 Boot 时，可使用：
+Patrol_Vehicle_Chassis_App.bin -> 0x08008000 (157008 bytes)
+但仍必须写入本包配套 BootState_A/B。
+
+禁止整片擦除。保留：
+- 0x0803E000..0x0803E7FF 配置恢复页
+- 0x0803F800..0x0803FFFF Config V5 与故障日志页
+
+启动引导：0x6041 + 0x6064 每 100 ms 成对读取，最多 6 组；
+成功完成或失败后均永久停止 Node 1 引导 SDO。
+运行期转向实时状态和位置只使用 0x181/0x281 TPDO。
+
+App CRC32: 87E52F5F
+App SHA256: 92DE4329D9951A86D617EB842EE52DF18E3F73C3ADA19E3512BEF332181A25D3
+Full SHA256: 13B9907F5D7AC50E1A705FA097CA4AA24EE559C08ECD5FBED7D7A5C5C16E90FF
+BootState_A SHA256: 20D379D3C866A51D218E068B1963A7DE1EE514CA7CDD1A286F2A4DA39C6A77E0
+BootState_B SHA256: D0FF1B294B5288D1AE1421EADF5B2D38A8752B76D472FF30BED9028E25B1C5B8

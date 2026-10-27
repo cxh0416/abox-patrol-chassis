@@ -1,0 +1,13 @@
+diff --git a/app/Core/User/system/src/patrol_rtos.c b/app/Core/User/system/src/patrol_rtos.c
+index 725f513..b1466eb 100644
+--- a/app/Core/User/system/src/patrol_rtos.c
++++ b/app/Core/User/system/src/patrol_rtos.c
+@@ -517,7 +517,7 @@ static void Patrol_EncoderTask(void *argument)
+         else
+             PatrolRuntime_OnEncoderError(PATROL_ENCODER_ERROR_FORMAT);
+         taskEXIT_CRITICAL();
+-        vTaskDelay(pdMS_TO_TICKS(read_config ? 500U : 100U));
++        vTaskDelay(pdMS_TO_TICKS(read_config ? 500U : 60U));
+ #else
+         vTaskDelay(pdMS_TO_TICKS(1000U));
+ #endif

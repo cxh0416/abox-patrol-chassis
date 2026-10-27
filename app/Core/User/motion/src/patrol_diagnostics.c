@@ -487,6 +487,7 @@ void PatrolDiagnostics_Snapshot(const PatrolDiagnostics* diagnostics, uint32_t n
     snapshot->right_actual_rpm = diagnostics->right_actual_rpm;
     snapshot->encoder_count = diagnostics->encoder_count;
     snapshot->encoder_sample_ms = diagnostics->encoder_ms;
+    snapshot->steering_position_ms = diagnostics->steering_position_ms;
     all_feedback = (uint8_t)(snapshot->steering_feedback_fresh && snapshot->drive_feedback_fresh &&
                              snapshot->encoder_online);
     if (all_feedback)
