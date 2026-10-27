@@ -17,6 +17,10 @@ rx_capacity = int(re.search(r'#define PATROL_CAN_RX_STACK_WORDS (\d+)U', source)
 safety_capacity = int(re.search(r'#define PATROL_SAFETY_STACK_WORDS (\d+)U', source)[1]) * 4
 canopen_capacity = int(re.search(r'#define PATROL_CANOPEN_STACK_WORDS (\d+)U', source)[1]) * 4
 chains = {
+    'drive angle selection': (canopen_capacity, ['Patrol_CanopenTask', 'PatrolRuntime_Tick',
+        'BenchDrive_SetSteeringAngle']),
+    'drive differential selection': (canopen_capacity, ['Patrol_CanopenTask', 'PatrolRuntime_Tick',
+        'BenchDrive_Tick']),
     'centering boundary fault capture': (canopen_capacity, ['Patrol_CanopenTask', 'PatrolRuntime_Tick',
         'RemoteService_SafetyFault', 'ChassisControl_RequestFault',
         'PatrolRuntime_RequestFaultStop', 'PatrolRuntime_CaptureFault']),

@@ -1,0 +1,182 @@
+[
+  {
+    "file": "BootState_A.bin",
+    "size": 2048,
+    "sha256": "33dc1f880c3a636b98d01d094ff97dad9b9abb55567d37008936a356f47de2c3"
+  },
+  {
+    "file": "BootState_B.bin",
+    "size": 2048,
+    "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+  },
+  {
+    "file": "candidate/candidate.manifest.json",
+    "size": 596,
+    "sha256": "4b7dd15a1b721444cbba657d6d5478d82d6758c18463f8143162797c782699ef"
+  },
+  {
+    "file": "candidate/Patrol_Vehicle_Chassis_App.bin",
+    "size": 157260,
+    "sha256": "beebf1bb839ba5ddaa79a93b51da44e51eaba23b26fce8bbacb2ab32d4962cbd"
+  },
+  {
+    "file": "flash.manifest.json",
+    "size": 2024,
+    "sha256": "cb00972c4f69ef6681f50d9766d673a240455c52bb37c02b365cf8e70dece097"
+  },
+  {
+    "file": "FLASH_ADDRESSES.txt",
+    "size": 678,
+    "sha256": "6c0a898d5b1d6bdd17a908e024b37935fe48a3cc3d37d38fff718a8ff50701e2"
+  },
+  {
+    "file": "Patrol_Vehicle_Chassis_Full.bin",
+    "size": 190028,
+    "sha256": "9c1b5f33d362bc5c28796ab029b439c6443b51a6cb7fa2686a7a2bee541b9697"
+  },
+  {
+    "file": "README.md",
+    "size": 2029,
+    "sha256": "f033927e5b7f3e4f5f97e748d842298ecd3fbb27f3caf65b42f3881bf5bb1479"
+  },
+  {
+    "file": "source/app/Core/User/motion/include/bench_drive.h",
+    "size": 3199,
+    "sha256": "455f6c12b1106f3b277d09e51d28e463e3d4b8090d022d55f20b5c9928d94993"
+  },
+  {
+    "file": "source/app/Core/User/motion/include/bench_steering.h",
+    "size": 3699,
+    "sha256": "0fdec3da4afd4ee6d6d8845d0f09f20b6a3c58580f5972e6787f43d085f32564"
+  },
+  {
+    "file": "source/app/Core/User/motion/private/motion_internal.h",
+    "size": 8139,
+    "sha256": "701228ed6a88f218139d0c3c63ddf5b17b8f0063a0b53fac3484fc661bd7dbbe"
+  },
+  {
+    "file": "source/app/Core/User/motion/src/bench_drive.c",
+    "size": 17650,
+    "sha256": "246c9de5cf270afab96f16cd8d7656bc28de16a1dc54562f96961b8836671fae"
+  },
+  {
+    "file": "source/app/Core/User/motion/src/bench_steering.c",
+    "size": 26317,
+    "sha256": "174297e6f344cb297c3c91ce9b11a259fae6a378376077af3ec8ac9f270ef595"
+  },
+  {
+    "file": "source/app/Core/User/motion/src/patrol_runtime.c",
+    "size": 47618,
+    "sha256": "526f8d756fe9112b57a9bd8eb7943f6fe0c72f392c4e98f1c950b06dbd24a35c"
+  },
+  {
+    "file": "source/docs/CURRENT.md",
+    "size": 92265,
+    "sha256": "1755456fe5ea3f3c67cd7911462799084f98747db2a8049cef76b363111cd283"
+  },
+  {
+    "file": "source/docs/implementation/源码模块与依赖.md",
+    "size": 16718,
+    "sha256": "18ff7ec39749db9f8db0715a4228638d3807456b4510a2202afa5bb13102523f"
+  },
+  {
+    "file": "source/docs/operations/架空行走与平台远控实现.md",
+    "size": 8704,
+    "sha256": "b0523d710e0bd9aca8f0aa7f2893fba1f5a6cbb2e1a32778db9cd8928c5bb455"
+  },
+  {
+    "file": "source/tests/bench_drive_test.c",
+    "size": 7186,
+    "sha256": "ebb8d222b8701530d5cc6d423435b4b9291212e0288363b663eac2af02d81185"
+  },
+  {
+    "file": "source/tests/bench_steering_test.c",
+    "size": 19922,
+    "sha256": "779ee5fdfef4a9d93bdae51e0c7d46cf3224ef9e8071b434cc365d8aa5140768"
+  },
+  {
+    "file": "source/tests/stop_scheduler_cases.c",
+    "size": 10828,
+    "sha256": "ddf9f5525215d116f5c36d1d2e3f5024a65780784c23b72af965178b3ae5355f"
+  },
+  {
+    "file": "source/tests/write_verify_runtime_cases.c",
+    "size": 26439,
+    "sha256": "0366f15a874545b678230d056e8224c079d3996bdab94f582ac6dd64282182c0"
+  },
+  {
+    "file": "source/tools/verify_can2_stack.py",
+    "size": 6185,
+    "sha256": "737f0ff7413623e6f606046e2a0a2832178868d69dfdb3c718ea5b3c584f79cf"
+  },
+  {
+    "file": "source/VERSION",
+    "size": 23,
+    "sha256": "12e8afec6886be54f2e90434cedf0542ce9294dbada224718ed48e5e030837ae"
+  },
+  {
+    "file": "source-changes.patch",
+    "size": 79606,
+    "sha256": "0ae5109d6e322b5304f45f072ca185b5f91fdf2dc8264b74c65bf3b652c98230"
+  },
+  {
+    "file": "validation/arm-release-build.log",
+    "size": 22,
+    "sha256": "8c35b1682f73592d30612d7b0fabdb384fcfff35cb5a076cb48b85b1368aa794"
+  },
+  {
+    "file": "validation/bench-stack.log",
+    "size": 294,
+    "sha256": "78faa7050eeff9523e01b82adf6c956ddb1fc917709732808bc50b999fe2801a"
+  },
+  {
+    "file": "validation/bootstate-create.log",
+    "size": 366,
+    "sha256": "5dfbed9dbe64f11c7c35e7a4bee00aaaa7416425862c4a973f05687730ea148d"
+  },
+  {
+    "file": "validation/bootstate-verifier-build.log",
+    "size": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "file": "validation/bootstate-verifier.log",
+    "size": 141,
+    "sha256": "65d4e35871f504b5d31b74f36d6cb08b67287ac484bfcde0b6e786944d8b32c0"
+  },
+  {
+    "file": "validation/can2-stack.log",
+    "size": 1439,
+    "sha256": "3c65ba934653c7fc113d92863b10dccfff780bc3cea4dcc2353198b443927a8d"
+  },
+  {
+    "file": "validation/git-diff-check.log",
+    "size": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "file": "validation/package_drive_differential_0.2.105.py",
+    "size": 14515,
+    "sha256": "7741e455a9405276eaa676ea73699f78db780d49bfa2addd232a3ca0063a026c"
+  },
+  {
+    "file": "validation/product-python.log",
+    "size": 140741,
+    "sha256": "d49ec1bb7d8b7899b2e18163cf2921a07fe09aad272d5a8ef446929f8006cd94"
+  },
+  {
+    "file": "validation/verify-state-0.2.105.c",
+    "size": 3969,
+    "sha256": "cfee41e42a3f4488e84cde533786009e24b226e0ea38adadb13bd8f80141a806"
+  },
+  {
+    "file": "verify-state-0.2.105.c",
+    "size": 3969,
+    "sha256": "cfee41e42a3f4488e84cde533786009e24b226e0ea38adadb13bd8f80141a806"
+  },
+  {
+    "file": "verify-state-0.2.105.exe",
+    "size": 70222,
+    "sha256": "bea96a3baf88be4856bce72342a5e9bf4ee4ca818e2288cc079ccee7aa0256a7"
+  }
+]

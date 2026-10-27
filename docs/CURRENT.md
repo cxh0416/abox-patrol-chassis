@@ -1,5 +1,11 @@
 # 当前项目状态
 
+2026-10-27 当前源码候选为 `patrol-chassis-0.2.105`，增加普通行走的两档内轮差速：油门作为外轮目标，采用转向电机反馈换算的实际车轮角度，±1° 内等速；小角度内轮为外轮 90%，大角度为 65%，在绝对转角 11° 进入大角度档、9° 退出，中间保持前档。前进/倒车均同比缩放，左转减左轮、右转减右轮；未新增软件速度斜坡，未调整驱动器加减速参数。恒油门下转角变化会更新目标，正在发送的左右目标对保持冻结，丢 ACK 后按两侧各自目标核验。双零速、三组新停车反馈、6 秒换向期限与其他安全门禁保留。实现和参数见[源码模块](implementation/源码模块与依赖.md)、[行走维护说明](operations/架空行走与平台远控实现.md)。
+
+本次独立行走执行器测试、实际转角与目标角相反的 Runtime 用例、左右轮分别丢 ACK、上一对已差速的半对核验及错误读回拒绝均通过。ARM Release、Bench/CAN2/服务栈、Flash 布局、冻结 Boot 与 `git diff --check` 通过；结构保持原尺寸（ARM 48 字节、主机 52 字节），静态 BSS 未越过 `0x2000BC40` 故障邮箱。全量产品回归运行 56 个测试方法，仍有与修改前完全相同的 8 条失败记录（静态身份检查 1 条、历史文档链接 7 条），无新增失败。因此仅整体替换[行走候选](../out/candidates/bench-drive/candidate.manifest.json)，正式 `dist/` 全部文件哈希保持不变。候选 App 157,260 字节、CRC32 `39E5B6E5`、SHA256 `BEEBF1BB839BA5DDAA79A93B51DA44E51EABA23B26FCE8BBACB2AB32D4962CBD`，`active_car=0`。验证摘要位于 `out/logs/drive-differential-verification-20261027.json`；未烧录，未验证真实差速、轮胎拖磨改善或驱动器加减速行为。
+
+2026-10-27 `patrol-chassis-0.2.105` 三文件烧录包已生成：[实际转角内轮差速完整包](operations/evidence/2026-10-27-drive-differential-flash-20261027-145020-117458/README.md)。`Patrol_Vehicle_Chassis_Full.bin` 190,028 字节、CRC32 `4A496685`、SHA256 `9C1B5F33D362BC5C28796AB029B439C6443B51A6CB7FA2686A7A2BEE541B9697`；`BootState_A.bin` SHA256 `33DC1F880C3A636B98D01D094FF97DAD9B9ABB55567D37008936A356F47DE2C3`；`BootState_B.bin` SHA256 `D0FF1B294B5288D1AE1421EADF5B2D38A8752B76D472FF30BED9028E25B1C5B8`。尚未烧录或实车验证。
+
 2026-10-27 当前源码候选为 `patrol-chassis-0.2.104`，保持 `0.2.103` 的显式停车与反馈过期修复，并将烧录变体恢复为 `PATROL_ACTIVE_CAR=0`。现场 `0.2.103` 使用 CAR2 精确中位档 `-1463`，而 Flash Config V5 保存中位为 `-1464`，启动时逐车归属比较失败并仅清除 RAM 标定标志，导致自动回中和运动使能均被 `UNCALIBRATED` 门禁阻止。`0.2.104` 不再应用该逐车精确中位档，可用于恢复本车行为；ARM Release、CAN2/Bench 栈、Full/State 拼接和 Boot State V3 校验通过，产品主机回归仍为 48/56（仅既有静态身份 1 项和历史文档链接 7 项）。候选 App 156,900 字节、CRC32 `00139201`、SHA256 `066E3A2F4B6FF3835C36ABA53D1C41AD93FEF5E2F2AA5874399B340C34D71E62`。
 
 2026-10-27 `patrol-chassis-0.2.104` 三文件烧录包已生成：[ActiveCar 0 完整包](operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/README.md)。`Patrol_Vehicle_Chassis_Full.bin` 189,668 字节、CRC32 `E2FBF29E`、SHA256 `1708BA5C0E66DC2868593645C96EAE40EA5905080085D9AB6AE970E78E3DDE61`；`BootState_A.bin` SHA256 `CA6A02F33F62D8E78CF43D8E3C87A1D7E10012CA3D78B5D3B57CEB281F1F6D59`；`BootState_B.bin` SHA256 `D0FF1B294B5288D1AE1421EADF5B2D38A8752B76D472FF30BED9028E25B1C5B8`。尚未烧录或实车验证。

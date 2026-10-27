@@ -1,0 +1,1 @@
+PASS: real Boot State V3 parser/CRC, State A binding, State B erase, matching-image jump and mismatch rejection; no install/write callbacks.

@@ -668,6 +668,7 @@ void PatrolRuntime_Tick(void)
             BenchDrive_Start(&g_motion.drive, now);
         uint8_t drive_was_verifying = g_motion.drive.verify;
         uint8_t steer_was_verifying = g_motion.bench.verify;
+        BenchDrive_SetSteeringAngle(&g_motion.drive, c->feedback.steering_actual_mdeg);
         BenchDrive_Tick(&g_motion.drive, now, drive_requested, executor_safe,
             c->target_rpm, g_motion.diagnostics.left_actual_rpm, g_motion.diagnostics.right_actual_rpm,
             g_motion.diagnostics.left_rpm_ms, g_motion.diagnostics.right_rpm_ms);

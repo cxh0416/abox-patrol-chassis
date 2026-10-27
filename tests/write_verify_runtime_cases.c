@@ -18,7 +18,7 @@ uint8_t VehiclePowerOutput_IsAvailable(void) { return 1U; }
 typedef struct { PatrolCanFrame frame; uint32_t at; } Sent;
 static Sent frames[3000];
 static unsigned count, handled, triggers, dropped;
-static int32_t target, profile, wheel[2], trigger_targets[20];
+static int32_t target, profile, wheel[2], trigger_targets[20], measured_position;
 static uint16_t control_word[2], drop_index;
 static uint8_t enabled[2], capacity, drop_node, omit_write, lose_verify_read, stuck_ack;
 static uint8_t ack, bad_readback;
@@ -74,6 +74,7 @@ static void respond(void)
             else if (index == 0x6040U) { width = 2U; value = control_word[node-1U]; }
             else if (index == 0x607AU) value = target + (bad_readback && g_motion.bench.verify ? 1 : 0);
             else if (index == 0x6081U) value = profile;
+            else if (index == 0x6064U) value = measured_position;
             else if (index == 0x60FFU) value = wheel[0];
             else if (index == 0x68FFU) value = wheel[1];
             else if (index == 0x6069U || index == 0x6869U)
@@ -120,7 +121,7 @@ static void fixture(void)
     drop_diagnostic_read = dropped_read = 0U;
     drop_index = 0U; mock_now = 1000U; mock_power = mock_profile_ready = 1U;
     mock_ota = mock_bus_off = 0U; capacity = 3U;
-    target = 0; profile = 180; wheel[0] = 300; wheel[1] = -300;
+    target = measured_position = 0; profile = 180; wheel[0] = 300; wheel[1] = -300;
     enabled[0] = enabled[1] = 1U; control_word[0] = 0x2FU; control_word[1] = 0x0FU;
     mock_config.calibrated = 1U;
     mock_config.steering_counts_per_degree_milli = VEHICLE_STEERING_COUNTS_MILLI;
@@ -144,6 +145,7 @@ static void fixture(void)
     g_motion.bench.applied_profile_rpm = 180U;
     g_motion.drive.phase = BENCH_ACTIVE; g_motion.drive.step = 12U;
     g_motion.drive.applied = g_motion.drive.writing = 300; g_motion.drive.direction = 1;
+    g_motion.drive.applied_left = g_motion.drive.applied_right = 300;
     PatrolRuntime_UpdateFeedback(mock_now);
     assert(ChassisControl_SafetyReady(RemoteService_State(), mock_now));
     assert(RemoteService_ApplyLocal("acquire","verify-test",1U,1000U,300,0,mock_now));
@@ -228,6 +230,28 @@ static void test_drive_lost_ack(uint16_t index)
     assert(writes(2U,index,index == 0x60FFU ? 600 : -600) == 1U);
     if (index == 0x60FFU) assert(!writes(2U,0x68FFU,-600));
     printf("PASS drive missing ACK 0x%04X: full pair verified; latest speed only\n", index);
+}
+
+// 真实 Runtime 使用实际电机转角而非摇杆目标；差速左/右写丢 ACK 均按冻结目标对核验。
+static void test_differential_runtime(uint16_t lost_index, int turn)
+{
+    fixture(); drop_node = lost_index ? 2U : 0U; drop_index = lost_index;
+    assert(SteeringAngle_ToControllerCount(turn*20000,0,VEHICLE_STEERING_COUNTS_MILLI,1,
+        -82680,82680,&measured_position));
+    g_motion.diagnostics.steering_position_count = measured_position;
+    PatrolRuntime_UpdateFeedback(mock_now);
+    /* Deliberately command the opposite steering angle to distinguish feedback from target. */
+    request(2U,2000,-turn*20000);
+    for (uint32_t t=1010U;t<1700U;t+=10U) tick(t);
+    assert(!RemoteService_State()->fault_latched && !RemoteService_State()->fault_pending);
+    assert(wheel[0]==(turn<0?1300:2000) && wheel[1]==(turn>0?-1300:-2000));
+    assert(!g_motion.drive.verify && g_motion.drive.applied==2000);
+    if (lost_index) {
+        assert(dropped==1U);
+        assert(writes(2U,0x60FFU,turn<0?1300:2000)==1U);
+        assert(writes(2U,0x68FFU,turn>0?-1300:-2000)==1U);
+    }
+    printf("PASS actual-angle differential turn=%d lost ACK=0x%04X: frozen pair verified\n",turn,lost_index);
 }
 
 // 不执行写入、核验漏响应、错误回读或旧 ACK 一直为高时均须安全停机，不能靠新遥控帧解除故障。
@@ -322,6 +346,38 @@ static void drive_reply(BenchDrive* b, PatrolCanFrame f, int32_t value, uint32_t
     assert(BenchDrive_OnFrame(b,&f,now));
 }
 
+// 上一目标已经差速时，左写丢 ACK 必须核对旧右轮的独立值；不能根据旧基础转速推断右轮。
+static void test_differential_half_pair_proof(uint8_t wrong_right)
+{
+    BenchDrive b; PatrolCanFrame f;
+    BenchDrive_Init(&b); b.phase=BENCH_ACTIVE; b.step=12U;
+    b.applied=2000; b.applied_left=2000; b.applied_right=1300; b.direction=1;
+    BenchDrive_SetSteeringAngle(&b,-20000);
+    BenchDrive_Tick(&b,1000U,1U,1U,2000,2000,-1300,1000U,1000U);
+    assert(BenchDrive_Take(&b,1000U,&f)); /* Left=1300 executed, ACK deliberately omitted. */
+    BenchDrive_Tick(&b,1060U,1U,1U,2000,1300,-1300,1060U,1060U);
+    assert(b.verify && BenchDrive_Take(&b,1060U,&f)); drive_reply(&b,f,0x37,1061U);
+    BenchDrive_SetSteeringAngle(&b,0); /* A later angle cannot change this proof's expected values. */
+    assert(BenchDrive_Take(&b,1062U,&f)); drive_reply(&b,f,3,1063U);
+    assert(BenchDrive_Take(&b,1064U,&f)); drive_reply(&b,f,1300,1065U);
+    assert(BenchDrive_Take(&b,1066U,&f)); drive_reply(&b,f,wrong_right?-2000:-1300,1067U);
+    if (wrong_right) {
+        assert(b.phase==BENCH_FAULT && b.cut_power);
+    } else {
+        assert(!b.verify && b.step==14U && b.applied_left==1300 && b.applied_right==1300);
+        assert(BenchDrive_Take(&b,1068U,&f));
+        int32_t value=(int32_t)((uint32_t)f.data[4] | (uint32_t)f.data[5]<<8 |
+            (uint32_t)f.data[6]<<16 | (uint32_t)f.data[7]<<24);
+        assert(value==-2000);
+        f.id=0x582U; f.data[0]=0x60U;
+        assert(BenchDrive_OnFrame(&b,&f,1069U));
+        assert(b.applied_left==1300 && b.applied_right==2000);
+        BenchDrive_Tick(&b,1070U,1U,1U,2000,1300,-2000,1070U,1070U);
+        assert(b.step==13U && b.writing_percent==0); /* Latest straight pair runs next. */
+    }
+    printf("PASS differential half-pair proof: independent previous right target, mismatch=%u\n",wrong_right);
+}
+
 // 59/60ms ACK 边界、79/80ms 单次读取、200ms 总期限、迟到应答排空和毫秒回绕
 // 都不能被新响应续期或转成假成功。
 static void test_verification_deadlines(void)
@@ -330,6 +386,7 @@ static void test_verification_deadlines(void)
         uint32_t base=wrap ? UINT32_MAX-50U : 1000U;
         BenchDrive b; PatrolCanFrame f;
         BenchDrive_Init(&b); b.phase=BENCH_ACTIVE; b.step=13U; b.writing=b.desired=600; b.applied=300;
+        b.applied_left=b.applied_right=300;
         assert(BenchDrive_Take(&b,base,&f));
         BenchDrive_Tick(&b,base+59U,1U,1U,600,300,-300,base,base);
         assert(b.pending && !b.verify && b.phase==BENCH_ACTIVE);
@@ -350,6 +407,7 @@ static void test_verification_deadlines(void)
         /* A response after the 80ms read timeout is consumed only by the
            drain state and cannot complete a new transaction. */
         BenchDrive_Init(&b); b.phase=BENCH_ACTIVE; b.step=13U; b.writing=b.desired=600; b.applied=300;
+        b.applied_left=b.applied_right=300;
         assert(BenchDrive_Take(&b,base,&f));
         BenchDrive_Tick(&b,base+60U,1U,1U,600,300,-300,base,base);
         assert(BenchDrive_Take(&b,base+60U,&f));
@@ -373,6 +431,7 @@ static void test_reversal_after_verified_zero(void)
 {
     BenchDrive b; PatrolCanFrame f;
     BenchDrive_Init(&b); b.phase=BENCH_ACTIVE; b.step=12U; b.applied=b.writing=300; b.direction=1;
+    b.applied_left=b.applied_right=300;
     BenchDrive_Tick(&b,1000U,1U,1U,-300,300,-300,1000U,1000U);
     assert(b.reversing && !b.writing && BenchDrive_Take(&b,1000U,&f));
     BenchDrive_Tick(&b,1059U,1U,1U,-300,0,0,1000U,1000U);
@@ -398,6 +457,7 @@ static void test_disarm_abandons_verification(void)
 {
     BenchDrive b; PatrolCanFrame f;
     BenchDrive_Init(&b); b.phase=BENCH_ACTIVE; b.step=13U; b.writing=b.desired=600; b.applied=300;
+    b.applied_left=b.applied_right=300;
     assert(BenchDrive_Take(&b,1000U,&f));
     BenchDrive_Tick(&b,1060U,1U,1U,600,300,-300,1000U,1000U);
     assert(b.verify && !b.pending);
@@ -419,7 +479,7 @@ static void test_disarm_abandons_verification(void)
 int main(void)
 {
     _Static_assert(sizeof(BenchSteering)==92U && sizeof(BenchDrive)==52U,
-        "steering trigger spacing consumes one bounded uint32 slot");
+        "frozen drive pair must fit existing RAM and fault-mailbox boundary");
     test_single_diagnostic_loss();
     test_steering_lost_ack(0x607AU,0);
     test_steering_lost_ack(0x6040U,0x3F);
@@ -429,6 +489,13 @@ int main(void)
     test_latest_after_unknown_trigger();
     test_drive_lost_ack(0x60FFU);
     test_drive_lost_ack(0x68FFU);
+    test_differential_half_pair_proof(0U);
+    test_differential_half_pair_proof(1U);
+    for (int turn=-1;turn<=1;turn+=2) {
+        test_differential_runtime(0U,turn);
+        test_differential_runtime(0x60FFU,turn);
+        test_differential_runtime(0x68FFU,turn);
+    }
     for (unsigned kind=0U; kind<6U; ++kind) test_verification_failure(kind);
     for (unsigned kind=0U; kind<3U; ++kind) test_safety_gate_during_verify(kind);
     test_verification_deadlines();

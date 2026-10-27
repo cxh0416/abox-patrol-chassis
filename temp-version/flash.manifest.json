@@ -1,0 +1,68 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.105",
+  "candidate": true,
+  "configuration": "Release",
+  "active_car": 0,
+  "actuation_enabled": true,
+  "steering_executor_compiled": true,
+  "drive_executor_compiled": true,
+  "startup_motion_permit": false,
+  "app": {
+    "file": "Patrol_Vehicle_Chassis_App.bin",
+    "address": "0x08008000",
+    "size": 157260,
+    "initial_sp": "0x20010000",
+    "reset_vector": "0x800d44d",
+    "crc32": "39E5B6E5",
+    "sha256": "BEEBF1BB839BA5DDAA79A93B51DA44E51EABA23B26FCE8BBACB2AB32D4962CBD"
+  },
+  "boot": {
+    "address": "0x08000000",
+    "size": 32768,
+    "sha256": "981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63"
+  },
+  "full": {
+    "file": "Patrol_Vehicle_Chassis_Full.bin",
+    "address": "0x08000000",
+    "size": 190028,
+    "crc32": "4A496685",
+    "sha256": "9C1B5F33D362BC5C28796AB029B439C6443B51A6CB7FA2686A7A2BEE541B9697"
+  },
+  "states": [
+    {
+      "file": "BootState_A.bin",
+      "address": "0x0803E800",
+      "size": 2048,
+      "record_crc32": "CBDED0C2",
+      "sha256": "33DC1F880C3A636B98D01D094FF97DAD9B9ABB55567D37008936A356F47DE2C3"
+    },
+    {
+      "file": "BootState_B.bin",
+      "address": "0x0803F000",
+      "size": 2048,
+      "erased": true,
+      "sha256": "D0FF1B294B5288D1AE1421EADF5B2D38A8752B76D472FF30BED9028E25B1C5B8"
+    }
+  ],
+  "verification": {
+    "arm_release_build": true,
+    "can2_stack": true,
+    "bench_stack": true,
+    "full_boot_prefix": true,
+    "full_app_suffix": true,
+    "version_marker": true,
+    "vectors_valid": true,
+    "state_a_bound": true,
+    "state_b_erased": true,
+    "product_python_passed": 48,
+    "product_python_total": 56,
+    "known_failures": 8,
+    "known_failure_summary": "1 static identity rule and 7 historical document links"
+  },
+  "source_commit": "048b7f588a2001b15d430ab6ab500f485845c0b6",
+  "platform_commit": "4db1579dfb3cc7505acf2b1d1a8d147c587ea217",
+  "product_dirty": true,
+  "board_flashed": false,
+  "field_verified": false
+}

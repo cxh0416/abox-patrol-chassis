@@ -1,0 +1,1224 @@
+diff --git a/VERSION b/VERSION
+index 99f7dec..dcb4ebe 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-patrol-chassis-0.2.104
++patrol-chassis-0.2.105
+diff --git a/app/Core/User/motion/include/bench_drive.h b/app/Core/User/motion/include/bench_drive.h
+index 7a3e7b3..af859c3 100644
+--- a/app/Core/User/motion/include/bench_drive.h
++++ b/app/Core/User/motion/include/bench_drive.h
+@@ -3,20 +3,31 @@
+ #include "bench_steering.h"
+ /* Drive actuator limit shared by normal control. */
+ #define BENCH_DRIVE_MAX_RPM 2000
++/* Vehicle-angle feedback: right positive. Only the inner wheel is reduced. */
++#define BENCH_DRIVE_STRAIGHT_MDEG 1000
++#define BENCH_DRIVE_LARGE_ENTER_MDEG 11000
++#define BENCH_DRIVE_LARGE_EXIT_MDEG 9000
++#define BENCH_DRIVE_INNER_SMALL_PERCENT 90
++#define BENCH_DRIVE_INNER_LARGE_PERCENT 65
+ typedef struct {
+     BenchPhase phase;
+     uint8_t step, pending, read, width, cut_power, confirmations, reversing;
+     uint8_t verify; /* Occupies former padding; verification never replays a write. */
++    int8_t direction;
+     uint16_t index;
+     uint32_t sent_ms, started_ms, zero_ms, left_ms, right_ms, fault;
+-    int32_t expected;
+     int16_t desired, applied, writing;
+-    int8_t direction;
++    int16_t applied_left, applied_right; /* Last acknowledged/read-back target per wheel. */
++    /* 0 = straight; negative = left inner, positive = right inner; abs = percent.
++     * Freezing base rpm + percentage retains the pair without growing static RAM. */
++    int8_t turn_percent, writing_percent;
+ } BenchDrive;
+ // 清空行走执行器状态并回到空闲阶段。重置握手、目标、方向和停车计数；仅修改 RAM，不发送 CAN 报文。
+ void BenchDrive_Init(BenchDrive* b);
+ // 从空闲状态启动行走驱动器准备流程。非空闲时拒绝；记录起始时间，实际模式写入、零速和 CiA402 使能由后续 Take/OnFrame 逐步推进。
+ uint8_t BenchDrive_Start(BenchDrive* b, uint32_t now);
++// 更新转向电机反馈对应的实际车轮角度。±1° 内等速；大角度档在 11° 进入、9° 退出，不增加软件速度斜坡。
++void BenchDrive_SetSteeringAngle(BenchDrive* b, int32_t actual_mdeg);
+ // 请求行走执行器有序停车或紧急故障退出。普通停止先取消旧事务，再写左右零速、确认停车并撤使能；emergency 非零则直接锁存故障并置切电请求。
+ void BenchDrive_Stop(BenchDrive* b, uint32_t now, uint8_t emergency);
+ // 推进行走目标、事务超时和换向停车状态。反向前明确写双轮零速，只有零速 ACK 之后且比上一对更新的左右反馈才参与三次低速确认；事务、准备、停车超时分别受限。
+diff --git a/app/Core/User/motion/src/bench_drive.c b/app/Core/User/motion/src/bench_drive.c
+index 2dd5b22..bbd5513 100644
+--- a/app/Core/User/motion/src/bench_drive.c
++++ b/app/Core/User/motion/src/bench_drive.c
+@@ -2,6 +2,9 @@
+ #include <stdlib.h>
+ #include <string.h>
+ 
++_Static_assert(sizeof(BenchDrive) == (sizeof(BenchPhase) == 1U ? 48U : 52U),
++    "Drive state must preserve the fault mailbox RAM boundary");
++
+ /* Values are retained for diagnostic step reporting and ordered transitions. */
+ typedef enum
+ {
+@@ -46,10 +49,46 @@ static int8_t direction(int16_t rpm)
+     return (rpm > 0) - (rpm < 0);
+ }
+ 
++// 实际转角确定内轮，比例自身保存滞回档位；进退方向不改变内轮所属侧。
++void BenchDrive_SetSteeringAngle(BenchDrive* b, int32_t actual_mdeg)
++{
++    int64_t magnitude = llabs((int64_t)actual_mdeg);
++    int percent = abs(b->turn_percent);
++    if (magnitude <= BENCH_DRIVE_STRAIGHT_MDEG) { b->turn_percent = 0; return; }
++    if (magnitude >= BENCH_DRIVE_LARGE_ENTER_MDEG) percent = BENCH_DRIVE_INNER_LARGE_PERCENT;
++    else if (magnitude <= BENCH_DRIVE_LARGE_EXIT_MDEG || !percent) percent = BENCH_DRIVE_INNER_SMALL_PERCENT;
++    b->turn_percent = (int8_t)(actual_mdeg > 0 ? percent : -percent);
++}
++
++static int16_t left_target(int16_t rpm, int8_t percent)
++{
++    return percent < 0 ? (int16_t)((int32_t)rpm * -percent / 100) : rpm;
++}
++
++static int16_t right_target(int16_t rpm, int8_t percent)
++{
++    return percent > 0 ? (int16_t)((int32_t)rpm * percent / 100) : rpm;
++}
++
++static void snapshot_pair(BenchDrive* b)
++{
++    b->writing = b->desired;
++    b->writing_percent = b->turn_percent;
++}
++
+ // 正常 ACK 和只读核验共用步骤推进。只有左右零目标均确认后才建立停车采样起点；半对目标核验后若新请求已变化，回到最新目标仲裁。
+ static void complete_step(BenchDrive* b, uint32_t now, uint8_t verified)
+ {
+     b->pending = b->verify = 0U;
++    if (b->step == DRIVE_STEP_TARGET_LEFT) {
++        b->applied_left = left_target(b->writing, b->writing_percent);
++        /* A confirmed half-pair can already move the vehicle. Preserve its
++         * direction even if a new throttle request cancels the right write. */
++        if (b->writing) b->direction = direction(b->writing);
++    }
++    else if (b->step == DRIVE_STEP_TARGET_RIGHT) b->applied_right = right_target(b->writing, b->writing_percent);
++    else if (b->step == DRIVE_STEP_ZERO_LEFT || b->step == DRIVE_STEP_STOP_LEFT) b->applied_left = 0;
++    else if (b->step == DRIVE_STEP_ZERO_RIGHT || b->step == DRIVE_STEP_STOP_RIGHT) b->applied_right = 0;
+     if (b->step == DRIVE_STEP_READ_ENABLED) {
+         b->step = DRIVE_STEP_ACTIVE;
+         b->phase = BENCH_ACTIVE;
+@@ -181,10 +220,12 @@ void BenchDrive_Tick(BenchDrive *b, uint32_t now, uint8_t requested, uint8_t saf
+             b->confirmations = 0;
+             b->step = DRIVE_STEP_TARGET_LEFT;
+             b->writing = 0; /* Always send both zero targets first. */
++            b->writing_percent = 0;
+         }
+-        else if (rpm != b->applied)
++        else if (rpm != b->applied || left_target(rpm,b->turn_percent) != b->applied_left ||
++                 right_target(rpm,b->turn_percent) != b->applied_right)
+         {
+-            b->writing = rpm;
++            snapshot_pair(b);
+             b->step = DRIVE_STEP_TARGET_LEFT;
+         }
+     }
+@@ -209,7 +250,7 @@ void BenchDrive_Tick(BenchDrive *b, uint32_t now, uint8_t requested, uint8_t saf
+                 {
+                     b->reversing = 0;
+                     b->direction = 0;
+-                    b->writing = b->desired;
++                    snapshot_pair(b);
+                     b->step = DRIVE_STEP_TARGET_LEFT;
+                 }
+             }
+@@ -237,7 +278,9 @@ uint8_t BenchDrive_Take(BenchDrive *b, uint32_t now, PatrolCanFrame *f)
+     }
+     /* The other axis may have held the bus while this pair was queued. A
+      * superseding request must go through direction/zero-speed arbitration
+-     * again, including when only the old left target had already been sent. */
++     * again, including when only the old left target had already been sent.
++     * Angle-only changes finish the frozen pair first, so moving steering
++     * feedback cannot starve right-wheel writes. */
+     if (b->phase == BENCH_ACTIVE && !b->reversing && b->desired != b->writing &&
+         (b->step == DRIVE_STEP_TARGET_LEFT || b->step == DRIVE_STEP_TARGET_RIGHT)) {
+         b->applied = INT16_MIN;
+@@ -271,7 +314,6 @@ uint8_t BenchDrive_Take(BenchDrive *b, uint32_t now, PatrolCanFrame *f)
+         b->index = 0x6061;
+         b->width = 1;
+         b->read = 1;
+-        b->expected = 3;
+         break;
+     case DRIVE_STEP_ZERO_LEFT:
+     case DRIVE_STEP_ZERO_RIGHT:
+@@ -292,14 +334,14 @@ uint8_t BenchDrive_Take(BenchDrive *b, uint32_t now, PatrolCanFrame *f)
+         b->index = 0x6041;
+         b->width = 2;
+         b->read = 1;
+-        b->expected = b->step == DRIVE_STEP_READ_READY ? 1 : b->step == DRIVE_STEP_READ_SWITCHED ? 3 : 7;
+         break;
+     /* The right wheel is mirror-mounted. Vehicle-forward therefore maps to
+      * a positive left motor target and a negative right motor target. */
+     case DRIVE_STEP_TARGET_LEFT:
+     case DRIVE_STEP_TARGET_RIGHT:
+         b->index = b->step == DRIVE_STEP_TARGET_LEFT ? 0x60FF : 0x68FF;
+-        value = b->step == DRIVE_STEP_TARGET_LEFT ? b->writing : -b->writing;
++        value = b->step == DRIVE_STEP_TARGET_LEFT ? left_target(b->writing,b->writing_percent) :
++            -right_target(b->writing,b->writing_percent);
+         break;
+     case DRIVE_STEP_STOP_LEFT:
+     case DRIVE_STEP_STOP_RIGHT:
+@@ -362,8 +404,9 @@ uint8_t BenchDrive_OnFrame(BenchDrive *b, const PatrolCanFrame *f, uint32_t now)
+             if (value != 3) { fail(b, 11U); return 1U; }
+             b->verify = VERIFY_LEFT;
+         } else {
+-            int32_t expected = b->verify == VERIFY_LEFT ? b->writing :
+-                b->step == DRIVE_STEP_TARGET_LEFT ? -(int32_t)b->applied : -(int32_t)b->writing;
++            int32_t expected = b->verify == VERIFY_LEFT ? left_target(b->writing,b->writing_percent) :
++                b->step == DRIVE_STEP_TARGET_LEFT ? -(int32_t)b->applied_right :
++                -right_target(b->writing,b->writing_percent);
+             if (value != expected) { fail(b, 11U); return 1U; }
+             if (b->verify == VERIFY_LEFT) b->verify = VERIFY_RIGHT;
+             else complete_step(b, now, 1U);
+@@ -396,13 +439,15 @@ uint8_t BenchDrive_OnFrame(BenchDrive *b, const PatrolCanFrame *f, uint32_t now)
+                 fail(b, 9);
+                 return 1;
+             }
+-            if (b->step == DRIVE_STEP_READ_DISABLED ? (value & 4) != 0 : (value & 0x4F) != b->expected)
++            uint8_t expected = b->step == DRIVE_STEP_READ_READY ? 1U :
++                b->step == DRIVE_STEP_READ_SWITCHED ? 3U : 7U;
++            if (b->step == DRIVE_STEP_READ_DISABLED ? (value & 4) != 0 : (value & 0x4F) != expected)
+             {
+                 b->pending = 0;
+                 return 1;
+             }
+         }
+-        else if (value != b->expected)
++        else if (value != 3) /* The only other preparation read is displayed mode 0x6061. */
+         {
+             fail(b, 10);
+             return 1;
+diff --git a/app/Core/User/motion/src/patrol_runtime.c b/app/Core/User/motion/src/patrol_runtime.c
+index 2e813a6..8eca158 100644
+--- a/app/Core/User/motion/src/patrol_runtime.c
++++ b/app/Core/User/motion/src/patrol_runtime.c
+@@ -668,6 +668,7 @@ void PatrolRuntime_Tick(void)
+             BenchDrive_Start(&g_motion.drive, now);
+         uint8_t drive_was_verifying = g_motion.drive.verify;
+         uint8_t steer_was_verifying = g_motion.bench.verify;
++        BenchDrive_SetSteeringAngle(&g_motion.drive, c->feedback.steering_actual_mdeg);
+         BenchDrive_Tick(&g_motion.drive, now, drive_requested, executor_safe,
+             c->target_rpm, g_motion.diagnostics.left_actual_rpm, g_motion.diagnostics.right_actual_rpm,
+             g_motion.diagnostics.left_rpm_ms, g_motion.diagnostics.right_rpm_ms);
+diff --git a/docs/CURRENT.md b/docs/CURRENT.md
+index 283e305..f13fbb7 100644
+--- a/docs/CURRENT.md
++++ b/docs/CURRENT.md
+@@ -1,5 +1,9 @@
+ # 当前项目状态
+ 
++2026-10-27 当前源码候选为 `patrol-chassis-0.2.105`，增加普通行走的两档内轮差速：油门作为外轮目标，采用转向电机反馈换算的实际车轮角度，±1° 内等速；小角度内轮为外轮 90%，大角度为 65%，在绝对转角 11° 进入大角度档、9° 退出，中间保持前档。前进/倒车均同比缩放，左转减左轮、右转减右轮；未新增软件速度斜坡，未调整驱动器加减速参数。恒油门下转角变化会更新目标，正在发送的左右目标对保持冻结，丢 ACK 后按两侧各自目标核验。双零速、三组新停车反馈、6 秒换向期限与其他安全门禁保留。实现和参数见[源码模块](implementation/源码模块与依赖.md)、[行走维护说明](operations/架空行走与平台远控实现.md)。
++
++本次独立行走执行器测试、实际转角与目标角相反的 Runtime 用例、左右轮分别丢 ACK、上一对已差速的半对核验及错误读回拒绝均通过。ARM Release、Bench/CAN2/服务栈、Flash 布局、冻结 Boot 与 `git diff --check` 通过；结构保持原尺寸（ARM 48 字节、主机 52 字节），静态 BSS 未越过 `0x2000BC40` 故障邮箱。全量产品回归运行 56 个测试方法，仍有与修改前完全相同的 8 条失败记录（静态身份检查 1 条、历史文档链接 7 条），无新增失败。因此仅整体替换[行走候选](../out/candidates/bench-drive/candidate.manifest.json)，正式 `dist/` 全部文件哈希保持不变。候选 App 157,260 字节、CRC32 `39E5B6E5`、SHA256 `BEEBF1BB839BA5DDAA79A93B51DA44E51EABA23B26FCE8BBACB2AB32D4962CBD`，`active_car=0`。验证摘要位于 `out/logs/drive-differential-verification-20261027.json`；未烧录，未验证真实差速、轮胎拖磨改善或驱动器加减速行为。
++
+ 2026-10-27 当前源码候选为 `patrol-chassis-0.2.104`，保持 `0.2.103` 的显式停车与反馈过期修复，并将烧录变体恢复为 `PATROL_ACTIVE_CAR=0`。现场 `0.2.103` 使用 CAR2 精确中位档 `-1463`，而 Flash Config V5 保存中位为 `-1464`，启动时逐车归属比较失败并仅清除 RAM 标定标志，导致自动回中和运动使能均被 `UNCALIBRATED` 门禁阻止。`0.2.104` 不再应用该逐车精确中位档，可用于恢复本车行为；ARM Release、CAN2/Bench 栈、Full/State 拼接和 Boot State V3 校验通过，产品主机回归仍为 48/56（仅既有静态身份 1 项和历史文档链接 7 项）。候选 App 156,900 字节、CRC32 `00139201`、SHA256 `066E3A2F4B6FF3835C36ABA53D1C41AD93FEF5E2F2AA5874399B340C34D71E62`。
+ 
+ 2026-10-27 `patrol-chassis-0.2.104` 三文件烧录包已生成：[ActiveCar 0 完整包](operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/README.md)。`Patrol_Vehicle_Chassis_Full.bin` 189,668 字节、CRC32 `E2FBF29E`、SHA256 `1708BA5C0E66DC2868593645C96EAE40EA5905080085D9AB6AE970E78E3DDE61`；`BootState_A.bin` SHA256 `CA6A02F33F62D8E78CF43D8E3C87A1D7E10012CA3D78B5D3B57CEB281F1F6D59`；`BootState_B.bin` SHA256 `D0FF1B294B5288D1AE1421EADF5B2D38A8752B76D472FF30BED9028E25B1C5B8`。尚未烧录或实车验证。
+diff --git "a/docs/implementation/\346\272\220\347\240\201\346\250\241\345\235\227\344\270\216\344\276\235\350\265\226.md" "b/docs/implementation/\346\272\220\347\240\201\346\250\241\345\235\227\344\270\216\344\276\235\350\265\226.md"
+index ace62bd..46096f6 100644
+--- "a/docs/implementation/\346\272\220\347\240\201\346\250\241\345\235\227\344\270\216\344\276\235\350\265\226.md"
++++ "b/docs/implementation/\346\272\220\347\240\201\346\250\241\345\235\227\344\270\216\344\276\235\350\265\226.md"
+@@ -81,6 +81,10 @@ app/Core/User/
+ 
+ ## 修改规则
+ 
++行走差速使用转向电机反馈换算的实际车轮角度，右转为正。现有单一油门目标表示外轮目标转速：实际转角在 ±1° 内左右等速，超出死区后内轮按外轮 90% 输出；大角度档在绝对转角达到 11° 时进入（内轮 65%），降到 9° 时退出，9°～11° 保持前档。左右转分别减缓左、右轮，倒车对带符号目标同比缩放；零油门仍为双零速，右轮镜像符号只在 CAN 报文边界转换。不新增软件速度斜坡、不读写驱动器加减速参数。
++
++`BenchDrive` 用基础转速和有符号比例冻结本轮左右目标对；仅转角变化时先完成本轮左右写入，再处理最新角度，恒速转向也能更新差速，档位不变不重复写。每侧分别记录最后一次已应答或核验的目标，用于半对写入丢 ACK 时读取完整目标对；ACK 只证明寄存器事务，不等于实测转速。进退换向仍先双零速并等待三组新停车反馈，停止和故障路径不受差速比例影响。固定的模式/状态期望值由步骤直接推导，执行器结构保持原尺寸（当前 ARM 48 字节、主机 52 字节），不侵占 Boot/App 故障邮箱。
++
+ 行走控制目标上限为 ±2000 rpm：`CHASSIS_MAX_RPM` 约束公共控制和本地 CAN2 入口，T12 将原始 ±450 映射到同一上限，`BENCH_DRIVE_MAX_RPM` 在执行器再次校验。T12 半量程对应 ±1000 rpm，满量程对应 ±2000 rpm；转向速度分段为 300/180/90 rpm，角度分段阈值不变。当前控制层换向及行走执行器停车/换向超时为 6000 ms，其他门禁继续有效。
+ 
+ 实体 T12 遥控器仅使用 CAN2 `0x10A.data[2]` 的 A 键状态控制使能，B 键 `data[3]` 保留但不执行控制动作。B 灯亮、灯灭及周期重发均不影响行走目标、转向、会话、使能或换向等待；A 关闭、摇杆回中、失联与安全故障仍通过现有停车链路处理。内部 `RemoteService_SetDriveBrake()` 行走禁用接口保留，未绑定任何实体按键。
+diff --git "a/docs/operations/\346\236\266\347\251\272\350\241\214\350\265\260\344\270\216\345\271\263\345\217\260\350\277\234\346\216\247\345\256\236\347\216\260.md" "b/docs/operations/\346\236\266\347\251\272\350\241\214\350\265\260\344\270\216\345\271\263\345\217\260\350\277\234\346\216\247\345\256\236\347\216\260.md"
+index bc04be3..9b63105 100644
+--- "a/docs/operations/\346\236\266\347\251\272\350\241\214\350\265\260\344\270\216\345\271\263\345\217\260\350\277\234\346\216\247\345\256\236\347\216\260.md"
++++ "b/docs/operations/\346\236\266\347\251\272\350\241\214\350\265\260\344\270\216\345\271\263\345\217\260\350\277\234\346\216\247\345\256\236\347\216\260.md"
+@@ -4,6 +4,10 @@
+ 
+ ## 执行与保护
+ 
++当前差速：使用转向电机反馈的实际车轮角度；±1° 内等速，其他小角度内轮为外轮的 90%，大角度内轮为 65%。大角度在 |角度|≥11° 进入、≤9° 退出，中间保持原档。左转减缓左轮、右转减缓右轮；油门对应外轮速度，倒车保持相同比例和两轮同向，不新增软件速度斜坡。2000 rpm 外轮目标对应两档内轮 1800/1300 rpm；1000 rpm 时为 900/650 rpm。参数位于 `motion/include/bench_drive.h`，不可将这组目标关系当成轮胎无滑移或驱动器加减速已经验收。
++
++台架先检查左右转和倒车的报文符号、实测速度，核对 1° 中位死区、9°/11° 滞回、恒油门转向的目标更新、零速和换向保护；随后低速落地对比转弯拖磨与负载，再按实测扩大验证范围。保留原安全门禁，不通过放宽反馈时效或重建中位维持差速输出。
++
+ 转向与行走执行器由 `PATROL_STEERING_EXECUTOR_ENABLED`、`PATROL_DRIVE_EXECUTOR_ENABLED`
+ 独立编译；正式运动输出另由 `PATROL_CHASSIS_ACTUATION_ENABLED` 控制。正式编译选项以最新 dist 清单为准。
+ 远控只建立公共 V4 控制会话；重启、MQTT 重连、停止、租约
+diff --git a/out/candidates/bench-drive/Patrol_Vehicle_Chassis_App.bin b/out/candidates/bench-drive/Patrol_Vehicle_Chassis_App.bin
+index 63b5457053a21a2ecb2d56c427679c09aca9a6bc..0243bca2e7e7ad3c0855b111138b68aa9fb6fa8f 100644
+GIT binary patch
+delta 21935
+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
+SSr)_)-#PwwNPQ>MZT}z8mHv_d
+
+delta 21728
+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
+
+diff --git a/out/candidates/bench-drive/candidate.manifest.json b/out/candidates/bench-drive/candidate.manifest.json
+index 67a1fe8..6054ad5 100644
+--- a/out/candidates/bench-drive/candidate.manifest.json
++++ b/out/candidates/bench-drive/candidate.manifest.json
+@@ -1,18 +1,18 @@
+ {
+     "product":  "patrol_vehicle_chassis",
+-    "version":  "patrol-chassis-0.2.104",
++    "version":  "patrol-chassis-0.2.105",
+     "candidate":  true,
+     "steering_executor_compiled":  true,
+     "drive_executor_compiled":  true,
+     "startup_permit":  false,
+     "actuation_enabled":  true,
+     "active_car":  0,
+-    "commit":  "5e7717bc921d5ff028168ccfb9a03f92a272bf0c",
++    "commit":  "048b7f588a2001b15d430ab6ab500f485845c0b6",
+     "dirty":  true,
+     "app_start":  "0x08008000",
+     "app_end":  "0x0803DFFF",
+     "config_recovery_page":  "0x0803E000",
+     "config_page":  "0x0803F800",
+-    "size":  156900,
+-    "sha256":  "066E3A2F4B6FF3835C36ABA53D1C41AD93FEF5E2F2AA5874399B340C34D71E62"
++    "size":  157260,
++    "sha256":  "BEEBF1BB839BA5DDAA79A93B51DA44E51EABA23B26FCE8BBACB2AB32D4962CBD"
+ }
+diff --git a/tests/bench_drive_test.c b/tests/bench_drive_test.c
+index 41bc380..858486b 100644
+--- a/tests/bench_drive_test.c
++++ b/tests/bench_drive_test.c
+@@ -1,6 +1,7 @@
+ #include "bench_drive.h"
+ #include <assert.h>
+ #include <stdio.h>
++#include <stdlib.h>
+ 
+ static void transact(BenchDrive* b, uint32_t* now)
+ {
+@@ -10,10 +11,13 @@ static void transact(BenchDrive* b, uint32_t* now)
+     if(step==13 || step==14) {
+         int32_t commanded=(int32_t)((uint32_t)f.data[4] | ((uint32_t)f.data[5]<<8) |
+             ((uint32_t)f.data[6]<<16) | ((uint32_t)f.data[7]<<24));
+-        assert(commanded==(step==13?b->writing:-b->writing));
++        int percent=step==13 ? -b->writing_percent : b->writing_percent;
++        int32_t magnitude=percent>0?(int32_t)b->writing*percent/100:b->writing;
++        assert(commanded==(step==13?magnitude:-magnitude));
+     }
+     if(b->pending) {
+-        r=PatrolCanopen_SdoWrite32(2,b->index,0,b->step==24?0x21:b->expected);
++        int32_t expected=b->step==2?3:b->step==6?1:b->step==8?3:b->step==10?7:0x21;
++        r=PatrolCanopen_SdoWrite32(2,b->index,0,expected);
+         r.id=0x582; r.dlc=b->read?4+b->width:4;
+         r.data[0]=b->read?(b->width==1?0x4f:0x4b):0x60;
+         assert(BenchDrive_OnFrame(b,&r,*now+1));
+@@ -26,8 +30,69 @@ static void active(BenchDrive* b,uint32_t* now)
+     while(b->phase==BENCH_PREPARING) transact(b,now);
+     assert(b->phase==BENCH_ACTIVE && b->applied==0);
+ }
++
++static void test_differential(void)
++{
++    const int16_t speeds[] = {0,1,10,500,1000,2000};
++    const int32_t angles[] = {-30000,-11000,-10000,-1001,-1000,0,1000,1001,10000,11000,30000};
++    BenchDrive b; PatrolCanFrame f; uint32_t now=10;
++    for (unsigned i=0;i<sizeof(speeds)/sizeof(speeds[0]);++i)
++        for (unsigned j=0;j<sizeof(angles)/sizeof(angles[0]);++j)
++            for (int sign=-1;sign<=1;sign+=2) {
++                active(&b,&now);
++                int16_t rpm=(int16_t)(sign*speeds[i]); int32_t angle=angles[j];
++                int percent=abs(angle)>=11000?65:90;
++                int16_t inner=(int16_t)((int32_t)rpm*percent/100);
++                int16_t left=angle < -1000?inner:rpm, right=angle > 1000?inner:rpm;
++                BenchDrive_SetSteeringAngle(&b,angle);
++                BenchDrive_Tick(&b,now,1,1,rpm,0,0,now,now);
++                if (rpm) { transact(&b,&now); transact(&b,&now); }
++                assert(b.applied_left==left && b.applied_right==right && b.applied==rpm);
++                BenchDrive_Tick(&b,now,1,1,rpm,0,0,now,now);
++                assert(!BenchDrive_Take(&b,now,&f)); /* No periodic redundant writes. */
++            }
++    /* Hysteresis remembers the selected band on both sides of 10 degrees. */
++    const int32_t boundary[] = {10000,10999,11000,10000,9001,9000,10000,1000,-1001};
++    const int percent[] = {90,90,65,65,65,90,90,100,90};
++    active(&b,&now);
++    for (unsigned i=0;i<sizeof(boundary)/sizeof(boundary[0]);++i) {
++        BenchDrive_SetSteeringAngle(&b,boundary[i]);
++        BenchDrive_Tick(&b,now,1,1,2000,0,0,now,now);
++        if (b.step==13) { transact(&b,&now); transact(&b,&now); }
++        int16_t inner=(int16_t)(2000*percent[i]/100);
++        assert(b.applied_left==(boundary[i]<-1000?inner:2000));
++        assert(b.applied_right==(boundary[i]>1000?inner:2000));
++    }
++    /* An angle change after the left ACK cannot replace/starve the frozen right target. */
++    active(&b,&now); BenchDrive_SetSteeringAngle(&b,-20000);
++    BenchDrive_Tick(&b,now,1,1,2000,0,0,now,now);
++    transact(&b,&now); assert(b.applied_left==1300 && b.direction==1);
++    BenchDrive_SetSteeringAngle(&b,20000);
++    BenchDrive_Tick(&b,now,1,1,2000,0,0,now,now);
++    transact(&b,&now); assert(b.applied_right==2000);
++    BenchDrive_Tick(&b,now,1,1,2000,0,0,now,now);
++    transact(&b,&now); transact(&b,&now);
++    assert(b.applied_left==2000 && b.applied_right==1300);
++    /* Reversing after only the first wheel moved still requires both zero writes. */
++    active(&b,&now); BenchDrive_SetSteeringAngle(&b,-20000);
++    BenchDrive_Tick(&b,now,1,1,2000,0,0,now,now); transact(&b,&now);
++    BenchDrive_Tick(&b,now,1,1,-2000,1300,0,now,now);
++    assert(!BenchDrive_Take(&b,now,&f));
++    BenchDrive_Tick(&b,now,1,1,-2000,1300,0,now,now);
++    assert(b.reversing && b.writing==0 && b.writing_percent==0);
++    transact(&b,&now); transact(&b,&now);
++    for (int i=0;i<3;++i) {
++        now+=20; BenchDrive_Tick(&b,now,1,1,-2000,0,0,now,now);
++    }
++    assert(!b.reversing && b.writing==-2000 && b.writing_percent==-65);
++    transact(&b,&now); transact(&b,&now);
++    BenchDrive_Stop(&b,now,0); transact(&b,&now); transact(&b,&now);
++    assert(!b.applied_left && !b.applied_right && b.step==22);
++    puts("differential directions, ratios, deadband, hysteresis, pair freeze and reversal passed");
++}
+ int main(void)
+ {
++    test_differential();
+     BenchDrive b; uint32_t now=10; PatrolCanFrame f,r;
+     active(&b,&now);
+     BenchDrive_Tick(&b,now,1,1,30,0,0,now,now);
+diff --git a/tests/write_verify_runtime_cases.c b/tests/write_verify_runtime_cases.c
+index 895c2d5..cb6155b 100644
+--- a/tests/write_verify_runtime_cases.c
++++ b/tests/write_verify_runtime_cases.c
+@@ -18,7 +18,7 @@ uint8_t VehiclePowerOutput_IsAvailable(void) { return 1U; }
+ typedef struct { PatrolCanFrame frame; uint32_t at; } Sent;
+ static Sent frames[3000];
+ static unsigned count, handled, triggers, dropped;
+-static int32_t target, profile, wheel[2], trigger_targets[20];
++static int32_t target, profile, wheel[2], trigger_targets[20], measured_position;
+ static uint16_t control_word[2], drop_index;
+ static uint8_t enabled[2], capacity, drop_node, omit_write, lose_verify_read, stuck_ack;
+ static uint8_t ack, bad_readback;
+@@ -74,6 +74,7 @@ static void respond(void)
+             else if (index == 0x6040U) { width = 2U; value = control_word[node-1U]; }
+             else if (index == 0x607AU) value = target + (bad_readback && g_motion.bench.verify ? 1 : 0);
+             else if (index == 0x6081U) value = profile;
++            else if (index == 0x6064U) value = measured_position;
+             else if (index == 0x60FFU) value = wheel[0];
+             else if (index == 0x68FFU) value = wheel[1];
+             else if (index == 0x6069U || index == 0x6869U)
+@@ -120,7 +121,7 @@ static void fixture(void)
+     drop_diagnostic_read = dropped_read = 0U;
+     drop_index = 0U; mock_now = 1000U; mock_power = mock_profile_ready = 1U;
+     mock_ota = mock_bus_off = 0U; capacity = 3U;
+-    target = 0; profile = 180; wheel[0] = 300; wheel[1] = -300;
++    target = measured_position = 0; profile = 180; wheel[0] = 300; wheel[1] = -300;
+     enabled[0] = enabled[1] = 1U; control_word[0] = 0x2FU; control_word[1] = 0x0FU;
+     mock_config.calibrated = 1U;
+     mock_config.steering_counts_per_degree_milli = VEHICLE_STEERING_COUNTS_MILLI;
+@@ -144,6 +145,7 @@ static void fixture(void)
+     g_motion.bench.applied_profile_rpm = 180U;
+     g_motion.drive.phase = BENCH_ACTIVE; g_motion.drive.step = 12U;
+     g_motion.drive.applied = g_motion.drive.writing = 300; g_motion.drive.direction = 1;
++    g_motion.drive.applied_left = g_motion.drive.applied_right = 300;
+     PatrolRuntime_UpdateFeedback(mock_now);
+     assert(ChassisControl_SafetyReady(RemoteService_State(), mock_now));
+     assert(RemoteService_ApplyLocal("acquire","verify-test",1U,1000U,300,0,mock_now));
+@@ -230,6 +232,28 @@ static void test_drive_lost_ack(uint16_t index)
+     printf("PASS drive missing ACK 0x%04X: full pair verified; latest speed only\n", index);
+ }
+ 
++// 真实 Runtime 使用实际电机转角而非摇杆目标；差速左/右写丢 ACK 均按冻结目标对核验。
++static void test_differential_runtime(uint16_t lost_index, int turn)
++{
++    fixture(); drop_node = lost_index ? 2U : 0U; drop_index = lost_index;
++    assert(SteeringAngle_ToControllerCount(turn*20000,0,VEHICLE_STEERING_COUNTS_MILLI,1,
++        -82680,82680,&measured_position));
++    g_motion.diagnostics.steering_position_count = measured_position;
++    PatrolRuntime_UpdateFeedback(mock_now);
++    /* Deliberately command the opposite steering angle to distinguish feedback from target. */
++    request(2U,2000,-turn*20000);
++    for (uint32_t t=1010U;t<1700U;t+=10U) tick(t);
++    assert(!RemoteService_State()->fault_latched && !RemoteService_State()->fault_pending);
++    assert(wheel[0]==(turn<0?1300:2000) && wheel[1]==(turn>0?-1300:-2000));
++    assert(!g_motion.drive.verify && g_motion.drive.applied==2000);
++    if (lost_index) {
++        assert(dropped==1U);
++        assert(writes(2U,0x60FFU,turn<0?1300:2000)==1U);
++        assert(writes(2U,0x68FFU,turn>0?-1300:-2000)==1U);
++    }
++    printf("PASS actual-angle differential turn=%d lost ACK=0x%04X: frozen pair verified\n",turn,lost_index);
++}
++
+ // 不执行写入、核验漏响应、错误回读或旧 ACK 一直为高时均须安全停机，不能靠新遥控帧解除故障。
+ static void test_verification_failure(unsigned kind)
+ {
+@@ -322,6 +346,38 @@ static void drive_reply(BenchDrive* b, PatrolCanFrame f, int32_t value, uint32_t
+     assert(BenchDrive_OnFrame(b,&f,now));
+ }
+ 
++// 上一目标已经差速时，左写丢 ACK 必须核对旧右轮的独立值；不能根据旧基础转速推断右轮。
++static void test_differential_half_pair_proof(uint8_t wrong_right)
++{
++    BenchDrive b; PatrolCanFrame f;
++    BenchDrive_Init(&b); b.phase=BENCH_ACTIVE; b.step=12U;
++    b.applied=2000; b.applied_left=2000; b.applied_right=1300; b.direction=1;
++    BenchDrive_SetSteeringAngle(&b,-20000);
++    BenchDrive_Tick(&b,1000U,1U,1U,2000,2000,-1300,1000U,1000U);
++    assert(BenchDrive_Take(&b,1000U,&f)); /* Left=1300 executed, ACK deliberately omitted. */
++    BenchDrive_Tick(&b,1060U,1U,1U,2000,1300,-1300,1060U,1060U);
++    assert(b.verify && BenchDrive_Take(&b,1060U,&f)); drive_reply(&b,f,0x37,1061U);
++    BenchDrive_SetSteeringAngle(&b,0); /* A later angle cannot change this proof's expected values. */
++    assert(BenchDrive_Take(&b,1062U,&f)); drive_reply(&b,f,3,1063U);
++    assert(BenchDrive_Take(&b,1064U,&f)); drive_reply(&b,f,1300,1065U);
++    assert(BenchDrive_Take(&b,1066U,&f)); drive_reply(&b,f,wrong_right?-2000:-1300,1067U);
++    if (wrong_right) {
++        assert(b.phase==BENCH_FAULT && b.cut_power);
++    } else {
++        assert(!b.verify && b.step==14U && b.applied_left==1300 && b.applied_right==1300);
++        assert(BenchDrive_Take(&b,1068U,&f));
++        int32_t value=(int32_t)((uint32_t)f.data[4] | (uint32_t)f.data[5]<<8 |
++            (uint32_t)f.data[6]<<16 | (uint32_t)f.data[7]<<24);
++        assert(value==-2000);
++        f.id=0x582U; f.data[0]=0x60U;
++        assert(BenchDrive_OnFrame(&b,&f,1069U));
++        assert(b.applied_left==1300 && b.applied_right==2000);
++        BenchDrive_Tick(&b,1070U,1U,1U,2000,1300,-2000,1070U,1070U);
++        assert(b.step==13U && b.writing_percent==0); /* Latest straight pair runs next. */
++    }
++    printf("PASS differential half-pair proof: independent previous right target, mismatch=%u\n",wrong_right);
++}
++
+ // 59/60ms ACK 边界、79/80ms 单次读取、200ms 总期限、迟到应答排空和毫秒回绕
+ // 都不能被新响应续期或转成假成功。
+ static void test_verification_deadlines(void)
+@@ -330,6 +386,7 @@ static void test_verification_deadlines(void)
+         uint32_t base=wrap ? UINT32_MAX-50U : 1000U;
+         BenchDrive b; PatrolCanFrame f;
+         BenchDrive_Init(&b); b.phase=BENCH_ACTIVE; b.step=13U; b.writing=b.desired=600; b.applied=300;
++        b.applied_left=b.applied_right=300;
+         assert(BenchDrive_Take(&b,base,&f));
+         BenchDrive_Tick(&b,base+59U,1U,1U,600,300,-300,base,base);
+         assert(b.pending && !b.verify && b.phase==BENCH_ACTIVE);
+@@ -350,6 +407,7 @@ static void test_verification_deadlines(void)
+         /* A response after the 80ms read timeout is consumed only by the
+            drain state and cannot complete a new transaction. */
+         BenchDrive_Init(&b); b.phase=BENCH_ACTIVE; b.step=13U; b.writing=b.desired=600; b.applied=300;
++        b.applied_left=b.applied_right=300;
+         assert(BenchDrive_Take(&b,base,&f));
+         BenchDrive_Tick(&b,base+60U,1U,1U,600,300,-300,base,base);
+         assert(BenchDrive_Take(&b,base+60U,&f));
+@@ -373,6 +431,7 @@ static void test_reversal_after_verified_zero(void)
+ {
+     BenchDrive b; PatrolCanFrame f;
+     BenchDrive_Init(&b); b.phase=BENCH_ACTIVE; b.step=12U; b.applied=b.writing=300; b.direction=1;
++    b.applied_left=b.applied_right=300;
+     BenchDrive_Tick(&b,1000U,1U,1U,-300,300,-300,1000U,1000U);
+     assert(b.reversing && !b.writing && BenchDrive_Take(&b,1000U,&f));
+     BenchDrive_Tick(&b,1059U,1U,1U,-300,0,0,1000U,1000U);
+@@ -398,6 +457,7 @@ static void test_disarm_abandons_verification(void)
+ {
+     BenchDrive b; PatrolCanFrame f;
+     BenchDrive_Init(&b); b.phase=BENCH_ACTIVE; b.step=13U; b.writing=b.desired=600; b.applied=300;
++    b.applied_left=b.applied_right=300;
+     assert(BenchDrive_Take(&b,1000U,&f));
+     BenchDrive_Tick(&b,1060U,1U,1U,600,300,-300,1000U,1000U);
+     assert(b.verify && !b.pending);
+@@ -419,7 +479,7 @@ static void test_disarm_abandons_verification(void)
+ int main(void)
+ {
+     _Static_assert(sizeof(BenchSteering)==92U && sizeof(BenchDrive)==52U,
+-        "steering trigger spacing consumes one bounded uint32 slot");
++        "frozen drive pair must fit existing RAM and fault-mailbox boundary");
+     test_single_diagnostic_loss();
+     test_steering_lost_ack(0x607AU,0);
+     test_steering_lost_ack(0x6040U,0x3F);
+@@ -429,6 +489,13 @@ int main(void)
+     test_latest_after_unknown_trigger();
+     test_drive_lost_ack(0x60FFU);
+     test_drive_lost_ack(0x68FFU);
++    test_differential_half_pair_proof(0U);
++    test_differential_half_pair_proof(1U);
++    for (int turn=-1;turn<=1;turn+=2) {
++        test_differential_runtime(0U,turn);
++        test_differential_runtime(0x60FFU,turn);
++        test_differential_runtime(0x68FFU,turn);
++    }
+     for (unsigned kind=0U; kind<6U; ++kind) test_verification_failure(kind);
+     for (unsigned kind=0U; kind<3U; ++kind) test_safety_gate_during_verify(kind);
+     test_verification_deadlines();
+diff --git a/tools/verify_can2_stack.py b/tools/verify_can2_stack.py
+index 90ad195..0d11b5e 100644
+--- a/tools/verify_can2_stack.py
++++ b/tools/verify_can2_stack.py
+@@ -17,6 +17,10 @@ rx_capacity = int(re.search(r'#define PATROL_CAN_RX_STACK_WORDS (\d+)U', source)
+ safety_capacity = int(re.search(r'#define PATROL_SAFETY_STACK_WORDS (\d+)U', source)[1]) * 4
+ canopen_capacity = int(re.search(r'#define PATROL_CANOPEN_STACK_WORDS (\d+)U', source)[1]) * 4
+ chains = {
++    'drive angle selection': (canopen_capacity, ['Patrol_CanopenTask', 'PatrolRuntime_Tick',
++        'BenchDrive_SetSteeringAngle']),
++    'drive differential selection': (canopen_capacity, ['Patrol_CanopenTask', 'PatrolRuntime_Tick',
++        'BenchDrive_Tick']),
+     'centering boundary fault capture': (canopen_capacity, ['Patrol_CanopenTask', 'PatrolRuntime_Tick',
+         'RemoteService_SafetyFault', 'ChassisControl_RequestFault',
+         'PatrolRuntime_RequestFaultStop', 'PatrolRuntime_CaptureFault']),

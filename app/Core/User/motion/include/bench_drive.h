@@ -3,20 +3,31 @@
 #include "bench_steering.h"
 /* Drive actuator limit shared by normal control. */
 #define BENCH_DRIVE_MAX_RPM 2000
+/* Vehicle-angle feedback: right positive. Only the inner wheel is reduced. */
+#define BENCH_DRIVE_STRAIGHT_MDEG 1000
+#define BENCH_DRIVE_LARGE_ENTER_MDEG 11000
+#define BENCH_DRIVE_LARGE_EXIT_MDEG 9000
+#define BENCH_DRIVE_INNER_SMALL_PERCENT 90
+#define BENCH_DRIVE_INNER_LARGE_PERCENT 65
 typedef struct {
     BenchPhase phase;
     uint8_t step, pending, read, width, cut_power, confirmations, reversing;
     uint8_t verify; /* Occupies former padding; verification never replays a write. */
+    int8_t direction;
     uint16_t index;
     uint32_t sent_ms, started_ms, zero_ms, left_ms, right_ms, fault;
-    int32_t expected;
     int16_t desired, applied, writing;
-    int8_t direction;
+    int16_t applied_left, applied_right; /* Last acknowledged/read-back target per wheel. */
+    /* 0 = straight; negative = left inner, positive = right inner; abs = percent.
+     * Freezing base rpm + percentage retains the pair without growing static RAM. */
+    int8_t turn_percent, writing_percent;
 } BenchDrive;
 // 清空行走执行器状态并回到空闲阶段。重置握手、目标、方向和停车计数；仅修改 RAM，不发送 CAN 报文。
 void BenchDrive_Init(BenchDrive* b);
 // 从空闲状态启动行走驱动器准备流程。非空闲时拒绝；记录起始时间，实际模式写入、零速和 CiA402 使能由后续 Take/OnFrame 逐步推进。
 uint8_t BenchDrive_Start(BenchDrive* b, uint32_t now);
+// 更新转向电机反馈对应的实际车轮角度。±1° 内等速；大角度档在 11° 进入、9° 退出，不增加软件速度斜坡。
+void BenchDrive_SetSteeringAngle(BenchDrive* b, int32_t actual_mdeg);
 // 请求行走执行器有序停车或紧急故障退出。普通停止先取消旧事务，再写左右零速、确认停车并撤使能；emergency 非零则直接锁存故障并置切电请求。
 void BenchDrive_Stop(BenchDrive* b, uint32_t now, uint8_t emergency);
 // 推进行走目标、事务超时和换向停车状态。反向前明确写双轮零速，只有零速 ACK 之后且比上一对更新的左右反馈才参与三次低速确认；事务、准备、停车超时分别受限。

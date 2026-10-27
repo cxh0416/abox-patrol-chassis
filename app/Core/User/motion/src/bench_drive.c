@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+_Static_assert(sizeof(BenchDrive) == (sizeof(BenchPhase) == 1U ? 48U : 52U),
+    "Drive state must preserve the fault mailbox RAM boundary");
+
 /* Values are retained for diagnostic step reporting and ordered transitions. */
 typedef enum
 {
@@ -46,10 +49,46 @@ static int8_t direction(int16_t rpm)
     return (rpm > 0) - (rpm < 0);
 }
 
+// 实际转角确定内轮，比例自身保存滞回档位；进退方向不改变内轮所属侧。
+void BenchDrive_SetSteeringAngle(BenchDrive* b, int32_t actual_mdeg)
+{
+    int64_t magnitude = llabs((int64_t)actual_mdeg);
+    int percent = abs(b->turn_percent);
+    if (magnitude <= BENCH_DRIVE_STRAIGHT_MDEG) { b->turn_percent = 0; return; }
+    if (magnitude >= BENCH_DRIVE_LARGE_ENTER_MDEG) percent = BENCH_DRIVE_INNER_LARGE_PERCENT;
+    else if (magnitude <= BENCH_DRIVE_LARGE_EXIT_MDEG || !percent) percent = BENCH_DRIVE_INNER_SMALL_PERCENT;
+    b->turn_percent = (int8_t)(actual_mdeg > 0 ? percent : -percent);
+}
+
+static int16_t left_target(int16_t rpm, int8_t percent)
+{
+    return percent < 0 ? (int16_t)((int32_t)rpm * -percent / 100) : rpm;
+}
+
+static int16_t right_target(int16_t rpm, int8_t percent)
+{
+    return percent > 0 ? (int16_t)((int32_t)rpm * percent / 100) : rpm;
+}
+
+static void snapshot_pair(BenchDrive* b)
+{
+    b->writing = b->desired;
+    b->writing_percent = b->turn_percent;
+}
+
 // 正常 ACK 和只读核验共用步骤推进。只有左右零目标均确认后才建立停车采样起点；半对目标核验后若新请求已变化，回到最新目标仲裁。
 static void complete_step(BenchDrive* b, uint32_t now, uint8_t verified)
 {
     b->pending = b->verify = 0U;
+    if (b->step == DRIVE_STEP_TARGET_LEFT) {
+        b->applied_left = left_target(b->writing, b->writing_percent);
+        /* A confirmed half-pair can already move the vehicle. Preserve its
+         * direction even if a new throttle request cancels the right write. */
+        if (b->writing) b->direction = direction(b->writing);
+    }
+    else if (b->step == DRIVE_STEP_TARGET_RIGHT) b->applied_right = right_target(b->writing, b->writing_percent);
+    else if (b->step == DRIVE_STEP_ZERO_LEFT || b->step == DRIVE_STEP_STOP_LEFT) b->applied_left = 0;
+    else if (b->step == DRIVE_STEP_ZERO_RIGHT || b->step == DRIVE_STEP_STOP_RIGHT) b->applied_right = 0;
     if (b->step == DRIVE_STEP_READ_ENABLED) {
         b->step = DRIVE_STEP_ACTIVE;
         b->phase = BENCH_ACTIVE;
@@ -181,10 +220,12 @@ void BenchDrive_Tick(BenchDrive *b, uint32_t now, uint8_t requested, uint8_t saf
             b->confirmations = 0;
             b->step = DRIVE_STEP_TARGET_LEFT;
             b->writing = 0; /* Always send both zero targets first. */
+            b->writing_percent = 0;
         }
-        else if (rpm != b->applied)
+        else if (rpm != b->applied || left_target(rpm,b->turn_percent) != b->applied_left ||
+                 right_target(rpm,b->turn_percent) != b->applied_right)
         {
-            b->writing = rpm;
+            snapshot_pair(b);
             b->step = DRIVE_STEP_TARGET_LEFT;
         }
     }
@@ -209,7 +250,7 @@ void BenchDrive_Tick(BenchDrive *b, uint32_t now, uint8_t requested, uint8_t saf
                 {
                     b->reversing = 0;
                     b->direction = 0;
-                    b->writing = b->desired;
+                    snapshot_pair(b);
                     b->step = DRIVE_STEP_TARGET_LEFT;
                 }
             }
@@ -237,7 +278,9 @@ uint8_t BenchDrive_Take(BenchDrive *b, uint32_t now, PatrolCanFrame *f)
     }
     /* The other axis may have held the bus while this pair was queued. A
      * superseding request must go through direction/zero-speed arbitration
-     * again, including when only the old left target had already been sent. */
+     * again, including when only the old left target had already been sent.
+     * Angle-only changes finish the frozen pair first, so moving steering
+     * feedback cannot starve right-wheel writes. */
     if (b->phase == BENCH_ACTIVE && !b->reversing && b->desired != b->writing &&
         (b->step == DRIVE_STEP_TARGET_LEFT || b->step == DRIVE_STEP_TARGET_RIGHT)) {
         b->applied = INT16_MIN;
@@ -271,7 +314,6 @@ uint8_t BenchDrive_Take(BenchDrive *b, uint32_t now, PatrolCanFrame *f)
         b->index = 0x6061;
         b->width = 1;
         b->read = 1;
-        b->expected = 3;
         break;
     case DRIVE_STEP_ZERO_LEFT:
     case DRIVE_STEP_ZERO_RIGHT:
@@ -292,14 +334,14 @@ uint8_t BenchDrive_Take(BenchDrive *b, uint32_t now, PatrolCanFrame *f)
         b->index = 0x6041;
         b->width = 2;
         b->read = 1;
-        b->expected = b->step == DRIVE_STEP_READ_READY ? 1 : b->step == DRIVE_STEP_READ_SWITCHED ? 3 : 7;
         break;
     /* The right wheel is mirror-mounted. Vehicle-forward therefore maps to
      * a positive left motor target and a negative right motor target. */
     case DRIVE_STEP_TARGET_LEFT:
     case DRIVE_STEP_TARGET_RIGHT:
         b->index = b->step == DRIVE_STEP_TARGET_LEFT ? 0x60FF : 0x68FF;
-        value = b->step == DRIVE_STEP_TARGET_LEFT ? b->writing : -b->writing;
+        value = b->step == DRIVE_STEP_TARGET_LEFT ? left_target(b->writing,b->writing_percent) :
+            -right_target(b->writing,b->writing_percent);
         break;
     case DRIVE_STEP_STOP_LEFT:
     case DRIVE_STEP_STOP_RIGHT:
@@ -362,8 +404,9 @@ uint8_t BenchDrive_OnFrame(BenchDrive *b, const PatrolCanFrame *f, uint32_t now)
             if (value != 3) { fail(b, 11U); return 1U; }
             b->verify = VERIFY_LEFT;
         } else {
-            int32_t expected = b->verify == VERIFY_LEFT ? b->writing :
-                b->step == DRIVE_STEP_TARGET_LEFT ? -(int32_t)b->applied : -(int32_t)b->writing;
+            int32_t expected = b->verify == VERIFY_LEFT ? left_target(b->writing,b->writing_percent) :
+                b->step == DRIVE_STEP_TARGET_LEFT ? -(int32_t)b->applied_right :
+                -right_target(b->writing,b->writing_percent);
             if (value != expected) { fail(b, 11U); return 1U; }
             if (b->verify == VERIFY_LEFT) b->verify = VERIFY_RIGHT;
             else complete_step(b, now, 1U);
@@ -396,13 +439,15 @@ uint8_t BenchDrive_OnFrame(BenchDrive *b, const PatrolCanFrame *f, uint32_t now)
                 fail(b, 9);
                 return 1;
             }
-            if (b->step == DRIVE_STEP_READ_DISABLED ? (value & 4) != 0 : (value & 0x4F) != b->expected)
+            uint8_t expected = b->step == DRIVE_STEP_READ_READY ? 1U :
+                b->step == DRIVE_STEP_READ_SWITCHED ? 3U : 7U;
+            if (b->step == DRIVE_STEP_READ_DISABLED ? (value & 4) != 0 : (value & 0x4F) != expected)
             {
                 b->pending = 0;
                 return 1;
             }
         }
-        else if (value != b->expected)
+        else if (value != 3) /* The only other preparation read is displayed mode 0x6061. */
         {
             fail(b, 10);
             return 1;
