@@ -1,0 +1,262 @@
+PASS Boot origin = 0x08000000
+PASS Boot length = 0x00008000
+PASS App origin = 0x08008000
+PASS BootState A 0x0803E800-0x0803EFFF
+PASS config recovery 0x0803E000-0x0803E7FF
+PASS BootState B 0x0803F000-0x0803F7FF
+PASS OTA page 0x0803F800-0x0803FFFF
+ABox Boot artifact verified
+size=32768
+sha256=981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63
+crc32=F36320C9
+initial_sp=0x20010000
+reset_handler=0x08001DF1
+descriptor_crc32=0xE55BBFCB
+-- The C compiler identification is GNU 14.2.1
+-- The CXX compiler identification is GNU 14.2.1
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/14.2 rel1/bin/arm-none-eabi-gcc.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/14.2 rel1/bin/arm-none-eabi-g++.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+Build type: Release
+-- The ASM compiler identification is GNU
+-- Found assembler: C:/Program Files (x86)/Arm GNU Toolchain arm-none-eabi/14.2 rel1/bin/arm-none-eabi-gcc.exe
+-- Configuring done (2.7s)
+CMake Warning in F:/work/A-Box/Patrol_Vehicle_Chassis/platform/components/enrollment/CMakeLists.txt:
+  The object file directory
+
+    C:/Users/cxh/AppData/Local/Temp/patrol-chassis-release-37bb6e9c36a4427eb95a9819d26c968d/ABoxUnifiedRelease-patrol-chassis-0.2.106/abox_platform_build/components/enrollment/CMakeFiles/abox_enrollment_ec800_http.dir/./
+
+  has 216 characters.  The maximum full path to an object file is 250
+  characters (see CMAKE_OBJECT_PATH_MAX).  Object file
+
+    src/abox_enrollment_ec800_http.c.obj
+
+  cannot be safely placed under this directory.  The build may not work
+  correctly.
+
+
+-- Generating done (0.3s)
+-- Build files have been written to: C:/Users/cxh/AppData/Local/Temp/patrol-chassis-release-37bb6e9c36a4427eb95a9819d26c968d/ABoxUnifiedRelease-patrol-chassis-0.2.106
+[1/166] Building C object abox_platform_build/components/ec800/CMakeFiles/abox_ec800_ufs.dir/src/abox_ec800_ufs.c.obj
+[2/166] Building C object abox_platform_build/components/core/CMakeFiles/abox_core.dir/src/abox_platform_config.c.obj
+[3/166] Building C object abox_platform_build/components/core/CMakeFiles/abox_core.dir/src/abox_config_store.c.obj
+[4/166] Building C object abox_platform_build/components/core/CMakeFiles/abox_core.dir/src/abox_platform_port.c.obj
+[5/166] Building C object abox_platform_build/components/core/CMakeFiles/abox_core.dir/src/abox_time_sync.c.obj
+[6/166] Building C object abox_platform_build/components/core/CMakeFiles/abox_core.dir/src/abox_clock.c.obj
+[7/166] Building C object abox_platform_build/components/ec800/CMakeFiles/abox_ec800.dir/src/abox_ec800_at_legacy.c.obj
+[8/166] Building C object abox_platform_build/components/ec800/CMakeFiles/abox_ec800.dir/src/abox_ec800_rx.c.obj
+[9/166] Building C object abox_platform_build/components/ec800/CMakeFiles/abox_ec800.dir/src/abox_ec800_iccid.c.obj
+[10/166] Building C object abox_platform_build/components/ec800/CMakeFiles/abox_ec800.dir/src/abox_ec800_diagnostics.c.obj
+[11/166] Building C object abox_platform_build/components/ec800/CMakeFiles/abox_ec800.dir/src/abox_ec800_at.c.obj
+[12/166] Linking C static library abox_platform_build\components\ec800\libabox_ec800_ufs.a
+[13/166] Building C object abox_platform_build/components/ec800/CMakeFiles/abox_ec800_tls.dir/src/abox_tls_secret_record.c.obj
+[14/166] Linking C static library abox_platform_build\components\core\libabox_core.a
+[15/166] Building C object abox_platform_build/components/ec800/CMakeFiles/abox_ec800_tls.dir/src/abox_ec800_tls.c.obj
+[16/166] Building C object abox_platform_build/components/ec800/CMakeFiles/abox_ec800_command_port.dir/src/abox_ec800_command_port.c.obj
+[17/166] Linking C static library abox_platform_build\components\ec800\libabox_ec800.a
+[18/166] Linking C static library abox_platform_build\components\ec800\libabox_ec800_tls.a
+[19/166] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_v4.dir/src/abox_sha256.c.obj
+[20/166] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_v4.dir/src/abox_mqtt_v4.c.obj
+[21/166] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_ec800_rx.dir/src/abox_mqtt_ec800_rx.c.obj
+[22/166] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_backoff.dir/src/abox_mqtt_backoff.c.obj
+[23/166] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_tls.dir/src/abox_mqtt_tls.c.obj
+[24/166] Building C object abox_platform_build/components/cjson/CMakeFiles/abox_cjson.dir/cJSON.c.obj
+[25/166] Linking C static library abox_platform_build\components\ec800\libabox_ec800_command_port.a
+[26/166] Linking C static library abox_platform_build\components\mqtt\libabox_mqtt_v4.a
+[27/166] Linking C static library abox_platform_build\components\mqtt\libabox_mqtt_ec800_rx.a
+[28/166] Linking C static library abox_platform_build\components\cjson\libabox_cjson.a
+[29/166] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_ec800.dir/src/abox_mqtt_receipt.c.obj
+[30/166] Linking C static library abox_platform_build\components\mqtt\libabox_mqtt_tls.a
+[31/166] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_ec800.dir/src/abox_mqtt_ec800_bridge.c.obj
+[32/166] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_ec800.dir/src/abox_mqtt_ec800.c.obj
+[33/166] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_runtime.dir/src/abox_mqtt_runtime_core_port.c.obj
+[34/166] Linking C static library abox_platform_build\components\mqtt\libabox_mqtt_backoff.a
+[35/166] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_runtime.dir/src/abox_mqtt_runtime.c.obj
+[36/166] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_digest.dir/src/abox_mqtt_digest.c.obj
+[37/166] Building C object abox_platform_build/components/boot_v2/CMakeFiles/abox_boot_v2_common.dir/src/abox_boot_v2_state.c.obj
+[38/166] Building C object abox_platform_build/components/ota/CMakeFiles/abox_https_ufs_downloader.dir/src/abox_https_ufs_downloader.c.obj
+[39/166] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_digest.dir/src/abox_mqtt_number.c.obj
+[40/166] Building C object abox_platform_build/components/boot_v2/CMakeFiles/abox_boot_v2_common.dir/src/abox_boot_v2_descriptor.c.obj
+[41/166] Building C object abox_platform_build/components/boot_v2/CMakeFiles/abox_boot_v2_common.dir/src/abox_boot_v2_image.c.obj
+[42/166] Building C object abox_platform_build/components/boot_v2/CMakeFiles/abox_boot_v2_common.dir/src/abox_boot_v2_fault.c.obj
+[43/166] Building C object abox_platform_build/components/ec_power/CMakeFiles/abox_ec_power.dir/src/ec_power.c.obj
+[44/166] Building C object abox_platform_build/components/ec_power/CMakeFiles/abox_ec_power.dir/src/abox_ec800_recovery.c.obj
+[45/166] Linking C static library abox_platform_build\components\mqtt\libabox_mqtt_ec800.a
+[46/166] Linking C static library abox_platform_build\components\mqtt\libabox_mqtt_runtime.a
+[47/166] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_trial.dir/src/abox_mqtt_trial.c.obj
+[48/166] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_trial.dir/src/abox_mqtt_trial_executor.c.obj
+[49/166] Linking C static library abox_platform_build\components\mqtt\libabox_mqtt_digest.a
+[50/166] Building C object abox_platform_build/components/mqtt/CMakeFiles/abox_mqtt_request.dir/src/abox_mqtt_request.c.obj
+[51/166] Building C object abox_platform_build/components/enrollment/CMakeFiles/abox_enrollment.dir/src/abox_enrollment_identity.c.obj
+[52/166] Building C object abox_platform_build/components/enrollment/CMakeFiles/abox_enrollment.dir/src/abox_enrollment.c.obj
+[53/166] Linking C static library abox_platform_build\components\ota\libabox_https_ufs_downloader.a
+[54/166] Linking C static library abox_platform_build\components\boot_v2\libabox_boot_v2_common.a
+[55/166] Building C object abox_platform_build/components/boot_v2/CMakeFiles/abox_boot_v2_app.dir/src/abox_boot_v2_ec800_port.c.obj
+[56/166] Building C object abox_platform_build/components/boot_v2/CMakeFiles/abox_boot_v2_app.dir/src/abox_boot_v2_services.c.obj
+[57/166] Building C object abox_platform_build/components/boot_v2/CMakeFiles/abox_boot_v2_app.dir/src/abox_boot_v2_app.c.obj
+[58/166] Building C object abox_platform_build/components/cloud/CMakeFiles/abox_cloud_service.dir/src/abox_cloud_response.c.obj
+[59/166] Building C object abox_platform_build/components/cloud/CMakeFiles/abox_cloud_service.dir/src/abox_cloud_service.c.obj
+[60/166] Building C object abox_platform_build/components/cloud/CMakeFiles/abox_cloud_service.dir/src/abox_cloud_internal_v2.c.obj
+[61/166] Building C object abox_platform_build/components/cloud/CMakeFiles/abox_cloud_service.dir/src/abox_cloud_dispatch.c.obj
+[62/166] Building C object abox_platform_build/components/cloud/CMakeFiles/abox_cloud_service.dir/src/abox_cloud_queue.c.obj
+[63/166] Linking C static library abox_platform_build\components\ec_power\libabox_ec_power.a
+[64/166] Building C object abox_platform_build/components/board_io/CMakeFiles/abox_board_io.dir/src/abox_board_io.c.obj
+[65/166] Linking C static library abox_platform_build\components\mqtt\libabox_mqtt_trial.a
+[66/166] Linking C static library abox_platform_build\components\mqtt\libabox_mqtt_request.a
+[67/166] Linking C static library abox_platform_build\components\enrollment\libabox_enrollment.a
+[68/166] Building C object abox_platform_build/components/enrollment/CMakeFiles/abox_enrollment_ec800_http.dir/src/abox_enrollment_service.c.obj
+[69/166] Linking C static library abox_platform_build\components\boot_v2\libabox_boot_v2_app.a
+[70/166] Building C object abox_platform_build/components/enrollment/CMakeFiles/abox_enrollment_ec800_http.dir/src/abox_enrollment_ec800_http.c.obj
+[71/166] Linking C static library abox_platform_build\components\cloud\libabox_cloud_service.a
+[72/166] Building C object abox_platform_build/components/cloud/CMakeFiles/abox_maintenance_service.dir/src/abox_maintenance_service.c.obj
+[73/166] Building C object abox_platform_build/components/cloud/CMakeFiles/abox_app_service.dir/src/abox_app_service.c.obj
+[74/166] Building C object abox_platform_build/components/cloud/CMakeFiles/abox_cloud_v4.dir/src/abox_time_client.c.obj
+[75/166] Building C object abox_platform_build/components/log/CMakeFiles/abox_log_ring.dir/src/abox_log_ring.c.obj
+[76/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/main.c.obj
+[77/166] Building C object abox_platform_build/components/cloud/CMakeFiles/abox_cloud_v4.dir/src/abox_cloud_v4.c.obj
+[78/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/gpio.c.obj
+[79/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/freertos.c.obj
+[80/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/dma.c.obj
+[81/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/can.c.obj
+[82/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/iwdg.c.obj
+[83/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/usart.c.obj
+[84/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/stm32f1xx_it.c.obj
+[85/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/stm32f1xx_hal_msp.c.obj
+[86/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/stm32f1xx_hal_timebase_tim.c.obj
+[87/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/sysmem.c.obj
+[88/166] Building ASM object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/startup_stm32f105xc.s.obj
+[89/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/syscalls.c.obj
+[90/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/absolute_encoder.c.obj
+[91/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/common/src/app_log.c.obj
+[92/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/system/src/mqtt_config_adapter.c.obj
+[93/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/system/src/app_version.c.obj
+[94/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/system/src/patrol_config.c.obj
+[95/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/patrol_enrollment.c.obj
+[96/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_service.c.obj
+[97/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_commands.c.obj
+[98/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/patrol_mqtt_profile.c.obj
+[99/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_messages.c.obj
+[100/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_tx.c.obj
+[101/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_protocol.c.obj
+[102/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/chassis_cloud_protocol.c.obj
+[103/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/chassis_control.c.obj
+[104/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_phy_remote.c.obj
+[105/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_can_remote.c.obj
+[106/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_auto_center.c.obj
+[107/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/common/src/fixed_point.c.obj
+[108/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/mqtt/src/mqtt_runtime.c.obj
+[109/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/mqtt/src/mqtt_core_adapter.c.obj
+[110/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/mqtt/src/mqtt_trial_manager.c.obj
+[111/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/ota/src/ota_info.c.obj
+[112/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_canopen.c.obj
+[113/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/ota/src/ota_service.c.obj
+[114/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_diagnostics.c.obj
+[115/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/steering_angle.c.obj
+[116/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/remote_service.c.obj
+[117/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/bench_steering.c.obj
+[118/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_fault_stop.c.obj
+[119/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/bench_drive.c.obj
+[120/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/common/src/time_base.c.obj
+[121/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/common/src/time_sync.c.obj
+[122/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/board/src/vehicle_power_output.c.obj
+[123/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/board/src/vehicle_power_port.c.obj
+[124/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/F_/work/A-Box/Patrol_Vehicle_Chassis/shared/boot_state_compat.c.obj
+[125/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/center_calibration.c.obj
+[126/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/system/src/patrol_rtos.c.obj
+[127/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/F_/work/A-Box/Patrol_Vehicle_Chassis/shared/fault_mailbox_compat.c.obj
+[128/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_runtime.c.obj
+[129/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/c39556533f2a467aa2143bd65424c066/monotonic_stm32f105.c.obj
+[130/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/070be34915889409c11a681bc698181d/stm32f105_ec800_v1/board_io_stm32f105.c.obj
+[131/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/c39556533f2a467aa2143bd65424c066/enrollment_identity_stm32f105.c.obj
+[132/166] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/c39556533f2a467aa2143bd65424c066/platform_port_stm32f105.c.obj
+[133/166] Linking C static library abox_platform_build\components\board_io\libabox_board_io.a
+[134/166] Linking C static library abox_platform_build\components\enrollment\libabox_enrollment_ec800_http.a
+[135/166] Linking C static library abox_platform_build\components\cloud\libabox_maintenance_service.a
+[136/166] Linking C static library abox_platform_build\components\cloud\libabox_app_service.a
+[137/166] Linking C static library abox_platform_build\components\cloud\libabox_cloud_v4.a
+[138/166] Linking C static library abox_platform_build\components\log\libabox_log_ring.a
+[139/166] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Core/Src/system_stm32f1xx.c.obj
+[140/166] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c.obj
+[141/166] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c.obj
+[142/166] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_can.c.obj
+[143/166] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c.obj
+[144/166] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c.obj
+[145/166] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c.obj
+[146/166] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.c.obj
+[147/166] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c.obj
+[148/166] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_iwdg.c.obj
+[149/166] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c.obj
+[150/166] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c.obj
+[151/166] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.c.obj
+[152/166] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c.obj
+[153/166] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c.obj
+[154/166] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.c.obj
+[155/166] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/croutine.c.obj
+[156/166] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/list.c.obj
+[157/166] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/event_groups.c.obj
+[158/166] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c.obj
+[159/166] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/queue.c.obj
+[160/166] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c.obj
+[161/166] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/timers.c.obj
+[162/166] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c.obj
+[163/166] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/tasks.c.obj
+[164/166] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/5e8aae068b95676a4085a434b05d9083/Source/portable/GCC/ARM_CM3/port.c.obj
+[165/166] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c.obj
+[166/166] Linking C executable Patrol_Vehicle_Chassis_App.elf
+Memory region         Used Size  Region Size  %age Used
+             RAM:       61432 B        64 KB     93.74%
+           FLASH:      165316 B       216 KB     74.74%
+PASS public_motion_digest: known frames 1692 + reserve 1024 <= 4096
+PASS public_power_replay_digest: known frames 1604 + reserve 1024 <= 4096
+PASS mqtt_transport_init: known frames 992 + reserve 1024 <= 4096
+PASS mqtt_transport_configure: known frames 272 + reserve 1024 <= 4096
+PASS maintenance_commit: known frames 2800 + reserve 1024 <= 4096
+PASS clock_sync_apply: known frames 680 + reserve 1024 <= 4096
+PASS clock_sync_send: known frames 1064 + reserve 1024 <= 4096
+PASS public_control_fault_stop: known frames 1200 + reserve 1024 <= 4096
+PASS public_control_fault_capture: known frames 1156 + reserve 1024 <= 4096
+PASS at_ota_termination: known frames 740 + reserve 1024 <= 4096
+PASS at_enrollment_termination: known frames 516 + reserve 1024 <= 4096
+PASS modem_reset_runtime: known frames 248 + reserve 1024 <= 4096
+PASS uart_rx_retry: known frames 124 + reserve 1024 <= 4096
+PASS uart_rx_failure_log: known frames 160 + reserve 1024 <= 4096
+PASS uart_tx_termination: known frames 596 + reserve 1024 <= 4096
+PASS enrollment_payload_termination: known frames 708 + reserve 1024 <= 4096
+PASS ota_payload_termination: known frames 748 + reserve 1024 <= 4096
+PASS drive angle selection: known 120 + reserve 512 <= 1024
+PASS drive differential selection: known 152 + reserve 512 <= 1024
+PASS centering boundary fault capture: known 208 + reserve 512 <= 1024
+PASS centering boundary fault transmit: known 280 + reserve 512 <= 1024
+PASS centering boundary stop log: known 264 + reserve 512 <= 1024
+PASS CAN2 target: known 320 + reserve 512 <= 1024
+PASS CAN2 reset: known 392 + reserve 512 <= 1024
+PASS CAN2 reply: known 224 + reserve 512 <= 1024
+PASS CAN2 lease stop: known 136 + reserve 512 <= 1024
+PASS handset A switch: known 272 + reserve 512 <= 1024
+PASS handset joystick: known 272 + reserve 512 <= 1024
+PASS handset lease stop: known 128 + reserve 512 <= 1024
+PASS fault capture from CAN2: known 368 + reserve 512 <= 1024
+PASS fault frame from CAN2: known 400 + reserve 512 <= 1024
+PASS fault transmit from CAN2: known 412 + reserve 512 <= 1024
+PASS fault frame from safety: known 168 + reserve 512 <= 1024
+PASS fault latch log: known 248 + reserve 512 <= 1024
+PASS fault stop retry: known 224 + reserve 512 <= 1024
+PASS diagnostic timeout log: known 280 + reserve 512 <= 1024
+PASS write verification log: known 224 + reserve 512 <= 1024
+PASS steering verification read: known 240 + reserve 512 <= 1024
+PASS drive verification read: known 240 + reserve 512 <= 1024
+PASS steering verification reply: known 260 + reserve 512 <= 1024
+PASS drive verification reply: known 244 + reserve 512 <= 1024
+PASS calibration stack: known frames 2320 + 1024 byte reserve <= 4096
+PASS MQTT trial save stack: known frames 2800 + 1024 byte reserve <= 4096
+PASS CANopen fault stack: known frames 432 + 512 byte library reserve <= 1024
+PASS center commit stack: known frames 1712 + 1024 byte reserve <= 4096
+Release patrol-chassis-0.2.106 written to F:\work\A-Box\Patrol_Vehicle_Chassis\dist
+Formal release completed for patrol_vehicle_chassis: patrol-chassis-0.2.106

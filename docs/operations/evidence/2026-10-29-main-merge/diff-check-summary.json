@@ -1,0 +1,9 @@
+{
+  "full_diff_check_exit": 2,
+  "historical_whitespace_diagnostics": {
+    "evidence": 1814694,
+    "history": 32
+  },
+  "other_files": [],
+  "policy": "Imported historical bytes preserved; no whitespace rewriting of field evidence."
+}

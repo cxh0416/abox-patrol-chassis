@@ -1,0 +1,474 @@
+test_idle_and_expired_control_return (test_auto_center_runtime.AutoCenterRuntimeTests.test_idle_and_expired_control_return) ... ok
+test_active_remote_session_blocks_before_commit_prompt (test_can2_center_calibration.Can2CenterCalibrationTests.test_active_remote_session_blocks_before_commit_prompt) ... ok
+test_commit_reply_loss_is_recovered_from_state (test_can2_center_calibration.Can2CenterCalibrationTests.test_commit_reply_loss_is_recovered_from_state) ... ok
+test_current_center_sequence_uses_same_state_machine (test_can2_center_calibration.Can2CenterCalibrationTests.test_current_center_sequence_uses_same_state_machine) ... ok
+test_default_channel_matches_current_can2_wiring (test_can2_center_calibration.Can2CenterCalibrationTests.test_default_channel_matches_current_can2_wiring) ... ok
+test_incomplete_reply_reports_missing_frame (test_can2_center_calibration.Can2CenterCalibrationTests.test_incomplete_reply_reports_missing_frame) ... ok
+test_python_direct_options_use_documented_order (test_can2_center_calibration.Can2CenterCalibrationTests.test_python_direct_options_use_documented_order) ... ok
+test_query_retries_without_repeating_mutation (test_can2_center_calibration.Can2CenterCalibrationTests.test_query_retries_without_repeating_mutation) ... ok
+test_reset_fault_is_a_separate_non_calibration_command (test_can2_center_calibration.Can2CenterCalibrationTests.test_reset_fault_is_a_separate_non_calibration_command) ... ok
+test_saved_center_mismatch_is_rejected (test_can2_center_calibration.Can2CenterCalibrationTests.test_saved_center_mismatch_is_rejected) ... ok
+test_start_reply_loss_is_recovered_from_session_token (test_can2_center_calibration.Can2CenterCalibrationTests.test_start_reply_loss_is_recovered_from_session_token) ... ok
+test_status_only_does_not_start_session (test_can2_center_calibration.Can2CenterCalibrationTests.test_status_only_does_not_start_session) ... ok
+test_recovery_needs_new_stable_feedback (test_can_recovery.CanRecoveryTests.test_recovery_needs_new_stable_feedback) ... ok
+test_real_can2_and_control_service (test_can_remote.CanRemoteTests.test_real_can2_and_control_service) ... ok
+test_production_center_runtime (test_center_runtime.CenterRuntimeTests.test_production_center_runtime) ... ok
+test_real_encoder_keeps_complete_state_within_public_budgets (test_cloud_status_budget.CloudStatusBudgetTests.test_real_encoder_keeps_complete_state_within_public_budgets) ... ok
+test_activity_expiry_and_tick_wrap (test_cloud_telemetry.TelemetryTests.test_activity_expiry_and_tick_wrap) ... ok
+test_production_transmit_scheduler (test_cloud_telemetry.TelemetryTests.test_production_transmit_scheduler) ... ok
+test_v5_only_load_save_and_storage (test_config_v5.ConfigV5Tests.test_v5_only_load_save_and_storage) ... ok
+test_production_drive_brake (test_drive_brake_runtime.DriveBrakeRuntimeTests.test_production_drive_brake) ... ok
+test_torn_write_full_journal_and_config_preservation (test_fault_journal.FaultJournalTests.test_torn_write_full_journal_and_config_preservation) ... ok
+test_lost_write_ack_read_only_verification (test_fault_stop_runtime.FaultStopRuntimeTests.test_lost_write_ack_read_only_verification) ... ok
+test_real_fault_stop_before_latch (test_fault_stop_runtime.FaultStopRuntimeTests.test_real_fault_stop_before_latch) ... ok
+test_disabled_build_cannot_write (test_hot_reset_recovery.HotResetRecoveryTests.test_disabled_build_cannot_write) ... ok
+test_enabled_shutdown_and_mailbox_fairness (test_hot_reset_recovery.HotResetRecoveryTests.test_enabled_shutdown_and_mailbox_fairness) ... ok
+MQTT runtime: TLS, RAM switch revoke, no fallback and reset safety latch passed
+test_runtime_security_chain (test_mqtt_runtime.MqttRuntimeTests.test_runtime_security_chain) ... ok
+MQTT trial manager: real phases, secret snapshot and failed-save recovery passed
+test_real_phase_and_restore (test_mqtt_trial_manager.MqttTrialManagerTests.test_real_phase_and_restore) ... ok
+test_archive_hashes (test_patrol_scaffold.PatrolScaffoldTests.test_archive_hashes) ... ok
+test_boot_trial_confirmation_has_flash_write_stack_margin (test_patrol_scaffold.PatrolScaffoldTests.test_boot_trial_confirmation_has_flash_write_stack_margin) ... ok
+test_center_calibration_freezes_structured_failure_and_rejection_evidence (test_patrol_scaffold.PatrolScaffoldTests.test_center_calibration_freezes_structured_failure_and_rejection_evidence) ... ok
+test_center_calibration_stop_keeps_commissioning_safety_context (test_patrol_scaffold.PatrolScaffoldTests.test_center_calibration_stop_keeps_commissioning_safety_context) ... ok
+test_config_page_is_v5_and_unarmed_by_default (test_patrol_scaffold.PatrolScaffoldTests.test_config_page_is_v5_and_unarmed_by_default) ... ok
+test_config_page_round_trips_wheel_angle_calibration (test_patrol_scaffold.PatrolScaffoldTests.test_config_page_round_trips_wheel_angle_calibration) ... ok
+test_config_tool_rejects_non_v5_layouts (test_patrol_scaffold.PatrolScaffoldTests.test_config_tool_rejects_non_v5_layouts) ... ok
+test_confirmed_vehicle_power_output_is_isolated_to_pvin_out1 (test_patrol_scaffold.PatrolScaffoldTests.test_confirmed_vehicle_power_output_is_isolated_to_pvin_out1) ... ok
+test_identity_and_safe_defaults (test_patrol_scaffold.PatrolScaffoldTests.test_identity_and_safe_defaults) ... ok
+test_idle_center_calibration_lease_tolerates_platform_delay_without_latching_motion_fault (test_patrol_scaffold.PatrolScaffoldTests.test_idle_center_calibration_lease_tolerates_platform_delay_without_latching_motion_fault) ... ok
+test_idle_coordinate_watchdog_ignores_non_position_motion_gates (test_patrol_scaffold.PatrolScaffoldTests.test_idle_coordinate_watchdog_ignores_non_position_motion_gates) ... ok
+test_intentional_power_off_consumes_late_coordinate_reset_without_idle_fault (test_patrol_scaffold.PatrolScaffoldTests.test_intentional_power_off_consumes_late_coordinate_reset_without_idle_fault) ... ok
+test_ota_port_tracks_active_mqtt_client (test_patrol_scaffold.PatrolScaffoldTests.test_ota_port_tracks_active_mqtt_client) ... ok
+test_product_version_has_one_external_default_and_optional_script_override (test_patrol_scaffold.PatrolScaffoldTests.test_product_version_has_one_external_default_and_optional_script_override) ... ok
+test_public_and_internal_mqtt_contracts_are_separated (test_patrol_scaffold.PatrolScaffoldTests.test_public_and_internal_mqtt_contracts_are_separated) ... ok
+test_public_profile_references_v4_and_documents_business_limits (test_patrol_scaffold.PatrolScaffoldTests.test_public_profile_references_v4_and_documents_business_limits) ... ok
+test_uart5_contract_matches_hal_without_changing_hardware (test_patrol_scaffold.PatrolScaffoldTests.test_uart5_contract_matches_hal_without_changing_hardware) ... ok
+test_app_keeps_mailbox_and_runtime_guard (test_ram_layout.RamLayoutContractTests.test_app_keeps_mailbox_and_runtime_guard) ... ok
+test_boot_uses_same_mailbox (test_ram_layout.RamLayoutContractTests.test_boot_uses_same_mailbox) ... ok
+test_boot_app_boundary_and_tick_failure (test_startup_handoff.StartupHandoffTests.test_boot_app_boundary_and_tick_failure) ... ok
+test_production_stop_arbitration (test_stop_scheduler.StopSchedulerTests.test_production_stop_arbitration) ... ok
+test_archive_failure_preserves_originals (test_workspace_maintenance.WorkspaceMaintenanceTests.test_archive_failure_preserves_originals) ... ok
+test_boundary_and_windows_junction_are_rejected (test_workspace_maintenance.WorkspaceMaintenanceTests.test_boundary_and_windows_junction_are_rejected) ... ok
+test_candidate_replaces_whole_set_and_rejects_invalid_stage (test_workspace_maintenance.WorkspaceMaintenanceTests.test_candidate_replaces_whole_set_and_rejects_invalid_stage) ... ok
+test_copy_corruption_leaves_previous_output (test_workspace_maintenance.WorkspaceMaintenanceTests.test_copy_corruption_leaves_previous_output) ... ok
+test_debug_output_stays_outside_formal_directory (test_workspace_maintenance.WorkspaceMaintenanceTests.test_debug_output_stays_outside_formal_directory) ... ok
+test_document_links_and_archived_evidence_references (test_workspace_maintenance.WorkspaceMaintenanceTests.test_document_links_and_archived_evidence_references) ... ok
+test_evidence_in_logs_is_not_disposable (test_workspace_maintenance.WorkspaceMaintenanceTests.test_evidence_in_logs_is_not_disposable) ... ok
+test_failed_swap_restores_previous_set_and_unlocks (test_workspace_maintenance.WorkspaceMaintenanceTests.test_failed_swap_restores_previous_set_and_unlocks) ... ok
+test_formal_package_layout_hash_and_dirty_gates (test_workspace_maintenance.WorkspaceMaintenanceTests.test_formal_package_layout_hash_and_dirty_gates) ... ok
+test_preview_archive_then_cleanup_is_repeatable (test_workspace_maintenance.WorkspaceMaintenanceTests.test_preview_archive_then_cleanup_is_repeatable) ... ok
+test_snapshot_change_and_protected_path_abort (test_workspace_maintenance.WorkspaceMaintenanceTests.test_snapshot_change_and_protected_path_abort) ... ok
+
+----------------------------------------------------------------------
+Ran 59 tests in 22.112s
+
+OK
+{
+  "initial": {
+    "result": 0,
+    "sequence": 1,
+    "phase": 0,
+    "reason": 0,
+    "token": 0,
+    "driver_raw": -1464,
+    "encoder_raw": 0,
+    "saved_center": -1464,
+    "active": false,
+    "calibrated": true,
+    "power_on": true,
+    "phase_name": "IDLE",
+    "reason_name": "NONE",
+    "result_name": "OK"
+  },
+  "motion": {
+    "result": 0,
+    "sequence": 1,
+    "flags": 39,
+    "stop_reason": 0,
+    "feedback_age_ms": 1,
+    "steering_online": true,
+    "drive_online": true,
+    "left_rpm": 0,
+    "right_rpm": 0
+  }
+}
+{
+  "initial": {
+    "result": 0,
+    "sequence": 1,
+    "phase": 0,
+    "reason": 0,
+    "token": 0,
+    "driver_raw": -1464,
+    "encoder_raw": 0,
+    "saved_center": -1464,
+    "active": false,
+    "calibrated": true,
+    "power_on": false,
+    "phase_name": "IDLE",
+    "reason_name": "NONE",
+    "result_name": "OK"
+  },
+  "motion": {
+    "result": 0,
+    "sequence": 1,
+    "flags": 6,
+    "stop_reason": 0,
+    "feedback_age_ms": 1,
+    "steering_online": true,
+    "drive_online": true,
+    "left_rpm": 0,
+    "right_rpm": 0
+  }
+}
+Session token: 77. Waiting for READY...
+READY: current 0x6064=-1464, encoder=0. Committing...
+WARNING: COMMIT reply incomplete (Incomplete reply for sequence 5: expected ['0x531', '0x532', '0x533'], received [0x531, 0x532], missing [0x533]); checking calibration state
+Recovered COMMIT from calibration phase COMPLETE
+{
+  "captured_driver_center": -1464,
+  "saved_driver_center": -1464,
+  "center_readback_delta": 0,
+  "encoder_raw": 0,
+  "calibrated": true,
+  "phase": "COMPLETE",
+  "result": "OK",
+  "commit_reply_recovered": true,
+  "script_version": "1.1.0"
+}
+{
+  "initial": {
+    "result": 0,
+    "sequence": 1,
+    "phase": 0,
+    "reason": 0,
+    "token": 0,
+    "driver_raw": -1464,
+    "encoder_raw": 0,
+    "saved_center": -1464,
+    "active": false,
+    "calibrated": true,
+    "power_on": false,
+    "phase_name": "IDLE",
+    "reason_name": "NONE",
+    "result_name": "OK"
+  },
+  "motion": {
+    "result": 0,
+    "sequence": 1,
+    "flags": 6,
+    "stop_reason": 0,
+    "feedback_age_ms": 1,
+    "steering_online": true,
+    "drive_online": true,
+    "left_rpm": 0,
+    "right_rpm": 0
+  }
+}
+Session token: 77. Waiting for READY...
+READY: current 0x6064=-1464, encoder=0. Committing...
+{
+  "captured_driver_center": -1464,
+  "saved_driver_center": -1464,
+  "center_readback_delta": 0,
+  "encoder_raw": 0,
+  "calibrated": true,
+  "phase": "COMPLETE",
+  "result": "OK",
+  "commit_reply_recovered": false,
+  "script_version": "1.1.0"
+}
+{
+  "result": 0,
+  "sequence": 3,
+  "flags": 6,
+  "stop_reason": 0,
+  "feedback_age_ms": 1,
+  "steering_online": true,
+  "drive_online": true,
+  "left_rpm": 0,
+  "right_rpm": 0
+}
+{
+  "initial": {
+    "result": 0,
+    "sequence": 1,
+    "phase": 0,
+    "reason": 0,
+    "token": 0,
+    "driver_raw": -1464,
+    "encoder_raw": 0,
+    "saved_center": -1464,
+    "active": false,
+    "calibrated": true,
+    "power_on": true,
+    "phase_name": "IDLE",
+    "reason_name": "NONE",
+    "result_name": "OK"
+  },
+  "motion": {
+    "result": 0,
+    "sequence": 1,
+    "flags": 7,
+    "stop_reason": 0,
+    "feedback_age_ms": 1,
+    "steering_online": true,
+    "drive_online": true,
+    "left_rpm": 0,
+    "right_rpm": 0
+  }
+}
+Session token: 77. Waiting for READY...
+READY: current 0x6064=-1464, encoder=0. Committing...
+{
+  "initial": {
+    "result": 0,
+    "sequence": 1,
+    "phase": 0,
+    "reason": 0,
+    "token": 0,
+    "driver_raw": -1464,
+    "encoder_raw": 0,
+    "saved_center": -1464,
+    "active": false,
+    "calibrated": true,
+    "power_on": false,
+    "phase_name": "IDLE",
+    "reason_name": "NONE",
+    "result_name": "OK"
+  },
+  "motion": {
+    "result": 0,
+    "sequence": 1,
+    "flags": 6,
+    "stop_reason": 0,
+    "feedback_age_ms": 1,
+    "steering_online": true,
+    "drive_online": true,
+    "left_rpm": 0,
+    "right_rpm": 0
+  }
+}
+WARNING: START reply incomplete (Incomplete reply for sequence 3: expected ['0x531', '0x532', '0x533'], received [0x531, 0x532], missing [0x533]); checking session state
+Recovered START session token: 77
+Session token: 77. Waiting for READY...
+READY: current 0x6064=-1464, encoder=0. Committing...
+{
+  "captured_driver_center": -1464,
+  "saved_driver_center": -1464,
+  "center_readback_delta": 0,
+  "encoder_raw": 0,
+  "calibrated": true,
+  "phase": "COMPLETE",
+  "result": "OK",
+  "commit_reply_recovered": false,
+  "script_version": "1.1.0"
+}
+maximum encoded state: 854 bytes
+PASS single diagnostic read loss: one retry recorded; no permanent latch or lost session
+PASS steering missing ACK 0x607A: read-only proof; no trigger replay
+PASS steering missing ACK 0x6040: read-only proof; no trigger replay
+PASS steering missing ACK 0x6040: read-only proof; no trigger replay
+PASS active profile write ACK loss verified without motion replay
+PASS committed steering goal completes before the single latest target runs
+PASS new target cannot cancel proof of an already-sent unknown trigger
+PASS drive missing ACK 0x60FF: full pair verified; latest speed only
+PASS drive missing ACK 0x68FF: full pair verified; latest speed only
+PASS differential half-pair proof: independent previous right target, mismatch=0
+PASS differential half-pair proof: independent previous right target, mismatch=1
+PASS actual-angle differential turn=-1 lost ACK=0x0000: frozen pair verified
+PASS actual-angle differential turn=-1 lost ACK=0x60FF: frozen pair verified
+PASS actual-angle differential turn=-1 lost ACK=0x68FF: frozen pair verified
+PASS actual-angle differential turn=1 lost ACK=0x0000: frozen pair verified
+PASS actual-angle differential turn=1 lost ACK=0x60FF: frozen pair verified
+PASS actual-angle differential turn=1 lost ACK=0x68FF: frozen pair verified
+PASS verification failure 0: zero targets, both disabled, no automatic resume
+PASS verification failure 1: zero targets, both disabled, no automatic resume
+PASS verification failure 2: zero targets, both disabled, no automatic resume
+PASS verification failure 3: zero targets, both disabled, no automatic resume
+PASS verification failure 4: zero targets, both disabled, no automatic resume
+PASS verification failure 5: zero targets, both disabled, no automatic resume
+PASS safety gate 0 during verification still stops both axes
+PASS safety gate 1 during verification still stops both axes
+PASS safety gate 2 during verification still stops both axes
+PASS ACK 59/60ms, read 79/80ms, total 200ms and drain boundaries across wrap
+PASS verified zero does not bypass three fresh stopped feedback pairs
+PASS disarm abandons verification and a late upload cannot ACK zero speed
+PASS both shutdowns before latch; fresh DLC6 status; first cause preserved
+PASS late Abort retries shutdown instead of advancing the safe sequence
+PASS missing steering does not block drive; 599/600ms boundary; retry after latch
+PASS missing shutdown ACK recovered by status confirmation
+PASS Bus-Off fallback and powered-off CAN stop path
+PASS 199/200ms steering timeout boundary and both shutdowns before latch
+PASS rejected submission, one mailbox, monotonic wrap
+PASS write ACK and old status cannot fake disabled; stuck-enable fallback
+PASS reversal-timeout and encoder-range faults disable before latch
+PASS fault between take/send discards old nonzero motion frame
+PASS delayed disable: wait for real status without repeating acknowledged shutdown
+PASS service reinit cannot cancel pending disable
+-- Configuring done (1.6s)
+-- Generating done (0.3s)
+-- Build files have been written to: F:/work/A-Box/Patrol_Vehicle_Chassis/platform/build/host
+[1/2] Building C object tests/CMakeFiles/product_runtime_recovery_test.dir/product_runtime_recovery_test.c.obj
+[2/2] Linking C executable tests\product_runtime_recovery_test.exe
+mqtt_adapter_test passed
+Test project F:/work/A-Box/Patrol_Vehicle_Chassis/platform/build/host
+      Start  1: abox_mqtt_registry_test
+ 1/72 Test  #1: abox_mqtt_registry_test ...................   Passed    0.02 sec
+      Start  2: abox_mqtt_registry_test_registry
+ 2/72 Test  #2: abox_mqtt_registry_test_registry ..........   Passed    0.10 sec
+      Start  3: abox_mqtt_registry_legacy_test
+ 3/72 Test  #3: abox_mqtt_registry_legacy_test ............   Passed    0.02 sec
+      Start  4: abox_mqtt_registry_legacy_test_registry
+ 4/72 Test  #4: abox_mqtt_registry_legacy_test_registry ...   Passed    0.08 sec
+      Start  5: abox_mqtt_registry_consistency
+ 5/72 Test  #5: abox_mqtt_registry_consistency ............   Passed    0.45 sec
+      Start  6: abox_mqtt_registry_vectors
+ 6/72 Test  #6: abox_mqtt_registry_vectors ................   Passed    0.08 sec
+      Start  7: abox_mqtt_request_test
+ 7/72 Test  #7: abox_mqtt_request_test ....................   Passed    0.02 sec
+      Start  8: abox_cloud_v4_test
+ 8/72 Test  #8: abox_cloud_v4_test ........................   Passed    0.02 sec
+      Start  9: abox_mqtt_backoff_test
+ 9/72 Test  #9: abox_mqtt_backoff_test ....................   Passed    0.02 sec
+      Start 10: abox_time_client_test
+10/72 Test #10: abox_time_client_test .....................   Passed    0.01 sec
+      Start 11: abox_mqtt_idem_ufs_test
+11/72 Test #11: abox_mqtt_idem_ufs_test ...................   Passed    0.34 sec
+      Start 12: abox_ec800_ufs_at_test
+12/72 Test #12: abox_ec800_ufs_at_test ....................   Passed    0.02 sec
+      Start 13: abox_mqtt_psk_files_test
+13/72 Test #13: abox_mqtt_psk_files_test ..................   Passed    0.16 sec
+      Start 14: abox_jlink_swd_test
+14/72 Test #14: abox_jlink_swd_test .......................   Passed    0.27 sec
+      Start 15: abox_factory_flash_test
+15/72 Test #15: abox_factory_flash_test ...................   Passed    0.16 sec
+      Start 16: abox_v4_product_preflight_test
+16/72 Test #16: abox_v4_product_preflight_test ............   Passed    0.13 sec
+      Start 17: abox_monotonic_test
+17/72 Test #17: abox_monotonic_test .......................   Passed    0.02 sec
+      Start 18: abox_time_sync_test
+18/72 Test #18: abox_time_sync_test .......................   Passed    0.02 sec
+      Start 19: abox_clock_test
+19/72 Test #19: abox_clock_test ...........................   Passed    0.01 sec
+      Start 20: abox_board_io_test
+20/72 Test #20: abox_board_io_test ........................   Passed    0.01 sec
+      Start 21: abox_board_io_stm32_test
+21/72 Test #21: abox_board_io_stm32_test ..................   Passed    0.01 sec
+      Start 22: abox_component_contract_test
+22/72 Test #22: abox_component_contract_test ..............   Passed   22.67 sec
+      Start 23: abox_release_publish_test
+23/72 Test #23: abox_release_publish_test .................   Passed    1.26 sec
+      Start 24: abox_config_store_test
+24/72 Test #24: abox_config_store_test ....................   Passed    0.02 sec
+      Start 25: abox_enrollment_test
+25/72 Test #25: abox_enrollment_test ......................   Passed    0.02 sec
+      Start 26: abox_enrollment_ec800_http_test
+26/72 Test #26: abox_enrollment_ec800_http_test ...........   Passed    0.01 sec
+      Start 27: abox_ec800_ufs_test
+27/72 Test #27: abox_ec800_ufs_test .......................   Passed    0.01 sec
+      Start 28: abox_ec800_tls_test
+28/72 Test #28: abox_ec800_tls_test .......................   Passed    0.01 sec
+      Start 29: abox_mqtt_tls_test
+29/72 Test #29: abox_mqtt_tls_test ........................   Passed    0.01 sec
+      Start 30: abox_mqtt_trial_test
+30/72 Test #30: abox_mqtt_trial_test ......................   Passed    0.01 sec
+      Start 31: abox_ec800_command_port_test
+31/72 Test #31: abox_ec800_command_port_test ..............   Passed    0.01 sec
+      Start 32: abox_platform_config_test
+32/72 Test #32: abox_platform_config_test .................   Passed    0.01 sec
+      Start 33: abox_ota_flash_test
+33/72 Test #33: abox_ota_flash_test .......................   Passed    0.01 sec
+      Start 34: abox_ota_ec_at_test
+34/72 Test #34: abox_ota_ec_at_test .......................   Passed    0.01 sec
+      Start 35: abox_ec800_test
+35/72 Test #35: abox_ec800_test ...........................   Passed    0.01 sec
+      Start 36: abox_mqtt_v4_contract_test
+36/72 Test #36: abox_mqtt_v4_contract_test ................   Passed    0.01 sec
+      Start 37: abox_mqtt_runtime_test
+37/72 Test #37: abox_mqtt_runtime_test ....................   Passed    0.01 sec
+      Start 38: abox_mqtt_ec800_rx_test
+38/72 Test #38: abox_mqtt_ec800_rx_test ...................   Passed    0.02 sec
+      Start 39: abox_mqtt_ec800_test
+39/72 Test #39: abox_mqtt_ec800_test ......................   Passed    0.01 sec
+      Start 40: abox_https_ufs_downloader_test
+40/72 Test #40: abox_https_ufs_downloader_test ............   Passed    0.01 sec
+      Start 41: abox_ec_power_test
+41/72 Test #41: abox_ec_power_test ........................   Passed    0.01 sec
+      Start 42: abox_boot_v2_test
+42/72 Test #42: abox_boot_v2_test .........................   Passed    0.01 sec
+      Start 43: abox_boot_v2_app_test
+43/72 Test #43: abox_boot_v2_app_test .....................   Passed    0.01 sec
+      Start 44: abox_ec800_mqtt_rx_route_test
+44/72 Test #44: abox_ec800_mqtt_rx_route_test .............   Passed    0.01 sec
+      Start 45: abox_mqtt_receipt_test
+45/72 Test #45: abox_mqtt_receipt_test ....................   Passed    0.01 sec
+      Start 46: abox_mqtt_ec800_bridge_test
+46/72 Test #46: abox_mqtt_ec800_bridge_test ...............   Passed    0.02 sec
+      Start 47: abox_mqtt_runtime_core_port_test
+47/72 Test #47: abox_mqtt_runtime_core_port_test ..........   Passed    0.01 sec
+      Start 48: abox_ec800_iccid_test
+48/72 Test #48: abox_ec800_iccid_test .....................   Passed    0.01 sec
+      Start 49: abox_enrollment_identity_test
+49/72 Test #49: abox_enrollment_identity_test .............   Passed    0.01 sec
+      Start 50: abox_stm32_enrollment_identity_test
+50/72 Test #50: abox_stm32_enrollment_identity_test .......   Passed    0.01 sec
+      Start 51: abox_enrollment_service_test
+51/72 Test #51: abox_enrollment_service_test ..............   Passed    0.01 sec
+      Start 52: abox_boot_v2_ec800_port_test
+52/72 Test #52: abox_boot_v2_ec800_port_test ..............   Passed    0.01 sec
+      Start 53: abox_boot_v2_app_init_test
+53/72 Test #53: abox_boot_v2_app_init_test ................   Passed    0.01 sec
+      Start 54: abox_ec800_recovery_test
+54/72 Test #54: abox_ec800_recovery_test ..................   Passed    0.01 sec
+      Start 55: abox_mqtt_trial_executor_test
+55/72 Test #55: abox_mqtt_trial_executor_test .............   Passed    0.01 sec
+      Start 56: abox_cloud_service_test
+56/72 Test #56: abox_cloud_service_test ...................   Passed    0.01 sec
+      Start 57: abox_cloud_internal_v2_test
+57/72 Test #57: abox_cloud_internal_v2_test ...............   Passed    0.01 sec
+      Start 58: abox_log_ring_test
+58/72 Test #58: abox_log_ring_test ........................   Passed    0.01 sec
+      Start 59: abox_cloud_response_test
+59/72 Test #59: abox_cloud_response_test ..................   Passed    0.01 sec
+      Start 60: abox_maintenance_service_test
+60/72 Test #60: abox_maintenance_service_test .............   Passed    0.01 sec
+      Start 61: abox_app_service_test
+61/72 Test #61: abox_app_service_test .....................   Passed    0.01 sec
+      Start 62: abox_app_service_failure_test
+62/72 Test #62: abox_app_service_failure_test .............   Passed    0.01 sec
+      Start 63: abox_app_service_uart_test
+63/72 Test #63: abox_app_service_uart_test ................   Passed    0.01 sec
+      Start 64: abox_registration_failure_test
+64/72 Test #64: abox_registration_failure_test ............   Passed    0.01 sec
+      Start 65: abox_cloud_dispatch_queue_test
+65/72 Test #65: abox_cloud_dispatch_queue_test ............   Passed    0.02 sec
+      Start 66: abox_psk_station_test
+66/72 Test #66: abox_psk_station_test .....................   Passed    0.01 sec
+      Start 67: abox_ec800_diagnostics_test
+67/72 Test #67: abox_ec800_diagnostics_test ...............   Passed    0.01 sec
+      Start 68: abox_mqtt_digest_test
+68/72 Test #68: abox_mqtt_digest_test .....................   Passed    0.02 sec
+      Start 69: abox_mqtt_digest_vectors
+69/72 Test #69: abox_mqtt_digest_vectors ..................   Passed    0.68 sec
+      Start 70: abox_mqtt_numbers
+70/72 Test #70: abox_mqtt_numbers .........................   Passed    1.23 sec
+      Start 71: product_io_init_test
+71/72 Test #71: product_io_init_test ......................   Passed    0.82 sec
+      Start 72: product_runtime_recovery_test
+72/72 Test #72: product_runtime_recovery_test .............   Passed    0.02 sec
+
+100% tests passed, 0 tests failed out of 72
+
+Total Test time (real) =  29.63 sec
+PASS bench handshake, target conversion, limits, stop, malformed replies, faults and timeout
+PASS Config V5 layout, uncalibrated gate, direct control session, reconnect and lease revoke
+differential directions, ratios, deadband, hysteresis, pair freeze and reversal passed
+bench drive tests passed
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.272s
+
+OK
+Product OTA startup failure injection: PASS (Patrol_Vehicle_Chassis)

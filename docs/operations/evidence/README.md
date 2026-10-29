@@ -1,5 +1,7 @@
 # Evidence 索引
 
+- 2026-10-29：同事运动分支与公共 TLS main 合并，0.2.106 主机/构建验证及正式打包；未刷写、未 OTA、未实车验收。见[集成发布索引](2026-10-29-main-merge/index.json)。
+
 本目录保存原始、不可改写的验证材料。本索引只提供导航；当前状态先看 [CURRENT](../../CURRENT.md)，当前操作步骤看 `docs/operations/`。
 
 ## MQTT

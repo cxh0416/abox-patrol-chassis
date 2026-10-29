@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-29",
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.106",
+  "source_commit": "0daf0041eca608f5f38b925db24a87586eb90b53",
+  "merge_commit": "69c726d66703b0b2aabf18baa6f92bb6611cfbe1",
+  "parents": [
+    "6bdc1aa6ecbe12556809e55208315689292f7240",
+    "192fe580c0b028c4def53704365106e4a9545c51"
+  ],
+  "platform_commit": "d3d940505eb5c534c83858fdc754f2c4ab5ac879",
+  "validation": {
+    "product_python_tests": 59,
+    "product_c_fixtures": "passed through tools/run_tests.ps1",
+    "platform_ctest": 72,
+    "startup_and_ota_init": "passed",
+    "arm_release": "passed",
+    "bench_can2_service_stacks": "passed",
+    "formal_matches_candidate": true,
+    "manifest_sha256_crc32_lengths_full_composition": "passed",
+    "existing_raw_evidence": "unchanged relative to original main; only evidence README navigation updated"
+  },
+  "recovery_fix": "Respect actuation/executor build switches; check each mailbox; rotate nodes after successful shutdown submission. Fresh diagnostics remain the authority; no automatic motion permit.",
+  "release_build_environment": "PowerShell 7; UTF-8 source reads explicit in product stack checkers",
+  "prior_dist_note": "Merge imported colleague tracked dist including its 0.2.63 manifest (source 68455ec). Incoming images were quarantined. Original local pre-merge package was not recovered; this freshly validated complete 0.2.106 package now replaces dist. The temporary rebuild of old 0.2.63 is not a release input.",
+  "deployment": {
+    "flashed": false,
+    "ota": false,
+    "physical_motion_acceptance": false
+  },
+  "files": {
+    "host-tests.log": {
+      "bytes": 26658,
+      "sha256": "03df3fa69f4289f2025a71609d3eb1370816c7cadeb667bf6dfeaed819273bc1"
+    },
+    "formal-build.log": {
+      "bytes": 24850,
+      "sha256": "aa3afb353c191fb820997a5928df2785abc50641c589f546b587fb847798391b"
+    },
+    "diff-check-summary.json": {
+      "bytes": 237,
+      "sha256": "3c052ebaada13595e1af202758befc17c7a7b34e2685e7e6861e13e55871123b"
+    },
+    "release.manifest.json": {
+      "bytes": 2395,
+      "sha256": "84febac5d763a137ddd91743174bc99bbf44bddc49ee0cfdf9ad46ed4a2925d7"
+    }
+  }
+}
