@@ -6,13 +6,13 @@ from pathlib import Path
 build = Path(sys.argv[1])
 frames = {}
 for path in build.rglob('*.su'):
-    for line in path.read_text(errors='replace').splitlines():
+    for line in path.read_text(encoding='utf-8', errors='replace').splitlines():
         parts = line.split('\t')
         if len(parts) < 3 or not Path(parts[0].rsplit(':', 3)[0]).is_file():
             continue
         name = parts[0].rsplit(':', 1)[-1].split('.')[0]
         frames[name] = max(frames.get(name, 0), int(parts[1]))
-source = (Path(__file__).resolve().parents[1] / 'app/Core/User/system/src/patrol_rtos.c').read_text()
+source = (Path(__file__).resolve().parents[1] / 'app/Core/User/system/src/patrol_rtos.c').read_text(encoding='utf-8')
 rx_capacity = int(re.search(r'#define PATROL_CAN_RX_STACK_WORDS (\d+)U', source)[1]) * 4
 safety_capacity = int(re.search(r'#define PATROL_SAFETY_STACK_WORDS (\d+)U', source)[1]) * 4
 canopen_capacity = int(re.search(r'#define PATROL_CANOPEN_STACK_WORDS (\d+)U', source)[1]) * 4
