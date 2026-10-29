@@ -161,7 +161,7 @@ uint8_t PatrolConfig_SetDiagLog(uint8_t enabled, const char* host, uint16_t port
 
 uint8_t PatrolConfig_IsCloudReady(const PatrolRemoteConfigV5_t* cfg)
 {
-    if (cfg == 0) return 0U;
+    if (cfg == 0 || cfg->mqtt_tls_enabled != 1U) return 0U;
     if (!string_is_safe(cfg->vid, sizeof(cfg->vid), 1U)) return 0U;
     if (!string_is_safe(cfg->mqtt_host, sizeof(cfg->mqtt_host), 0U)) return 0U;
     if (!string_is_safe(cfg->mqtt_username, sizeof(cfg->mqtt_username), 0U)) return 0U;

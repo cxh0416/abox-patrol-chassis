@@ -101,17 +101,16 @@ int main(void)
     ABoxMqttConfig tls = {"tls.example", 8883U, "tls-user", "tls-pass", 1U, 0U, {0}};
 
     reset_fakes(); init_at(&at);
-    assert(MqttRuntime_Init(&at, &plain, now_ms));
-    assert(!MqttRuntime_IsReady());
+    assert(!MqttRuntime_Init(&at, &plain, now_ms));
+    assert(command_count == 0U);
+    assert(MqttRuntime_Init(&at, &tls, now_ms));
     service(&at);
-    assert(MqttRuntime_IsReady() && MqttRuntime_ActiveClient() == 0U && !MqttRuntime_ActiveTls());
-    assert(observed_count >= 4U && observed[0] == MQTT_RUNTIME_PREPARED);
-    assert(observed[1] == MQTT_RUNTIME_CONNECT && observed[2] == MQTT_RUNTIME_CONNECTED);
-    assert(observed[3] == MQTT_RUNTIME_READY);
-    assert(command_count == 0U && applied.tls_enabled == 0U && security_ready && !paused);
-
+    assert(MqttRuntime_IsReady() && MqttRuntime_ActiveTls());
+    assert(!MqttRuntime_ApplyRamCandidate(&plain, now_ms));
+    assert(!MqttRuntime_RestoreRamActive(&plain, now_ms));
+    ABoxMqttConfig next=tls; next.host="next.example";
     assert(MqttRuntime_ApplyRamCandidate(&tls, now_ms));
-    assert(revoked == 1U && !security_ready && paused);
+    assert(revoked > 0U && !security_ready && paused);
     service(&at);
     if (!MqttRuntime_IsReady()) {
         unsigned i;
@@ -128,8 +127,8 @@ int main(void)
 
     /* A cancel/subscribe timeout can restore while the candidate is connected
        but its subscriptions have not completed. */
-    core_auto_ready = 0U;
-    assert(MqttRuntime_ApplyRamCandidate(&plain, now_ms));
+    core_auto_ready = 0U; command_count = 0U;
+    assert(MqttRuntime_ApplyRamCandidate(&next, now_ms));
     while (MqttRuntime_State() != MQTT_RUNTIME_CONNECTED && now_ms < 120000U) {
         MqttRuntime_Task(now_ms);
         ABoxEc800At_Task(&at);

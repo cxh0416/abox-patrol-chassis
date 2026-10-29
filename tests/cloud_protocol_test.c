@@ -59,7 +59,7 @@ int main(void)
         "\"command\":\"internal_config\",\"params\":{\"action\":\"set_mqtt\","
         "\"vid\":\"PATROL_CHASSIS-001\",\"host\":\"36.153.162.171\",\"port\":19683,"
         "\"username\":\"patrol\",\"password\":\"test-pass\","
-        "\"tlsEnabled\":false,\"tlsProfileId\":0}}}";
+        "\"tlsEnabled\":true,\"tlsProfileId\":0}}}";
     static const char bad_set_mqtt[] =
         "{\"version\":\"2.0\",\"data\":{\"requestId\":\"req-5\","
         "\"command\":\"internal_config\",\"params\":{\"action\":\"set_mqtt\","
@@ -196,7 +196,7 @@ int main(void)
             snprintf(json, sizeof(json), "{\"version\":\"2.0\",\"timestamp\":0,\"data\":{\"requestId\":\"vid-test\","
                 "\"command\":\"internal_config\",\"params\":{\"action\":\"set_mqtt\",\"vid\":\"%s\","
                 "\"host\":\"broker.example\",\"port\":19683,\"username\":\"u\",\"password\":\"p\","
-                "\"tlsEnabled\":false,\"tlsProfileId\":0}}}", vid);
+                "\"tlsEnabled\":true,\"tlsProfileId\":0}}}", vid);
             if (CloudProtocol_Parse(json, (uint16_t)strlen(json), 0U, &request) !=
                 (n <= 31 ? CLOUD_PROTOCOL_OK : CLOUD_PROTOCOL_INVALID)) return 1;
             if (n <= 31 && strcmp(vid, request.mqtt_vid)) return 1;
@@ -205,7 +205,7 @@ int main(void)
             snprintf(json, sizeof(json), "{\"version\":\"2.0\",\"timestamp\":0,\"data\":{\"requestId\":\"vid-test\","
                 "\"command\":\"internal_config\",\"params\":{\"action\":\"set_mqtt\",\"vid\":\"%s\","
                 "\"host\":\"broker.example\",\"port\":19683,\"username\":\"u\",\"password\":\"p\","
-                "\"tlsEnabled\":false,\"tlsProfileId\":0}}}", invalid[i]);
+                "\"tlsEnabled\":true,\"tlsProfileId\":0}}}", invalid[i]);
             if (CloudProtocol_Parse(json, (uint16_t)strlen(json), 0U, &request) != CLOUD_PROTOCOL_INVALID) return 1;
         }
     }

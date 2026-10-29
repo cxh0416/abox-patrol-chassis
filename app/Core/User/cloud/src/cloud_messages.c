@@ -10,6 +10,7 @@
 #include "boot_state.h"
 #include "fixed_point.h"
 #include "mqtt_core.h"
+#include "mqtt_runtime.h"
 #include "ota_service.h"
 #include "remote_service.h"
 #include "time_base.h"
@@ -230,6 +231,11 @@ void CloudMessages_BuildInfoResult(char* output, uint16_t size)
                  (unsigned)PatrolConfig_Get()->mqtt_port,
                  PatrolConfig_Get()->mqtt_tls_enabled ? "true" : "false",
                  (unsigned)PatrolConfig_Get()->mqtt_tls_profile_id);
+    json_append(&writer, ",\"mqttAuthMode\":");
+    json_string(&writer, PatrolConfig_MqttCredentials()->mode == ABOX_TLS_AUTH_PSK ? "psk" : "ca");
+    json_appendf(&writer, ",\"mqttTlsActive\":%s,\"trustedTime\":%s",
+                 MqttRuntime_ActiveTls() ? "true" : "false",
+                 TimeBase_GetSnapshot().quality == ABOX_CLOCK_SYNCHRONIZED ? "true" : "false");
     json_appendf(&writer, ",\"uptimeMs\":%lu,\"mqttState\":", (unsigned long)CloudPort_Now());
     json_string(&writer, mqtt_state_name(MQTT_Core_GetState()));
     json_appendf(&writer, ",\"mqttStateCode\":%u,\"iccid\":", (unsigned int)MQTT_Core_GetState());

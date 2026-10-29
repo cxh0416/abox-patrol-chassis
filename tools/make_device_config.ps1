@@ -13,7 +13,6 @@ param(
     [ValidateSet(-1, 1)] [int] $AbsoluteDirection = 1,
     [ValidateRange(1, 2000)] [int] $SteeringToleranceMdeg = 2000,
     [switch] $Calibrated,
-    [switch] $PlainMqtt,
     [switch] $Force
 )
 
@@ -35,6 +34,5 @@ $arguments = @(
     )
 if ($Calibrated) { $arguments += '--calibrated' }
 if ($Force) { $arguments += '--force' }
-if ($PlainMqtt) { $arguments += '--no-mqtt-tls-enabled' }
 & python @arguments
 if ($LASTEXITCODE -ne 0) { throw "make_device_config.py failed with exit code $LASTEXITCODE" }

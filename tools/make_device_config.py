@@ -76,6 +76,8 @@ def build_config_page(
     mqtt_tls_enabled: bool = True,
     mqtt_tls_profile_id: int = DEFAULT_TLS_PROFILE_ID,
 ) -> bytes:
+    if not mqtt_tls_enabled:
+        raise ValueError("V4 MQTT requires TLS")
     if not VID_RE.fullmatch(vid):
         raise ValueError("VID must match [A-Za-z0-9._-]{1,31}")
     if not 0 <= port <= 65535 or not 1 <= diag_port <= 65535:
@@ -229,7 +231,7 @@ def main() -> int:
     parser.add_argument("--steering-tolerance-mdeg", type=int, default=2000)
     parser.add_argument("--calibrated", action="store_true")
     parser.add_argument("--mqtt-tls-enabled", action=argparse.BooleanOptionalAction, default=True,
-                        help="use TLS by default; --no-mqtt-tls-enabled is for explicit legacy/debug use")
+                        help="V4 MQTT requires TLS")
     parser.add_argument("--mqtt-tls-profile-id", type=int, default=DEFAULT_TLS_PROFILE_ID)
     parser.add_argument("--force", action="store_true")
     args = parser.parse_args()

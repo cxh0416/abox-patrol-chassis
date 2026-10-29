@@ -58,6 +58,7 @@ $mqttAdapterTest = Join-Path $hostBuild 'mqtt_adapter_test.exe'
     "$PSScriptRoot\..\platform\components\boot_v2\src\abox_boot_v2_ec800_port.c" `
     "$PSScriptRoot\..\platform\components\boot_v2\src\abox_boot_v2_services.c" `
     "$PSScriptRoot\..\platform\components\mqtt\src\abox_mqtt_ec800.c" `
+    "$PSScriptRoot\..\platform\components\mqtt\src\abox_mqtt_backoff.c" `
     "$PSScriptRoot\..\platform\components\mqtt\src\abox_mqtt_ec800_bridge.c" `
     "$PSScriptRoot\..\platform\components\mqtt\src\abox_mqtt_ec800_rx.c" `
     "$PSScriptRoot\..\platform\components\mqtt\src\abox_mqtt_receipt.c" `

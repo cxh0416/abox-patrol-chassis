@@ -169,13 +169,17 @@ static __attribute__((noinline)) void handle_config_request(const CloudProtocolR
             }
             credentials = &request->mqtt_psk;
         } else {
-        strcpy(candidate.vid, request->mqtt_vid);
-        strcpy(candidate.mqtt_host, request->mqtt_host);
-        candidate.mqtt_port = request->mqtt_port;
-        strcpy(candidate.mqtt_username, request->mqtt_username);
-        strcpy(candidate.mqtt_password, request->mqtt_password);
-        candidate.mqtt_tls_enabled = request->mqtt_tls_enabled;
-        candidate.mqtt_tls_profile_id = request->mqtt_tls_profile_id;
+            if (!MqttRuntime_ActiveTls()) {
+                CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "TLS_REQUIRED");
+                return;
+            }
+            strcpy(candidate.vid, request->mqtt_vid);
+            strcpy(candidate.mqtt_host, request->mqtt_host);
+            candidate.mqtt_port = request->mqtt_port;
+            strcpy(candidate.mqtt_username, request->mqtt_username);
+            strcpy(candidate.mqtt_password, request->mqtt_password);
+            candidate.mqtt_tls_enabled = request->mqtt_tls_enabled;
+            candidate.mqtt_tls_profile_id = request->mqtt_tls_profile_id;
         }
         if (!boot_state_allows_reboot() || OtaService_IsBusy() ||
             g_cloud.mqtt_candidate_pending || g_cloud.mqtt_persistent_active ||

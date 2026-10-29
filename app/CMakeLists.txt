@@ -138,6 +138,7 @@ list(REMOVE_ITEM CMAKE_C_IMPLICIT_LINK_LIBRARIES ob)
 target_link_libraries(${CMAKE_PROJECT_NAME}
     stm32cubemx
     abox::mqtt_digest
+    abox::cloud_v4
     # Add user defined libraries
 )
 
