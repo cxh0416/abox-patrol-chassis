@@ -6,7 +6,7 @@ from pathlib import Path
 build=Path(sys.argv[1])
 frames={}
 for path in build.rglob('*.su'):
-    for line in path.read_text(errors='replace').splitlines():
+    for line in path.read_text(encoding='utf-8', errors='replace').splitlines():
         fields=line.split('\t')
         if len(fields)>=3:
             if not Path(fields[0].rsplit(':',3)[0]).is_file():
@@ -18,7 +18,7 @@ chain=['Patrol_RemoteTask','CloudService_Task','ABoxAppService_Poll','app_transp
 for name in chain:
     if name not in frames:raise SystemExit('Missing stack evidence: '+name)
 used=sum(frames[n] for n in chain)
-source=(Path(__file__).resolve().parents[1]/'app/Core/User/system/src/patrol_rtos.c').read_text()
+source=(Path(__file__).resolve().parents[1]/'app/Core/User/system/src/patrol_rtos.c').read_text(encoding='utf-8')
 capacity=int(re.search(r'#define PATROL_REMOTE_STACK_WORDS (\d+)U',source)[1])*4
 assert used+1024<=capacity, (used,capacity)
 print(f'PASS calibration stack: known frames {used} + 1024 byte reserve <= {capacity}')
