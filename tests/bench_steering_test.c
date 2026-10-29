@@ -31,8 +31,67 @@ static void advance(BenchSteering* b, uint32_t* now)
     }
     *now+=10;
 }
+static void initial_limits(BenchSteering* b, int32_t low, int32_t high)
+{
+    PatrolCanFrame f,r;
+    BenchSteering_Tick(b,0,1,1,0,0);
+    assert(BenchSteering_Take(b,0,&f) && f.id==0);
+    assert(BenchSteering_Take(b,1,&f) && b->index==0x201A && b->read);
+    r=reply(b,low); assert(BenchSteering_OnFrame(b,&r,2));
+    assert(BenchSteering_Take(b,3,&f) && b->index==0x2019 && b->read);
+    r=reply(b,high); assert(BenchSteering_OnFrame(b,&r,4));
+}
+static void zero_limit_bootstrap(void)
+{
+    BenchSteering b; PatrolCanFrame f,r;
+    BenchSteering_Init(&b);
+    assert(BenchSteering_Start(&b,-1463,-1463,-1463,30000,0));
+    initial_limits(&b,0,0);
+    assert(b.phase==BENCH_PREPARING && b.fault==0);
+    assert(b.minimum==-84142 && b.maximum==81216 && !b.limits_aligned);
+    for (uint32_t t=5;t<9;t++) {
+        assert(BenchSteering_Take(&b,t,&f));
+        assert(f.id==0x601 && (b.index==0x201A || b.index==0x2019));
+        r=reply(&b,b.expected); assert(BenchSteering_OnFrame(&b,&r,t));
+    }
+    assert(b.limits_aligned && b.cached_minimum==-84142 && b.cached_maximum==81216);
+    /* A disappearing pair in a live epoch is not permission to re-anchor. */
+    b.phase=BENCH_IDLE;
+    assert(BenchSteering_Start(&b,-1463,-1463,-1463,30000,0));
+    initial_limits(&b,0,0);
+    assert(b.phase==BENCH_FAULT && b.fault==8 && b.cut_power);
+
+    /* Commissioning keeps its original envelope, including rejecting zero. */
+    BenchSteering_Init(&b);
+    assert(BenchSteering_StartCommissioning(&b,-1463,-1463,60000,0));
+    initial_limits(&b,0,0);
+    assert(b.phase==BENCH_FAULT && b.fault==8);
+    assert(!BenchSteering_Take(&b,5,&f));
+
+    for (int kind=0;kind<3;kind++) {
+        BenchSteering_Init(&b);
+        assert(BenchSteering_Start(&b,-1463,-1463,-1463,30000,0));
+        initial_limits(&b,kind==0?123:kind==1?100:0,kind==0?123:kind==1?-100:-1);
+        assert(b.phase==BENCH_FAULT && b.fault==8);
+    }
+    /* An ACK is insufficient; mismatched limit readback cannot reach enable. */
+    BenchSteering_Init(&b);
+    assert(BenchSteering_Start(&b,-1463,-1463,-1463,30000,0));
+    initial_limits(&b,0,0);
+    assert(BenchSteering_Take(&b,5,&f) && !b.read);
+    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,6));
+    assert(BenchSteering_Take(&b,7,&f) && b.read);
+    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,8));
+    assert(b.phase==BENCH_FAULT && b.fault==10 && b.cut_power);
+
+    BenchSteering_Init(&b);
+    assert(BenchSteering_Start(&b,-1463,-1463,-1463,30000,0));
+    BenchSteering_Tick(&b,0,1,0,0,0);
+    assert(b.phase==BENCH_FAULT && !BenchSteering_Take(&b,1,&f));
+}
 int main(void)
 {
+    zero_limit_bootstrap();
     SteeringCoordinate coordinate;
     BenchSteering b; PatrolCanFrame f,r; uint32_t now=0; int32_t target;
     SteeringCoordinate_Reset(&coordinate);
@@ -60,21 +119,39 @@ int main(void)
     assert(BenchSteering_Start(&b,-83815,-85123,-85123,30000,now));
     for(int i=0;i<20;i++) advance(&b,&now);
     assert(b.phase==BENCH_ACTIVE);
-    for(int i=0;i<3;i++) advance(&b,&now);
+    for(int i=0;i<4;i++) advance(&b,&now);
     assert(b.applied==-82413 && b.step==16);
-    /* A changed target during positioning must replace, not queue behind, the
-       old target. Drop only new-set-point bit 4 after each acknowledged trigger. */
-    for (int angle=500; angle>=0; angle-=500) {
-        BenchSteering_Tick(&b,now,1,1,angle,0);
-        assert(BenchSteering_Take(&b,now,&f) && b.index==0x607A);
-        r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+1));
-        assert(BenchSteering_Take(&b,now+2,&f) && b.index==0x6040 && f.data[4]==0x3F);
-        r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+3));
-        assert(BenchSteering_Take(&b,now+4,&f) && b.index==0x6040 && f.data[4]==0x2F);
-        r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+5));
-        assert(b.phase==BENCH_ACTIVE && b.step==16);
-        now+=10;
-    }
+    /* Once 0x607A has been written, a newer remote target waits in the single
+       desired slot until this trigger/clear cycle finishes. */
+    now=b.last_trigger_ms+BENCH_STEERING_TRIGGER_INTERVAL_MS;
+    BenchSteering_Tick(&b,now,1,1,500,0);
+    assert(BenchSteering_Take(&b,now,&f) && b.index==0x607A);
+    int32_t committed=b.applied;
+    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+1));
+    BenchSteering_Tick(&b,now+2,1,1,0,0);
+    assert(b.desired!=committed && b.applied==committed && b.step==18);
+    assert(BenchSteering_Take(&b,now+2,&f) && b.index==0x6041 && b.read);
+    r=reply(&b,0x27); assert(BenchSteering_OnFrame(&b,&r,now+3));
+    assert(BenchSteering_Take(&b,now+4,&f) && b.index==0x6040 && f.data[4]==0x3F);
+    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+5));
+    assert(BenchSteering_Take(&b,now+6,&f) && b.index==0x6040 && f.data[4]==0x2F);
+    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+7));
+    assert(b.phase==BENCH_ACTIVE && b.step==16 && b.desired==b.center);
+
+    /* Start-to-start trigger spacing is at least 100 ms. */
+    BenchSteering_Tick(&b,now+8,1,1,0,0);
+    assert(b.step==16 && !BenchSteering_Take(&b,now+8,&f));
+    now=b.last_trigger_ms+BENCH_STEERING_TRIGGER_INTERVAL_MS;
+    BenchSteering_Tick(&b,now,1,1,0,0);
+    assert(BenchSteering_Take(&b,now,&f) && b.index==0x607A);
+    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+1));
+    assert(BenchSteering_Take(&b,now+2,&f) && b.index==0x6041 && b.read);
+    r=reply(&b,0x27); assert(BenchSteering_OnFrame(&b,&r,now+3));
+    assert(BenchSteering_Take(&b,now+4,&f) && b.index==0x6040 && f.data[4]==0x3F);
+    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+5));
+    assert(BenchSteering_Take(&b,now+6,&f) && b.index==0x6040 && f.data[4]==0x2F);
+    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+7));
+    assert(b.phase==BENCH_ACTIVE && b.step==16);
     BenchSteering_Tick(&b,now,0,1,0,0);
     assert(b.phase==BENCH_STOPPING);
     assert(BenchSteering_Take(&b,now,&f) && b.index==0x6040 && f.data[4]==6);
@@ -85,34 +162,29 @@ int main(void)
     assert(b.phase==BENCH_IDLE); /* stop emitted no target position */
     assert(b.limits_aligned && b.minimum==-167802 && b.maximum==-2444);
 
-    /* 0x6080 is a fixed 300 rpm ceiling.  An active profile starts at creep
-       speed for a near target, then only receives a target after its selected
-       0x6081 value has been read back. */
+    /* Current MAX/MID/CREEP profiles are equal, so runtime target changes do
+       not require repeated 0x6081 writes. */
     BenchSteering_Init(&b); now=0;
     assert(BenchSteering_Start(&b,-83815,-85123,-85123,30000,now));
     for(int i=0;i<20;i++) advance(&b,&now);
-    assert(b.phase==BENCH_ACTIVE && b.applied_profile_rpm==75);
+    assert(b.phase==BENCH_ACTIVE && b.applied_profile_rpm==1000);
+    now=b.last_trigger_ms+BENCH_STEERING_TRIGGER_INTERVAL_MS;
     BenchSteering_Tick(&b,now,1,1,30000,0);
-    assert(BenchSteering_Take(&b,now,&f) && b.index==0x6081);
-    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+1));
-    assert(BenchSteering_Take(&b,now+2,&f) && b.index==0x6081 && b.read);
-    r=reply(&b,300); assert(BenchSteering_OnFrame(&b,&r,now+3));
-    assert(b.applied_profile_rpm==300);
-    assert(BenchSteering_Take(&b,now+4,&f) && b.index==0x607A);
+    assert(BenchSteering_Take(&b,now,&f) && b.index==0x607A);
     r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+5));
-    assert(BenchSteering_Take(&b,now+6,&f) && b.index==0x6040 && f.data[4]==0x3F);
-    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+7));
-    assert(BenchSteering_Take(&b,now+8,&f) && b.index==0x6040 && f.data[4]==0x2F);
-    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+9));
+    assert(BenchSteering_Take(&b,now+1,&f) && b.index==0x6041 && b.read);
+    r=reply(&b,0x27); assert(BenchSteering_OnFrame(&b,&r,now+2));
+    assert(BenchSteering_Take(&b,now+3,&f) && b.index==0x6040 && f.data[4]==0x3F);
+    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+4));
+    assert(BenchSteering_Take(&b,now+5,&f) && b.index==0x6040 && f.data[4]==0x2F);
+    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+6));
     assert(b.phase==BENCH_ACTIVE && b.step==16);
-    /* At 27 degrees, even a full-scale command must fall back to creep before
-       it can consume the 30.0 to 30.5 degree fault margin. */
-    BenchSteering_Tick(&b,now+10,1,1,30000,27000);
-    assert(BenchSteering_Take(&b,now+10,&f) && b.index==0x6081);
-    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+11));
-    assert(BenchSteering_Take(&b,now+12,&f) && b.index==0x6081 && b.read);
-    r=reply(&b,75); assert(BenchSteering_OnFrame(&b,&r,now+13));
-    assert(b.applied_profile_rpm==75 && b.step==16);
+    BenchSteering_Tick(&b,now+7,1,1,30000,27000);
+    assert(b.applied_profile_rpm==1000 && b.step==16);
+    assert(!BenchSteering_Take(&b,now+7,&f));
+    BenchSteering_Tick(&b,now+8,1,1,30000,24000);
+    assert(b.applied_profile_rpm==1000 && b.step==16);
+    assert(!BenchSteering_Take(&b,now+8,&f));
 
     BenchSteering_Init(&b);
     assert(BenchSteering_Start(&b,-83815,-72187,-85123,30000,0)); now=0;
@@ -146,11 +218,38 @@ int main(void)
     BenchSteering_OnFrame(&b,&r,11); assert(b.pending);
     r=reply(&b,-111593); r.data[1]++;
     assert(!BenchSteering_OnFrame(&b,&r,12)&&b.pending);
-    BenchSteering_Tick(&b,111,1,1,0,0); assert(b.phase==BENCH_FAULT&&b.cut_power);
+    BenchSteering_Tick(&b,209,1,1,0,0); assert(b.pending&&b.phase!=BENCH_FAULT);
+    BenchSteering_Tick(&b,210,1,1,0,0); assert(b.phase==BENCH_FAULT&&b.cut_power);
     assert(b.fault == 6U);
-    BenchSteering_Stop(&b,112,1);
+    BenchSteering_Stop(&b,211,1);
     assert(b.fault == 6U); /* emergency propagation preserves first timeout */
-    assert(!BenchSteering_Take(&b,112,&f));
+    assert(!BenchSteering_Take(&b,211,&f));
+    /* Motion ACKs at 59ms complete normally; at 60ms the result must instead
+       be read back. Verification has an 80ms read deadline followed by a
+       bounded drain window ending at 200ms. */
+    for (int expired=0;expired<2;expired++) {
+        BenchSteering_Init(&b); b.phase=BENCH_ACTIVE; b.step=17;
+        assert(BenchSteering_Take(&b,1000,&f)&&b.index==0x607A);
+        r=reply(&b,0);
+        assert(BenchSteering_OnFrame(&b,&r,expired?1060:1059));
+        if (expired) {
+            assert(b.phase==BENCH_ACTIVE&&b.verify&&!b.pending&&!b.cut_power);
+            assert(BenchSteering_Take(&b,1060,&f)&&b.index==0x6041&&b.read);
+            assert(f.data[0]==0x40); /* lost ACK never causes a target write replay */
+            BenchSteering_Tick(&b,1139,1,1,0,0);
+            assert(b.verify&&b.pending&&b.phase!=BENCH_FAULT);
+            BenchSteering_Tick(&b,1140,1,1,0,0);
+            assert(b.verify&&!b.pending&&b.phase!=BENCH_FAULT);
+            r=reply(&b,0x2237);
+            assert(BenchSteering_OnFrame(&b,&r,1150)); /* late reply is drained */
+            assert(!BenchSteering_Take(&b,1150,&f));
+            BenchSteering_Tick(&b,1259,1,1,0,0);
+            assert(b.phase!=BENCH_FAULT);
+            BenchSteering_Tick(&b,1260,1,1,0,0);
+            assert(b.phase==BENCH_FAULT&&b.cut_power);
+        }
+        else assert(b.phase==BENCH_ACTIVE&&!b.pending&&!b.fault);
+    }
     BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0); now=0;
     while (b.step != 4) advance(&b,&now);
     assert(BenchSteering_Take(&b,now,&f)); r=reply(&b,3);
@@ -168,6 +267,19 @@ int main(void)
     BenchSteering_OnFrame(&b,&r,now+1); assert(b.phase==BENCH_FAULT&&b.cut_power);
     BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0);
     BenchSteering_Tick(&b,1,1,0,0,0); assert(b.phase==BENCH_FAULT&&b.cut_power);
+    /* PREPARING can be aborted through shutdown before limits are aligned. */
+    BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0);
+    assert(b.phase==BENCH_PREPARING && !b.limits_aligned);
+    BenchSteering_Stop(&b,10,0);
+    assert(b.phase==BENCH_STOPPING && b.fault==0 && !b.cut_power);
+    BenchSteering_Tick(&b,10,0,1,0,0);
+    assert(BenchSteering_Take(&b,10,&f) && b.index==0x6040 && f.data[4]==6);
+    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,11));
+    assert(BenchSteering_Take(&b,12,&f) && b.index==0x6041 && b.read);
+    r=reply(&b,0x21); assert(BenchSteering_OnFrame(&b,&r,13));
+    assert(BenchSteering_Take(&b,14,&f) && f.id==0 && f.data[0]==0x80);
+    assert(b.phase==BENCH_IDLE && !b.cut_power);
+    /* A shutdown that never completes still trips the bounded stop deadline. */
     BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0);
     BenchSteering_Stop(&b,10,0); BenchSteering_Tick(&b,510,0,1,0,0);
     assert(b.phase==BENCH_FAULT&&b.cut_power);

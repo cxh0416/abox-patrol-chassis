@@ -1,0 +1,182 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.81",
+  "validation": {
+    "arm_release_build": true,
+    "stack_checks": true,
+    "flash_layout": true,
+    "frozen_boot": true,
+    "product_python_total": 45,
+    "product_python_passed": 43,
+    "failed_tests": [
+      "test_lost_write_ack_read_only_verification (test_fault_stop_runtime.FaultStopRuntimeTests.test_lost_write_ack_read_only_verification)",
+      "test_identity_and_safe_defaults (test_patrol_scaffold.PatrolScaffoldTests.test_identity_and_safe_defaults)"
+    ],
+    "current_800_rpm_bench_variant": true,
+    "board_flashed": false,
+    "hardware_motion_verified": false,
+    "formal_publication": false,
+    "formal_blocker": "Two repository test failures: legacy hot-reset static check and old 90-rpm profile expectation"
+  },
+  "app_sha256": "104d4c21eeffc235c9bcdac4fcdd0b80037d7d04e891e7bf753c67bb156cf7ad",
+  "app_size": 154264,
+  "full_size": 187032,
+  "states": [
+    {
+      "file": "BootState_A.bin",
+      "address": "0x0803E800",
+      "bytes": 2048,
+      "sha256": "79d64bf25690a70262dd3514626ac5e84fecf1a1088983f004d397fc8c3d3cff",
+      "sequence": 1,
+      "state": "NORMAL"
+    },
+    {
+      "file": "BootState_B.bin",
+      "address": "0x0803F000",
+      "bytes": 2048,
+      "sha256": "fe41c65b5f605bbf532fcb5ddf2135ff9c43c3f9235dfd3fd8777396d4333e0b",
+      "sequence": 2,
+      "state": "NORMAL"
+    }
+  ],
+  "board_flashed": false,
+  "field_motion_tested": false,
+  "formal_release": false,
+  "files": [
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/ABox_Boot.bin",
+      "bytes": 32768,
+      "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/BootState_A.bin",
+      "bytes": 2048,
+      "sha256": "79d64bf25690a70262dd3514626ac5e84fecf1a1088983f004d397fc8c3d3cff"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/BootState_B.bin",
+      "bytes": 2048,
+      "sha256": "fe41c65b5f605bbf532fcb5ddf2135ff9c43c3f9235dfd3fd8777396d4333e0b"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/candidate.manifest.json",
+      "bytes": 35285,
+      "sha256": "62d6058844349e4764149c28f4565514fcdd22c0033b44e605ea8eac52b3f87c"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/debug.manifest.json",
+      "bytes": 1351,
+      "sha256": "f1ad73d8f5bd6287b05460426133b970dc7c024a58aa29ddd1b9699732dd06e8"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/FLASH_ADDRESSES.txt",
+      "bytes": 1272,
+      "sha256": "e799c7379a56bb2aec417fa7dc4b09915877add3921bcd66b17c7949a9879138"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/Patrol_Vehicle_Chassis_App.bin",
+      "bytes": 154264,
+      "sha256": "104d4c21eeffc235c9bcdac4fcdd0b80037d7d04e891e7bf753c67bb156cf7ad"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/Patrol_Vehicle_Chassis_App.elf",
+      "bytes": 263752,
+      "sha256": "6e481b2f444bae0e40f01edb871b721b5189f6f2a3cc065295bb463b3b8bc0e6"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/Patrol_Vehicle_Chassis_App.map",
+      "bytes": 664886,
+      "sha256": "a73f89143e1c31a8684a61b760f4320fd6a4ce2f361a1e0c7210a0612b324fc5"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/Patrol_Vehicle_Chassis_Full.bin",
+      "bytes": 187032,
+      "sha256": "a693965d3078fb1c00782fc6f5a4bcd676ec9e748ce7bf57cb2e2dec4e2e67f2"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/source/app/Core/User/motion/include/vehicle_steering_profile.h",
+      "bytes": 1521,
+      "sha256": "29ad8745b7ea453ca5e5fa45ceb424e2a86deb01a5aed49f6e253d69b34121ff"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/source/app/Core/User/motion/src/bench_steering.c",
+      "bytes": 25203,
+      "sha256": "95f4438289b0660edeb43d63c7f3a586db877fcd0fbe381a1d294af3906d6432"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/source-changes.patch",
+      "bytes": 979,
+      "sha256": "04e6f12816ecaa0df40120675efcb4941ba1866fbef03090cb2d292fc61a60f9"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/validation/package-steering-800.py",
+      "bytes": 13773,
+      "sha256": "e5c97818ec57374b7b93d8aed29bd31ed14e1328a36c65f49d998040f2a64331"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/validation/steering-800-arm-build.log",
+      "bytes": 18942,
+      "sha256": "499a48265cef338c8f0d790cc773ef999e3f19f3e9f87e97ecb02a2e86a5eb9f"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/validation/steering-800-arm-configure.log",
+      "bytes": 894,
+      "sha256": "f45ba61ec88131f2be0c90abcee78d28b5b0efc4e7ebf6e5c65823c5d85c6e3d"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/validation/steering-800-bench-stack.log",
+      "bytes": 298,
+      "sha256": "242ff0a9cca66a5dda4819bfc2e6c4a43ea84e10da011a6216a4e2d66dedeca7"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/validation/steering-800-bench-variant-build.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/validation/steering-800-bench-variant.c",
+      "bytes": 18047,
+      "sha256": "8f38b18847c1efdb16aaa66f5a99c3fffcb78fdf264075f2f095b2e23cbc82ea"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/validation/steering-800-bench-variant.log",
+      "bytes": 94,
+      "sha256": "20df3eb447d2145355be10cb7c17696db1d02ffed14009762aa2abe6703d9eb3"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/validation/steering-800-boot-state-build.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/validation/steering-800-boot-state.log",
+      "bytes": 180,
+      "sha256": "f5ecaf894752fadc36a627f73202de237b836910e4052e79e07fffb1aced21aa"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/validation/steering-800-can2-stack.log",
+      "bytes": 1122,
+      "sha256": "a6811400a38cdffd696d6fa888dd0fe9f4b3dc9fc47f55498763fd734bbf14fb"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/validation/steering-800-frozen-boot.log",
+      "bytes": 208,
+      "sha256": "bbfc3d831c9390d994c173862385a257e5a7f9af896d96c2f1e29684457e28f2"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/validation/steering-800-layout.log",
+      "bytes": 253,
+      "sha256": "0c7076fd7c4b9a18e0f7173bc168689737dd8035c8f8093927e1a7e29c6ab9b2"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/validation/steering-800-python.log",
+      "bytes": 123410,
+      "sha256": "ba27b0cfe7852cf89cd1cf5ee13b35c40933e4ca11ffd0a9586dc8c8598ea7c5"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-800-flash-180322-433838/validation/steering-800-service-stack.log",
+      "bytes": 1178,
+      "sha256": "5676c5d233915e5aa13af27e7eee51f871222c5af1aa0ce7e3de435814d5853f"
+    }
+  ]
+}

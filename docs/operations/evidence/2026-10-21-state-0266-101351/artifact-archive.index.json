@@ -1,0 +1,29 @@
+{
+  "reason": "Preserve 0.2.66 inputs referenced by original immutable index before latest output directories are replaced with 0.2.67. Original index and payloads unchanged.",
+  "files": [
+    {
+      "original_path": "out/debug/online/Patrol_Vehicle_Chassis_Full.bin",
+      "archive_path": "docs/operations/evidence/2026-10-21-state-0266-101351/artifact-archive/Patrol_Vehicle_Chassis_Full.bin",
+      "sha256": "7321acb042316b56eba1517d79173e470217275ee9258270e6ee01128ebbf14a",
+      "bytes": 183720
+    },
+    {
+      "original_path": "out/debug/online/Patrol_Vehicle_Chassis_App.bin",
+      "archive_path": "docs/operations/evidence/2026-10-21-state-0266-101351/artifact-archive/Patrol_Vehicle_Chassis_App.bin",
+      "sha256": "233fa5563c7c60a1aaadf013cbe48f8fca84e65d1126633396e962a9895afe43",
+      "bytes": 150952
+    },
+    {
+      "original_path": "out/debug/online/debug.manifest.json",
+      "archive_path": "docs/operations/evidence/2026-10-21-state-0266-101351/artifact-archive/debug.manifest.json",
+      "sha256": "0e16d9fc03bb6c2901c4a78851c245b4565ded1e15c2953b598c79d7d41fb88f",
+      "bytes": 1862
+    },
+    {
+      "original_path": "out/candidates/bench-drive/candidate.manifest.json",
+      "archive_path": "docs/operations/evidence/2026-10-21-state-0266-101351/artifact-archive/candidate.manifest.json",
+      "sha256": "c64d0920c6f9078690ce77f43fa69178ca0df4d08bebfa1b33ec5027fad5bcc7",
+      "bytes": 4661
+    }
+  ]
+}

@@ -21,6 +21,7 @@
 #include "abox_mqtt_v4.h"
 #include "patrol_mqtt_profile.h"
 
+// 将文本有界复制到指定缓冲区。处理空源和容量边界，确保可用空间内有终止符；不用于证明源字段通过业务验证。
 void CloudMessages_CopyString(char* dst, uint16_t size, const char* src)
 {
     if ((dst == 0) || (size == 0U)) return;
@@ -29,6 +30,7 @@ void CloudMessages_CopyString(char* dst, uint16_t size, const char* src)
     dst[size - 1U] = '\0';
 }
 
+// 初始化有界 JSON 写入器。绑定缓冲区、容量和有效状态，后续追加发生溢出时保持失败标志。
 static void json_init(JsonWriter_t* writer, char* buffer, uint16_t capacity)
 {
     writer->buffer = buffer;
@@ -38,6 +40,7 @@ static void json_init(JsonWriter_t* writer, char* buffer, uint16_t capacity)
     if (writer->valid) buffer[0] = '\0';
 }
 
+// 向 JSON 写入器追加原样文本。先核对剩余容量再提交，失败后不继续把半截载荷标为有效消息。
 static void json_append(JsonWriter_t* writer, const char* text)
 {
     uint16_t length;
@@ -48,6 +51,7 @@ static void json_append(JsonWriter_t* writer, const char* text)
     writer->length = (uint16_t)(writer->length + length);
 }
 
+// 按格式字符串追加 JSON 片段。检查变参格式化结果和截断状态，调用方负责只将已转义文本放入 JSON 字符串字段。
 static void json_appendf(JsonWriter_t* writer, const char* fmt, ...)
 {
     va_list ap;
@@ -64,6 +68,7 @@ static void json_appendf(JsonWriter_t* writer, const char* fmt, ...)
     writer->length = (uint16_t)(writer->length + (uint16_t)written);
 }
 
+// 向 JSON 写入器追加指定长度的转义字符串。处理引号、反斜杠和控制字符，受目标容量限制，避免日志等原始文本破坏 JSON 结构。
 static void json_string_n(JsonWriter_t* writer, const char* value, uint16_t length)
 {
     uint16_t i;
@@ -98,11 +103,13 @@ static void json_string_n(JsonWriter_t* writer, const char* value, uint16_t leng
     json_append(writer, "\"");
 }
 
+// 追加以终止符结束的 JSON 转义字符串。复用指定长度的字符串编码，空字符串与无效写入状态按当前实现处理。
 static void json_string(JsonWriter_t* writer, const char* value)
 {
     json_string_n(writer, value ? value : "", (uint16_t)strlen(value ? value : ""));
 }
 
+// 估算指定文本经过 JSON 转义后的长度。用于预先规划日志分片或消息容量，返回编码后的字符占用而非原始字节数。
 static uint16_t escaped_length(const char* value, uint16_t length)
 {
     uint16_t i;
@@ -118,6 +125,7 @@ static uint16_t escaped_length(const char* value, uint16_t length)
     return result;
 }
 
+// 追加当前公共协议时间戳字段。使用可信时间接口并遵循无效时间的既有编码路径，不以 MCU 上电 tick 伪造 UTC。
 static void json_append_timestamp(JsonWriter_t* writer)
 {
     char value[21];
@@ -129,6 +137,7 @@ static void json_append_timestamp(JsonWriter_t* writer)
     json_append(writer, value);
 }
 
+// 将 Boot State 编号转换为可读名称。仅用于状态报告，不能据名称认为对应固件已经完成现场验收。
 static const char* boot_state_name(uint32_t state)
 {
     switch ((BootStateCode_t)state)
@@ -143,6 +152,7 @@ static const char* boot_state_name(uint32_t state)
     }
 }
 
+// 将 MQTT 连接状态枚举转换为可读名称。用于内部诊断和状态消息，返回静态文本，调用方不得修改或释放。
 static const char* mqtt_state_name(MQTT_CoreState_t state)
 {
     if (state == MQTT_CORE_ST_READY) return "READY";
@@ -152,6 +162,7 @@ static const char* mqtt_state_name(MQTT_CoreState_t state)
     return "CONNECTING";
 }
 
+// 缓存最近已完成发送的请求响应。保存 requestId、Topic 和载荷以支持重复请求，缓存不取代动作摘要冲突检查。
 void CloudMessages_CacheResponse(const char* request_id, const char* topic, const char* payload)
 {
     CloudMessages_CopyString(g_cloud.last_request_id, sizeof(g_cloud.last_request_id), request_id);
@@ -159,6 +170,7 @@ void CloudMessages_CacheResponse(const char* request_id, const char* topic, cons
     CloudMessages_CopyString(g_cloud.last_response_payload, sizeof(g_cloud.last_response_payload), payload);
 }
 
+// 构造并排队一条内部管理响应。编码请求关联、结果码、说明及结果 JSON；reboot 仅登记发送完成后的重启意图，不在此立即复位。
 uint8_t CloudMessages_ScheduleResponse(const char* topic, const char* request_id, uint16_t code, const char* message,
                                  const char* result_json, uint8_t reboot)
 {
@@ -173,12 +185,14 @@ uint8_t CloudMessages_ScheduleResponse(const char* topic, const char* request_id
     return 1U;
 }
 
+// 安排不带复杂结果对象的错误响应。复用统一响应构造与单响应队列，避免各命令自行拼接不一致结构。
 void CloudMessages_ScheduleSimpleError(const char* topic, const char* request_id, uint16_t code, const char* message)
 {
     if (!CloudMessages_ScheduleResponse(topic, request_id, code, message, "{}", 0U))
         APP_LOGW("CLOUD", "response queue busy code=%u", (unsigned int)code);
 }
 
+// 排队一条已经编码的完整响应载荷。检查缓冲区与当前排队状态，调用者负责载荷已满足对应协议格式。
 uint8_t CloudMessages_ScheduleRawResponse(const char* topic, const char* payload)
 {
     if (g_cloud.cloud.response_pending || topic == 0 || payload == 0 || strlen(payload) >= sizeof(g_cloud.response_payload)) return 0U;
@@ -189,6 +203,7 @@ uint8_t CloudMessages_ScheduleRawResponse(const char* topic, const char* payload
     return 1U;
 }
 
+// 构造公共同步请求对应的响应任务。通过统一公共协议字段和可信时间生成载荷，最终是否发送由 CloudTx 跟踪回执。
 uint8_t CloudMessages_ScheduleSyncResponse(const char* request_id)
 {
     char response[320], timestamp[21];
@@ -203,6 +218,7 @@ uint8_t CloudMessages_ScheduleSyncResponse(const char* request_id)
     return (uint8_t)ABoxCloudService_QueueResponse(&g_cloud.cloud, request_id, 1);
 }
 
+// 格式化内部设备信息结果对象。汇总固件、配置、Boot 与运行诊断，使用受限输出缓冲区，不触发硬件动作。
 void CloudMessages_BuildInfoResult(char* output, uint16_t size)
 {
     JsonWriter_t writer;
@@ -271,6 +287,7 @@ void CloudMessages_BuildInfoResult(char* output, uint16_t size)
     if (!writer.valid) CloudMessages_CopyString(output, size, "{}");
 }
 
+// 构造公共 MQTT 心跳消息。使用产品身份及公共字段语义，不在公共接口中写入内部控制过程记录。
 uint8_t CloudMessages_BuildHeartbeat(char* output, uint16_t size)
 {
     JsonWriter_t writer;
@@ -282,6 +299,7 @@ uint8_t CloudMessages_BuildHeartbeat(char* output, uint16_t size)
     return (uint8_t)(writer.valid && writer.length <= CLOUD_PUBLIC_PAYLOAD_MAX);
 }
 
+// 构造产品公共能力清单消息。从正式产品注册表声明能力及版本语义，构造成功不意味着所有能力已通过实车测试。
 uint8_t CloudMessages_BuildManifest(char* output, uint16_t size)
 {
     JsonWriter_t writer;
@@ -296,6 +314,7 @@ uint8_t CloudMessages_BuildManifest(char* output, uint16_t size)
     return (uint8_t)(writer.valid && writer.length <= CLOUD_PUBLIC_PAYLOAD_MAX);
 }
 
+// 保存一次已提交状态报告所对应的比较快照。后续事件检测据此识别目标、使能与故障变化，快照属于发送调度状态而非不可变现场证据。
 void CloudMessages_RememberStatusSnapshot(uint32_t now)
 {
     const ChassisControl* control = RemoteService_State();
@@ -309,6 +328,7 @@ void CloudMessages_RememberStatusSnapshot(uint32_t now)
     g_cloud.status_snapshot.target_steering_mdeg = control->target_steering_mdeg;
 }
 
+// 比较当前运行状态与上次报告快照。返回需要唤醒状态上报的原因文本，未发生相关变化时返回空指针。
 const char* CloudMessages_StatusChangeReason(uint32_t now)
 {
     const ChassisControl* control = RemoteService_State();
@@ -331,6 +351,7 @@ const char* CloudMessages_StatusChangeReason(uint32_t now)
     return 0;
 }
 
+// 构造公共底盘状态报告。在容量内编码当前状态和触发原因；请求 ID 由当前调度上下文提供，不在构造时判定真实运动成功。
 uint8_t CloudMessages_BuildStatusReport(char* output, uint16_t size, const char* report_reason)
 {
     JsonWriter_t writer;
@@ -409,6 +430,7 @@ uint8_t CloudMessages_BuildStatusReport(char* output, uint16_t size, const char*
                      writer.length - payload_start - 2U <= CLOUD_PUBLIC_OBJECT_MAX);
 }
 
+// 截取一次有界日志快照并初始化分片。关联请求 ID，限制总行数和存储容量，后续分片只读取该次快照而非持续移动的日志环。
 void CloudMessages_PrepareLogSnapshot(const char* request_id)
 {
     uint16_t length;
@@ -453,6 +475,7 @@ void CloudMessages_PrepareLogSnapshot(const char* request_id)
     g_cloud.log_active = (g_cloud.log_chunk_total > 0U) ? 1U : 0U;
 }
 
+// 构造当前日志分片消息。按转义后容量和每片行数限制编码，分片索引在发送完成后再推进，避免失败时跳过数据。
 uint8_t CloudMessages_BuildLogChunk(char* output, uint16_t size)
 {
     JsonWriter_t writer;
@@ -476,6 +499,7 @@ uint8_t CloudMessages_BuildLogChunk(char* output, uint16_t size)
     return (uint8_t)(writer.valid && writer.length < CLOUD_PAYLOAD_LIMIT);
 }
 
+// 将一条指定等级日志编码为告警载荷。执行 JSON 转义和容量检查，是否发布由发送调度决定，不阻塞运动任务等待网络。
 uint8_t CloudMessages_BuildAlert(char* output, uint16_t size, const char* line, AppLogLevel_t level)
 {
     JsonWriter_t writer;
@@ -489,6 +513,7 @@ uint8_t CloudMessages_BuildAlert(char* output, uint16_t size, const char* line, 
     return (uint8_t)(writer.valid && writer.length < CLOUD_PAYLOAD_LIMIT);
 }
 
+// 构造中位标定管理响应结果。汇总当前业务状态与诊断，不能把单次 ACK 或格式化成功解释为标定落盘成功。
 void CloudMessages_BuildCalibrationResult(char* output, uint16_t size)
 {
     const PatrolRemoteConfigV5_t* cfg = PatrolConfig_Get();

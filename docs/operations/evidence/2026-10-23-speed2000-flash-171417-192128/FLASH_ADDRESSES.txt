@@ -1,0 +1,31 @@
+patrol_vehicle_chassis / patrol-chassis-0.2.63
+当前工作区 Speed2000/500 rpm 转向配置的测试烧录包。
+
+推荐完整安装：
+1. Patrol_Vehicle_Chassis_Full.bin -> 0x08000000 (187032 bytes)
+2. BootState_A.bin -> 0x0803E800 (2048 bytes)
+3. BootState_B.bin -> 0x0803F000 (2048 bytes)
+
+Full 为冻结 Boot + App，已包含 Boot；不要同时重复烧录 Full 与独立 App/Boot。
+若板上冻结 Boot 已核对一致，也可改为：
+Patrol_Vehicle_Chassis_App.bin -> 0x08008000 (154264 bytes)
+但必须同时写入配套 BootState_A/B。
+
+禁止整片擦除。保留：
+- 0x0803E000..0x0803E7FF 配置恢复页
+- 0x0803F800..0x0803FFFF Config V5 与故障日志页
+
+构建配置：
+- active_car=0，使用板上 Config V5 标定
+- steering/drive executor enabled
+- actuation enabled
+- steering profile 500/500/500 rpm
+- drive limit +/-2000 rpm
+
+校验：
+- ARM Release 编译通过
+- CAN2 栈、运动栈、Flash 布局校验通过
+- Boot State V3 实际解析与 App 匹配启动检查通过
+
+App SHA256: 798dae6212857365c9c0c35d6730264c5ef27553175a2aef62e81df882af3120
+Full SHA256: c8f76d32a1e52e66e2d84bac99616d0076162e7783665c2271bb15cb3d0cd816

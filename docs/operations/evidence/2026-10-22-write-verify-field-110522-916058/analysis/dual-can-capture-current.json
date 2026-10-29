@@ -1,0 +1,15 @@
+{
+  "started_at": "2026-10-22T10:49:49.7844506+08:00",
+  "pid": 1848,
+  "output": "E:\\1_work\\ChassisCar_test\\logs\\dual-can-write-verify-20261022-104949-746098",
+  "stdout": "E:\\1_work\\ChassisCar_test\\logs\\dual-can-write-verify-20261022-104949-746098.stdout.log",
+  "stderr": "E:\\1_work\\ChassisCar_test\\logs\\dual-can-write-verify-20261022-104949-746098.stderr.log",
+  "stop_file": "E:\\1_work\\ChassisCar_test\\logs\\stop-write-verify-20261022-104949-746098.flag",
+  "duration_s": 1800,
+  "physical_channels": {
+    "CAN1": 2,
+    "CAN2": 1
+  },
+  "bitrate_kbps": 500,
+  "hardware_listen_only": true
+}

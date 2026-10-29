@@ -1,0 +1,7 @@
+{
+  "exit_code": 1,
+  "entry": "E:\\1_work\\ChassisCar_test\\chassis_offline_remote.py",
+  "speed_rpm": 500,
+  "angle_degrees": 30,
+  "physical_motion_requires_operator_confirmation": true
+}

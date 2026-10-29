@@ -1,0 +1,9 @@
+{
+  "address": 536905556,
+  "address_hex": "0x20008754",
+  "width": 1,
+  "offset": 532,
+  "motion_size": 608,
+  "app_sha256": "ced4fd110f4c02b1108a99cc3c2c2eb0d8d948e07232aaa04441741a219ec020",
+  "source": "ARM offsetof on matching source and verified ELF g_motion base/size"
+}

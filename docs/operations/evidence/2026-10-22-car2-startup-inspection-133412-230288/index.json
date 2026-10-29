@@ -1,0 +1,281 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "created_at": "2026-10-22T13:34:12.228267+08:00",
+  "files": [
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-startup-20261022-132217-293627\\events.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\can1\\car2-startup-20261022-132217-293627\\events.jsonl",
+      "bytes": 146442,
+      "sha256": "04b1edc0feb420f2ca4a4fc75002235cc208c3e9ed8dcbf74319a254d88a5795"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-startup-20261022-132217-293627\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\can1\\car2-startup-20261022-132217-293627\\frames.jsonl",
+      "bytes": 962615,
+      "sha256": "50e359c73efe733c0a7efd16dc7b3b83fdc003e570a8afb5e1c2b74e89a90025"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-startup-20261022-132217-293627\\metadata.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\can1\\car2-startup-20261022-132217-293627\\metadata.json",
+      "bytes": 1136,
+      "sha256": "8c38e3692fd8ac2599ec65978acbd17a2f3206582fc753989a9430d0fb073af9"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-startup-20261022-132217-293627\\sha256.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\can1\\car2-startup-20261022-132217-293627\\sha256.json",
+      "bytes": 352,
+      "sha256": "d4ada8dfe555e3537068c0f1d7e17a8e58bab19c78bea6d5baeaf43d6dd8f8d0"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-startup-20261022-132217-293627\\summary.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\can1\\car2-startup-20261022-132217-293627\\summary.json",
+      "bytes": 1191,
+      "sha256": "be4a4fd5a94afd9f44fe55e727063eaa0cccbb57832706084ba935a0b353ccc6"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-startup-20261022-132217-293627.stdout.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\can1\\car2-startup-20261022-132217-293627.stdout.log",
+      "bytes": 69794,
+      "sha256": "2c0fe7b1d4c51713d6264e597841b7e74ed78622d995c189a8f9078387e96acc"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-startup-20261022-132217-293627.stderr.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\can1\\car2-startup-20261022-132217-293627.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-app-running-20261022-133254-605407\\events.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\can1\\car2-app-running-20261022-133254-605407\\events.jsonl",
+      "bytes": 23810,
+      "sha256": "1e23c76d0bb3a7edb92f1404571b630b66d009408fb63b932a101c9769a903ae"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-app-running-20261022-133254-605407\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\can1\\car2-app-running-20261022-133254-605407\\frames.jsonl",
+      "bytes": 160319,
+      "sha256": "63e794e62a4b8ed8063430467217a5daf5db12d71c3a8108f7f880b96e29550f"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-app-running-20261022-133254-605407\\metadata.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\can1\\car2-app-running-20261022-133254-605407\\metadata.json",
+      "bytes": 1136,
+      "sha256": "e1a796a4aba1f0406cde7acb312db338620b324d15b2c941410bcd37ad09dccf"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-app-running-20261022-133254-605407\\sha256.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\can1\\car2-app-running-20261022-133254-605407\\sha256.json",
+      "bytes": 352,
+      "sha256": "02ac4ad62aee3e5855d6caa7c09f5eafa97270fc937149f377880d1fa0382296"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-app-running-20261022-133254-605407\\summary.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\can1\\car2-app-running-20261022-133254-605407\\summary.json",
+      "bytes": 1184,
+      "sha256": "1062f6ed96fbbf40bc027286a337392aac3538192e8bf09ea13e0253d47d6433"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-app-running-20261022-133254-605407.stdout.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\can1\\car2-app-running-20261022-133254-605407.stdout.log",
+      "bytes": 11780,
+      "sha256": "a3255d874e59e788e43d18a83e546d599be89d2df58605b7b63dd131dde80b87"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-app-running-20261022-133254-605407.stderr.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\can1\\car2-app-running-20261022-133254-605407.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-132217-783084\\snapshot.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\swd\\2026-10-22-fault-stop-readonly-132217-783084\\snapshot.json",
+      "bytes": 567,
+      "sha256": "44a5b247949e7e81a7f1d7372455140f88a76f9979e813190b95b278a690c580"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-132455-092116\\CAN1-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\swd\\2026-10-22-fault-stop-readonly-132455-092116\\CAN1-registers.bin",
+      "bytes": 32,
+      "sha256": "6bdf2fca1cd5e38aa895b491b3c02e7a18643cac0173f4ccc2bcb9f17949b701"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-132455-092116\\CAN2-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\swd\\2026-10-22-fault-stop-readonly-132455-092116\\CAN2-registers.bin",
+      "bytes": 32,
+      "sha256": "6bdf2fca1cd5e38aa895b491b3c02e7a18643cac0173f4ccc2bcb9f17949b701"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-132455-092116\\motion-fault.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\swd\\2026-10-22-fault-stop-readonly-132455-092116\\motion-fault.bin",
+      "bytes": 128,
+      "sha256": "daef7007369604adca2200571fa7c8156ad90f42f6177a33600f76992c1662b8"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-132455-092116\\snapshot.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\swd\\2026-10-22-fault-stop-readonly-132455-092116\\snapshot.json",
+      "bytes": 4196,
+      "sha256": "c57848f3a8250f116234e4fd5f5324e0b8476cd0818593e939f138071c505b6f"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-132534-892733\\snapshot.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\swd\\2026-10-22-fault-stop-readonly-132534-892733\\snapshot.json",
+      "bytes": 2571,
+      "sha256": "f2ad4d806306fe869b8787f99475e13b4e976c8ce8f0414a72727147ed9d97dc"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-132617-572067\\snapshot.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\swd\\2026-10-22-fault-stop-readonly-132617-572067\\snapshot.json",
+      "bytes": 4049,
+      "sha256": "ad5672ffeeb764370b5b970bdaf524245515e94e5d2fa7370871fa04e0058158"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-133128-477119\\snapshot.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\swd\\2026-10-22-fault-stop-readonly-133128-477119\\snapshot.json",
+      "bytes": 4525,
+      "sha256": "ea064db69a5fe65dbe6aedd0bd50c4571a901b4daae5a1a7fb6497062c01e578"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-133157-795994\\CAN1-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\swd\\2026-10-22-fault-stop-readonly-133157-795994\\CAN1-registers.bin",
+      "bytes": 32,
+      "sha256": "3ae6446202eba1c94d3a3c7c2d82c41df7546f1a7a17a20af653c4ab074a04c1"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-133157-795994\\CAN2-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\swd\\2026-10-22-fault-stop-readonly-133157-795994\\CAN2-registers.bin",
+      "bytes": 32,
+      "sha256": "3ae6446202eba1c94d3a3c7c2d82c41df7546f1a7a17a20af653c4ab074a04c1"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-133157-795994\\motion-fault.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\swd\\2026-10-22-fault-stop-readonly-133157-795994\\motion-fault.bin",
+      "bytes": 128,
+      "sha256": "38723a2e5e8a17aa7950dc008209944e898f69a7bd10a23c839d341e935fd5ca"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-133157-795994\\snapshot.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\swd\\2026-10-22-fault-stop-readonly-133157-795994\\snapshot.json",
+      "bytes": 3850,
+      "sha256": "8396c0569d11bb642e9e880759dd583681c10b585723a0eb562196bd5d681ce2"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-133254-892751\\CAN1-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\swd\\2026-10-22-fault-stop-readonly-133254-892751\\CAN1-registers.bin",
+      "bytes": 32,
+      "sha256": "3ae6446202eba1c94d3a3c7c2d82c41df7546f1a7a17a20af653c4ab074a04c1"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-133254-892751\\CAN2-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\swd\\2026-10-22-fault-stop-readonly-133254-892751\\CAN2-registers.bin",
+      "bytes": 32,
+      "sha256": "3ae6446202eba1c94d3a3c7c2d82c41df7546f1a7a17a20af653c4ab074a04c1"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-133254-892751\\motion-fault.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\swd\\2026-10-22-fault-stop-readonly-133254-892751\\motion-fault.bin",
+      "bytes": 128,
+      "sha256": "38723a2e5e8a17aa7950dc008209944e898f69a7bd10a23c839d341e935fd5ca"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-133254-892751\\snapshot.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\swd\\2026-10-22-fault-stop-readonly-133254-892751\\snapshot.json",
+      "bytes": 3856,
+      "sha256": "7341dc4feb4872dedb1589f5e48045141ce40ee24d0a2913e0e71a1ce058f66d"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\car2-0277-schema.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\analysis\\car2-0277-schema.json",
+      "bytes": 18854,
+      "sha256": "b2b4c66681f75d826353b195e5b9e46a19220e9ad3261218a9787dbe27496419"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\car2-0277-readonly.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\analysis\\car2-0277-readonly.py",
+      "bytes": 5243,
+      "sha256": "7f1428a6b6304ba5843689118f80b9dc57fa0c01a62df367377f1620c3a9359e"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\car2-hardware-readonly.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\analysis\\car2-hardware-readonly.py",
+      "bytes": 4621,
+      "sha256": "1e6399c4716cbb64ed46c7c3150bd017552ec8e0c7d9fe0d4b2949459076c829"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\car2-boot-state-readonly.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\analysis\\car2-boot-state-readonly.py",
+      "bytes": 5196,
+      "sha256": "99c0b88080ed3d38d131fc3fadd2b80a594b3bda7bc589cba09fe5d722058a47"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\car2-startup-fault-readonly.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\analysis\\car2-startup-fault-readonly.py",
+      "bytes": 5303,
+      "sha256": "ed79129f1af4122eeec99197928a70ad24a1216d7d5443de267299c5b5c8e46e"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\prepare-car2-0277-schema.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\analysis\\prepare-car2-0277-schema.py",
+      "bytes": 8360,
+      "sha256": "46d13238a6fa77c755f3266814349d25200369e7c55b1f49fa3cae5c3f180e1e"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\car2-0277-abi.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\analysis\\car2-0277-abi.c",
+      "bytes": 8975,
+      "sha256": "9bf97f169dc73b65ef01cb4f5f8d766d7134b755eda9ef67fe0ff9a350583b83"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\car2-0277-abi.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\analysis\\car2-0277-abi.bin",
+      "bytes": 744,
+      "sha256": "7716339046547c259737e802e60534cd269bb36d5b4999332766be9dc9412d2a"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\car2-0277-abi.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\analysis\\car2-0277-abi.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\car2-startup-capture-current.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\analysis\\car2-startup-capture-current.json",
+      "bytes": 583,
+      "sha256": "ab7b1a46cc7d2d41a3dc57909b8cfa112eb6827c58636e6616ac848622361c52"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\car2-running-capture-current.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\analysis\\car2-running-capture-current.json",
+      "bytes": 494,
+      "sha256": "4e27edc5c870f53c34b2a7d7bfeff629f78a56c1c77f26197f2bce479056defe"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\car2-startup-inspection.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\analysis\\car2-startup-inspection.json",
+      "bytes": 9859,
+      "sha256": "761b1e72d5da792cd4e07df8a42dddd562c7f0a5e85cb636a520be95ae67429f"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\archive-car2-startup-inspection.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\analysis\\archive-car2-startup-inspection.py",
+      "bytes": 7946,
+      "sha256": "df6a79ff04d787908de4dd57ea0b3e01d408f7a9d989e3a0ff8f8bdb5983eaac"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\WriteAckVerify_0_2_77_Flash\\candidate.manifest.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\image-reference\\candidate.manifest.json",
+      "bytes": 15575,
+      "sha256": "d2072bde96b991cf92473c699b6c701487f450259264fbeb6f6f85a4ad4927a5"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\Patrol_Vehicle_Chassis_App.map",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-startup-inspection-133412-230288\\image-reference\\Patrol_Vehicle_Chassis_App.map",
+      "bytes": 664181,
+      "sha256": "ee5bb7584f0f2109bc57bb674bdd1df36b1befd2c655a54afdcfd0536824c6e7"
+    }
+  ],
+  "hardware_listen_only": true,
+  "target_reset_halt_or_write": false,
+  "driver_parameters_written": false,
+  "early_ram_snapshot_invalid": true,
+  "final_snapshots_valid": true
+}

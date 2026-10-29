@@ -1,0 +1,19 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "created_at": "2026-10-22T14:27:08.543257+08:00",
+  "vehicle": "CAR2",
+  "duration_s": 130.406,
+  "counts": {
+    "CAN1:0x702": 1291,
+    "CAN1:0x701": 1291
+  },
+  "CAN2_frames": 0,
+  "mcu_can2_rx": 0,
+  "mcu_t12_switch_seen": 0,
+  "fault_latched": 0,
+  "power_command": 0,
+  "can1_hal_error_cumulative": 24,
+  "busoff_mask": 0,
+  "limits": "No valid frame observed at CAN2 and none counted by MCU. CH1 reception on a known-good bus has not yet been verified; receiver hardware failure is not established. Cumulative CAN1 HAL error 0x18 exists although current CAN1 heartbeat reception continues and active Bus-Off is zero.",
+  "next_step": "Await operator connecting physical CH1 to known-good CAN1 for channel verification. Listener stopped to avoid mislabeling the rewired bus or competing hardware ownership."
+}

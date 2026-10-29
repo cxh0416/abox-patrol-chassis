@@ -1,0 +1,17 @@
+﻿patrol_vehicle_chassis / patrol-chassis-0.2.86 / CAN2 CENTER CALIBRATION CANDIDATE
+
+写完三个文件后再复位：
+1. Patrol_Vehicle_Chassis_Full.bin -> 0x08000000 (188336 bytes)
+2. BootState_A.bin -> 0x0803E800 (2048 bytes)
+3. BootState_B.bin -> 0x0803F000 (2048 bytes)
+
+已有匹配冻结 Boot 时可只写：
+Patrol_Vehicle_Chassis_App.bin -> 0x08008000 (155568 bytes)
+但仍必须写入本包 BootState_A/B。
+
+禁止整片擦除。保留：
+- 0x0803E000..0x0803E7FF 配置恢复页
+- 0x0803F800..0x0803FFFF Config V5 与故障日志页
+
+App CRC32: AC7DA36F
+App SHA256: 21db7daa3852b87de43439b4bfc1bd558faa76c200a8b03078452c68b2b8f5a7

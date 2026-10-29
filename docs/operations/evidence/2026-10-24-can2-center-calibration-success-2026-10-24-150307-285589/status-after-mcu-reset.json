@@ -1,0 +1,29 @@
+{
+  "calibration": {
+    "result": 0,
+    "sequence": 1,
+    "phase": 0,
+    "reason": 0,
+    "token": 0,
+    "driver_raw": -8122,
+    "encoder_raw": 0,
+    "saved_center": -8122,
+    "active": false,
+    "calibrated": true,
+    "power_on": false,
+    "phase_name": "IDLE",
+    "reason_name": "NONE",
+    "result_name": "OK"
+  },
+  "motion": {
+    "result": 0,
+    "sequence": 1,
+    "flags": 2,
+    "stop_reason": 3,
+    "feedback_age_ms": 257,
+    "steering_online": true,
+    "drive_online": true,
+    "left_rpm": 0,
+    "right_rpm": 0
+  }
+}

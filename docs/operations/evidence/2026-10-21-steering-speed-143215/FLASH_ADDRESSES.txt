@@ -1,0 +1,20 @@
+Product: patrol_vehicle_chassis
+App: patrol-chassis-0.2.71; stop/reversal timeouts: 6000 ms
+Drive limit: 1000 rpm; steering profile: 300/180/90 rpm; angle thresholds unchanged; physical B brake removed.
+
+Flash ALL THREE matching files before reset:
+Patrol_Vehicle_Chassis_Full.bin  0x08000000  183784 bytes
+BootState_A.bin  0x0803E800  2048 bytes
+BootState_B.bin  0x0803F000  2048 bytes
+
+Full contains Boot + App only. App.bin alone loads at 0x08008000,
+but it still requires the same matching A/B state pages; do not also write Full.
+Use page erase only; no mass erase. Preserve recovery 0x0803E000
+and Config V5 0x0803F800. Do not reset between the three writes.
+These manual-install NORMAL pages replace both previous OTA state records.
+Stable UFS metadata is explicitly unseeded; no old UFS backup is asserted valid.
+With provisioning and the normal safe conditions met, existing auto-seed logic
+can establish the current image's stable backup. This has not been field verified.
+No board access was performed for this change. No firmware was flashed.
+Python 42/43: unchanged hot-reset design check fails. Candidate, not formal release.
+Host tests/build success do not prove physical motion or stopping performance.

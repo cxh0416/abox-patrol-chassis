@@ -1,0 +1,10 @@
+exec DisableAutoUpdateFW
+exec SuppressGUI 1
+exec InhibitConnectRetries = 1
+exec ForceAttachTarget = 1
+device Cortex-M3
+si SWD
+speed 1000
+connect
+w1 0x20008754 0x01
+qc

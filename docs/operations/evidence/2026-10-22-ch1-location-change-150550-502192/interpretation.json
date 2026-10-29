@@ -1,0 +1,163 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "created_at": "2026-10-22T15:05:50.584844+08:00",
+  "operator_wiring_confirmation_verbatim": "现在CH1接在CAN1上，我将CH1接到CAN2上，你继续监听",
+  "duration_s": 557.407,
+  "counts": {
+    "0x10b": 2,
+    "0x10a": 2,
+    "0x701": 1620,
+    "0x702": 1620
+  },
+  "first_frames": {
+    "0x10b": {
+      "bus": "RECEIVER",
+      "adapter_channel": 0,
+      "elapsed_s": 327.2030000000086,
+      "id": 267,
+      "dlc": 8,
+      "data": "00 00 00 00 00 00 00 00",
+      "extended": false,
+      "remote": false,
+      "hardware_timestamp_raw": 8629697,
+      "time_flag": 1,
+      "decoded": {
+        "kind": "t12_joystick",
+        "steer_raw": 0,
+        "throttle_raw": 0,
+        "reference_rpm": 0
+      }
+    },
+    "0x10a": {
+      "bus": "RECEIVER",
+      "adapter_channel": 0,
+      "elapsed_s": 327.2190000000119,
+      "id": 266,
+      "dlc": 8,
+      "data": "01 01 02 00 00 00 00 00",
+      "extended": false,
+      "remote": false,
+      "hardware_timestamp_raw": 8629897,
+      "time_flag": 1,
+      "decoded": {
+        "kind": "t12_switch",
+        "a": 2,
+        "a_enabled": true,
+        "b": 0,
+        "b_action": "none"
+      }
+    },
+    "0x701": {
+      "bus": "RECEIVER",
+      "adapter_channel": 0,
+      "elapsed_s": 340.14100000000326,
+      "id": 1793,
+      "dlc": 1,
+      "data": "7F",
+      "extended": false,
+      "remote": false,
+      "hardware_timestamp_raw": 8758840,
+      "time_flag": 1,
+      "decoded": {
+        "kind": "heartbeat",
+        "node": 1,
+        "state": 127,
+        "bootup": false
+      }
+    },
+    "0x702": {
+      "bus": "RECEIVER",
+      "adapter_channel": 0,
+      "elapsed_s": 340.1570000000065,
+      "id": 1794,
+      "dlc": 1,
+      "data": "7F",
+      "extended": false,
+      "remote": false,
+      "hardware_timestamp_raw": 8759019,
+      "time_flag": 1,
+      "decoded": {
+        "kind": "heartbeat",
+        "node": 2,
+        "state": 127,
+        "bootup": false
+      }
+    }
+  },
+  "last_frames": {
+    "0x10b": {
+      "bus": "RECEIVER",
+      "adapter_channel": 0,
+      "elapsed_s": 327.25,
+      "id": 267,
+      "dlc": 8,
+      "data": "00 00 00 00 00 00 00 00",
+      "extended": false,
+      "remote": false,
+      "hardware_timestamp_raw": 8630097,
+      "time_flag": 1,
+      "decoded": {
+        "kind": "t12_joystick",
+        "steer_raw": 0,
+        "throttle_raw": 0,
+        "reference_rpm": 0
+      }
+    },
+    "0x10a": {
+      "bus": "RECEIVER",
+      "adapter_channel": 0,
+      "elapsed_s": 327.26600000000326,
+      "id": 266,
+      "dlc": 8,
+      "data": "01 01 02 00 00 00 00 00",
+      "extended": false,
+      "remote": false,
+      "hardware_timestamp_raw": 8630297,
+      "time_flag": 1,
+      "decoded": {
+        "kind": "t12_switch",
+        "a": 2,
+        "a_enabled": true,
+        "b": 0,
+        "b_action": "none"
+      }
+    },
+    "0x701": {
+      "bus": "RECEIVER",
+      "adapter_channel": 0,
+      "elapsed_s": 503.64100000000326,
+      "id": 1793,
+      "dlc": 1,
+      "data": "7F",
+      "extended": false,
+      "remote": false,
+      "hardware_timestamp_raw": 10391854,
+      "time_flag": 1,
+      "decoded": {
+        "kind": "heartbeat",
+        "node": 1,
+        "state": 127,
+        "bootup": false
+      }
+    },
+    "0x702": {
+      "bus": "RECEIVER",
+      "adapter_channel": 0,
+      "elapsed_s": 503.6570000000065,
+      "id": 1794,
+      "dlc": 1,
+      "data": "7F",
+      "extended": false,
+      "remote": false,
+      "hardware_timestamp_raw": 10392075,
+      "time_flag": 1,
+      "decoded": {
+        "kind": "heartbeat",
+        "node": 2,
+        "state": 127,
+        "bootup": false
+      }
+    }
+  },
+  "interpretation": "Physical CH1 wiring changed during this capture. RECEIVER is a software label, not proof of the physical bus. Operator confirms current continuous motor heartbeats are from CAN1. Brief 0x10A/0x10B frames were captured but cannot establish continuous CAN2 recovery; exact changeover times were not independently observed. Original raw records unchanged."
+}

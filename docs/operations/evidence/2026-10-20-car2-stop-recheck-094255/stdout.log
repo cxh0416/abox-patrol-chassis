@@ -1,0 +1,50 @@
+SEGGER J-Link Commander V9.84 (Compiled Oct  7 2026 14:35:46)
+DLL version V9.84, compiled Oct  7 2026 14:34:44
+
+J-Link Commander will now exit on Error
+
+J-Link Command File read successfully.
+Processing script file...
+J-Link>device STM32F105RC
+J-Link connection not established yet but required for command.
+Connecting to J-Link ...O.K.
+Firmware: J-Link V9 compiled Dec 13 2022 11:14:50
+Hardware version: V9.70
+J-Link uptime (since boot): N/A (Not supported by this model)
+S/N: 69730334
+License(s): RDI,FlashBP,FlashDL,JFlash,GDB
+VTref=3.304V
+J-Link>if SWD
+Selecting SWD as current target interface.
+J-Link>speed 4000
+Selecting 4000 kHz as target interface speed
+J-Link>connect
+Device "STM32F105RC" selected.
+
+
+Connecting to target via SWD
+InitTarget() start
+SWD selected. Executing JTAG -> SWD switching sequence.
+Error: Failed to initialize DAP.
+Can not attach to CPU. Trying connect under reset.
+SWD selected. Executing JTAG -> SWD switching sequence.
+Error: Failed to initialize DAP.
+Connecting to CPU via connect under reset failed.
+InitTarget() end - Took 304ms
+Connect failed. Resetting via Reset pin and trying again.
+InitTarget() start
+SWD selected. Executing JTAG -> SWD switching sequence.
+Error: Failed to initialize DAP.
+Can not attach to CPU. Trying connect under reset.
+SWD selected. Executing JTAG -> SWD switching sequence.
+Error: Failed to initialize DAP.
+Connecting to CPU via connect under reset failed.
+InitTarget() end - Took 305ms
+
+****** Error: J-Link script file function InitTarget() returned with error code -1
+
+Error occurred: Could not connect to the target device.
+For troubleshooting steps visit: https://kb.segger.com/J-Link_Troubleshooting
+
+Script processing completed.
+

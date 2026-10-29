@@ -28,6 +28,7 @@ CAN_HandleTypeDef hcan1;
 CAN_HandleTypeDef hcan2;
 
 /* CAN1 init function */
+// 按工程参数初始化连接驱动器总线的 CAN1。设置位时序与工作选项，失败进入统一错误处理；过滤器、接收通知和启动由运行层继续配置。
 void MX_CAN1_Init(void)
 {
 
@@ -72,6 +73,7 @@ void MX_CAN1_Init(void)
 
 }
 /* CAN2 init function */
+// 按工程参数初始化本地控制侧 CAN2。仅建立 HAL 外设配置，不解析 T12、不直接转发运动目标，初始化失败走统一错误处理。
 void MX_CAN2_Init(void)
 {
 
@@ -118,6 +120,7 @@ void MX_CAN2_Init(void)
 
 static uint32_t HAL_RCC_CAN1_CLK_ENABLED=0;
 
+// 为指定 CAN 实例配置底层时钟、GPIO 和中断。按 CAN1/CAN2 句柄选择当前板硬件资源，双 CAN 的公共时钟依赖按工程计数维护。
 void HAL_CAN_MspInit(CAN_HandleTypeDef* canHandle)
 {
 
@@ -203,6 +206,7 @@ void HAL_CAN_MspInit(CAN_HandleTypeDef* canHandle)
   }
 }
 
+// 释放指定 CAN 实例的底层硬件资源。关闭对应引脚和中断，处理共享时钟依赖；调用前应已撤销业务使用和在途事务。
 void HAL_CAN_MspDeInit(CAN_HandleTypeDef* canHandle)
 {
 

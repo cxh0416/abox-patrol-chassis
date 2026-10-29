@@ -1,0 +1,35 @@
+{
+  "public": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-20-car2-install-0262-094818",
+  "protected": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-20-car2-install-0262-094818",
+  "jlink_exit_code": 0,
+  "operator_confirmation": "2026-10-20 user: 已网页下电，SWD 已接好; keep MCU powered; wheels lifted and E-stop previously confirmed.",
+  "checks": {
+    "output_off": true,
+    "no_session": true,
+    "no_enable": true,
+    "ota_idle": true,
+    "bench_idle": true,
+    "center_idle_or_done": true,
+    "not_halted": true,
+    "uid_match": true,
+    "old_app_match": true,
+    "frozen_boot_match": true,
+    "boot_idle": true
+  },
+  "boot_states": [
+    {
+      "name": "state-a-before",
+      "valid": true,
+      "sequence": 1,
+      "state": 4,
+      "version": "patrol-chassis-0.2.61"
+    },
+    {
+      "name": "state-b-before",
+      "valid": false
+    }
+  ],
+  "ready": true,
+  "config_sha256": "6f8f8ed12227504c5881147a3488f017d406fd7bd5156b6937dae34a0d74845e",
+  "boundary": "Sequential stopped-state and backups; no firmware writes/reset/halt/run commands. Attach initialization/retries disabled."
+}

@@ -1,0 +1,107 @@
+Build type: Release
+-- Configuring done (0.3s)
+-- Generating done (0.2s)
+CMake Warning (unused-cli):
+  Manually-specified variables were not used by the project:
+
+    CHASSIS_ACTUATION
+    CHASSIS_APP_FAULT_INJECTION
+    CHASSIS_APP_TEST_FAULT_KIND
+    CHASSIS_CAN2_GATEWAY
+    CHASSIS_DRIVE_EXECUTOR
+    CHASSIS_MQTT_LAB
+    CHASSIS_MQTT_TRIAL_FAULT_INJECTION
+    CHASSIS_MQTT_TRIAL_FAULT_KIND
+    CHASSIS_OTA_AUTO_SEED
+    CHASSIS_POWER_OUTPUT
+    CHASSIS_READONLY_DIAGNOSTICS
+    CHASSIS_STEERING_EXECUTOR
+
+
+-- Build files have been written to: E:/1_work/ChassisCar/abox-patrol-vehicle-chassis-firmware/build/Release
+[1/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/freertos.c.obj
+[2/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/gpio.c.obj
+[3/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/can.c.obj
+[4/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/main.c.obj
+[5/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/dma.c.obj
+[6/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/iwdg.c.obj
+[7/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/usart.c.obj
+[8/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/stm32f1xx_it.c.obj
+[9/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/stm32f1xx_hal_msp.c.obj
+[10/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/stm32f1xx_hal_timebase_tim.c.obj
+[11/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/sysmem.c.obj
+[12/83] Building ASM object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/startup_stm32f105xc.s.obj
+[13/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/Src/syscalls.c.obj
+[14/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/absolute_encoder.c.obj
+[15/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/common/src/app_log.c.obj
+[16/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/system/src/patrol_config.c.obj
+[17/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/system/src/app_version.c.obj
+[18/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/system/src/mqtt_config_adapter.c.obj
+[19/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/patrol_enrollment.c.obj
+[20/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_service.c.obj
+[21/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_commands.c.obj
+[22/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/patrol_mqtt_profile.c.obj
+[23/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_messages.c.obj
+[24/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_tx.c.obj
+[25/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/cloud_protocol.c.obj
+[26/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/chassis_cloud_protocol.c.obj
+[27/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/chassis_control.c.obj
+[28/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_phy_remote.c.obj
+[29/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_can_remote.c.obj
+[30/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/common/src/fixed_point.c.obj
+[31/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_auto_center.c.obj
+[32/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/mqtt/src/mqtt_core_adapter.c.obj
+[33/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/mqtt/src/mqtt_runtime.c.obj
+[34/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/mqtt/src/mqtt_trial_manager.c.obj
+[35/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/ota/src/ota_info.c.obj
+[36/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_canopen.c.obj
+[37/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_diagnostics.c.obj
+[38/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/ota/src/ota_service.c.obj
+[39/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/steering_angle.c.obj
+[40/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/cloud/src/remote_service.c.obj
+[41/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/bench_drive.c.obj
+[42/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/bench_steering.c.obj
+[43/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/board/src/vehicle_power_output.c.obj
+[44/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/board/src/vehicle_power_port.c.obj
+[45/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/common/src/time_base.c.obj
+[46/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/common/src/time_sync.c.obj
+[47/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/E_/1_work/ChassisCar/abox-patrol-vehicle-chassis-firmware/shared/boot_state_compat.c.obj
+[48/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_runtime.c.obj
+[49/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/E_/1_work/ChassisCar/abox-patrol-vehicle-chassis-firmware/shared/fault_mailbox_compat.c.obj
+[50/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/center_calibration.c.obj
+[51/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/system/src/patrol_rtos.c.obj
+[52/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/E_/1_work/ChassisCar/abox-patrol-vehicle-chassis-firmware/platform/targets/stm32f105_ec800_v1/monotonic_stm32f105.c.obj
+[53/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/E_/1_work/ChassisCar/abox-patrol-vehicle-chassis-firmware/platform/targets/stm32f105_ec800_v1/board_io_stm32f105.c.obj
+[54/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/E_/1_work/ChassisCar/abox-patrol-vehicle-chassis-firmware/platform/targets/stm32f105_ec800_v1/enrollment_identity_stm32f105.c.obj
+[55/83] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Core/Src/system_stm32f1xx.c.obj
+[56/83] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/E_/1_work/ChassisCar/abox-patrol-vehicle-chassis-firmware/platform/targets/stm32f105_ec800_v1/platform_port_stm32f105.c.obj
+[57/83] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio_ex.c.obj
+[58/83] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c.obj
+[59/83] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim_ex.c.obj
+[60/83] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_can.c.obj
+[61/83] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_gpio.c.obj
+[62/83] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc_ex.c.obj
+[63/83] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_rcc.c.obj
+[64/83] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_tim.c.obj
+[65/83] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_iwdg.c.obj
+[66/83] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c.obj
+[67/83] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_dma.c.obj
+[68/83] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_pwr.c.obj
+[69/83] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash.c.obj
+[70/83] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_flash_ex.c.obj
+[71/83] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/croutine.c.obj
+[72/83] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_exti.c.obj
+[73/83] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/event_groups.c.obj
+[74/83] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/list.c.obj
+[75/83] Building C object cmake/stm32cubemx/CMakeFiles/STM32_Drivers.dir/__/__/Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_uart.c.obj
+[76/83] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/queue.c.obj
+[77/83] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/stream_buffer.c.obj
+[78/83] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/timers.c.obj
+[79/83] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/tasks.c.obj
+[80/83] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c.obj
+[81/83] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM3/port.c.obj
+[82/83] Building C object cmake/stm32cubemx/CMakeFiles/FreeRTOS.dir/__/__/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c.obj
+[83/83] Linking C executable Patrol_Vehicle_Chassis_App.elf
+Memory region         Used Size  Region Size  %age Used
+             RAM:       61432 B        64 KB     93.74%
+           FLASH:      151048 B       216 KB     68.29%

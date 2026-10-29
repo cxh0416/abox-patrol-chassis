@@ -1,0 +1,18 @@
+device STM32F105RC
+exec InhibitConnectRetries = 1
+exec ForceAttachTarget = 1
+if SWD
+speed 1000
+connect
+h
+loadfile "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\dist\Patrol_Vehicle_Chassis_App.bin" 0x08008000 noreset
+verifybin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\dist\Patrol_Vehicle_Chassis_App.bin" 0x08008000
+loadfile "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-install-0263-102312\state-a-installed.bin" 0x0803E800 noreset
+verifybin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-install-0263-102312\state-a-installed.bin" 0x0803E800
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-install-0263-102312\app-readback.bin", 0x08008000, 0x249B0
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-install-0263-102312\boot-after.bin", 0x08000000, 0x8000
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-install-0263-102312\state-a-readback.bin", 0x0803E800, 0x800
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-install-0263-102312\state-b-after.bin", 0x0803F000, 0x800
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\out\flash\2026-10-20-car2-install-0263-102312\config-after-halted.bin", 0x0803F800, 0x800
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\out\flash\2026-10-20-car2-install-0263-102312\recovery-after-halted.bin", 0x0803E000, 0x800
+qc

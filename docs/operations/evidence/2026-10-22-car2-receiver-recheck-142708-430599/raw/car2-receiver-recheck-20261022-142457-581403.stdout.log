@@ -1,0 +1,396 @@
+只听采集，500 kbps；分析仪 CH2 -> CAN1，分析仪 CH1 -> CAN2
+输出：E:\1_work\ChassisCar_test\logs\car2-receiver-recheck-20261022-142457-581403
+M 标记故障；Ctrl+C 结束。本次只听 CAN1、CAN2。
+左右转速显示驱动器原始符号（右轮镜像安装）；括号为字段 age，目标不变时固件可能不重复发送。
+[    0.0s] CAN1帧数=0/age=未见 CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+[    1.0s] CAN1帧数=20/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=10 age=47ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=10 age=16ms max_gap=109.0ms
+[    2.0s] CAN1帧数=39/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=20 age=31ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=19 age=110ms max_gap=110.0ms
+[    3.0s] CAN1帧数=59/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=30 age=31ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=29 age=94ms max_gap=110.0ms
+[    4.0s] CAN1帧数=79/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=40 age=16ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=39 age=78ms max_gap=110.0ms
+[    5.0s] CAN1帧数=99/age=0ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=50 age=0ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=49 age=78ms max_gap=110.0ms
+[    6.0s] CAN1帧数=118/age=63ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=59 age=94ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=59 age=63ms max_gap=110.0ms
+[    7.0s] CAN1帧数=138/age=47ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=69 age=78ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=69 age=47ms max_gap=110.0ms
+[    8.0s] CAN1帧数=158/age=47ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=79 age=78ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=79 age=47ms max_gap=110.0ms
+[    9.0s] CAN1帧数=178/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=89 age=63ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=89 age=31ms max_gap=110.0ms
+[   10.0s] CAN1帧数=198/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=99 age=63ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=99 age=16ms max_gap=110.0ms
+[   11.0s] CAN1帧数=218/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=109 age=47ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=109 age=16ms max_gap=110.0ms
+[   12.0s] CAN1帧数=237/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=119 age=31ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=118 age=110ms max_gap=110.0ms
+[   13.0s] CAN1帧数=257/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=129 age=31ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=128 age=94ms max_gap=110.0ms
+[   14.0s] CAN1帧数=277/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=139 age=16ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=138 age=78ms max_gap=110.0ms
+[   15.0s] CAN1帧数=297/age=0ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=149 age=0ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=148 age=78ms max_gap=110.0ms
+[   16.0s] CAN1帧数=316/age=63ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=158 age=94ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=158 age=63ms max_gap=110.0ms
+[   17.0s] CAN1帧数=336/age=63ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=168 age=94ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=168 age=63ms max_gap=110.0ms
+[   18.0s] CAN1帧数=356/age=47ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=178 age=78ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=178 age=47ms max_gap=110.0ms
+[   19.0s] CAN1帧数=376/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=188 age=63ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=188 age=31ms max_gap=110.0ms
+[   20.0s] CAN1帧数=396/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=198 age=63ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=198 age=31ms max_gap=110.0ms
+[   21.0s] CAN1帧数=416/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=208 age=47ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=208 age=16ms max_gap=110.0ms
+[   22.0s] CAN1帧数=436/age=0ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=218 age=31ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=218 age=0ms max_gap=110.0ms
+[   23.0s] CAN1帧数=455/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=228 age=31ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=227 age=94ms max_gap=110.0ms
+[   24.0s] CAN1帧数=475/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=238 age=16ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=237 age=94ms max_gap=110.0ms
+[   25.0s] CAN1帧数=495/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=248 age=16ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=247 age=78ms max_gap=110.0ms
+[   26.0s] CAN1帧数=514/age=63ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=257 age=94ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=257 age=63ms max_gap=110.0ms
+[   27.0s] CAN1帧数=534/age=63ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=267 age=94ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=267 age=63ms max_gap=110.0ms
+[   28.0s] CAN1帧数=554/age=47ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=277 age=78ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=277 age=47ms max_gap=110.0ms
+[   29.0s] CAN1帧数=574/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=287 age=78ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=287 age=31ms max_gap=110.0ms
+[   30.0s] CAN1帧数=594/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=297 age=63ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=297 age=31ms max_gap=110.0ms
+[   31.0s] CAN1帧数=614/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=307 age=47ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=307 age=16ms max_gap=110.0ms
+[   32.0s] CAN1帧数=634/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=317 age=47ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=317 age=16ms max_gap=110.0ms
+[   33.0s] CAN1帧数=653/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=327 age=31ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=326 age=94ms max_gap=110.0ms
+[   34.0s] CAN1帧数=673/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=337 age=16ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=336 age=94ms max_gap=110.0ms
+[   35.0s] CAN1帧数=693/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=347 age=16ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=346 age=78ms max_gap=110.0ms
+[   36.0s] CAN1帧数=712/age=63ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=356 age=110ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=356 age=63ms max_gap=110.0ms
+[   37.0s] CAN1帧数=732/age=63ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=366 age=94ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=366 age=63ms max_gap=110.0ms
+[   38.0s] CAN1帧数=752/age=47ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=376 age=78ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=376 age=47ms max_gap=110.0ms
+[   39.0s] CAN1帧数=772/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=386 age=78ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=386 age=31ms max_gap=110.0ms
+[   40.0s] CAN1帧数=792/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=396 age=63ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=396 age=31ms max_gap=110.0ms
+[   41.0s] CAN1帧数=812/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=406 age=47ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=406 age=16ms max_gap=110.0ms
+[   42.0s] CAN1帧数=832/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=416 age=47ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=416 age=16ms max_gap=110.0ms
+[   43.0s] CAN1帧数=851/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=426 age=31ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=425 age=94ms max_gap=110.0ms
+[   44.0s] CAN1帧数=871/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=436 age=16ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=435 age=94ms max_gap=110.0ms
+[   45.0s] CAN1帧数=891/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=446 age=16ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=445 age=78ms max_gap=110.0ms
+[   46.0s] CAN1帧数=910/age=78ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=455 age=110ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=455 age=78ms max_gap=110.0ms
+[   47.0s] CAN1帧数=930/age=63ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=465 age=94ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=465 age=63ms max_gap=110.0ms
+[   48.0s] CAN1帧数=950/age=47ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=475 age=78ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=475 age=47ms max_gap=110.0ms
+[   49.0s] CAN1帧数=970/age=47ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=485 age=78ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=485 age=47ms max_gap=110.0ms
+[   50.0s] CAN1帧数=990/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=495 age=63ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=495 age=31ms max_gap=110.0ms
+[   51.0s] CAN1帧数=1010/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=505 age=47ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=505 age=16ms max_gap=110.0ms
+[   52.0s] CAN1帧数=1030/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=515 age=47ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=515 age=16ms max_gap=110.0ms
+[   53.0s] CAN1帧数=1049/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=525 age=31ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=524 age=110ms max_gap=110.0ms
+[   54.0s] CAN1帧数=1069/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=535 age=31ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=534 age=94ms max_gap=110.0ms
+[   55.0s] CAN1帧数=1089/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=545 age=16ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=544 age=78ms max_gap=110.0ms
+[   56.0s] CAN1帧数=1108/age=78ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=554 age=110ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=554 age=78ms max_gap=110.0ms
+[   57.0s] CAN1帧数=1128/age=63ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=564 age=94ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=564 age=63ms max_gap=110.0ms
+[   58.0s] CAN1帧数=1148/age=63ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=574 age=78ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=574 age=63ms max_gap=110.0ms
+[   59.0s] CAN1帧数=1168/age=47ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=584 age=78ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=584 age=47ms max_gap=110.0ms
+[   60.0s] CAN1帧数=1188/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=594 age=63ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=594 age=31ms max_gap=110.0ms
+[   61.0s] CAN1帧数=1208/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=604 age=63ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=604 age=31ms max_gap=110.0ms
+[   62.0s] CAN1帧数=1228/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=614 age=47ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=614 age=16ms max_gap=110.0ms
+[   63.0s] CAN1帧数=1247/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=624 age=31ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=623 age=110ms max_gap=110.0ms
+[   64.0s] CAN1帧数=1267/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=634 age=31ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=633 age=94ms max_gap=110.0ms
+[   65.0s] CAN1帧数=1287/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=644 age=16ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=643 age=94ms max_gap=110.0ms
+[   66.0s] CAN1帧数=1307/age=0ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=654 age=0ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=653 age=78ms max_gap=110.0ms
+[   67.0s] CAN1帧数=1326/age=63ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=663 age=94ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=663 age=63ms max_gap=110.0ms
+[   68.0s] CAN1帧数=1346/age=63ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=673 age=94ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=673 age=63ms max_gap=110.0ms
+[   69.0s] CAN1帧数=1366/age=47ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=683 age=78ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=683 age=47ms max_gap=110.0ms
+[   70.0s] CAN1帧数=1386/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=693 age=63ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=693 age=31ms max_gap=110.0ms
+[   71.0s] CAN1帧数=1406/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=703 age=63ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=703 age=31ms max_gap=110.0ms
+[   72.0s] CAN1帧数=1426/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=713 age=47ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=713 age=16ms max_gap=110.0ms
+[   73.0s] CAN1帧数=1446/age=0ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=723 age=31ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=723 age=0ms max_gap=110.0ms
+[   74.0s] CAN1帧数=1465/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=733 age=31ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=732 age=94ms max_gap=110.0ms
+[   75.0s] CAN1帧数=1485/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=743 age=16ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=742 age=94ms max_gap=110.0ms
+[   76.0s] CAN1帧数=1505/age=0ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=753 age=0ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=752 age=78ms max_gap=110.0ms
+[   77.0s] CAN1帧数=1524/age=63ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=762 age=94ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=762 age=63ms max_gap=110.0ms
+[   78.0s] CAN1帧数=1544/age=63ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=772 age=94ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=772 age=63ms max_gap=110.0ms
+[   79.0s] CAN1帧数=1564/age=47ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=782 age=78ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=782 age=47ms max_gap=110.0ms
+[   80.0s] CAN1帧数=1584/age=47ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=792 age=63ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=792 age=47ms max_gap=110.0ms
+[   81.0s] CAN1帧数=1604/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=802 age=63ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=802 age=31ms max_gap=110.0ms
+[   82.0s] CAN1帧数=1624/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=812 age=47ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=812 age=16ms max_gap=110.0ms
+[   83.0s] CAN1帧数=1644/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=822 age=47ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=822 age=16ms max_gap=110.0ms
+[   84.0s] CAN1帧数=1663/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=832 age=31ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=831 age=94ms max_gap=110.0ms
+[   85.0s] CAN1帧数=1683/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=842 age=16ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=841 age=94ms max_gap=110.0ms
+[   86.0s] CAN1帧数=1703/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=852 age=16ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=851 age=78ms max_gap=110.0ms
+[   87.0s] CAN1帧数=1722/age=78ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=861 age=94ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=861 age=78ms max_gap=110.0ms
+[   88.0s] CAN1帧数=1742/age=63ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=871 age=94ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=871 age=63ms max_gap=110.0ms
+[   89.0s] CAN1帧数=1762/age=47ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=881 age=78ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=881 age=47ms max_gap=110.0ms
+[   90.0s] CAN1帧数=1782/age=47ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=891 age=63ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=891 age=47ms max_gap=110.0ms
+[   91.0s] CAN1帧数=1802/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=901 age=63ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=901 age=31ms max_gap=110.0ms
+[   92.0s] CAN1帧数=1822/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=911 age=47ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=911 age=16ms max_gap=110.0ms
+[   93.0s] CAN1帧数=1842/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=921 age=47ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=921 age=16ms max_gap=110.0ms
+[   94.0s] CAN1帧数=1861/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=931 age=31ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=930 age=110ms max_gap=110.0ms
+[   95.0s] CAN1帧数=1881/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=941 age=16ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=940 age=94ms max_gap=110.0ms
+[   96.0s] CAN1帧数=1901/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=951 age=16ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=950 age=78ms max_gap=110.0ms
+[   97.0s] CAN1帧数=1920/age=78ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=960 age=110ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=960 age=78ms max_gap=110.0ms
+[   98.0s] CAN1帧数=1940/age=63ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=970 age=94ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=970 age=63ms max_gap=110.0ms
+[   99.0s] CAN1帧数=1960/age=47ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=980 age=78ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=980 age=47ms max_gap=110.0ms
+[  100.0s] CAN1帧数=1980/age=47ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=990 age=78ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=990 age=47ms max_gap=110.0ms
+[  101.0s] CAN1帧数=2000/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1000 age=63ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1000 age=31ms max_gap=110.0ms
+[  102.0s] CAN1帧数=2020/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1010 age=47ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1010 age=16ms max_gap=110.0ms
+[  103.0s] CAN1帧数=2040/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1020 age=47ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1020 age=16ms max_gap=110.0ms
+[  104.0s] CAN1帧数=2059/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1030 age=31ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1029 age=110ms max_gap=110.0ms
+[  105.0s] CAN1帧数=2079/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1040 age=31ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1039 age=94ms max_gap=110.0ms
+[  106.0s] CAN1帧数=2099/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1050 age=16ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1049 age=78ms max_gap=110.0ms
+[  107.0s] CAN1帧数=2118/age=78ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1059 age=110ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1059 age=78ms max_gap=110.0ms
+[  108.0s] CAN1帧数=2138/age=63ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1069 age=94ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1069 age=63ms max_gap=110.0ms
+[  109.0s] CAN1帧数=2158/age=47ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1079 age=78ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1079 age=47ms max_gap=110.0ms
+[  110.0s] CAN1帧数=2178/age=47ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1089 age=78ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1089 age=47ms max_gap=110.0ms
+[  111.0s] CAN1帧数=2198/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1099 age=63ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1099 age=31ms max_gap=110.0ms
+[  112.0s] CAN1帧数=2218/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1109 age=63ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1109 age=16ms max_gap=110.0ms
+[  113.0s] CAN1帧数=2238/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1119 age=47ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1119 age=16ms max_gap=110.0ms
+[  114.0s] CAN1帧数=2258/age=0ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1129 age=31ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1129 age=0ms max_gap=110.0ms
+[  115.0s] CAN1帧数=2277/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1139 age=31ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1138 age=94ms max_gap=110.0ms
+[  116.0s] CAN1帧数=2297/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1149 age=16ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1148 age=78ms max_gap=110.0ms
+[  117.0s] CAN1帧数=2316/age=78ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1158 age=110ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1158 age=78ms max_gap=110.0ms
+[  118.0s] CAN1帧数=2336/age=63ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1168 age=94ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1168 age=63ms max_gap=110.0ms
+[  119.0s] CAN1帧数=2356/age=63ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1178 age=78ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1178 age=63ms max_gap=110.0ms
+[  120.0s] CAN1帧数=2376/age=47ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1188 age=78ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1188 age=47ms max_gap=110.0ms
+[  121.0s] CAN1帧数=2396/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1198 age=63ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1198 age=31ms max_gap=110.0ms
+[  122.0s] CAN1帧数=2416/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1208 age=63ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1208 age=31ms max_gap=110.0ms
+[  123.0s] CAN1帧数=2436/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1218 age=47ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1218 age=16ms max_gap=110.0ms
+[  124.0s] CAN1帧数=2456/age=0ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1228 age=31ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1228 age=0ms max_gap=110.0ms
+[  125.0s] CAN1帧数=2475/age=31ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1238 age=31ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1237 age=94ms max_gap=110.0ms
+[  126.0s] CAN1帧数=2495/age=16ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1248 age=16ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1247 age=94ms max_gap=110.0ms
+[  127.0s] CAN1帧数=2515/age=0ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1258 age=0ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1257 age=78ms max_gap=110.0ms
+[  128.0s] CAN1帧数=2534/age=63ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1267 age=94ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1267 age=63ms max_gap=110.0ms
+[  129.0s] CAN1帧数=2554/age=63ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1277 age=94ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1277 age=63ms max_gap=110.0ms
+[  130.0s] CAN1帧数=2574/age=47ms CAN2帧数=0/age=未见 A=未见 T12=未见 L目标=未见 R目标=未见 L实测=未见 R实测=未见 转向目标=未见 行走状态=未见 左故障=未见 右故障=未见 | SDO未应答事件=0
+  CAN1.STD.0x702         DLC=1 DATA=7F                      count=1287 age=78ms max_gap=110.0ms
+  CAN1.STD.0x701         DLC=1 DATA=7F                      count=1287 age=47ms max_gap=110.0ms
+采集结束：operator_stop_file；原始记录：E:\1_work\ChassisCar_test\logs\car2-receiver-recheck-20261022-142457-581403\frames.jsonl

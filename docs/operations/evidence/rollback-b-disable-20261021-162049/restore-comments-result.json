@@ -1,0 +1,11 @@
+{
+  "target": "d3614871be8400dd37565ebfe97b044996be85be",
+  "subject": "注释添加",
+  "backup_branch": "backup/before-restore-comments-20261021-162217",
+  "working_tree_backup": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\rollback-b-disable-20261021-162049\\working-tree-backup.zip",
+  "working_tree_backup_sha256": "83d4946002e96b71ab4501a2c9a68e048b318953c51d8d387c16734d1a82ab21",
+  "tracked_source_and_index_match_target": true,
+  "preserved_evidence_files": 70,
+  "board_flashed": false,
+  "firmware_rebuilt": false
+}

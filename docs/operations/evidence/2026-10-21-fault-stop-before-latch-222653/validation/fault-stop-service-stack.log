@@ -1,0 +1,17 @@
+PASS public_motion_digest: known frames 1692 + reserve 1024 <= 4096
+PASS public_power_replay_digest: known frames 1604 + reserve 1024 <= 4096
+PASS mqtt_transport_init: known frames 992 + reserve 1024 <= 4096
+PASS mqtt_transport_configure: known frames 272 + reserve 1024 <= 4096
+PASS maintenance_commit: known frames 2800 + reserve 1024 <= 4096
+PASS clock_sync_apply: known frames 680 + reserve 1024 <= 4096
+PASS clock_sync_send: known frames 976 + reserve 1024 <= 4096
+PASS public_control_fault_stop: known frames 1200 + reserve 1024 <= 4096
+PASS public_control_fault_capture: known frames 1156 + reserve 1024 <= 4096
+PASS at_ota_termination: known frames 740 + reserve 1024 <= 4096
+PASS at_enrollment_termination: known frames 516 + reserve 1024 <= 4096
+PASS modem_reset_runtime: known frames 248 + reserve 1024 <= 4096
+PASS uart_rx_retry: known frames 124 + reserve 1024 <= 4096
+PASS uart_rx_failure_log: known frames 160 + reserve 1024 <= 4096
+PASS uart_tx_termination: known frames 596 + reserve 1024 <= 4096
+PASS enrollment_payload_termination: known frames 708 + reserve 1024 <= 4096
+PASS ota_payload_termination: known frames 748 + reserve 1024 <= 4096

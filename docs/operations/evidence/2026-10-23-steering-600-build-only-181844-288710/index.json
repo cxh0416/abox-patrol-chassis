@@ -1,0 +1,87 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.82",
+  "tests_run": false,
+  "validators_run": false,
+  "board_flashed": false,
+  "files": [
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\platform\\targets\\stm32f105_abox_boot\\dist\\ABox_Boot.bin",
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-600-build-only-181844-288710/ABox_Boot.bin",
+      "bytes": 32768,
+      "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+    },
+    {
+      "original_path": "Offline generated package file",
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-600-build-only-181844-288710/BootState_A.bin",
+      "bytes": 2048,
+      "sha256": "cd438dbabe4c658fd8a3695119227e83a4a353f659476d884333dcb450e07e78"
+    },
+    {
+      "original_path": "Offline generated package file",
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-600-build-only-181844-288710/BootState_B.bin",
+      "bytes": 2048,
+      "sha256": "0ac5cd16088fc73ad743c068a285e077993c2e8a877c4b1aba0d6bb7bd63465c"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\package-steering-600-build-only.py",
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-600-build-only-181844-288710/build/package-steering-600-build-only.py",
+      "bytes": 5159,
+      "sha256": "b842d7cb58ba39b47f434d380367b2862a06a00d2a574e0855a6cb245792ab36"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-600-arm-build.log",
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-600-build-only-181844-288710/build/steering-600-arm-build.log",
+      "bytes": 18942,
+      "sha256": "606da24684053a12826273a27f7ede8060c46f8195d1e788e1b03d497e40a6ad"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-600-arm-configure.log",
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-600-build-only-181844-288710/build/steering-600-arm-configure.log",
+      "bytes": 194,
+      "sha256": "27f35a38ea391ce4fbaf78fc9b22fa1ee619257339712363fc264a005eb72795"
+    },
+    {
+      "original_path": "Offline generated package file",
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-600-build-only-181844-288710/flash.manifest.json",
+      "bytes": 1118,
+      "sha256": "875dd15d0b3d77a31a9344b3a84ce3e41ff11d1ba304b04b4222bf1bf6557608"
+    },
+    {
+      "original_path": "Offline generated package file",
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-600-build-only-181844-288710/FLASH_ADDRESSES.txt",
+      "bytes": 1044,
+      "sha256": "5e34a05e7969178f14e2c7e2150566872350898bcaa8582ce6fd34155c154aa3"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\build\\Steering800\\Patrol_Vehicle_Chassis_App.bin",
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-600-build-only-181844-288710/Patrol_Vehicle_Chassis_App.bin",
+      "bytes": 154264,
+      "sha256": "f18a32e1f70e14c4dff064ebb36e0ea2a36ab135966b148737b7dd4cfbb1fbf3"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\build\\Steering800\\Patrol_Vehicle_Chassis_App.elf",
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-600-build-only-181844-288710/Patrol_Vehicle_Chassis_App.elf",
+      "bytes": 263752,
+      "sha256": "38baccc50493542ebbb349ac23c645aefb986d6412b47fd0a3b42d7bd57519ce"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\build\\Steering800\\Patrol_Vehicle_Chassis_App.map",
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-600-build-only-181844-288710/Patrol_Vehicle_Chassis_App.map",
+      "bytes": 664886,
+      "sha256": "a73f89143e1c31a8684a61b760f4320fd6a4ce2f361a1e0c7210a0612b324fc5"
+    },
+    {
+      "original_path": "Offline generated package file",
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-600-build-only-181844-288710/Patrol_Vehicle_Chassis_Full.bin",
+      "bytes": 187032,
+      "sha256": "7ee435eec310c82c9da5839177cfd3fb9041662d1378cbfb4105174727b02dda"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\include\\vehicle_steering_profile.h",
+      "archive_path": "docs/operations/evidence/2026-10-23-steering-600-build-only-181844-288710/source/vehicle_steering_profile.h",
+      "bytes": 1521,
+      "sha256": "7fe7ec3b998c10a8509c35892b820627807718e945978c279b92a65b9207bd70"
+    }
+  ]
+}

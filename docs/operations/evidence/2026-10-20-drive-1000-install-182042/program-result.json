@@ -1,0 +1,16 @@
+{
+  "version": "patrol-chassis-0.2.65",
+  "candidate": true,
+  "drive_max_rpm": 1000,
+  "steering_changed": false,
+  "app_sha256": "ddfe2361bc187b4658383cd7fe8e529d16d9786b319b9b34a2313d51ed18986f",
+  "verification": {
+    "app_byte_equal": true,
+    "state_a_byte_equal": true,
+    "boot_unchanged": true,
+    "recovery_unchanged": true,
+    "state_b_unchanged": true,
+    "config_v5_unchanged": true
+  },
+  "hardware_motion_verified": false
+}

@@ -1,0 +1,13 @@
+{
+  "pid": 27088,
+  "bitrate_kbps": 500,
+  "stdout": "E:\\1_work\\ChassisCar_test\\logs\\car2-app-running-20261022-133254-605407.stdout.log",
+  "duration_s": 30,
+  "hardware_listen_only": true,
+  "stderr": "E:\\1_work\\ChassisCar_test\\logs\\car2-app-running-20261022-133254-605407.stderr.log",
+  "output": "E:\\1_work\\ChassisCar_test\\logs\\car2-app-running-20261022-133254-605407",
+  "physical_channels": {
+    "CAN1": 2
+  },
+  "started_at": "2026-10-22T13:32:54.6642473+08:00"
+}

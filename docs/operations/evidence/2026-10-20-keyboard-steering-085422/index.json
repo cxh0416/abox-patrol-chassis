@@ -1,0 +1,29 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "started_at": "2026-10-20T08:54:22.117717+08:00",
+  "command": [
+    "D:\\Anaconda-3\\python.exe",
+    "E:\\1_work\\ChassisCar_test\\chassis_offline_remote.py",
+    "--channel",
+    "1",
+    "--dll",
+    "E:\\canalyst-II-Driver\\CAN\\二次开发库文件\\x64(64bit)\\ControlCAN.dll",
+    "--diagnose-steering"
+  ],
+  "exit_code": 1,
+  "script_sha256": "ec3d467c7eb9d8d269f288d6bb355eda68f53ae9560cc1163ab0aa792b03a141",
+  "operation": "Node 1 SDO uploads only, no NMT, downloads or motion commands.",
+  "artifacts": [
+    {
+      "path": "steering-readonly.stdout.log",
+      "sha256": "7413a64ce8c329c754cb1fae071e45c96f905bd2bceb77020e977f1193301e3f",
+      "bytes": 1343
+    },
+    {
+      "path": "steering-readonly.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "boundary": "Read-only snapshot; no mechanical position confirmation or movement test."
+}

@@ -52,6 +52,7 @@
 
 /* USER CODE END FunctionPrototypes */
 
+// 创建本产品 FreeRTOS 运行对象。转交 PatrolRtos_Init 创建静态任务和队列，随后由主函数启动内核调度。
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /**
@@ -59,6 +60,7 @@ void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
   * @param  None
   * @retval None
   */
+// 创建本产品 FreeRTOS 运行对象。转交 PatrolRtos_Init 创建静态任务和队列，随后由主函数启动内核调度。
 void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
   PatrolRtos_Init();

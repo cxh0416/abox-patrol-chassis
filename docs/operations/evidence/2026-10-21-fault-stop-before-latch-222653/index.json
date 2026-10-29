@@ -1,0 +1,274 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.75",
+  "app_sha256": "bf129903c3fabe5acedbc413ff3e619e112c1b2e2c3ed7993e7be6f0e3deb654",
+  "app_size": 152744,
+  "board_flashed": false,
+  "field_motion_tested": false,
+  "formal_release": false,
+  "dist_manifest_sha256_unchanged": "72f4f7d2b3cb156c0ae3c20b6005fefd6abc47aaec70b34760bb163bb8540836",
+  "boot_state_policy": "offline NORMAL A/B; stable UFS explicitly unseeded; not a readback of the current board",
+  "states": [
+    {
+      "file": "BootState_A.bin",
+      "address": "0x0803E800",
+      "sequence": 1,
+      "state": "NORMAL",
+      "stable_ufs_metadata": "explicitly unseeded",
+      "sha256": "d59fd2275c3805ff597d2360e540a181e11bf96c2377735c90e30d3a10505a69",
+      "bytes": 2048,
+      "app_size": 152744,
+      "app_crc32": "22FBF3BD"
+    },
+    {
+      "file": "BootState_B.bin",
+      "address": "0x0803F000",
+      "sequence": 2,
+      "state": "NORMAL",
+      "stable_ufs_metadata": "explicitly unseeded",
+      "sha256": "101cbd2c7be82da3125d59b544a68de3cc132c8b23721274b0864ff842da5d56",
+      "bytes": 2048,
+      "app_size": 152744,
+      "app_crc32": "22FBF3BD"
+    }
+  ],
+  "validation": {
+    "arm_release_build": true,
+    "stack_checks": true,
+    "flash_layout": true,
+    "frozen_boot": true,
+    "standalone_product_c_tests": true,
+    "fault_stop_production_regression": true,
+    "product_python_passed": 43,
+    "product_python_total": 44,
+    "known_existing_failure": "test_identity_and_safe_defaults: existing hot-reset recovery design; unchanged assertion",
+    "formal_publication": false,
+    "formal_blocker": "Existing Python failure and clean-worktree publication gate",
+    "hardware_motion_verified": false,
+    "board_flashed": false
+  },
+  "files": [
+    {
+      "original_path": "C:\\Users\\ijk\\AppData\\Local\\Temp\\patrol-fault-stop-stage-3le3jl9k\\package\\ABox_Boot.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\ABox_Boot.bin",
+      "bytes": 32768,
+      "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+    },
+    {
+      "original_path": "C:\\Users\\ijk\\AppData\\Local\\Temp\\patrol-fault-stop-stage-3le3jl9k\\package\\BootState_A.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\BootState_A.bin",
+      "bytes": 2048,
+      "sha256": "d59fd2275c3805ff597d2360e540a181e11bf96c2377735c90e30d3a10505a69"
+    },
+    {
+      "original_path": "C:\\Users\\ijk\\AppData\\Local\\Temp\\patrol-fault-stop-stage-3le3jl9k\\package\\BootState_B.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\BootState_B.bin",
+      "bytes": 2048,
+      "sha256": "101cbd2c7be82da3125d59b544a68de3cc132c8b23721274b0864ff842da5d56"
+    },
+    {
+      "original_path": "C:\\Users\\ijk\\AppData\\Local\\Temp\\patrol-fault-stop-stage-3le3jl9k\\package\\candidate.manifest.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\candidate.manifest.json",
+      "bytes": 15162,
+      "sha256": "f28c361a82666a5128c98af430e894937758ca260a342f559898b50931ca5e2f"
+    },
+    {
+      "original_path": "C:\\Users\\ijk\\AppData\\Local\\Temp\\patrol-fault-stop-stage-3le3jl9k\\package\\debug.manifest.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\debug.manifest.json",
+      "bytes": 1282,
+      "sha256": "5220b61660f2e8e3ff3ec7d6e77baa5b49d24390a9e9ba0128f4494fffe28c9f"
+    },
+    {
+      "original_path": "C:\\Users\\ijk\\AppData\\Local\\Temp\\patrol-fault-stop-stage-3le3jl9k\\package\\FLASH_ADDRESSES.txt",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\FLASH_ADDRESSES.txt",
+      "bytes": 1393,
+      "sha256": "3b3fd3ae5580a55fde200481756010b67a96d06fe56b1c4de7d816d045a4beb1"
+    },
+    {
+      "original_path": "C:\\Users\\ijk\\AppData\\Local\\Temp\\patrol-fault-stop-stage-3le3jl9k\\package\\Patrol_Vehicle_Chassis_App.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\Patrol_Vehicle_Chassis_App.bin",
+      "bytes": 152744,
+      "sha256": "bf129903c3fabe5acedbc413ff3e619e112c1b2e2c3ed7993e7be6f0e3deb654"
+    },
+    {
+      "original_path": "C:\\Users\\ijk\\AppData\\Local\\Temp\\patrol-fault-stop-stage-3le3jl9k\\package\\Patrol_Vehicle_Chassis_Full.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\Patrol_Vehicle_Chassis_Full.bin",
+      "bytes": 185512,
+      "sha256": "f269d948c9e9fda0926b1429ed9a388cdbcade7d011cc5f190ea188a87d893f0"
+    },
+    {
+      "original_path": "derived host verifier from immutable 0.2.74 evidence; size/version updated only",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\verify-fault-stop-state.c",
+      "bytes": 3434,
+      "sha256": "91e744c89f7c4f69bcbea6b0868f85dfea22b678723770d9f23235eeff181f8f"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\build\\FaultStopRelease\\Patrol_Vehicle_Chassis_App.elf",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\Patrol_Vehicle_Chassis_App.elf",
+      "bytes": 263600,
+      "sha256": "98f9bd6f53e4b1bc45b50d022aaffca72d649470c8252175b2832bc84668e202"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\build\\FaultStopRelease\\Patrol_Vehicle_Chassis_App.map",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\Patrol_Vehicle_Chassis_App.map",
+      "bytes": 663817,
+      "sha256": "d088b269beffd79b6da0bac0f4016cdb674d6e75d25f49d9c2d226d9723bd179"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-stop-arm-configure.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\validation\\fault-stop-arm-configure.log",
+      "bytes": 311,
+      "sha256": "1756d7496f85b9ff8586963101e5191c020eebdad35561fbbbdf7bd2296f4da5"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-stop-arm-final.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\validation\\fault-stop-arm-final.log",
+      "bytes": 1869,
+      "sha256": "7e3c5ebf91d0a62f1b02e733e12af18a6b705fa8b7a857417f4b1499effc62bb"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-stop-bench-stack.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\validation\\fault-stop-bench-stack.log",
+      "bytes": 298,
+      "sha256": "04ed3fe85ecece3e64a123978469839defcebfc5847b6222a96d32cdd1accce2"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-stop-can-stack.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\validation\\fault-stop-can-stack.log",
+      "bytes": 738,
+      "sha256": "bb31315a882341bb3ce3d857cefe98ff9e186b767e453d4a0f1a5fc212312b7a"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-stop-service-stack.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\validation\\fault-stop-service-stack.log",
+      "bytes": 1178,
+      "sha256": "5676c5d233915e5aa13af27e7eee51f871222c5af1aa0ce7e3de435814d5853f"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-stop-frozen-boot.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\validation\\fault-stop-frozen-boot.log",
+      "bytes": 208,
+      "sha256": "bbfc3d831c9390d994c173862385a257e5a7f9af896d96c2f1e29684457e28f2"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-stop-layout.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\validation\\fault-stop-layout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-stop-product-c.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\validation\\fault-stop-product-c.log",
+      "bytes": 240,
+      "sha256": "846972a2e7b1bba3f8bcaefadd0f96267c9ed8983c90c3e3347d1863796d3e87"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-stop-new-regression-final.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\validation\\fault-stop-new-regression-final.log",
+      "bytes": 837,
+      "sha256": "1b841b625afcc1a3101fb34588ba5c58db8aa214a9757888908d30669185a479"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-stop-boot-state.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\validation\\fault-stop-boot-state.log",
+      "bytes": 180,
+      "sha256": "f5ecaf894752fadc36a627f73202de237b836910e4052e79e07fffb1aced21aa"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-stop-python-validated.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\validation\\fault-stop-python-validated.log",
+      "bytes": 107503,
+      "sha256": "4d34afc0319c28902b6762bc74ef97a1457b2d6c93658a2a8575b4c62244e406"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-stop-baseline-check.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\validation\\fault-stop-baseline-check.json",
+      "bytes": 173,
+      "sha256": "4e91bccd0a917ae9e1e16b6f6a7c23aa7f97e20edbc128fb78046ff7190574eb"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-stop-formal-gate.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\validation\\fault-stop-formal-gate.log",
+      "bytes": 622,
+      "sha256": "1174ac61ec4b6f3d144940b6950e44f8d6d892a6d8c3f42f78b337b5be23fba6"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\package-fault-stop.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\validation\\package-fault-stop.py",
+      "bytes": 12525,
+      "sha256": "774b80ec85f617c445c9ec3d5110e5f7440e4ecfd82d98dc7ab12f47e2500c90"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\include\\patrol_fault_stop.h",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\source\\app\\Core\\User\\motion\\include\\patrol_fault_stop.h",
+      "bytes": 2188,
+      "sha256": "a72bc565a39211a19cc22392159a5cb0cb1840b7b16e65407d32682b89b9da91"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\src\\patrol_fault_stop.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\source\\app\\Core\\User\\motion\\src\\patrol_fault_stop.c",
+      "bytes": 5826,
+      "sha256": "2c728d6a90eed92504d885c771eb30c163304a1afc3882593f221e084d05897a"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\src\\patrol_runtime.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\source\\app\\Core\\User\\motion\\src\\patrol_runtime.c",
+      "bytes": 40336,
+      "sha256": "8aab440a50e96b76ef80481d20c6fefcd2e3bb0f0385e8157cc06b103338f154"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\src\\chassis_control.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\source\\app\\Core\\User\\motion\\src\\chassis_control.c",
+      "bytes": 12849,
+      "sha256": "3d5666c548eb9a4d1ab54e1fd4ca5ab421cf940ce4f83c78ee28e5eff4732ab8"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\include\\chassis_control.h",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\source\\app\\Core\\User\\motion\\include\\chassis_control.h",
+      "bytes": 5212,
+      "sha256": "c966bb575db8e001c4261c01ebcba36184e30b9af47ef901057c5a168153e215"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\cloud\\src\\remote_service.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\source\\app\\Core\\User\\cloud\\src\\remote_service.c",
+      "bytes": 17111,
+      "sha256": "58d0b1ff6810f7f0a1f342137b3613a42ea14ca78660354fee471bbfbc3695ad"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\tests\\fault_stop_runtime_cases.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\source\\tests\\fault_stop_runtime_cases.c",
+      "bytes": 17186,
+      "sha256": "2d6f6353ad6a6916c13d4d4f777f5511a1f19b1f7e1d3aa8d51a78bb5a8ed91a"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\tests\\test_fault_stop_runtime.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\source\\tests\\test_fault_stop_runtime.py",
+      "bytes": 2766,
+      "sha256": "6389e05746ca6c105bf2b37c796b6b0b13794a9bb570b592da1b3962f6cccbaa"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\tools\\verify_can2_stack.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\source\\tools\\verify_can2_stack.py",
+      "bytes": 4207,
+      "sha256": "e65a0459e99e48d4ae5505750709538c2b25f9179cbc406d86bad232ef79563c"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\tools\\service_stack_budget.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\source\\tools\\service_stack_budget.json",
+      "bytes": 5655,
+      "sha256": "e167e50b9d57fc39bc420fb698c888fee332fd9d1eff3ec2871f8580b142e131"
+    },
+    {
+      "original_path": "git diff --binary; untracked new source files also copied under source/",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-fault-stop-before-latch-222653\\source-changes.patch",
+      "bytes": 137825,
+      "sha256": "33be58ad512c4a658becd6970c18f8f7356651fd3655bb3dc9cc1fd46e0aba02"
+    },
+    {
+      "original_path": "verified staged package",
+      "archive_path": "docs\\operations\\evidence\\FaultStopBeforeLatch_0_2_75_Flash.zip",
+      "bytes": 256243,
+      "sha256": "df0e0a63f3256df1a23884f5c5ac67133d5e6a3f5964043b70b29f7dc519eaff"
+    }
+  ]
+}

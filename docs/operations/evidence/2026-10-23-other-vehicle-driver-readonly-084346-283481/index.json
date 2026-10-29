@@ -1,0 +1,83 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "operator_context": "另一台已调试完成车辆的转向驱动器，COM7接驱动器485A/B",
+  "vehicle_identity": "Not independently identified; no SWD attachment or vehicle config read",
+  "passive_test": {
+    "baud": 115200,
+    "format": "8N1",
+    "duration_s": 15,
+    "rx_bytes": 0,
+    "tx_bytes": 0
+  },
+  "read_query": {
+    "baud": 115200,
+    "protocol": "Modbus ASCII",
+    "slave": 1,
+    "function": 3,
+    "register": "0x1018",
+    "quantity": 2,
+    "valid_response_count": 3,
+    "checks": [
+      {
+        "sample": 0,
+        "lrc_valid": true,
+        "slave": 1,
+        "function": 3,
+        "data_hex": "b8 99 ff fe",
+        "response_hex": "01 03 04 b8 99 ff fe aa"
+      },
+      {
+        "sample": 1,
+        "lrc_valid": true,
+        "slave": 1,
+        "function": 3,
+        "data_hex": "b8 99 ff fe",
+        "response_hex": "01 03 04 b8 99 ff fe aa"
+      },
+      {
+        "sample": 2,
+        "lrc_valid": true,
+        "slave": 1,
+        "function": 3,
+        "data_hex": "b8 99 ff fe",
+        "response_hex": "01 03 04 b8 99 ff fe aa"
+      }
+    ],
+    "register_word_order_not_independently_verified": true
+  },
+  "parameter_writes": 0,
+  "enable_or_motion_commands": 0,
+  "calibration_writes": 0,
+  "limitations": [
+    "Successful stationary position reads do not prove physical motion, angle calibration or encoder pulse integrity during motion",
+    "Does not establish that previous vehicle has healthy encoder or matching wiring",
+    "Driver RS485 is not a direct raw encoder signal output"
+  ],
+  "files": [
+    {
+      "source": "E:\\1_work\\ChassisCar_test\\logs\\driver-position-readonly-20261023-084227-086988\\frames.jsonl",
+      "archived": "00-frames.jsonl",
+      "sha256": "9b9776a9d8a9b98f6a5341cb522284305228df8f0c4e4a747265180e67bf0a37"
+    },
+    {
+      "source": "E:\\1_work\\ChassisCar_test\\logs\\driver-position-readonly-20261023-084227-086988\\summary.json",
+      "archived": "01-summary.json",
+      "sha256": "afc7da71c35f05491e4c428d20fe3cc5b140037edca2cf5994723708de1695e4"
+    },
+    {
+      "source": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\read-driver-position-ascii.ps1",
+      "archived": "02-read-driver-position-ascii.ps1",
+      "sha256": "d444890420e112b7754c28ba203b8970fde5eb11ab3467275fecc18315f4f9d9"
+    },
+    {
+      "source": "E:\\1_work\\ChassisCar_test\\logs\\encoder-passive-20261023-084016-115450\\bytes.jsonl",
+      "archived": "03-bytes.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "E:\\1_work\\ChassisCar_test\\logs\\encoder-passive-20261023-084016-115450\\summary.json",
+      "archived": "04-summary.json",
+      "sha256": "363589d119562b4836e861eb9e1278d32d9ce7526faa21c89b73536d6b16f000"
+    }
+  ]
+}

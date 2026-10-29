@@ -1,0 +1,6 @@
+{"at_s":0.0340481,"direction":"TX_READ_FUNCTION_03","hex":"3A 30 31 30 33 31 30 31 38 30 30 30 32 44 32 0D 0A","ascii":":010310180002D2\r\n"}
+{"at_s":0.0962886,"direction":"RX","hex":"3A 30 31 30 33 30 34 42 38 39 39 46 46 46 45 41 41 0D 0A","ascii":":010304B899FFFEAA\r\n"}
+{"at_s":0.3159714,"direction":"TX_READ_FUNCTION_03","hex":"3A 30 31 30 33 31 30 31 38 30 30 30 32 44 32 0D 0A","ascii":":010310180002D2\r\n"}
+{"at_s":0.3316791,"direction":"RX","hex":"3A 30 31 30 33 30 34 42 38 39 39 46 46 46 45 41 41 0D 0A","ascii":":010304B899FFFEAA\r\n"}
+{"at_s":0.5345133,"direction":"TX_READ_FUNCTION_03","hex":"3A 30 31 30 33 31 30 31 38 30 30 30 32 44 32 0D 0A","ascii":":010310180002D2\r\n"}
+{"at_s":0.5493412,"direction":"RX","hex":"3A 30 31 30 33 30 34 42 38 39 39 46 46 46 45 41 41 0D 0A","ascii":":010304B899FFFEAA\r\n"}

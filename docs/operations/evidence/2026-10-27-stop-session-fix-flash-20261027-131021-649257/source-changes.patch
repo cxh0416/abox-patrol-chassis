@@ -1,0 +1,2670 @@
+diff --git "a/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/FLASH_ADDRESSES.txt" "b/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/FLASH_ADDRESSES.txt"
+deleted file mode 100644
+index 0f23eca..0000000
+--- "a/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/FLASH_ADDRESSES.txt"
++++ /dev/null
+@@ -1,19 +0,0 @@
+-patrol_vehicle_chassis / patrol-chassis-0.2.91 / FEEDBACK PRIORITY AND CONTROLLED STOP
+-
+-推荐完整安装，写完三个文件后再复位：
+-1. Patrol_Vehicle_Chassis_Full.bin -> 0x08000000 (189504 bytes)
+-2. BootState_A.bin -> 0x0803E800 (2048 bytes)
+-3. BootState_B.bin -> 0x0803F000 (2048 bytes)
+-
+-Full 已包含 32 KiB 冻结 Boot 和 App，不要同时重复烧录独立 App/Boot。
+-已有匹配冻结 Boot 时，可使用：
+-Patrol_Vehicle_Chassis_App.bin -> 0x08008000 (156736 bytes)
+-但仍必须写入本包配套 BootState_A/B。
+-
+-禁止整片擦除。保留：
+-- 0x0803E000..0x0803E7FF 配置恢复页
+-- 0x0803F800..0x0803FFFF Config V5 与故障日志页
+-
+-App CRC32: B98E6B15
+-App SHA256: FA95F31778CABFA5314E052CC3F7FBFFA3BDD0EF4CF0E34140F72B11F1EABCB5
+-Full SHA256: 2D53FA603AF050B7578D7B219F25491AF765880373BFFB0B3C8EA2231F486838
+diff --git "a/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/README.md" "b/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/README.md"
+deleted file mode 100644
+index 08c33f9..0000000
+--- "a/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/README.md"
++++ /dev/null
+@@ -1,74 +0,0 @@
+-# 运动反馈优先级与受控停车修复
+-
+-日期：2026-10-25  
+-候选版本：`patrol-chassis-0.2.91`
+-
+-## 问题
+-
+-现场双路监听显示，转向目标写入连续占用 CAN1 后，Node 2 行驶状态反馈从
+-最后一次正常 `0x6041=0x37` 到下一次响应约间隔 297 ms。Node 1 的一次
+-`0x6041` 响应迟至约 187 ms 才返回，超过诊断单次事务期限，导致行驶状态
+-超过 250 ms 安全时效。原逻辑随即把本次反馈延迟解释为执行故障并永久锁存。
+-
+-该次记录中总线并没有超过 250 ms 的 SDO 未应答或 Abort；问题是串行事务
+-和运动写入的调度顺序，而不是驱动器已明确拒绝动作。
+-
+-## 修改
+-
+-- 关键反馈样本达到 150 ms 时提前进入紧急状态，预留一次 60 ms SDO 事务
+-  和响应处理时间。
+-- 紧急读取按真实样本年龄选择；新鲜 Node 1 位置 TPDO `0x281` 仍优先，
+-  不为已有实时位置额外发送 `0x6064`。
+-- 若低频诊断事务尚未超时，保留其唯一 SDO 所有权；事务超时释放后，下一条
+-  总线机会必须给紧急反馈，不能先发送排队的运动写入。
+-- 单次反馈过期时，先取消新目标并进入现有零速、三组低速确认、撤使能流程。
+-  会话在停车期间撤销后，受控停车状态仍持续到两个执行器完成停车。
+-- 250 ms 反馈安全时效没有放宽。节点离线、Bus-Off、OTA 忙、驱动器故障、
+-  停车超时或 CAN 发送失败仍进入原故障锁存和下电路径。
+-
+-## 验证
+-
+-- `test_stop_scheduler.py`：通过，包括紧急反馈抢占、低频事务超时释放、
+-  会话撤销后的多周期停车和反馈恢复后的正常收尾。
+-- `test_center_runtime.py`、`test_auto_center_runtime.py`：通过。
+-- `test_can2_center_calibration.py`：11/11 通过。
+-- `chassis_safety_test`、`bench_drive_test`：通过。
+-- ARM Release 构建、栈预算、CAN2 栈、冻结 Boot、版本标记、Full 拼接和
+-  Boot State A/B 绑定通过。
+-
+-仍存在的完整套件失败：
+-
+-- `test_identity_and_safe_defaults`：工作树既有热复位 SDO 写与静态断言冲突。
+-- `test_document_links_and_archived_evidence_references`：现有文档链接指向已
+-  不在当前工作区的旧证据目录。
+-- `bench_steering_test`：既有断言仍要求已淘汰的 `90 rpm` 轮廓速度，与当前
+-  `600/600/600 rpm` 配置不一致。
+-
+-这些失败均未放宽断言，也不涉及本次反馈调度行为。
+-
+-## 烧录
+-
+-推荐完整安装：
+-
+-1. `Patrol_Vehicle_Chassis_Full.bin` → `0x08000000`
+-2. `BootState_A.bin` → `0x0803E800`
+-3. `BootState_B.bin` → `0x0803F000`
+-
+-已有匹配冻结 Boot 时，可改为：
+-
+-`Patrol_Vehicle_Chassis_App.bin` → `0x08008000`
+-
+-但仍必须同时写入本包 `BootState_A/B`。禁止整片擦除，保留：
+-
+-- `0x0803E000..0x0803E7FF` 配置恢复页
+-- `0x0803F800..0x0803FFFF` Config V5 与故障日志页
+-
+-## 验证边界
+-
+-本包尚未烧录，不能替代实车验收。烧录全部配套文件后再复位，并在架空或具备
+-急停的条件下复测：
+-
+-- 高频转向时 Node 2 状态、双轮速度和 Node 1 状态仍持续刷新。
+-- 接近 150 ms 的关键反馈读取优先于运动写入。
+-- 单次反馈过期时车辆先有序停车，不立即锁存。
+-- 若停车本身超时、发送失败或驱动器 Abort，系统仍锁存并撤电。
+diff --git "a/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/flash.manifest.json" "b/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/flash.manifest.json"
+deleted file mode 100644
+index c69064c..0000000
+--- "a/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/flash.manifest.json"
++++ /dev/null
+@@ -1,51 +0,0 @@
+-{
+-  "product": "patrol_vehicle_chassis",
+-  "version": "patrol-chassis-0.2.91",
+-  "candidate": true,
+-  "configuration": "Release",
+-  "active_car": 0,
+-  "actuation_enabled": true,
+-  "steering_executor_compiled": true,
+-  "drive_executor_compiled": true,
+-  "app": {
+-    "file": "Patrol_Vehicle_Chassis_App.bin",
+-    "address": "0x08008000",
+-    "size": 156736,
+-    "initial_sp": "0x20010000",
+-    "reset_vector": "0x0800D44D",
+-    "crc32": "B98E6B15",
+-    "sha256": "FA95F31778CABFA5314E052CC3F7FBFFA3BDD0EF4CF0E34140F72B11F1EABCB5"
+-  },
+-  "boot": {
+-    "file": "ABox_Boot.bin",
+-    "address": "0x08000000",
+-    "size": 32768,
+-    "crc32": "F36320C9",
+-    "sha256": "981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63"
+-  },
+-  "full": {
+-    "file": "Patrol_Vehicle_Chassis_Full.bin",
+-    "address": "0x08000000",
+-    "size": 189504,
+-    "crc32": "A18B2FF2",
+-    "sha256": "2D53FA603AF050B7578D7B219F25491AF765880373BFFB0B3C8EA2231F486838"
+-  },
+-  "states": [
+-    {
+-      "file": "BootState_A.bin",
+-      "address": "0x0803E800",
+-      "size": 2048,
+-      "record_crc32": "6FD2DA89",
+-      "sha256": "07B1E53F519C93B4A98EAEBC4240D4C2B236B47D33362CF47DFC71AC4EC3A0D8"
+-    },
+-    {
+-      "file": "BootState_B.bin",
+-      "address": "0x0803F000",
+-      "size": 2048,
+-      "erased": true,
+-      "sha256": "D0FF1B294B5288D1AE1421EADF5B2D38A8752B76D472FF30BED9028E25B1C5B8"
+-    }
+-  ],
+-  "board_flashed": false,
+-  "field_verified": false
+-}
+diff --git "a/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/index.json" "b/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/index.json"
+deleted file mode 100644
+index 0f9e414..0000000
+--- "a/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/index.json"
++++ /dev/null
+@@ -1,48 +0,0 @@
+-{
+-  "product": "patrol_vehicle_chassis",
+-  "date": "2026-10-25",
+-  "version": "patrol-chassis-0.2.91",
+-  "candidate": true,
+-  "purpose": "Prioritize feedback approaching its 250 ms safety deadline and use the existing bounded stop sequence instead of immediately latching a fault after one delayed status upload",
+-  "root_cause": "A Node 1 SDO response arrived about 187 ms after its request while steering writes occupied CAN1; Node 2 drive status was not sampled again for about 297 ms, exceeded the 250 ms feedback gate, and the executor classified the transport scheduling delay as a permanent execution fault",
+-  "app_sha256": "fa95f31778cabfa5314e052cc3f7fbffa3bdd0ef4cf0e34140f72b11f1eabcb5",
+-  "full_sha256": "2d53fa603af050b7578d7b219f25491af765880373bffb0b3c8ea2231f486838",
+-  "app_crc32": "B98E6B15",
+-  "validation": {
+-    "arm_release_build": true,
+-    "feedback_priority": true,
+-    "low_priority_timeout_release": true,
+-    "controlled_stop_after_session_revoke": true,
+-    "center_runtime": true,
+-    "auto_center_runtime": true,
+-    "can2_center_calibration": true,
+-    "chassis_safety_test": true,
+-    "bench_drive_test": true,
+-    "can2_stack": true,
+-    "full_boot_prefix": true,
+-    "full_app_suffix": true,
+-    "boot_state_a_bound": true,
+-    "boot_state_b_erased": true
+-  },
+-  "known_full_suite_failures": [
+-    "test_identity_and_safe_defaults: pre-existing static assertion",
+-    "test_document_links_and_archived_evidence_references: existing CURRENT.md links to removed evidence directories",
+-    "bench_steering_test: pre-existing assertion still expects the retired 90 rpm profile speed"
+-  ],
+-  "board_flashed": false,
+-  "field_verified": false,
+-  "files": [
+-    "ABox_Boot.bin",
+-    "BootState_A.bin",
+-    "BootState_B.bin",
+-    "Patrol_Vehicle_Chassis_App.bin",
+-    "Patrol_Vehicle_Chassis_App.elf",
+-    "Patrol_Vehicle_Chassis_App.map",
+-    "Patrol_Vehicle_Chassis_Full.bin",
+-    "FLASH_ADDRESSES.txt",
+-    "README.md",
+-    "flash.manifest.json",
+-    "index.json",
+-    "sha256.json"
+-  ]
+-}
+diff --git "a/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/sha256.json" "b/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/sha256.json"
+deleted file mode 100644
+index 01a07a0..0000000
+--- "a/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/sha256.json"
++++ /dev/null
+@@ -1,9 +0,0 @@
+-{
+-  "ABox_Boot.bin": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+-  "BootState_A.bin": "07b1e53f519c93b4a98eaebc4240d4c2b236b47d33362cf47dfc71ac4ec3a0d8",
+-  "BootState_B.bin": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8",
+-  "Patrol_Vehicle_Chassis_App.bin": "fa95f31778cabfa5314e052cc3f7fbffa3bdd0ef4cf0e34140f72b11f1eabcb5",
+-  "Patrol_Vehicle_Chassis_App.elf": "12484997f9fbacdecdfbfc8ff55cba1fcd035873376de3405ae68bc1bd482773",
+-  "Patrol_Vehicle_Chassis_App.map": "d83e5534b9e48d9edb5ab2b6227c8c5a1904939b8917890e4d35dcc31f14b8b2",
+-  "Patrol_Vehicle_Chassis_Full.bin": "2d53fa603af050b7578d7b219f25491af765880373bffb0b3c8ea2231f486838"
+-}
+diff --git a/VERSION b/VERSION
+index d41baf5..5b6ea62 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-patrol-chassis-0.2.101
++patrol-chassis-0.2.103
+diff --git a/app/Core/User/motion/include/bench_steering.h b/app/Core/User/motion/include/bench_steering.h
+index fbd821a..7b18e30 100644
+--- a/app/Core/User/motion/include/bench_steering.h
++++ b/app/Core/User/motion/include/bench_steering.h
+@@ -9,13 +9,17 @@ typedef enum { BENCH_IDLE, BENCH_PREPARING, BENCH_ACTIVE, BENCH_STOPPING, BENCH_
+ #define BENCH_WRITE_ACK_WAIT_MS 60U
+ #define BENCH_WRITE_VERIFY_MS 200U
+ #define BENCH_VERIFY_READ_MS 80U
++#define BENCH_STEERING_TRIGGER_INTERVAL_MS 100U
+ typedef struct {
+     BenchPhase phase;
+     uint8_t step, pending, read, width, cut_power, limits_aligned, upper_first, preserve_limits;
+     uint16_t index;
+     uint8_t verify, pp_ack_low; /* Occupies former padding; no RAM-size increase. */
+-    uint32_t sent_ms, started_ms, stop_ms, fault;
+-    int32_t minimum, maximum, center, hold, desired, applied, expected;
++    uint32_t sent_ms, started_ms, stop_ms, last_trigger_ms, fault;
++    int32_t minimum, maximum, center, hold;
++    int32_t desired; /* Single latest-target slot. */
++    int32_t applied; /* Target committed by the current 0x607A write. */
++    int32_t expected;
+     int32_t calibration_center, cached_minimum, cached_maximum, previous_minimum;
+     uint16_t limit_mdeg;
+     uint16_t profile_rpm, applied_profile_rpm, speed_write_rpm;
+diff --git a/app/Core/User/motion/private/motion_internal.h b/app/Core/User/motion/private/motion_internal.h
+index 9d9b793..d84ed47 100644
+--- a/app/Core/User/motion/private/motion_internal.h
++++ b/app/Core/User/motion/private/motion_internal.h
+@@ -132,6 +132,7 @@ typedef struct {
+     uint8_t drive_turn;
+     uint8_t bench_turn;
+     uint8_t bench_transport_stopped;
++    uint8_t feedback_stop_mask; /* bit 0 steering, bit 1 drive: bounded stop owned by feedback loss. */
+     uint16_t feedback_gate_mask, bench_fault_gate_mask;
+     SteeringCoordinate coordinate;
+     uint8_t coordinate_reset_requested;
+diff --git a/app/Core/User/motion/src/bench_steering.c b/app/Core/User/motion/src/bench_steering.c
+index 7e3295f..dcc6ae3 100644
+--- a/app/Core/User/motion/src/bench_steering.c
++++ b/app/Core/User/motion/src/bench_steering.c
+@@ -120,6 +120,12 @@ static uint16_t profile_speed(int32_t target_mdeg, int32_t actual_mdeg)
+     return VEHICLE_STEERING_PROFILE_MAX_RPM;
+ }
+ 
++// 两个已发送定位触发之间至少间隔固定周期，避免持续摇杆输入把每次任务机会都变成触发事务。
++static uint8_t trigger_interval_ready(const BenchSteering* b, uint32_t now_ms)
++{
++    return (uint32_t)(now_ms - b->last_trigger_ms) >= BENCH_STEERING_TRIGGER_INTERVAL_MS ? 1U : 0U;
++}
++
+ // 锁存转向执行器首个故障并置切电请求。撤销待响应事务并进入故障阶段；重复故障不会覆盖最初的故障编号。
+ static void fail(BenchSteering *b, uint32_t reason)
+ {
+@@ -152,6 +158,7 @@ uint8_t BenchSteering_Start(BenchSteering *b, int32_t actual, int32_t center, in
+     b->calibration_center = calibration_center;
+     b->phase = BENCH_PREPARING;
+     b->started_ms = now;
++    b->last_trigger_ms = now - BENCH_STEERING_TRIGGER_INTERVAL_MS;
+     b->center = center;
+     b->hold = actual;
+     b->minimum = INT32_MIN;
+@@ -171,6 +178,7 @@ uint8_t BenchSteering_StartCommissioning(BenchSteering *b, int32_t actual, int32
+     b->calibration_center = center;
+     b->phase = BENCH_PREPARING;
+     b->started_ms = now;
++    b->last_trigger_ms = now - BENCH_STEERING_TRIGGER_INTERVAL_MS;
+     b->center = center;
+     b->hold = actual;
+     b->minimum = INT32_MIN;
+@@ -189,14 +197,10 @@ void BenchSteering_Stop(BenchSteering *b, uint32_t now, uint8_t cut_power)
+     }
+     if (b->phase == BENCH_IDLE || b->phase == BENCH_FAULT || b->phase == BENCH_STOPPING)
+         return;
+-    /* A partially rewritten limit pair must be restored by a power cycle. */
+-    if (b->phase == BENCH_PREPARING && !b->limits_aligned)
+-    {
+-        fail(b, 11U);
+-        return;
+-    }
++    /* PREPARING can be aborted with shutdown even before limits are aligned.
++       A later start must re-read and rewrite the complete limit pair. */
+     b->pending = 0;
+-    b->verify = b->pp_ack_low = 0U;
++    b->verify = b->pp_ack_low = b->target_pending = 0U;
+     b->phase = BENCH_STOPPING;
+     b->step = STEER_STEP_STOP;
+     b->stop_ms = now;
+@@ -258,7 +262,7 @@ void BenchSteering_Tick(BenchSteering *b, uint32_t now, uint8_t requested, uint8
+             b->target_pending = b->desired != b->applied;
+             if (b->profile_rpm != b->applied_profile_rpm)
+                 b->step = STEER_STEP_WRITE_PROFILE_SPEED_ACTIVE;
+-            else if (b->target_pending)
++            else if (b->target_pending && trigger_interval_ready(b, now))
+                 b->step = STEER_STEP_TARGET;
+         }
+     }
+@@ -275,13 +279,6 @@ uint8_t BenchSteering_Take(BenchSteering *b, uint32_t now, PatrolCanFrame *f)
+     if (b->pending || b->phase == BENCH_IDLE || b->phase == BENCH_FAULT ||
+         b->verify == VERIFY_DRAIN || b->step == STEER_STEP_ACTIVE)
+         return 0;
+-    /* A target written before an ACK wait may already have been superseded.
+-     * Replace that untriggered target, rather than triggering the old value. */
+-    if (b->step == STEER_STEP_TRIGGER && b->desired != b->applied &&
+-        (b->verify == VERIFY_NONE || b->verify == VERIFY_ACK_LOW)) {
+-        b->verify = b->pp_ack_low = 0U;
+-        b->step = STEER_STEP_TARGET;
+-    }
+     if (!b->verify && b->step == STEER_STEP_TRIGGER && !b->pp_ack_low) {
+         b->verify = VERIFY_ACK_LOW;
+         b->stop_ms = now;
+@@ -396,6 +393,7 @@ uint8_t BenchSteering_Take(BenchSteering *b, uint32_t now, PatrolCanFrame *f)
+         /* Vendor PP control bit 5 replaces the active set-point immediately.
+            Queued positioning (0x1F) delays boundary retreat and return-to-center. */
+         value = b->step == STEER_STEP_TRIGGER ? 0x3F : 0x2F;
++        if (b->step == STEER_STEP_TRIGGER) b->last_trigger_ms = now;
+         break;
+     case STEER_STEP_STOP:
+         b->index = 0x6040;
+diff --git a/app/Core/User/motion/src/patrol_runtime.c b/app/Core/User/motion/src/patrol_runtime.c
+index 8e7aae9..2e813a6 100644
+--- a/app/Core/User/motion/src/patrol_runtime.c
++++ b/app/Core/User/motion/src/patrol_runtime.c
+@@ -368,6 +368,14 @@ uint8_t PatrolRuntime_Take(uint32_t now, PatrolCanFrame* request, uint8_t* owner
+     return have_request;
+ }
+ 
++// Stop responsibility follows executor state; session ownership only grants new targets.
++enum { FEEDBACK_STOP_STEERING = 1U, FEEDBACK_STOP_DRIVE = 2U };
++
++static uint8_t executor_requires_stop(BenchPhase phase)
++{
++    return (phase == BENCH_PREPARING || phase == BENCH_ACTIVE || phase == BENCH_STOPPING) ? 1U : 0U;
++}
++
+ static uint32_t feedback_due;
+ 
+ /* >>>>> DRIVE-RECOVERY: START >>>>> */
+@@ -550,23 +558,40 @@ void PatrolRuntime_Tick(void)
+             !PatrolRuntimePort_CanBusOffActive() && ChassisControl_SafetyReady(c, now);
+         uint8_t remote_requested = c->session_active && c->enable_request &&
+             (int32_t)(now - c->lease_deadline_ms) < 0;
+-        /*
+-         * A single delayed status upload is a transport-scheduling event, not
+-         * proof that the drive actuator rejected a write. Stop through the
+-         * normal bounded zero/disable path and let a genuine stop failure
+-         * decide whether to latch. Node, bus, OTA and drive faults retain the
+-         * immediate fault path below.
+-         */
++        /*
++         * A single delayed status upload is a transport-scheduling event, not
++         * proof that the drive actuator rejected a write. Stop through the
++         * normal bounded zero/disable path and let a genuine stop failure
++         * decide whether to latch. Stop responsibility follows executor state,
++         * not session ownership: an explicit stop releases the session before
++         * either executor has necessarily entered STOPPING. Node, bus and
++         * drive faults retain the immediate fault path below.
++         */
++        uint8_t transient_feedback = (uint8_t)(
++            (g_motion.feedback_gate_mask & (1U | 2U | 8U | 16U)) != 0U);
++        uint8_t explicit_stop = (uint8_t)(
++            c->stop_reason == CHASSIS_STOP_EXPLICIT);
++        uint8_t feedback_stop_transport_ready = (uint8_t)(
++            !CenterCalibration_IsActive() && VehiclePowerOutput_IsOn() &&
++            !c->feedback.can_bus_off && !PatrolRuntimePort_CanBusOffActive() &&
++            c->feedback.steering_online && c->feedback.drive_online &&
++            !c->feedback.drive_fault);
++        if (!executor_requires_stop(g_motion.bench.phase))
++            g_motion.feedback_stop_mask &= (uint8_t)~FEEDBACK_STOP_STEERING;
++        if (!executor_requires_stop(g_motion.drive.phase))
++            g_motion.feedback_stop_mask &= (uint8_t)~FEEDBACK_STOP_DRIVE;
++        if (CenterCalibration_IsActive())
++            g_motion.feedback_stop_mask = 0U;
++        else if ((transient_feedback || explicit_stop) && feedback_stop_transport_ready) {
++            if (executor_requires_stop(g_motion.bench.phase))
++                g_motion.feedback_stop_mask |= FEEDBACK_STOP_STEERING;
++            if (executor_requires_stop(g_motion.drive.phase))
++                g_motion.feedback_stop_mask |= FEEDBACK_STOP_DRIVE;
++        }
+         controlled_feedback_stop = (uint8_t)(
+             !c->fault_latched && !c->fault_pending &&
+-            (c->session_active || g_motion.bench.phase == BENCH_STOPPING ||
+-             g_motion.drive.phase == BENCH_STOPPING) &&
+-            VehiclePowerOutput_IsOn() && !c->feedback.can_bus_off &&
+-            !PatrolRuntimePort_CanBusOffActive() &&
+-            !PatrolRuntimePort_OtaBusy() && c->feedback.steering_online &&
+-            c->feedback.drive_online && !c->feedback.drive_fault &&
+-            (g_motion.feedback_gate_mask & (1U | 2U | 8U | 16U)) != 0U &&
+-            (g_motion.bench.phase != BENCH_IDLE || g_motion.drive.phase != BENCH_IDLE));
++            g_motion.feedback_stop_mask != 0U &&
++            feedback_stop_transport_ready);
+         if (controlled_feedback_stop) remote_requested = 0U;
+         uint8_t center_requested = g_motion.center_cal.phase == CENTER_CAL_JOGGING;
+         uint8_t center_executor_active = center_requested ||
+diff --git a/docs/CURRENT.md b/docs/CURRENT.md
+index 8f85a2f..0ce5766 100644
+--- a/docs/CURRENT.md
++++ b/docs/CURRENT.md
+@@ -1,6 +1,10 @@
+ # 当前项目状态
+ 
+-2026-10-27 当前源码候选为 `patrol-chassis-0.2.101`，基于 `2ba035d`（离线中位标定_test2）定点取消普通运动的实时双角 `2°` 比较。标定相对双角校验保留；自动回中启动前仅对新鲜且时间差不超过 `30 ms` 的样本执行一致性校验，未配对时等待，超差保留 `ANGLE_MISMATCH` 首因并进入统一故障停机；回中运行中不逐帧比较，完成仍需三组配对且两路在 `±1°`。编码器在线、规格、范围、公共反馈时效、上电运行坐标、换向三组低速/6 秒期限及联网功能继续保留，本次不是完整编码器解耦或离线裁剪。
++2026-10-27 当前源码候选为 `patrol-chassis-0.2.103`，修正显式停车、会话释放与反馈瞬时过期之间的误判：停车责任改为按转向/行走执行器状态分别锁存，不再依赖 `session_active`；`PREPARING/ACTIVE` 执行器遇到显式停车或瞬时反馈门禁时进入有界零速/撤使能停车，`STOPPING` 持续到完成或自身期限超时。转向准备阶段尚未完成限位对齐时也可先执行 shutdown，后续启动必须重新读写完整限位。仅节点离线、Bus-Off、驱动器故障、CAN 发送失败或停车序列超时升级为故障锁存。新增会话已释放后的显式停车、单次反馈过期跨周期保持停车、自动回中/行走制动隔离及节点离线硬故障回归，全部通过。ARM Release、CAN2/Bench 栈与 `git diff --check`（CRLF 兼容）通过；全量产品回归 48/56，剩余 8 项为既有静态身份规则 1 项和历史文档链接 7 项。候选 App 157,020 字节，SHA256 `0D04FAFC9C2DE1E9AB1434861AC74842F3081794FC693FBE8274C4338E2D2248`，位于 `out/candidates/bench-drive/`；`dist/` 未替换，尚未烧录和实车验证。
++
++2026-10-27 当前源码候选为 `patrol-chassis-0.2.102`，转向定位流程改为“已写目标提交后完成本轮触发”：`0x607A`写入后不再因遥控目标继续变化而回退覆盖，新的摇杆目标只保留在单值最新目标槽，当前`0x6040=0x3F -> 0x2F`周期结束后再处理；两次`0x3F`触发起始时间至少间隔`100 ms`。已发出的触发不取消、不重放、不被新目标覆盖。双路 CAN 记录确认修改前328次`0x607A`写入仅64次触发，最严重连续35次写入、约1.406 s后才触发。ARM Release、Bench/CAN2 栈、Full/State 拼接、版本标记和 Boot State V3 校验通过；App 156,828 字节、CRC32 `5D8E248C`、SHA256 `4E9B3572E43A3DEE3FA3BECD6CFF6EEA674F8B0E0F73CC3474BEC1E9F97F8A15`，Full 189,596 字节、CRC32 `51342170`、SHA256 `43210984F9A75787F8E1A5ABAC0B49D878A1247B8606C3D37287FC24AB117F49`。[候选与烧录包](operations/evidence/2026-10-27-target-commit-flash-20261027-112403-819758/README.md)；`out/candidates/bench-drive/` 已更新，`dist/` 未替换，尚未烧录和实车验证。完整套件保持 47/56，9项失败与当前基线相同。
++
++2026-10-27 前一源码候选为 `patrol-chassis-0.2.101`，基于 `2ba035d`（离线中位标定_test2）定点取消普通运动的实时双角 `2°` 比较。标定相对双角校验保留；自动回中启动前仅对新鲜且时间差不超过 `30 ms` 的样本执行一致性校验，未配对时等待，超差保留 `ANGLE_MISMATCH` 首因并进入统一故障停机；回中运行中不逐帧比较，完成仍需三组配对且两路在 `±1°`。编码器在线、规格、范围、公共反馈时效、上电运行坐标、换向三组低速/6 秒期限及联网功能继续保留，本次不是完整编码器解耦或离线裁剪。
+ 
+ 本次普通运动、T12/CAN2 控制、标定与自动回中定向主机回归通过；ARM Release、Bench/CAN2/服务调用链栈、固定 Flash 分区和冻结 Boot 校验通过。当前转向 Profile 的 MAX/MID/CREEP 均为 `1000 rpm`。App 为 156,844 字节、RAM 61,440 字节、CRC32 `29E5BDE0`、SHA256 `944DE4A7A16F8E539FD58F6EC23CDB509AFC175DB38F830E016949A7A30BDE7E`，Full 189,612 字节、CRC32 `5EF34678`、SHA256 `E0EB1F7F6479DFA541C41D30F21721CC97F84AA180B186A19F885E396380D694`。[候选清单](../out/candidates/bench-drive/candidate.manifest.json)、[验证记录](../out/logs/angle-boundary-verification-20261027.json)与[本次重新构建的完整烧录包](operations/evidence/2026-10-27-current-build-flash-20261027-101535-407337/README.md)。完整产品回归执行 56 个测试方法，仍有与修改前相同的 9 条失败记录：热复位静态断言和停车调度各 1 条、历史文档链接 7 条，无新增失败。因此按验证失败例外仅更新候选，`dist/` 维持正式版 `0.2.63`，未烧录、未下发 OTA、未做实车运动或回中验收。
+ 
+diff --git a/docs/operations/evidence/README.md b/docs/operations/evidence/README.md
+index 08afe23..457425d 100644
+--- a/docs/operations/evidence/README.md
++++ b/docs/operations/evidence/README.md
+@@ -15,6 +15,7 @@
+ 
+ ## Steering / Calibration / CANopen
+ 
++- 2026-10-27：`0.2.102` 将转向目标改为单槽最新目标提交：`0x607A`后完成本轮`0x3F/0x2F`再处理新目标，删除触发前回退覆盖，并限制两次触发起始间隔至少`100 ms`。候选与 Full/App/State A/B 烧录包见 [index](2026-10-27-target-commit-flash-20261027-112403-819758/index.json)；尚未烧录和实车验证。
+ - 2026-09-02：CAN 与控制器标定起点，见本目录对应 JSON。
+ - 2026-09-08：0.2.5 发布、行走与转向台架材料，见 `2026-09-08-*`。
+ - 2026-09-14：中位置零、停车链、转向限位、故障记录及 J-Link 刷写，优先从各目录的 `index.md` 或 `index.json` 进入。
+diff --git a/out/candidates/bench-drive/Patrol_Vehicle_Chassis_App.bin b/out/candidates/bench-drive/Patrol_Vehicle_Chassis_App.bin
+index c6c3c5ccefa648a9d1474d21fa99872ff92818c4..966a4ce246f0ad5c9cd8299af1d848a48610081c 100644
+GIT binary patch
+delta 26990
+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
+Q07Nv;uD^@42@wbX2@nIZ3;+NC
+
+delta 26918
+zcmZsD3w%t+`}di%yV=c6u1G}K&AKEaY@#%76~U2BLR_jSDx@@S74#CSzfDk=stOa<
+zrRv&>dsdo8N*YRAy=XURQIu*~q3VRhIeUM<v*Gve`+whjKHtps%slhV%ri63JhRun
+z_docZe@Qt>vRGF8k!0Fm9ZfpWv1%QOpbOP8L`65Kd-C@j6+fy^DEaa&^!=bXI2DJ3
+z3i;N{+$uqz|8jnvdgL!{^5aCFZ<8A;E~NcKwvt48B_xK#Ry2k5CM}CxEaSNRP?2z?
+zE_Z5bO{n-*#h@^vAUo-h$REhaim;ZmNQ*0WKOr%Hlj7Tpq2dKQeZN(^;M2aS%?ise
+zp<)fKY&B!hN?*)&_20;}#9kD`$4gfZ*;vi*G=Hu(HO)Q}D!$=MdvayF?beK};aOR?
+zEF|u<T+|^{e2q?N-MRf}dm6s2zw#ejb8MDfB`lb^9bc#6>%nwy>;9x8z1=!7IK*Bg
+z^vJ)Wx`rD4X>63fg(QQ}nOoHtKvjcGhevhdugmnUs29mm`a@Jg%r=&u-<}L;+HyEl
+z+$a~tyc+-H%Bee{VhIh2jt*JsOOGO^rXr*-rq4&~$SgWOx^K^6vJziz!I#64BFG$Q
+zd~#(TzDz?YeEj(<v*7RJ%e58X_eHKA^t<Tos;*mkO<Ovr&6SpKc-6v!{Hgg0F-TEy
+ze@VzLYlt|LPKYs*Ao@v+o+#;eG3|-6qCTcU72O4W6PIsA-zYdmUFMVh`iR_unh>#F
+z#be!ELZ;I^eSb2vVyAu%PeN%(ryt1vimRQH2??XY@hkXqa>d4YgMT}>oR=RrJ7Vyz
+z{JdP6-l0|xm(xD5oy>15K9uQS$%FYHk5zO@*{CM1D^B%(jgUSS34JFk_)D&e_g~0V
+zkpc9VK@-T}isZqG>OiA2GLF-cvNq_4*Rqaud_(5MNH-_m^KxQax4-y;ixb;<{KZ9H
+zBF=QE#XSgLqkXfJLbAbyJb;K@PY^MczMb8fl+o?kvq(G*95$LvrIUx<;4j-N(uPmv
+z$)^>&N6a8(aYgW`BZSn_n$exZ4tQJX6}dU0*PyA<R7Q)tY18PX;jekU(l%$oP>$oY
+z9M5SF-l};2#S+r@H#g}y&O&;9e)O>|PM9IY3(=z0UG69n)BLa7i1w;YQ>hUpucn4%
+zv=SqZakUv?oR<09(lIY}?`w8*@xfOgJ`P<m|MMX6Cwrnmgg8N!!EJ0QI=$-Zsh_tj
+zuemFx@#O_W*_QzVpG5>7->1;pmy*aP`rsu!fBP5>AG@iw(aq@-$4EAgORZE2IgMxM
+zbGm4;H9a+UttlT&>GdP8c?a(MK<K0d&Z;IPv@$3|CI0CN#Q)8njB5W3ue8-$b2l`N
+zXw{h-qgT53C9h>+zbwB@CBnD9ENaVX&jJTf&SeJpufgRq3Wl<H5~tO9rSw{{GDJ`c
+zx67ldIjSBXMha;3_|+koJdCok+yo&N%+k|}@smeCcJW#zN>?86O8q?dY+NlX=ibxu
+zL(!VMn7&$FsKG1k@Eo&nacMebgMsr(n>|GqE&Ol5Pdy_nEWQ-}HFVm`OUX)F|MCnn
+znvR}u+SK6G3N?4-wOj{>t)C#H4i#5I7|jyu2^6DhLo0dE%j?s0kr|=laJ#0O(}vb4
+z^l?I(E)+3C>|A`4Rp|={BitY12UgA(4nVjk!ndu&7gi&jWam<&YKit5>N-g`OpNh=
+ze1fZO@e!|ij#f_`Z`$vP%I1XxAu1zM?BgkwBYT~*9H<TyKlYrFFDnDZEpV^F-RL2D
+zu4z%h8F{fEuMN&@VO%D+?&Xzsxt7V1FQwLSi4JR^xYUy%fc~b<xshUohiFyc=ijKg
+z@C8nrHi*;qVf6w-08OP*oJQA8YEOQqmPxHi4*hPDo+Qu*lX^o)bbcj?yi3QtGAMj3
+z@~!~Pz`DVlcHc*I|0}PC9duum7xy~ZhKu*V8kG?&_NVP9M-wycJ-K`MH^|xmxH38I
+zXK=54L>EnNn<Y7wg2BRRgEE6Kh88**X9Mx+4OdR%%BlWFRfbDi?2WQ$1vTh?fT{Bj
+zXrCR*X<KgNH64IWX`FUkS5BKi|Ck(0-lX2ieP90D**w)){`)qJ7#kbsp_N|giua@?
+zSX|^Rv#7*t&XQ`3ac3cT>vpNL_4$l+%~h57y))htC_Z*^O*7MS4cgq$nm5{U+CcH%
+z30j)l%k+geO{W*~qf`w=>Q<Ri;!&?2Lm^d&g#Vz=AD*ddILSqcpCD&wre07r6%|B@
+zAA40zI~HgKo}R1c#%jbjoEq^Xr&6aV`J~|_pD!rIcN`~dMFTl)Z!~Nyun5=yR03ip
+z*Xelnp{4|CoDw@WSI%iH8qJu*(LGJ;M($~PB~RI;DF_x{bZV;)W*!1NmpgL)IGDvB
+zp?B5X3LsFN=IZ_5!SJ<HQ~gQiJ=?%IWz!c^ng_@LS~F#GL`T<}tTo1{T!RoSZgo6A
+zKM+!>`_v?|nNFIjCl_e()M?2FJ$=#UshN2hQR1gQ|CG$B@bB>Xb2F#Fzs2XDoS6%M
+zDQ%snSLHf1;z~LoZ!F2D=Df~>X4`|sRNy6hpg7z~IyVn+qm$F84rhb>n|iKCMeZ4S
+z;#+~@3(n@jUg(#S)z+Aj@#&-N^p;q)$*YN`p7!9Tgm=XnHmI%O6&uiJw?N*14Dl1n
+zr*T|*dOo_4b>qp4gkuB9eU;OkzQJh<5!Vy>7|$8+8Q)LBWxVIoIW6OV8eG-~MQ~3t
+zV9=d<z-bQQ`?@=vNi!V<>;S$28iBtsE0)#qnsF%HiEz*Dye3s3nZ!8u&WrFf0yUL>
+zSyT@1)fZ!}#!+)ulg31NOL59^jjti>TZ4tqS7dET=j#-h6$h%Z)YNjRB#n*w|4EBs
+ziEY04cVeJe`h})4P+UicOdCsv&~4K?s$#r>;t2ZfwEn!>PW`5L=)TdZEH9`b9Us`V
+zg55VqUI%TP0JbI+PT{l~%$ch$w&Vqi@6hqni%nBqCyz$qE3Wn;80;R&X){<pU<bbY
+z3@*tC6E8ucJ@W@6FY_nW%Q;JgAaNfyh+I4;E-!k?7$hEYD+MiLFSyl$7V~@*;&wAX
+z;=XhH`QnBnZZq=>K_;=*&BQ?_qDtIF0+;lvHNzN>%&Xi(jm21LgT!U-r9ubf8H_yt
+zLGc-g+lCeOCF?-r6*-i1NPT23KBq1f@#_$uY3*lBo#BwWBX)3|0kO*wJHXmwMob}>
+z*w>ndm;(2)ig9pF^WB>&uGagl;^H`cnqU;{(s1vH3TzBgSST^eF7@+<Rxp2S@dt-p
+z+Th`ZK%qHjjJM2^JY%sX?a9vhx~#YiPMqqFXRA+6kl6HvQh3L<PdFg#w6%rg_qR9L
+zT3T3h?m9-GmiykE#*=x)bZmadVZpUr?GeUp-~{jua1Qtd@Y}&_ZovH$@OlRf`Ufrt
+zInQLhj8Pei^i+VW+*Y111d8qHclk9sha*5d>`@5;VvWZS|3C7m1#BzCgPtORz%8SD
+zXRIJ8wEN6x;~KE^Y^QNK5jS7X@E19cWDDx5s;ji$3V#XVNY6uCaM#fpE$aNm_dVZt
+zQVJt;vWJ28De=OdYJbt;)m9JB`qt(z*3xw|W0n5mZ7)4KvkS?i*Jt*Oi1O@d`td~t
+zwkap47&5g&l(>d=oYk8QqmySDP18X*YsAr$yyjE*-vU0L&S?k0T>@+eP7dU>$KgH!
+zt^$RxaM~_AdCe#w0~iC$F-Dd}iT9nejcwuDoRxA=%1mQY*&(^y5GCGl<{Nt={wm^+
+zr5uufO!i8{JtHcVwDauuNC`bOdmt&K4`**D<LKHsJx9+%iL*fkqlQt(*0^^Ow+pBS
+zrXc><9$xbu{EYI{UA!i#UL1O~TqOhvYO&Z|P|Y9UXcs{*D0GX_`DL{A>&fIHHNO6Q
+z=RlX$wn6T@?~|rcZ++3gh4@)B1l5y%VRq?+i;MrtI?4EQhF$uc?tQ&)(%bIka?!+X
+zwqeF~^6HetK`JZJW@QRSk95wt-nLF&Wtd<Yn6dNGJ5%h^5*ji$Icx^X7|=NP$n#nM
+z*jkkZh*#;zxe;V6oi?{4`I4@ln?;_Zm*ysAUW71XoOR`K+F_ud39xrD`3r{w;P8CJ
+zvG%hbV$zar3;r_=F5*qVet>NkPVAz?3;GZXT~&}wKBvbE+LN{PYC(TOY4p6YrY4co
+zs2Vtp8}2WF9Uuq~t>ra$P(&SY5x4~W23!Yj0)GOjm6|N2z$HZ11`Dwe1a|2;XM(Wg
+zDBItqrg^2+m^DnUg;p*vR|+k4`Cxr#M|`!ys1>}@WUpU&D1A6jr5o}MD=R|CZl^NF
+z30z`SZM2}mKzvSS`{>k~UbN->8G)DWQPq(~KMa#ybk+QrXtoQyW$l7RF&KO0U0yCu
+zCj@3hi0{*y`K<$3nGK-v!7lpyd_%~YYDKxBhK)$gZt#-EF3^!T=zs-@c|Dw5{O{<s
+zWpdHtt2VZtHIsbVM>1cg7DuAuU?Y!;W3UI<F)uKaE9DPp%36!r9{&u@KCg7ln`Y6V
+z>WNMQB2@5coF|WtD-W$<WOShC7R0vx&=K79(K{+(oDe2%bQKAy7Up}Kk~gABIgNQE
+zj~8WH^v1=+)A9|ueCL8pE<UPul;FQUKs+hW&B8vZb_?XhVR<S3*U6fa0P!L<y*VIa
+zkK=|sc;^i{*TTNI03PqIsC%<JF+D*`m6!!=HblZ511tx&0$&1wpYWOpfXx&w+)==F
+zd~+U{3qRw-2XOz!NW2A?@h0?BUQ-I}0~j~o2CT@x7qjdR+=oE>$^e|62sOQJ3{dao
+zH64Lh_R{ljFA9Ga?1QKgz{I`ul|lm<OxG4JWNT!=!t@qX5I+}K47|UWzPzvl`JS2<
+z4hrn$iK^aX)PwIFJ-09c3KD7IQ1WrbfJM=S+@Ry%`3}c0{o<sT58=yC0LFYq^q26L
+z9pW_`;W7%&0@r~_2Y5|b88&<HC&7ItHu}Tw*vD&f(J24@ye1e30e;*~_b+Y}J=LQW
+zT4V%@Qy{*B;O0Vr2f~FsUEG~S(%^Sv$R8C6@6O`GB2hyMFbkN3T7u~(rpe(fb}hh|
+zR_aTkt%~wn-}DBSi#5-PxP%0D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
+
+diff --git a/out/candidates/bench-drive/candidate.manifest.json b/out/candidates/bench-drive/candidate.manifest.json
+index dce0858..cbe01b9 100644
+--- a/out/candidates/bench-drive/candidate.manifest.json
++++ b/out/candidates/bench-drive/candidate.manifest.json
+@@ -1,19 +1,18 @@
+ {
+-  "product": "patrol_vehicle_chassis",
+-  "version": "patrol-chassis-0.2.101",
+-  "candidate": true,
+-  "steering_executor_compiled": true,
+-  "drive_executor_compiled": true,
+-  "startup_permit": false,
+-  "actuation_enabled": true,
+-  "steering_profile_rpm": 1000,
+-  "active_car": 0,
+-  "commit": "2ba035d730849cb798ef89d4fb18b04848fbcaeb",
+-  "dirty": true,
+-  "app_start": "0x08008000",
+-  "app_end": "0x0803DFFF",
+-  "config_recovery_page": "0x0803E000",
+-  "config_page": "0x0803F800",
+-  "size": 156844,
+-  "sha256": "944DE4A7A16F8E539FD58F6EC23CDB509AFC175DB38F830E016949A7A30BDE7E"
++    "product":  "patrol_vehicle_chassis",
++    "version":  "patrol-chassis-0.2.103",
++    "candidate":  true,
++    "steering_executor_compiled":  true,
++    "drive_executor_compiled":  true,
++    "startup_permit":  false,
++    "actuation_enabled":  true,
++    "active_car":  2,
++    "commit":  "5e7717bc921d5ff028168ccfb9a03f92a272bf0c",
++    "dirty":  true,
++    "app_start":  "0x08008000",
++    "app_end":  "0x0803DFFF",
++    "config_recovery_page":  "0x0803E000",
++    "config_page":  "0x0803F800",
++    "size":  157020,
++    "sha256":  "0D04FAFC9C2DE1E9AB1434861AC74842F3081794FC693FBE8274C4338E2D2248"
+ }
+diff --git a/temp_verify_Version/FLASH_ADDRESSES.txt b/temp_verify_Version/FLASH_ADDRESSES.txt
+deleted file mode 100644
+index a2ed9f8..0000000
+--- a/temp_verify_Version/FLASH_ADDRESSES.txt
++++ /dev/null
+@@ -1,26 +0,0 @@
+-﻿patrol_vehicle_chassis / patrol-chassis-0.2.85 / CANDIDATE
+-
+-推荐完整安装，写完三个文件后再复位：
+-1. Patrol_Vehicle_Chassis_Full.bin -> 0x08000000 (187480 bytes)
+-2. BootState_A.bin -> 0x0803E800 (2048 bytes)
+-3. BootState_B.bin -> 0x0803F000 (2048 bytes)
+-
+-Full 已包含 32 KiB 冻结 Boot 和 App，不要同时重复烧录独立 App/Boot。
+-已有匹配冻结 Boot 时，可用：
+-Patrol_Vehicle_Chassis_App.bin -> 0x08008000 (154712 bytes)
+-但仍必须写入本包配套 BootState_A/B。
+-
+-禁止整片擦除。保留：
+-- 0x0803E000..0x0803E7FF 配置恢复页
+-- 0x0803F800..0x0803FFFF Config V5 与故障日志页
+-
+-构建配置：
+-- active_car=0，使用板上 Config V5 标定
+-- steering/drive executor enabled
+-- actuation enabled
+-
+-验证：
+-- ARM Release、栈、CAN2 栈和 Flash/RAM 布局通过
+-- 写后核验与故障停机专项回归通过
+-- State A 已按本 App 大小、CRC 和版本生成；State B 为擦除页
+-- 未烧录，未进行实车运动验收
+diff --git a/temp_verify_Version/README.md b/temp_verify_Version/README.md
+deleted file mode 100644
+index 5c6543d..0000000
+--- a/temp_verify_Version/README.md
++++ /dev/null
+@@ -1,37 +0,0 @@
+-# 写后核验 60/80/200 ms 烧录包
+-
+-版本：`patrol-chassis-0.2.85`
+-
+-本包包含：
+-
+-- `Patrol_Vehicle_Chassis_Full.bin`：冻结 Boot + App
+-- `BootState_A.bin`：与本 App 匹配的 Boot State V3
+-- `BootState_B.bin`：擦除页
+-- `Patrol_Vehicle_Chassis_App.bin`：可在已核对 Boot 时单独烧写
+-- `ABox_Boot.bin`：冻结 Boot，供组成和核对 Full 使用
+-
+-烧录：
+-
+-- `Patrol_Vehicle_Chassis_Full.bin -> 0x08000000`
+-- `BootState_A.bin -> 0x0803E800`
+-- `BootState_B.bin -> 0x0803F000`
+-
+-已有匹配冻结 Boot 时，可改为：
+-
+-- `Patrol_Vehicle_Chassis_App.bin -> 0x08008000`
+-- 仍必须同时烧写本包的 `BootState_A.bin` 和 `BootState_B.bin`
+-
+-不要整片擦除。保留 `0x0803E000..0x0803E7FF` 配置恢复页和
+-`0x0803F800..0x0803FFFF` Config V5/故障日志页。
+-
+-校验：
+-
+-- App 大小 `154712` 字节，CRC32 `0x95355B90`
+-- Full 大小 `187480` 字节；偏移 `0x8000` 处向量与独立 App 一致
+-- State A 大小 `2048` 字节，绑定 App `154712 / 0x95355B90 / patrol-chassis-0.2.85`
+-- State B 大小 `2048` 字节，内容为擦除态 `0xFF`
+-- 实际 Boot State V3 解析器、匹配启动、损坏 State/App 拒绝启动检查通过
+-- ARM Release、栈、CAN2 栈和 Flash/RAM 布局检查通过
+-- 写后核验与故障停机专项回归通过
+-
+-完整哈希见 `sha256.json` 和 `flash.manifest.json`。本包尚未烧录，尚未做实车运动验收。
+diff --git a/temp_verify_Version/flash.manifest.json b/temp_verify_Version/flash.manifest.json
+deleted file mode 100644
+index cb725f8..0000000
+--- a/temp_verify_Version/flash.manifest.json
++++ /dev/null
+@@ -1,53 +0,0 @@
+-{
+-  "product": "patrol_vehicle_chassis",
+-  "version": "patrol-chassis-0.2.85",
+-  "candidate": true,
+-  "configuration": "Release",
+-  "active_car": 0,
+-  "actuation_enabled": true,
+-  "steering_executor_compiled": true,
+-  "drive_executor_compiled": true,
+-  "app": {
+-    "file": "Patrol_Vehicle_Chassis_App.bin",
+-    "address": "0x08008000",
+-    "size": 154712,
+-    "initial_sp": "0x20010000",
+-    "reset_vector": "0x0800D44D",
+-    "crc32": "95355B90",
+-    "sha256": "563cc515eca87caa15764355c031f7c0ea530a4cd09f6430c0230d1f72b8f3f9"
+-  },
+-  "boot": {
+-    "file": "ABox_Boot.bin",
+-    "address": "0x08000000",
+-    "size": 32768,
+-    "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+-  },
+-  "full": {
+-    "file": "Patrol_Vehicle_Chassis_Full.bin",
+-    "address": "0x08000000",
+-    "size": 187480,
+-    "sha256": "8112d46288d8480c4701cead508ac261b97baccd2b43a8b24207cfa4841fc203"
+-  },
+-  "states": [
+-    {
+-      "file": "BootState_A.bin",
+-      "address": "0x0803E800",
+-      "sequence": 1,
+-      "state": "CONFIRMED",
+-      "size": 2048,
+-      "sha256": "29b31b9e12c389adae3c3298a682582158b8f5ce89c28b019ce5349b43ab24e2",
+-      "app_size": 154712,
+-      "app_crc32": "95355B90"
+-    },
+-    {
+-      "file": "BootState_B.bin",
+-      "address": "0x0803F000",
+-      "state": "ERASED",
+-      "size": 2048,
+-      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+-    }
+-  ],
+-  "boot_state_parser_verification": true,
+-  "board_flashed": false,
+-  "field_motion_verified": false
+-}
+diff --git a/temp_verify_Version/index.json b/temp_verify_Version/index.json
+deleted file mode 100644
+index 55c98a8..0000000
+--- a/temp_verify_Version/index.json
++++ /dev/null
+@@ -1,120 +0,0 @@
+-{
+-  "product": "patrol_vehicle_chassis",
+-  "version": "patrol-chassis-0.2.85",
+-  "created_at": "2026-10-24T11:02:36+08:00",
+-  "candidate": true,
+-  "configuration": "Release",
+-  "active_car": 0,
+-  "actuation_enabled": true,
+-  "steering_executor_compiled": true,
+-  "drive_executor_compiled": true,
+-  "flash": {
+-    "recommended_full": {
+-      "file": "Patrol_Vehicle_Chassis_Full.bin",
+-      "address": "0x08000000",
+-      "bytes": 187480,
+-      "sha256": "8112d46288d8480c4701cead508ac261b97baccd2b43a8b24207cfa4841fc203"
+-    },
+-    "state_a": {
+-      "file": "BootState_A.bin",
+-      "address": "0x0803E800",
+-      "bytes": 2048,
+-      "sha256": "29b31b9e12c389adae3c3298a682582158b8f5ce89c28b019ce5349b43ab24e2"
+-    },
+-    "state_b": {
+-      "file": "BootState_B.bin",
+-      "address": "0x0803F000",
+-      "bytes": 2048,
+-      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+-    },
+-    "optional_app": {
+-      "file": "Patrol_Vehicle_Chassis_App.bin",
+-      "address": "0x08008000",
+-      "bytes": 154712,
+-      "crc32": "95355B90",
+-      "sha256": "563cc515eca87caa15764355c031f7c0ea530a4cd09f6430c0230d1f72b8f3f9"
+-    }
+-  },
+-  "validation": {
+-    "arm_release_build": true,
+-    "bench_stack": true,
+-    "can2_stack": true,
+-    "flash_ram_layout": true,
+-    "targeted_write_verify_and_fault_stop_tests": true,
+-    "boot_state_parser": true,
+-    "full_app_offset_vectors": true,
+-    "product_python_passed": 44,
+-    "product_python_total": 45,
+-    "known_existing_failure": "test_identity_and_safe_defaults: existing hot-reset recovery design; unchanged assertion"
+-  },
+-  "files": [
+-    {
+-      "path": "ABox_Boot.bin",
+-      "bytes": 32768,
+-      "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+-    },
+-    {
+-      "path": "BootState_A.bin",
+-      "bytes": 2048,
+-      "sha256": "29b31b9e12c389adae3c3298a682582158b8f5ce89c28b019ce5349b43ab24e2"
+-    },
+-    {
+-      "path": "BootState_B.bin",
+-      "bytes": 2048,
+-      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+-    },
+-    {
+-      "path": "FLASH_ADDRESSES.txt",
+-      "bytes": 989,
+-      "sha256": "b94d8436d2d6108196bea7912a8f42af2bbf52366a6a86c4c41395ded1c01a01"
+-    },
+-    {
+-      "path": "flash.manifest.json",
+-      "bytes": 1515,
+-      "sha256": "a1faad3c7c34e632ce6757f8dfd1a4e9fae400fe8ed532de00ffa1ea7f38fc1b"
+-    },
+-    {
+-      "path": "Patrol_Vehicle_Chassis_App.bin",
+-      "bytes": 154712,
+-      "sha256": "563cc515eca87caa15764355c031f7c0ea530a4cd09f6430c0230d1f72b8f3f9"
+-    },
+-    {
+-      "path": "Patrol_Vehicle_Chassis_App.elf",
+-      "bytes": 263880,
+-      "sha256": "31383f509bd773f73d6828495a6cc5843069e391fe6a36092620667bf469b962"
+-    },
+-    {
+-      "path": "Patrol_Vehicle_Chassis_App.map",
+-      "bytes": 665383,
+-      "sha256": "8413b0739e9cadd38a1fbfa2cea129ff607ec83c1f0e0d4537ae3d375a249ff5"
+-    },
+-    {
+-      "path": "Patrol_Vehicle_Chassis_Full.bin",
+-      "bytes": 187480,
+-      "sha256": "8112d46288d8480c4701cead508ac261b97baccd2b43a8b24207cfa4841fc203"
+-    },
+-    {
+-      "path": "README.md",
+-      "bytes": 1401,
+-      "sha256": "b181f3cfdc8490bc726c3501e94c760cac57e713c6154d5dc7838a646c002c71"
+-    },
+-    {
+-      "path": "sha256.json",
+-      "bytes": 477,
+-      "sha256": "1ea1fc3b435a4c768537b3d57049b9902a00a516b5c665d59008b84f2e644754"
+-    },
+-    {
+-      "path": "validation/package-flash.py",
+-      "bytes": 7089,
+-      "sha256": "6f7b8ad557245f6ed3b4ceae4848a3e9d76f27184edddfcf4c57350bb8671a82d"
+-    },
+-    {
+-      "path": "validation/verify-boot-state.c",
+-      "bytes": 3917,
+-      "sha256": "cf41f6a6f8f5108bdc55d6ec0549da494c15aa9aeaec890f9384222be02aae01"
+-    }
+-  ],
+-  "board_flashed": false,
+-  "field_motion_verified": false,
+-  "formal_release": false
+-}
+diff --git a/temp_verify_Version/sha256.json b/temp_verify_Version/sha256.json
+deleted file mode 100644
+index 48807b3..0000000
+--- a/temp_verify_Version/sha256.json
++++ /dev/null
+@@ -1,7 +0,0 @@
+-{
+-  "ABox_Boot.bin": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+-  "BootState_A.bin": "29b31b9e12c389adae3c3298a682582158b8f5ce89c28b019ce5349b43ab24e2",
+-  "BootState_B.bin": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8",
+-  "Patrol_Vehicle_Chassis_App.bin": "563cc515eca87caa15764355c031f7c0ea530a4cd09f6430c0230d1f72b8f3f9",
+-  "Patrol_Vehicle_Chassis_Full.bin": "8112d46288d8480c4701cead508ac261b97baccd2b43a8b24207cfa4841fc203"
+-}
+diff --git a/temp_verify_Version/validation/package-flash.py b/temp_verify_Version/validation/package-flash.py
+deleted file mode 100644
+index 3b2950c..0000000
+--- a/temp_verify_Version/validation/package-flash.py
++++ /dev/null
+@@ -1,210 +0,0 @@
+-#!/usr/bin/env python3
+-"""Build and verify the 0.2.85 Full/App/BootState flash bundle."""
+-
+-from __future__ import annotations
+-
+-import hashlib
+-import json
+-import shutil
+-import struct
+-import subprocess
+-import sys
+-import zlib
+-from pathlib import Path
+-
+-
+-ROOT = Path(__file__).resolve().parents[5]
+-EVIDENCE = Path(__file__).resolve().parents[1]
+-VERSION = "patrol-chassis-0.2.85"
+-APP = ROOT / "out/candidates/bench-drive/Patrol_Vehicle_Chassis_App.bin"
+-ELF = ROOT / "app/build/BenchSteering/Patrol_Vehicle_Chassis_App.elf"
+-MAP = ROOT / "app/build/BenchSteering/Patrol_Vehicle_Chassis_App.map"
+-BOOT = ROOT / "platform/targets/stm32f105_abox_boot/dist/ABox_Boot.bin"
+-CANDIDATE = ROOT / "out/candidates/bench-drive/candidate.manifest.json"
+-APP_START = 0x08008000
+-BOOT_SIZE = 0x8000
+-STATE_PAGE_SIZE = 0x800
+-BOOT_SHA256 = "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+-
+-
+-def sha256(data: bytes) -> str:
+-    return hashlib.sha256(data).hexdigest()
+-
+-
+-def write_json(path: Path, value: object) -> None:
+-    path.write_text(
+-        json.dumps(value, ensure_ascii=False, indent=2) + "\n",
+-        encoding="utf-8",
+-        newline="\n",
+-    )
+-
+-
+-def main() -> int:
+-    app = APP.read_bytes()
+-    boot = BOOT.read_bytes()
+-    elf = ELF.read_bytes()
+-    map_file = MAP.read_bytes()
+-    candidate = json.loads(CANDIDATE.read_text(encoding="utf-8"))
+-
+-    assert candidate["version"] == VERSION
+-    assert candidate["actuation_enabled"] is True
+-    assert candidate["active_car"] == 0
+-    assert candidate["size"] == len(app)
+-    assert candidate["sha256"].lower() == sha256(app)
+-    assert len(app) <= 0x36000
+-    assert len(boot) == BOOT_SIZE
+-    assert sha256(boot) == BOOT_SHA256
+-    assert f"PATROL_VEHICLE_CHASSIS_FW_VERSION={VERSION}".encode("ascii") in app
+-
+-    initial_sp, reset_vector = struct.unpack_from("<II", app)
+-    assert 0x20000000 <= initial_sp <= 0x20010000
+-    assert reset_vector & 1 and APP_START <= reset_vector <= 0x0803DFFF
+-
+-    full = boot + app
+-    assert len(full) == BOOT_SIZE + len(app)
+-    assert struct.unpack_from("<II", full, BOOT_SIZE) == (initial_sp, reset_vector)
+-
+-    destinations = {
+-        "Patrol_Vehicle_Chassis_App.bin": app,
+-        "Patrol_Vehicle_Chassis_App.elf": elf,
+-        "Patrol_Vehicle_Chassis_App.map": map_file,
+-        "ABox_Boot.bin": boot,
+-        "Patrol_Vehicle_Chassis_Full.bin": full,
+-    }
+-    for name, data in destinations.items():
+-        path = EVIDENCE / name
+-        if path.exists():
+-            raise RuntimeError(f"Refusing to overwrite existing evidence file: {path}")
+-        path.write_bytes(data)
+-
+-    subprocess.run(
+-        [
+-            sys.executable,
+-            "-X",
+-            "utf8",
+-            str(ROOT / "tools/make_bootstate_image.py"),
+-            "--app",
+-            str(APP),
+-            "--version",
+-            VERSION,
+-            "--state-a",
+-            str(EVIDENCE / "BootState_A.bin"),
+-            "--state-b",
+-            str(EVIDENCE / "BootState_B.bin"),
+-        ],
+-        cwd=ROOT,
+-        check=True,
+-    )
+-
+-    state_a = (EVIDENCE / "BootState_A.bin").read_bytes()
+-    state_b = (EVIDENCE / "BootState_B.bin").read_bytes()
+-    state_format = "<IHHIIBBBBII32sII32sIBB2sI"
+-    state = struct.unpack(state_format, state_a[: struct.calcsize(state_format)])
+-    assert len(state_a) == len(state_b) == STATE_PAGE_SIZE
+-    assert state[:3] == (0x42535632, 3, struct.calcsize(state_format))
+-    assert state[9:12] == (len(app), zlib.crc32(app) & 0xFFFFFFFF, VERSION.encode().ljust(32, b"\0"))
+-    assert zlib.crc32(state_a[:108]) & 0xFFFFFFFF == state[-1]
+-    assert state_b == b"\xff" * STATE_PAGE_SIZE
+-
+-    app_crc = f"{zlib.crc32(app) & 0xFFFFFFFF:08X}"
+-    addresses = f"""patrol_vehicle_chassis / {VERSION} / CANDIDATE
+-
+-推荐完整安装，写完三个文件后再复位：
+-1. Patrol_Vehicle_Chassis_Full.bin -> 0x08000000 ({len(full)} bytes)
+-2. BootState_A.bin -> 0x0803E800 ({len(state_a)} bytes)
+-3. BootState_B.bin -> 0x0803F000 ({len(state_b)} bytes)
+-
+-Full 已包含 32 KiB 冻结 Boot 和 App，不要同时重复烧录独立 App/Boot。
+-已有匹配冻结 Boot 时，可用：
+-Patrol_Vehicle_Chassis_App.bin -> 0x08008000 ({len(app)} bytes)
+-但仍必须写入本包配套 BootState_A/B。
+-
+-禁止整片擦除。保留：
+-- 0x0803E000..0x0803E7FF 配置恢复页
+-- 0x0803F800..0x0803FFFF Config V5 与故障日志页
+-
+-构建配置：
+-- active_car=0，使用板上 Config V5 标定
+-- steering/drive executor enabled
+-- actuation enabled
+-
+-验证：
+-- ARM Release、栈、CAN2 栈和 Flash/RAM 布局通过
+-- 写后核验与故障停机专项回归通过
+-- State A 已按本 App 大小、CRC 和版本生成；State B 为擦除页
+-- 未烧录，未进行实车运动验收
+-"""
+-    (EVIDENCE / "FLASH_ADDRESSES.txt").write_text(
+-        addresses, encoding="utf-8-sig", newline="\n"
+-    )
+-
+-    files = [
+-        "ABox_Boot.bin",
+-        "BootState_A.bin",
+-        "BootState_B.bin",
+-        "Patrol_Vehicle_Chassis_App.bin",
+-        "Patrol_Vehicle_Chassis_Full.bin",
+-    ]
+-    hashes = {name: sha256((EVIDENCE / name).read_bytes()) for name in files}
+-    write_json(EVIDENCE / "sha256.json", hashes)
+-
+-    manifest = {
+-        "product": "patrol_vehicle_chassis",
+-        "version": VERSION,
+-        "candidate": True,
+-        "configuration": "Release",
+-        "active_car": 0,
+-        "actuation_enabled": True,
+-        "steering_executor_compiled": True,
+-        "drive_executor_compiled": True,
+-        "app": {
+-            "file": "Patrol_Vehicle_Chassis_App.bin",
+-            "address": "0x08008000",
+-            "size": len(app),
+-            "initial_sp": f"0x{initial_sp:08X}",
+-            "reset_vector": f"0x{reset_vector:08X}",
+-            "crc32": app_crc,
+-            "sha256": hashes["Patrol_Vehicle_Chassis_App.bin"],
+-        },
+-        "boot": {
+-            "file": "ABox_Boot.bin",
+-            "address": "0x08000000",
+-            "size": len(boot),
+-            "sha256": hashes["ABox_Boot.bin"],
+-        },
+-        "full": {
+-            "file": "Patrol_Vehicle_Chassis_Full.bin",
+-            "address": "0x08000000",
+-            "size": len(full),
+-            "sha256": hashes["Patrol_Vehicle_Chassis_Full.bin"],
+-        },
+-        "states": [
+-            {
+-                "file": "BootState_A.bin",
+-                "address": "0x0803E800",
+-                "sequence": 1,
+-                "state": "CONFIRMED",
+-                "size": len(state_a),
+-                "sha256": hashes["BootState_A.bin"],
+-                "app_size": len(app),
+-                "app_crc32": app_crc,
+-            },
+-            {
+-                "file": "BootState_B.bin",
+-                "address": "0x0803F000",
+-                "state": "ERASED",
+-                "size": len(state_b),
+-                "sha256": hashes["BootState_B.bin"],
+-            },
+-        ],
+-        "boot_state_parser_verification": True,
+-        "board_flashed": False,
+-        "field_motion_verified": False,
+-    }
+-    write_json(EVIDENCE / "flash.manifest.json", manifest)
+-    print(json.dumps(manifest, ensure_ascii=False, indent=2))
+-    return 0
+-
+-
+-if __name__ == "__main__":
+-    raise SystemExit(main())
+diff --git a/temp_verify_Version/validation/verify-boot-state.c b/temp_verify_Version/validation/verify-boot-state.c
+deleted file mode 100644
+index e8eb460..0000000
+--- a/temp_verify_Version/validation/verify-boot-state.c
++++ /dev/null
+@@ -1,109 +0,0 @@
+-#include <assert.h>
+-#include <stdio.h>
+-#include <stdint.h>
+-#include <string.h>
+-#include "abox_boot_v2.h"
+-#include "abox_boot_v2_boot.h"
+-
+-static uint8_t pages[4096], app[0x36000];
+-static uint32_t app_size;
+-static unsigned jumps, installs, writes;
+-
+-void ABoxBootV2_ImageBindLayoutInternal(const ABoxBootV2Layout *layout) { (void)layout; }
+-int ABox_PortFlashRead(uint32_t address, uint8_t *data, uint32_t length)
+-{
+-    if (address < 0x0803e800U || address + length > 0x0803f800U) return 0;
+-    memcpy(data, pages + address - 0x0803e800U, length);
+-    return 1;
+-}
+-int ABox_PortFlashBegin(void) { writes++; return 0; }
+-int ABox_PortFlashWrite(uint32_t address, const uint8_t *data, uint32_t length)
+-{
+-    (void)address; (void)data; (void)length; writes++; return 0;
+-}
+-int ABox_PortFlashErasePage(uint32_t address) { (void)address; writes++; return 0; }
+-void ABox_PortFlashEnd(void) {}
+-int ABoxBootV2_FaultValid(void) { return 0; }
+-void ABoxBootV2_FaultClear(void) { assert(!"confirmed image must not enter trial recovery"); }
+-
+-static uint8_t valid_image(void *context, uint32_t size, uint32_t crc)
+-{
+-    uint32_t sp, reset;
+-    (void)context;
+-    memcpy(&sp, app, 4);
+-    memcpy(&reset, app + 4, 4);
+-    return size == app_size && crc == ABoxBootV2_Crc32(app, app_size) &&
+-        sp >= 0x20000000U && sp <= 0x20010000U && (reset & 1U) &&
+-        (reset & ~1U) >= 0x08008000U && (reset & ~1U) < 0x08008000U + app_size;
+-}
+-static uint8_t app_vector_valid(void *context) { (void)context; return 1U; }
+-static ABoxBootV2InstallResult install(void *context, uint8_t slot, uint32_t size, uint32_t crc)
+-{
+-    (void)context; (void)slot; (void)size; (void)crc; installs++;
+-    return ABOX_BOOT_V2_INSTALL_FAILED;
+-}
+-static void jump(void *context) { (void)context; jumps++; }
+-static uint8_t reason(void *context) { (void)context; return 0U; }
+-static void load(const char *name, uint8_t *data, size_t size)
+-{
+-    FILE *file = fopen(name, "rb");
+-    assert(file);
+-    assert(fread(data, 1, size, file) == size);
+-    assert(fgetc(file) == EOF);
+-    fclose(file);
+-}
+-
+-int main(int argc, char **argv)
+-{
+-    ABoxBootV2Layout layout = {
+-        0x0803e800U, 0x0803f000U, 0x800U, 0x08008000U, 0x0803dfffU,
+-        0x20000000U, 0x20010000U
+-    };
+-    ABoxBootV2BootPort port = {0};
+-    ABoxBootV2Record record;
+-    ABoxBootV2Diagnostics diagnostics;
+-    uint8_t saved[4096];
+-    FILE *file;
+-
+-    assert(argc == 4);
+-    load(argv[1], pages, 2048);
+-    load(argv[2], pages + 2048, 2048);
+-    file = fopen(argv[3], "rb");
+-    assert(file);
+-    app_size = (uint32_t)fread(app, 1, sizeof(app), file);
+-    assert(feof(file));
+-    fclose(file);
+-    assert(app_size == 154712U);
+-    memcpy(saved, pages, sizeof(pages));
+-
+-    port.flash_image_valid = valid_image;
+-    port.install_slot = install;
+-    port.app_vector_valid = app_vector_valid;
+-    port.jump_to_app = jump;
+-    port.reset_reason = reason;
+-    assert(ABoxBootV2_StateBindLayout(&layout));
+-    assert(ABoxBootV2Boot_Init(&port));
+-    assert(ABoxBootV2_StateLoad(&record));
+-    assert(ABoxBootV2_StateDiagnostics(&diagnostics));
+-    assert(diagnostics.page_a_valid == 1U && diagnostics.page_b_valid == 0U);
+-    assert(diagnostics.selected_page == 0U && diagnostics.selected_sequence == 1U);
+-    assert(record.sequence == 1U && record.state == ABOX_BOOT_V2_CONFIRMED);
+-    assert(record.image_size == app_size);
+-    assert(record.image_crc32 == ABoxBootV2_Crc32(app, app_size));
+-    assert(!strcmp(record.image_version, "patrol-chassis-0.2.85"));
+-
+-    jumps = 0U;
+-    ABoxBootV2Boot_Task();
+-    assert(jumps == 1U && installs == 0U && writes == 0U);
+-
+-    app[32] ^= 1U;
+-    jumps = 0U;
+-    ABoxBootV2Boot_Task();
+-    assert(jumps == 0U && installs == 0U && writes == 0U);
+-
+-    memcpy(pages, saved, sizeof(pages));
+-    pages[108] ^= 1U;
+-    assert(!ABoxBootV2_StateLoad(&record));
+-    puts("PASS Boot State A matches App size/CRC/version; corrupted A or App does not jump.");
+-    return 0;
+-}
+diff --git a/temp_verify_Version_2/FLASH_ADDRESSES.txt b/temp_verify_Version_2/FLASH_ADDRESSES.txt
+deleted file mode 100644
+index 8ae2001..0000000
+--- a/temp_verify_Version_2/FLASH_ADDRESSES.txt
++++ /dev/null
+@@ -1,15 +0,0 @@
+-patrol_vehicle_chassis / patrol-chassis-0.2.90 / ENCODER CHUNK REASSEMBLY
+-
+-推荐完整安装，写完三个文件后再复位：
+-1. Patrol_Vehicle_Chassis_Full.bin -> 0x08000000 (188800 bytes)
+-2. BootState_A.bin -> 0x0803E800 (2048 bytes)
+-3. BootState_B.bin -> 0x0803F000 (2048 bytes)
+-
+-Full 已包含 32 KiB 冻结 Boot 和 App，不要同时重复烧录独立 App/Boot。
+-已有匹配冻结 Boot 时，可使用：
+-Patrol_Vehicle_Chassis_App.bin -> 0x08008000 (156032 bytes)
+-但仍必须写入本包配套 BootState_A/B。
+-
+-禁止整片擦除。保留：
+-- 0x0803E000..0x0803E7FF 配置恢复页
+-- 0x0803F800..0x0803FFFF Config V5 与故障日志页
+diff --git a/temp_verify_Version_2/README.md b/temp_verify_Version_2/README.md
+deleted file mode 100644
+index 2194ead..0000000
+--- a/temp_verify_Version_2/README.md
++++ /dev/null
+@@ -1,54 +0,0 @@
+-# 绝对编码器分段接收修复
+-
+-日期：2026-10-25  
+-候选版本：`patrol-chassis-0.2.90`
+-
+-## 问题
+-
+-`0.2.89` 已允许在接收缓冲区中搜索有效 Modbus 响应，并将缓冲区扩大到 32 字节。
+-J-Link 实机复测仍观察到格式错误持续增长，说明 UART5 的请求回显和编码器响应
+-可能被 `HAL_UARTEx_ReceiveToIdle` 分成两个独立的 IDLE 数据块返回。
+-
+-原逻辑每个轮询仅调用一次接收，因此只拿到第一块便进入解析；如果第一块是
+-8 字节请求回显，就会结束本次事务，真正的位置响应没有被接收。
+-
+-## 修复
+-
+-- 每次读取最多接收两个连续 IDLE 数据块。
+-- 两块数据追加到同一个 32 字节缓冲区。
+-- 每收到一块都重新搜索地址、功能码、长度和 CRC 均有效的响应。
+-- 已收到有效响应时立即停止，不增加固定等待。
+-- 保持原有错误分类、轮询周期和超时值。
+-
+-## 验证
+-
+-- ARM Release 构建通过。
+-- `chassis_safety_test` 通过。
+-- 使用现场真实报文验证：仅含 8 字节请求时解析失败；增加 9 字节有效位置响应后解析成功。
+-- CAN2 协议回归通过。
+-- CAN2 栈检查通过。
+-- Full、App、State A/B 和版本绑定检查通过。
+-
+-## 烧录
+-
+-1. `Patrol_Vehicle_Chassis_Full.bin` → `0x08000000`
+-2. `BootState_A.bin` → `0x0803E800`
+-3. `BootState_B.bin` → `0x0803F000`
+-
+-可选独立 App：
+-
+-`Patrol_Vehicle_Chassis_App.bin` → `0x08008000`
+-
+-禁止整片擦除，保留 `0x0803E000..0x0803E7FF` 和
+-`0x0803F800..0x0803FFFF`。
+-
+-## 烧录后验证
+-
+-通过 J-Link 观察 `g_motion.diagnostics`：
+-
+-- `encoder_seen=1`
+-- 旋转编码器时 `encoder_count` 变化
+-- `encoder_ms` 持续更新
+-- 无格式、CRC、超时错误继续增长
+-
+-本包尚未烧录和实车验证。
+diff --git a/temp_verify_Version_2/flash.manifest.json b/temp_verify_Version_2/flash.manifest.json
+deleted file mode 100644
+index 22db46a..0000000
+--- a/temp_verify_Version_2/flash.manifest.json
++++ /dev/null
+@@ -1,65 +0,0 @@
+-{
+-  "product": "patrol_vehicle_chassis",
+-  "version": "patrol-chassis-0.2.90",
+-  "candidate": true,
+-  "configuration": "Release",
+-  "active_car": 0,
+-  "actuation_enabled": true,
+-  "steering_executor_compiled": true,
+-  "drive_executor_compiled": true,
+-  "app": {
+-    "file": "Patrol_Vehicle_Chassis_App.bin",
+-    "address": "0x08008000",
+-    "size": 156032,
+-    "initial_sp": "0x20010000",
+-    "reset_vector": "0x0800D44D",
+-    "crc32": "B3D4129F",
+-    "sha256": "7b3df11f507f95adcf05acdce7681cf000894455d7f2a367b777beb6a77ecf4e"
+-  },
+-  "boot": {
+-    "file": "ABox_Boot.bin",
+-    "address": "0x08000000",
+-    "size": 32768,
+-    "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+-  },
+-  "full": {
+-    "file": "Patrol_Vehicle_Chassis_Full.bin",
+-    "address": "0x08000000",
+-    "size": 188800,
+-    "sha256": "de6c94365cb171ee738ae64a4c4082b0402aa8c201aadb54ab1e7c68a8491f23"
+-  },
+-  "states": [
+-    {
+-      "file": "BootState_A.bin",
+-      "address": "0x0803E800",
+-      "sequence": 1,
+-      "state": "CONFIRMED",
+-      "size": 2048,
+-      "sha256": "ca322dcb5ed0d22a264312993416ecc76c8506c5ca6908984bbafb181d3a0015",
+-      "app_size": 156032,
+-      "app_crc32": "B3D4129F"
+-    },
+-    {
+-      "file": "BootState_B.bin",
+-      "address": "0x0803F000",
+-      "state": "ERASED",
+-      "size": 2048,
+-      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+-    }
+-  ],
+-  "verification": {
+-    "boot_artifact": true,
+-    "full_boot_prefix": true,
+-    "full_app_suffix": true,
+-    "version_marker": true,
+-    "vectors_valid": true,
+-    "state_a_bound": true,
+-    "state_b_erased": true,
+-    "encoder_chunk_reassembly_test": true,
+-    "can_remote_host_test": true,
+-    "can2_stack": true,
+-    "diff_check": true
+-  },
+-  "board_flashed": false,
+-  "field_verified": false
+-}
+diff --git a/temp_verify_Version_2/index.json b/temp_verify_Version_2/index.json
+deleted file mode 100644
+index 99e37d8..0000000
+--- a/temp_verify_Version_2/index.json
++++ /dev/null
+@@ -1,45 +0,0 @@
+-{
+-  "product": "patrol_vehicle_chassis",
+-  "date": "2026-10-25",
+-  "version": "patrol-chassis-0.2.90",
+-  "candidate": true,
+-  "purpose": "Assemble up to two idle-delimited UART chunks per encoder read so request echo and the valid position response can be parsed independently of board timing",
+-  "app_sha256": "7b3df11f507f95adcf05acdce7681cf000894455d7f2a367b777beb6a77ecf4e",
+-  "full_sha256": "de6c94365cb171ee738ae64a4c4082b0402aa8c201aadb54ab1e7c68a8491f23",
+-  "app_crc32": "B3D4129F",
+-  "validation": {
+-    "arm_release_build": true,
+-    "chassis_safety_test": true,
+-    "encoder_chunk_reassembly_test": true,
+-    "can_remote_host_test": true,
+-    "can2_stack": true,
+-    "diff_check": true,
+-    "full_boot_prefix": true,
+-    "full_app_suffix": true,
+-    "boot_state_a_bound": true,
+-    "boot_state_b_erased": true
+-  },
+-  "known_full_suite_failures": [
+-    "test_identity_and_safe_defaults: pre-existing static assertion",
+-    "test_document_links_and_archived_evidence_references: existing CURRENT.md links to removed evidence directories"
+-  ],
+-  "board_flashed": false,
+-  "field_verified": false,
+-  "files": [
+-    "ABox_Boot.bin",
+-    "BootState_A.bin",
+-    "BootState_B.bin",
+-    "Patrol_Vehicle_Chassis_App.bin",
+-    "Patrol_Vehicle_Chassis_App.elf",
+-    "Patrol_Vehicle_Chassis_App.map",
+-    "Patrol_Vehicle_Chassis_Full.bin",
+-    "FLASH_ADDRESSES.txt",
+-    "README.md",
+-    "flash.manifest.json",
+-    "source-change.patch",
+-    "validation/chassis-safety-test.log",
+-    "validation/can-remote-test.log",
+-    "validation/can2-stack.log",
+-    "validation/diff-check.log"
+-  ]
+-}
+diff --git a/temp_verify_Version_2/sha256.json b/temp_verify_Version_2/sha256.json
+deleted file mode 100644
+index 9d23709..0000000
+--- a/temp_verify_Version_2/sha256.json
++++ /dev/null
+@@ -1,19 +0,0 @@
+-{
+-  "ABox_Boot.bin": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+-  "BootState_A.bin": "ca322dcb5ed0d22a264312993416ecc76c8506c5ca6908984bbafb181d3a0015",
+-  "BootState_B.bin": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8",
+-  "FLASH_ADDRESSES.txt": "bf252d373c099cbcdc34d73acd08d115512144a060efcbafda9091e1fafbc7f8",
+-  "flash.manifest.json": "e0dc879b31633504185d3776c5063c21e55689a8e824867a3101f4f806d3cc16",
+-  "index.json": "5ae86ffaa78ce3d9d8f09e61faa7deb6055d449109d1124976be6a75945cb327",
+-  "Patrol_Vehicle_Chassis_App.bin": "7b3df11f507f95adcf05acdce7681cf000894455d7f2a367b777beb6a77ecf4e",
+-  "Patrol_Vehicle_Chassis_App.elf": "d0c8d8a090bc6fc0efa90f12819994e1cb7b3dbe88632cf90f6c741e79d2378f",
+-  "Patrol_Vehicle_Chassis_App.map": "7085ed6dc29fc0cea5b58f07553e1f97142f416c44998dcb90fc973b7d1efb2b",
+-  "Patrol_Vehicle_Chassis_Full.bin": "de6c94365cb171ee738ae64a4c4082b0402aa8c201aadb54ab1e7c68a8491f23",
+-  "README.md": "d338730929e9e9170ec1b3cdd812c4b3c0c46d21c390d1c2e1a39501352279dd",
+-  "source-change.patch": "6c1605f21dfeac22a39cd130cbce102bdc1c04342acbb65bb60a076f9bde7642",
+-  "validation/can-remote-test.log": "7caf42d60656e19680555d4b8dd76aa1c1b68573b5450bf5e079412edd6d61e2",
+-  "validation/can2-stack.log": "e996626726cd9287bf1ebed554af1d303551a34b619f553290a299b0a20e547f",
+-  "validation/chassis-safety-test.log": "0102503a5c0dfc4467eb2a223ab07e6eeba8f93376db3d89a454553407287baf",
+-  "validation/diff-check.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+-}
+-
+diff --git a/temp_verify_Version_2/source-change.patch b/temp_verify_Version_2/source-change.patch
+deleted file mode 100644
+index 143575c..0000000
+--- a/temp_verify_Version_2/source-change.patch
++++ /dev/null
+@@ -1,193 +0,0 @@
+-diff --git a/app/Core/User/motion/include/absolute_encoder.h b/app/Core/User/motion/include/absolute_encoder.h
+-index 5ad59a1..9984cab 100644
+---- a/app/Core/User/motion/include/absolute_encoder.h
+-+++ b/app/Core/User/motion/include/absolute_encoder.h
+-@@ -8,6 +8,7 @@
+- #define ABS_ENCODER_RESPONSE_SIZE 9U
+- #define ABS_ENCODER_CONFIG_RESPONSE_SIZE 11U
+- #define ABS_ENCODER_WRITE_RESPONSE_SIZE 8U
+-+#define ABS_ENCODER_RX_BUFFER_SIZE 32U
+- 
+- // 计算绝对编码器 Modbus RTU 报文的 CRC16。对给定字节区间逐字节计算，字节排列由构造和解析函数按协议处理。
+- uint16_t AbsoluteEncoder_Crc16(const uint8_t* data, uint16_t length);
+-@@ -19,7 +20,10 @@ void AbsoluteEncoder_BuildReadRequest(uint8_t request[ABS_ENCODER_REQUEST_SIZE])
+- // 校验保持寄存器读取响应并提取寄存器值。检查站号、功能码、字节数、帧长度及 CRC，失败时不把无效响应当成新反馈。
+- uint8_t AbsoluteEncoder_ParseHoldingResponse(const uint8_t* response, uint16_t length,
+-                                              uint16_t* registers, uint16_t register_count);
+--// 解析编码器位置响应为完整计数。先校验寄存器响应，再按设备寄存器组合规则输出计数，返回解析成功标志。
+-+// 在整段 UART 接收数据中查找一个完整有效的保持寄存器响应。允许前面存在请求回显或无效字节，但仍严格核对站号、功能码、长度和 CRC。
+-+uint8_t AbsoluteEncoder_ParseHoldingResponseAnywhere(const uint8_t* bytes, uint16_t length,
+-+                                                     uint16_t* registers, uint16_t register_count);
+-+// 解析编码器位置响应为完整计数。可在包含请求回显的接收缓冲区中定位有效响应，再按设备寄存器组合规则输出计数。
+- uint8_t AbsoluteEncoder_ParseResponse(const uint8_t* response, uint16_t length, uint32_t* count);
+- // 构造单个保持寄存器写入请求。使用 RTU 单写功能码并附 CRC，不能据构造成功认为编码器已保存参数。
+- void AbsoluteEncoder_BuildWriteSingleRequest(uint16_t register_offset, uint16_t value,
+-diff --git a/app/Core/User/motion/src/absolute_encoder.c b/app/Core/User/motion/src/absolute_encoder.c
+-index e6f41dd..e2c1c13 100644
+---- a/app/Core/User/motion/src/absolute_encoder.c
+-+++ b/app/Core/User/motion/src/absolute_encoder.c
+-@@ -59,11 +59,31 @@ uint8_t AbsoluteEncoder_ParseHoldingResponse(const uint8_t* response, uint16_t l
+-     return 1U;
+- }
+- 
+-+// 在接收缓冲区中搜索有效保持寄存器响应，兼容半双工总线把请求回显放在响应之前的情况。
+-+uint8_t AbsoluteEncoder_ParseHoldingResponseAnywhere(const uint8_t* bytes, uint16_t length,
+-+                                                     uint16_t* registers, uint16_t register_count)
+-+{
+-+    uint16_t expected_length;
+-+    uint16_t offset;
+-+    if (bytes == 0 || registers == 0 || register_count == 0U) return 0U;
+-+    expected_length = (uint16_t)(5U + register_count * 2U);
+-+    if (length < expected_length) return 0U;
+-+    for (offset = 0U; offset <= (uint16_t)(length - expected_length); offset++) {
+-+        if (bytes[offset] == ABS_ENCODER_ADDRESS && bytes[offset + 1U] == 0x03U &&
+-+            bytes[offset + 2U] == (uint8_t)(register_count * 2U) &&
+-+            AbsoluteEncoder_ParseHoldingResponse(bytes + offset, expected_length,
+-+                                                  registers, register_count))
+-+            return 1U;
+-+    }
+-+    return 0U;
+-+}
+-+
+- // 解析编码器位置响应为完整计数。先校验寄存器响应，再按设备寄存器组合规则输出计数，返回解析成功标志。
+- uint8_t AbsoluteEncoder_ParseResponse(const uint8_t* response, uint16_t length, uint32_t* count)
+- {
+-     uint16_t registers[2];
+--    if (count == 0 || !AbsoluteEncoder_ParseHoldingResponse(response, length, registers, 2U)) return 0U;
+-+    if (count == 0 ||
+-+        !AbsoluteEncoder_ParseHoldingResponseAnywhere(response, length, registers, 2U)) return 0U;
+-     *count = (uint32_t)registers[0] | (uint32_t)registers[1] << 16;
+-     return 1U;
+- }
+-@@ -89,7 +109,17 @@ uint8_t AbsoluteEncoder_ParseWriteSingleResponse(const uint8_t* response, uint16
+-                                                  uint16_t register_offset, uint16_t value)
+- {
+-     uint8_t expected[ABS_ENCODER_REQUEST_SIZE];
+--    if (response == 0 || length != ABS_ENCODER_WRITE_RESPONSE_SIZE) return 0U;
+-+    uint16_t offset;
+-+    if (response == 0 || length < ABS_ENCODER_WRITE_RESPONSE_SIZE) return 0U;
+-     AbsoluteEncoder_BuildWriteSingleRequest(register_offset, value, expected);
+--    return memcmp(response, expected, ABS_ENCODER_WRITE_RESPONSE_SIZE) == 0 ? 1U : 0U;
+-+    if (length == ABS_ENCODER_WRITE_RESPONSE_SIZE)
+-+        return memcmp(response, expected, ABS_ENCODER_WRITE_RESPONSE_SIZE) == 0 ? 1U : 0U;
+-+    /* A write echo can contain the identical request twice. Only a matching
+-+     * frame after the leading request proves that the device answered. */
+-+    for (offset = ABS_ENCODER_REQUEST_SIZE;
+-+         offset <= (uint16_t)(length - ABS_ENCODER_WRITE_RESPONSE_SIZE); offset++) {
+-+        if (memcmp(response + offset, expected, ABS_ENCODER_WRITE_RESPONSE_SIZE) == 0)
+-+            return 1U;
+-+    }
+-+    return 0U;
+- }
+-diff --git a/app/Core/User/system/src/patrol_rtos.c b/app/Core/User/system/src/patrol_rtos.c
+-index 674bdc0..725f513 100644
+---- a/app/Core/User/system/src/patrol_rtos.c
+-+++ b/app/Core/User/system/src/patrol_rtos.c
+-@@ -434,11 +434,12 @@ static void Patrol_EncoderTask(void *argument)
+-     {
+- #if PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED
+-         uint8_t request[ABS_ENCODER_REQUEST_SIZE];
+--        uint8_t response[16] = {0};
+-+        uint8_t response[ABS_ENCODER_RX_BUFFER_SIZE] = {0};
+-         uint16_t registers[3];
+-         uint16_t response_length = 0U;
+-         uint16_t register_count;
+-         uint8_t read_config;
+-+        uint8_t response_ok = 0U;
+-         HAL_StatusTypeDef status;
+-         PatrolDiagnosticsSnapshot snapshot;
+-         uint32_t now;
+-@@ -474,11 +475,27 @@ static void Patrol_EncoderTask(void *argument)
+-         (void)HAL_UART_AbortReceive(&huart5);
+-         __HAL_UART_FLUSH_DRREGISTER(&huart5);
+-         status = HAL_UART_Transmit(&huart5, request, sizeof(request), 30U);
+--        if (status == HAL_OK)
+--            status = HAL_UARTEx_ReceiveToIdle(&huart5, response, sizeof(response), &response_length, 40U);
+-+        if (status == HAL_OK) {
+-+            /* A half-duplex adapter may deliver the request echo and the
+-+             * encoder reply as separate idle-delimited chunks. Collect at
+-+             * most two chunks, then search the combined buffer for a valid
+-+             * Modbus response. */
+-+            for (uint8_t chunk = 0U; chunk < 2U && response_length < sizeof(response); chunk++) {
+-+                uint16_t received = 0U;
+-+                status = HAL_UARTEx_ReceiveToIdle(
+-+                    &huart5, response + response_length,
+-+                    (uint16_t)(sizeof(response) - response_length), &received, 40U);
+-+                response_length += received;
+-+                if (status == HAL_OK && AbsoluteEncoder_ParseHoldingResponseAnywhere(
+-+                        response, response_length, registers, register_count)) {
+-+                    response_ok = 1U;
+-+                    break;
+-+                }
+-+                if (received == 0U) break;
+-+            }
+-+        }
+-         taskENTER_CRITICAL();
+--        if (status == HAL_OK && AbsoluteEncoder_ParseHoldingResponse(response, response_length,
+--                                                                     registers, register_count))
+-+        if (response_ok)
+-         {
+-             if (read_config)
+-                 PatrolRuntime_OnEncoderConfig(registers, now);
+-diff --git a/tests/chassis_safety_test.c b/tests/chassis_safety_test.c
+-index 48abeb5..ac852f8 100644
+---- a/tests/chassis_safety_test.c
+-+++ b/tests/chassis_safety_test.c
+-@@ -380,6 +380,12 @@ int main(void)
+-     uint8_t request[8];
+-     uint8_t write_response[8];
+-     uint8_t response[9] = {1, 3, 4, 0x12, 0x34, 0x56, 0x78, 0, 0};
+-+    uint8_t combined[ABS_ENCODER_RX_BUFFER_SIZE] = {0};
+-+    uint8_t field_echo_reply[17] = {
+-+        0x01, 0x03, 0x00, 0x03, 0x00, 0x02, 0x34, 0x0B,
+-+        0x01, 0x03, 0x04, 0x0C, 0x14, 0x00, 0x00, 0xB9, 0x67
+-+    };
+-+    uint8_t config_request[8];
+-     uint16_t crc;
+-     uint32_t count;
+-     uint16_t config_values[3];
+-@@ -451,16 +457,44 @@ int main(void)
+-     response[7] = (uint8_t)crc; response[8] = (uint8_t)(crc >> 8);
+-     CHECK(AbsoluteEncoder_ParseResponse(response, sizeof(response), &count));
+-     CHECK(count == 0x56781234U);
+-+    memcpy(combined, request, sizeof(request));
+-+    memcpy(combined + sizeof(request), response, sizeof(response));
+-+    CHECK(AbsoluteEncoder_ParseResponse(combined, sizeof(request) + sizeof(response), &count));
+-+    CHECK(count == 0x56781234U);
+-+    CHECK(!AbsoluteEncoder_ParseResponse(combined, sizeof(request), &count));
+-+    CHECK(AbsoluteEncoder_ParseResponse(combined, sizeof(request) + sizeof(response), &count));
+-+    CHECK(count == 0x56781234U);
+-+    CHECK(AbsoluteEncoder_ParseResponse(field_echo_reply, sizeof(field_echo_reply), &count));
+-+    CHECK(count == 3092U);
+-+    combined[sizeof(request) + 8U] ^= 0x01U;
+-+    CHECK(!AbsoluteEncoder_ParseResponse(combined, sizeof(request) + sizeof(response), &count));
+-+    memcpy(combined + sizeof(request), response, sizeof(response));
+-+    combined[0] = 0xA5U;
+-+    combined[1] = 0x5AU;
+-+    CHECK(AbsoluteEncoder_ParseResponse(combined, sizeof(request) + sizeof(response), &count));
+-+    CHECK(count == 0x56781234U);
+-     AbsoluteEncoder_BuildWriteSingleRequest(3U, 15U, write_response);
+-     CHECK(write_response[0] == 1U && write_response[1] == 6U && write_response[3] == 3U &&
+-           write_response[4] == 0U && write_response[5] == 15U);
+-     CHECK(AbsoluteEncoder_ParseWriteSingleResponse(write_response, sizeof(write_response), 3U, 15U));
+-+    memset(combined, 0, sizeof(combined));
+-+    memcpy(combined, write_response, sizeof(write_response));
+-+    memcpy(combined + sizeof(write_response), write_response, sizeof(write_response));
+-+    CHECK(AbsoluteEncoder_ParseWriteSingleResponse(combined, sizeof(write_response) * 2U, 3U, 15U));
+-+    combined[sizeof(write_response) + 5U] = 1U;
+-+    CHECK(!AbsoluteEncoder_ParseWriteSingleResponse(combined, sizeof(write_response) * 2U, 3U, 15U));
+-     write_response[5] = 1U;
+-     CHECK(!AbsoluteEncoder_ParseWriteSingleResponse(write_response, sizeof(write_response), 3U, 15U));
+-     crc = AbsoluteEncoder_Crc16(config_response, 9);
+-     config_response[9] = (uint8_t)crc; config_response[10] = (uint8_t)(crc >> 8);
+-     CHECK(AbsoluteEncoder_ParseHoldingResponse(config_response, sizeof(config_response), config_values, 3U));
+-     CHECK(config_values[0] == 1U && config_values[1] == 3U && config_values[2] == 0x4B00U);
+-+    AbsoluteEncoder_BuildReadHoldingRequest(0U, 3U, config_request);
+-+    memcpy(combined, config_request, sizeof(config_request));
+-+    memcpy(combined + sizeof(config_request), config_response, sizeof(config_response));
+-+    CHECK(AbsoluteEncoder_ParseHoldingResponseAnywhere(
+-+        combined, sizeof(config_request) + sizeof(config_response), config_values, 3U));
+-+    CHECK(config_values[0] == 1U && config_values[1] == 3U && config_values[2] == 0x4B00U);
+- 
+-     CHECK(FixedPoint_FormatMilli(fixed, sizeof(fixed), 0) && strcmp(fixed, "0.000") == 0);
+-     CHECK(FixedPoint_FormatMilli(fixed, sizeof(fixed), -1) && strcmp(fixed, "-0.001") == 0);
+diff --git a/temp_verify_Version_2/validation/can-remote-test.log b/temp_verify_Version_2/validation/can-remote-test.log
+deleted file mode 100644
+index cd5453c..0000000
+--- a/temp_verify_Version_2/validation/can-remote-test.log
++++ /dev/null
+@@ -1,6 +0,0 @@
+-test_real_can2_and_control_service (test_can_remote.CanRemoteTests.test_real_can2_and_control_service) ... ok
+-
+-----------------------------------------------------------------------
+-Ran 1 test in 1.261s
+-
+-OK
+diff --git a/temp_verify_Version_2/validation/can2-stack.log b/temp_verify_Version_2/validation/can2-stack.log
+deleted file mode 100644
+index 34737a6..0000000
+--- a/temp_verify_Version_2/validation/can2-stack.log
++++ /dev/null
+@@ -1,19 +0,0 @@
+-PASS CAN2 target: known 320 + reserve 512 <= 1024
+-PASS CAN2 reset: known 392 + reserve 512 <= 1024
+-PASS CAN2 reply: known 224 + reserve 512 <= 1024
+-PASS CAN2 lease stop: known 136 + reserve 512 <= 1024
+-PASS handset A switch: known 272 + reserve 512 <= 1024
+-PASS handset joystick: known 272 + reserve 512 <= 1024
+-PASS handset lease stop: known 128 + reserve 512 <= 1024
+-PASS fault capture from CAN2: known 368 + reserve 512 <= 1024
+-PASS fault frame from CAN2: known 400 + reserve 512 <= 1024
+-PASS fault transmit from CAN2: known 412 + reserve 512 <= 1024
+-PASS fault frame from safety: known 168 + reserve 512 <= 1024
+-PASS fault latch log: known 264 + reserve 512 <= 1024
+-PASS fault stop retry: known 240 + reserve 512 <= 1024
+-PASS diagnostic timeout log: known 296 + reserve 512 <= 1024
+-PASS write verification log: known 240 + reserve 512 <= 1024
+-PASS steering verification read: known 256 + reserve 512 <= 1024
+-PASS drive verification read: known 256 + reserve 512 <= 1024
+-PASS steering verification reply: known 260 + reserve 512 <= 1024
+-PASS drive verification reply: known 244 + reserve 512 <= 1024
+diff --git a/temp_verify_Version_2/validation/chassis-safety-test.log b/temp_verify_Version_2/validation/chassis-safety-test.log
+deleted file mode 100644
+index d4898c6..0000000
+--- a/temp_verify_Version_2/validation/chassis-safety-test.log
++++ /dev/null
+@@ -1 +0,0 @@
+-PASS: chassis_safety_test exit=0; includes split-chunk reassembly and real echo+reply frame
+diff --git a/temp_verify_Version_2/validation/diff-check.log b/temp_verify_Version_2/validation/diff-check.log
+deleted file mode 100644
+index e69de29..0000000
+diff --git a/tests/bench_steering_test.c b/tests/bench_steering_test.c
+index 2c34120..6f470ab 100644
+--- a/tests/bench_steering_test.c
++++ b/tests/bench_steering_test.c
+@@ -121,21 +121,37 @@ int main(void)
+     assert(b.phase==BENCH_ACTIVE);
+     for(int i=0;i<4;i++) advance(&b,&now);
+     assert(b.applied==-82413 && b.step==16);
+-    /* A changed target during positioning must replace, not queue behind, the
+-       old target. Drop only new-set-point bit 4 after each acknowledged trigger. */
+-    for (int angle=500; angle>=0; angle-=500) {
+-        BenchSteering_Tick(&b,now,1,1,angle,0);
+-        assert(BenchSteering_Take(&b,now,&f) && b.index==0x607A);
+-        r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+1));
+-        assert(BenchSteering_Take(&b,now+2,&f) && b.index==0x6041 && b.read);
+-        r=reply(&b,0x27); assert(BenchSteering_OnFrame(&b,&r,now+3));
+-        assert(BenchSteering_Take(&b,now+4,&f) && b.index==0x6040 && f.data[4]==0x3F);
+-        r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+5));
+-        assert(BenchSteering_Take(&b,now+6,&f) && b.index==0x6040 && f.data[4]==0x2F);
+-        r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+7));
+-        assert(b.phase==BENCH_ACTIVE && b.step==16);
+-        now+=10;
+-    }
++    /* Once 0x607A has been written, a newer remote target waits in the single
++       desired slot until this trigger/clear cycle finishes. */
++    now=b.last_trigger_ms+BENCH_STEERING_TRIGGER_INTERVAL_MS;
++    BenchSteering_Tick(&b,now,1,1,500,0);
++    assert(BenchSteering_Take(&b,now,&f) && b.index==0x607A);
++    int32_t committed=b.applied;
++    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+1));
++    BenchSteering_Tick(&b,now+2,1,1,0,0);
++    assert(b.desired!=committed && b.applied==committed && b.step==18);
++    assert(BenchSteering_Take(&b,now+2,&f) && b.index==0x6041 && b.read);
++    r=reply(&b,0x27); assert(BenchSteering_OnFrame(&b,&r,now+3));
++    assert(BenchSteering_Take(&b,now+4,&f) && b.index==0x6040 && f.data[4]==0x3F);
++    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+5));
++    assert(BenchSteering_Take(&b,now+6,&f) && b.index==0x6040 && f.data[4]==0x2F);
++    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+7));
++    assert(b.phase==BENCH_ACTIVE && b.step==16 && b.desired==b.center);
++
++    /* Start-to-start trigger spacing is at least 100 ms. */
++    BenchSteering_Tick(&b,now+8,1,1,0,0);
++    assert(b.step==16 && !BenchSteering_Take(&b,now+8,&f));
++    now=b.last_trigger_ms+BENCH_STEERING_TRIGGER_INTERVAL_MS;
++    BenchSteering_Tick(&b,now,1,1,0,0);
++    assert(BenchSteering_Take(&b,now,&f) && b.index==0x607A);
++    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+1));
++    assert(BenchSteering_Take(&b,now+2,&f) && b.index==0x6041 && b.read);
++    r=reply(&b,0x27); assert(BenchSteering_OnFrame(&b,&r,now+3));
++    assert(BenchSteering_Take(&b,now+4,&f) && b.index==0x6040 && f.data[4]==0x3F);
++    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+5));
++    assert(BenchSteering_Take(&b,now+6,&f) && b.index==0x6040 && f.data[4]==0x2F);
++    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+7));
++    assert(b.phase==BENCH_ACTIVE && b.step==16);
+     BenchSteering_Tick(&b,now,0,1,0,0);
+     assert(b.phase==BENCH_STOPPING);
+     assert(BenchSteering_Take(&b,now,&f) && b.index==0x6040 && f.data[4]==6);
+@@ -146,45 +162,29 @@ int main(void)
+     assert(b.phase==BENCH_IDLE); /* stop emitted no target position */
+     assert(b.limits_aligned && b.minimum==-167802 && b.maximum==-2444);
+ 
+-    /* 0x6080 is a fixed 300 rpm ceiling.  An active profile starts at creep
+-       speed for a near target, then only receives a target after its selected
+-       0x6081 value has been read back. */
++    /* Current MAX/MID/CREEP profiles are equal, so runtime target changes do
++       not require repeated 0x6081 writes. */
+     BenchSteering_Init(&b); now=0;
+     assert(BenchSteering_Start(&b,-83815,-85123,-85123,30000,now));
+     for(int i=0;i<20;i++) advance(&b,&now);
+-    assert(b.phase==BENCH_ACTIVE && b.applied_profile_rpm==90);
++    assert(b.phase==BENCH_ACTIVE && b.applied_profile_rpm==1000);
++    now=b.last_trigger_ms+BENCH_STEERING_TRIGGER_INTERVAL_MS;
+     BenchSteering_Tick(&b,now,1,1,30000,0);
+-    assert(BenchSteering_Take(&b,now,&f) && b.index==0x6081);
+-    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+1));
+-    assert(BenchSteering_Take(&b,now+2,&f) && b.index==0x6081 && b.read);
+-    r=reply(&b,300); assert(BenchSteering_OnFrame(&b,&r,now+3));
+-    assert(b.applied_profile_rpm==300);
+-    assert(BenchSteering_Take(&b,now+4,&f) && b.index==0x607A);
++    assert(BenchSteering_Take(&b,now,&f) && b.index==0x607A);
+     r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+5));
+-    assert(BenchSteering_Take(&b,now+6,&f) && b.index==0x6041 && b.read);
+-    r=reply(&b,0x27); assert(BenchSteering_OnFrame(&b,&r,now+6));
+-    assert(BenchSteering_Take(&b,now+7,&f) && b.index==0x6040 && f.data[4]==0x3F);
+-    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+7));
+-    assert(BenchSteering_Take(&b,now+8,&f) && b.index==0x6040 && f.data[4]==0x2F);
+-    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+9));
++    assert(BenchSteering_Take(&b,now+1,&f) && b.index==0x6041 && b.read);
++    r=reply(&b,0x27); assert(BenchSteering_OnFrame(&b,&r,now+2));
++    assert(BenchSteering_Take(&b,now+3,&f) && b.index==0x6040 && f.data[4]==0x3F);
++    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+4));
++    assert(BenchSteering_Take(&b,now+5,&f) && b.index==0x6040 && f.data[4]==0x2F);
++    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+6));
+     assert(b.phase==BENCH_ACTIVE && b.step==16);
+-    /* At 27 degrees, even a full-scale command must fall back to creep before
+-       it can consume the 30.0 to 30.5 degree fault margin. */
+-    BenchSteering_Tick(&b,now+10,1,1,30000,27000);
+-    assert(BenchSteering_Take(&b,now+10,&f) && b.index==0x6081);
+-    assert(f.data[4]==90 && f.data[5]==0 && f.data[6]==0 && f.data[7]==0);
+-    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+11));
+-    assert(BenchSteering_Take(&b,now+12,&f) && b.index==0x6081 && b.read);
+-    r=reply(&b,90); assert(BenchSteering_OnFrame(&b,&r,now+13));
+-    assert(b.applied_profile_rpm==90 && b.step==16);
+-    /* At 24 degrees the mid profile is written and verified before proceeding. */
+-    BenchSteering_Tick(&b,now+20,1,1,30000,24000);
+-    assert(BenchSteering_Take(&b,now+20,&f) && b.index==0x6081);
+-    assert(f.data[4]==180 && f.data[5]==0 && f.data[6]==0 && f.data[7]==0);
+-    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+21));
+-    assert(BenchSteering_Take(&b,now+22,&f) && b.index==0x6081 && b.read);
+-    r=reply(&b,180); assert(BenchSteering_OnFrame(&b,&r,now+23));
+-    assert(b.applied_profile_rpm==180 && b.phase==BENCH_ACTIVE && b.step==16);
++    BenchSteering_Tick(&b,now+7,1,1,30000,27000);
++    assert(b.applied_profile_rpm==1000 && b.step==16);
++    assert(!BenchSteering_Take(&b,now+7,&f));
++    BenchSteering_Tick(&b,now+8,1,1,30000,24000);
++    assert(b.applied_profile_rpm==1000 && b.step==16);
++    assert(!BenchSteering_Take(&b,now+8,&f));
+ 
+     BenchSteering_Init(&b);
+     assert(BenchSteering_Start(&b,-83815,-72187,-85123,30000,0)); now=0;
+@@ -267,6 +267,19 @@ int main(void)
+     BenchSteering_OnFrame(&b,&r,now+1); assert(b.phase==BENCH_FAULT&&b.cut_power);
+     BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0);
+     BenchSteering_Tick(&b,1,1,0,0,0); assert(b.phase==BENCH_FAULT&&b.cut_power);
++    /* PREPARING can be aborted through shutdown before limits are aligned. */
++    BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0);
++    assert(b.phase==BENCH_PREPARING && !b.limits_aligned);
++    BenchSteering_Stop(&b,10,0);
++    assert(b.phase==BENCH_STOPPING && b.fault==0 && !b.cut_power);
++    BenchSteering_Tick(&b,10,0,1,0,0);
++    assert(BenchSteering_Take(&b,10,&f) && b.index==0x6040 && f.data[4]==6);
++    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,11));
++    assert(BenchSteering_Take(&b,12,&f) && b.index==0x6041 && b.read);
++    r=reply(&b,0x21); assert(BenchSteering_OnFrame(&b,&r,13));
++    assert(BenchSteering_Take(&b,14,&f) && f.id==0 && f.data[0]==0x80);
++    assert(b.phase==BENCH_IDLE && !b.cut_power);
++    /* A shutdown that never completes still trips the bounded stop deadline. */
+     BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0);
+     BenchSteering_Stop(&b,10,0); BenchSteering_Tick(&b,510,0,1,0,0);
+     assert(b.phase==BENCH_FAULT&&b.cut_power);
+diff --git a/tests/stop_scheduler_cases.c b/tests/stop_scheduler_cases.c
+index 81e65a1..99d76b5 100644
+--- a/tests/stop_scheduler_cases.c
++++ b/tests/stop_scheduler_cases.c
+@@ -133,7 +133,7 @@ int main(void)
+     g_motion.bench.step = 16U;
+     g_motion.drive.phase = BENCH_ACTIVE;
+     g_motion.drive.step = 12U;
+-    g_motion.feedback_gate_mask = 16U;
++    g_motion.feedback_gate_mask = 0U;
+     mock_control.feedback.calibrated = 1U;
+     mock_control.feedback.encoder_profile_ready = 1U;
+     mock_control.feedback.encoder_range_valid = 1U;
+@@ -141,19 +141,20 @@ int main(void)
+     mock_control.feedback.drive_online = 1U;
+     mock_control.feedback.power_ready = 0U;
+     mock_control.feedback.feedback_ms = mock_now;
+-    mock_control.session_active = mock_control.enable_request = 1U;
+-    mock_control.lease_deadline_ms = mock_now + 1000U;
++    /*
++     * An explicit stop releases the session before the executor necessarily
++     * enters STOPPING. A released session must not turn the ordered stop into
++     * BenchDrive fault 3.
++     */
++    mock_control.session_active = mock_control.enable_request = 0U;
++    mock_control.stop_reason = CHASSIS_STOP_EXPLICIT;
++    mock_control.lease_deadline_ms = 0U;
+     PatrolRuntime_Tick();
+     assert(g_motion.bench.phase == BENCH_STOPPING);
+     assert(g_motion.drive.phase == BENCH_STOPPING);
+     assert(!g_motion.bench.cut_power && !g_motion.drive.cut_power);
+     assert(!mock_control.fault_latched && !mock_control.fault_pending);
+-    /*
+-     * The first tick revokes the remote session while the bounded stop is
+-     * still active. Subsequent ticks must keep the same stop classification,
+-     * otherwise the now-inactive session would turn the same stale feedback
+-     * into an immediate actuator fault.
+-     */
++    /* Subsequent ticks must keep the same stop classification. */
+     assert(!mock_control.session_active);
+     mock_now += 10U;
+     PatrolRuntime_Tick();
+@@ -170,6 +171,52 @@ int main(void)
+     assert(g_motion.drive.phase == BENCH_STOPPING);
+     assert(!g_motion.bench.cut_power && !g_motion.drive.cut_power);
+     assert(!mock_control.fault_latched && !mock_control.fault_pending);
++    /* A transient feedback gate also starts the same per-axis bounded stop. */
++    reset_fixture();
++    mock_power = 1U;
++    mock_can_ready = 1U;
++    mock_now = 1000U;
++    g_motion.coordinate.valid = 1U;
++    g_motion.bench.phase = BENCH_ACTIVE;
++    g_motion.bench.step = 16U;
++    g_motion.drive.phase = BENCH_ACTIVE;
++    g_motion.drive.step = 12U;
++    g_motion.feedback_gate_mask = 16U;
++    mock_control.feedback.calibrated = 1U;
++    mock_control.feedback.encoder_profile_ready = 1U;
++    mock_control.feedback.encoder_range_valid = 1U;
++    mock_control.feedback.steering_online = 1U;
++    mock_control.feedback.drive_online = 1U;
++    mock_control.feedback.power_ready = 0U;
++    mock_control.feedback.feedback_ms = mock_now;
++    mock_control.session_active = mock_control.enable_request = 1U;
++    mock_control.stop_reason = CHASSIS_STOP_NONE;
++    mock_control.lease_deadline_ms = mock_now + 1000U;
++    PatrolRuntime_Tick();
++    assert(g_motion.bench.phase == BENCH_STOPPING);
++    assert(g_motion.drive.phase == BENCH_STOPPING);
++    assert(!mock_control.fault_latched && !mock_control.fault_pending);
++    g_motion.feedback_gate_mask = 0U;
++    mock_now += 10U;
++    PatrolRuntime_Tick();
++    assert(g_motion.bench.phase == BENCH_STOPPING);
++    assert(g_motion.drive.phase == BENCH_STOPPING);
++    assert(!mock_control.fault_latched && !mock_control.fault_pending);
++    /* Node loss remains a terminal fault and must bypass the ordered stop. */
++    reset_fixture();
++    mock_power = 1U;
++    mock_now = 1000U;
++    g_motion.bench.phase = BENCH_ACTIVE;
++    g_motion.drive.phase = BENCH_ACTIVE;
++    g_motion.feedback_gate_mask = 16U;
++    mock_control.feedback.steering_online = 1U;
++    mock_control.feedback.drive_online = 0U;
++    mock_control.feedback.power_ready = 0U;
++    mock_control.session_active = mock_control.enable_request = 0U;
++    PatrolRuntime_Tick();
++    assert(g_motion.bench.phase == BENCH_FAULT);
++    assert(g_motion.drive.phase == BENCH_FAULT);
++    assert(mock_control.fault_latched && !mock_power);
+     /* Reset cannot energize outputs and must preserve the original evidence. */
+     PatrolRuntime_Init(); mock_now=2000;
+     g_motion.diagnostics.drive_status_word=0xBF;
+diff --git a/tests/write_verify_runtime_cases.c b/tests/write_verify_runtime_cases.c
+index b89f6a3..895c2d5 100644
+--- a/tests/write_verify_runtime_cases.c
++++ b/tests/write_verify_runtime_cases.c
+@@ -195,7 +195,7 @@ static void test_steering_lost_ack(uint16_t index, int32_t value)
+     printf("PASS steering missing ACK 0x%04X: read-only proof; no trigger replay\n", index);
+ }
+ 
+-// 未触发的旧转角在核验期间被更新时直接换成最新目标；不能恢复后补发积压旧定位。
++// 核验中的目标先完成本轮触发；期间收到的唯一最新目标在随后一轮执行，不补发中间值。
+ static void test_latest_steering(void)
+ {
+     fixture(); drop_node = 1U; drop_index = 0x607AU;
+@@ -208,9 +208,10 @@ static void test_latest_steering(void)
+     }
+     int32_t latest;
+     assert(SteeringAngle_ToControllerCount(8000,0,VEHICLE_STEERING_COUNTS_MILLI,1,-82680,82680,&latest));
+-    assert(changed && dropped && triggers == 1U && trigger_targets[0] == latest);
++    assert(changed && dropped && triggers == 2U);
++    assert(trigger_targets[0] != latest && trigger_targets[1] == latest);
+     assert(!RemoteService_State()->fault_latched && target == latest);
+-    puts("PASS latest steering replaces superseded untriggered goal after verification");
++    puts("PASS committed steering goal completes before the single latest target runs");
+ }
+ 
+ // 行走左右目标分别丢 ACK，必须核对完整目标对和驱动状态；核验后采用最新遥控速度。
+@@ -417,7 +418,8 @@ static void test_disarm_abandons_verification(void)
+ // 执行生产路径的成功、未知执行结果、最新目标和安全退路场景。
+ int main(void)
+ {
+-    _Static_assert(sizeof(BenchSteering)==88U && sizeof(BenchDrive)==52U,"verification must use former padding");
++    _Static_assert(sizeof(BenchSteering)==92U && sizeof(BenchDrive)==52U,
++        "steering trigger spacing consumes one bounded uint32 slot");
+     test_single_diagnostic_loss();
+     test_steering_lost_ack(0x607AU,0);
+     test_steering_lost_ack(0x6040U,0x3F);

@@ -1,0 +1,80 @@
+diff --git a/app/Core/User/system/src/patrol_rtos.c b/app/Core/User/system/src/patrol_rtos.c
+index 53afadb..674bdc0 100644
+--- a/app/Core/User/system/src/patrol_rtos.c
++++ b/app/Core/User/system/src/patrol_rtos.c
+@@ -43,6 +43,8 @@
+ #define PATROL_HEALTH_REQUIRED (PATROL_HEALTH_SAFETY | PATROL_HEALTH_CAN_RX | PATROL_HEALTH_CANOPEN)
+ 
+ #define PATROL_SAFETY_STACK_WORDS 256U
++#define PATROL_CAN_REPLY_RETRY_MS 2U
++#define PATROL_CAN_REPLY_TIMEOUT_MS 500U
+ #define PATROL_CAN_RX_STACK_WORDS 256U
+ #define PATROL_CANOPEN_STACK_WORDS 256U
+ #define PATROL_ENCODER_STACK_WORDS 192U
+@@ -339,11 +341,16 @@ static void Patrol_CanRxTask(void *argument)
+     PatrolCanFrame_t frame;
+     PatrolCanFrame decoded;
+     PatrolCanFrame replies[3];
++    uint8_t replies_ready = 0U;
++    uint8_t reply_index = 0U;
++    TickType_t reply_started = 0U;
+     (void)argument;
+     patrol_start_can();
+     for (;;)
+     {
+-        (void)ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(100U));
++        const TickType_t wait_ticks = replies_ready ?
++            pdMS_TO_TICKS(PATROL_CAN_REPLY_RETRY_MS) : pdMS_TO_TICKS(100U);
++        (void)ulTaskNotifyTake(pdTRUE, wait_ticks);
+         while (PatrolRtos_CanRxPop(&frame, 0U) == pdPASS)
+         {
+ /* >>>>> CAN2-GATEWAY: START >>>>> */
+@@ -372,21 +379,33 @@ static void Patrol_CanRxTask(void *argument)
+             }
+             taskEXIT_CRITICAL();
+         }
+-        taskENTER_CRITICAL();
+-        uint8_t reply = PatrolCanRemote_TakeReply(replies, HAL_GetTick());
+-        taskEXIT_CRITICAL();
+-        if (reply) {
+-            for (unsigned i=0;i<3;i++) {
+-                CAN_TxHeaderTypeDef header={0};
+-                uint32_t mailbox;
+-                header.StdId=replies[i].id; header.IDE=CAN_ID_STD;
+-                header.RTR=CAN_RTR_DATA; header.DLC=replies[i].dlc;
+-                if (HAL_CAN_AddTxMessage(&hcan2,&header,replies[i].data,&mailbox)!=HAL_OK) {
+-                    taskENTER_CRITICAL();
+-                    PatrolCanRemote_Tick(HAL_GetTick(),0U);
+-                    taskEXIT_CRITICAL();
+-                    break;
+-                }
++        if (!replies_ready) {
++            taskENTER_CRITICAL();
++            replies_ready = PatrolCanRemote_TakeReply(replies, HAL_GetTick());
++            taskEXIT_CRITICAL();
++            reply_index = 0U;
++            reply_started = xTaskGetTickCount();
++        }
++        if (replies_ready) {
++            CAN_TxHeaderTypeDef header = {0};
++            uint32_t mailbox;
++            header.StdId = replies[reply_index].id;
++            header.IDE = CAN_ID_STD;
++            header.RTR = CAN_RTR_DATA;
++            header.DLC = replies[reply_index].dlc;
++            if (HAL_CAN_AddTxMessage(&hcan2, &header, replies[reply_index].data,
++                                     &mailbox) == HAL_OK) {
++                reply_index++;
++                if (reply_index >= 3U) replies_ready = 0U;
++            } else if ((TickType_t)(xTaskGetTickCount() - reply_started) >=
++                       pdMS_TO_TICKS(PATROL_CAN_REPLY_TIMEOUT_MS)) {
++                /* A temporary full mailbox must not discard the remaining
++                 * correlated frames. Only a persistent transport failure
++                 * invalidates the CAN2 remote session. */
++                replies_ready = 0U;
++                taskENTER_CRITICAL();
++                PatrolCanRemote_Tick(HAL_GetTick(), 0U);
++                taskEXIT_CRITICAL();
+             }
+         }
+         xEventGroupSetBits(g_health_events, PATROL_HEALTH_CAN_RX);

@@ -1,0 +1,206 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "created_at": "2026-10-21T09:14:23.105751+08:00",
+  "type": "continued reverse timeout diagnosis",
+  "commit": "6dc46630cd6cae3cabf0600be1ca4c0f3e03a29a",
+  "initial_snapshot_index": {
+    "path": "docs\\operations\\evidence\\2026-10-21-reverse-lock-readonly-084141\\index.json",
+    "bytes": 4440,
+    "sha256": "aa3a0868be2dc8531b66195279d8de2d3736812f5b19b41dce9e4f03e162ec94"
+  },
+  "initial_snapshot_ram": {
+    "path": "out\\flash\\2026-10-21-reverse-lock-readonly-084141\\ram-readonly.bin",
+    "bytes": 65536,
+    "sha256": "ce42cf57d5ce93efcf160ecacbf36d7048abb5d7485cd5f425350b64acfd6f26"
+  },
+  "confirmed_field_sequence": 14,
+  "core_findings": "findings.json",
+  "latest_driver_readback": "live-driver-findings.json",
+  "retained_drive_timing": "retained-drive-state.json",
+  "host_double_wait_reproduction": "double-wait-repro.log",
+  "probe_sequence": "First supplemental attempt failed to connect to programmer; operator reconnected; retry and after-CAN reads succeeded without halt/reset/run.",
+  "can_actions": "Mode1 hardware listen identification on both channels, then only 21 Node2 SDO uploads on identified physical channel2; no NMT/SDO downloads/enable/fault-reset/motion commands.",
+  "firmware_changed": false,
+  "public_evidence": [
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\can-channel1-passive.jsonl",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\can-channel2-passive.jsonl",
+      "bytes": 80823,
+      "sha256": "3c59ae73322574817cc792d60fcc1ad0616804aee3cc347953c94b6345acebea"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\can-passive-identification.json",
+      "bytes": 777,
+      "sha256": "85de45d8cb473d11fe57bd24f03ed358676392f59e7004342a34165219afe86d"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\can1-readonly-sdo-raw.jsonl",
+      "bytes": 4512,
+      "sha256": "3f9c460ecc3af5ba4e8ce820e8cbaa686fced2273dbb15eb5f59197a09c6e24d"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\can1-readonly-sdo-results.json",
+      "bytes": 4938,
+      "sha256": "6022fdc5c4eb05ed84cbcfd824711672687cc8dcce186ce302b3584349f40adc"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\control-after-can.bin",
+      "bytes": 104,
+      "sha256": "a293aa0f21d13f9e17fef7fe30869eac018cb7ddff7f30fd3d028478265ec1d6"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\double-wait-build.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\double-wait-repro.log",
+      "bytes": 302,
+      "sha256": "6f14cf4a0f0b1efefc970311c3f604594f3153827577ad6ba4a6d968983d8aab"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\fault-after-can.bin",
+      "bytes": 128,
+      "sha256": "3befb29ef18cec876e3655ad8e2157857185212d1df9025745482e696ab32c6a"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\findings.json",
+      "bytes": 3012,
+      "sha256": "1746f173b720c0893e0f144767dc00e8124d2e6e5aa53abbd9b12ec5f9350e59"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\live-driver-findings.json",
+      "bytes": 2297,
+      "sha256": "7dcd1c9909853b52e907c924e78625531d0f215b99d5f9109c9c7e050d0e1883"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\live-followup-decode.json",
+      "bytes": 291,
+      "sha256": "88b2e59d1d9e313af22edb18c1f3466b2cd139aeb3f669ad9d33a0e9821be9f8"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\motion-after-can.bin",
+      "bytes": 604,
+      "sha256": "adfb2d20ab28bdf931cabf52d502b5c2bb52f2e815488167757c0a9f04fca04b"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\power-after-can.bin",
+      "bytes": 1,
+      "sha256": "4bf5122f344554c53bde2ebb8cd2b7e3d1600ad631c385a5d7cce23c7785459a"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\readonly-after-can.jlink",
+      "bytes": 832,
+      "sha256": "9781f000fd39527cbb6c97dbd93f0fe48bca950ee2c63f016033ee3c19a05496"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\readonly-after-can.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\readonly-after-can.stdout.log",
+      "bytes": 3744,
+      "sha256": "97238686c75b07d3611ae9be7af28ead9b950f94cb7f3b533d4cdab5bd2de8db"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\readonly-live-retry1.jlink",
+      "bytes": 655,
+      "sha256": "c2a6adb2c37eddffa765462b41f84fcc0fef89cd8b9328a3dbf48cfff13633da"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\readonly-live-retry1.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\readonly-live-retry1.stdout.log",
+      "bytes": 3327,
+      "sha256": "123089ff0dbf37c765796208547b18573978be620b7dab4f5f0efec442e20f10"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\readonly-live.jlink",
+      "bytes": 634,
+      "sha256": "4d9e8cd29aeed358683dd1a28105ccdf94caf311498708aa7b711596599ebde3"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\readonly-live.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\readonly-live.stdout.log",
+      "bytes": 424,
+      "sha256": "cb0fde3e899d1aa96dbfbabd8d42df7815afb070309aca27d5f00735c83b8dfb"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\retained-drive-state.json",
+      "bytes": 1185,
+      "sha256": "34c882b8586175d64e42a17c005df76a3209f8d036c14636af1141ac6a3584d6"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\uid-live-retry1.bin",
+      "bytes": 12,
+      "sha256": "4d46849cde0edf35dcd65338a472ff614a7193426a4a4b0d712dcc1a29a73f92"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\vendor-drive-ramp-docx.json",
+      "bytes": 160,
+      "sha256": "91a221503751db7f1a8393b5b317b5d35398230737bcb8952a5b7c4679bb68f3"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\vendor-drive-ramp-pdf.json",
+      "bytes": 13993,
+      "sha256": "0853a5d20c69ea3b781522b25c69fa6d7837a15e325fdd3d876e73a7ca63806d"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\vendor-ramp-objects.json",
+      "bytes": 232,
+      "sha256": "6cbd455c94973637f2821f3dba0cbab1105f9cd20431025910619f4bef65fea5"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-deep-check-085851\\vendor-relevant-pages.json",
+      "bytes": 4019,
+      "sha256": "2a805b281585ff74747a76d4107af783fb10206ff04b49723c128cbf674df2db"
+    }
+  ],
+  "protected_evidence": [
+    {
+      "path": "out\\flash\\2026-10-21-reverse-deep-check-085851\\app-live-retry1.bin",
+      "bytes": 151048,
+      "sha256": "ddfe2361bc187b4658383cd7fe8e529d16d9786b319b9b34a2313d51ed18986f"
+    },
+    {
+      "path": "out\\flash\\2026-10-21-reverse-deep-check-085851\\ram-live-retry1.bin",
+      "bytes": 65536,
+      "sha256": "cfedbba3adffeeb528621f15ccf7f8cb138307a5130a5714cf0e28cb0087b10e"
+    }
+  ],
+  "host_sources": [
+    {
+      "path": "out\\logs\\reverse-double-wait.c",
+      "bytes": 1979,
+      "sha256": "2281fa51f587ede30ad4301b759bef17a2bc3219e667898e27fd5b7a98cf94e0"
+    },
+    {
+      "path": "out\\logs\\reverse-drive-layout.c",
+      "bytes": 406,
+      "sha256": "3a76ad7db165fa4ea5eb86b46c1d6831c5d1bce8f15d6de25720071b4a8362e8"
+    },
+    {
+      "path": "out\\logs\\reverse-drive-sdo-readonly.py",
+      "bytes": 3252,
+      "sha256": "37a974351b2e79afce969059c145a3ffe41d9c4dd29c8d35ca4619a6258c51be"
+    }
+  ],
+  "source_hashes": {
+    "app/Core/User/motion/src/chassis_control.c": "4e2628ccecd4694f6ebf84e0c224e951e76efef6de72c69e9bd80933e60c08c3",
+    "app/Core/User/motion/src/bench_drive.c": "89e3f7ad8bda30e4899bf8872b51304433f35498ac573909d019943939bc2252",
+    "app/Core/User/motion/src/patrol_runtime.c": "4f06e474e3214611442d04ff9cc174160db30f7b1b4ba73078788765a42911a9",
+    "app/Core/User/motion/src/patrol_phy_remote.c": "4fdbb01cae825f229ed4e5d51dd6064aae837da1e610e705f7199e97696a0bd6"
+  }
+}

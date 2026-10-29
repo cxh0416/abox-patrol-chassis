@@ -1,0 +1,60 @@
+{
+  "at": "2026-10-22T16:38:49.563355+08:00",
+  "product": "patrol_vehicle_chassis",
+  "uid_raw_hex": "6fab4a393932361146423230",
+  "app_version": "0.2.77",
+  "operator_confirmed_mechanical_center": true,
+  "operator_confirmed_com7_connection": "steering driver tuning port",
+  "driver_center_samples": [
+    -8123,
+    -8123,
+    -8123
+  ],
+  "can1_observed_ids": [
+    "0x601",
+    "0x581",
+    "0x701"
+  ],
+  "encoder_seen": false,
+  "drive_heartbeat_seen": false,
+  "calibration_committed": false,
+  "writes_performed": false,
+  "reason": "Independent encoder and drive feedback unavailable; calibration prerequisites not met",
+  "files": [
+    {
+      "source": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-163341-319759\\snapshot.json",
+      "archived": "00-snapshot.json",
+      "sha256": "de8a783ba17dfa79e19a78b70adcc99f8d4c527a76c812f811f127cb6dea7749"
+    },
+    {
+      "source": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-163602-969909\\snapshot.json",
+      "archived": "01-snapshot.json",
+      "sha256": "84e33dce0553458514b72a4a55138719102e76e2ee1a4975963503bdfe856ab5"
+    },
+    {
+      "source": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261022-163729-938436\\events.jsonl",
+      "archived": "02-events.jsonl",
+      "sha256": "44514ff558da752ae40ef1a194036c3305c34d51a4929c0fbd276f5c1906a978"
+    },
+    {
+      "source": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261022-163729-938436\\frames.jsonl",
+      "archived": "03-frames.jsonl",
+      "sha256": "8ce2145fe3c331f60a4d0218e51cc0479ead3c92d8099439bcb56e5372f2fef6"
+    },
+    {
+      "source": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261022-163729-938436\\metadata.json",
+      "archived": "04-metadata.json",
+      "sha256": "2a74eb5e2a773e5d232495c9b4b54447778c7b688a47fd29f8026bf9bfcdaba6"
+    },
+    {
+      "source": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261022-163729-938436\\sha256.json",
+      "archived": "05-sha256.json",
+      "sha256": "6af8f344da556e5ad1514d3d8ff8f529ac3bb35d875f223ab450a46fb1442ed9"
+    },
+    {
+      "source": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261022-163729-938436\\summary.json",
+      "archived": "06-summary.json",
+      "sha256": "53506ff7a01e2e92ccd00d381c6ea0fc0d3493107510710ceb4404611b8bdd3c"
+    }
+  ]
+}

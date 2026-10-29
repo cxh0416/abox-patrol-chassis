@@ -1,0 +1,32 @@
+{
+  "running": false,
+  "pid": 11900,
+  "started_at": "2026-10-21T09:22:15.280234+08:00",
+  "elapsed_s": 120.851,
+  "frames": 33515,
+  "channels": {
+    "2": {
+      "0x181": 10986,
+      "0x281": 10986,
+      "0x702": 1197,
+      "0x602": 2906,
+      "0x582": 2906,
+      "0x601": 1670,
+      "0x581": 1668,
+      "0x701": 1196
+    },
+    "1": {}
+  },
+  "motor_state": {
+    "left_actual": 22,
+    "right_actual": -22,
+    "drive_status": 55,
+    "left_fault_code": 0,
+    "right_fault_code": 0,
+    "left_target": 0,
+    "right_target": 0
+  },
+  "raw_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-reversal-live-092215\\can-raw.jsonl",
+  "error": null,
+  "stop_reason": "stop_file"
+}

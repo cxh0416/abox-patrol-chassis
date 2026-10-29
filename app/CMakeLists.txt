@@ -46,6 +46,18 @@ option(PATROL_CHASSIS_OTA_AUTO_SEED "Seed first stable OTA slot" ON)
 option(PATROL_DRIVE_EXECUTOR_ENABLED "Compile bounded drive executor" OFF)
 option(PATROL_STEERING_EXECUTOR_ENABLED "Compile bounded steering executor" OFF)
 option(PATROL_CHASSIS_ACTUATION_ENABLED "Allow CANopen motion output after hardware validation" OFF)
+# >>>>> CAR-PROFILE: START >>>>>
+set(PATROL_ACTIVE_CAR "0" CACHE STRING "Active vehicle calibration profile: 0=disabled, 1..4=car")
+if(NOT PATROL_ACTIVE_CAR MATCHES "^[0-4]$")
+    message(FATAL_ERROR "PATROL_ACTIVE_CAR must be 0..4")
+endif()
+# <<<<< CAR-PROFILE: END <<<<<
+# >>>>> CAN2-GATEWAY: START >>>>>
+option(PATROL_CHASSIS_CAN2_GATEWAY_ENABLED "Bridge CAN2<->CAN1 for offline bench remote control" OFF)
+if(PATROL_CHASSIS_CAN2_GATEWAY_ENABLED)
+    message(FATAL_ERROR "Transparent CAN2 gateway bypasses motion arbitration; use the CAN2 keyboard command service")
+endif()
+# <<<<< CAN2-GATEWAY: END <<<<<
 option(PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED "Allow read-only CANopen and encoder polling" ON)
 option(PATROL_CHASSIS_POWER_OUTPUT_ENABLED "Allow the confirmed PA0 vehicle relay-supply output" ON)
 option(PATROL_CHASSIS_APP_FAULT_INJECTION_TEST "Build intentional Boot confirmation fault" OFF)
@@ -97,8 +109,14 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
     $<$<CONFIG:Debug>:PATROL_EC800_AT_TRACE=1>
     PATROL_OTA_AUTO_SEED=$<BOOL:${PATROL_CHASSIS_OTA_AUTO_SEED}>
     PATROL_CHASSIS_ACTUATION_ENABLED=$<BOOL:${PATROL_CHASSIS_ACTUATION_ENABLED}>
+    # >>>>> CAR-PROFILE: START >>>>>
+    PATROL_ACTIVE_CAR=${PATROL_ACTIVE_CAR}
+    # <<<<< CAR-PROFILE: END <<<<<
     PATROL_STEERING_EXECUTOR_ENABLED=$<BOOL:${PATROL_STEERING_EXECUTOR_ENABLED}>
     PATROL_DRIVE_EXECUTOR_ENABLED=$<BOOL:${PATROL_DRIVE_EXECUTOR_ENABLED}>
+    # >>>>> CAN2-GATEWAY: START >>>>>
+    PATROL_CHASSIS_CAN2_GATEWAY_ENABLED=$<BOOL:${PATROL_CHASSIS_CAN2_GATEWAY_ENABLED}>
+    # <<<<< CAN2-GATEWAY: END <<<<<
     PATROL_CHASSIS_POWER_OUTPUT_ENABLED=$<BOOL:${PATROL_CHASSIS_POWER_OUTPUT_ENABLED}>
     PATROL_CHASSIS_MQTT_LAB_TEST=$<BOOL:${PATROL_CHASSIS_MQTT_LAB_TEST}>
     PATROL_MQTT_TRIAL_FAULT_INJECTION=$<BOOL:${PATROL_MQTT_TRIAL_FAULT_INJECTION}>

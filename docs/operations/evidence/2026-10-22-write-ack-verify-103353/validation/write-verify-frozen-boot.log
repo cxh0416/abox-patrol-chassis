@@ -1,0 +1,7 @@
+ABox Boot artifact verified
+size=32768
+sha256=981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63
+crc32=F36320C9
+initial_sp=0x20010000
+reset_handler=0x08001DF1
+descriptor_crc32=0xE55BBFCB

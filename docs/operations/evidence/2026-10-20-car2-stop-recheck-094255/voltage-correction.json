@@ -1,0 +1,9 @@
+{
+  "corrects": "decoded.json",
+  "timestamp": "2026-10-20T09:44:03.638324+08:00",
+  "field": "observed",
+  "correction": "Actual stdout.log VTref is 3.304 V, not 0.004 V. The initial human-readable summary misread truncated error output. No loss-of-supply conclusion is supported. DAP attach failed despite target reference voltage present.",
+  "source": "stdout.log",
+  "source_sha256": "b54acbd0c54f0561956ed74a4cc2de8363f8a824712c20427ff13cd7afde8bdf",
+  "hardware_actions_after_failure": "None. No further attach/reset/write/flash attempted."
+}

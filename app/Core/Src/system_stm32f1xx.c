@@ -152,6 +152,7 @@ const uint8_t APBPrescTable[8U] =  {0, 0, 0, 0, 1, 2, 3, 4};
 
 #if defined(STM32F100xE) || defined(STM32F101xE) || defined(STM32F101xG) || defined(STM32F103xE) || defined(STM32F103xG)
 #ifdef DATA_IN_ExtSRAM
+  // 初始化条件编译启用的外部存储控制接口。只对相应芯片与宏组合编译，按当前工程分支配置，不表示本板已经装有外部存储器。
   static void SystemInit_ExtMemCtl(void); 
 #endif /* DATA_IN_ExtSRAM */
 #endif /* STM32F100xE || STM32F101xE || STM32F101xG || STM32F103xE || STM32F103xG */
@@ -172,6 +173,7 @@ const uint8_t APBPrescTable[8U] =  {0, 0, 0, 0, 1, 2, 3, 4};
   * @param  None
   * @retval None
   */
+// 在启动汇编进入 C 运行时前初始化系统基础状态。按芯片条件重置时钟配置并设置向量表等启动项；此时全局数据初始化尚未完成，不能调用普通产品服务。
 void SystemInit (void)
 {
 #if defined(STM32F100xE) || defined(STM32F101xE) || defined(STM32F101xG) || defined(STM32F103xE) || defined(STM32F103xG)
@@ -221,6 +223,7 @@ void SystemInit (void)
   * @param  None
   * @retval None
   */
+// 按 RCC 寄存器重新计算 SystemCoreClock。识别当前时钟源、PLL 和 AHB 分频，只更新软件频率值，不实际切换硬件时钟。
 void SystemCoreClockUpdate (void)
 {
   uint32_t tmp = 0U, pllmull = 0U, pllsource = 0U;
@@ -346,6 +349,7 @@ void SystemCoreClockUpdate (void)
   * @param  None
   * @retval None
   */ 
+// 初始化条件编译启用的外部存储控制接口。只对相应芯片与宏组合编译，按当前工程分支配置，不表示本板已经装有外部存储器。
 void SystemInit_ExtMemCtl(void) 
 {
   __IO uint32_t tmpreg;

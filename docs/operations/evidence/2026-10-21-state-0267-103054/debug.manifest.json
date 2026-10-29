@@ -1,0 +1,49 @@
+{
+  "kind": "online-debug",
+  "configuration": "Release",
+  "candidate": true,
+  "product": "patrol_vehicle_chassis",
+  "app_version": "patrol-chassis-0.2.67",
+  "boot_version": "abox-boot-2.3.0",
+  "app_offset": "0x00008000",
+  "initial_sp": "0x20010000",
+  "reset_vector": "0x800d44d",
+  "full_length": 183720,
+  "full_sha256": "976e55161ca29500f6077c5cf465c17a2c7d737ed4e51142bedee7415735ea3d",
+  "app_sha256": "d3d3055fa6edfb087f50ac2052e8a858cfd44bbb3d5b3112c06f22fe01cdb6ed",
+  "boot_sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+  "source_candidate_manifest_sha256": "03b3339c2edfc0fa26f4ff4c879c6e925f78b294eae8bb017d79da81354e6644",
+  "firmware_rebuilt": false,
+  "board_flashed": false,
+  "includes_boot_state": false,
+  "includes_device_config": false,
+  "load_addresses": {
+    "ABox_Boot.bin": "0x08000000",
+    "Patrol_Vehicle_Chassis_App.bin": "0x08008000",
+    "Patrol_Vehicle_Chassis_Full.bin": "0x08000000"
+  },
+  "boot_state_pages": [
+    "0x0803E800",
+    "0x0803F000"
+  ],
+  "config_recovery_page": "0x0803E000",
+  "config_page": "0x0803F800",
+  "installation_note": "Existing boards need matching App version/size/CRC in Boot State, derived from a fresh board readback. Preserve recovery/config and other state page; do not mass erase. Full is Boot+App only, not a whole-chip backup.",
+  "validation": {
+    "python": {
+      "total": 43,
+      "passed": 42,
+      "failed": 1,
+      "known_failure": "test_patrol_scaffold.PatrolScaffoldTests.test_identity_and_safe_defaults: retained hot-reset SDO recovery path"
+    },
+    "standalone_c": "pass",
+    "arm_release": "pass",
+    "flash_layout": "pass",
+    "can2_stack": "pass",
+    "bench_stack": "pass",
+    "service_stack": "pass",
+    "ram_bytes": 61432,
+    "board_installation": "not performed",
+    "physical_motion_acceptance": "not performed"
+  }
+}

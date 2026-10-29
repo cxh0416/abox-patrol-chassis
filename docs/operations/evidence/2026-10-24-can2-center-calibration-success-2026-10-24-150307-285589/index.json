@@ -1,0 +1,46 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "date": "2026-10-24",
+  "version": "patrol-chassis-0.2.87",
+  "result": "center calibration committed and reloaded after MCU reset",
+  "steering_center_count": -8122,
+  "absolute_center_count": 0,
+  "calibrated": true,
+  "config_page_readback": true,
+  "mcu_reset_reload_verified": true,
+  "full_vehicle_power_cycle_verified": false,
+  "issue": "script misreported TOKEN response with phase COMPLETE as failure after the successful commit",
+  "script_fixed": true,
+  "files": [
+    {
+      "path": "config-page.bin",
+      "bytes": 2048,
+      "sha256": "59dc59c2bd2cb74e75f10eb9a3c83c2350b865b5c5d6608269cdd4c0482de865"
+    },
+    {
+      "path": "config-values.json",
+      "bytes": 669,
+      "sha256": "6e8ace7fdbe951c9e2ed3e184159151e456c669efac414d31bc18c6edf64b4e3"
+    },
+    {
+      "path": "jlink-readonly.log",
+      "bytes": 4318,
+      "sha256": "22458339684155bf55c7e10d64e842e63ca8330cb1df0f657eecdbb811367f81"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1581,
+      "sha256": "ba770b254398615fdf75250929a5d34c4eae9023db19f3638eeef555286aa75e"
+    },
+    {
+      "path": "status-after-commit.json",
+      "bytes": 574,
+      "sha256": "f829482ed399e5b418ae22f509c108c380159e2c6f816cb40c453f49eaf83bd3"
+    },
+    {
+      "path": "status-after-mcu-reset.json",
+      "bytes": 574,
+      "sha256": "edd7d009f6e57f67b0c7241e7bb7554672c5f3166c41f3e9470b3a1c7c36e5bf"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "execute": true,
+  "physical_channel": 2,
+  "preflight": {
+    "sample": {
+      "tick_ms": 546170,
+      "encoder": 1384,
+      "encoder_angle_deg": 25.04977375565611,
+      "encoder_age_ms": 82,
+      "encoder_config_valid": 1,
+      "center": -14303,
+      "session": 0,
+      "enable": 0,
+      "power": 0
+    },
+    "position": 53466,
+    "center": -14303,
+    "driver_angle_deg": 24.999631105208792,
+    "limits": [
+      -96982,
+      68376
+    ],
+    "status": "0x1637",
+    "fault": 0,
+    "mode": 1
+  },
+  "error": "return-to-center timeout"
+}

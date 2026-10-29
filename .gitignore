@@ -21,3 +21,5 @@ tmp/
 outputs/
 __pycache__/
 *.py[cod]
+
+/temp-version/

@@ -59,6 +59,7 @@
 /**
   * Initializes the Global MSP.
   */
+// 初始化 HAL 使用的系统级时钟与中断基础资源。配置 AFIO/PWR 等依赖及调试相关设置，具体外设引脚由各 MSP 初始化函数负责。
 void HAL_MspInit(void)
 {
 

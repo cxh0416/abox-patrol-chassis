@@ -1,0 +1,228 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "app_version": "patrol-chassis-0.2.76",
+  "app_sha256": "177efdb46df9a968755edcaf0007fac78768125fb2bad2a43e4ca7fa27d822b2",
+  "app_image_read_only_verified": true,
+  "board_flashed_by_agent": false,
+  "driver_parameters_written": false,
+  "target_halted_or_reset": false,
+  "capture_closed": true,
+  "files": [
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261022-085846-595023\\events.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\raw\\can1-20261022-085846-595023\\events.jsonl",
+      "bytes": 19197917,
+      "sha256": "4fb7c029a58ac12e971b37f3031f453661784518d88a21bca3be4e1124cfc439"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261022-085846-595023\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\raw\\can1-20261022-085846-595023\\frames.jsonl",
+      "bytes": 58670925,
+      "sha256": "43d77240e787d3ba2a835cae8048adda426c20df81400da7be2623351f21a620"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261022-085846-595023\\metadata.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\raw\\can1-20261022-085846-595023\\metadata.json",
+      "bytes": 1136,
+      "sha256": "5ebc8b758669af2aed94cbaabef7c0f998dfa98d7f6d6b32039473ec1ebb9163"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261022-085846-595023\\sha256.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\raw\\can1-20261022-085846-595023\\sha256.json",
+      "bytes": 352,
+      "sha256": "89603cab46ab72d7487f716d11b718f3cc39f9a0726ac43fc0778334acfa9502"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261022-085846-595023\\summary.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\raw\\can1-20261022-085846-595023\\summary.json",
+      "bytes": 28610,
+      "sha256": "ed574d8686afe900288b48ed78f15ceb2f267e6c6f3987cac5ad7419d568ec5c"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261022-085846-595023.stdout.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\raw\\can1-20261022-085846-595023.stdout.log",
+      "bytes": 1333172,
+      "sha256": "68488e55249aa7a0aeef920b5ab09447771ab12618660ed2071fbe7149bb9bc1"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261022-085846-595023.stderr.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\raw\\can1-20261022-085846-595023.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\stop-can1-20261022-085846-595023.flag",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\raw\\stop-can1-20261022-085846-595023.flag",
+      "bytes": 35,
+      "sha256": "4577b224697b95fc34f98ded55b605d01ff102cc1ea6f4d3991fb047c214dce2"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-090819-077162\\CAN1-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\swd\\2026-10-22-fault-stop-readonly-090819-077162\\CAN1-registers.bin",
+      "bytes": 32,
+      "sha256": "c681ea3f902822292aa42f76a52f6e500519b772d396d486d6b00d5da0a720e4"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-090819-077162\\CAN2-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\swd\\2026-10-22-fault-stop-readonly-090819-077162\\CAN2-registers.bin",
+      "bytes": 32,
+      "sha256": "3ae6446202eba1c94d3a3c7c2d82c41df7546f1a7a17a20af653c4ab074a04c1"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-090819-077162\\motion-fault.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\swd\\2026-10-22-fault-stop-readonly-090819-077162\\motion-fault.bin",
+      "bytes": 128,
+      "sha256": "b33d0fec6e0ce846f0d6c2279d6c8ef31d88c3cfc0eba801415a90e26bd26347"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-090819-077162\\snapshot.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\swd\\2026-10-22-fault-stop-readonly-090819-077162\\snapshot.json",
+      "bytes": 2337,
+      "sha256": "ea8c0d0ee2fa518a962116c8f38723c398e9f7800cb6651f63968413316ed107"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-091128-345811\\CAN1-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\swd\\2026-10-22-fault-stop-readonly-091128-345811\\CAN1-registers.bin",
+      "bytes": 32,
+      "sha256": "c681ea3f902822292aa42f76a52f6e500519b772d396d486d6b00d5da0a720e4"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-091128-345811\\CAN2-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\swd\\2026-10-22-fault-stop-readonly-091128-345811\\CAN2-registers.bin",
+      "bytes": 32,
+      "sha256": "3ae6446202eba1c94d3a3c7c2d82c41df7546f1a7a17a20af653c4ab074a04c1"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-091128-345811\\motion-fault.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\swd\\2026-10-22-fault-stop-readonly-091128-345811\\motion-fault.bin",
+      "bytes": 128,
+      "sha256": "b33d0fec6e0ce846f0d6c2279d6c8ef31d88c3cfc0eba801415a90e26bd26347"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-091128-345811\\snapshot.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\swd\\2026-10-22-fault-stop-readonly-091128-345811\\snapshot.json",
+      "bytes": 2401,
+      "sha256": "62feb85dccad1cf227f4ea234c45e18ea1b93f53fcf4058559483083ce71db35"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-091239-673647\\CAN1-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\swd\\2026-10-22-fault-stop-readonly-091239-673647\\CAN1-registers.bin",
+      "bytes": 32,
+      "sha256": "c681ea3f902822292aa42f76a52f6e500519b772d396d486d6b00d5da0a720e4"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-091239-673647\\CAN2-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\swd\\2026-10-22-fault-stop-readonly-091239-673647\\CAN2-registers.bin",
+      "bytes": 32,
+      "sha256": "3ae6446202eba1c94d3a3c7c2d82c41df7546f1a7a17a20af653c4ab074a04c1"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-091239-673647\\motion-fault.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\swd\\2026-10-22-fault-stop-readonly-091239-673647\\motion-fault.bin",
+      "bytes": 128,
+      "sha256": "b33d0fec6e0ce846f0d6c2279d6c8ef31d88c3cfc0eba801415a90e26bd26347"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-091239-673647\\snapshot.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\swd\\2026-10-22-fault-stop-readonly-091239-673647\\snapshot.json",
+      "bytes": 2429,
+      "sha256": "2fbbff119ef7f8e72dc62ad151e5dee6ce9c8c6148e25732e07b53b54651ea59"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-stop-0276-field-findings.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\analysis\\fault-stop-0276-field-findings.json",
+      "bytes": 20825,
+      "sha256": "1a62b408163917a0467884b22b02f593bcb05d8a9e96d2afb12698492630c17d"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\can1-capture-progress.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\analysis\\can1-capture-progress.py",
+      "bytes": 2840,
+      "sha256": "bab05bd318f12c79b1a6c65c5be92f903a295ab5e142e17194f238af7b854bca"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-stop-0276-readonly.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\analysis\\fault-stop-0276-readonly.py",
+      "bytes": 4701,
+      "sha256": "32af842000557142763a22ea2e0e9abf382ed48d83a62988660d7d7895159343"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-stop-0276-schema.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\analysis\\fault-stop-0276-schema.json",
+      "bytes": 9159,
+      "sha256": "7ef4c6d968ae3936f566fc1ad3b9d5da8180e407f7d8c7880751f354de55064c"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-stop-0276-t12-schema.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\analysis\\fault-stop-0276-t12-schema.json",
+      "bytes": 9885,
+      "sha256": "675a2e3a4827aa2be170f8c18ea818f896a82ae64ad747fa27645afa1afc69d4"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-stop-0276-abi.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\analysis\\fault-stop-0276-abi.c",
+      "bytes": 4062,
+      "sha256": "7884a6c52d00d8ae8323f73662bdc5d79061fbdedfbf1db7468c6e2fb42e136d"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-stop-0276-abi.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\analysis\\fault-stop-0276-abi.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\can1-capture-current.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\analysis\\can1-capture-current.json",
+      "bytes": 559,
+      "sha256": "be58ffd55f31ef8d0bd39fbad47d3b7162f29640ba93cfe44f796fb660c11a8b"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\src\\patrol_runtime.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\source-at-analysis\\patrol_runtime.c",
+      "bytes": 40336,
+      "sha256": "8aab440a50e96b76ef80481d20c6fefcd2e3bb0f0385e8157cc06b103338f154"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\src\\bench_drive.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\source-at-analysis\\bench_drive.c",
+      "bytes": 11069,
+      "sha256": "5702790505f7bb0a2c0b25a9753df20f774fedc2b2254c86770d606f0b2a800c"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\src\\bench_steering.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\source-at-analysis\\bench_steering.c",
+      "bytes": 20661,
+      "sha256": "a9136011cc7351b3bf377e9f1387d14d186e80b65a7055fd50de68b9fd0abbeb"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\src\\patrol_diagnostics.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\source-at-analysis\\patrol_diagnostics.c",
+      "bytes": 19497,
+      "sha256": "75f84ff764c9f15f0825b56bd75d94ff0949cb91cb81309ff8c7209c1939ebd2"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\src\\patrol_phy_remote.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\source-at-analysis\\patrol_phy_remote.c",
+      "bytes": 7801,
+      "sha256": "b9e48f54d53ccd8b681fcb3d87c0e757ffe335eea375fa30d661bf64cb7fc131"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\src\\patrol_fault_stop.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\source-at-analysis\\patrol_fault_stop.c",
+      "bytes": 5826,
+      "sha256": "2c728d6a90eed92504d885c771eb30c163304a1afc3882593f221e084d05897a"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\can1_bus_monitor.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\analysis\\can1_bus_monitor.py",
+      "bytes": 23342,
+      "sha256": "58f9a8679c469c4d6c82c9cc4dbd393d753cb0cd486928bf3700e1d4180cfccc"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\archive-0276-reproduction.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-fault-stop-field-091900-226145\\analysis\\archive-0276-reproduction.py",
+      "bytes": 9178,
+      "sha256": "17995c1cf31f0305ddd8ada2a2083728f92a98820251f1c7efa4bc4437ba9959"
+    }
+  ]
+}

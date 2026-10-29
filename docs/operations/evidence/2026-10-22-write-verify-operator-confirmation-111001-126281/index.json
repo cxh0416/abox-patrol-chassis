@@ -1,0 +1,16 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "created_at": "2026-10-22T11:10:01.126281+08:00",
+  "files": [
+    {
+      "original_path": "Current session operator reply, transcribed verbatim",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-verify-operator-confirmation-111001-126281\\operator-confirmation.json",
+      "bytes": 1277,
+      "sha256": "317e25b08e5c4cb98e72f711c75dc674baf5788515d4fc51e4f7ed776f695dfb"
+    }
+  ],
+  "related_evidence": {
+    "path": "docs\\operations\\evidence\\2026-10-22-write-verify-field-110522-916058\\index.json",
+    "sha256": "d81e513106a90d838b518280f3f5c232d704f9dadb1ba07aed4d1431f2791e14"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "started_at": "2026-10-23T19:34:04.175263+08:00",
+  "mode": "attach-only SWD, no halt/reset/go/target writes",
+  "probe_serial": 59406895,
+  "dhcsr_before": "0x1010001",
+  "uid_raw_hex": "34ffd3054e57333750350443",
+  "app_sha256": "b4ce4053360fbe13470bb8c8cc7581e8df3f94f6f5f7bf570744f98b7556e069",
+  "version_markers": [
+    "PATROL_VEHICLE_CHASSIS_FW_VERSION=patrol-chassis-0.2.83"
+  ],
+  "image_matches_exact_elf": false,
+  "error": "RuntimeError: Image differs; no RAM ABI interpretation"
+}

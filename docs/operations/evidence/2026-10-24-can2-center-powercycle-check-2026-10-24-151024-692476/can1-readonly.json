@@ -1,0 +1,14 @@
+{
+  "wiring": "CANalyst physical CH2 to A-BOX CAN1",
+  "writes": false,
+  "node1": {
+    "operationModeDisplay6061": 1,
+    "position6064": -8122,
+    "statusWord6041": "0x5022"
+  },
+  "node2": {
+    "operationModeDisplay6061": 3,
+    "position6064": 6482378,
+    "statusWord6041": "0x5010"
+  }
+}

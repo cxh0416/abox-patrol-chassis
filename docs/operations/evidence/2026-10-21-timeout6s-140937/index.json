@@ -1,0 +1,121 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.70",
+  "source_commit": "d3614871be8400dd37565ebfe97b044996be85be",
+  "app_sha256": "e661dbd2033bf68a212cb67c104b729e55795f4fa664bc6322605a68f3ff25bd",
+  "board_flashed": false,
+  "current_board_capture": false,
+  "boot_state_policy": "manual-install NORMAL, stable UFS metadata explicitly unseeded",
+  "states": [
+    {
+      "file": "BootState_A.bin",
+      "sequence": 1,
+      "state": "NORMAL",
+      "bytes": 2048,
+      "sha256": "1122c25dd6e7ec9da68802aa9d8e2ce83447ab0df6298928cddfe525180b8aa8",
+      "address": "0x0803E800",
+      "app_version": "patrol-chassis-0.2.70",
+      "app_size": 151016,
+      "app_crc32": "1800FAAC",
+      "stable_metadata": "unseeded"
+    },
+    {
+      "file": "BootState_B.bin",
+      "sequence": 2,
+      "state": "NORMAL",
+      "bytes": 2048,
+      "sha256": "38e742c0813512fc7d5a3b182e8b9e1d2eb0fbbdde18378649263f6ee9e68089",
+      "address": "0x0803F000",
+      "app_version": "patrol-chassis-0.2.70",
+      "app_size": 151016,
+      "app_crc32": "1800FAAC",
+      "stable_metadata": "unseeded"
+    }
+  ],
+  "files": {
+    "ABox_Boot.bin": {
+      "bytes": 32768,
+      "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+    },
+    "boot-state-verification.log": {
+      "bytes": 179,
+      "sha256": "c338891e01df5496bd6c0f8dbba9c94809398c6ae2f1d98390f1a76f7018cf50"
+    },
+    "BootState_A.bin": {
+      "bytes": 2048,
+      "sha256": "1122c25dd6e7ec9da68802aa9d8e2ce83447ab0df6298928cddfe525180b8aa8"
+    },
+    "BootState_B.bin": {
+      "bytes": 2048,
+      "sha256": "38e742c0813512fc7d5a3b182e8b9e1d2eb0fbbdde18378649263f6ee9e68089"
+    },
+    "candidate.manifest.json": {
+      "bytes": 14773,
+      "sha256": "c7c23fea034de746f761ce09c924654ad0f1ba8f22e1b951e2e648855db196c5"
+    },
+    "debug.manifest.json": {
+      "bytes": 1128,
+      "sha256": "592e2c84ef2ae0ef034069b445916bf93ea4c99b563a8ecaeeeaee946397c58b"
+    },
+    "FLASH_ADDRESSES.txt": {
+      "bytes": 1189,
+      "sha256": "114106701a0094e2b1c3d504689b20c5e154efa3f7b4b7ed0a8dcf6e17fcd7ca"
+    },
+    "Patrol_Vehicle_Chassis_App.bin": {
+      "bytes": 151016,
+      "sha256": "e661dbd2033bf68a212cb67c104b729e55795f4fa664bc6322605a68f3ff25bd"
+    },
+    "Patrol_Vehicle_Chassis_Full.bin": {
+      "bytes": 183784,
+      "sha256": "3c5a76818eaa83e51f066ec36f4974210ec7b8f5fbb5376b8981b59d4f793f92"
+    },
+    "source-changes.patch": {
+      "bytes": 10413,
+      "sha256": "29708431ac6b01daed269354cae2dc135a1e5e1d7dac4aae2e489d47079fb711"
+    },
+    "timeout6s-arm.log": {
+      "bytes": 6512,
+      "sha256": "8f07cc9a70a26d17609508613b87e4a81fa364b9a9c90fb3da99f14b78bcb79a"
+    },
+    "timeout6s-boot.log": {
+      "bytes": 208,
+      "sha256": "bbfc3d831c9390d994c173862385a257e5a7f9af896d96c2f1e29684457e28f2"
+    },
+    "timeout6s-c-tests.log": {
+      "bytes": 240,
+      "sha256": "846972a2e7b1bba3f8bcaefadd0f96267c9ed8983c90c3e3347d1863796d3e87"
+    },
+    "timeout6s-chassis-test.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "timeout6s-configure.log": {
+      "bytes": 186,
+      "sha256": "eff1d958214c395f5ff6e2bd96977932e26d0c62a2cb08ac6fbd8f2372d137bb"
+    },
+    "timeout6s-layout.log": {
+      "bytes": 253,
+      "sha256": "0c7076fd7c4b9a18e0f7173bc168689737dd8035c8f8093927e1a7e29c6ab9b2"
+    },
+    "timeout6s-python.log": {
+      "bytes": 107717,
+      "sha256": "893a420fd6ebbd54de6a1408def7def7a694e2e3f6049cc17e08079a06fec896"
+    },
+    "timeout6s-readonly.log": {
+      "bytes": 1431,
+      "sha256": "2b58197eac0e12ed222c59087e52809178871afc7cff839cd7c5b776aba29543"
+    },
+    "timeout6s-stack.log": {
+      "bytes": 674,
+      "sha256": "1081181ca93c71a02358221e023c3d274e064b74a161a2e9c831837fd40c93f3"
+    },
+    "Timeout6s_Flash.zip": {
+      "bytes": 123172,
+      "sha256": "8b7d487e368f2fd139940f46bc533d67158bdf002f41dc78a80d2cda44c4c1e6"
+    },
+    "verify-state-timeout6s.c": {
+      "bytes": 3379,
+      "sha256": "8f68ea8c567939795b6694a37ba2615fbd36e7b13dd2ec13b37c9200582fcae2"
+    }
+  }
+}

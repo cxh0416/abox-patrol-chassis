@@ -1,0 +1,42 @@
+{
+  "kind": "online-debug",
+  "configuration": "Release",
+  "candidate": true,
+  "product": "patrol_vehicle_chassis",
+  "app_version": "patrol-chassis-0.2.69",
+  "boot_version": "abox-boot-2.3.0",
+  "app_offset": "0x00008000",
+  "initial_sp": "0x20010000",
+  "reset_vector": "0x800d44d",
+  "full_length": 183776,
+  "full_sha256": "0dee1f987dc22d6bc63ab0e9bc7ae04002ee3245851589b960d52a808b35ac04",
+  "app_sha256": "7be29b4f06eb3f9fd0cb42652a3aa30e11de31d1e9d5ec439cfe8884441cd10c",
+  "boot_sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+  "firmware_rebuilt": true,
+  "board_flashed": false,
+  "includes_boot_state": false,
+  "includes_device_config": false,
+  "validation": {
+    "product_python_passed": 42,
+    "product_python_total": 43,
+    "known_existing_failure": "test_identity_and_safe_defaults: user-confirmed existing hot-reset recovery design; unchanged",
+    "standalone_product_c_tests": true,
+    "arm_release_build": true,
+    "stack_checks": true,
+    "hardware_motion_verified": false,
+    "boot_state_host_verification": true,
+    "physical_b_ignored_regression": true,
+    "timeout_4s_boundary_regression": true
+  },
+  "load_addresses": {
+    "Patrol_Vehicle_Chassis_App.bin": "0x08008000",
+    "Patrol_Vehicle_Chassis_Full.bin": "0x08000000",
+    "ABox_Boot.bin": "0x08000000"
+  },
+  "boot_state_pages": [
+    "0x0803E800",
+    "0x0803F000"
+  ],
+  "config_recovery_page": "0x0803E000",
+  "config_page": "0x0803F800"
+}

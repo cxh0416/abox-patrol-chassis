@@ -15,6 +15,7 @@ typedef struct {
     uint8_t fast;
 } CloudTelemetry;
 
+// 登记最近一次需要快速诊断上报的活动时间。设置有效活动标记，由 Update 在租约到期后恢复普通上报节奏。
 static inline void CloudTelemetry_Wake(CloudTelemetry* state, uint32_t now)
 {
     state->last_activity_ms = now;
@@ -22,6 +23,7 @@ static inline void CloudTelemetry_Wake(CloudTelemetry* state, uint32_t now)
 }
 
 /* Unsigned elapsed time also expires leases across HAL tick wrap. */
+// 更新快速诊断租约并检测进入快速模式的上升沿。活动刷新时间，过期清活动标记；仅从非快速转为快速时返回非零，而非简单返回当前模式。
 static inline uint8_t CloudTelemetry_Update(CloudTelemetry* state, uint32_t now,
                                             uint8_t active)
 {

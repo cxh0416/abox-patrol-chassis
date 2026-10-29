@@ -1,0 +1,229 @@
+{
+  "assumption": "PatrolCanFrame_t 44 bytes: bus0, header4, data32, timestamp40; sizes verified from queue/RTOS declaration",
+  "frames": [
+    {
+      "slot": 15,
+      "bus": 0,
+      "id": "181",
+      "data": "bb2204006c0401",
+      "timestamp_ms": 124971
+    },
+    {
+      "slot": 16,
+      "bus": 0,
+      "id": "281",
+      "data": "9efaffff01000000",
+      "timestamp_ms": 124972
+    },
+    {
+      "slot": 17,
+      "bus": 0,
+      "id": "181",
+      "data": "bb2204006c0401",
+      "timestamp_ms": 124982
+    },
+    {
+      "slot": 18,
+      "bus": 0,
+      "id": "281",
+      "data": "9efaffff01000000",
+      "timestamp_ms": 124983
+    },
+    {
+      "slot": 19,
+      "bus": 0,
+      "id": "181",
+      "data": "bb2204006c0401",
+      "timestamp_ms": 124993
+    },
+    {
+      "slot": 20,
+      "bus": 0,
+      "id": "281",
+      "data": "9efaffff01000000",
+      "timestamp_ms": 124994
+    },
+    {
+      "slot": 21,
+      "bus": 0,
+      "id": "181",
+      "data": "bb2204006c0401",
+      "timestamp_ms": 125004
+    },
+    {
+      "slot": 22,
+      "bus": 0,
+      "id": "281",
+      "data": "9efaffff01000000",
+      "timestamp_ms": 125005
+    },
+    {
+      "slot": 23,
+      "bus": 0,
+      "id": "181",
+      "data": "bb2204006c0401",
+      "timestamp_ms": 125015
+    },
+    {
+      "slot": 24,
+      "bus": 0,
+      "id": "281",
+      "data": "9efaffff01000000",
+      "timestamp_ms": 125016
+    },
+    {
+      "slot": 25,
+      "bus": 0,
+      "id": "181",
+      "data": "bb2204006c0401",
+      "timestamp_ms": 125026
+    },
+    {
+      "slot": 26,
+      "bus": 0,
+      "id": "281",
+      "data": "9efaffff00000000",
+      "timestamp_ms": 125027
+    },
+    {
+      "slot": 27,
+      "bus": 0,
+      "id": "082",
+      "data": "1000010001000000",
+      "timestamp_ms": 125030
+    },
+    {
+      "slot": 28,
+      "bus": 0,
+      "id": "181",
+      "data": "bb2204006c0401",
+      "timestamp_ms": 125037
+    },
+    {
+      "slot": 29,
+      "bus": 0,
+      "id": "281",
+      "data": "9efaffff00000000",
+      "timestamp_ms": 125038
+    },
+    {
+      "slot": 30,
+      "bus": 0,
+      "id": "181",
+      "data": "bb2204006c0401",
+      "timestamp_ms": 125048
+    },
+    {
+      "slot": 31,
+      "bus": 0,
+      "id": "281",
+      "data": "9efaffff00000000",
+      "timestamp_ms": 125049
+    },
+    {
+      "slot": 0,
+      "bus": 0,
+      "id": "701",
+      "data": "05",
+      "timestamp_ms": 125057
+    },
+    {
+      "slot": 1,
+      "bus": 0,
+      "id": "181",
+      "data": "bb2204006c0401",
+      "timestamp_ms": 125059
+    },
+    {
+      "slot": 2,
+      "bus": 0,
+      "id": "281",
+      "data": "9efaffff00000000",
+      "timestamp_ms": 125060
+    },
+    {
+      "slot": 3,
+      "bus": 0,
+      "id": "181",
+      "data": "bb2204006c0401",
+      "timestamp_ms": 125070
+    },
+    {
+      "slot": 4,
+      "bus": 0,
+      "id": "281",
+      "data": "9efaffff00000000",
+      "timestamp_ms": 125071
+    },
+    {
+      "slot": 5,
+      "bus": 0,
+      "id": "181",
+      "data": "bb2204006c0401",
+      "timestamp_ms": 125081
+    },
+    {
+      "slot": 6,
+      "bus": 0,
+      "id": "281",
+      "data": "9efaffff00000000",
+      "timestamp_ms": 125082
+    },
+    {
+      "slot": 7,
+      "bus": 0,
+      "id": "181",
+      "data": "bb2204006c0401",
+      "timestamp_ms": 125092
+    },
+    {
+      "slot": 8,
+      "bus": 0,
+      "id": "281",
+      "data": "9efaffff00000000",
+      "timestamp_ms": 125093
+    },
+    {
+      "slot": 9,
+      "bus": 0,
+      "id": "181",
+      "data": "bb2204006c0401",
+      "timestamp_ms": 125103
+    },
+    {
+      "slot": 10,
+      "bus": 0,
+      "id": "281",
+      "data": "9efaffff00000000",
+      "timestamp_ms": 125104
+    },
+    {
+      "slot": 11,
+      "bus": 0,
+      "id": "181",
+      "data": "bb2204006c0401",
+      "timestamp_ms": 125114
+    },
+    {
+      "slot": 12,
+      "bus": 0,
+      "id": "281",
+      "data": "9efaffff00000000",
+      "timestamp_ms": 125115
+    },
+    {
+      "slot": 13,
+      "bus": 0,
+      "id": "181",
+      "data": "bb2204006c0401",
+      "timestamp_ms": 125125
+    },
+    {
+      "slot": 14,
+      "bus": 0,
+      "id": "281",
+      "data": "9efaffff00000000",
+      "timestamp_ms": 125126
+    }
+  ]
+}

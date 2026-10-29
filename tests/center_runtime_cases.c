@@ -10,6 +10,7 @@ static void reset_fixture(void)
     BenchSteering_Init(&g_motion.bench); BenchDrive_Init(&g_motion.drive);
     SteeringCoordinate_Reset(&g_motion.coordinate);
     g_motion.coordinate_reset_requested = mock_bus_off = mock_ota = mock_permit = 0;
+    mock_cal_prepare = 0;
     g_motion.feedback_gate_mask = g_motion.bench_fault_gate_mask = 0;
     mock_can_ready = mock_revoke_before_send = mock_sent = 0;
     mock_power = 1; mock_now = 1000;
@@ -81,6 +82,19 @@ int main(void)
         assert(CenterCalibration_FormatDiagnostics(diagnostics, sizeof(diagnostics)));
         assert(strstr(diagnostics, "\"detailReason\":\"gate_not_ready\""));
     }
+
+    /* Calibration keeps its relative two-degree guard after normal-motion
+     * comparison is removed. The raw jump is valid but disagrees by ~3 deg. */
+    reset_fixture(); start_ready();
+    assert(CenterCalibration_Jog(g_motion.center_cal.session_id, 1000));
+    mock_now += 20U;
+    mock_snapshot.encoder_count += 166U;
+    mock_snapshot.encoder_sample_ms = mock_snapshot.coherent_feedback_ms = mock_now;
+    CenterCalibration_UpdateRelative(&mock_snapshot);
+    assert(!g_motion.center_cal.relative_valid);
+    CenterCalibration_Tick(mock_now);
+    assert(g_motion.center_cal.phase == CENTER_CAL_STOPPING ||
+           g_motion.center_cal.phase == CENTER_CAL_FAILED);
 
     reset_fixture(); start_ready();
     assert(CenterCalibration_Jog(g_motion.center_cal.session_id, 1000));

@@ -1,0 +1,155 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "source_commit": "6dc46630cd6cae3cabf0600be1ca4c0f3e03a29a",
+  "version": "patrol-chassis-0.2.68",
+  "board_flashed": false,
+  "read_only_board_capture": true,
+  "source_record": {
+    "magic": 1112757810,
+    "abi": 3,
+    "length": 112,
+    "sequence": 22,
+    "state": 4,
+    "stable_slot": 0,
+    "candidate_slot": 0,
+    "trial_fail_count": 0,
+    "last_reset_reason": 0,
+    "image_size": 151048,
+    "image_crc32": 3139107186,
+    "image_version": "patrol-chassis-0.2.65",
+    "stable_image_size": 151048,
+    "stable_image_crc32": 3139107186,
+    "stable_image_version": "patrol-chassis-0.2.65",
+    "last_error": 0,
+    "rollback_report_pending": 0,
+    "rollback_installed": 0,
+    "reserved0": 0,
+    "reserved1": 0,
+    "record_crc32": 2659134881,
+    "page": "A",
+    "valid": true
+  },
+  "states": [
+    {
+      "file": "BootState_A.bin",
+      "address": "0x0803E800",
+      "sequence": 23,
+      "state": "NORMAL",
+      "app_version": "patrol-chassis-0.2.68",
+      "app_size": 151008,
+      "app_crc32": "E519F02A",
+      "sha256": "72938269a76ddcd60869ff21786c922126da9ef6ba4d144d88034338d6aa9ca1",
+      "bytes": 2048
+    },
+    {
+      "file": "BootState_B.bin",
+      "address": "0x0803F000",
+      "sequence": 24,
+      "state": "NORMAL",
+      "app_version": "patrol-chassis-0.2.68",
+      "app_size": 151008,
+      "app_crc32": "E519F02A",
+      "sha256": "9cbebf4a93bce4a86613ad4f258a9d079235541c008afbba93f1a163e13daa65",
+      "bytes": 2048
+    }
+  ],
+  "retained_stable_metadata": {
+    "stable_slot": 0,
+    "stable_image_size": 151048,
+    "stable_image_crc32": 3139107186,
+    "stable_image_version": "patrol-chassis-0.2.65"
+  },
+  "private_flash_backup_sha256": "2b5953baf10272593b65d851eee385d5805944bc114f989a2589a46e2ea344ad",
+  "app_sha256": "c68151dc92196752a5cf0086e887e7824c1de846b97a32ea9ff6ad7be8d9269a",
+  "note": "NORMAL records match manual App installation; retain previous UFS stable metadata and do not claim new stable slot confirmation.",
+  "files": {
+    "ABox_Boot.bin": {
+      "bytes": 32768,
+      "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+    },
+    "b-disabled-arm.log": {
+      "bytes": 6698,
+      "sha256": "0ebbf5410de09feec54aec22dde9403d17aa6af9adc2396dd6b3d25ff0dcca07"
+    },
+    "b-disabled-boot.log": {
+      "bytes": 208,
+      "sha256": "bbfc3d831c9390d994c173862385a257e5a7f9af896d96c2f1e29684457e28f2"
+    },
+    "b-disabled-c-tests.log": {
+      "bytes": 240,
+      "sha256": "846972a2e7b1bba3f8bcaefadd0f96267c9ed8983c90c3e3347d1863796d3e87"
+    },
+    "b-disabled-layout.log": {
+      "bytes": 253,
+      "sha256": "0c7076fd7c4b9a18e0f7173bc168689737dd8035c8f8093927e1a7e29c6ab9b2"
+    },
+    "b-disabled-python.log": {
+      "bytes": 94124,
+      "sha256": "071cd6369b70735e3f2e65324ccd4497e5a767d01bf5b6c1b00f33b5a3a0b2ac"
+    },
+    "b-disabled-readonly.log": {
+      "bytes": 3234,
+      "sha256": "218aa7183e38c5351280ce636d17b4b50962b7d9f1813ae6d443eeb12797c699"
+    },
+    "b-disabled-stack.log": {
+      "bytes": 1701,
+      "sha256": "06c4df5add9ed6df4000c1959a4fd2003b6657d07c694cd8a6871851fbf242bc"
+    },
+    "boot-state-verification.log": {
+      "bytes": 180,
+      "sha256": "f5ecaf894752fadc36a627f73202de237b836910e4052e79e07fffb1aced21aa"
+    },
+    "BootState_A.bin": {
+      "bytes": 2048,
+      "sha256": "72938269a76ddcd60869ff21786c922126da9ef6ba4d144d88034338d6aa9ca1"
+    },
+    "BootState_B.bin": {
+      "bytes": 2048,
+      "sha256": "9cbebf4a93bce4a86613ad4f258a9d079235541c008afbba93f1a163e13daa65"
+    },
+    "B_Disabled_Flash.zip": {
+      "bytes": 122987,
+      "sha256": "d92d5e7f6c57b2a222974137c92d5d94380bb75a796b3bebb26cd5fb4d2b2cb0"
+    },
+    "candidate.manifest.json": {
+      "bytes": 3865,
+      "sha256": "5d562b6899891091a19e6b3bdd3c82310492d9518724f00983a489eb58e221f5"
+    },
+    "debug.manifest.json": {
+      "bytes": 1613,
+      "sha256": "4e15d3c2c0263efba75b72d48a53de0dac616e778e8e9e3b9960de0f06d6cf76"
+    },
+    "FLASH_ADDRESSES.txt": {
+      "bytes": 773,
+      "sha256": "137784ec2c5d8bd98628b19f63c598f0f3dd28c5ed7f51f6f2bdc02fe06a8849"
+    },
+    "Patrol_Vehicle_Chassis_App.bin": {
+      "bytes": 151008,
+      "sha256": "c68151dc92196752a5cf0086e887e7824c1de846b97a32ea9ff6ad7be8d9269a"
+    },
+    "Patrol_Vehicle_Chassis_Full.bin": {
+      "bytes": 183776,
+      "sha256": "5d8e8d8e27a77315915a579fabfadba8c7abace39a43503244472d97289d1db6"
+    },
+    "source-changes.patch": {
+      "bytes": 14052,
+      "sha256": "62de659dccab45b00d23c014834f2a96afce85d1e255d8c9c54bdfd775edc4b5"
+    },
+    "state-before.json": {
+      "bytes": 1302,
+      "sha256": "7e1b747bf948d719a17991dab76dfd9dbc9f5a12d2baf4a25ab921db0466128f"
+    },
+    "state-readonly.bin": {
+      "bytes": 4096,
+      "sha256": "40a76adea27fd4dea30f924b84c1399eb0e8336c5e990514f3813501baaa755b"
+    },
+    "uid.bin": {
+      "bytes": 12,
+      "sha256": "4d46849cde0edf35dcd65338a472ff614a7193426a4a4b0d712dcc1a29a73f92"
+    },
+    "verify-state-b-disabled.c": {
+      "bytes": 3421,
+      "sha256": "0e7b53bb96df9ff437516f3900147e7053c6dad0a9c5c212a03073bb29a1b2a7"
+    }
+  }
+}

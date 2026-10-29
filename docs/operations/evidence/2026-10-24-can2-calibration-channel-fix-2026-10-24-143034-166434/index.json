@@ -1,0 +1,46 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "date": "2026-10-24",
+  "title": "CAN2 center calibration script channel diagnosis",
+  "app_sha256": "84590b4bbe63f16a917409d611137669c712c6ea68e21c4de3c2247bd1043968",
+  "app_matches_0_2_86": true,
+  "root_cause": "CANalyst physical CH1 is CAN2 on this vehicle; original default used physical CH2 (CAN1)",
+  "read_only_status_on_ch1": {
+    "result": 0,
+    "driver_raw": -8122,
+    "encoder_raw": 1642,
+    "saved_center": -83815,
+    "calibrated": true,
+    "power_on": false
+  },
+  "wrong_channel_timeout": {
+    "result": 5,
+    "ids": [
+      "0x531",
+      "0x532",
+      "0x533"
+    ]
+  },
+  "files": [
+    {
+      "path": "jlink-readonly.json",
+      "bytes": 470,
+      "sha256": "b666664d735fbd23bade2319b84b320948d58956e9c34ccf79b3895f18ffb66d"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1141,
+      "sha256": "318840f69dd5a4431e39ae3194ffadff080b94e0085b10034ec44bed0f388901"
+    },
+    {
+      "path": "status-ch1.jsonl",
+      "bytes": 300,
+      "sha256": "90c49e575f28e3aa76a5d662a90748e8ffb42c1b9e6e5c5601055b4c3dec8df6"
+    },
+    {
+      "path": "status-wrong-ch2.log",
+      "bytes": 72,
+      "sha256": "217819ac51f12dee2f8045fd3f07b9aff149798351fa6f2d46e6c379d4073ccc"
+    }
+  ]
+}

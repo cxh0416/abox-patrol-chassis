@@ -1,0 +1,9 @@
+{
+  "host_started_at": "2026-10-22T10:51:00.650667+08:00",
+  "mode": "SWD attach/read only; no halt/reset/go/target writes",
+  "schema": "image-only; no RAM ABI interpretation",
+  "expected_app_sha256": "ced4fd110f4c02b1108a99cc3c2c2eb0d8d948e07232aaa04441741a219ec020",
+  "probe_serial": 59406895,
+  "error": "RuntimeError: SWD attach failed",
+  "host_finished_at": "2026-10-22T10:51:00.997637+08:00"
+}

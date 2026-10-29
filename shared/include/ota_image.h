@@ -5,12 +5,14 @@
 
 #include "boot_cfg.h"
 
+// 从四个连续字节按小端顺序读取 32 位值。输入须至少有四字节可读，不要求源地址按字对齐。
 static inline uint32_t PatrolChassisOta_ReadLe32(const uint8_t *data)
 {
     return (uint32_t)data[0] | ((uint32_t)data[1] << 8U) |
            ((uint32_t)data[2] << 16U) | ((uint32_t)data[3] << 24U);
 }
 
+// 检查 App 初始栈与复位向量是否位于允许范围。要求栈位于 SRAM、复位入口带 Thumb 位且落入 App 分区；仅检查向量，不替代完整镜像 CRC 或签名校验。
 static inline uint8_t PatrolChassisOta_VectorValid(const uint8_t *vector)
 {
     uint32_t sp;

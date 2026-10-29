@@ -1,0 +1,112 @@
+{
+  "stop_reason": "duration",
+  "error": null,
+  "kind": "snapshot",
+  "elapsed_s": 5.0,
+  "latest": {
+    "CAN1.node1.read_request.steering_actual_count:0": {
+      "age_ms": 31.0,
+      "at_s": 4.9689999999827705,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24676,
+        "index_hex": "0x6064",
+        "subindex": 0,
+        "object": "steering_actual_count",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node1.read_response.steering_actual_count:0": {
+      "age_ms": 31.0,
+      "at_s": 4.9689999999827705,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24676,
+        "index_hex": "0x6064",
+        "subindex": 0,
+        "object": "steering_actual_count",
+        "command": 67,
+        "action": "read_response",
+        "value": -8123,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.heartbeat.node1": {
+      "age_ms": 15.0,
+      "at_s": 4.98499999998603,
+      "decoded": {
+        "kind": "heartbeat",
+        "node": 1,
+        "state": 127,
+        "bootup": false
+      }
+    },
+    "CAN1.node1.read_request.statusword:0": {
+      "age_ms": 62.0,
+      "at_s": 4.937999999994645,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24641,
+        "index_hex": "0x6041",
+        "subindex": 0,
+        "object": "statusword",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node1.read_response.statusword:0": {
+      "age_ms": 62.0,
+      "at_s": 4.937999999994645,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24641,
+        "index_hex": "0x6041",
+        "subindex": 0,
+        "object": "statusword",
+        "command": 75,
+        "action": "read_response",
+        "value": 8784,
+        "observed_reply_ms": 0.0
+      }
+    }
+  },
+  "ids": {
+    "CAN1.STD.0x601": {
+      "age_ms": 31.0,
+      "count": 150,
+      "first_s": 0.0159999999741558,
+      "last_s": 4.9689999999827705,
+      "max_host_gap_ms": 62.000000005355105,
+      "last_data": "40 64 60 00 00 00 00 00",
+      "dlc": 8
+    },
+    "CAN1.STD.0x581": {
+      "age_ms": 31.0,
+      "count": 150,
+      "first_s": 0.0159999999741558,
+      "last_s": 4.9689999999827705,
+      "max_host_gap_ms": 62.000000005355105,
+      "last_data": "43 64 60 00 45 E0 FF FF",
+      "dlc": 8
+    },
+    "CAN1.STD.0x701": {
+      "age_ms": 15.0,
+      "count": 50,
+      "first_s": 0.030999999988125637,
+      "last_s": 4.98499999998603,
+      "max_host_gap_ms": 110.00000001513399,
+      "last_data": "7F",
+      "dlc": 1
+    }
+  },
+  "unanswered_sdo_events": 0,
+  "sdo_completed": 150,
+  "sdo_aborts": 0,
+  "pending_sdo": 0,
+  "max_observed_reply_ms": 16.0
+}

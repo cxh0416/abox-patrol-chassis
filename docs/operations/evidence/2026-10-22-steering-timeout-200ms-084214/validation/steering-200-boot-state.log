@@ -1,0 +1,1 @@
+PASS: real Boot State V3 parser/CRC, highest-sequence selection, A/B alone, corrupt-page fallback, matching-image jump and mismatched-image rejection; no install/write callbacks.

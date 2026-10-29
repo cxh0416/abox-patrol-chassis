@@ -27,6 +27,7 @@
 /* Private variables ---------------------------------------------------------*/
 TIM_HandleTypeDef        htim1;
 /* Private function prototypes -----------------------------------------------*/
+// 声明 HAL 模板保留的 TIM1 兼容中断入口。当前工程实际更新中断由 TIM1_UP_IRQHandler 处理，本声明不创建中断实现。
 void TIM1_IRQHandler(void);
 /* Private functions ---------------------------------------------------------*/
 
@@ -39,6 +40,7 @@ void TIM1_IRQHandler(void);
   * @param  TickPriority: Tick interrupt priority.
   * @retval HAL status
   */
+// 使用 TIM1 建立 HAL 的 1 ms 时间基准。按当前总线时钟计算分频和周期并设置中断优先级，返回 HAL 初始化或启动结果。
 HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
 {
   RCC_ClkInitTypeDef    clkconfig;
@@ -110,6 +112,7 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
   * @param  None
   * @retval None
   */
+// 暂停 TIM1 更新中断产生的 HAL tick。只屏蔽更新中断，不停用计数器；暂停期间依赖 HAL 超时的阻塞调用可能无法正常超时。
 void HAL_SuspendTick(void)
 {
   /* Disable TIM1 update Interrupt */
@@ -122,6 +125,7 @@ void HAL_SuspendTick(void)
   * @param  None
   * @retval None
   */
+// 恢复 TIM1 更新中断维护的 HAL tick。与 SuspendTick 配对使用，不补计暂停期间已经丢失的毫秒事件。
 void HAL_ResumeTick(void)
 {
   /* Enable TIM1 Update interrupt */

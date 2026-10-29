@@ -1,0 +1,14 @@
+{
+  "physical_channels": {
+    "CAN1": 1
+  },
+  "pid": 31460,
+  "output": "E:\\1_work\\ChassisCar_test\\logs\\car2-ch1-can1-check-20261022-142941-412140",
+  "duration_s": 20,
+  "operator_wiring_confirmation": "CH1 moved from CAN2 to known-good CAN1; CH2 unchanged",
+  "hardware_listen_only": true,
+  "bitrate_kbps": 500,
+  "started_at": "2026-10-22T14:29:41.4340835+08:00",
+  "stderr": "E:\\1_work\\ChassisCar_test\\logs\\car2-ch1-can1-check-20261022-142941-412140.stderr.log",
+  "stdout": "E:\\1_work\\ChassisCar_test\\logs\\car2-ch1-can1-check-20261022-142941-412140.stdout.log"
+}

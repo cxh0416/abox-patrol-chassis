@@ -1,0 +1,11 @@
+PASS calibration stack: known frames 2320 + 1024 byte reserve <= 4096
+PASS MQTT trial save stack: known frames 2800 + 1024 byte reserve <= 4096
+PASS CANopen fault stack: known frames 440 + 512 byte library reserve <= 1024
+PASS center commit stack: known frames 1712 + 1024 byte reserve <= 4096
+PASS CAN2 target: known 288 + reserve 512 <= 1024
+PASS CAN2 reset: known 360 + reserve 512 <= 1024
+PASS CAN2 reply: known 192 + reserve 512 <= 1024
+PASS CAN2 lease stop: known 128 + reserve 512 <= 1024
+PASS handset A switch: known 272 + reserve 512 <= 1024
+PASS handset joystick: known 272 + reserve 512 <= 1024
+PASS handset lease stop: known 128 + reserve 512 <= 1024

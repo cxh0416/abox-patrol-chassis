@@ -1,0 +1,209 @@
+diff --git a/app/Core/User/cloud/include/remote_service.h b/app/Core/User/cloud/include/remote_service.h
+index d6e382d..20acfb5 100644
+--- a/app/Core/User/cloud/include/remote_service.h
++++ b/app/Core/User/cloud/include/remote_service.h
+@@ -18,7 +18,7 @@ void RemoteService_Init(void);
+ void RemoteService_Task(void);
+ void RemoteService_SafetyTick(uint32_t now_ms);
+ void RemoteService_UpdateFeedback(const ChassisFeedback* feedback);
+-/* Physical B switch inhibits traction for every transport without revoking steering. */
++/* Internal traction inhibit; independent of handset buttons and steering. */
+ void RemoteService_SetDriveBrake(uint8_t active);
+ /* Local transports share the same owner, safety checks and lease watchdog.
+  * No network clock or JSON envelope is required on the physical CAN port. */
+diff --git a/app/Core/User/motion/src/patrol_phy_remote.c b/app/Core/User/motion/src/patrol_phy_remote.c
+index d71433c..55062e7 100644
+--- a/app/Core/User/motion/src/patrol_phy_remote.c
++++ b/app/Core/User/motion/src/patrol_phy_remote.c
+@@ -73,7 +73,7 @@ uint8_t PatrolPhyRemote_OnFrame(const PatrolCanFrame* frame, uint32_t received_m
+ 
+     if (frame->id != PATROL_PHY_REMOTE_SWITCH_ID && frame->id != PATROL_PHY_REMOTE_JOYSTICK_ID)
+         return 0U;
+-    /* A queued old switch must never release a newer brake state. */
++    /* Reject queued old switch frames before updating enable state. */
+     if (frame->dlc != 8U || (uint32_t)(now_ms - received_ms) > 100U)
+         return 1U;
+ 
+@@ -82,9 +82,7 @@ uint8_t PatrolPhyRemote_OnFrame(const PatrolCanFrame* frame, uint32_t received_m
+             if (switch_seen && (int32_t)(received_ms - last_switch_ms) < 0) return 1U;
+             switch_seen = 1U;
+             last_switch_ms = received_ms;
+-            /* Operator confirmed B follows A: lamp on/nonzero, lamp off/zero.
+-             * Use the transmitted state, never toggle on each cyclic frame. */
+-            RemoteService_SetDriveBrake(frame->data[3] != 0U);
++            /* B (data[3]) is reserved and has no control action. */
+             /* byte2 = channel A = handset enable (nonzero = active, 0 = inactive). */
+             uint8_t enable = frame->data[2];
+             uint8_t was_active = (last_enable != 0U);
+diff --git a/app/Core/User/motion/src/patrol_runtime.c b/app/Core/User/motion/src/patrol_runtime.c
+index 8552a07..f49666d 100644
+--- a/app/Core/User/motion/src/patrol_runtime.c
++++ b/app/Core/User/motion/src/patrol_runtime.c
+@@ -500,7 +500,7 @@ void PatrolRuntime_Tick(void)
+     if (have_request)
+     {
+         PatrolRuntimePort_Enter();
+-        /* A B switch can arrive after frame selection. Discard an old drive
++        /* A traction inhibit can arrive after frame selection. Discard an old drive
+          * command and start its bounded zero/disable sequence, without touching
+          * the steering executor or the shared session. */
+         if (bench_frame == 2 && RemoteService_State()->drive_brake &&
+diff --git "a/docs/implementation/\346\272\220\347\240\201\346\250\241\345\235\227\344\270\216\344\276\235\350\265\226.md" "b/docs/implementation/\346\272\220\347\240\201\346\250\241\345\235\227\344\270\216\344\276\235\350\265\226.md"
+index 2dd5d92..27bd9ed 100644
+--- "a/docs/implementation/\346\272\220\347\240\201\346\250\241\345\235\227\344\270\216\344\276\235\350\265\226.md"
++++ "b/docs/implementation/\346\272\220\347\240\201\346\250\241\345\235\227\344\270\216\344\276\235\350\265\226.md"
+@@ -68,7 +68,7 @@ app/Core/User/
+ 
+ 行走控制目标上限为 ±1000 rpm：`CHASSIS_MAX_RPM` 约束公共控制和本地 CAN2 入口，T12 将原始 ±450 映射到同一上限，`BENCH_DRIVE_MAX_RPM` 在执行器再次校验。T12 半量程对应 ±500 rpm，满量程对应 ±1000 rpm；转向速度分段仍为 300/150/75 rpm，原角度与换向/停车门禁继续有效。
+ 
+-实体 T12 遥控器的 B 行走制动由 `patrol_phy_remote.c` 读取 CAN2 `0x10A.data[3]`，按操作者确认沿用当前 A 键极性：非零为灯亮/制动，零为灯灭/解除。周期帧表示当前状态，不作为重复按键事件翻转。`RemoteService_SetDriveBrake()` 在公共 `ChassisControl` 中保存独立行走禁用位；激活立即清除行走目标和待换向请求，保留原方向、转向目标、会话与使能。所有控制入口接受的新行走请求在制动期间均归零，解除后等待新目标并继续执行原换向确认。
++实体 T12 遥控器仅使用 CAN2 `0x10A.data[2]` 的 A 键状态控制使能，B 键 `data[3]` 保留但不执行控制动作。B 灯亮、灯灭及周期重发均不影响行走目标、转向、会话、使能或换向等待；A 关闭、摇杆回中、失联与安全故障仍通过现有停车链路处理。内部 `RemoteService_SetDriveBrake()` 行走禁用接口保留，未绑定任何实体按键。
+ 
+ 运行层仅撤销行走执行器请求，完成两路零速、三组新鲜停车反馈、撤使能与状态确认，转向执行器及电源输出继续按原逻辑工作。发送前再次检查制动位，丢弃已经选取但尚未发送的行走命令。制动解除早于停车完成时，必须完成原停车序列后才能重新初始化行走。真实停车超时、反馈/驱动故障等仍服从公共故障处理，不保证故障时继续转向。Boot、Config V5、公共 MQTT V4 不变。
+ 
+diff --git a/tests/can_remote_test.c b/tests/can_remote_test.c
+index f28350d..c8a1914 100644
+--- a/tests/can_remote_test.c
++++ b/tests/can_remote_test.c
+@@ -90,72 +90,60 @@ static void joystick(int16_t throttle, int16_t steer)
+     f.data[4]=(uint8_t)throttle; f.data[5]=(uint8_t)((uint16_t)throttle>>8);
+     assert(PatrolPhyRemote_OnFrame(&f,now,now));
+ }
+-static void physical_brake_cases(void)
++static void physical_b_ignored_cases(void)
+ {
+-    init(); switches(1,0); joystick(450,180);
+-    assert(state()->target_rpm==1000 && state()->target_steering_mdeg==10000);
+-    assert(state()->active_direction==1 && state()->enable_request);
+-    uint32_t deadline=state()->lease_deadline_ms;
+-    now+=10; switches(1,1);
+-    assert(state()->drive_brake && state()->target_rpm==0 && state()->requested_rpm==0);
+-    assert(state()->target_steering_mdeg==10000 && state()->enable_request && state()->session_active);
+-    assert(state()->lease_deadline_ms==deadline && VehiclePowerOutput_IsOn());
+-    for(unsigned n=0;n<5;n++) {
+-        now+=10; healthy(); switches(1,1); joystick(-450,-180);
+-        assert(state()->drive_brake && state()->target_rpm==0 && !state()->reversal_pending);
+-        assert(state()->target_steering_mdeg==-10000 && state()->enable_request);
++    /* Every protocol B value and repeated frames leave both targets intact. */
++    for (unsigned b=0; b<=2; b++) {
++        init(); switches(1,0); joystick(450,180);
++        uint32_t deadline=state()->lease_deadline_ms;
++        for (unsigned n=0; n<5; n++) {
++            now+=10; healthy(); switches(1,(uint8_t)b);
++            assert(!state()->drive_brake && state()->target_rpm==1000);
++            assert(state()->target_steering_mdeg==10000 && state()->enable_request);
++            assert(state()->session_active && state()->lease_deadline_ms==deadline);
++            assert(VehiclePowerOutput_IsOn());
++        }
++        joystick(225,-180);
++        assert(state()->target_rpm==500 && state()->target_steering_mdeg==-10000);
++        joystick(0,0); assert(state()->target_rpm==0);
+     }
+-    /* Both nonzero protocol values mean on; repeated frames never toggle. */
+-    switches(1,2); assert(state()->drive_brake);
+-    /* Invalid/stale/out-of-order switch packets cannot release B. */
+-    PatrolCanFrame f={PATROL_PHY_REMOTE_SWITCH_ID,7,{0}};
+-    f.data[2]=1;
+-    assert(PatrolPhyRemote_OnFrame(&f,now,now) && state()->drive_brake);
+-    f.dlc=8;
+-    assert(PatrolPhyRemote_OnFrame(&f,now-101,now) && state()->drive_brake);
+-    assert(PatrolPhyRemote_OnFrame(&f,now-1,now) && state()->drive_brake);
+-    /* Releasing B accepts fresh targets, but retains the prior drive direction. */
+-    now+=10; healthy(); switches(1,0);
+-    assert(!state()->drive_brake && state()->target_rpm==0);
+-    joystick(-450,180);
++    /* B cannot cancel or bypass the existing three-sample reversal gate. */
++    init(); switches(1,0); joystick(450,0); joystick(-450,180);
+     assert(state()->reversal_pending && state()->target_rpm==0);
+-    for(unsigned n=0;n<3;n++) { now+=10; healthy(); RemoteService_SafetyTick(now); }
+-    assert(state()->target_rpm==-1000 && state()->target_steering_mdeg==10000);
+-    /* Brake cancels an already-pending reversal. */
+-    joystick(450,0); assert(state()->reversal_pending);
+-    switches(1,1);
+-    assert(!state()->reversal_pending && state()->requested_rpm==0);
+-    now+=10; healthy(); RemoteService_SafetyTick(now);
+-    assert(state()->target_rpm==0 && state()->enable_request);
++    for (unsigned b=0; b<=2; b++) {
++        now+=10; healthy(); switches(1,(uint8_t)b);
++        assert(state()->reversal_pending && state()->requested_rpm==-1000);
++        RemoteService_SafetyTick(now);
++        if (b<2) assert(state()->target_rpm==0);
++    }
++    assert(!state()->reversal_pending && state()->target_rpm==-1000);
++    switches(1,1); assert(state()->target_rpm==-1000);
+ 
+-    /* The physical brake also covers other control owners and survives reset. */
+-    init(); assert(RemoteService_ApplyLocal("acquire","other-owner",1,300,100,8000,now));
+-    switches(0,1);
+-    assert(state()->drive_brake && state()->target_rpm==0 && state()->target_steering_mdeg==8000);
++    /* B also has no effect on another transport's motion or enable. */
++    init(); assert(RemoteService_ApplyLocal("acquire","other-owner",1,300,200,8000,now));
++    switches(0,1); switches(0,2); switches(0,0);
++    assert(state()->target_rpm==200 && state()->target_steering_mdeg==8000);
+     assert(state()->enable_request && !strcmp(state()->session_id,"other-owner"));
+-    assert(RemoteService_ApplyLocal("renew","other-owner",2,300,200,-8000,now));
+-    assert(state()->target_rpm==0 && state()->target_steering_mdeg==-8000);
+-    RemoteService_Init(); healthy(); assert(state()->drive_brake);
+-    assert(RemoteService_ApplyLocal("acquire","other-owner",1,300,200,8000,now));
+-    assert(state()->target_rpm==0 && state()->enable_request);
+-    now+=10; switches(0,0);
+-    assert(RemoteService_ApplyLocal("renew","other-owner",2,300,200,8000,now));
+-    assert(state()->target_rpm==200);
+ 
+-    /* Joystick traffic alone cannot keep a missing B/A switch stream alive. */
++    /* A off, stale switches and missing switch traffic still stop with B lit. */
++    init(); VehiclePowerOutput_Set(0); switches(1,1); healthy(); joystick(450,180);
++    assert(VehiclePowerOutput_IsOn() && state()->target_rpm==1000);
++    PatrolCanFrame f={PATROL_PHY_REMOTE_SWITCH_ID,7,{0}};
++    assert(PatrolPhyRemote_OnFrame(&f,now,now) && state()->enable_request);
++    f.dlc=8;
++    assert(PatrolPhyRemote_OnFrame(&f,now-101,now) && state()->enable_request);
++    assert(PatrolPhyRemote_OnFrame(&f,now-1,now) && state()->enable_request);
++    now+=10; switches(0,1);
++    assert(!state()->enable_request && state()->target_rpm==0 && VehiclePowerOutput_IsOn());
++    now+=3000; PatrolPhyRemote_Tick(now,1); assert(!VehiclePowerOutput_IsOn());
+     init(); switches(1,1); joystick(450,180);
+     for(unsigned n=0;n<2;n++) {
+-        now+=100; healthy(); joystick(450,180);
+-        assert(state()->enable_request && state()->drive_brake);
++        now+=100; healthy(); joystick(450,180); assert(state()->enable_request);
+     }
+     now+=100; healthy(); PatrolPhyRemote_Tick(now,1);
+-    assert(!state()->enable_request && state()->drive_brake);
+-    /* A off still performs its normal stop and delayed power-off with B on. */
+-    init(); VehiclePowerOutput_Set(0); switches(1,1); healthy(); joystick(450,180);
+-    assert(VehiclePowerOutput_IsOn() && state()->drive_brake);
+-    now+=10; switches(0,1); assert(!state()->enable_request && VehiclePowerOutput_IsOn());
+-    now+=3000; PatrolPhyRemote_Tick(now,1); assert(!VehiclePowerOutput_IsOn());
+-    /* Releasing B never clears an actual fault or enables an uncalibrated car. */
++    assert(!state()->enable_request && state()->target_rpm==0);
++
++    /* B cannot clear a latched fault or bypass calibration requirements. */
+     init(); switches(1,1); RemoteService_ExecutionFault();
+     switches(1,0); joystick(450,180);
+     assert(state()->fault_latched && !state()->enable_request);
+@@ -258,7 +246,7 @@ int main(void)
+     assert(state()->fault_latched && state()->stop_reason==CHASSIS_STOP_DIRECTION_TIMEOUT);
+     assert(!state()->enable_request);
+     drive_speed_cases();
+-    physical_brake_cases();
+-    puts("CAN2 and physical B brake, steering continuity, release/reversal, freshness, owners and faults: PASS");
++    physical_b_ignored_cases();
++    puts("CAN2 and ignored B button, A stop, reversal, freshness, owners and faults: PASS");
+     return 0;
+ }
+diff --git a/tools/verify_can2_stack.py b/tools/verify_can2_stack.py
+index 015a231..4434f6f 100644
+--- a/tools/verify_can2_stack.py
++++ b/tools/verify_can2_stack.py
+@@ -25,8 +25,8 @@ chains = {
+                                'ChassisControl_RuntimeSafetyReason']),
+     'CAN2 lease stop': (safety_capacity, ['Patrol_SafetyControlTask', 'PatrolCanRemote_Tick',
+                                         'RemoteService_ApplyLocal', 'ChassisControl_Apply']),
+-    'handset B switch': (rx_capacity, ['Patrol_CanRxTask', 'PatrolPhyRemote_OnFrame',
+-                                     'RemoteService_SetDriveBrake', 'ChassisControl_SetDriveBrake']),
++    'handset A switch': (rx_capacity, ['Patrol_CanRxTask', 'PatrolPhyRemote_OnFrame',
++                                     'RemoteService_ApplyLocal', 'ChassisControl_Apply']),
+     'handset joystick': (rx_capacity, ['Patrol_CanRxTask', 'PatrolPhyRemote_OnFrame',
+                                      'RemoteService_ApplyLocal', 'ChassisControl_Apply']),
+     'handset lease stop': (safety_capacity, ['Patrol_SafetyControlTask', 'PatrolPhyRemote_Tick',

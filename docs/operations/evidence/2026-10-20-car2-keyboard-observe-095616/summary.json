@@ -1,0 +1,8 @@
+{
+  "exit_code": 1,
+  "samples": 75,
+  "session_seen": false,
+  "nonzero_steering_seen": false,
+  "fault_seen": false,
+  "boundary": "Read-only memory observation. No halt, reset, load, erase, write or motion commands. Sequential samples are not a motion permit or physical observation."
+}

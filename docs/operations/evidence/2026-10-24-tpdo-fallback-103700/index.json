@@ -1,0 +1,46 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.84",
+  "files": [
+    {
+      "name": "BootState_A.bin",
+      "bytes": 2048,
+      "sha256": "81bab742313ec20a0540535e884f4957d15b9b3c975b6ddcf74fd87d6b89a7d8"
+    },
+    {
+      "name": "BootState_B.bin",
+      "bytes": 2048,
+      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+    },
+    {
+      "name": "candidate.manifest.json",
+      "bytes": 547,
+      "sha256": "230ea78e0f1b4237548f29fd449a6df8e385ffa2877ef0fb273792a9cb19ae7e"
+    },
+    {
+      "name": "FLASH_ADDRESSES.txt",
+      "bytes": 258,
+      "sha256": "9a2bbcf071a860da3254b36a27ad7cd610e57a9121fa28f61dffcc3dcf3e87c4"
+    },
+    {
+      "name": "Patrol_Vehicle_Chassis_App.bin",
+      "bytes": 154520,
+      "sha256": "14a97169dc14145f717806225a82fc591f593a1feb911992ae72556fd7ea87c1"
+    },
+    {
+      "name": "README.md",
+      "bytes": 1048,
+      "sha256": "891ff5fe72642a3231e1b6b776b92a4098f7ce5dc9566239eaa89f8974e9e57b"
+    },
+    {
+      "name": "tpdo-fallback-arm-build.log",
+      "bytes": 18942,
+      "sha256": "2a17b14c1112f88020ea3473b15eee8dfe9114bcae9d99a3ea08e9f429e8e43a"
+    },
+    {
+      "name": "tpdo-fallback-arm-configure.log",
+      "bytes": 895,
+      "sha256": "3f429256071127ca4ebe13969478f6db26a07b135dbb400d282e20374f1510ba"
+    }
+  ]
+}

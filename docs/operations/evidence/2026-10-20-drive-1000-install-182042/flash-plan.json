@@ -1,0 +1,50 @@
+{
+  "halted_guard": {
+    "output": 0,
+    "session": 0,
+    "enable": 0,
+    "target_rpm": 0,
+    "ota": 0,
+    "bench": 0,
+    "drive": 0,
+    "center": 0,
+    "auto_requested": 0,
+    "left": 0,
+    "right": 0
+  },
+  "all_checks_pass": true,
+  "previous_states": [
+    {
+      "page": "A",
+      "sequence": 13,
+      "state": 4,
+      "app_size": 151056,
+      "app_crc": 488291891,
+      "version": "patrol-chassis-0.2.64"
+    },
+    {
+      "page": "B",
+      "sequence": 12,
+      "state": 4,
+      "app_size": 150800,
+      "app_crc": 1787742367,
+      "version": "patrol-chassis-0.2.63"
+    }
+  ],
+  "new_state_sequence": 14,
+  "version": "patrol-chassis-0.2.65",
+  "app_sha256": "ddfe2361bc187b4658383cd7fe8e529d16d9786b319b9b34a2313d51ed18986f",
+  "app_size": 151048,
+  "write_addresses": {
+    "App": "0x08008000",
+    "BootStateA": "0x0803E800"
+  },
+  "preserved": [
+    "Boot",
+    "Config recovery",
+    "BootStateB",
+    "ConfigV5"
+  ],
+  "drive_max_rpm": 1000,
+  "steering_parameters_changed": false
+}

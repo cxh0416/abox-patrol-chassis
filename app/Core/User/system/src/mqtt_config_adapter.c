@@ -3,6 +3,7 @@
 
 #include <string.h>
 
+// 检查 MQTT 配置文本是否有合法容量内终止符和允许字符。拒绝空指针、越界文本及不支持字符，供 V5 到公共配置转换使用。
 static uint8_t text_valid(const char *value, uint16_t capacity)
 {
     uint16_t i;
@@ -15,6 +16,7 @@ static uint8_t text_valid(const char *value, uint16_t capacity)
     return 0U;
 }
 
+// 把产品 Config V5 转换为公共 MQTT 运行配置。校验 Broker、认证和 TLS 字段并关联当前凭据，输出结构仍可能引用原配置存储，调用方须保证生命周期。
 uint8_t PatrolMqttConfig_FromV5(const PatrolRemoteConfigV5_t *config,
                                 ABoxMqttConfig *runtime)
 {

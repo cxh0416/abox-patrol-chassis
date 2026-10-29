@@ -1,0 +1,73 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "started_at": "2026-10-20T09:22:02.771931+08:00",
+  "operation": "Read-only SWD memory snapshots. Exact source/platform commits rebuilt to byte-identical App; ARM-compiled field offsets and symbol sizes verified before interpreting RAM. No halt/reset/run/erase/load/write command.",
+  "artifacts": [
+    {
+      "path": "busoff_mask.bin",
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d",
+      "bytes": 1
+    },
+    {
+      "path": "control.bin",
+      "sha256": "33b7f571a970bc215988381418536b5a8b1eaa501cd1f0c1bf1de3a5084f7d79",
+      "bytes": 104
+    },
+    {
+      "path": "current_app.bin",
+      "sha256": "3990b87dc261692e429cd807327b8221cf81a238ea4adc615e124645d63e67b6",
+      "bytes": 148520
+    },
+    {
+      "path": "decoded.json",
+      "sha256": "a7debef2392313254117bdfb0037d0294e3d5df9fd157bdd672e29c10493c952",
+      "bytes": 2329
+    },
+    {
+      "path": "fault.bin",
+      "sha256": "38806534b5d82071042d93c69e9a405f146c919de8114581e6fd91f8b4e31268",
+      "bytes": 128
+    },
+    {
+      "path": "jlink.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "jlink.stdout.log",
+      "sha256": "0e9ad27d497b2589d1ccc13f25e5c371788b75319c120bbf3ee84b1c558061a4",
+      "bytes": 5191
+    },
+    {
+      "path": "layout-arm.txt",
+      "sha256": "540ab1a7bc82251220353dafd37c7ea4aad7f4ed552ca55615a9856d6778720a",
+      "bytes": 2890
+    },
+    {
+      "path": "motion.bin",
+      "sha256": "942ae46416492d4bfffd2362550440743b056d3e2803c33542ad8bc0cc4ae5ad",
+      "bytes": 604
+    },
+    {
+      "path": "power_command.bin",
+      "sha256": "4bf5122f344554c53bde2ebb8cd2b7e3d1600ad631c385a5d7cce23c7785459a",
+      "bytes": 1
+    },
+    {
+      "path": "raw_rx_counts.bin",
+      "sha256": "bfb2d853ddc97c0c44c83d26ab94c7b36e1ba669a8a00438974e2b00b50941aa",
+      "bytes": 8
+    },
+    {
+      "path": "read-ram.jlink",
+      "sha256": "90a0e5c7487e42b56d9b4dade081e709b3d3cc2b4050a693cc74bc14d79b4450",
+      "bytes": 1389
+    },
+    {
+      "path": "tick.bin",
+      "sha256": "a04c35019244f4e64a8969cbbb16bfd95360befe5e585214d9956d197a93ac86",
+      "bytes": 4
+    }
+  ],
+  "boundary": "Core remained running; fields are sequential snapshots, not an atomic motion permit. Historic failure fields retain earlier event data."
+}

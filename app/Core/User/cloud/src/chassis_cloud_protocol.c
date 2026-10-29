@@ -7,6 +7,7 @@
 #include "chassis_control.h"
 #include "abox_mqtt_digest.h"
 
+// 检查 JSON 对象及其子结构是否存在重复字段。拒绝会造成请求摘要与实际解释不一致的重复键，避免同一请求出现多种含义。
 static uint8_t duplicate_free(const cJSON *node)
 {
     const cJSON *a, *b;
@@ -18,6 +19,7 @@ static uint8_t duplicate_free(const cJSON *node)
     }
     return 1U;
 }
+// 向规范化摘要写入器提供运动参数。按规定类型和顺序输出参数，使重放检查与业务解析使用相同语义，而非原始 JSON 排版。
 static int motion_params(void *value, ABoxCanonicalWriter write, void *context)
 {
     const ChassisCloudCommand *command = value;
@@ -30,6 +32,7 @@ static int motion_params(void *value, ABoxCanonicalWriter write, void *context)
         write(context, ",\"steeringDeg\":", 15) && ABoxMqttDigest_WriteMilli(command->steering_mdeg, write, context) &&
         write(context, "}", 1);
 }
+// 生成底盘命令的规范化 32 字节摘要。供同 requestId 的重放和冲突检测使用，摘要只基于正式命令字段，不代表授权或签名验证。
 uint8_t ChassisCloud_RequestDigest(const ChassisCloudCommand *command, uint8_t digest[32])
 {
     if (!command) return 0;
@@ -39,10 +42,12 @@ uint8_t ChassisCloud_RequestDigest(const ChassisCloudCommand *command, uint8_t d
     return (uint8_t)ABoxMqttDigest_NullRequest(command->type == CHASSIS_CLOUD_COMMAND_POWER_ON ? "power_on" : "power_off",
         command->has_expires_at, command->expires_at, digest);
 }
+// 判断 cJSON 数值是否是可接受的整数。拒绝非数字、非有限值或小数，具体上下界由各业务字段继续检查。
 static uint8_t integer(const cJSON *n)
 { return cJSON_IsNumber(n) && n->valuedouble >= 0 && n->valuedouble <= 9007199254740991.0 &&
          n->valuedouble == (double)(uint64_t)n->valuedouble; }
 
+// 校验并复制协议标识字符串。限制字符和长度，保留终止符空间；失败不把被截断标识当成有效身份。
 static uint8_t copy_identifier(char* output, uint16_t capacity, const cJSON* item)
 {
     size_t length;
@@ -53,6 +58,7 @@ static uint8_t copy_identifier(char* output, uint16_t capacity, const cJSON* ite
     return 1U;
 }
 
+// 将公共请求 JSON 转为底盘类型化命令。检查长度、结构、重复键、身份和各动作参数，输出解析状态；本函数不授予控制权、不写硬件。
 ChassisCloudStatus ChassisCloud_Parse(const char* payload, uint16_t length,
                                       ChassisCloudCommand* command)
 {

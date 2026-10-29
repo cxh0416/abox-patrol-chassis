@@ -1,0 +1,114 @@
+{
+  "stack_bytes": 4096,
+  "reserve_bytes": 1024,
+  "chains": {
+    "public_motion_digest": [
+      "Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "app_cloud",
+      "ABoxMqttEc800Bridge_Poll", "ABoxMqttEc800_Poll", "ABoxMqttEc800Rx_Poll",
+      "message", "on_message", "CloudCommands_OnMessage", "handle_public_control",
+      "RemoteService_HandleControl", "ChassisCloud_RequestDigest", "ABoxMqttDigest_RequestStream",
+      "ABoxMqttDigest_WriteRequest", "motion_params", "ABoxMqttDigest_WriteMilli",
+      "ABoxMqttDigest_WriteInteger", "hash", "ABoxSha256_Update", "transform"
+    ],
+    "public_power_replay_digest": [
+      "Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "app_cloud",
+      "ABoxMqttEc800Bridge_Poll", "ABoxMqttEc800_Poll", "ABoxMqttEc800Rx_Poll",
+      "message", "on_message", "CloudCommands_OnMessage", "handle_public_control",
+      "RemoteService_HandleControl", "ABoxMqttDigest_NullRequest", "ABoxMqttDigest_RequestStream",
+      "ABoxMqttDigest_WriteRequest", "null_params", "hash", "ABoxSha256_Update", "transform"
+    ],
+    "mqtt_transport_init": [
+      "main",
+      "CloudService_Init",
+      "MQTT_Core_SetAtCore",
+      "ABoxMqttEc800Bridge_Init",
+      "ABoxMqttEc800_Init"
+    ],
+    "mqtt_transport_configure": [
+      "Patrol_RemoteTask",
+      "CloudService_Task",
+      "ABoxAppService_Poll",
+      "app_runtime",
+      "MqttRuntime_Task",
+      "ABoxMqttRuntime_Poll",
+      "start",
+      "apply_config",
+      "MQTT_Core_ApplyRuntimeConfig",
+      "ABoxMqttEc800Bridge_Configure",
+      "ABoxMqttEc800_Configure"
+    ],
+    "maintenance_commit": [
+      "Patrol_RemoteTask",
+      "CloudService_Task",
+      "ABoxAppService_Poll",
+      "app_before_cloud",
+      "MqttTrialManager_Poll",
+      "ABoxMaintenanceService_Commit",
+      "ABoxConfigStore_Commit",
+      "write_config_snapshot",
+      "PatrolConfig_Save",
+      "OTA_Info_SaveRemoteConfig",
+      "ota_info_write_raw",
+      "ota_info_write_raw_unlocked"
+    ],
+    "clock_sync_apply": [
+      "Patrol_RemoteTask",
+      "CloudService_Task",
+      "ABoxAppService_Poll",
+      "app_cloud",
+      "CloudTx_Service",
+      "ABoxCloudService_Poll",
+      "tx_external",
+      "TimeSync_Task",
+      "ABoxTimeSync_Poll",
+      "apply",
+      "TimeBase_Synchronize",
+      "ABoxClock_Synchronize",
+      "ABoxClock_Snapshot"
+    ],
+    "clock_sync_send": [
+      "Patrol_RemoteTask",
+      "CloudService_Task",
+      "ABoxAppService_Poll",
+      "app_cloud",
+      "CloudTx_Service",
+      "ABoxCloudService_Poll",
+      "tx_external",
+      "TimeSync_Task",
+      "ABoxTimeSync_Poll",
+      "send",
+      "MQTT_Core_PublishEx",
+      "MQTT_Core_PublishExTracked",
+      "ABoxMqttEc800_Publish"
+    ],
+    "public_control_fault_stop": [
+      "Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "app_cloud",
+      "ABoxMqttEc800Bridge_Poll", "ABoxMqttEc800_Poll", "ABoxMqttEc800Rx_Poll",
+      "message", "on_message", "CloudCommands_OnMessage", "handle_public_control",
+      "RemoteService_HandleControl", "ChassisControl_Apply", "force_stop",
+      "ChassisControl_RequestFault", "PatrolRuntime_RequestFaultStop", "dispatch_fault_stop",
+      "PatrolRuntimePort_SendCan", "HAL_CAN_AddTxMessage"
+    ],
+    "public_control_fault_capture": [
+      "Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "app_cloud",
+      "ABoxMqttEc800Bridge_Poll", "ABoxMqttEc800_Poll", "ABoxMqttEc800Rx_Poll",
+      "message", "on_message", "CloudCommands_OnMessage", "handle_public_control",
+      "RemoteService_HandleControl", "ChassisControl_Apply", "force_stop",
+      "ChassisControl_RequestFault", "PatrolRuntime_RequestFaultStop", "PatrolRuntime_CaptureFault"
+    ],
+    "at_ota_termination": [
+      "Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "ABoxEc800Rx_Drain", "ABoxEc800At_Feed", "emit_line", "ABoxEc800At_OnModemReset", "ABoxEc800At_Reset", "terminate_all", "command_done", "download_fail", "log_failure", "log_message", "adapter_log", "AppLog_Printf"
+    ],
+    "at_enrollment_termination": [
+      "Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "ABoxEc800Rx_Drain", "ABoxEc800At_Feed", "emit_line", "ABoxEc800At_OnModemReset", "ABoxEc800At_Reset", "terminate_all", "command_done", "finish", "http_done", "ABoxEnrollment_OnHttp"
+    ],
+    "modem_reset_runtime": [
+      "Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "ABoxEc800At_OnModemReset", "ABoxMqttRuntime_OnModemReset", "start", "changed", "AppLog_Printf"
+    ],
+    "uart_rx_retry": ["Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "app_restart_rx", "HAL_UARTEx_ReceiveToIdle_DMA", "UART_Start_Receive_DMA", "HAL_DMA_Start_IT"],
+    "uart_rx_failure_log": ["Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "app_restart_rx", "AppLog_Printf"],
+    "uart_tx_termination": ["Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "ABoxEc800At_Task", "terminate_all", "command_done", "download_fail", "log_failure", "log_message", "adapter_log", "AppLog_Printf"],
+    "enrollment_payload_termination": ["Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "ABoxEc800Rx_Drain", "ABoxEc800At_Feed", "emit_line", "on_event", "ABoxEc800At_SendPayload", "terminate_all", "command_done", "stop_http", "finish", "http_done", "ABoxEnrollment_OnHttp"],
+    "ota_payload_termination": ["Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "ABoxBootV2App_Task", "send_payload", "ABoxEc800At_SendPayload", "terminate_all", "command_done", "download_fail", "log_failure", "log_message", "adapter_log", "AppLog_Printf"]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "mode": "SWD read-only verification after BootState repair",
+  "vtor_samples": [
+    "0x08008000",
+    "0x08008000",
+    "0x08008000",
+    "0x08008000",
+    "0x08008000"
+  ],
+  "tick_samples": [
+    99729,
+    99931,
+    100133,
+    100335,
+    100537
+  ],
+  "cfsr": "0x00000000",
+  "state_a_matches": true,
+  "state_b_matches": true,
+  "config_page_preserved": true,
+  "config_page_sha256": "1835f5eb2c548b64c56a6c73bb0f434fb28fb19a5b29d56e2f5734e035a06b34",
+  "app_sha256": "86c79df4f076a9a52be67c3877a9aa56643199e5cf91573332d32bfb329ed6b7",
+  "app_bytes": 154472,
+  "boot_sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+  "boot_bytes": 32768,
+  "app_started": true
+}

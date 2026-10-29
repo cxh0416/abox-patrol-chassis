@@ -1,0 +1,156 @@
+{
+  "capture": "E:\\1_work\\ChassisCar_test\\logs\\dual-can-20261022-092703-094437",
+  "elapsed_s": 291.4059999999881,
+  "counts": {
+    "CAN1:0x181": 26493,
+    "CAN1:0x281": 26493,
+    "CAN2:0x10a": 7284,
+    "CAN2:0x10b": 7284,
+    "CAN1:0x702": 2885,
+    "CAN1:0x701": 2885
+  },
+  "a_values": [
+    2
+  ],
+  "axis_ranges": {
+    "throttle": [
+      -450,
+      450
+    ],
+    "steering": [
+      -450,
+      450
+    ]
+  },
+  "axis_runs": [
+    {
+      "state": [
+        0,
+        0
+      ],
+      "start_s": 0.0629999999946449,
+      "end_s": 176.31299999999464,
+      "frames": 4407,
+      "first_data": "00 00 00 00 00 00 00 00",
+      "throttle": 0,
+      "steer": 0
+    },
+    {
+      "state": [
+        1,
+        0
+      ],
+      "start_s": 176.34399999998277,
+      "end_s": 178.31299999999464,
+      "frames": 50,
+      "first_data": "00 00 00 00 8D 00 00 00",
+      "throttle": 141,
+      "steer": 0
+    },
+    {
+      "state": [
+        0,
+        0
+      ],
+      "start_s": 178.34399999998277,
+      "end_s": 178.79699999999139,
+      "frames": 12,
+      "first_data": "00 00 00 00 01 00 00 00",
+      "throttle": 1,
+      "steer": 0
+    },
+    {
+      "state": [
+        -1,
+        0
+      ],
+      "start_s": 178.8279999999795,
+      "end_s": 180.9529999999795,
+      "frames": 54,
+      "first_data": "00 00 00 00 80 FF 00 00",
+      "throttle": -128,
+      "steer": 0
+    },
+    {
+      "state": [
+        0,
+        0
+      ],
+      "start_s": 180.98499999998603,
+      "end_s": 182.18799999999464,
+      "frames": 31,
+      "first_data": "00 00 00 00 00 00 00 00",
+      "throttle": 0,
+      "steer": 0
+    },
+    {
+      "state": [
+        0,
+        -1
+      ],
+      "start_s": 182.23499999998603,
+      "end_s": 184.43799999999464,
+      "frames": 56,
+      "first_data": "CB FF 00 00 00 00 00 00",
+      "throttle": 0,
+      "steer": -53
+    },
+    {
+      "state": [
+        0,
+        0
+      ],
+      "start_s": 184.46899999998277,
+      "end_s": 185.15599999998813,
+      "frames": 18,
+      "first_data": "F1 FF 00 00 00 00 00 00",
+      "throttle": 0,
+      "steer": -15
+    },
+    {
+      "state": [
+        0,
+        1
+      ],
+      "start_s": 185.18799999999464,
+      "end_s": 186.98499999998603,
+      "frames": 46,
+      "first_data": "50 00 00 00 00 00 00 00",
+      "throttle": 0,
+      "steer": 80
+    },
+    {
+      "state": [
+        0,
+        0
+      ],
+      "start_s": 187.03099999998813,
+      "end_s": 291.39099999997416,
+      "frames": 2610,
+      "first_data": "00 00 00 00 00 00 00 00",
+      "throttle": 0,
+      "steer": 0
+    }
+  ],
+  "can1_control_frames": [],
+  "last_joystick": {
+    "bus": "CAN2",
+    "adapter_channel": 0,
+    "elapsed_s": 291.39099999997416,
+    "id": 267,
+    "dlc": 8,
+    "data": "00 00 00 00 00 00 00 00",
+    "extended": false,
+    "remote": false,
+    "hardware_timestamp_raw": 40329372,
+    "time_flag": 1,
+    "decoded": {
+      "kind": "t12_joystick",
+      "steer_raw": 0,
+      "throttle_raw": 0,
+      "reference_rpm": 0
+    }
+  },
+  "max_host_joystick_gap_ms": 47.0000000204891,
+  "max_host_switch_gap_ms": 47.0000000204891
+}

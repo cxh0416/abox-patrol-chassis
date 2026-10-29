@@ -1,0 +1,11 @@
+{
+  "format": "gzip",
+  "original_path": "docs/operations/evidence/2026-10-24-dual-can-repro-111810-128058/frames.jsonl",
+  "archive_path": "docs/operations/evidence/2026-10-24-dual-can-repro-111810-128058/frames.jsonl.gz",
+  "original_bytes": 173503824,
+  "original_sha256": "3a3ade78c476f021730e179070057326b963615dcbf604bb2c50626c6d665610",
+  "archive_bytes": 5924682,
+  "archive_sha256": "e289b717aba37db7c336fe6006e43f5e26978d74fc9bb1ac3329ddc5a13e9ac5",
+  "note": "Lossless storage archive. Original evidence content and existing evidence hashes are unchanged. The uncompressed original is retained locally and ignored by Git. Restore frames.jsonl before using the existing analysis scripts or checking sha256.json.",
+  "restore_from_repository_root": "python -c \"import gzip,pathlib; p=pathlib.Path('docs/operations/evidence/2026-10-24-dual-can-repro-111810-128058/frames.jsonl.gz'); raw=gzip.decompress(p.read_bytes()); import hashlib; assert hashlib.sha256(raw).hexdigest() == '3a3ade78c476f021730e179070057326b963615dcbf604bb2c50626c6d665610'; dest=p.with_suffix(''); assert not dest.exists() or dest.read_bytes()==raw; dest.write_bytes(raw)\""
+}

@@ -1,0 +1,13 @@
+device STM32F105RC
+exec InhibitConnectRetries = 1
+exec ForceAttachTarget = 1
+if SWD
+speed 1000
+connect
+h
+loadfile "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-b-brake-install-180251\app-installed.bin" 0x08008000 noreset
+verifybin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-b-brake-install-180251\app-installed.bin" 0x08008000
+loadfile "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-b-brake-install-180251\state-a-installed.bin" 0x0803E800 noreset
+verifybin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-b-brake-install-180251\state-a-installed.bin" 0x0803E800
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\out\flash\2026-10-20-b-brake-install-180251\flash-programmed.bin", 0x08000000, 0x40000
+qc

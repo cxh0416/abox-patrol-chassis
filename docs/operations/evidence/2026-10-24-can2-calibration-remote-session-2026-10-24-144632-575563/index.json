@@ -1,0 +1,26 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "date": "2026-10-24",
+  "title": "Physical remote session blocked CAN2 center calibration",
+  "motion_flags": 39,
+  "session_id": "phy-remote",
+  "session_active": true,
+  "fault_latched": false,
+  "center_query": {
+    "driver_raw": -88686,
+    "encoder_raw": 4076,
+    "saved_center": -83815
+  },
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 1127,
+      "sha256": "d92f384227ebeab06307476a8d84e0aafa283ae1b4c4326826f8eb716b30a3f5"
+    },
+    {
+      "path": "session-readonly.json",
+      "bytes": 912,
+      "sha256": "4b7348ef42890ead64026f70c6bbb81bc5d3344d950e913422146e7d49c67edc"
+    }
+  ]
+}

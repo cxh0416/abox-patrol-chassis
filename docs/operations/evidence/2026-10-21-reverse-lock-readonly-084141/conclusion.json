@@ -1,0 +1,16 @@
+{
+  "confirmed": [
+    "Device App matches retained 0.2.65 candidate and ELF companion.",
+    "Captured reason 11 is CHASSIS_STOP_DIRECTION_TIMEOUT.",
+    "Fault timestamp minus retained reversal start is 2001 ms.",
+    "Captured raw wheel speeds are left 22 rpm, right -17 rpm; three qualifying <=20 rpm pairs were not accepted in time.",
+    "Current software fault is latched; A/B handset paths do not call PatrolRuntime_ResetFault.",
+    "Host reproduction using production remote/control code latches at 2001 ms and remains latched after A off/on and B on/off."
+  ],
+  "not_established": [
+    "Actual motor deceleration trajectory and configured drive ramp were not measured.",
+    "Motor mechanical holding/brake state is not inferred from MCU RAM.",
+    "The captured episode is not proof that every rapid reversal has the same cause."
+  ],
+  "hardware_actions": "Read-only SWD, no halt/reset/run, programming, CAN commands, output changes or fault reset. CPU S_HALT was clear before and after reads."
+}

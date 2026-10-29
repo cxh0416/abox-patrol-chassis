@@ -1,0 +1,18 @@
+{
+  "ABox_Boot.bin": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+  "BootState_A.bin": "a9738175c19a872952a9c8a216f07e67b9a40dfa578282008015dc7449800060",
+  "BootState_B.bin": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8",
+  "FLASH_ADDRESSES.txt": "900e3279cefb68040a87b7d56cca27fe936fea1aab0883da61e2a1bcc026c792",
+  "flash.manifest.json": "0d022d96eb371123fdc10c6e432a72ab1198990a196b0507e79243ec690c0358",
+  "index.json": "213c34d8de811d61f6ca8c9b3649437e2701f9f485678a47ac7c51dbc3444e2a",
+  "Patrol_Vehicle_Chassis_App.bin": "505f00b41c870641797eaaafe5dea7b0a93f910c031ec705cfcbd0510baae7a4",
+  "Patrol_Vehicle_Chassis_App.elf": "ca7a30b56febe6e9c82465709707d7c4b3e5e47247aa076fb30cf71744f3ba91",
+  "Patrol_Vehicle_Chassis_App.map": "7cadf98ac495504f64bc5227ef9975d960f42c3b77c5172e0eb896a4abdc9def",
+  "Patrol_Vehicle_Chassis_Full.bin": "f4754ca94265142bdd9983a2532b9df9d9024072ff7d847e106fe7fb72a986be",
+  "README.md": "d1c75f1b70e85bda2a3ab5db9569497f04de92694d4d012148fc2cc154681bf1",
+  "source-change.patch": "189e1709669b42dcffac66f0e39540dc8ef5c1370782d73a6ed99513f945df52",
+  "validation/can-remote-test.log": "636e5afacec5366d356ee1f33b2429b53c6feed028a445146d268ddaba1c94c4",
+  "validation/can2-stack.log": "e996626726cd9287bf1ebed554af1d303551a34b619f553290a299b0a20e547f",
+  "validation/diff-check.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}
+

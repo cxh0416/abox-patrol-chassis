@@ -38,6 +38,7 @@ extern IWDG_HandleTypeDef hiwdg;
 
 /* USER CODE END Private defines */
 
+// 初始化独立看门狗的分频及重载值。启动后必须由看门狗任务持续刷新，HAL 初始化失败进入统一错误处理。
 void MX_IWDG_Init(void);
 
 /* USER CODE BEGIN Prototypes */

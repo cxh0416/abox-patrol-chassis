@@ -1,0 +1,17 @@
+{
+  "observed": {
+    "output": 0,
+    "session": 0,
+    "enable": 0,
+    "target_rpm": 0,
+    "ota": 0,
+    "bench": 0,
+    "drive": 0,
+    "center": 0,
+    "auto_requested": 0,
+    "left": 0,
+    "right": 0
+  },
+  "operator_confirmation": "A off, sticks released, vehicle stopped",
+  "all_checks_pass": true
+}

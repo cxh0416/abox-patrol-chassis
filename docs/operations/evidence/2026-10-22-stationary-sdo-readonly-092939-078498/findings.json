@@ -1,0 +1,237 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "read_only": true,
+  "driver_parameters_written": false,
+  "nmt_or_enable_or_clear_or_reset_sent": false,
+  "planned": 1600,
+  "sent": 1592,
+  "statuses": {
+    "ok": 1588,
+    "timeout": 4
+  },
+  "total_can_uploads_including_safety_reads": 1608,
+  "initial_safety": [
+    {
+      "node": 1,
+      "index": "0x6041",
+      "value": 8753
+    },
+    {
+      "node": 2,
+      "index": "0x6041",
+      "value": 4113
+    },
+    {
+      "node": 2,
+      "index": "0x6069",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6869",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6069",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6869",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6069",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6869",
+      "value": 0
+    }
+  ],
+  "final_safety": [
+    {
+      "node": 1,
+      "index": "0x6041",
+      "value": 8753
+    },
+    {
+      "node": 2,
+      "index": "0x6041",
+      "value": 4113
+    },
+    {
+      "node": 2,
+      "index": "0x6069",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6869",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6069",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6869",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6069",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6869",
+      "value": 0
+    }
+  ],
+  "adapter_samples_at_300ms_timeout": [
+    {
+      "status": {
+        "return_code": 1,
+        "raw": "000000000060000000000000",
+        "buffer_changed": true,
+        "values": {
+          "ErrInterrupt": 0,
+          "regMode": 0,
+          "regStatus": 0,
+          "regALCapture": 0,
+          "regECCapture": 0,
+          "regEWLimit": 96,
+          "regRECounter": 0,
+          "regTECounter": 0,
+          "Reserved": 0
+        }
+      },
+      "errors": {
+        "return_code": 1,
+        "raw": "0000000000000000",
+        "buffer_changed": true,
+        "values": {
+          "ErrCode": 0,
+          "Passive_ErrData": [
+            0,
+            0,
+            0
+          ],
+          "ArLost_ErrData": 0
+        }
+      }
+    },
+    {
+      "status": {
+        "return_code": 1,
+        "raw": "000000000060000000000000",
+        "buffer_changed": true,
+        "values": {
+          "ErrInterrupt": 0,
+          "regMode": 0,
+          "regStatus": 0,
+          "regALCapture": 0,
+          "regECCapture": 0,
+          "regEWLimit": 96,
+          "regRECounter": 0,
+          "regTECounter": 0,
+          "Reserved": 0
+        }
+      },
+      "errors": {
+        "return_code": 1,
+        "raw": "0000000000000000",
+        "buffer_changed": true,
+        "values": {
+          "ErrCode": 0,
+          "Passive_ErrData": [
+            0,
+            0,
+            0
+          ],
+          "ArLost_ErrData": 0
+        }
+      }
+    },
+    {
+      "status": {
+        "return_code": 1,
+        "raw": "000000000060000000000000",
+        "buffer_changed": true,
+        "values": {
+          "ErrInterrupt": 0,
+          "regMode": 0,
+          "regStatus": 0,
+          "regALCapture": 0,
+          "regECCapture": 0,
+          "regEWLimit": 96,
+          "regRECounter": 0,
+          "regTECounter": 0,
+          "Reserved": 0
+        }
+      },
+      "errors": {
+        "return_code": 1,
+        "raw": "0000000000000000",
+        "buffer_changed": true,
+        "values": {
+          "ErrCode": 0,
+          "Passive_ErrData": [
+            0,
+            0,
+            0
+          ],
+          "ArLost_ErrData": 0
+        }
+      }
+    },
+    {
+      "status": {
+        "return_code": 1,
+        "raw": "000000000060000000000000",
+        "buffer_changed": true,
+        "values": {
+          "ErrInterrupt": 0,
+          "regMode": 0,
+          "regStatus": 0,
+          "regALCapture": 0,
+          "regECCapture": 0,
+          "regEWLimit": 96,
+          "regRECounter": 0,
+          "regTECounter": 0,
+          "Reserved": 0
+        }
+      },
+      "errors": {
+        "return_code": 1,
+        "raw": "0000000000000000",
+        "buffer_changed": true,
+        "values": {
+          "ErrCode": 0,
+          "Passive_ErrData": [
+            0,
+            0,
+            0
+          ],
+          "ArLost_ErrData": 0
+        }
+      }
+    }
+  ],
+  "conclusions": [
+    "Standalone analyzer-only Node1 SDO read timeouts reproduced with MCU fault-latched/output-off and no other CAN control requests in RX.",
+    "Both nodes disabled and three fresh pairs of zero wheel RPM verified before and after this read-only test.",
+    "Four read timeouts persisted with 300ms wait; just lengthening normal steering deadline does not eliminate the observed symptom."
+  ],
+  "limitations": [
+    "This is the sweep baseline only; no matched after-heartbeat comparison has yet been completed.",
+    "SDK error counters sampled after timeout are not failure-time driver counters and cannot exclude transient electrical errors or capture loss.",
+    "This test does not clear or resolve the underlying cause."
+  ]
+}

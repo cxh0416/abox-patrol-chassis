@@ -1,0 +1,67 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "uid": "34ffd3054e57333750350443",
+  "source_record": {
+    "magic": 1112757810,
+    "abi": 3,
+    "length": 112,
+    "sequence": 14,
+    "state": 4,
+    "stable_slot": 0,
+    "candidate_slot": 0,
+    "trial_fail_count": 0,
+    "last_reset_reason": 0,
+    "image_size": 151048,
+    "image_crc32": 3139107186,
+    "image_version": "patrol-chassis-0.2.65",
+    "stable_image_size": 151048,
+    "stable_image_crc32": 3139107186,
+    "stable_image_version": "patrol-chassis-0.2.65",
+    "last_error": 0,
+    "rollback_report_pending": 0,
+    "rollback_installed": 0,
+    "reserved0": 0,
+    "reserved1": 0,
+    "record_crc32": 2958779679,
+    "page": "A",
+    "valid": true
+  },
+  "files": [
+    {
+      "file": "BootState_A.bin",
+      "address": "0x803e800",
+      "bytes": 2048,
+      "sha256": "bbd16b54748370f963fc5ec3e6a25de1eef0141891635cc44414d840222e1751",
+      "sequence": 15,
+      "state": "NORMAL",
+      "state_code": 0,
+      "candidate_slot": 255,
+      "app_version": "patrol-chassis-0.2.66",
+      "app_size": 150952,
+      "app_crc32": "74B51F07",
+      "record_crc32": "6CBF5458"
+    },
+    {
+      "file": "BootState_B.bin",
+      "address": "0x803f000",
+      "bytes": 2048,
+      "sha256": "75ccac5bb7288cd851ad09ee4de7497af9eff78a4b605bec4492d50d10f170d7",
+      "sequence": 16,
+      "state": "NORMAL",
+      "state_code": 0,
+      "candidate_slot": 255,
+      "app_version": "patrol-chassis-0.2.66",
+      "app_size": 150952,
+      "app_crc32": "74B51F07",
+      "record_crc32": "D1354B74"
+    }
+  ],
+  "retained_stable_metadata": {
+    "stable_slot": 0,
+    "stable_image_size": 151048,
+    "stable_image_crc32": 3139107186,
+    "stable_image_version": "patrol-chassis-0.2.65"
+  },
+  "note": "Generated offline initialization records; NORMAL does not claim candidate motion/OTA acceptance or mark new UFS stable slot confirmed. Flash both records only with the exact matching App.",
+  "board_written": false
+}

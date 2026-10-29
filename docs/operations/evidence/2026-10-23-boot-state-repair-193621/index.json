@@ -1,0 +1,55 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "files": [
+    {
+      "name": "backup-state.jlink",
+      "bytes": 611,
+      "sha256": "21eb34178e9ace7110acec85a639b71e075e078be2ee195c7ef8205aa89c438d"
+    },
+    {
+      "name": "before-config-page.bin",
+      "bytes": 2048,
+      "sha256": "1835f5eb2c548b64c56a6c73bb0f434fb28fb19a5b29d56e2f5734e035a06b34"
+    },
+    {
+      "name": "before-state-a.bin",
+      "bytes": 2048,
+      "sha256": "a3d00cf8f4fd75022760638f87bab4be16a51b0452a116ce0eb4e1c0ce448496"
+    },
+    {
+      "name": "before-state-b.bin",
+      "bytes": 2048,
+      "sha256": "0ac5cd16088fc73ad743c068a285e077993c2e8a877c4b1aba0d6bb7bd63465c"
+    },
+    {
+      "name": "BootState_A.bin",
+      "bytes": 2048,
+      "sha256": "4a0f177fcfa273f77a1f106357b9749ba3a06077d76012248621aa2df5f9038d"
+    },
+    {
+      "name": "BootState_B.bin",
+      "bytes": 2048,
+      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+    },
+    {
+      "name": "README.md",
+      "bytes": 981,
+      "sha256": "9cac62150d5e3861df46ec4e443c758fe90c5c5fe79efbfca2950681c2590751"
+    },
+    {
+      "name": "repair-check.json",
+      "bytes": 728,
+      "sha256": "10e3bd1ba4df501a829d35666dc637970072a277e7cac8cd61a1e06db6c34f15"
+    },
+    {
+      "name": "runtime-network-check.json",
+      "bytes": 849,
+      "sha256": "2923870ec540f6a419117f4ea24ff34df1881b659db751fc608c8766c2b6c645"
+    },
+    {
+      "name": "write-state.jlink",
+      "bytes": 744,
+      "sha256": "84d46fcbfe4446ea7fec615f01e17460943d74b5ea70c298c793110b10f267be"
+    }
+  ]
+}

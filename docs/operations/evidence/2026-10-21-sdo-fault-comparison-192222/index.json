@@ -1,0 +1,464 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "files": [
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261021-183631-973740\\events.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\can1-20261021-183631-973740\\events.jsonl",
+      "sha256": "55f6aefc48c695fa9f97e8d4d47cd2978bf002d858098a54743c6f1d30505bd4",
+      "bytes": 298102
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261021-183631-973740\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\can1-20261021-183631-973740\\frames.jsonl",
+      "sha256": "a94456fb7e43f2b5b9ee8ef3828ace9f4f7fba8400a48531036ca4a02cdf89d5",
+      "bytes": 55302369
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261021-183631-973740\\metadata.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\can1-20261021-183631-973740\\metadata.json",
+      "sha256": "42c50f7cb114184d5f81efb727739f137615571527815411ffa93ece7a7029c8",
+      "bytes": 1136
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261021-183631-973740\\sha256.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\can1-20261021-183631-973740\\sha256.json",
+      "sha256": "9084144df6f52ae59642be0061c695a7b9720e24c2889cce0e762def75ad8de1",
+      "bytes": 352
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261021-183631-973740\\summary.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\can1-20261021-183631-973740\\summary.json",
+      "sha256": "cc47191187c91f3dbedd9e26fc9dc5cf0cd1efa913650eafa31cefe5c1c26737",
+      "bytes": 28505
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\direct-stop-20261021-184557-195697\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\direct-stop-20261021-184557-195697\\frames.jsonl",
+      "sha256": "3875940ffe80ec0ccd697d88b33deb1ee4f8e33b18252792a3324b6e36500628",
+      "bytes": 219403
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\direct-stop-20261021-184557-195697\\result.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\direct-stop-20261021-184557-195697\\result.json",
+      "sha256": "42e41505bd5acf9bf0ea6114dd72000dcc38f9f0bae16cbdd8fe110d32d187af",
+      "bytes": 918
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-readonly-20261021-184749-913680\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-readonly-20261021-184749-913680\\frames.jsonl",
+      "sha256": "488d0551e3d35bf18f75404fc5448780622bcabca99e0d8ccf2a02af88d3279a",
+      "bytes": 9634
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-readonly-20261021-184749-913680\\results.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-readonly-20261021-184749-913680\\results.json",
+      "sha256": "043f1340cdc5b8a9dcec73f9c91195f46cefbd247d3d2c585b0e94dd35535389",
+      "bytes": 1047
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-readonly-20261021-184919-028237\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-readonly-20261021-184919-028237\\frames.jsonl",
+      "sha256": "f1023fd77791af9796de40a49b90acdd4c103e24b7e8c7c185cdf36ecee8b246",
+      "bytes": 1325588
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-readonly-20261021-184919-028237\\results.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-readonly-20261021-184919-028237\\results.json",
+      "sha256": "b89cfd029fcb101da1c037e5b1e9e83a49cec2020be36d288f91bd591a88c686",
+      "bytes": 103146
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-readonly-20261021-185810-169046\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-readonly-20261021-185810-169046\\frames.jsonl",
+      "sha256": "a7bc27fdc33e2a415021b776243fff36ba158ec25d055f6e9b69f413e641adeb",
+      "bytes": 9423
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-readonly-20261021-185810-169046\\results.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-readonly-20261021-185810-169046\\results.json",
+      "sha256": "253fc64875325cc888701cad72eedfdf1833b34be78f5a851817ecd7f4bc09e4",
+      "bytes": 1040
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-diagnostic-finalverify-20261021-192201-634995\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-diagnostic-finalverify-20261021-192201-634995\\frames.jsonl",
+      "sha256": "f16c807af7d07b6f6195b7b819b877b16985be6c1b7c5db9526bd4a7aa1c4bb0",
+      "bytes": 11888
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-diagnostic-finalverify-20261021-192201-634995\\result.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-diagnostic-finalverify-20261021-192201-634995\\result.json",
+      "sha256": "dcae501fb7ee5aa5165571bd3d0b94b0bf1a262227a09054c6983a57070ea932",
+      "bytes": 754
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-nmt-diagnostic-20261021-190525-058388\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-nmt-diagnostic-20261021-190525-058388\\frames.jsonl",
+      "sha256": "a800ff19d60e3a36a0b76744c01a4ff98afee9ffd10ad5a38cfcf9aa13801ba7",
+      "bytes": 11285
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-nmt-diagnostic-20261021-190525-058388\\result.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-nmt-diagnostic-20261021-190525-058388\\result.json",
+      "sha256": "7efb3983961f5967dcd78335822821cbf0d31b005678323342a5d5764b141c11",
+      "bytes": 569
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-nmt-diagnostic-20261021-190843-684296\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-nmt-diagnostic-20261021-190843-684296\\frames.jsonl",
+      "sha256": "2c6c4448e258261aef1137d3cdc8cc828aaf14fdf50c3064ad9830f209d82d62",
+      "bytes": 10282
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-nmt-diagnostic-20261021-190843-684296\\result.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-nmt-diagnostic-20261021-190843-684296\\result.json",
+      "sha256": "b8d764166262d346c0e297ce49411e3dcd576abb0dfbf937f2d09951b089d69c",
+      "bytes": 576
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-nmt-diagnostic-20261021-190953-787375\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-nmt-diagnostic-20261021-190953-787375\\frames.jsonl",
+      "sha256": "7481a1f92558dd5d58c9880a881ec4e815107ca2f018b864281dcf12050119ad",
+      "bytes": 5075
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-nmt-diagnostic-20261021-190953-787375\\result.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-nmt-diagnostic-20261021-190953-787375\\result.json",
+      "sha256": "1173a4318145d122db3fb83dcaa92e7c05f3c55dbd552a4f631ab9aa4a520e43",
+      "bytes": 573
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-nmt-diagnostic-20261021-191220-000166\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-nmt-diagnostic-20261021-191220-000166\\frames.jsonl",
+      "sha256": "2c36fac45ed6fe09db5d1f8bfa0b4e1223c70d6ba974178b9b559bc55b710adb",
+      "bytes": 10283
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-nmt-diagnostic-20261021-191220-000166\\result.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-nmt-diagnostic-20261021-191220-000166\\result.json",
+      "sha256": "a05cf47e2dc636bf780a1ee5cf7d905a43b226371ad9595fa6b5542c01c57c88",
+      "bytes": 577
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-nmt-diagnostic-20261021-191607-550931\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-nmt-diagnostic-20261021-191607-550931\\frames.jsonl",
+      "sha256": "3e93549ae379403583caf8c640fd25cdc9ca60244f5ef3dc8bce0b443b60f8d6",
+      "bytes": 4888
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-nmt-diagnostic-20261021-191607-550931\\result.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-nmt-diagnostic-20261021-191607-550931\\result.json",
+      "sha256": "191a0d3c6cd068dad1ef2cc2dd940a383d9be2f54a4a578c40e6dcb8f3ceb1f5",
+      "bytes": 574
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-phase-readonly-20261021-185337-062674\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-phase-readonly-20261021-185337-062674\\frames.jsonl",
+      "sha256": "bfb0b1f086564de983b85b456eb25bc705ff6f0b7890d3b3f8f2ee85ba469fe3",
+      "bytes": 887020
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-phase-readonly-20261021-185337-062674\\results.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-phase-readonly-20261021-185337-062674\\results.json",
+      "sha256": "e304d83accb7b3804c670f86522a568fa25424e399e248870e634bbd93529675",
+      "bytes": 109836
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-phase-readonly-20261021-190528-267244\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-phase-readonly-20261021-190528-267244\\frames.jsonl",
+      "sha256": "2264b545c1a9ad59c1ad78efaad99d95a66915dda3812aa5bcac2397f7f95e93",
+      "bytes": 886497
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-phase-readonly-20261021-190528-267244\\results.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-phase-readonly-20261021-190528-267244\\results.json",
+      "sha256": "c01722a1a9059e374c621a14062c1f5f8aaab96b8b99f676d06e2934c6ac95d0",
+      "bytes": 109870
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-phase-readonly-20261021-190900-458556\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-phase-readonly-20261021-190900-458556\\frames.jsonl",
+      "sha256": "986a70e6b281941f1251aaaa68f7082f11c5243e3f78b1128a5cc0170507f63e",
+      "bytes": 148708
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-phase-readonly-20261021-190900-458556\\results.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-phase-readonly-20261021-190900-458556\\results.json",
+      "sha256": "80a954ca342ea3a414e30661a336403efb1b7e3fd6bb2337c4350dbdf698f611",
+      "bytes": 110442
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-phase-readonly-20261021-191005-657101\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-phase-readonly-20261021-191005-657101\\frames.jsonl",
+      "sha256": "6435bd0f0ea993e28cca3cd8ab7697b48a2bd15fe556c77551352ac79058b159",
+      "bytes": 886769
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-phase-readonly-20261021-191005-657101\\results.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-phase-readonly-20261021-191005-657101\\results.json",
+      "sha256": "bee830a69a5bf8553dabfb147cea4878579a1556dbdd5fe68c4844f4616a673e",
+      "bytes": 109807
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-phase-readonly-20261021-191234-711515\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-phase-readonly-20261021-191234-711515\\frames.jsonl",
+      "sha256": "04263fd41942d208ecdb5b82828a203c53096b9f15bab6c4001b23f80b41986a",
+      "bytes": 589787
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-phase-readonly-20261021-191234-711515\\results.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-phase-readonly-20261021-191234-711515\\results.json",
+      "sha256": "8279b6c90b014ee3dcd613ee6e96d07c629e9a99bfea891b0e922af512b53a4a",
+      "bytes": 440819
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-phase-readonly-20261021-191620-938663\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-phase-readonly-20261021-191620-938663\\frames.jsonl",
+      "sha256": "f2b2b98d861e0fd2b1457de55c7b3a94438127df90c0b544c03875ddd3dccdf6",
+      "bytes": 3482779
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-phase-readonly-20261021-191620-938663\\results.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\raw\\steering-phase-readonly-20261021-191620-938663\\results.json",
+      "sha256": "03cc170b775af7b50655d9a1565e6947b53dbe5cb34ed151a8da961a27fe93eb",
+      "bytes": 437751
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-fault-followup-184153-677663\\CAN1-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\snapshots\\2026-10-21-fault-followup-184153-677663\\CAN1-registers.bin",
+      "sha256": "c9295236b327ea517c037bc77c6c87929063773278e3a24fa7a541ab1cd08982",
+      "bytes": 32
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-fault-followup-184153-677663\\CAN2-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\snapshots\\2026-10-21-fault-followup-184153-677663\\CAN2-registers.bin",
+      "sha256": "3ae6446202eba1c94d3a3c7c2d82c41df7546f1a7a17a20af653c4ab074a04c1",
+      "bytes": 32
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-fault-followup-184153-677663\\GPIOA-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\snapshots\\2026-10-21-fault-followup-184153-677663\\GPIOA-registers.bin",
+      "sha256": "a2524ef90ddc55e8517253028ffef2745247ee77c8a27508e87f72b7886cabfa",
+      "bytes": 20
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-fault-followup-184153-677663\\motion-fault.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\snapshots\\2026-10-21-fault-followup-184153-677663\\motion-fault.bin",
+      "sha256": "afc889051c5e551ee337478ce546d43264dc1d7a33e8c2b70aeee444cef62013",
+      "bytes": 128
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-fault-followup-184153-677663\\snapshot.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\snapshots\\2026-10-21-fault-followup-184153-677663\\snapshot.json",
+      "sha256": "080fb70c3836e8701952e9ec2fa844be58dbc6ece42e9d3ec1640bce3adb6734",
+      "bytes": 767
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-fault-followup-184603-189167\\CAN1-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\snapshots\\2026-10-21-fault-followup-184603-189167\\CAN1-registers.bin",
+      "sha256": "3ae6446202eba1c94d3a3c7c2d82c41df7546f1a7a17a20af653c4ab074a04c1",
+      "bytes": 32
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-fault-followup-184603-189167\\CAN2-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\snapshots\\2026-10-21-fault-followup-184603-189167\\CAN2-registers.bin",
+      "sha256": "3ae6446202eba1c94d3a3c7c2d82c41df7546f1a7a17a20af653c4ab074a04c1",
+      "bytes": 32
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-fault-followup-184603-189167\\GPIOA-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\snapshots\\2026-10-21-fault-followup-184603-189167\\GPIOA-registers.bin",
+      "sha256": "ab634266acc65770dca672c6005ee7159831f2b90d354760002747eddfdb9845",
+      "bytes": 20
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-fault-followup-184603-189167\\motion-fault.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\snapshots\\2026-10-21-fault-followup-184603-189167\\motion-fault.bin",
+      "sha256": "1bbfc3efda83d540644a6c294ae465e126a2f905de7e88b7654489b027694d99",
+      "bytes": 128
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-fault-followup-184603-189167\\snapshot.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\snapshots\\2026-10-21-fault-followup-184603-189167\\snapshot.json",
+      "sha256": "a3460ba6a87848261e74be884cce6037d10cc0fa7768e2cd66456948cefcc332",
+      "bytes": 765
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-fault-followup-191942-761356\\CAN1-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\snapshots\\2026-10-21-fault-followup-191942-761356\\CAN1-registers.bin",
+      "sha256": "3ae6446202eba1c94d3a3c7c2d82c41df7546f1a7a17a20af653c4ab074a04c1",
+      "bytes": 32
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-fault-followup-191942-761356\\CAN2-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\snapshots\\2026-10-21-fault-followup-191942-761356\\CAN2-registers.bin",
+      "sha256": "3ae6446202eba1c94d3a3c7c2d82c41df7546f1a7a17a20af653c4ab074a04c1",
+      "bytes": 32
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-fault-followup-191942-761356\\GPIOA-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\snapshots\\2026-10-21-fault-followup-191942-761356\\GPIOA-registers.bin",
+      "sha256": "ab634266acc65770dca672c6005ee7159831f2b90d354760002747eddfdb9845",
+      "bytes": 20
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-fault-followup-191942-761356\\motion-fault.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\snapshots\\2026-10-21-fault-followup-191942-761356\\motion-fault.bin",
+      "sha256": "1bbfc3efda83d540644a6c294ae465e126a2f905de7e88b7654489b027694d99",
+      "bytes": 128
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-fault-followup-191942-761356\\snapshot.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\snapshots\\2026-10-21-fault-followup-191942-761356\\snapshot.json",
+      "sha256": "0009bfa061b243e7cff2f214161ccf8cd5a47fc851a0aade9aca977978d470c6",
+      "bytes": 766
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\can1_bus_monitor.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\tools-at-archive\\can1_bus_monitor.py",
+      "sha256": "58f9a8679c469c4d6c82c9cc4dbd393d753cb0cd486928bf3700e1d4180cfccc",
+      "bytes": 23342
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\can1_stop_now.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\tools-at-archive\\can1_stop_now.py",
+      "sha256": "65bdc35a5d4769a46fed36c090771331cf6c3f09e29d4f149c3a0857eff147ae",
+      "bytes": 5758
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\steering_sdo_readonly_probe.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\tools-at-archive\\steering_sdo_readonly_probe.py",
+      "sha256": "877d9e20007e3528681914b0a8b6fb8d9c504e87a31da02fab4c7c452ea65bf4",
+      "bytes": 3612
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\steering_sdo_phase_probe.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\tools-at-archive\\steering_sdo_phase_probe.py",
+      "sha256": "32a9de076343304e1fa323d6774f4b59b6d426763b12c7cbfbb6641de737580e",
+      "bytes": 5205
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\steering_nmt_diagnostic_mode.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\tools-at-archive\\steering_nmt_diagnostic_mode.py",
+      "sha256": "01e2700fd337a59ce2b438d25a87090fe841bf837cb7616d74e00179e05595d2",
+      "bytes": 3442
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\steering_center_once.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\tools-at-archive\\steering_center_once.py",
+      "sha256": "0fd64922c36ed44f6515b9467020d54340652b39e937852c35631653ad38f5aa",
+      "bytes": 9762
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\steering_diagnostic_finalverify.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\tools-at-archive\\steering_diagnostic_finalverify.py",
+      "sha256": "14d15e96f10fed126007cefa0f1924b200b1e3f9c26c3794009a06ae4c515c29",
+      "bytes": 2587
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\analyze-sdo-missing.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\analysis\\analyze-sdo-missing.py",
+      "sha256": "42768fbcecf2634775c4fb4b438391d75790e926f9922303c0b5fc03e293a1a6",
+      "bytes": 4003
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\analyze-steering-comparison.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\analysis\\analyze-steering-comparison.py",
+      "sha256": "85b544e687b1bc1e484e57c122b33079c038a8647e910c6bd6026a63abfc6271",
+      "bytes": 2492
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\sdo-fault-capture-final-1846.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\analysis\\sdo-fault-capture-final-1846.json",
+      "sha256": "e0e1f51013fc1f5b0ac7a460650e6b71495386d5fdc07f17ef642feed984c7b5",
+      "bytes": 58985
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-followup-readonly.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\analysis\\fault-followup-readonly.py",
+      "sha256": "2f7f6b8004d69c2e1d6a26be24c07bb079a7283715a363978756ada04878e375",
+      "bytes": 3016
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-live-readonly.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\analysis\\steering-live-readonly.py",
+      "sha256": "2fd91f496e45d02e19f5d783237ba41e9fa606cb9b719a1b2c876aa1a7a6dc1c",
+      "bytes": 2092
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-timeout-runtime-repro.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\analysis\\steering-timeout-runtime-repro.c",
+      "sha256": "1e9514dbdf51fb35c9bdc08ca8cf7a23d5bf95f851621bddadba03f6918ee242",
+      "bytes": 2221
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-timeout-runtime-repro.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\analysis\\steering-timeout-runtime-repro.log",
+      "sha256": "9a9d7e773ddefc6be3a6c5518bde32ea1e8e5bf30b62c24ef739a9a982c69dd5",
+      "bytes": 301
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\static-sdo-probe-1849.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\analysis\\static-sdo-probe-1849.log",
+      "sha256": "40f8fb4501a654bff28ddc6fbc369e54cadcfc8f2437555ccc3550b4106ae97c",
+      "bytes": 70639
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\archive-sdo-fault-comparison.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\analysis\\archive-sdo-fault-comparison.py",
+      "sha256": "e24fe65d258533272a2d5f3c597a2d268175c536a56d27ece91b52756816b65e",
+      "bytes": 8736
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-pdo-comparison-final-1920.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\analysis\\steering-pdo-comparison-final-1920.json",
+      "sha256": "dc0ee5fe6bb403a1d3050b798598473a62d7617c3ed6bf2c0326f69c198d5717",
+      "bytes": 83453
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\src\\patrol_runtime.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\source-at-analysis\\app\\Core\\User\\motion\\src\\patrol_runtime.c",
+      "sha256": "4acb9116acf69d25aa58e07740e326179969671fcad2cd4f9fbd643efe81b7fd",
+      "bytes": 35051
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\src\\bench_drive.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\source-at-analysis\\app\\Core\\User\\motion\\src\\bench_drive.c",
+      "sha256": "5702790505f7bb0a2c0b25a9753df20f774fedc2b2254c86770d606f0b2a800c",
+      "bytes": 11069
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\src\\bench_steering.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\source-at-analysis\\app\\Core\\User\\motion\\src\\bench_steering.c",
+      "sha256": "0a4fdcdea424b2af6337e635c12396cd4a2d43ddb8060475c5a86f977f344525",
+      "bytes": 20661
+    },
+    {
+      "original_path": "new derived findings",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-fault-comparison-192222\\findings.json",
+      "sha256": "c691e65c5621b5160ddc89f44814483552c3112dbaf9611e159bd0540bfbc50b",
+      "bytes": 4087
+    }
+  ],
+  "protected_originals": [
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-21-fault-followup-184153-677663\\ram.bin",
+      "sha256": "b313e6b3869de86b0646aed8d899d861421e557588e0d66a574aa2f6665c06c7",
+      "bytes": 65536,
+      "reason": "Full RAM may contain credentials; not copied into public evidence."
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-21-fault-followup-184603-189167\\ram.bin",
+      "sha256": "547f2f0b70753557290f2b1cede41f8c8a51093cfcc04c38d1f03a50188a78eb",
+      "bytes": 65536,
+      "reason": "Full RAM may contain credentials; not copied into public evidence."
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-21-fault-followup-191942-761356\\ram.bin",
+      "sha256": "97d12a5660045a4f294bfe68b2ef6376fe52b8bacdae1c92f1d93091e1c2cac4",
+      "bytes": 65536,
+      "reason": "Full RAM may contain credentials; not copied into public evidence."
+    }
+  ],
+  "originals_retained": true
+}

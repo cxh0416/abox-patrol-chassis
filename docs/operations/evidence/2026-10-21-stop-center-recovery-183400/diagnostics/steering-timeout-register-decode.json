@@ -1,0 +1,9 @@
+{
+  "benchSentMs": 40741,
+  "faultAtMs": 40841,
+  "deadlineDeltaMs": 100,
+  "powerCommand": 0,
+  "can1Rx": 326725,
+  "can2Rx": 80546,
+  "rxOverflow": 0
+}

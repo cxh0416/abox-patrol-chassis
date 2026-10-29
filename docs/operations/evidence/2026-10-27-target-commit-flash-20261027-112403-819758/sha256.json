@@ -1,0 +1,212 @@
+[
+  {
+    "file": "ABox_Boot.bin",
+    "size": 32768,
+    "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+  },
+  {
+    "file": "BootState_A.bin",
+    "size": 2048,
+    "sha256": "d75c291c2ffd01bcf6a3887f1902f4e5e9eab5b79d210d2b4650625fb99875d9"
+  },
+  {
+    "file": "BootState_B.bin",
+    "size": 2048,
+    "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+  },
+  {
+    "file": "candidate/candidate.manifest.json",
+    "size": 580,
+    "sha256": "176af57be4e9df1e694f7baa0fb681eeee0de09330984d40e8c55373522bafe5"
+  },
+  {
+    "file": "candidate/Patrol_Vehicle_Chassis_App.bin",
+    "size": 156828,
+    "sha256": "4e9b3572e43a3dee3fa3becd6cff6eea674f8b0e0f73cc3474bec1e9f97f8a15"
+  },
+  {
+    "file": "flash.manifest.json",
+    "size": 2173,
+    "sha256": "dbea394bc9311d9fe814c9fc7a4dca461eb406dd100a9fd696fa127f83aa2b44"
+  },
+  {
+    "file": "FLASH_ADDRESSES.txt",
+    "size": 1434,
+    "sha256": "9d0e2a9909d9aaefea915f85ac233bc7f9b2ff6e77c7b85b931db488551cc335"
+  },
+  {
+    "file": "Patrol_Vehicle_Chassis_App.bin",
+    "size": 156828,
+    "sha256": "4e9b3572e43a3dee3fa3becd6cff6eea674f8b0e0f73cc3474bec1e9f97f8a15"
+  },
+  {
+    "file": "Patrol_Vehicle_Chassis_App.elf",
+    "size": 269092,
+    "sha256": "e3d97633e2112eda41b5aa622d17f2131218fe0cc4ea0d68b6842cf9049c9ba5"
+  },
+  {
+    "file": "Patrol_Vehicle_Chassis_App.map",
+    "size": 667453,
+    "sha256": "393f11437d9afe8aaadb399263dc6db235ba9e41a707f7af5fbfd31378f3868d"
+  },
+  {
+    "file": "Patrol_Vehicle_Chassis_Full.bin",
+    "size": 189596,
+    "sha256": "43210984f9a75787f8e1a5abac0b49d878a1247b8606c3d37287fc24ab117f49"
+  },
+  {
+    "file": "README.md",
+    "size": 2984,
+    "sha256": "e4689c586e251e1a35b94a57957d2d6686ceffd635db4cca2857d41c9c09b490"
+  },
+  {
+    "file": "source/app/Core/User/cloud/include/remote_service.h",
+    "size": 3918,
+    "sha256": "5ff4eae3a5237378848681c95a32700d1490b5722806d17546ff2ac50ece4cfa"
+  },
+  {
+    "file": "source/app/Core/User/cloud/src/remote_service.c",
+    "size": 17276,
+    "sha256": "398250d02166fbb52e76352eb2c0f0edda3cb2c7d976c58cceae5200a2960571"
+  },
+  {
+    "file": "source/app/Core/User/motion/include/chassis_control.h",
+    "size": 5363,
+    "sha256": "1da5f82f7299e35b85a2ffdd6dcd65d8b19561f8c702e1be6c0185e00528ca43"
+  },
+  {
+    "file": "source/app/Core/User/motion/include/vehicle_steering_profile.h",
+    "size": 1524,
+    "sha256": "1f6fd7772fdab0188c83d73becef1bad9a61f9cacaed2dd97310de5dbbc4853d"
+  },
+  {
+    "file": "source/app/Core/User/motion/src/chassis_control.c",
+    "size": 12702,
+    "sha256": "ed34500a2da457170130d1c9efe2f22df0635d2be777b7051d8fc973756fde29"
+  },
+  {
+    "file": "source/app/Core/User/motion/src/patrol_auto_center.c",
+    "size": 2582,
+    "sha256": "63abb514725962418f147f13560f402dd02912f4eccbce45f959c9ca641fe06e"
+  },
+  {
+    "file": "source/app/Core/User/motion/src/patrol_phy_remote.c",
+    "size": 7801,
+    "sha256": "d1058c4b361998059d245ecb47f71063297a575a7d4bd593f5ad349e624235a4"
+  },
+  {
+    "file": "source/app/Core/User/motion/src/patrol_runtime.c",
+    "size": 46198,
+    "sha256": "6c863c827548212d2db3395b52b7dec7a0f636b5ae0f3333177bbc8103b20289"
+  },
+  {
+    "file": "source/app/Core/User/system/src/patrol_rtos.c",
+    "size": 29329,
+    "sha256": "c7e3ced96d52edf14ecb6741a9936bdb6cb39b3feb66ceb1d160cfe67a5f344d"
+  },
+  {
+    "file": "source/tests/auto_center_runtime_cases.c",
+    "size": 12842,
+    "sha256": "b27dde7f7c0b01abc649553550e836e5d643e4ab3c3d983e777247d3ced1be92"
+  },
+  {
+    "file": "source/tests/can_remote_test.c",
+    "size": 19037,
+    "sha256": "0e9ac86a08b41e2e9f906b4407ca05772eba0a7931c2c361128a692243fedba6"
+  },
+  {
+    "file": "source/tests/center_runtime_stubs.h",
+    "size": 5870,
+    "sha256": "f276f4213bd374694834a070fed5d189cc5eceb9f23a6dc8b701d9f7a9ce5363"
+  },
+  {
+    "file": "source/tests/chassis_safety_test.c",
+    "size": 41493,
+    "sha256": "670ffd74ee98682be125877dabcfd7c85b674a9254615144aa5a9d347749c0e5"
+  },
+  {
+    "file": "source/tests/drive_brake_runtime_cases.c",
+    "size": 6288,
+    "sha256": "901b439aa58ac5b4dab69cc623809092924dddfe400914fcc087899dd09fc6af"
+  },
+  {
+    "file": "source/tests/fault_stop_runtime_cases.c",
+    "size": 18329,
+    "sha256": "41419b5de59f10ef0288bf560f7f9cabcf1f06c6ee150ab7fe7f94602033c861"
+  },
+  {
+    "file": "source/tests/test_auto_center_runtime.py",
+    "size": 1665,
+    "sha256": "9a4b35262d1b31adbf5bc93d5195fb5ff055f97e76fb444004fb3a447878ad63"
+  },
+  {
+    "file": "source/tests/test_can_remote.py",
+    "size": 1907,
+    "sha256": "68969e56a3b3dde8b9612221b81ab2a91b37eeda83d748bebfe175022cb0c697"
+  },
+  {
+    "file": "source-changes.patch",
+    "size": 70460,
+    "sha256": "421eec1d3dfa3ae99f4abdce05d8379c477e69677217d4a0f14a71c09a8d8afc"
+  },
+  {
+    "file": "validation/arm-release-build.log",
+    "size": 22,
+    "sha256": "8c35b1682f73592d30612d7b0fabdb384fcfff35cb5a076cb48b85b1368aa794"
+  },
+  {
+    "file": "validation/bench-stack.log",
+    "size": 294,
+    "sha256": "78faa7050eeff9523e01b82adf6c956ddb1fc917709732808bc50b999fe2801a"
+  },
+  {
+    "file": "validation/bootstate-create.log",
+    "size": 356,
+    "sha256": "cbc012260c23e95f2d127d6abf8413ceb90f725fd37c411efa64da9915c131a4"
+  },
+  {
+    "file": "validation/bootstate-verifier-build.log",
+    "size": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "file": "validation/bootstate-verifier.log",
+    "size": 141,
+    "sha256": "65d4e35871f504b5d31b74f36d6cb08b67287ac484bfcde0b6e786944d8b32c0"
+  },
+  {
+    "file": "validation/can2-stack.log",
+    "size": 1312,
+    "sha256": "2c3496e3eefa92818708b96fb298ffcd9222fabbc2ea11a20afe828759aaab19"
+  },
+  {
+    "file": "validation/git-diff-check.log",
+    "size": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "file": "validation/package-target-commit-0.2.102.py",
+    "size": 20684,
+    "sha256": "e90cc88153f6159e0c12d615c356b2d839975d349c98506cef16e2ce0a7479f4"
+  },
+  {
+    "file": "validation/product-python.log",
+    "size": 139485,
+    "sha256": "e81a1631797df0c29792c1adb82c0e6d93e1598006918e3f8e3bb51cfc76ba45"
+  },
+  {
+    "file": "validation/verify-state-0.2.102.c",
+    "size": 3969,
+    "sha256": "bce7098d7aea439ef8417e347c5bdc1b6aa004f758a555cd860e82bacfb28cde"
+  },
+  {
+    "file": "verify-state-0.2.102.c",
+    "size": 3969,
+    "sha256": "bce7098d7aea439ef8417e347c5bdc1b6aa004f758a555cd860e82bacfb28cde"
+  },
+  {
+    "file": "verify-state-0.2.102.exe",
+    "size": 70222,
+    "sha256": "88121b091d66d5c7bc054ac926b927b7dd4a4a8e1e27866113c206f0356579f0"
+  }
+]

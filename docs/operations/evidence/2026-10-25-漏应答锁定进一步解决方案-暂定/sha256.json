@@ -1,0 +1,9 @@
+{
+  "ABox_Boot.bin": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+  "BootState_A.bin": "07b1e53f519c93b4a98eaebc4240d4c2b236b47d33362cf47dfc71ac4ec3a0d8",
+  "BootState_B.bin": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8",
+  "Patrol_Vehicle_Chassis_App.bin": "fa95f31778cabfa5314e052cc3f7fbffa3bdd0ef4cf0e34140f72b11f1eabcb5",
+  "Patrol_Vehicle_Chassis_App.elf": "12484997f9fbacdecdfbfc8ff55cba1fcd035873376de3405ae68bc1bd482773",
+  "Patrol_Vehicle_Chassis_App.map": "d83e5534b9e48d9edb5ab2b6227c8c5a1904939b8917890e4d35dcc31f14b8b2",
+  "Patrol_Vehicle_Chassis_Full.bin": "2d53fa603af050b7578d7b219f25491af765880373bffb0b3c8ea2231f486838"
+}

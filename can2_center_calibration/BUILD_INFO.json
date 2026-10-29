@@ -1,0 +1,32 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.91",
+  "candidate": true,
+  "date": "2026-10-25",
+  "app": {
+    "path": "../docs/operations/evidence/2026-10-25-feedback-priority-flash-2026-10-25-172803-318591/Patrol_Vehicle_Chassis_App.bin",
+    "address": "0x08008000",
+    "bytes": 156736,
+    "crc32": "B98E6B15",
+    "sha256": "fa95f31778cabfa5314e052cc3f7fbffa3bdd0ef4cf0e34140f72b11f1eabcb5"
+  },
+  "full": {
+    "path": "../docs/operations/evidence/2026-10-25-feedback-priority-flash-2026-10-25-172803-318591/Patrol_Vehicle_Chassis_Full.bin",
+    "address": "0x08000000",
+    "bytes": 189504,
+    "sha256": "2d53fa603af050b7578d7b219f25491af765880373bffb0b3c8ea2231f486838"
+  },
+  "boot_state_a": {
+    "path": "../docs/operations/evidence/2026-10-25-feedback-priority-flash-2026-10-25-172803-318591/BootState_A.bin",
+    "address": "0x0803E800",
+    "sha256": "07b1e53f519c93b4a98eaebc4240d4c2b236b47d33362cf47dfc71ac4ec3a0d8"
+  },
+  "boot_state_b": {
+    "path": "../docs/operations/evidence/2026-10-25-feedback-priority-flash-2026-10-25-172803-318591/BootState_B.bin",
+    "address": "0x0803F000",
+    "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+  },
+  "evidence_index": "../docs/operations/evidence/2026-10-25-feedback-priority-flash-2026-10-25-172803-318591/index.json",
+  "board_flashed": false,
+  "field_center_calibration_verified": false
+}

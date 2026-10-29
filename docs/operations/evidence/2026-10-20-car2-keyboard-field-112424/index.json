@@ -1,0 +1,19 @@
+{
+  "artifacts": [
+    {
+      "path": "console.log",
+      "bytes": 17313,
+      "sha256": "8d1bcfb6b8030b1b44adacfc79964b2aa802b7d401affd48f4205c7249a85ff1"
+    },
+    {
+      "path": "frames.jsonl",
+      "bytes": 406920,
+      "sha256": "3d7bf45fff591b1dfe2a94833135a59cdfe40fbcba425562072bcd55b21f66d9"
+    },
+    {
+      "path": "session.json",
+      "bytes": 196,
+      "sha256": "d18fde88954de3a11253cab7f4beea21d7a26d0340c23a054b330b2ea5199da5"
+    }
+  ]
+}

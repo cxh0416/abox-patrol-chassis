@@ -1,0 +1,13 @@
+SEGGER J-Link Commander V9.84 (Compiled Oct  7 2026 14:35:46)
+DLL version V9.84, compiled Oct  7 2026 14:34:44
+
+J-Link Commander will now exit on Error
+
+J-Link Command File read successfully.
+Processing script file...
+J-Link>device STM32F105RC
+J-Link connection not established yet but required for command.
+Connecting to J-Link ...FAILED: Cannot connect to the probe/programmer.
+
+Script processing completed.
+

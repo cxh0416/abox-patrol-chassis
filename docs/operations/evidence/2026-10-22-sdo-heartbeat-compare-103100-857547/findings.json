@@ -1,0 +1,111 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "app_image": "0.2.76; read-only hash verified at test start",
+  "comparison_baseline": "docs/operations/evidence/2026-10-22-stationary-sdo-readonly-092939-078498/index.json",
+  "baseline": {
+    "mode": "sweep around predicted heartbeat",
+    "sent": 1592,
+    "success": 1588,
+    "timeout": 4
+  },
+  "current": {
+    "mode": "upload 30ms after host-received heartbeat",
+    "sent": 1600,
+    "success": 1600,
+    "timeout": 0,
+    "abort": 0
+  },
+  "initial_safety": [
+    {
+      "node": 1,
+      "index": "0x6041",
+      "value": 8753
+    },
+    {
+      "node": 2,
+      "index": "0x6041",
+      "value": 4113
+    },
+    {
+      "node": 2,
+      "index": "0x6069",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6869",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6069",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6869",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6069",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6869",
+      "value": 0
+    }
+  ],
+  "final_safety": [
+    {
+      "node": 1,
+      "index": "0x6041",
+      "value": 8753
+    },
+    {
+      "node": 2,
+      "index": "0x6041",
+      "value": 4113
+    },
+    {
+      "node": 2,
+      "index": "0x6069",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6869",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6069",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6869",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6069",
+      "value": 0
+    },
+    {
+      "node": 2,
+      "index": "0x6869",
+      "value": 0
+    }
+  ],
+  "tx_uploads": 1616,
+  "other_can_masters": 0,
+  "driver_parameters_written": false,
+  "limitations": [
+    "Nonrandomized short stationary comparison; not a guarantee of stability.",
+    "Host timestamps do not establish exact on-wire phase.",
+    "No proof of driver firmware defect versus electrical/capture loss.",
+    "This test predates the new write-verification firmware and is not its field acceptance."
+  ]
+}

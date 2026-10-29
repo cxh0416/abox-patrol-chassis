@@ -5,7 +5,7 @@
 #include <string.h>
 
 /* No write retries: a trigger whose acknowledgement was lost must never replay. */
-#define TRANSACTION_MS 100U
+#define TRANSACTION_MS 200U
 #define PREPARE_MS 5000U
 /* PP shutdown acknowledges the write before deceleration releases enable.
  * Vehicle status remained 0x2237 at 180 ms and reached 0x2231 at 357 ms.
@@ -51,11 +51,57 @@ typedef enum
     STEER_STEP_PROFILE_SPEED_ACTIVE_COMPLETE = 31,
 } BenchSteeringStep;
 
+enum { VERIFY_NONE, VERIFY_STATUS, VERIFY_MODE, VERIFY_TARGET, VERIFY_OBJECT, VERIFY_ACK_LOW, VERIFY_DRAIN };
+
+// 仅活动期目标、轮廓速度和定位触发允许失应答核验；准备、限位、使能和停机握手继续使用原有失败路径。
+static uint8_t motion_write(const BenchSteering* b)
+{
+    return b->phase == BENCH_ACTIVE && !b->read &&
+        (b->step == STEER_STEP_TARGET || b->step == STEER_STEP_TRIGGER ||
+         b->step == STEER_STEP_CLEAR_TRIGGER || b->step == STEER_STEP_WRITE_PROFILE_SPEED_ACTIVE);
+}
+
+// 结束当前已确认步骤。核验与正常 ACK 共用相同推进规则，保留单个最新目标，不建立补发运动指令队列。
+static void complete_step(BenchSteering* b, uint32_t now)
+{
+    b->pending = b->verify = 0U;
+    b->step++;
+    if (b->step == STEER_STEP_TRIGGER) b->pp_ack_low = 0U;
+    if (b->phase == BENCH_STOPPING && b->step == STEER_STEP_STOP_COMPLETE && !b->stop_confirmed)
+        b->stop_ms = now;
+    if (b->step == STEER_STEP_LIMITS_COMPLETE) {
+        b->limits_aligned = 1U;
+        b->cached_minimum = b->minimum;
+        b->cached_maximum = b->maximum;
+        b->step = STEER_STEP_WRITE_MODE;
+    }
+    if (b->step == STEER_STEP_READ_PROFILE_SPEED + 1U ||
+        b->step == STEER_STEP_PROFILE_SPEED_ACTIVE_COMPLETE) {
+        b->applied_profile_rpm = b->speed_write_rpm;
+        if (b->step == STEER_STEP_PROFILE_SPEED_ACTIVE_COMPLETE)
+            b->step = b->target_pending ? STEER_STEP_TARGET : STEER_STEP_ACTIVE;
+    }
+    if (b->step == STEER_STEP_ACTIVE || b->step == STEER_STEP_TARGET_COMPLETE) {
+        b->phase = BENCH_ACTIVE;
+        b->step = STEER_STEP_ACTIVE;
+    }
+}
+
+// 将运动写入的未知结果转为限时只读核验。保留原步骤和已发送值，绝不重发丢 ACK 的写入；stop_ms 在活动期临时保存核验起点。
+static void begin_verify(BenchSteering* b, uint32_t now)
+{
+    b->pending = 0U;
+    b->verify = VERIFY_STATUS;
+    b->stop_ms = now;
+}
+
+// 检查请求的转向软限位是否属于已支持档位。只接受代码中明确列举的毫度档位，避免未验证的幅度直接进入定位流程。
 static uint8_t valid_limit(uint16_t limit)
 {
     return (limit == 1000 || limit == 3000 || limit == 5000 || limit == 20000 || limit == 30000) ? 1U : 0U;
 }
 
+// 按目标误差与当前位置选择转向轮廓速度。接近目标或软限位时使用慢速，其次中速，否则使用最大速度；速度来自统一 profile 常量，不在此改变配置。
 static uint16_t profile_speed(int32_t target_mdeg, int32_t actual_mdeg)
 {
     int64_t error = (int64_t)target_mdeg - actual_mdeg;
@@ -74,20 +120,30 @@ static uint16_t profile_speed(int32_t target_mdeg, int32_t actual_mdeg)
     return VEHICLE_STEERING_PROFILE_MAX_RPM;
 }
 
+// 两个已发送定位触发之间至少间隔固定周期，避免持续摇杆输入把每次任务机会都变成触发事务。
+static uint8_t trigger_interval_ready(const BenchSteering* b, uint32_t now_ms)
+{
+    return (uint32_t)(now_ms - b->last_trigger_ms) >= BENCH_STEERING_TRIGGER_INTERVAL_MS ? 1U : 0U;
+}
+
+// 锁存转向执行器首个故障并置切电请求。撤销待响应事务并进入故障阶段；重复故障不会覆盖最初的故障编号。
 static void fail(BenchSteering *b, uint32_t reason)
 {
     /* Cross-executor emergency stopping must not replace the first cause. */
     if (b->phase == BENCH_FAULT)
         return;
     b->pending = 0;
+    b->verify = 0U;
     b->fault = reason;
     b->cut_power = 1;
     b->phase = BENCH_FAULT;
 }
+// 清空转向执行器全部运行状态。仅操作状态结构，不写驱动器；需要保留的已对齐限位缓存由启动函数显式恢复。
 void BenchSteering_Init(BenchSteering *b)
 {
     memset(b, 0, sizeof(*b));
 }
+// 启动正常转向位置模式握手。要求空闲且软限位档位合法；保存实测保持位置、运行中位及标定中位，后续逐项读写验证驱动器对象。
 uint8_t BenchSteering_Start(BenchSteering *b, int32_t actual, int32_t center, int32_t calibration_center,
                             uint16_t limit, uint32_t now)
 {
@@ -102,6 +158,7 @@ uint8_t BenchSteering_Start(BenchSteering *b, int32_t actual, int32_t center, in
     b->calibration_center = calibration_center;
     b->phase = BENCH_PREPARING;
     b->started_ms = now;
+    b->last_trigger_ms = now - BENCH_STEERING_TRIGGER_INTERVAL_MS;
     b->center = center;
     b->hold = actual;
     b->minimum = INT32_MIN;
@@ -110,6 +167,7 @@ uint8_t BenchSteering_Start(BenchSteering *b, int32_t actual, int32_t center, in
     b->applied = INT32_MIN;
     return 1;
 }
+// 启动中位标定专用转向握手。仅允许合法范围和空闲执行器，置 preserve_limits 保留现有驱动限位；不能替代普通运动的标定与坐标门禁。
 uint8_t BenchSteering_StartCommissioning(BenchSteering *b, int32_t actual, int32_t center, uint32_t limit,
                                          uint32_t now)
 {
@@ -120,6 +178,7 @@ uint8_t BenchSteering_StartCommissioning(BenchSteering *b, int32_t actual, int32
     b->calibration_center = center;
     b->phase = BENCH_PREPARING;
     b->started_ms = now;
+    b->last_trigger_ms = now - BENCH_STEERING_TRIGGER_INTERVAL_MS;
     b->center = center;
     b->hold = actual;
     b->minimum = INT32_MIN;
@@ -128,6 +187,7 @@ uint8_t BenchSteering_StartCommissioning(BenchSteering *b, int32_t actual, int32
     b->applied = INT32_MIN;
     return 1U;
 }
+// 请求转向撤使能或故障切电。普通停车进入有期限的撤使能确认；准备过程中限位尚未成对对齐则判故障，避免继续使用半更新的限位。
 void BenchSteering_Stop(BenchSteering *b, uint32_t now, uint8_t cut_power)
 {
     if (cut_power)
@@ -137,22 +197,21 @@ void BenchSteering_Stop(BenchSteering *b, uint32_t now, uint8_t cut_power)
     }
     if (b->phase == BENCH_IDLE || b->phase == BENCH_FAULT || b->phase == BENCH_STOPPING)
         return;
-    /* A partially rewritten limit pair must be restored by a power cycle. */
-    if (b->phase == BENCH_PREPARING && !b->limits_aligned)
-    {
-        fail(b, 11U);
-        return;
-    }
+    /* PREPARING can be aborted with shutdown even before limits are aligned.
+       A later start must re-read and rewrite the complete limit pair. */
     b->pending = 0;
+    b->verify = b->pp_ack_low = b->target_pending = 0U;
     b->phase = BENCH_STOPPING;
     b->step = STEER_STEP_STOP;
     b->stop_ms = now;
     b->stop_confirmed = 0;
 }
+// 记录转向 CAN 请求发送失败。交由统一故障入口锁存，不能以一次报文提交失败推断驱动器处于安全状态。
 void BenchSteering_TxFailed(BenchSteering *b)
 {
     fail(b, 2U);
 }
+// 根据请求、安全条件和时间推进转向执行器。检查目标范围、计数转换、准备与事务期限；活动阶段按误差切换轮廓速度，停止阶段保留专用确认期限。
 void BenchSteering_Tick(BenchSteering *b, uint32_t now, uint8_t requested, uint8_t safe,
                         int32_t angle, int32_t actual_angle)
 {
@@ -165,6 +224,19 @@ void BenchSteering_Tick(BenchSteering *b, uint32_t now, uint8_t requested, uint8
     }
     if (!requested)
         BenchSteering_Stop(b, now, 0U);
+    if (b->verify)
+    {
+        if (now - b->stop_ms >= BENCH_WRITE_VERIFY_MS) {
+            fail(b, 12U);
+        } else if (b->verify != VERIFY_DRAIN && b->pending &&
+                   now - b->sent_ms >= BENCH_VERIFY_READ_MS) {
+            /* Do not reuse the timed-out object. Keep sole SDO ownership while
+             * draining so a late response cannot satisfy a newer request. */
+            b->pending = 0U;
+            b->verify = VERIFY_DRAIN;
+        }
+        return;
+    }
     if (b->phase == BENCH_STOPPING)
     {
         if (now - b->stop_ms >= (b->stop_confirmed || b->step == STEER_STEP_STOP_COMPLETE ? STOP_FINISH_MS : STOP_MS))
@@ -190,19 +262,42 @@ void BenchSteering_Tick(BenchSteering *b, uint32_t now, uint8_t requested, uint8
             b->target_pending = b->desired != b->applied;
             if (b->profile_rpm != b->applied_profile_rpm)
                 b->step = STEER_STEP_WRITE_PROFILE_SPEED_ACTIVE;
-            else if (b->target_pending)
+            else if (b->target_pending && trigger_interval_ready(b, now))
                 b->step = STEER_STEP_TARGET;
         }
     }
-    if (b->pending && now - b->sent_ms >= TRANSACTION_MS)
+    if (b->pending && motion_write(b) && now - b->sent_ms >= BENCH_WRITE_ACK_WAIT_MS)
+        begin_verify(b, now);
+    else if (b->pending && now - b->sent_ms >= TRANSACTION_MS)
         fail(b, 6U);
 }
 
+// 构造当前转向步骤的 NMT 或 SDO 请求。只控制 Node 1，依次处理限位、模式、速度、保持位置、使能、定位触发及停止；只允许一个在途事务。
 uint8_t BenchSteering_Take(BenchSteering *b, uint32_t now, PatrolCanFrame *f)
 {
     int32_t value = 0;
-    if (b->pending || b->phase == BENCH_IDLE || b->phase == BENCH_FAULT || b->step == STEER_STEP_ACTIVE)
+    if (b->pending || b->phase == BENCH_IDLE || b->phase == BENCH_FAULT ||
+        b->verify == VERIFY_DRAIN || b->step == STEER_STEP_ACTIVE)
         return 0;
+    if (!b->verify && b->step == STEER_STEP_TRIGGER && !b->pp_ack_low) {
+        b->verify = VERIFY_ACK_LOW;
+        b->stop_ms = now;
+    }
+    if (b->verify) {
+        if (now - b->stop_ms >= BENCH_WRITE_VERIFY_MS) { fail(b, 12U); return 0U; }
+        b->index = b->verify == VERIFY_MODE ? 0x6061U :
+            b->verify == VERIFY_TARGET ? 0x607AU :
+            b->verify == VERIFY_OBJECT ? (b->step == STEER_STEP_WRITE_PROFILE_SPEED_ACTIVE ? 0x6081U : 0x6040U) : 0x6041U;
+        b->subindex = 0U;
+        b->read = 1U;
+        b->width = b->index == 0x6061U ? 1U :
+            (b->index == 0x607AU || b->index == 0x6081U ? 4U : 2U);
+        b->expected = 0x27U;
+        *f = PatrolCanopen_SdoRead(1U, b->index, 0U);
+        b->pending = 1U;
+        b->sent_ms = now;
+        return 1U;
+    }
     if (b->step == STEER_STEP_START_NODE || b->step == STEER_STEP_STOP_COMPLETE)
     {
         memset(f, 0, sizeof(*f));
@@ -298,6 +393,7 @@ uint8_t BenchSteering_Take(BenchSteering *b, uint32_t now, PatrolCanFrame *f)
         /* Vendor PP control bit 5 replaces the active set-point immediately.
            Queued positioning (0x1F) delays boundary retreat and return-to-center. */
         value = b->step == STEER_STEP_TRIGGER ? 0x3F : 0x2F;
+        if (b->step == STEER_STEP_TRIGGER) b->last_trigger_ms = now;
         break;
     case STEER_STEP_STOP:
         b->index = 0x6040;
@@ -334,6 +430,7 @@ uint8_t BenchSteering_Take(BenchSteering *b, uint32_t now, PatrolCanFrame *f)
     return 1;
 }
 
+// 校验并消费当前转向事务的驱动器响应。确认索引、长度、模式、状态字和写回值；按状态推进限位对齐及定位握手，不能把 ACK 当成真实转角到位。
 uint8_t BenchSteering_OnFrame(BenchSteering *b, const PatrolCanFrame *f, uint32_t now)
 {
     int32_t value;
@@ -353,9 +450,61 @@ uint8_t BenchSteering_OnFrame(BenchSteering *b, const PatrolCanFrame *f, uint32_
         }
         return 1;
     }
+    if (b->verify == VERIFY_DRAIN) {
+        /* The read was abandoned; consume only its matching late response.
+         * No new request is emitted until the absolute verification expires. */
+        return (uint8_t)(f->id == 0x581U && f->dlc >= 4U && f->dlc <= 8U &&
+                         f->data[1] == (uint8_t)b->index &&
+                         f->data[2] == (uint8_t)(b->index >> 8) &&
+                         f->data[3] == b->subindex);
+    }
     if (!b->pending || f->id != 0x581 || f->dlc < 4 || f->dlc > 8 || f->data[1] != (uint8_t)b->index ||
         f->data[2] != (uint8_t)(b->index >> 8) || f->data[3] != b->subindex)
         return 0;
+    if (b->verify) {
+        if (now - b->stop_ms >= BENCH_WRITE_VERIFY_MS) {
+            fail(b, 12U); return 1U;
+        }
+        if (b->pending && now - b->sent_ms >= BENCH_VERIFY_READ_MS) {
+            b->pending = 0U;
+            b->verify = VERIFY_DRAIN;
+            return 1U;
+        }
+        if (f->data[0] == 0x80U) {
+            if (f->dlc == 8U) fail(b, 12U);
+            return 1U;
+        }
+        if (!PatrolCanopen_ParseSdoValue(f, 1U, b->index, 0U, &value, &width) || width != b->width) return 1U;
+        b->pending = 0U;
+        if (b->verify == VERIFY_STATUS || b->verify == VERIFY_ACK_LOW) {
+            if ((value & 0x6FU) != 0x27U || (value & 8U)) { fail(b, 12U); return 1U; }
+            if (b->verify == VERIFY_ACK_LOW) {
+                if (!(value & 0x1000U)) { b->pp_ack_low = 1U; b->verify = 0U; }
+                return 1U; /* Poll a previous high ACK only within the absolute bound. */
+            }
+            if (b->step == STEER_STEP_TRIGGER && (!b->pp_ack_low || !(value & 0x1000U))) return 1U;
+            if (b->step == STEER_STEP_CLEAR_TRIGGER && (value & 0x1000U)) return 1U;
+            b->verify = VERIFY_MODE;
+        } else if (b->verify == VERIFY_MODE) {
+            if (value != 1) { fail(b, 12U); return 1U; }
+            b->verify = VERIFY_TARGET;
+        } else if (b->verify == VERIFY_TARGET) {
+            int32_t target = b->applied == INT32_MIN ? b->hold : b->applied;
+            if (value != target) { fail(b, 12U); return 1U; }
+            if (b->step == STEER_STEP_TARGET) complete_step(b, now);
+            else b->verify = VERIFY_OBJECT;
+        } else {
+            int32_t expected = b->step == STEER_STEP_WRITE_PROFILE_SPEED_ACTIVE ? b->speed_write_rpm :
+                b->step == STEER_STEP_TRIGGER ? 0x3F : 0x2F;
+            if (value != expected) { fail(b, 12U); return 1U; }
+            complete_step(b, now);
+        }
+        return 1U;
+    }
+    if (motion_write(b) && now - b->sent_ms >= BENCH_WRITE_ACK_WAIT_MS && f->data[0] != 0x80U) {
+        begin_verify(b, now);
+        return 1U;
+    }
     if (now - b->sent_ms >= TRANSACTION_MS)
     {
         fail(b, 6U);
@@ -408,7 +557,15 @@ uint8_t BenchSteering_OnFrame(BenchSteering *b, const PatrolCanFrame *f, uint32_
                 b->step = STEER_STEP_WRITE_MODE;
                 return 1;
             }
-            if (b->previous_minimum >= value ||
+            /* A driver with both RAM limits at zero has no usable envelope.
+             * Normal arming already requires a calibrated, stationary runtime
+             * coordinate and fresh cross-checked feedback. Bootstrap that one
+             * known empty pair through the same bounded write/readback path.
+             * Commissioning above must continue to preserve existing limits;
+             * an uncalibrated provisional origin cannot define new limits.
+             * Cached limits below still reject an unexpected live epoch loss. */
+            if ((b->previous_minimum >= value &&
+                 (b->previous_minimum != 0 || value != 0)) ||
                 !SteeringAngle_ToControllerCount(-BENCH_STEERING_ENVELOPE_MDEG, b->center,
                                                  VEHICLE_STEERING_COUNTS_MILLI, VEHICLE_STEERING_DIRECTION,
                                                  INT32_MIN, INT32_MAX, &envelope_low) ||
@@ -470,32 +627,11 @@ uint8_t BenchSteering_OnFrame(BenchSteering *b, const PatrolCanFrame *f, uint32_
     }
     else if (f->data[0] != 0x60)
         return 1;
-    b->pending = 0;
-    b->step++;
-    if (b->phase == BENCH_STOPPING && b->step == STEER_STEP_STOP_COMPLETE && !b->stop_confirmed)
-        b->stop_ms = now; /* Disabled: separately bound NMT housekeeping. */
-    if (b->step == STEER_STEP_LIMITS_COMPLETE)
-    {
-        b->limits_aligned = 1;
-        b->cached_minimum = b->minimum;
-        b->cached_maximum = b->maximum;
-        b->step = STEER_STEP_WRITE_MODE;
-    }
-    if (b->step == STEER_STEP_READ_PROFILE_SPEED + 1U ||
-        b->step == STEER_STEP_PROFILE_SPEED_ACTIVE_COMPLETE)
-    {
-        b->applied_profile_rpm = b->speed_write_rpm;
-        if (b->step == STEER_STEP_PROFILE_SPEED_ACTIVE_COMPLETE)
-            b->step = b->target_pending ? STEER_STEP_TARGET : STEER_STEP_ACTIVE;
-    }
-    if (b->step == STEER_STEP_ACTIVE || b->step == STEER_STEP_TARGET_COMPLETE)
-    {
-        b->phase = BENCH_ACTIVE;
-        b->step = STEER_STEP_ACTIVE;
-    }
+    complete_step(b, now);
     return 1;
 }
 
+// 查询转向停止过程是否已取得撤使能确认。用于运行层区分等待驱动器确认与最后完成步骤，避免提前释放执行器归属。
 uint8_t BenchSteering_StopFinishReady(const BenchSteering *b)
 {
     return b->phase == BENCH_STOPPING && b->step == STEER_STEP_STOP_COMPLETE && !b->pending;

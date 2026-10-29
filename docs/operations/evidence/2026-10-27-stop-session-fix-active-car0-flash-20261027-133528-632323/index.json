@@ -1,0 +1,178 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.104",
+  "candidate": true,
+  "app_size": 156900,
+  "app_crc32": "00139201",
+  "app_sha256": "066E3A2F4B6FF3835C36ABA53D1C41AD93FEF5E2F2AA5874399B340C34D71E62",
+  "full_size": 189668,
+  "full_crc32": "E2FBF29E",
+  "full_sha256": "1708BA5C0E66DC2868593645C96EAE40EA5905080085D9AB6AE970E78E3DDE61",
+  "states": [
+    {
+      "file": "BootState_A.bin",
+      "address": "0x0803E800",
+      "size": 2048,
+      "record_crc32": "CFE6111C",
+      "sha256": "CA6A02F33F62D8E78CF43D8E3C87A1D7E10012CA3D78B5D3B57CEB281F1F6D59"
+    },
+    {
+      "file": "BootState_B.bin",
+      "address": "0x0803F000",
+      "size": 2048,
+      "erased": true,
+      "sha256": "D0FF1B294B5288D1AE1421EADF5B2D38A8752B76D472FF30BED9028E25B1C5B8"
+    }
+  ],
+  "three_file_package": true,
+  "files": [
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/BootState_A.bin",
+      "size": 2048,
+      "sha256": "ca6a02f33f62d8e78cf43d8e3c87a1d7e10012ca3d78b5d3b57ceb281f1f6d59"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/BootState_B.bin",
+      "size": 2048,
+      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/candidate/candidate.manifest.json",
+      "size": 596,
+      "sha256": "fb46fe97c7b63a7100ff3fa087cd1f8dda775d774e26930dabc678161700844a"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/candidate/Patrol_Vehicle_Chassis_App.bin",
+      "size": 156900,
+      "sha256": "066e3a2f4b6ff3835c36aba53d1c41ad93fef5e2f2aa5874399b340c34d71e62"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/flash.manifest.json",
+      "size": 2024,
+      "sha256": "1a76e2a9847366df25757801e1b0e22b48f701477d7c3eabb7cca3879b059171"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/FLASH_ADDRESSES.txt",
+      "size": 678,
+      "sha256": "c49ec0c26b89fe3d6ddb240771bf4211cdef001ce6cb52a2793368e031aa1934"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/Patrol_Vehicle_Chassis_Full.bin",
+      "size": 189668,
+      "sha256": "1708ba5c0e66dc2868593645c96eae40ea5905080085d9ab6ae970e78e3dde61"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/README.md",
+      "size": 1889,
+      "sha256": "869eed3fd36956a2191385375c78448c025b060dc681472cd1e544e7ff65d45f"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/sha256.json",
+      "size": 4328,
+      "sha256": "62e8de71892afa49ed3197c447c9b948346d97cce419de1f71d5a2880d38d1e0"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/source/app/Core/User/motion/include/bench_steering.h",
+      "size": 3699,
+      "sha256": "0fdec3da4afd4ee6d6d8845d0f09f20b6a3c58580f5972e6787f43d085f32564"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/source/app/Core/User/motion/private/motion_internal.h",
+      "size": 8139,
+      "sha256": "701228ed6a88f218139d0c3c63ddf5b17b8f0063a0b53fac3484fc661bd7dbbe"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/source/app/Core/User/motion/src/bench_steering.c",
+      "size": 26317,
+      "sha256": "174297e6f344cb297c3c91ce9b11a259fae6a378376077af3ec8ac9f270ef595"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/source/app/Core/User/motion/src/patrol_runtime.c",
+      "size": 47530,
+      "sha256": "11f36c4de806c5830a62af7fe8e772dd5c78e9d8daef7a4c13f3f02b60a4588d"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/source/tests/bench_steering_test.c",
+      "size": 19922,
+      "sha256": "779ee5fdfef4a9d93bdae51e0c7d46cf3224ef9e8071b434cc365d8aa5140768"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/source/tests/stop_scheduler_cases.c",
+      "size": 10828,
+      "sha256": "ddf9f5525215d116f5c36d1d2e3f5024a65780784c23b72af965178b3ae5355f"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/source/VERSION",
+      "size": 23,
+      "sha256": "1bbb72824dfe4c7d3ae6035a32c4376d5a328a0525e07138acd8352431d2fcdb"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/source-changes.patch",
+      "size": 137590,
+      "sha256": "56033b7c8f3aa930a5f146792c96e3f039d000402a730ad34e4f698aff61f1fe"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/validation/arm-release-build.log",
+      "size": 22,
+      "sha256": "8c35b1682f73592d30612d7b0fabdb384fcfff35cb5a076cb48b85b1368aa794"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/validation/bench-stack.log",
+      "size": 294,
+      "sha256": "78faa7050eeff9523e01b82adf6c956ddb1fc917709732808bc50b999fe2801a"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/validation/bootstate-create.log",
+      "size": 354,
+      "sha256": "8c5c384ebd9cc0bc84400a66cec9097ab2214e721e96035a5dbbb76592250c3c"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/validation/bootstate-verifier-build.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/validation/bootstate-verifier.log",
+      "size": 141,
+      "sha256": "65d4e35871f504b5d31b74f36d6cb08b67287ac484bfcde0b6e786944d8b32c0"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/validation/can2-stack.log",
+      "size": 1312,
+      "sha256": "f2eff2a003284bb996adcfa87e5692622725a65c6f6369db3a28c99b112609cc"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/validation/git-diff-check.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/validation/package_stop_session_fix_0.2.104.py",
+      "size": 14034,
+      "sha256": "bf8cc37abf557e68c136dce6e5ef0b2485cc676c7bd9d539200abcaa4546a8e0"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/validation/product-python.log",
+      "size": 140031,
+      "sha256": "a08a554592418fb8ee487a6ba63421fa9248bb5fd283510016a4e26a1f7ebb53"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/validation/verify-state-0.2.104.c",
+      "size": 3969,
+      "sha256": "f3d0db9b4667c64f9af3d879e95ddc217bbac0795d97a1c67e9fbeb686723045"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/verify-state-0.2.104.c",
+      "size": 3969,
+      "sha256": "f3d0db9b4667c64f9af3d879e95ddc217bbac0795d97a1c67e9fbeb686723045"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-stop-session-fix-active-car0-flash-20261027-133528-632323/verify-state-0.2.104.exe",
+      "size": 70222,
+      "sha256": "20ab3c5d37421cc73354e8b74e1c934064c7376afa6deca5c18825e2402992f0"
+    }
+  ],
+  "board_flashed": false,
+  "field_verified": false,
+  "dist_updated": false
+}

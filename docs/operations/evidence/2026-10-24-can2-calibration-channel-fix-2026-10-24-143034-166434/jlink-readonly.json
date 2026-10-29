@@ -1,0 +1,10 @@
+{
+  "mode": "SWD attach/read only; no reset, halt, write, or erase",
+  "probe_serial": 59406895,
+  "vtor": "0x08008000",
+  "dhcsr": "0x01010001",
+  "app_sha256": "84590b4bbe63f16a917409d611137669c712c6ea68e21c4de3c2247bd1043968",
+  "expected_0_2_86_sha256": "84590b4bbe63f16a917409d611137669c712c6ea68e21c4de3c2247bd1043968",
+  "app_matches_0_2_86": true,
+  "boot_state_a_header": "3256534203007000010000000400000000000000d05f0200a510c86b706174726f6c2d63686173736973"
+}

@@ -58,6 +58,7 @@ defined in linker script */
   .section .text.Reset_Handler
   .weak Reset_Handler
   .type Reset_Handler, %function
+// 复位入口：初始化系统、复制 data、清零 bss、调用静态构造后进入 main；此时尚未启动 RTOS。
 Reset_Handler:
 
 /* Call the clock system initialization function.*/
@@ -109,6 +110,7 @@ LoopFillZerobss:
  * @retval None
 */
     .section .text.Default_Handler,"ax",%progbits
+// 未被覆盖的弱中断默认入口：进入永久循环保留现场，不自动返回或恢复业务。
 Default_Handler:
 Infinite_Loop:
   b Infinite_Loop

@@ -1,0 +1,73 @@
+{
+  "stop_reason": "duration",
+  "error": null,
+  "kind": "snapshot",
+  "elapsed_s": 5.0,
+  "latest": {
+    "CAN1.heartbeat.node1": {
+      "age_ms": 0.0,
+      "at_s": 5.0,
+      "decoded": {
+        "kind": "heartbeat",
+        "node": 1,
+        "state": 0,
+        "bootup": true
+      }
+    },
+    "CAN2.t12_switch": {
+      "age_ms": 0.0,
+      "at_s": 5.0,
+      "decoded": {
+        "kind": "t12_switch",
+        "a": 2,
+        "a_enabled": true,
+        "b": 0,
+        "b_action": "none"
+      }
+    },
+    "CAN2.t12_joystick": {
+      "age_ms": 31.0,
+      "at_s": 4.9689999999827705,
+      "decoded": {
+        "kind": "t12_joystick",
+        "steer_raw": 0,
+        "throttle_raw": 0,
+        "reference_rpm": 0
+      }
+    }
+  },
+  "ids": {
+    "CAN1.STD.0x701": {
+      "age_ms": 0.0,
+      "count": 20374,
+      "first_s": 2.015999999974156,
+      "last_s": 5.0,
+      "max_host_gap_ms": 16.00000000325963,
+      "last_data": "00",
+      "dlc": 1
+    },
+    "CAN2.STD.0x10A": {
+      "age_ms": 0.0,
+      "count": 63,
+      "first_s": 2.515999999974156,
+      "last_s": 5.0,
+      "max_host_gap_ms": 47.0000000204891,
+      "last_data": "01 01 02 00 00 00 00 00",
+      "dlc": 8
+    },
+    "CAN2.STD.0x10B": {
+      "age_ms": 31.0,
+      "count": 62,
+      "first_s": 2.5309999999881256,
+      "last_s": 4.9689999999827705,
+      "max_host_gap_ms": 47.0000000204891,
+      "last_data": "00 00 00 00 00 00 00 00",
+      "dlc": 8
+    }
+  },
+  "unanswered_sdo_events": 0,
+  "sdo_completed": 0,
+  "sdo_aborts": 0,
+  "pending_sdo": 0,
+  "max_observed_reply_ms": 0
+}

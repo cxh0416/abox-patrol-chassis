@@ -1,0 +1,47 @@
+{"at_s": 0.012465000007068738, "direction": "RX", "id": 1794, "data": "7f"}
+{"at_s": 0.07043260001228191, "direction": "RX", "id": 1793, "data": "7f"}
+{"at_s": 0.11292910002521239, "direction": "RX", "id": 1794, "data": "7f"}
+{"at_s": 0.17071520001627505, "direction": "RX", "id": 1793, "data": "7f"}
+{"at_s": 0.21428410001681186, "direction": "RX", "id": 1794, "data": "7f"}
+{"at_s": 0.25856600000406615, "direction": "TX_READ_ONLY_PREFLIGHT", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"at_s": 0.25968790001934394, "direction": "RX", "id": 1409, "data": "4b 41 60 00 50 16"}
+{"at_s": 0.25989120002486743, "direction": "TX_READ_ONLY_PREFLIGHT", "id": 1538, "data": "40 41 60 00 00 00 00 00"}
+{"at_s": 0.2609387999982573, "direction": "RX", "id": 1410, "data": "4b 41 60 00 50 20"}
+{"at_s": 0.2617497000028379, "direction": "TX_READ_ONLY_PREFLIGHT", "id": 1538, "data": "40 69 60 00 00 00 00 00"}
+{"at_s": 0.2634437000087928, "direction": "RX", "id": 1410, "data": "43 69 60 00 00 00 00 00"}
+{"at_s": 0.263563200016506, "direction": "TX_READ_ONLY_PREFLIGHT", "id": 1538, "data": "40 69 68 00 00 00 00 00"}
+{"at_s": 0.26444790000095963, "direction": "RX", "id": 1410, "data": "43 69 68 00 00 00 00 00"}
+{"at_s": 0.2645665000018198, "direction": "TX_READ_ONLY_PREFLIGHT", "id": 1538, "data": "40 69 60 00 00 00 00 00"}
+{"at_s": 0.26560240000253543, "direction": "RX", "id": 1410, "data": "43 69 60 00 00 00 00 00"}
+{"at_s": 0.26592770000570454, "direction": "TX_READ_ONLY_PREFLIGHT", "id": 1538, "data": "40 69 68 00 00 00 00 00"}
+{"at_s": 0.2669350000214763, "direction": "RX", "id": 1410, "data": "43 69 68 00 00 00 00 00"}
+{"at_s": 0.26715080000576563, "direction": "TX_READ_ONLY_PREFLIGHT", "id": 1538, "data": "40 69 60 00 00 00 00 00"}
+{"at_s": 0.26806260002194904, "direction": "RX", "id": 1410, "data": "43 69 60 00 00 00 00 00"}
+{"at_s": 0.26818850002018735, "direction": "TX_READ_ONLY_PREFLIGHT", "id": 1538, "data": "40 69 68 00 00 00 00 00"}
+{"at_s": 0.2690778000105638, "direction": "RX", "id": 1410, "data": "43 69 68 00 00 00 00 00"}
+{"at_s": 0.2692649000091478, "direction": "TX_READ_ONLY_POSITION", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"at_s": 0.27069220002158545, "direction": "RX", "id": 1409, "data": "43 64 60 00 99 b8 fe ff"}
+{"at_s": 0.32122520002303645, "direction": "TX_READ_ONLY_POSITION", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"at_s": 0.321539099997608, "direction": "RX", "id": 1793, "data": "7f"}
+{"at_s": 0.32157170001300983, "direction": "RX", "id": 1794, "data": "7f"}
+{"at_s": 0.32333010001457296, "direction": "RX", "id": 1409, "data": "43 64 60 00 99 b8 fe ff"}
+{"at_s": 0.3743681000196375, "direction": "TX_READ_ONLY_POSITION", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"at_s": 0.3747731000185013, "direction": "RX", "id": 1793, "data": "7f"}
+{"at_s": 0.3751778000150807, "direction": "RX", "id": 1409, "data": "43 64 60 00 99 b8 fe ff"}
+{"at_s": 0.42572650001966394, "direction": "TX_READ_ONLY_PREFLIGHT", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"at_s": 0.4261718000052497, "direction": "RX", "id": 1794, "data": "7f"}
+{"at_s": 0.4265696000074968, "direction": "RX", "id": 1409, "data": "4b 41 60 00 50 16"}
+{"at_s": 0.4269790000107605, "direction": "TX_READ_ONLY_PREFLIGHT", "id": 1538, "data": "40 41 60 00 00 00 00 00"}
+{"at_s": 0.4282248000090476, "direction": "RX", "id": 1410, "data": "4b 41 60 00 50 20"}
+{"at_s": 0.42847410001559183, "direction": "TX_READ_ONLY_PREFLIGHT", "id": 1538, "data": "40 69 60 00 00 00 00 00"}
+{"at_s": 0.42968570001539774, "direction": "RX", "id": 1410, "data": "43 69 60 00 00 00 00 00"}
+{"at_s": 0.42991250002523884, "direction": "TX_READ_ONLY_PREFLIGHT", "id": 1538, "data": "40 69 68 00 00 00 00 00"}
+{"at_s": 0.43098710000049323, "direction": "RX", "id": 1410, "data": "43 69 68 00 00 00 00 00"}
+{"at_s": 0.4311699000245426, "direction": "TX_READ_ONLY_PREFLIGHT", "id": 1538, "data": "40 69 60 00 00 00 00 00"}
+{"at_s": 0.4322326000255998, "direction": "RX", "id": 1410, "data": "43 69 60 00 00 00 00 00"}
+{"at_s": 0.43255120000685565, "direction": "TX_READ_ONLY_PREFLIGHT", "id": 1538, "data": "40 69 68 00 00 00 00 00"}
+{"at_s": 0.4335253000026569, "direction": "RX", "id": 1410, "data": "43 69 68 00 00 00 00 00"}
+{"at_s": 0.43373170000268146, "direction": "TX_READ_ONLY_PREFLIGHT", "id": 1538, "data": "40 69 60 00 00 00 00 00"}
+{"at_s": 0.43483179999748245, "direction": "RX", "id": 1410, "data": "43 69 60 00 00 00 00 00"}
+{"at_s": 0.43502890001400374, "direction": "TX_READ_ONLY_PREFLIGHT", "id": 1538, "data": "40 69 68 00 00 00 00 00"}
+{"at_s": 0.436137000011513, "direction": "RX", "id": 1410, "data": "43 69 68 00 00 00 00 00"}

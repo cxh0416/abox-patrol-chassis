@@ -1,0 +1,12 @@
+{
+  "ABox_Boot.bin": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+  "BootState_A.bin": "7eeee3343631ff544211fd8377094d669cc0bc6c622ab84896c8bf85cd1c10fa",
+  "BootState_B.bin": "f5fcec2de99151f0e3a825bad75c8482c41c9cbdbcd9fc5946dd18e7dbf1f87c",
+  "flash.manifest.json": "4accc85cf573763f22a4e7c944c6711f045fe75d8be15de1b73edd2ad19f56d0",
+  "FLASH_ADDRESSES.txt": "00d81d71de80e74436deca8957c953f74d6c60b96ae66c0d6a4bd5dbfe8e40d9",
+  "Patrol_Vehicle_Chassis_App.bin": "798dae6212857365c9c0c35d6730264c5ef27553175a2aef62e81df882af3120",
+  "Patrol_Vehicle_Chassis_App.elf": "1e5f03a59906bde5bb27b7e55872719fbdab602e8739d5d51b97c781145bd356",
+  "Patrol_Vehicle_Chassis_App.map": "a73f89143e1c31a8684a61b760f4320fd6a4ce2f361a1e0c7210a0612b324fc5",
+  "Patrol_Vehicle_Chassis_Full.bin": "c8f76d32a1e52e66e2d84bac99616d0076162e7783665c2271bb15cb3d0cd816",
+  "source-changes.patch": "1f4978cdf03c51cdbf273cce9700f474f3753c8da29880aff105a86cd2ca1cdb"
+}

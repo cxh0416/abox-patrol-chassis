@@ -1,0 +1,50 @@
+{
+  "timestamp": "2026-10-20T09:52:56.116223+08:00",
+  "tick_ms": 206165,
+  "power_command": 1,
+  "session": 0,
+  "fault_latched": 0,
+  "ota_busy_motion_gate": 0,
+  "can_rx_count": 3428,
+  "encoder_timeout_count": 310,
+  "cloud_initialized": 1,
+  "cloud_config_ready": 1,
+  "mqtt_ready_last_task": 1,
+  "ota_context": {
+    "state": 8,
+    "provisioned": 1,
+    "busy": 0,
+    "seeding": 0,
+    "slot": 0,
+    "downloaded": 148520,
+    "read_size": 148520,
+    "written_total": 148520,
+    "last_error": 0,
+    "retry_due": 15175,
+    "seed_attempted": 1,
+    "stable_checked": 1
+  },
+  "boot_states": [
+    {
+      "page": "state-a",
+      "valid": true,
+      "sequence": 2,
+      "state": 4,
+      "image_version": "patrol-chassis-0.2.62",
+      "stable_slot": 255,
+      "stable_image_size": 0,
+      "stable_image_version": ""
+    },
+    {
+      "page": "state-b",
+      "valid": true,
+      "sequence": 3,
+      "state": 4,
+      "image_version": "patrol-chassis-0.2.62",
+      "stable_slot": 0,
+      "stable_image_size": 148520,
+      "stable_image_version": "patrol-chassis-0.2.62"
+    }
+  ],
+  "boundary": "Read-only sequential snapshot; no movement requested."
+}

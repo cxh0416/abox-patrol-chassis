@@ -1,0 +1,17 @@
+{
+  "started_at": "2026-10-22T14:24:57.6250730+08:00",
+  "pid": 5960,
+  "output": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-recheck-20261022-142457-581403",
+  "stdout": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-recheck-20261022-142457-581403.stdout.log",
+  "stderr": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-recheck-20261022-142457-581403.stderr.log",
+  "stop_file": "E:\\1_work\\ChassisCar_test\\logs\\stop-car2-receiver-recheck-20261022-142457-581403.flag",
+  "duration_s": 600,
+  "physical_channels": {
+    "CAN2": 1,
+    "CAN1": 2
+  },
+  "bitrate_kbps": 500,
+  "hardware_listen_only": true,
+  "vehicle": "CAR2",
+  "purpose": "Receiver recheck after CANTest release"
+}

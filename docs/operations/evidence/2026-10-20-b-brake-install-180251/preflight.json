@@ -1,0 +1,40 @@
+{
+  "observed": {
+    "power_command": 1,
+    "session_active": 1,
+    "enable_request": 1,
+    "target_rpm": 0,
+    "feedback_ota_busy": 0,
+    "ota_busy_direct": 0,
+    "bench_phase": 16781314,
+    "drive_phase": 3074,
+    "center_phase": 0,
+    "auto_requested": 0,
+    "left_actual_rpm": 0,
+    "right_actual_rpm": 0,
+    "left_rpm_ms": 4471490,
+    "right_rpm_ms": 4471460,
+    "steering_status": 1591,
+    "drive_status": 4151,
+    "tick": 4471012,
+    "left_age_ms": 4294966818,
+    "right_age_ms": 4294966848
+  },
+  "checks": {
+    "output_off": false,
+    "no_session": false,
+    "no_enable": false,
+    "zero_target": true,
+    "ota_idle": true,
+    "executors_idle": false,
+    "calibration_idle": true,
+    "auto_center_idle": true,
+    "zero_reported_wheels": true,
+    "installed_app_matches_elf": true,
+    "frozen_boot_matches": true
+  },
+  "uid": "34ffd3054e57333750350443",
+  "matched_elf": "app/build/PhyRemote/Patrol_Vehicle_Chassis_App.elf",
+  "old_app_sha256": "170ac3dcf92c8c893e686c1591ea2ecdc242378c12095c0dfddc4a06b648fe59",
+  "candidate_sha256": "10ef9284390fa6acb73fcf40e709ec5d22215e2fbb5da67f0f30f0a7f798e3ab"
+}

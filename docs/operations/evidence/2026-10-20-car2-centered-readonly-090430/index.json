@@ -1,0 +1,27 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "started_at": "2026-10-20T09:04:30.487463+08:00",
+  "script_sha256": "f8240742eb62baacd5dfb3f42b26fdd7221da7a7c13eed23b5ac8e2c1622923e",
+  "operator_confirmed": {
+    "car": 2,
+    "wheels_lifted": true,
+    "hardware_estop_available": true,
+    "powered": true,
+    "wiring": "CANalyst physical CH2 to ABox CAN2; ABox CAN1 to drivers",
+    "mechanically_centered": true
+  },
+  "operation": "Node 1 and Node 2 SDO upload requests only; no NMT, parameter download, targets, enable, calibration write or flashing.",
+  "values": {
+    "steering": {},
+    "drive": {}
+  },
+  "error": null,
+  "artifacts": [
+    {
+      "path": "readonly.stdout.log",
+      "sha256": "f66f2bf84f92a90a51bb1492819758f53e00456a33cfb3bbafcbea27c92339ac",
+      "bytes": 1017
+    }
+  ],
+  "boundary": "Mechanical centered state is operator testimony. Readback alone does not verify mechanical motion or independent angle calibration."
+}

@@ -1,0 +1,6 @@
+patrol-chassis-0.2.84
+Patrol_Vehicle_Chassis_App.bin -> 0x08008000
+BootState_A.bin -> 0x0803E800
+BootState_B.bin -> 0x0803F000
+Do not alter 0x0803E000 recovery page or 0x0803F800 Config V5.
+active_car=0; drive/steering executors and actuation enabled.

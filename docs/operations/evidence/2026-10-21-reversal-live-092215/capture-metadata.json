@@ -1,0 +1,24 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "started_at": "2026-10-21T09:22:15.280234+08:00",
+  "pid": 11900,
+  "physical_channel2_connected_to": "CAN1 as verified in preceding passive identification",
+  "channels": {
+    "2": {
+      "mode": 1,
+      "started": true
+    },
+    "1": {
+      "mode": 1,
+      "init_result": 1,
+      "start_result": 1
+    }
+  },
+  "bitrate_kbps": 500,
+  "hardware_listen_only": true,
+  "transmit_interface_bound": false,
+  "library": "E:\\canalyst-II-Driver\\CAN\\\u4e8c\u6b21\u5f00\u53d1\u5e93\u6587\u4ef6\\x64(64bit)\\ControlCAN.dll",
+  "library_sha256": "6d151f92217983c39a6690ded76b41f86ebad7570bcc27fc9d13f7141425b1e3",
+  "timing": "elapsed_s uses host perf_counter; hardware_timestamp_raw and TimeFlag are retained without assuming a timestamp unit",
+  "operator_task": "Operator reproduces forward/reverse failure; recorder does not send control or reset frames."
+}

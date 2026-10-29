@@ -1,0 +1,36 @@
+{
+  "source_snapshot": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-21-reverse-lock-readonly-084141\\ram-readonly.bin",
+  "arm_layout": {
+    "drive_size": 48,
+    "phase_size": 1,
+    "drive_offset": 308,
+    "sent_ms": 12,
+    "started_ms": 16,
+    "index": 8,
+    "reversing": 7,
+    "applied": 42,
+    "writing": 44,
+    "direction": 46
+  },
+  "retained_drive_state": {
+    "phase": 4,
+    "step": 12,
+    "pending": 0,
+    "read": 0,
+    "index_hex": "0x68ff",
+    "sent_ms": 50799950,
+    "started_ms": 50785450,
+    "reversing": 0,
+    "applied": 0,
+    "writing": 0,
+    "direction": 1,
+    "fault": 3,
+    "last_send_timer_after_reverse_ms": 71,
+    "fault_after_last_send_timer_ms": 1930
+  },
+  "interpretation": [
+    "Applied=0 at step12 with pending=0 and index68FF means the two zero-target writes completed the executor acknowledgement sequence.",
+    "The lower executor reversing flag is zero; the observed incident timed out in the upper control layer before a lower-layer reverse confirmation.",
+    "The send timestamp is a software request timestamp, not a measured CAN bus timestamp."
+  ]
+}

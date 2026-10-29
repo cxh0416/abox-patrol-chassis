@@ -1,0 +1,329 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "phase": "programmed-and-first-runtime",
+  "public_directory": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-20-car2-install-0262-094818",
+  "artifacts": [
+    {
+      "path": "app-readback.bin",
+      "bytes": 148520,
+      "sha256": "ab9244c91d98a7f287057b15420c1753a0c9a127c403cbfea1f438776c0fd362"
+    },
+    {
+      "path": "backup.index.json",
+      "bytes": 2716,
+      "sha256": "be333817d502c6ea671719b106433fd6f0a25608bf942790c3a9b36c667d38f3"
+    },
+    {
+      "path": "backup.jlink",
+      "bytes": 1896,
+      "sha256": "653699d0a2a27deb7df29add76720d8144c1bc3af80954a5bac6aa823b970a8f"
+    },
+    {
+      "path": "backup.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "backup.stdout.log",
+      "bytes": 6364,
+      "sha256": "1cff4aec4d480235ea6b17a88cae4560ca6c390ffae72f92e3434459146154e9"
+    },
+    {
+      "path": "boot-after.bin",
+      "bytes": 32768,
+      "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+    },
+    {
+      "path": "boot-before.bin",
+      "bytes": 32768,
+      "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+    },
+    {
+      "path": "control-before.bin",
+      "bytes": 104,
+      "sha256": "af95359d0b75d5b9bb39990ef1dcd18f10f9578b41beae797975dfd683c9ca5a"
+    },
+    {
+      "path": "control-halted.bin",
+      "bytes": 104,
+      "sha256": "89cfbf0014d5eeedf8c28c8f6db9c23b583c5007954e54df1bfb213b96e44500"
+    },
+    {
+      "path": "dhcsr-before.bin",
+      "bytes": 4,
+      "sha256": "52a5c4a10657220cac05c63adfa923c7771c55d868a58ee360eb3d1511985c3e"
+    },
+    {
+      "path": "dhcsr-halted.bin",
+      "bytes": 4,
+      "sha256": "905c3e0e1bf85991fc02bb18a99f986ec86d99daf813aa29f256d3d6209a7465"
+    },
+    {
+      "path": "halt-and-guard.jlink",
+      "bytes": 778,
+      "sha256": "5ba0cc83ac80c9219856f8872c840faf77231aab92a3129129e795a474464e10"
+    },
+    {
+      "path": "halt-and-guard.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "halt-and-guard.stdout.log",
+      "bytes": 4133,
+      "sha256": "47d7c8967cb5be72153a323f2df87e5bfc012dbf462b0fcd0c941d5029248f36"
+    },
+    {
+      "path": "halted-guard.json",
+      "bytes": 168,
+      "sha256": "3b037111e3df0484d22573ccbfda0d04695655652332457e0737acd89c49946a"
+    },
+    {
+      "path": "motion-before.bin",
+      "bytes": 604,
+      "sha256": "9a54b813646b33491d73dae28445421445593b5bf0fb93c42d1b2406ca313b8a"
+    },
+    {
+      "path": "motion-halted.bin",
+      "bytes": 604,
+      "sha256": "4b0bba3beb19fb6d770ad8472df0d20333cb9a928ab33a7ec25f0ada5c9f4297"
+    },
+    {
+      "path": "power-before.bin",
+      "bytes": 1,
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d"
+    },
+    {
+      "path": "power-halted.bin",
+      "bytes": 1,
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d"
+    },
+    {
+      "path": "preflight.json",
+      "bytes": 1241,
+      "sha256": "2f99c26849fa33203585baba55093abe62f79a49df82b240215abd6500bc9d56"
+    },
+    {
+      "path": "program-and-verify.jlink",
+      "bytes": 1684,
+      "sha256": "0d21d56de8ed47ee343d02a6fcfc7fcd7cb125003871f122fda11dfe32c0e594"
+    },
+    {
+      "path": "program-and-verify.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "program-and-verify.stdout.log",
+      "bytes": 7431,
+      "sha256": "a5704f6d64e6b2b33f75327f045fb16d3de9d025c04242400e131cbf839e2fa6"
+    },
+    {
+      "path": "program-result.json",
+      "bytes": 688,
+      "sha256": "5885d18691e1c5550435d54ca112a412b54b014c014b2a293a0e0eb0ceaa0863"
+    },
+    {
+      "path": "restart-result.json",
+      "bytes": 141,
+      "sha256": "48bc268b1998b57d554fd41ece38b953f774ee00fde03165fe25c64b499f0dac"
+    },
+    {
+      "path": "restart.jlink",
+      "bytes": 119,
+      "sha256": "8f1bfe019c5a0fdb91dbf3a0f93b005010b8666cefcaacef1bed62ce49e2d54a"
+    },
+    {
+      "path": "restart.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "restart.stdout.log",
+      "bytes": 2258,
+      "sha256": "271ab867aa2254e654b7e5facd4b472b33671bef16067ddda562ce60f6a55a47"
+    },
+    {
+      "path": "runtime-first-app.bin",
+      "bytes": 148520,
+      "sha256": "ab9244c91d98a7f287057b15420c1753a0c9a127c403cbfea1f438776c0fd362"
+    },
+    {
+      "path": "runtime-first-control.bin",
+      "bytes": 104,
+      "sha256": "2d7ef1b38a87bb8e2044cbffef478026c4576b6e38d2ed4b60a3e6fc37e0b3da"
+    },
+    {
+      "path": "runtime-first-dhcsr.bin",
+      "bytes": 4,
+      "sha256": "52a5c4a10657220cac05c63adfa923c7771c55d868a58ee360eb3d1511985c3e"
+    },
+    {
+      "path": "runtime-first-motion.bin",
+      "bytes": 604,
+      "sha256": "9fb403a7fa289da13520dc50ba15f60197953d2063191a08afe33154f11b3072"
+    },
+    {
+      "path": "runtime-first-power.bin",
+      "bytes": 1,
+      "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d"
+    },
+    {
+      "path": "runtime-first-state-a.bin",
+      "bytes": 2048,
+      "sha256": "3182b8831285a67e1dfc4663ed3231b56015d820646d027781051bfc91c21474"
+    },
+    {
+      "path": "runtime-first-state-b.bin",
+      "bytes": 2048,
+      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+    },
+    {
+      "path": "runtime-first-tick.bin",
+      "bytes": 4,
+      "sha256": "9ddc6845b29d87ccbd95efec832da5697716351fc6c5b49d622f51749b2dad57"
+    },
+    {
+      "path": "runtime-first.jlink",
+      "bytes": 1655,
+      "sha256": "23609863e0d9fac3c509db7a8a601729e72769537ff190981a2b9828e30c4475"
+    },
+    {
+      "path": "runtime-first.json",
+      "bytes": 3501,
+      "sha256": "4dd6a6e20f47c586f9016b7804f945993ea8e1d0d01f5068049ef1bbc595bd87"
+    },
+    {
+      "path": "runtime-first.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "runtime-first.stdout.log",
+      "bytes": 5735,
+      "sha256": "7f53941fd5fd424124dc3a686c7f05d2e2e6f11a46284738bb27dde3635c8b13"
+    },
+    {
+      "path": "runtime-second-cloud-ready.bin",
+      "bytes": 3,
+      "sha256": "75c8fd04ad916aec3e3d5cb76a452b116b3d4d0912a0a485e9fb8e3d240e210c"
+    },
+    {
+      "path": "runtime-second-control.bin",
+      "bytes": 104,
+      "sha256": "b46b69a398f32a389ed1be2f932a21b0c1ab3880e285646abf0a7c5928ed6c39"
+    },
+    {
+      "path": "runtime-second-motion.bin",
+      "bytes": 604,
+      "sha256": "41f2b11049515bdeca4cd1911cd5cfcb2c26714a4a268caf69995ab684690068"
+    },
+    {
+      "path": "runtime-second-power.bin",
+      "bytes": 1,
+      "sha256": "4bf5122f344554c53bde2ebb8cd2b7e3d1600ad631c385a5d7cce23c7785459a"
+    },
+    {
+      "path": "runtime-second-state-a.bin",
+      "bytes": 2048,
+      "sha256": "3182b8831285a67e1dfc4663ed3231b56015d820646d027781051bfc91c21474"
+    },
+    {
+      "path": "runtime-second-state-b.bin",
+      "bytes": 2048,
+      "sha256": "0465bb0f72acd7512cacdc615de4eec002b609b22ef7f1b43d4be2afb33dc61e"
+    },
+    {
+      "path": "runtime-second-tick.bin",
+      "bytes": 4,
+      "sha256": "563669a84dfaf13ebdeba8bee15ffa5ae63f010b52b3e0f8dbc27d3bd45aaf1c"
+    },
+    {
+      "path": "runtime-second.jlink",
+      "bytes": 1501,
+      "sha256": "43f336fbd75812207318de2255cc0e4a62b77f37c0219b4dc8c1a7c6cf15d206"
+    },
+    {
+      "path": "runtime-second.json",
+      "bytes": 1224,
+      "sha256": "e259d5e4bbfd16c5ff4712210a6bb29130d169fa513c089ad92390301292521a"
+    },
+    {
+      "path": "runtime-second.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "runtime-second.stdout.log",
+      "bytes": 5353,
+      "sha256": "783333b3b9026924362dce19990f8df3f4cb3516170e63d06389f774b34468f0"
+    },
+    {
+      "path": "state-a-before.bin",
+      "bytes": 2048,
+      "sha256": "32a85c505d18c6ea7639e43882a6248625c6b1eae3cf195cf54674f6707c366a"
+    },
+    {
+      "path": "state-a-installed.bin",
+      "bytes": 2048,
+      "sha256": "3182b8831285a67e1dfc4663ed3231b56015d820646d027781051bfc91c21474"
+    },
+    {
+      "path": "state-a-readback.bin",
+      "bytes": 2048,
+      "sha256": "3182b8831285a67e1dfc4663ed3231b56015d820646d027781051bfc91c21474"
+    },
+    {
+      "path": "state-b-after.bin",
+      "bytes": 2048,
+      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+    },
+    {
+      "path": "state-b-before.bin",
+      "bytes": 2048,
+      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+    },
+    {
+      "path": "uid.bin",
+      "bytes": 12,
+      "sha256": "4d46849cde0edf35dcd65338a472ff614a7193426a4a4b0d712dcc1a29a73f92"
+    }
+  ],
+  "protected": [
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-20-car2-install-0262-094818\\app-region-before.bin",
+      "bytes": 221184,
+      "sha256": "8760e3538fb76db0f6e3e2fbcb0793f4bce1726cbb8cd125ee3acefdec3ca54d"
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-20-car2-install-0262-094818\\config-after-halted.bin",
+      "bytes": 2048,
+      "sha256": "6f8f8ed12227504c5881147a3488f017d406fd7bd5156b6937dae34a0d74845e"
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-20-car2-install-0262-094818\\config-before.bin",
+      "bytes": 2048,
+      "sha256": "6f8f8ed12227504c5881147a3488f017d406fd7bd5156b6937dae34a0d74845e"
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-20-car2-install-0262-094818\\recovery-after-halted.bin",
+      "bytes": 2048,
+      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-20-car2-install-0262-094818\\recovery-before.bin",
+      "bytes": 2048,
+      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-20-car2-install-0262-094818\\runtime-first-config.bin",
+      "bytes": 2048,
+      "sha256": "6f8f8ed12227504c5881147a3488f017d406fd7bd5156b6937dae34a0d74845e"
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-20-car2-install-0262-094818\\runtime-second-ota-context.bin",
+      "bytes": 960,
+      "sha256": "b8edab24027b33e3b8499b1e060ab18302dcd7b8636c1a17349b0e030df93798"
+    }
+  ]
+}

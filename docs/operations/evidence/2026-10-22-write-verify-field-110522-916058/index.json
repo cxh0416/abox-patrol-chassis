@@ -1,0 +1,98 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "created_at": "2026-10-22T11:05:23.319146+08:00",
+  "capture_closed": true,
+  "hardware_listen_only": true,
+  "files": [
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\dual-can-write-verify-20261022-104949-746098\\events.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-verify-field-110522-916058\\raw\\events.jsonl",
+      "bytes": 14139735,
+      "sha256": "c830d034038ecfb9f4e61bba372b270509ca55a7d5843dfd93464f6b156c6a84"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\dual-can-write-verify-20261022-104949-746098\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-verify-field-110522-916058\\raw\\frames.jsonl",
+      "bytes": 80300479,
+      "sha256": "9dbe1afad134eae190d6418bf945d26ccbcab08681c2aa2dd546242353502ad9"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\dual-can-write-verify-20261022-104949-746098\\metadata.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-verify-field-110522-916058\\raw\\metadata.json",
+      "bytes": 1169,
+      "sha256": "e55dda9707d7c32f3027ec2a4fba41bbe544f5ac8ccf10faa5098101893401d6"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\dual-can-write-verify-20261022-104949-746098\\sha256.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-verify-field-110522-916058\\raw\\sha256.json",
+      "bytes": 352,
+      "sha256": "698b92c270fabcb8228185d8d97b44c48991f6b0ee9460822aae39ccf98473ad"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\dual-can-write-verify-20261022-104949-746098\\summary.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-verify-field-110522-916058\\raw\\summary.json",
+      "bytes": 29550,
+      "sha256": "fa1399366fad36e905816db20f7faca0e0191444df5eb0277fb39a8338e1271c"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\dual-can-write-verify-20261022-104949-746098.stdout.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-verify-field-110522-916058\\raw\\dual-can-write-verify-20261022-104949-746098.stdout.log",
+      "bytes": 1161124,
+      "sha256": "2653f07a5e4f240ba5bde3724e377f1f98184846185d5133e8097465fb8fba09"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\dual-can-write-verify-20261022-104949-746098.stderr.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-verify-field-110522-916058\\raw\\dual-can-write-verify-20261022-104949-746098.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\stop-write-verify-20261022-104949-746098.flag",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-verify-field-110522-916058\\raw\\stop-write-verify-20261022-104949-746098.flag",
+      "bytes": 67,
+      "sha256": "044dd16873f9e8f8c61a932c22541cb23981a980a7ec7d327c8fb86c74124597"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\dual-can-capture-current.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-verify-field-110522-916058\\analysis\\dual-can-capture-current.json",
+      "bytes": 626,
+      "sha256": "f71b7d3f433236319b0f82f0fce30f9bf27374e1e670b1257a1a963ac01dd1c8"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\write-verify-field-analysis.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-verify-field-110522-916058\\analysis\\write-verify-field-analysis.json",
+      "bytes": 55284,
+      "sha256": "25d8df27b943129bc739684825756e852e42b2380f7151ac68f2689f19717d7c"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\analyze-write-verify-field.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-verify-field-110522-916058\\analysis\\analyze-write-verify-field.py",
+      "bytes": 11241,
+      "sha256": "9f7596929a6c0721170913509339981fdf8736c18756ae7f6c45c986772042e2"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\write-verify-image-readonly.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-verify-field-110522-916058\\analysis\\write-verify-image-readonly.py",
+      "bytes": 3856,
+      "sha256": "4a4e08543037720169e8fbe0cdadd9841574ff7b7ec4ca245101773fed622d93"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\write-verify-image-readonly-latest.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-verify-field-110522-916058\\analysis\\write-verify-image-readonly-latest.json",
+      "bytes": 179,
+      "sha256": "b6cfdd54c69c4b142e3a7df10c59f4b466d05fad468ecb25b9f3c6130bdfeb37"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\can1_bus_monitor.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-verify-field-110522-916058\\analysis\\can1_bus_monitor.py",
+      "bytes": 24222,
+      "sha256": "9153562c502ded759ff311ba94f43674b33c5aa57334a6dd25a2172e6a071e3a"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-105100-649660\\snapshot.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-verify-field-110522-916058\\swd-image-check\\snapshot.json",
+      "bytes": 411,
+      "sha256": "169d5984aa8eaae3b9cd6eefb7d66688adbdc49a1e73b5df455d43e54686673a"
+    }
+  ]
+}

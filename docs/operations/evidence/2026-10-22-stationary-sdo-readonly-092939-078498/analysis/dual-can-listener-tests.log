@@ -1,0 +1,18 @@
+test_capture_flushes_all_raw_frames_and_creates_hashes (test_can1_bus_monitor.MonitorTests.test_capture_flushes_all_raw_frames_and_creates_hashes) ... ok
+test_cli_checks_before_opening_device (test_can1_bus_monitor.MonitorTests.test_cli_checks_before_opening_device) ... ok
+test_dual_capture_preserves_input_and_output_bus_identity (test_can1_bus_monitor.MonitorTests.test_dual_capture_preserves_input_and_output_bus_identity) ... ok
+test_dual_channels_are_listen_only_and_share_device_lifetime (test_can1_bus_monitor.MonitorTests.test_dual_channels_are_listen_only_and_share_device_lifetime) ... ok
+test_failure_still_saves_summary (test_can1_bus_monitor.MonitorTests.test_failure_still_saves_summary) ... ok
+test_partial_open_failure_closes_device (test_can1_bus_monitor.MonitorTests.test_partial_open_failure_closes_device) ... ok
+test_receive_batch_preserves_hardware_fields (test_can1_bus_monitor.MonitorTests.test_receive_batch_preserves_hardware_fields) ... ok
+test_receiver_label_displays_input_and_keeps_actual_bus_name (test_can1_bus_monitor.MonitorTests.test_receiver_label_displays_input_and_keeps_actual_bus_name) ... ok
+test_reply_matching_timeout_and_independent_age (test_can1_bus_monitor.MonitorTests.test_reply_matching_timeout_and_independent_age) ... ok
+test_sdk_abi_and_listen_only_channel (test_can1_bus_monitor.MonitorTests.test_sdk_abi_and_listen_only_channel) ... ok
+test_signed_targets_and_compact_driver_responses (test_can1_bus_monitor.MonitorTests.test_signed_targets_and_compact_driver_responses) ... ok
+test_unknown_extended_remote_and_truncated_frames_preserved_not_decoded (test_can1_bus_monitor.MonitorTests.test_unknown_extended_remote_and_truncated_frames_preserved_not_decoded) ... ok
+test_usb_receive_error_is_not_empty_traffic (test_can1_bus_monitor.MonitorTests.test_usb_receive_error_is_not_empty_traffic) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.139s
+
+OK

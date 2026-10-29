@@ -20,18 +20,21 @@
 #include "patrol_can_status.h"
 #include "vehicle_power_output.h"
 
+// 检查当前 Boot State 是否允许管理请求重启。避免在安装、试运行或回滚关键阶段插入不兼容的复位操作，状态读取失败时按代码的拒绝路径处理。
 static uint8_t boot_state_allows_reboot(void)
 {
     BootStateRecord_t state;
     if (!BootState_Load(&state)) return 1U;
     return (state.state == BOOT_STATE_NORMAL || state.state == BOOT_STATE_CONFIRMED) ? 1U : 0U;
 }
+// 把试连证明文本转换为内部 64 位标识。供 MQTT 试连会话关联使用，不把该数值当成运动授权或硬件验收结果。
 static uint64_t mqtt_trial_proof_id(const char *text)
 {
     uint64_t hash = UINT64_C(1469598103934665603);
     while (text != 0 && *text != '\0') { hash ^= (uint8_t)*text++; hash *= UINT64_C(1099511628211); }
     return hash != 0U ? hash : 1U;
 }
+// 把 64 位 MQTT 试连会话号格式化为十进制文本。output 必须能容纳最多 20 位数字与终止符，供协议响应关联会话。
 static void mqtt_trial_session_decimal(uint64_t value, char output[21])
 {
     char reverse[20];
@@ -41,6 +44,7 @@ static void mqtt_trial_session_decimal(uint64_t value, char output[21])
     output[count] = '\0';
 }
 
+// 执行已经解析的内部维护与配置请求。按动作检查 OTA、标定、供电及持久化条件，调度响应和必要的延后重启；涉及 MQTT 试连时先响应再切换连接。
 static __attribute__((noinline)) void handle_config_request(const CloudProtocolRequest_t* request)
 {
     /* The Remote task serializes command handling and TX. A response is copied
@@ -283,6 +287,7 @@ static __attribute__((noinline)) void handle_config_request(const CloudProtocolR
     }
 }
 
+// 校验并启动内部 OTA 维护请求。拒绝不兼容的升级状态，将下载、校验和安装准备交给 OTA 服务，不把请求接受当作升级成功。
 static void handle_ota_request(const CloudProtocolRequest_t* request)
 {
     BootStateRecord_t state;
@@ -321,6 +326,7 @@ static void handle_ota_request(const CloudProtocolRequest_t* request)
     g_cloud.ota_response_waiting = 1U;
 }
 
+// 将公共控制请求交给底盘远控服务并调度响应。公共协议与内部维护协议保持分离，响应缓冲区受限；实际会话和安全仲裁由 RemoteService 完成。
 static __attribute__((noinline)) void handle_public_control(const char* payload)
 {
     /* Remote owns this workspace. ScheduleRawResponse copies it before a later
@@ -359,6 +365,7 @@ static __attribute__((noinline)) void handle_public_control(const char* payload)
     else APP_LOGW("REMOTE", "invalid or busy chassis control request");
 }
 
+// 按 Topic 分发收到的 MQTT 消息。优先识别时间同步、公共控制和内部维护入口，未知 Topic 不执行动作；解析结果仍须通过各业务门禁。
 void CloudCommands_OnMessage(const char* topic, const char* payload)
 {
     if (TimeSync_OnMessage(topic, payload)) return;

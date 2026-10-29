@@ -24,6 +24,7 @@
 CloudContext g_cloud;
 static uint32_t g_enroll_provision_due;
 static ABoxEc800Recovery g_modem_recovery;
+// 响应网络身份或配置切换事件。同时清理云发送关联状态并撤销底盘远控授权，避免旧连接下的目标继续有效。
 static void mqtt_network_changed(void)
 {
     CloudTx_NetworkChanged();
@@ -33,6 +34,7 @@ static void mqtt_network_changed(void)
 _Static_assert(64U >= sizeof(((PatrolRemoteConfigV5_t*)0)->vid) + 21U,
                "public topic storage must cover maximum Config V5 VID");
 
+// 根据有效 VID 构造全部公共 MQTT Topic。复用平台 V4 Topic 构造器，任何一个容量或身份校验失败都拒绝整组配置。
 static uint8_t build_public_topics(const char* vid)
 {
     return ABoxMqttV4_BuildTopic(g_cloud.topic_heartbeat, sizeof(g_cloud.topic_heartbeat),
@@ -47,6 +49,7 @@ static uint8_t build_public_topics(const char* vid)
                                  vid, ABOX_MQTT_V4_TOPIC_RESPONSE);
 }
 
+// 判断当前配置是否仍需首次身份与凭据注册。考虑试连中的保护阶段及默认 VID 标记，避免在已进行的维护流程中重复注册。
 uint8_t CloudService_NeedsEnrollment(void)
 {
     const PatrolRemoteConfigV5_t *cfg = PatrolConfig_Get();
@@ -56,8 +59,10 @@ uint8_t CloudService_NeedsEnrollment(void)
            (cfg->reserved0 != 1U && strcmp(cfg->vid, PATROL_CONFIG_DEFAULT_VID) == 0));
 }
 
+// 向云服务调度提供当前毫秒单调时钟。使用 HAL_GetTick 端口，不将返回值作为 UTC 或请求有效期绝对时间。
 uint32_t CloudPort_Now(void) { return HAL_GetTick(); }
 
+// 应用 VID 对应的 Client ID、Topic 与时间同步订阅。先验证 VID 并逐项构造公共和内部 Topic，再更新订阅集合；此操作不直接重建控制会话。
 uint8_t CloudService_ApplyMqttIdentity(const char* vid)
 {
     const char* subscriptions[4];
@@ -78,6 +83,7 @@ uint8_t CloudService_ApplyMqttIdentity(const char* vid)
     return 1U;
 }
 
+// 读取并归类本次 MCU 复位来源。按看门狗、软件、电源和引脚标志优先级编码后清除 RCC 复位标志，供启动报告使用。
 static uint8_t read_reset_reason(void)
 {
     uint8_t reason = 0U;
@@ -91,17 +97,20 @@ static uint8_t read_reset_reason(void)
     return reason;
 }
 
+// 启动 EC800 所用 USART1 的空闲线 DMA 接收。使用固定云接收缓冲区，返回 HAL 是否接受启动请求，不在此解析 AT 或 MQTT 消息。
 static int uart_start_rx(void)
 {
     return HAL_UARTEx_ReceiveToIdle_DMA(&huart1, g_cloud.uart_dma, sizeof(g_cloud.uart_dma)) == HAL_OK;
 }
 
+// 为 EC800 AT 核心提供毫秒时钟回调。上下文在本适配器中未使用，返回 HAL tick 作为超时计算基准。
 static uint32_t ec800_tick(void *context)
 {
     (void)context;
     return HAL_GetTick();
 }
 
+// 通过绑定的 UART 发送 EC800 AT 字节。context 为 UART 句柄，使用给定毫秒超时；返回 HAL 发送结果，不能据此认定模块已执行命令。
 static int ec800_write(void *context, const uint8_t *data, uint16_t length,
                        uint32_t timeout_ms)
 {
@@ -111,21 +120,36 @@ static int ec800_write(void *context, const uint8_t *data, uint16_t length,
 
 
 static ABoxAppService g_app_service;
+// 处理云业务发送、维护结果及延后重启。维护响应按试连结果安排，发送调度在此轮询；只有既有重启条件和期限成立时才执行系统复位。
 static void app_cloud(void *context, uint32_t now);
+// 在云连接前处理试连与 OTA 的阶段结果。安排安装就绪或失败响应并检查配置、模块电源与 TLS 预置条件；返回能否继续云服务阶段。
 static int app_before_cloud(void *, uint32_t);
+// 查询配置与模块上电是否允许开始连接。仅表示启动连接的前提，不表示已鉴权、订阅或能发布。
 static int app_can_connect(void *);
+// 推进 MQTT/TLS 运行时管理器。将调度提供的单调时间传入运行时，网络切换安全撤权由绑定回调保证。
 static void app_runtime(void *, uint32_t);
+// 查询 MQTT/TLS 运行时是否进入就绪状态。结果用于公共 App 服务阶段切换，不代替传输层逐次发布回执。
 static int app_runtime_ready(void *);
+// 推进 MQTT 传输核心一次。由统一 App 调度安排时序，避免多个任务同时推进共享 AT 事务。
 static void app_transport(void *, uint32_t);
+// 查询 MQTT 核心是否已连接且满足就绪条件。返回传输就绪标志，不表示当前业务响应已发送完成。
 static int app_transport_ready(void *);
+// 查询传输错误或运行时模块恢复请求。合并 MQTT 错误状态与 TLS 运行时恢复需求，交给统一恢复调度处理。
 static int app_transport_error(void *);
+// 判断 MQTT 维护流程是否禁止自动模块恢复。试连、恢复和阻塞阶段按状态限制自动重启，避免覆盖正在进行的持久化或回退事务。
 static int app_maintenance_busy(void *);
+// 处理公共 App 服务向产品发出的事件。网络变更事件触发发送状态清理及运动会话撤销，其他事件保持现有处理方式。
 static void app_event(void *, ABoxAppServiceEvent);
+// 记录 EC800 恢复重启事件。只写诊断日志，实际电源序列由公共恢复服务执行。
 static void app_restarted(void *, uint32_t);
+// 同步云就绪状态并安排首次上报与预置。上升沿唤醒心跳、状态报告及延后 OTA 文件预置，下降沿撤销云就绪；不自动恢复运动授权。
 static void app_ready(void *, int, uint32_t);
 
+// 在身份注册前安排必要的 OTA/TLS 文件预置。约束模块供电完成、OTA 空闲和节流期限，避免与注册或升级共享 AT 通道产生冲突。
 static void app_before_enrollment(void *context, uint32_t now);
+// 推进身份注册服务一次。作为公共 App 服务回调调用产品注册适配器，时间与上下文未另行修改。
 static void app_enrollment(void *context, uint32_t now);
+// 安全重启 EC800 DMA 接收路径。先停止 DMA、重置接收器状态再重启，任一步失败返回零，由上层安排恢复。
 static int app_restart_rx(void *context);
 static const ABoxAppServicePort app_port = {
     .restart_rx = app_restart_rx,
@@ -138,6 +162,7 @@ static const ABoxAppServicePort app_port = {
     .recovery = &g_modem_recovery, .event = app_event, .restarted = app_restarted
 };
 
+// 初始化 EC800、MQTT、注册、OTA 与云调度适配器。绑定固定接收存储和平台服务，加载本车配置并建立安全默认状态；关键初始化失败时保持通信服务未就绪。
 void CloudService_Init(void)
 {
     g_cloud.initialized = 0U;
@@ -245,6 +270,7 @@ void CloudService_Init(void)
 }
 
 #ifdef ABOX_PSK_STATION
+// 接收受控工位注入的下一代 PSK 候选配置。只在需要注册且凭据 generation 更新时允许，将持久化提交交给试连验证，失败不直接覆盖稳定凭据。
 static int stage_station_psk(const ABoxPskStationInput *input)
 {
     PatrolRemoteConfigV5_t next = *PatrolConfig_Get();
@@ -267,6 +293,7 @@ static int stage_station_psk(const ABoxPskStationInput *input)
 }
 #endif
 
+// 轮询公共 App 服务及可选工位注册流程。仅在初始化成功后执行，由云任务持有服务上下文；每轮处理有限状态，不在运动任务内阻塞等待网络。
 void CloudService_Task(void)
 {
     if (!g_cloud.initialized) return;
@@ -279,6 +306,7 @@ void CloudService_Task(void)
 #endif
 }
 
+// 安全重启 EC800 DMA 接收路径。先停止 DMA、重置接收器状态再重启，任一步失败返回零，由上层安排恢复。
 static int app_restart_rx(void *context)
 {
     (void)context;
@@ -293,6 +321,7 @@ static int app_restart_rx(void *context)
     }
     return 1;
 }
+// 在身份注册前安排必要的 OTA/TLS 文件预置。约束模块供电完成、OTA 空闲和节流期限，避免与注册或升级共享 AT 通道产生冲突。
 static void app_before_enrollment(void *context, uint32_t now)
 {
     (void)context; (void)now;
@@ -303,11 +332,13 @@ static void app_before_enrollment(void *context, uint32_t now)
             g_enroll_provision_due = HAL_GetTick() + 60000U;
     }
 }
+// 推进身份注册服务一次。作为公共 App 服务回调调用产品注册适配器，时间与上下文未另行修改。
 static void app_enrollment(void *context, uint32_t now)
 {
     (void)context; (void)now;
     PatrolEnrollment_Task();
 }
+// 在云连接前处理试连与 OTA 的阶段结果。安排安装就绪或失败响应并检查配置、模块电源与 TLS 预置条件；返回能否继续云服务阶段。
 static int app_before_cloud(void *context, uint32_t now)
 {
     (void)context; (void)now;
@@ -339,28 +370,38 @@ static int app_before_cloud(void *context, uint32_t now)
     }
     return 1;
 }
+// 查询配置与模块上电是否允许开始连接。仅表示启动连接的前提，不表示已鉴权、订阅或能发布。
 static int app_can_connect(void *context) { (void)context; return g_cloud.config_ready && EC_Power_IsOnDone(); }
+// 推进 MQTT/TLS 运行时管理器。将调度提供的单调时间传入运行时，网络切换安全撤权由绑定回调保证。
 static void app_runtime(void *context, uint32_t now) { (void)context; MqttRuntime_Task(now); }
+// 查询 MQTT/TLS 运行时是否进入就绪状态。结果用于公共 App 服务阶段切换，不代替传输层逐次发布回执。
 static int app_runtime_ready(void *context) { (void)context; return MqttRuntime_IsReady(); }
+// 推进 MQTT 传输核心一次。由统一 App 调度安排时序，避免多个任务同时推进共享 AT 事务。
 static void app_transport(void *context, uint32_t now) { (void)context; (void)now; MQTT_Core_Task(); }
+// 查询 MQTT 核心是否已连接且满足就绪条件。返回传输就绪标志，不表示当前业务响应已发送完成。
 static int app_transport_ready(void *context) { (void)context; return MQTT_Core_IsReady(); }
+// 查询传输错误或运行时模块恢复请求。合并 MQTT 错误状态与 TLS 运行时恢复需求，交给统一恢复调度处理。
 static int app_transport_error(void *context) { (void)context; return MQTT_Core_GetState() == MQTT_CORE_ST_ERROR || MqttRuntime_NeedsModemRecovery(); }
+// 判断 MQTT 维护流程是否禁止自动模块恢复。试连、恢复和阻塞阶段按状态限制自动重启，避免覆盖正在进行的持久化或回退事务。
 static int app_maintenance_busy(void *context)
 {
     ABoxMqttTrialState state = MqttTrialManager_State(); (void)context;
     return !MqttTrialManager_RuntimeRecoveryAllowed() || (state != ABOX_MQTT_TRIAL_IDLE && state != ABOX_MQTT_TRIAL_COMMITTED && state != ABOX_MQTT_TRIAL_FAILED) ||
         (MqttRuntime_State() == ABOX_MQTT_RUNTIME_BLOCKED && !MqttRuntime_NeedsModemRecovery());
 }
+// 处理公共 App 服务向产品发出的事件。网络变更事件触发发送状态清理及运动会话撤销，其他事件保持现有处理方式。
 static void app_event(void *context, ABoxAppServiceEvent event)
 {
     (void)context;
     if (event == ABOX_APP_NETWORK_CHANGED) mqtt_network_changed();
 }
+// 记录 EC800 恢复重启事件。只写诊断日志，实际电源序列由公共恢复服务执行。
 static void app_restarted(void *context, uint32_t now)
 {
     (void)context; (void)now;
     APP_LOGW("CLOUD", "MQTT transport blocked; restart EC800");
 }
+// 同步云就绪状态并安排首次上报与预置。上升沿唤醒心跳、状态报告及延后 OTA 文件预置，下降沿撤销云就绪；不自动恢复运动授权。
 static void app_ready(void *context, int ready, uint32_t now)
 {
     (void)context; (void)now;
@@ -379,6 +420,7 @@ static void app_ready(void *context, int ready, uint32_t now)
     }
     g_cloud.mqtt_was_ready = ready;
  }
+// 处理云业务发送、维护结果及延后重启。维护响应按试连结果安排，发送调度在此轮询；只有既有重启条件和期限成立时才执行系统复位。
 static void app_cloud(void *context, uint32_t now)
 {
     uint8_t ready = MQTT_Core_IsReady();
@@ -419,12 +461,14 @@ static void app_cloud(void *context, uint32_t now)
     }
 }
 
+// 在 UART DMA 接收回调中登记 EC800 新数据。只接受 USART1 事件，使用 DMA 写位置通知环形接收器；中断内不解析 JSON 或执行云命令。
 void CloudService_OnUartRxEvent(UART_HandleTypeDef* huart, uint16_t size)
 {
     if ((huart == 0) || (huart->Instance != USART1)) return;
     (void)ABoxEc800Rx_OnDmaEvent(&g_cloud.ec800_rx, size);
 }
 
+// 在 EC800 UART 错误时登记接收重启请求。只处理 USART1，将耗时恢复延后到服务调度，避免在中断内执行复杂重连。
 void CloudService_OnUartError(UART_HandleTypeDef* huart)
 {
     if ((huart == 0) || (huart->Instance != USART1)) return;

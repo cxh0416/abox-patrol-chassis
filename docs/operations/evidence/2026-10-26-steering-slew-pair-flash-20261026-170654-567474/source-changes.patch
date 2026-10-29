@@ -1,0 +1,2940 @@
+diff --git a/app/Core/User/cloud/include/remote_service.h b/app/Core/User/cloud/include/remote_service.h
+index 583b887..c8ebccf 100644
+--- a/app/Core/User/cloud/include/remote_service.h
++++ b/app/Core/User/cloud/include/remote_service.h
+@@ -19,6 +19,8 @@ void RemoteService_LabSeedNetworkState(void);
+ #endif
+ // 将执行失败交给先撤使能后锁存流程；pending 阶段立即禁止新运动，已有首因保持不变。
+ void RemoteService_ExecutionFault(void);
++// 以已确认的安全门禁原因进入统一撤使能和锁存流程，保留底层首因而不是覆盖为泛化的显式停车。
++void RemoteService_SafetyFault(ChassisStopReason reason);
+ // 在撤使能确认或有界失败退路处理后锁存 MCU 故障；不恢复控制授权。
+ void RemoteService_CompleteFaultStop(void);
+ // 初始化共享远控仲裁及请求缓存。根据 Config V5 填入标定有效性，保留内部行走禁用位并清空会话和重放记录；不会自动使能。
+diff --git a/app/Core/User/cloud/src/remote_service.c b/app/Core/User/cloud/src/remote_service.c
+index 60c587f..b8e44b0 100644
+--- a/app/Core/User/cloud/src/remote_service.c
++++ b/app/Core/User/cloud/src/remote_service.c
+@@ -99,6 +99,14 @@ void RemoteService_ExecutionFault(void)
+     ChassisControl_RequestFault(&g_control, CHASSIS_STOP_EXECUTION_FAULT);
+     taskEXIT_CRITICAL();
+ }
++// 以真实安全门禁原因进入故障流程，供实体遥控等本地控制入口保留首因。
++void RemoteService_SafetyFault(ChassisStopReason reason)
++{
++    if (reason == CHASSIS_STOP_NONE) return;
++    taskENTER_CRITICAL();
++    ChassisControl_RequestFault(&g_control, reason);
++    taskEXIT_CRITICAL();
++}
+ // 由运行层在双节点撤使能完成或等待超期时正式锁存；本函数不发运动命令。
+ void RemoteService_CompleteFaultStop(void)
+ {
+@@ -167,16 +175,21 @@ uint8_t RemoteService_ApplyLocal(const char* action, const char* session_id,
+     uint32_t seq, uint32_t lease_ms, int16_t rpm, int32_t steering_mdeg, uint32_t now_ms)
+ {
+     uint8_t accepted = 0U;
++    ChassisStopReason safety_reason;
+     if (!g_remote_initialized || action == NULL || session_id == NULL || !session_id[0]) return 0U;
+     taskENTER_CRITICAL();
+     if (!strcmp(action, "stop")) {
+         accepted = ChassisControl_Apply(&g_control, action, session_id, seq, lease_ms,
+                                         rpm, steering_mdeg, now_ms);
+     } else if (!CenterCalibration_IsActive() &&
+-               (!g_control.session_active || !strcmp(g_control.session_id, session_id)) &&
+-               ChassisControl_SafetyReady(&g_control, now_ms)) {
+-        accepted = ChassisControl_Apply(&g_control, action, session_id, seq, lease_ms,
+-                                        rpm, steering_mdeg, now_ms);
++               (!g_control.session_active || !strcmp(g_control.session_id, session_id))) {
++        safety_reason = ChassisControl_SafetyReason(&g_control, now_ms);
++        if (safety_reason == CHASSIS_STOP_NONE) {
++            accepted = ChassisControl_Apply(&g_control, action, session_id, seq, lease_ms,
++                                            rpm, steering_mdeg, now_ms);
++        } else if (safety_reason == CHASSIS_STOP_ANGLE_MISMATCH) {
++            ChassisControl_RequestFault(&g_control, safety_reason);
++        }
+     }
+     taskEXIT_CRITICAL();
+     return accepted;
+diff --git a/app/Core/User/motion/include/chassis_control.h b/app/Core/User/motion/include/chassis_control.h
+index 1029d9e..1ffc78d 100644
+--- a/app/Core/User/motion/include/chassis_control.h
++++ b/app/Core/User/motion/include/chassis_control.h
+@@ -7,6 +7,7 @@
+ #define CHASSIS_MAX_STEERING_MDEG 30000
+ #define CHASSIS_MAX_LEASE_MS 1000U
+ #define CHASSIS_FEEDBACK_TIMEOUT_MS 250U
++#define CHASSIS_STEERING_PAIR_SKEW_MS 30U
+ 
+ typedef enum {
+     CHASSIS_STOP_NONE = 0,
+@@ -37,6 +38,7 @@ typedef struct {
+     uint8_t power_ready;
+     uint8_t encoder_range_valid;
+     uint8_t encoder_profile_ready;
++    uint8_t angle_pair_valid;
+     int16_t left_actual_rpm;
+     int16_t right_actual_rpm;
+     int32_t steering_actual_mdeg;
+@@ -55,14 +57,14 @@ typedef struct {
+     int32_t target_steering_mdeg;
+     int8_t active_direction;
+     int8_t steering_boundary; /* -1/+1 inward-only; clear only after operator backs off. */
+-    uint8_t session_active;
+-    uint8_t reversal_pending;
+-    uint8_t zero_confirmations;
+-    uint8_t enable_request;
+-    uint8_t fault_latched;
+-    uint8_t auto_center_inhibited; /* SAFETY_STOP parks until a new accepted command/power cycle. */
+-    uint8_t drive_brake; /* Traction-only inhibit; steering/session stay authorized. */
+-    uint8_t fault_pending; /* 已禁止运动，正在优先撤使能，尚未完成故障锁存。 */
++    uint8_t session_active : 1;
++    uint8_t reversal_pending : 1;
++    uint8_t zero_confirmations : 2;
++    uint8_t enable_request : 1;
++    uint8_t fault_latched : 1;
++    uint8_t auto_center_inhibited : 1; /* SAFETY_STOP parks until a new accepted command/power cycle. */
++    uint8_t drive_brake : 1; /* Traction-only inhibit; steering/session stay authorized. */
++    uint8_t fault_pending : 1; /* 已禁止运动，正在优先撤使能，尚未完成故障锁存。 */
+     ChassisStopReason stop_reason;
+     ChassisFeedback feedback;
+     uint8_t (*request_fault_stop)(void);
+diff --git a/app/Core/User/motion/include/patrol_diagnostics.h b/app/Core/User/motion/include/patrol_diagnostics.h
+index cf9c8cc..1582336 100644
+--- a/app/Core/User/motion/include/patrol_diagnostics.h
++++ b/app/Core/User/motion/include/patrol_diagnostics.h
+@@ -91,6 +91,7 @@ typedef struct {
+     int32_t steering_position_count;
+     int32_t left_actual_rpm;
+     int32_t right_actual_rpm;
++    uint32_t steering_position_ms;
+     uint32_t encoder_count;
+     uint32_t encoder_sample_ms;
+     uint32_t coherent_feedback_ms;
+diff --git a/app/Core/User/motion/src/bench_steering.c b/app/Core/User/motion/src/bench_steering.c
+index 7e3295f..5c667a5 100644
+--- a/app/Core/User/motion/src/bench_steering.c
++++ b/app/Core/User/motion/src/bench_steering.c
+@@ -132,6 +132,64 @@ static void fail(BenchSteering *b, uint32_t reason)
+     b->cut_power = 1;
+     b->phase = BENCH_FAULT;
+ }
++
++// 转向状态等待只使用已核验映射的0x181 TPDO；没有新鲜状态时不发送额外SDO请求。
++static uint8_t status_wait_step(const BenchSteering* b)
++{
++    return (uint8_t)(b->verify == VERIFY_STATUS || b->verify == VERIFY_ACK_LOW ||
++        b->step == STEER_STEP_READ_READY || b->step == STEER_STEP_READ_SWITCHED ||
++        b->step == STEER_STEP_READ_ENABLED || b->step == STEER_STEP_READ_DISABLED);
++}
++
++// 用本次到达的0x181推进状态握手。本函数不缓存状态，也不保留额外RAM。
++static uint8_t advance_from_status_tpdo(BenchSteering* b, uint32_t now, uint16_t value)
++{
++    uint16_t state = value & 0x6FU;
++    if ((value & 8U) != 0U) {
++        fail(b, b->verify ? 12U : 9U);
++        return 1U;
++    }
++    if (b->verify == VERIFY_ACK_LOW) {
++        if (state != 0x27U) {
++            fail(b, 12U);
++        } else if ((value & 0x1000U) == 0U) {
++            b->pp_ack_low = 1U;
++            b->verify = 0U;
++        }
++        return 1U;
++    }
++    if (b->verify == VERIFY_STATUS) {
++        if (state != 0x27U) {
++            fail(b, 12U);
++        } else if (!(b->step == STEER_STEP_TRIGGER && (!b->pp_ack_low || !(value & 0x1000U))) &&
++                   !(b->step == STEER_STEP_CLEAR_TRIGGER && (value & 0x1000U))) {
++            b->verify = VERIFY_MODE;
++        }
++        return 1U;
++    }
++    if (b->step == STEER_STEP_READ_READY && state == 0x21U) {
++        complete_step(b, now);
++        return 1U;
++    }
++    if (b->step == STEER_STEP_READ_SWITCHED && state == 0x23U) {
++        complete_step(b, now);
++        return 1U;
++    }
++    if (b->step == STEER_STEP_READ_ENABLED && state == 0x27U) {
++        complete_step(b, now);
++        return 1U;
++    }
++    if (b->step == STEER_STEP_READ_DISABLED && b->phase == BENCH_STOPPING &&
++        now - b->stop_ms < STOP_MS &&
++        (state == 0x21U || state == 0x23U || state == 0x40U)) {
++        b->stop_confirmed = 1U;
++        b->stop_ms = now;
++        if (!b->pending) b->step = STEER_STEP_STOP_COMPLETE;
++        return 1U;
++    }
++    return 0U;
++}
++
+ // 清空转向执行器全部运行状态。仅操作状态结构，不写驱动器；需要保留的已对齐限位缓存由启动函数显式恢复。
+ void BenchSteering_Init(BenchSteering *b)
+ {
+@@ -286,11 +344,17 @@ uint8_t BenchSteering_Take(BenchSteering *b, uint32_t now, PatrolCanFrame *f)
+         b->verify = VERIFY_ACK_LOW;
+         b->stop_ms = now;
+     }
++    if (status_wait_step(b)) {
++        if (b->verify && now - b->stop_ms >= BENCH_WRITE_VERIFY_MS) {
++            fail(b, 12U);
++        }
++        return 0U;
++    }
+     if (b->verify) {
+         if (now - b->stop_ms >= BENCH_WRITE_VERIFY_MS) { fail(b, 12U); return 0U; }
+         b->index = b->verify == VERIFY_MODE ? 0x6061U :
+             b->verify == VERIFY_TARGET ? 0x607AU :
+-            b->verify == VERIFY_OBJECT ? (b->step == STEER_STEP_WRITE_PROFILE_SPEED_ACTIVE ? 0x6081U : 0x6040U) : 0x6041U;
++            (b->step == STEER_STEP_WRITE_PROFILE_SPEED_ACTIVE ? 0x6081U : 0x6040U);
+         b->subindex = 0U;
+         b->read = 1U;
+         b->width = b->index == 0x6061U ? 1U :
+@@ -377,12 +441,7 @@ uint8_t BenchSteering_Take(BenchSteering *b, uint32_t now, PatrolCanFrame *f)
+     case STEER_STEP_READ_READY:
+     case STEER_STEP_READ_SWITCHED:
+     case STEER_STEP_READ_ENABLED:
+-        b->index = 0x6041;
+-        b->read = 1;
+-        b->expected = b->step == STEER_STEP_READ_READY      ? 0x21
+-                      : b->step == STEER_STEP_READ_SWITCHED ? 0x23
+-                                                            : 0x27;
+-        break;
++        return 0;
+     case STEER_STEP_TARGET:
+         b->index = 0x607A;
+         b->width = 4;
+@@ -402,9 +461,7 @@ uint8_t BenchSteering_Take(BenchSteering *b, uint32_t now, PatrolCanFrame *f)
+         value = 6;
+         break;
+     case STEER_STEP_READ_DISABLED:
+-        b->index = 0x6041;
+-        b->read = 1;
+-        break;
++        return 0;
+     case STEER_STEP_WRITE_FIRST_LIMIT:
+     case STEER_STEP_READ_FIRST_LIMIT:
+     case STEER_STEP_WRITE_SECOND_LIMIT:
+@@ -437,19 +494,13 @@ uint8_t BenchSteering_OnFrame(BenchSteering *b, const PatrolCanFrame *f, uint32_
+ {
+     int32_t value;
+     uint8_t width;
+-    /* Mapping was read back this session before enabling. Only a post-shutdown
+-       status can confirm disable; keep any in-flight SDO owned until drained. */
+-    if (f->id == 0x181 && f->dlc >= 2 && f->dlc <= 8 && b->tpdo_check == 2 &&
+-        b->phase == BENCH_STOPPING && b->step == STEER_STEP_READ_DISABLED &&
+-        !b->stop_confirmed && now - b->stop_ms < STOP_MS) {
++    if (f->id == 0x181U && f->dlc >= 2U) {
+         uint16_t status = (uint16_t)f->data[0] | (uint16_t)f->data[1] << 8;
+-        if (status & 8U) { fail(b, 9U); return 1; }
+-        if ((status & 0x6FU) == 0x21U || (status & 0x6FU) == 0x23U ||
+-            (status & 0x6FU) == 0x40U) {
+-            b->stop_confirmed = 1;
+-            b->stop_ms = now;
+-            if (!b->pending) b->step = STEER_STEP_STOP_COMPLETE;
+-        }
++        if (b->tpdo_check == 2U && b->phase != BENCH_IDLE && b->phase != BENCH_FAULT)
++            (void)advance_from_status_tpdo(b, now, status);
++        if (b->phase == BENCH_STOPPING &&
++            now - b->stop_ms >= (b->stop_confirmed ? STOP_FINISH_MS : STOP_MS))
++            fail(b, 3U);
+         return 1;
+     }
+     if (b->verify == VERIFY_DRAIN) {
+@@ -478,16 +529,7 @@ uint8_t BenchSteering_OnFrame(BenchSteering *b, const PatrolCanFrame *f, uint32_
+         }
+         if (!PatrolCanopen_ParseSdoValue(f, 1U, b->index, 0U, &value, &width) || width != b->width) return 1U;
+         b->pending = 0U;
+-        if (b->verify == VERIFY_STATUS || b->verify == VERIFY_ACK_LOW) {
+-            if ((value & 0x6FU) != 0x27U || (value & 8U)) { fail(b, 12U); return 1U; }
+-            if (b->verify == VERIFY_ACK_LOW) {
+-                if (!(value & 0x1000U)) { b->pp_ack_low = 1U; b->verify = 0U; }
+-                return 1U; /* Poll a previous high ACK only within the absolute bound. */
+-            }
+-            if (b->step == STEER_STEP_TRIGGER && (!b->pp_ack_low || !(value & 0x1000U))) return 1U;
+-            if (b->step == STEER_STEP_CLEAR_TRIGGER && (value & 0x1000U)) return 1U;
+-            b->verify = VERIFY_MODE;
+-        } else if (b->verify == VERIFY_MODE) {
++        if (b->verify == VERIFY_MODE) {
+             if (value != 1) { fail(b, 12U); return 1U; }
+             b->verify = VERIFY_TARGET;
+         } else if (b->verify == VERIFY_TARGET) {
+@@ -609,18 +651,6 @@ uint8_t BenchSteering_OnFrame(BenchSteering *b, const PatrolCanFrame *f, uint32_
+                 return 1;
+             }
+         }
+-        else if (b->index == 0x6041)
+-        {
+-            uint16_t state = (uint16_t)value & 0x6F;
+-            if ((value & 8) || (b->step == STEER_STEP_READ_DISABLED ? (!b->stop_confirmed && state == 0x27) : state != b->expected))
+-            {
+-                if (value & 8)
+-                    fail(b, 9U);
+-                else
+-                    b->pending = 0; /* Poll state again; bounded by prepare/stop deadline. */
+-                return 1;
+-            }
+-        }
+         else if (value != b->expected)
+         {
+             fail(b, 10U);
+diff --git a/app/Core/User/motion/src/chassis_control.c b/app/Core/User/motion/src/chassis_control.c
+index 506ef31..ea52f85 100644
+--- a/app/Core/User/motion/src/chassis_control.c
++++ b/app/Core/User/motion/src/chassis_control.c
+@@ -12,11 +12,18 @@ static uint8_t stopped(const ChassisFeedback* feedback)
+     return (abs(feedback->left_actual_rpm) <= 20 && abs(feedback->right_actual_rpm) <= 20) ? 1U : 0U;
+ }
+ 
++// 只有运行层确认两路角度样本处于同一时间窗口后，才允许把二者差值作为真实转角故障。
++static uint8_t angle_pair_usable(const ChassisFeedback* feedback)
++{
++    return feedback->angle_pair_valid;
++}
++
+ // 统一撤销运动目标并按原因更新停车状态。清除行走、转向、待换向请求和使能；保留已锁存的首个故障原因，按 release 决定是否释放会话。
+ static void force_stop(ChassisControl* control, ChassisStopReason reason, uint8_t release)
+ {
+     if (reason == CHASSIS_STOP_DIRECTION_TIMEOUT || reason == CHASSIS_STOP_ENCODER_RANGE ||
+-        reason == CHASSIS_STOP_ENCODER_PROFILE) ChassisControl_RequestFault(control, reason);
++        reason == CHASSIS_STOP_ENCODER_PROFILE || reason == CHASSIS_STOP_ANGLE_MISMATCH)
++        ChassisControl_RequestFault(control, reason);
+     control->target_rpm = 0;
+     control->target_steering_mdeg = 0;
+     control->requested_rpm = 0;
+@@ -142,7 +149,9 @@ ChassisStopReason ChassisControl_SafetyReason(const ChassisControl* control, uin
+     if (!f->encoder_profile_ready) return CHASSIS_STOP_ENCODER_PROFILE;
+     if (!f->encoder_range_valid || !steering_hard_range(f)) return CHASSIS_STOP_ENCODER_RANGE;
+     if (!f->power_ready) return CHASSIS_STOP_POWER_NOT_READY;
+-    if (llabs((int64_t)f->steering_actual_mdeg - f->encoder_actual_mdeg) > 2000L) return CHASSIS_STOP_ANGLE_MISMATCH;
++    if (!angle_pair_usable(f)) return CHASSIS_STOP_FEEDBACK_STALE;
++    if (llabs((int64_t)f->steering_actual_mdeg - f->encoder_actual_mdeg) >
++        VEHICLE_STEERING_TOLERANCE_MDEG) return CHASSIS_STOP_ANGLE_MISMATCH;
+     return CHASSIS_STOP_NONE;
+ }
+ 
+@@ -164,6 +173,10 @@ uint8_t ChassisControl_Apply(ChassisControl* control, const char* action, const
+     if (control->fault_latched || control->fault_pending) return 0U;
+     if (lease_ms == 0U || lease_ms > CHASSIS_MAX_LEASE_MS || abs(drive_rpm) > CHASSIS_MAX_RPM ||
+         labs(steering_mdeg) > CHASSIS_MAX_STEERING_MDEG) return 0U;
++    if (!angle_pair_usable(&control->feedback)) {
++        force_stop(control, CHASSIS_STOP_FEEDBACK_STALE, 0U);
++        return 0U;
++    }
+     if (strcmp(action, "acquire") == 0) {
+         if (control->session_active && strcmp(control->session_id, session_id) != 0) return 0U;
+         strncpy(control->session_id, session_id, sizeof(control->session_id) - 1U);
+@@ -208,6 +221,12 @@ uint8_t ChassisControl_Apply(ChassisControl* control, const char* action, const
+ // 周期检查租约、安全门禁和换向停车确认。等待换向时保持零速，每个不同反馈时间戳最多计一次，两轮均不超过 20 rpm 连续三次才放行；超过当前代码的 2 秒期限撤使能并锁存故障。
+ void ChassisControl_Tick(ChassisControl* control, uint32_t now_ms)
+ {
++    if ((control->session_active || control->enable_request) &&
++        !angle_pair_usable(&control->feedback)) {
++        force_stop(control, CHASSIS_STOP_FEEDBACK_STALE, 0U);
++        control->auto_center_inhibited = 1U;
++        return;
++    }
+     ChassisStopReason reason = ChassisControl_SafetyReason(control, now_ms);
+     if (reason != CHASSIS_STOP_NONE) { force_stop(control, reason, 0U); return; }
+     if (control->session_active && (int32_t)(now_ms - control->lease_deadline_ms) >= 0) {
+diff --git a/app/Core/User/motion/src/patrol_diagnostics.c b/app/Core/User/motion/src/patrol_diagnostics.c
+index 8904d20..8d78e7d 100644
+--- a/app/Core/User/motion/src/patrol_diagnostics.c
++++ b/app/Core/User/motion/src/patrol_diagnostics.c
+@@ -5,8 +5,11 @@
+ 
+ #define PATROL_DIAG_SDO_TIMEOUT_MS 60U
+ #define PATROL_DIAG_SDO_RETRY_COUNT 1U
+-#define PATROL_STEERING_TPDO_FRESH_MS 100U
+-#define PATROL_STEERING_POSITION_FALLBACK_MS 250U
++#define PATROL_DIAG_BOOTSTRAP_ACTIVE 0x8000U
++#define PATROL_DIAG_BOOTSTRAP_COUNT_SHIFT 13U
++#define PATROL_DIAG_BOOTSTRAP_COUNT_MASK (3U << PATROL_DIAG_BOOTSTRAP_COUNT_SHIFT)
++#define PATROL_DIAG_BOOTSTRAP_POSITION_SAMPLES 6U
++#define PATROL_DIAG_BOOTSTRAP_SAMPLE_MS 100U
+ /* A retry must fit before any safety sample expires, including two 10ms task
+  * turns for response processing and resuming the other feedback reads. */
+ #define PATROL_DIAG_RETRY_FEEDBACK_MAX_AGE_MS \
+@@ -20,8 +23,9 @@ typedef struct {
+ } PatrolSdoEntry;
+ 
+ static const PatrolSdoEntry g_sdo_entries[PATROL_DIAG_SDO_ENTRY_COUNT] = {
+-    {1U, 0x6041U, 0U, 100U},
+-    {1U, 0x6064U, 0U, 50U},
++    /* Node 1 realtime state/position are supplied only by 0x181/0x281 TPDO. */
++    {1U, 0x6041U, 0U, 0U},
++    {1U, 0x6064U, 0U, 0U},
+     {2U, 0x6041U, 0U, 100U},
+     {2U, 0x6069U, 0U, 50U},
+     {2U, 0x6869U, 0U, 50U},
+@@ -46,17 +50,13 @@ static uint8_t fresh(uint8_t seen, uint32_t sample_ms, uint32_t now_ms, uint32_t
+     return (uint8_t)(seen && (now_ms - sample_ms) <= timeout_ms);
+ }
+ 
+-// 选择对象下一次读取周期。Node 1 的 0x281 TPDO 正常时，0x6064 SDO
+-// 只做低频兜底；TPDO 中断后恢复 50 ms 快速轮询。
+-static uint32_t sdo_period_ms(const PatrolDiagnostics* diagnostics,
+-                              const PatrolSdoEntry* entry, uint32_t now_ms)
++// The two Node 1 entries are startup bootstrap transactions only. A sentinel
++// due value distinguishes them from the disabled runtime SDO entries.
++static uint8_t sdo_enabled(const PatrolDiagnostics* d, uint8_t entry)
+ {
+-    if (entry->node == 1U && entry->index == 0x6064U &&
+-        diagnostics->steering_tpdo_position_ms != 0U &&
+-        fresh(1U, diagnostics->steering_tpdo_position_ms, now_ms,
+-              PATROL_STEERING_TPDO_FRESH_MS))
+-        return PATROL_STEERING_POSITION_FALLBACK_MS;
+-    return entry->period_ms;
++    return (uint8_t)(g_sdo_entries[entry].period_ms != 0U ||
++        ((d->sdo_success_mask & PATROL_DIAG_BOOTSTRAP_ACTIVE) != 0U &&
++         d->sdo_due_ms[entry] != UINT32_MAX));
+ }
+ 
+ // 检查节点在线及当前时间下的诊断读取资格。供只读轮询选择节点使用，不代表节点已取得运动使能。
+@@ -126,11 +126,8 @@ static uint8_t urgent_feedback_entry(const PatrolDiagnostics* diagnostics, uint3
+     for (uint8_t entry = 0U; entry < 5U; entry++) {
+         const PatrolSdoEntry* sdo = &g_sdo_entries[entry];
+         uint32_t age;
+-        if (!sdo_node_ready(diagnostics, sdo->node, now_ms)) continue;
++        if (!sdo_enabled(diagnostics, entry) || !sdo_node_ready(diagnostics, sdo->node, now_ms)) continue;
+         if (!due(now_ms, diagnostics->sdo_due_ms[entry])) continue;
+-        if (entry == 1U && diagnostics->steering_tpdo_position_ms != 0U &&
+-            fresh(1U, diagnostics->steering_tpdo_position_ms, now_ms,
+-                  PATROL_STEERING_TPDO_FRESH_MS)) continue;
+         age = feedback_age(diagnostics, entry, now_ms);
+         if (age < PATROL_DIAG_FEEDBACK_PRIORITY_MS) continue;
+         if (selected == UINT8_MAX || age > oldest) {
+@@ -155,12 +152,42 @@ static uint8_t take_entry(PatrolDiagnostics* diagnostics, uint8_t entry,
+     return 1U;
+ }
+ 
+-// 结束当前诊断 SDO 事务并安排后续轮询。清理在途标志及相关时间状态，避免旧响应阻塞后续安全反馈读取。
+-static void finish_pending(PatrolDiagnostics* diagnostics, uint32_t now_ms)
++// 结束当前诊断 SDO 事务并安排后续轮询。启动引导只接受成功响应，并按“状态字、位置”交替采样；
++// 运行期周期对象按原计划排期。清理在途标志，避免旧响应阻塞后续安全反馈读取。
++static void finish_pending(PatrolDiagnostics* diagnostics, uint32_t now_ms, uint8_t success)
+ {
+     uint8_t entry = diagnostics->pending_entry;
+-    diagnostics->sdo_due_ms[entry] =
+-        now_ms + sdo_period_ms(diagnostics, &g_sdo_entries[entry], now_ms);
++    uint8_t bootstrap = (uint8_t)(entry < 2U &&
++        (diagnostics->sdo_success_mask & PATROL_DIAG_BOOTSTRAP_ACTIVE) != 0U);
++    if (bootstrap && !success) {
++        diagnostics->sdo_success_mask &= (uint16_t)~(
++            PATROL_DIAG_BOOTSTRAP_ACTIVE | PATROL_DIAG_BOOTSTRAP_COUNT_MASK);
++        diagnostics->sdo_due_ms[0] = UINT32_MAX;
++        diagnostics->sdo_due_ms[1] = UINT32_MAX;
++        diagnostics->pending_valid = 0U;
++        diagnostics->pending_retry = 0U;
++        return;
++    }
++    if (entry == 0U) {
++        diagnostics->sdo_due_ms[0] = UINT32_MAX;
++        diagnostics->sdo_due_ms[1] = now_ms;
++    } else if (entry == 1U) {
++        uint16_t count = (uint16_t)((diagnostics->sdo_success_mask &
++            PATROL_DIAG_BOOTSTRAP_COUNT_MASK) >> PATROL_DIAG_BOOTSTRAP_COUNT_SHIFT);
++        if (++count >= PATROL_DIAG_BOOTSTRAP_POSITION_SAMPLES) {
++            diagnostics->sdo_success_mask &= (uint16_t)~(
++                PATROL_DIAG_BOOTSTRAP_ACTIVE | PATROL_DIAG_BOOTSTRAP_COUNT_MASK);
++            diagnostics->sdo_due_ms[1] = UINT32_MAX;
++        } else {
++            diagnostics->sdo_success_mask = (uint16_t)(
++                (diagnostics->sdo_success_mask & ~PATROL_DIAG_BOOTSTRAP_COUNT_MASK) |
++                (count << PATROL_DIAG_BOOTSTRAP_COUNT_SHIFT));
++            diagnostics->sdo_due_ms[0] = now_ms + PATROL_DIAG_BOOTSTRAP_SAMPLE_MS;
++            diagnostics->sdo_due_ms[1] = UINT32_MAX;
++        }
++    } else {
++        diagnostics->sdo_due_ms[entry] = now_ms + g_sdo_entries[entry].period_ms;
++    }
+     diagnostics->pending_valid = 0U;
+     diagnostics->pending_retry = 0U;
+ }
+@@ -209,6 +236,9 @@ void PatrolDiagnostics_Init(PatrolDiagnostics* diagnostics)
+ {
+     if (diagnostics == 0) return;
+     memset(diagnostics, 0, sizeof(*diagnostics));
++    diagnostics->sdo_success_mask = PATROL_DIAG_BOOTSTRAP_ACTIVE;
++    diagnostics->sdo_due_ms[0] = 0U;
++    diagnostics->sdo_due_ms[1] = UINT32_MAX;
+ }
+ 
+ // 消费转向驱动器已核验映射的 TPDO1/TPDO2。状态字和位置由驱动器主动周期发送，
+@@ -283,7 +313,7 @@ void PatrolDiagnostics_OnCanFrame(PatrolDiagnostics* diagnostics, const PatrolCa
+             (uint32_t)frame->data[7] << 24;
+         diagnostics->sdo_abort_count++;
+         diagnostics->sdo_abort_mask |= (uint16_t)(1U << diagnostics->pending_entry);
+-        finish_pending(diagnostics, now_ms);
++        finish_pending(diagnostics, now_ms, 0U);
+         return;
+     }
+     if (PatrolCanopen_ParseSdoValue(frame, entry->node, entry->index, entry->subindex,
+@@ -293,7 +323,7 @@ void PatrolDiagnostics_OnCanFrame(PatrolDiagnostics* diagnostics, const PatrolCa
+         diagnostics->sdo_success_count++;
+         diagnostics->sdo_success_mask |= (uint16_t)(1U << diagnostics->pending_entry);
+         store_sdo_value(diagnostics, entry, value, now_ms);
+-        finish_pending(diagnostics, now_ms);
++        finish_pending(diagnostics, now_ms, 1U);
+     }
+     else
+     {
+@@ -310,17 +340,19 @@ uint8_t PatrolDiagnostics_TakeSdoRead(PatrolDiagnostics* diagnostics, uint32_t n
+     if (diagnostics->pending_valid)
+     {
+         const PatrolSdoEntry* entry = &g_sdo_entries[diagnostics->pending_entry];
++        uint8_t bootstrap = (uint8_t)(diagnostics->pending_entry < 2U &&
++            sdo_enabled(diagnostics, diagnostics->pending_entry));
+         if (!sdo_node_ready(diagnostics, entry->node, now_ms))
+         {
+-            finish_pending(diagnostics, now_ms);
++            finish_pending(diagnostics, now_ms, 0U);
+             return 0U;
+         }
+         if ((now_ms - diagnostics->pending_sent_ms) < PATROL_DIAG_SDO_TIMEOUT_MS) return 0U;
+         diagnostics->sdo_timeout_count++;
+         if (diagnostics->pending_retry >= PATROL_DIAG_SDO_RETRY_COUNT ||
+-            !allow_retry || !retry_feedback_ready(diagnostics, now_ms))
++            (!bootstrap && (!allow_retry || !retry_feedback_ready(diagnostics, now_ms))))
+         {
+-            finish_pending(diagnostics, now_ms);
++            finish_pending(diagnostics, now_ms, 0U);
+             return 0U;
+         }
+         diagnostics->pending_retry++;
+@@ -337,6 +369,7 @@ uint8_t PatrolDiagnostics_TakeSdoRead(PatrolDiagnostics* diagnostics, uint32_t n
+         uint32_t oldest_age = 0U;
+         uint8_t selected = 0U;
+         for (uint8_t i = 0U; i < 5U; i++) {
++            if (!sdo_enabled(diagnostics, i)) continue;
+             if (!sdo_node_ready(diagnostics, g_sdo_entries[i].node, now_ms) ||
+                 !due(now_ms, diagnostics->sdo_due_ms[i])) continue;
+             uint32_t age = now_ms - stamps[i];
+@@ -355,12 +388,8 @@ uint8_t PatrolDiagnostics_TakeSdoRead(PatrolDiagnostics* diagnostics, uint32_t n
+         if (diagnostics->stop_priority && index >= 5U) continue;
+         if (diagnostics->motion_priority && index >= 7U) continue;
+         const PatrolSdoEntry* entry = &g_sdo_entries[index];
+-        if (!sdo_node_ready(diagnostics, entry->node, now_ms)) continue;
+-        uint8_t gated = (uint8_t)(index == 1U &&
+-            diagnostics->steering_tpdo_position_ms != 0U &&
+-            !fresh(1U, diagnostics->steering_tpdo_position_ms, now_ms,
+-                   PATROL_STEERING_TPDO_FRESH_MS));
+-        if (!gated && !due(now_ms, diagnostics->sdo_due_ms[index])) continue;
++        if (!sdo_enabled(diagnostics, index) || !sdo_node_ready(diagnostics, entry->node, now_ms)) continue;
++        if (!due(now_ms, diagnostics->sdo_due_ms[index])) continue;
+         diagnostics->pending_valid = 1U;
+         diagnostics->pending_entry = index;
+         diagnostics->pending_retry = 0U;
+@@ -390,20 +419,22 @@ uint8_t PatrolDiagnostics_TakeSdoReadUrgent(PatrolDiagnostics* diagnostics, uint
+     urgent = urgent_feedback_entry(diagnostics, now_ms);
+     if (diagnostics->pending_valid) {
+         const PatrolSdoEntry* entry = &g_sdo_entries[diagnostics->pending_entry];
++        uint8_t bootstrap = (uint8_t)(diagnostics->pending_entry < 2U &&
++            sdo_enabled(diagnostics, diagnostics->pending_entry));
+         if (!sdo_node_ready(diagnostics, entry->node, now_ms)) {
+-            finish_pending(diagnostics, now_ms);
++            finish_pending(diagnostics, now_ms, 0U);
+         } else {
+             if ((now_ms - diagnostics->pending_sent_ms) < PATROL_DIAG_SDO_TIMEOUT_MS) return 0U;
+             diagnostics->sdo_timeout_count++;
+             if (diagnostics->pending_entry < 5U &&
+                 diagnostics->pending_retry < PATROL_DIAG_SDO_RETRY_COUNT &&
+-                allow_retry && retry_feedback_ready(diagnostics, now_ms)) {
++                (bootstrap || (allow_retry && retry_feedback_ready(diagnostics, now_ms)))) {
+                 diagnostics->pending_retry++;
+                 diagnostics->pending_sent_ms = now_ms;
+                 *frame = PatrolCanopen_SdoRead(entry->node, entry->index, entry->subindex);
+                 return 1U;
+             }
+-            finish_pending(diagnostics, now_ms);
++            finish_pending(diagnostics, now_ms, 0U);
+         }
+         urgent = urgent_feedback_entry(diagnostics, now_ms);
+     }
+@@ -485,6 +516,7 @@ void PatrolDiagnostics_Snapshot(const PatrolDiagnostics* diagnostics, uint32_t n
+     snapshot->steering_position_count = diagnostics->steering_position_count;
+     snapshot->left_actual_rpm = diagnostics->left_actual_rpm;
+     snapshot->right_actual_rpm = diagnostics->right_actual_rpm;
++    snapshot->steering_position_ms = diagnostics->steering_position_ms;
+     snapshot->encoder_count = diagnostics->encoder_count;
+     snapshot->encoder_sample_ms = diagnostics->encoder_ms;
+     all_feedback = (uint8_t)(snapshot->steering_feedback_fresh && snapshot->drive_feedback_fresh &&
+diff --git a/app/Core/User/motion/src/patrol_phy_remote.c b/app/Core/User/motion/src/patrol_phy_remote.c
+index 00c2043..179a53c 100644
+--- a/app/Core/User/motion/src/patrol_phy_remote.c
++++ b/app/Core/User/motion/src/patrol_phy_remote.c
+@@ -1,5 +1,6 @@
+ #include "patrol_phy_remote.h"
+ 
++#include <stdlib.h>
+ #include <string.h>
+ 
+ #include "center_calibration.h"
+@@ -15,14 +16,29 @@
+  * has time to finish. Immediate power-off while an executor is still stopping
+  * would trip an execution fault. */
+ #define PATROL_PHY_REMOTE_POWER_OFF_GRACE_MS 3000U
++#define PATROL_PHY_REMOTE_STEER_RATE_MDEG_S 12000
++#define PATROL_PHY_REMOTE_STEER_REVERSAL_MDEG 5000
++#define PATROL_PHY_REMOTE_STEER_CENTER_MDEG 1000
++#define PATROL_PHY_REMOTE_STEER_CENTER_SAMPLES 3U
+ 
+ static uint32_t control_seq;
+-static uint8_t armed;
+ static uint32_t power_off_deadline_ms;   /* 0 = no pending power-off */
+-static uint8_t last_enable;              /* previous switch-frame enable; nonzero = active */
+-static uint8_t powered_by_remote;        /* this module commanded power-on */
+-static uint8_t switch_seen;
+ static uint32_t last_switch_ms;
++static uint16_t steering_command_ms;
++static struct {
++    uint16_t armed : 1;
++    uint16_t last_enable : 1;
++    uint16_t powered_by_remote : 1;
++    uint16_t switch_seen : 1;
++    uint16_t steering_center_mode : 1;
++    uint16_t steering_center_samples : 2;
++} g_phy;
++#define armed g_phy.armed
++#define last_enable g_phy.last_enable
++#define powered_by_remote g_phy.powered_by_remote
++#define switch_seen g_phy.switch_seen
++#define steering_center_mode g_phy.steering_center_mode
++#define steering_center_samples g_phy.steering_center_samples
+ 
+ // 检查实体 T12 是否持有当前共享控制会话。必须同时存在活动会话且 session_id 匹配 phy-remote，避免停止或续租其他控制方的会话。
+ static uint8_t owns(void)
+@@ -31,6 +47,42 @@ static uint8_t owns(void)
+     return c->session_active && !strcmp(c->session_id, PATROL_PHY_REMOTE_SESSION);
+ }
+ 
++// 按固定时间内最大角度变化量推进转向目标；采用64位中间量，时钟停顿或异常间隔不得制造大跨度目标。
++static int32_t slew_steering(int32_t current, int32_t requested, uint32_t now_ms)
++{
++    uint16_t elapsed = steering_command_ms == 0U ? 10U :
++        (uint16_t)((uint16_t)now_ms - steering_command_ms);
++    int64_t max_step;
++    int64_t delta;
++    if (elapsed < 10U) elapsed = 10U;
++    if (elapsed > 100U) elapsed = 100U;
++    max_step = (int64_t)PATROL_PHY_REMOTE_STEER_RATE_MDEG_S * elapsed / 1000;
++    delta = (int64_t)requested - current;
++    if (delta > max_step) current = (int32_t)((int64_t)current + max_step);
++    else if (delta < -max_step) current = (int32_t)((int64_t)current - max_step);
++    else current = requested;
++    steering_command_ms = (uint16_t)now_ms;
++    return current;
++}
++
++// 大幅跨中位反向时先回到机械中位；两路时间对齐且连续稳定后，再恢复向新目标移动。
++static void update_center_transition(const ChassisFeedback* feedback, int32_t commanded_mdeg)
++{
++    if (!steering_center_mode || feedback == 0) return;
++    if (commanded_mdeg < -PATROL_PHY_REMOTE_STEER_CENTER_MDEG ||
++        commanded_mdeg > PATROL_PHY_REMOTE_STEER_CENTER_MDEG ||
++        !feedback->angle_pair_valid ||
++        llabs((int64_t)feedback->steering_actual_mdeg) > PATROL_PHY_REMOTE_STEER_CENTER_MDEG ||
++        llabs((int64_t)feedback->encoder_actual_mdeg) > PATROL_PHY_REMOTE_STEER_CENTER_MDEG) {
++        steering_center_samples = 0U;
++        return;
++    }
++    if (steering_center_samples < PATROL_PHY_REMOTE_STEER_CENTER_SAMPLES)
++        steering_center_samples++;
++    if (steering_center_samples >= PATROL_PHY_REMOTE_STEER_CENTER_SAMPLES)
++        steering_center_mode = 0U;
++}
++
+ // 撤销实体遥控目标并释放其本地武装状态。通过统一 stop 仲裁清除目标，后续执行器负责有序停机；本函数不直接操作驱动器寄存器。
+ static void stop_remote(uint32_t now_ms)
+ {
+@@ -38,6 +90,9 @@ static void stop_remote(uint32_t now_ms)
+      * and the shared executor performs its bounded stop sequence. */
+     (void)RemoteService_ApplyLocal("stop", PATROL_PHY_REMOTE_SESSION, 0, 0, 0, 0, now_ms);
+     armed = 0U;
++    steering_command_ms = 0U;
++    steering_center_mode = 0U;
++    steering_center_samples = 0U;
+ }
+ 
+ // 将 T12 有符号摇杆量换算为转向目标。按满量程 450 映射到正负 25000 mdeg，并钳位异常超幅输入。
+@@ -70,6 +125,9 @@ void PatrolPhyRemote_Init(void)
+     powered_by_remote = 0U;
+     switch_seen = 0U;
+     last_switch_ms = 0U;
++    steering_command_ms = 0U;
++    steering_center_mode = 0U;
++    steering_center_samples = 0U;
+ }
+ 
+ // 处理 T12 开关与摇杆帧并提交共享控制请求。校验 8 字节长度、100 ms 接收时效及开关帧顺序；A 控制使能和延迟下电，B 字节不执行动作，摇杆必须有新鲜开关流和有效会话。
+@@ -93,7 +151,7 @@ uint8_t PatrolPhyRemote_OnFrame(const PatrolCanFrame* frame, uint32_t received_m
+             uint8_t enable = frame->data[2];
+             uint8_t was_active = (last_enable != 0U);
+             uint8_t active = (enable != 0U);
+-            last_enable = enable;
++            last_enable = enable != 0U;
+             if (active) {
+                 if (!was_active) {
+                     /* Rising edge: cancel any pending power-off and power on.
+@@ -110,6 +168,9 @@ uint8_t PatrolPhyRemote_OnFrame(const PatrolCanFrame* frame, uint32_t received_m
+                                              ++control_seq, PATROL_PHY_REMOTE_LEASE_MS,
+                                              0, 0, now_ms)) {
+                     armed = 1U;
++                    steering_command_ms = (uint16_t)now_ms;
++                    steering_center_mode = 0U;
++                    steering_center_samples = 0U;
+                 }
+             } else if (was_active) {
+                 /* Falling edge: fail-closed stop, then power off after the
+@@ -133,9 +194,27 @@ uint8_t PatrolPhyRemote_OnFrame(const PatrolCanFrame* frame, uint32_t received_m
+                                          ((uint16_t)frame->data[1] << 8));
+             int16_t raw_throttle = (int16_t)((uint16_t)frame->data[4] |
+                                             ((uint16_t)frame->data[5] << 8));
++            const ChassisControl* state = RemoteService_State();
++            int32_t requested = map_steering(raw_steer);
++            int32_t ordered = state->target_steering_mdeg;
++            if (state->feedback.angle_pair_valid) {
++                update_center_transition(&state->feedback, ordered);
++                if (!steering_center_mode &&
++                    ((ordered > 0 && requested < 0) || (ordered < 0 && requested > 0)) &&
++                    llabs((int64_t)requested - ordered) >= PATROL_PHY_REMOTE_STEER_REVERSAL_MDEG) {
++                    steering_center_mode = 1U;
++                    steering_center_samples = 0U;
++                }
++                ordered = slew_steering(ordered, steering_center_mode ? 0 : requested, now_ms);
++            } else {
++                ordered = requested;
++                steering_command_ms = (uint16_t)now_ms;
++                steering_center_mode = 0U;
++                steering_center_samples = 0U;
++            }
+             if (!RemoteService_ApplyLocal("renew", PATROL_PHY_REMOTE_SESSION,
+                                           ++control_seq, PATROL_PHY_REMOTE_LEASE_MS,
+-                                          map_rpm(raw_throttle), map_steering(raw_steer),
++                                          map_rpm(raw_throttle), ordered,
+                                           now_ms)) {
+                 stop_remote(now_ms);
+             }
+@@ -150,6 +229,7 @@ uint8_t PatrolPhyRemote_OnFrame(const PatrolCanFrame* frame, uint32_t received_m
+ void PatrolPhyRemote_Tick(uint32_t now_ms, uint8_t transport_healthy)
+ {
+     const ChassisControl* c;
++    ChassisStopReason safety_reason;
+     if (power_off_deadline_ms != 0U &&
+         (int32_t)(now_ms - power_off_deadline_ms) >= 0) {
+         (void)VehiclePowerOutput_Set(0U);
+@@ -161,9 +241,21 @@ void PatrolPhyRemote_Tick(uint32_t now_ms, uint8_t transport_healthy)
+     if (!transport_healthy || !switch_seen ||
+         (uint32_t)(now_ms - last_switch_ms) >= PATROL_PHY_REMOTE_LEASE_MS ||
+         CenterCalibration_IsActive() || !owns() ||
+-        !c->enable_request || (int32_t)(now_ms - c->lease_deadline_ms) >= 0 ||
+-        !ChassisControl_SafetyReady(c, now_ms)) {
++        !c->enable_request || (int32_t)(now_ms - c->lease_deadline_ms) >= 0) {
+         stop_remote(now_ms);
++        return;
++    }
++    safety_reason = ChassisControl_SafetyReason(c, now_ms);
++    if (safety_reason != CHASSIS_STOP_NONE) {
++        if (safety_reason == CHASSIS_STOP_ANGLE_MISMATCH) {
++            RemoteService_SafetyFault(safety_reason);
++            armed = 0U;
++            steering_command_ms = 0U;
++            steering_center_mode = 0U;
++            steering_center_samples = 0U;
++        } else {
++            stop_remote(now_ms);
++        }
+     }
+ }
+ /* <<<<< PHY-REMOTE: END <<<<< */
+diff --git a/app/Core/User/motion/src/patrol_runtime.c b/app/Core/User/motion/src/patrol_runtime.c
+index 57b8b80..3bcd930 100644
+--- a/app/Core/User/motion/src/patrol_runtime.c
++++ b/app/Core/User/motion/src/patrol_runtime.c
+@@ -370,6 +370,13 @@ uint8_t PatrolRuntime_Take(uint32_t now, PatrolCanFrame* request, uint8_t* owner
+ 
+ static uint32_t feedback_due;
+ 
++// 计算无符号毫秒时间戳的绝对差，支持计数器回绕；用于确认两路转角样本是否来自同一时间窗口。
++static uint32_t timestamp_delta(uint32_t a, uint32_t b)
++{
++    int32_t delta = (int32_t)(a - b);
++    return (uint32_t)(delta < 0 ? -delta : delta);
++}
++
+ /* >>>>> DRIVE-RECOVERY: START >>>>> */
+ /* A hot MCU reset leaves the drive controllers in their previous states, which
+  * can still be Operation Enabled. The normal chain then deadlocks: the steering
+@@ -470,7 +477,7 @@ void PatrolRuntime_UpdateFeedback(uint32_t now)
+                 !snapshot.drive_fault && !feedback.can_bus_off && !feedback.ota_busy &&
+                 (snapshot.steering_status_word & 0x6FU) != 0x27U,
+                 snapshot.steering_position_count, snapshot.encoder_count, cfg->absolute_center_count,
+-                snapshot.coherent_feedback_ms, now);
++                snapshot.steering_position_ms, now);
+         }
+         if (!was_valid && g_motion.coordinate.valid) {
+             g_motion.coordinate_calibration_center = cfg->steering_center_count;
+@@ -486,6 +493,9 @@ void PatrolRuntime_UpdateFeedback(uint32_t now)
+      * Raw controller sign remains available in get_can_diag. */
+     feedback.right_actual_rpm = snapshot.right_actual_rpm > 32768 ? -32768 :
+         (snapshot.right_actual_rpm < -32767 ? 32767 : (int16_t)-snapshot.right_actual_rpm);
++    feedback.angle_pair_valid = (uint8_t)(snapshot.steering_feedback_fresh && snapshot.encoder_online &&
++        timestamp_delta(snapshot.steering_position_ms, snapshot.encoder_sample_ms) <=
++            CHASSIS_STEERING_PAIR_SKEW_MS);
+     if (feedback.calibrated)
+     {
+         feedback.steering_actual_mdeg = SteeringAngle_FromControllerCount(
+diff --git a/app/Core/User/system/src/patrol_rtos.c b/app/Core/User/system/src/patrol_rtos.c
+index 725f513..55dd762 100644
+--- a/app/Core/User/system/src/patrol_rtos.c
++++ b/app/Core/User/system/src/patrol_rtos.c
+@@ -517,7 +517,7 @@ static void Patrol_EncoderTask(void *argument)
+         else
+             PatrolRuntime_OnEncoderError(PATROL_ENCODER_ERROR_FORMAT);
+         taskEXIT_CRITICAL();
+-        vTaskDelay(pdMS_TO_TICKS(read_config ? 500U : 100U));
++        vTaskDelay(pdMS_TO_TICKS(read_config ? 500U : 20U));
+ #else
+         vTaskDelay(pdMS_TO_TICKS(1000U));
+ #endif
+diff --git a/can2_center_calibration/README.md b/can2_center_calibration/README.md
+index 34cf340..5728ebf 100644
+--- a/can2_center_calibration/README.md
++++ b/can2_center_calibration/README.md
+@@ -4,7 +4,7 @@
+ 
+ 配套固件候选为 `patrol-chassis-0.2.91`。源码候选位于 `out/candidates/bench-drive/`；完整烧录包位于本次 `docs/operations/evidence/2026-10-25-feedback-priority-flash-*` 证据目录。没有该 CAN2 标定通道的旧固件会表现为 `0x530` 无响应；`0.2.88` 修复发送邮箱暂时繁忙时丢失后续帧，`0.2.89` 增加编码器接收流内的有效帧重同步，`0.2.90` 兼容请求回显和响应被 UART IDLE 分成两个数据块，`0.2.91` 增加临近过期反馈优先级和单次过期后的受控停车。
+ 
+-本目录主机脚本版本为 `1.1.0`。脚本接受三帧乱序、重复和迟到应答；只读查询缺帧时使用新序号重试。`PREPARE` 可安全重试，`START/COMMIT` 不属于幂等操作，不会盲目重发，而是通过只读状态查询恢复会话令牌或确认提交阶段。提交结束后仍以 `COMPLETE`、`calibrated=true`、保存中位与捕获中位一致作为成功依据。
++本目录主机脚本版本为 `1.2.0`。脚本接受三帧乱序、重复和迟到应答；只读查询缺帧时使用新序号重试。`POWER_ON` 后脚本会等待状态、轮速和使能反馈刷新，并在等待期间持续刷新 `PREPARE` 的三秒抑制窗口，避免反馈尚未就绪就发送 `START`。`PREPARE` 可安全重试，`START/COMMIT` 不属于幂等操作，不会盲目重发，而是通过只读状态查询恢复会话令牌或确认提交阶段。提交结束后仍以 `COMPLETE`、`calibrated=true`、保存中位与捕获中位一致作为成功依据。
+ 
+ ## 接线
+ 
+diff --git a/can2_center_calibration/can2_center_calibration.py b/can2_center_calibration/can2_center_calibration.py
+index 37ecae3..7cbe85a 100644
+--- a/can2_center_calibration/can2_center_calibration.py
++++ b/can2_center_calibration/can2_center_calibration.py
+@@ -21,7 +21,10 @@ from dataclasses import asdict, dataclass
+ from typing import Callable, Iterable
+ 
+ 
+-SCRIPT_VERSION = "1.1.0"
++SCRIPT_VERSION = "1.2.0"
++POWER_READY_TIMEOUT_S = 5.0
++POWER_READY_POLL_S = 0.1
++PREPARE_REFRESH_S = 1.0
+ VCI_USBCAN2 = 4
+ MOTION_COMMAND = 0x520
+ MOTION_ACK = 0x521
+@@ -504,6 +507,39 @@ def _prepare_calibration(client: Can2CalibrationClient):
+     return prepared
+ 
+ 
++def _wait_for_motion_ready(
++    client: Can2CalibrationClient, status: MotionStatus, timeout_s: float
++) -> MotionStatus:
++    """Wait for fresh post-power-on feedback while keeping auto-centering suppressed."""
++    started = time.monotonic()
++    deadline = started + timeout_s
++    next_prepare = started + PREPARE_REFRESH_S
++    while not status.motion_ready:
++        if status.fault_latched:
++            raise Can2CalibrationError(
++                "A motion fault became latched while waiting for post-power-on feedback"
++            )
++        if status.session_active:
++            raise Can2CalibrationError(
++                "Another control session became active while waiting for post-power-on feedback"
++            )
++        now = time.monotonic()
++        if now >= deadline:
++            raise Can2CalibrationError(
++                "POWER_ON succeeded, but fresh motion feedback did not become ready "
++                f"within {timeout_s:.1f}s (flags=0x{status.flags:02X}, "
++                f"stopReason={status.stop_reason})"
++            )
++        if now >= next_prepare:
++            # PREPARE lasts three seconds in firmware. Refresh it before expiry so
++            # the old calibration cannot trigger auto-centering during power-up.
++            _prepare_calibration(client)
++            next_prepare = now + PREPARE_REFRESH_S
++        time.sleep(POWER_READY_POLL_S)
++        status = client.motion_status()
++    return status
++
++
+ def _start_calibration(client: Can2CalibrationClient, deadline: float):
+     """START is non-idempotent; recover its token through a read-only query."""
+     while True:
+@@ -590,10 +626,12 @@ def calibrate_current(client: Can2CalibrationClient, reset_fault: bool, assume_y
+                 raise Can2CalibrationError("Operator did not confirm mechanical center")
+ 
+         _prepare_calibration(client)
++        powered = motion
+         if not motion.power_on:
+             powered = client.power_on()
+             if powered.result != 0 or not powered.power_on:
+                 raise Can2CalibrationError(f"POWER_ON rejected: result={powered.result}")
++        _wait_for_motion_ready(client, powered, POWER_READY_TIMEOUT_S)
+ 
+         started = _start_calibration(client, time.monotonic() + 3.0)
+         if started.token == 0:
+diff --git a/docs/CURRENT.md b/docs/CURRENT.md
+index bd98f5b..d93e407 100644
+--- a/docs/CURRENT.md
++++ b/docs/CURRENT.md
+@@ -1,5 +1,11 @@
+ # 当前项目状态
+ 
++2026-10-26 当前源码候选为 `patrol-chassis-0.2.97`，仅将独立绝对编码器在正常运行时的 UART5 轮询间隔从 `50 ms` 调整为 `20 ms`，配置读取间隔保持 `500 ms`；公共 CAN 调度、驱动器参数和双转角 `2°`硬门禁未改动。ARM Release、CAN2 栈和 Bench 栈检查通过；App 157,000 字节、CRC32 `3DD46E04`、SHA256 `1ADBAFAB4013816B3AD484523F046E59E887C034960D71DA79A59EEC572EBA19`，Full 189,768 字节、SHA256 `8B0BBA0C5BAE4CA57C3B314A8A43222CC86A47099D1D7EB5C7B806E6019D4675`。[候选与烧录包](operations/evidence/2026-10-26-encoder-poll-20-flash-2026-10-26-163639-909738/README.md)；尚未烧录和实车验证。完整套件保持 49/57，8 项失败与修改前相同。
++
++2026-10-26 现场只读复核确认 `patrol-chassis-0.2.95` 的自动回中失败根因：上电引导在约 310 ms 内只读取一次 Node 1 状态字和三次位置；最后位置到达时，状态字已超过 250 ms 新鲜期，运行坐标始终未建立，Node 1 也未开始发送 `0x181/0x281` PDO。`patrol-chassis-0.2.96` 将启动引导改为 `0x6041/0x6064` 每 100 ms 成对读取、最多六组，并只按位置样本时间推进稳定窗口；成功完成或任一引导事务失败后均永久停止 Node 1 引导 SDO，运行期仍只使用 PDO。相关自动回中、中位标定、故障停车和停止调度回归通过，ARM Release、CAN2 栈和 Bench 栈检查通过；App 157,008 字节、CRC32 `87E52F5F`、SHA256 `92DE4329D9951A86D617EB842EE52DF18E3F73C3ADA19E3512BEF332181A25D3`，Full 189,776 字节、SHA256 `13B9907F5D7AC50E1A705FA097CA4AA24EE559C08ECD5FBED7D7A5C5C16E90FF`。[候选与烧录包](operations/evidence/2026-10-26-auto-center-paired-bootstrap-flash-2026-10-26-154618-901442/README.md)；尚未烧录和实车验证。完整套件仍有既有的 1 项源码静态规则失败和 7 项历史文档链接失败。
++
++2026-10-26 CAN2 中位标定脚本升级到 `1.2.0`，修复 `POWER_ON` 后立即发送 `START` 导致的 `GATE_NOT_READY` 竞态。脚本现在最多等待 5 秒，直到状态、轮速和使能反馈刷新（`flags` bit 2）；等待期间每秒刷新一次 `PREPARE` 的三秒抑制窗口，避免旧中位触发自动回中。实车验证从 `flags=0x02 / power_on=false` 上电后达到 `flags=0x07 / feedback_age=62 ms`，`START` 成功返回会话令牌，随后只执行 `CANCEL` 和下电，没有提交中位或写 Config V5；12 项脚本回归通过。[标定工具说明](../can2_center_calibration/README.md)。
++
+ 2026-10-25 当前源码候选为 `patrol-chassis-0.2.91`，用于修复“转向目标写入连续占用 CAN1 后，Node 2 状态反馈超过 250 ms 被直接锁存为执行故障”的问题。关键反馈在 150 ms 时获得 SDO 发送优先级；低频诊断事务超时释放后，下一条总线机会必须给紧急反馈。单次反馈过期时先执行原零速、三轮低速确认和撤使能流程，控制会话撤销后受控停车仍继续到双执行器收尾；250 ms 时效、节点离线、Bus-Off、OTA、驱动器故障和停车失败锁存均未放宽。相关调度、中心标定和行驶执行器主机回归通过，ARM Release 与栈检查通过；App 156,736 字节、CRC32 `B98E6B15`、SHA256 `FA95F31778CABFA5314E052CC3F7FBFFA3BDD0EF4CF0E34140F72B11F1EABCB5`，Full 189,504 字节、SHA256 `2D53FA603AF050B7578D7B219F25491AF765880373BFFB0B3C8EA2231F486838`。[候选与烧录包](operations/evidence/2026-10-25-feedback-priority-flash-2026-10-25-172803-318591/index.json)；尚未烧录和实车验证。完整套件仍有既有的 `test_identity_and_safe_defaults`、失效证据链接和旧 `90 rpm` 断言失败。
+ 
+ 2026-10-25 `0.2.90` 已在实车烧录并验证。绝对编码器 UART5 的“请求回显 + 位置响应”被拆分到两个 IDLE 数据块时可直接重组；J-Link 连续采样确认 `encoder_seen=1`、转动时 `encoder_count` 变化、`encoder_ms` 更新，格式错误和 CRC 错误计数为 0。随后 CAN2 中位流程捕获并保存转向驱动器中位 `-1504`，编码器归零到 `0`，掉电前状态为 `phase=COMPLETE / calibrated=true`。现场观察到 `COMMIT` 已成功时脚本偶发未收齐同序号三帧而误报超时；主机脚本已原地升级到 `1.1.0`，只读查询自动重试，`START/COMMIT` 不盲目重放并通过状态机恢复确认；11 项脚本回归和实机 CAN2 只读查询均通过。App 156,032 字节、CRC32 `B3D4129F`、SHA256 `7B3DF11F507F95ADCF05ACDCE7681CF000894455D7F2A367B777BEB6A77ECF4E`，Full 188,800 字节、SHA256 `DE6C94365CB171EE738AE64A4C4082B0402AA8C201AADB54AB1E7C68A8491F23`。[候选与烧录包](operations/evidence/2026-10-25-encoder-chunk-reassembly-flash-2026-10-25-151438-155107/index.json)。
+diff --git "a/docs/operations/evidence/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/FLASH_ADDRESSES.txt" "b/docs/operations/evidence/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/FLASH_ADDRESSES.txt"
+deleted file mode 100644
+index 0f23eca..0000000
+--- "a/docs/operations/evidence/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/FLASH_ADDRESSES.txt"
++++ /dev/null
+@@ -1,19 +0,0 @@
+-patrol_vehicle_chassis / patrol-chassis-0.2.91 / FEEDBACK PRIORITY AND CONTROLLED STOP
+-
+-推荐完整安装，写完三个文件后再复位：
+-1. Patrol_Vehicle_Chassis_Full.bin -> 0x08000000 (189504 bytes)
+-2. BootState_A.bin -> 0x0803E800 (2048 bytes)
+-3. BootState_B.bin -> 0x0803F000 (2048 bytes)
+-
+-Full 已包含 32 KiB 冻结 Boot 和 App，不要同时重复烧录独立 App/Boot。
+-已有匹配冻结 Boot 时，可使用：
+-Patrol_Vehicle_Chassis_App.bin -> 0x08008000 (156736 bytes)
+-但仍必须写入本包配套 BootState_A/B。
+-
+-禁止整片擦除。保留：
+-- 0x0803E000..0x0803E7FF 配置恢复页
+-- 0x0803F800..0x0803FFFF Config V5 与故障日志页
+-
+-App CRC32: B98E6B15
+-App SHA256: FA95F31778CABFA5314E052CC3F7FBFFA3BDD0EF4CF0E34140F72B11F1EABCB5
+-Full SHA256: 2D53FA603AF050B7578D7B219F25491AF765880373BFFB0B3C8EA2231F486838
+diff --git "a/docs/operations/evidence/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/README.md" "b/docs/operations/evidence/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/README.md"
+deleted file mode 100644
+index 08c33f9..0000000
+--- "a/docs/operations/evidence/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/README.md"
++++ /dev/null
+@@ -1,74 +0,0 @@
+-# 运动反馈优先级与受控停车修复
+-
+-日期：2026-10-25  
+-候选版本：`patrol-chassis-0.2.91`
+-
+-## 问题
+-
+-现场双路监听显示，转向目标写入连续占用 CAN1 后，Node 2 行驶状态反馈从
+-最后一次正常 `0x6041=0x37` 到下一次响应约间隔 297 ms。Node 1 的一次
+-`0x6041` 响应迟至约 187 ms 才返回，超过诊断单次事务期限，导致行驶状态
+-超过 250 ms 安全时效。原逻辑随即把本次反馈延迟解释为执行故障并永久锁存。
+-
+-该次记录中总线并没有超过 250 ms 的 SDO 未应答或 Abort；问题是串行事务
+-和运动写入的调度顺序，而不是驱动器已明确拒绝动作。
+-
+-## 修改
+-
+-- 关键反馈样本达到 150 ms 时提前进入紧急状态，预留一次 60 ms SDO 事务
+-  和响应处理时间。
+-- 紧急读取按真实样本年龄选择；新鲜 Node 1 位置 TPDO `0x281` 仍优先，
+-  不为已有实时位置额外发送 `0x6064`。
+-- 若低频诊断事务尚未超时，保留其唯一 SDO 所有权；事务超时释放后，下一条
+-  总线机会必须给紧急反馈，不能先发送排队的运动写入。
+-- 单次反馈过期时，先取消新目标并进入现有零速、三组低速确认、撤使能流程。
+-  会话在停车期间撤销后，受控停车状态仍持续到两个执行器完成停车。
+-- 250 ms 反馈安全时效没有放宽。节点离线、Bus-Off、OTA 忙、驱动器故障、
+-  停车超时或 CAN 发送失败仍进入原故障锁存和下电路径。
+-
+-## 验证
+-
+-- `test_stop_scheduler.py`：通过，包括紧急反馈抢占、低频事务超时释放、
+-  会话撤销后的多周期停车和反馈恢复后的正常收尾。
+-- `test_center_runtime.py`、`test_auto_center_runtime.py`：通过。
+-- `test_can2_center_calibration.py`：11/11 通过。
+-- `chassis_safety_test`、`bench_drive_test`：通过。
+-- ARM Release 构建、栈预算、CAN2 栈、冻结 Boot、版本标记、Full 拼接和
+-  Boot State A/B 绑定通过。
+-
+-仍存在的完整套件失败：
+-
+-- `test_identity_and_safe_defaults`：工作树既有热复位 SDO 写与静态断言冲突。
+-- `test_document_links_and_archived_evidence_references`：现有文档链接指向已
+-  不在当前工作区的旧证据目录。
+-- `bench_steering_test`：既有断言仍要求已淘汰的 `90 rpm` 轮廓速度，与当前
+-  `600/600/600 rpm` 配置不一致。
+-
+-这些失败均未放宽断言，也不涉及本次反馈调度行为。
+-
+-## 烧录
+-
+-推荐完整安装：
+-
+-1. `Patrol_Vehicle_Chassis_Full.bin` → `0x08000000`
+-2. `BootState_A.bin` → `0x0803E800`
+-3. `BootState_B.bin` → `0x0803F000`
+-
+-已有匹配冻结 Boot 时，可改为：
+-
+-`Patrol_Vehicle_Chassis_App.bin` → `0x08008000`
+-
+-但仍必须同时写入本包 `BootState_A/B`。禁止整片擦除，保留：
+-
+-- `0x0803E000..0x0803E7FF` 配置恢复页
+-- `0x0803F800..0x0803FFFF` Config V5 与故障日志页
+-
+-## 验证边界
+-
+-本包尚未烧录，不能替代实车验收。烧录全部配套文件后再复位，并在架空或具备
+-急停的条件下复测：
+-
+-- 高频转向时 Node 2 状态、双轮速度和 Node 1 状态仍持续刷新。
+-- 接近 150 ms 的关键反馈读取优先于运动写入。
+-- 单次反馈过期时车辆先有序停车，不立即锁存。
+-- 若停车本身超时、发送失败或驱动器 Abort，系统仍锁存并撤电。
+diff --git "a/docs/operations/evidence/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/flash.manifest.json" "b/docs/operations/evidence/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/flash.manifest.json"
+deleted file mode 100644
+index c69064c..0000000
+--- "a/docs/operations/evidence/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/flash.manifest.json"
++++ /dev/null
+@@ -1,51 +0,0 @@
+-{
+-  "product": "patrol_vehicle_chassis",
+-  "version": "patrol-chassis-0.2.91",
+-  "candidate": true,
+-  "configuration": "Release",
+-  "active_car": 0,
+-  "actuation_enabled": true,
+-  "steering_executor_compiled": true,
+-  "drive_executor_compiled": true,
+-  "app": {
+-    "file": "Patrol_Vehicle_Chassis_App.bin",
+-    "address": "0x08008000",
+-    "size": 156736,
+-    "initial_sp": "0x20010000",
+-    "reset_vector": "0x0800D44D",
+-    "crc32": "B98E6B15",
+-    "sha256": "FA95F31778CABFA5314E052CC3F7FBFFA3BDD0EF4CF0E34140F72B11F1EABCB5"
+-  },
+-  "boot": {
+-    "file": "ABox_Boot.bin",
+-    "address": "0x08000000",
+-    "size": 32768,
+-    "crc32": "F36320C9",
+-    "sha256": "981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63"
+-  },
+-  "full": {
+-    "file": "Patrol_Vehicle_Chassis_Full.bin",
+-    "address": "0x08000000",
+-    "size": 189504,
+-    "crc32": "A18B2FF2",
+-    "sha256": "2D53FA603AF050B7578D7B219F25491AF765880373BFFB0B3C8EA2231F486838"
+-  },
+-  "states": [
+-    {
+-      "file": "BootState_A.bin",
+-      "address": "0x0803E800",
+-      "size": 2048,
+-      "record_crc32": "6FD2DA89",
+-      "sha256": "07B1E53F519C93B4A98EAEBC4240D4C2B236B47D33362CF47DFC71AC4EC3A0D8"
+-    },
+-    {
+-      "file": "BootState_B.bin",
+-      "address": "0x0803F000",
+-      "size": 2048,
+-      "erased": true,
+-      "sha256": "D0FF1B294B5288D1AE1421EADF5B2D38A8752B76D472FF30BED9028E25B1C5B8"
+-    }
+-  ],
+-  "board_flashed": false,
+-  "field_verified": false
+-}
+diff --git "a/docs/operations/evidence/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/index.json" "b/docs/operations/evidence/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/index.json"
+deleted file mode 100644
+index 0f9e414..0000000
+--- "a/docs/operations/evidence/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/index.json"
++++ /dev/null
+@@ -1,48 +0,0 @@
+-{
+-  "product": "patrol_vehicle_chassis",
+-  "date": "2026-10-25",
+-  "version": "patrol-chassis-0.2.91",
+-  "candidate": true,
+-  "purpose": "Prioritize feedback approaching its 250 ms safety deadline and use the existing bounded stop sequence instead of immediately latching a fault after one delayed status upload",
+-  "root_cause": "A Node 1 SDO response arrived about 187 ms after its request while steering writes occupied CAN1; Node 2 drive status was not sampled again for about 297 ms, exceeded the 250 ms feedback gate, and the executor classified the transport scheduling delay as a permanent execution fault",
+-  "app_sha256": "fa95f31778cabfa5314e052cc3f7fbffa3bdd0ef4cf0e34140f72b11f1eabcb5",
+-  "full_sha256": "2d53fa603af050b7578d7b219f25491af765880373bffb0b3c8ea2231f486838",
+-  "app_crc32": "B98E6B15",
+-  "validation": {
+-    "arm_release_build": true,
+-    "feedback_priority": true,
+-    "low_priority_timeout_release": true,
+-    "controlled_stop_after_session_revoke": true,
+-    "center_runtime": true,
+-    "auto_center_runtime": true,
+-    "can2_center_calibration": true,
+-    "chassis_safety_test": true,
+-    "bench_drive_test": true,
+-    "can2_stack": true,
+-    "full_boot_prefix": true,
+-    "full_app_suffix": true,
+-    "boot_state_a_bound": true,
+-    "boot_state_b_erased": true
+-  },
+-  "known_full_suite_failures": [
+-    "test_identity_and_safe_defaults: pre-existing static assertion",
+-    "test_document_links_and_archived_evidence_references: existing CURRENT.md links to removed evidence directories",
+-    "bench_steering_test: pre-existing assertion still expects the retired 90 rpm profile speed"
+-  ],
+-  "board_flashed": false,
+-  "field_verified": false,
+-  "files": [
+-    "ABox_Boot.bin",
+-    "BootState_A.bin",
+-    "BootState_B.bin",
+-    "Patrol_Vehicle_Chassis_App.bin",
+-    "Patrol_Vehicle_Chassis_App.elf",
+-    "Patrol_Vehicle_Chassis_App.map",
+-    "Patrol_Vehicle_Chassis_Full.bin",
+-    "FLASH_ADDRESSES.txt",
+-    "README.md",
+-    "flash.manifest.json",
+-    "index.json",
+-    "sha256.json"
+-  ]
+-}
+diff --git "a/docs/operations/evidence/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/sha256.json" "b/docs/operations/evidence/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/sha256.json"
+deleted file mode 100644
+index 01a07a0..0000000
+--- "a/docs/operations/evidence/2026-10-25-\346\274\217\345\272\224\347\255\224\351\224\201\345\256\232\350\277\233\344\270\200\346\255\245\350\247\243\345\206\263\346\226\271\346\241\210-\346\232\202\345\256\232/sha256.json"
++++ /dev/null
+@@ -1,9 +0,0 @@
+-{
+-  "ABox_Boot.bin": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+-  "BootState_A.bin": "07b1e53f519c93b4a98eaebc4240d4c2b236b47d33362cf47dfc71ac4ec3a0d8",
+-  "BootState_B.bin": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8",
+-  "Patrol_Vehicle_Chassis_App.bin": "fa95f31778cabfa5314e052cc3f7fbffa3bdd0ef4cf0e34140f72b11f1eabcb5",
+-  "Patrol_Vehicle_Chassis_App.elf": "12484997f9fbacdecdfbfc8ff55cba1fcd035873376de3405ae68bc1bd482773",
+-  "Patrol_Vehicle_Chassis_App.map": "d83e5534b9e48d9edb5ab2b6227c8c5a1904939b8917890e4d35dcc31f14b8b2",
+-  "Patrol_Vehicle_Chassis_Full.bin": "2d53fa603af050b7578d7b219f25491af765880373bffb0b3c8ea2231f486838"
+-}
+diff --git a/out/candidates/bench-drive/Patrol_Vehicle_Chassis_App.bin b/out/candidates/bench-drive/Patrol_Vehicle_Chassis_App.bin
+index 491387af8163ff05cfbc55baeb81441887c9d126..4f132b80b3c821fc770f6f1c1ce745fdca5e4d99 100644
+GIT binary patch
+delta 22484
+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
+Tf;GwH8{2CBZ;09B_}%{xX5fOa
+
+delta 22211
+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
+F{|}v)>1Y4|
+
+diff --git a/out/candidates/bench-drive/candidate.manifest.json b/out/candidates/bench-drive/candidate.manifest.json
+index 1e19db9..1e3acc4 100644
+--- a/out/candidates/bench-drive/candidate.manifest.json
++++ b/out/candidates/bench-drive/candidate.manifest.json
+@@ -1,18 +1,18 @@
+ {
+-    "product":  "patrol_vehicle_chassis",
+-    "version":  "patrol-chassis-0.2.91",
+-    "candidate":  true,
+-    "steering_executor_compiled":  true,
+-    "drive_executor_compiled":  true,
+-    "startup_permit":  false,
+-    "actuation_enabled":  true,
+-    "active_car":  0,
+-    "commit":  "65db594be2747558489843b7c17aa9b56e7fc082",
+-    "dirty":  true,
+-    "app_start":  "0x08008000",
+-    "app_end":  "0x0803DFFF",
+-    "config_recovery_page":  "0x0803E000",
+-    "config_page":  "0x0803F800",
+-    "size":  156736,
+-    "sha256":  "FA95F31778CABFA5314E052CC3F7FBFFA3BDD0EF4CF0E34140F72B11F1EABCB5"
++  "product": "patrol_vehicle_chassis",
++  "version": "patrol-chassis-0.2.95",
++  "candidate": true,
++  "steering_executor_compiled": true,
++  "drive_executor_compiled": true,
++  "startup_permit": false,
++  "actuation_enabled": true,
++  "active_car": 0,
++  "commit": "2ba035d730849cb798ef89d4fb18b04848fbcaeb",
++  "dirty": true,
++  "app_start": "0x08008000",
++  "app_end": "0x0803DFFF",
++  "config_recovery_page": "0x0803E000",
++  "config_page": "0x0803F800",
++  "size": 156976,
++  "sha256": "B11E1ADE989E1DD77D23F6B432BA052452F63392E8B0333ACCC0F7DDBDE5AB5B"
+ }
+diff --git a/tests/auto_center_runtime_cases.c b/tests/auto_center_runtime_cases.c
+index e160e2b..3f338d6 100644
+--- a/tests/auto_center_runtime_cases.c
++++ b/tests/auto_center_runtime_cases.c
+@@ -6,6 +6,7 @@ static void feedback(int32_t angle_mdeg)
+     mock_snapshot.steering_position_count = (int32_t)((int64_t)angle_mdeg * 2710800 / 1000000);
+     mock_snapshot.encoder_count = 2048U + (int32_t)((int64_t)angle_mdeg * 55250 / 1000000);
+     mock_snapshot.coherent_feedback_ms = mock_snapshot.encoder_sample_ms = mock_now;
++    mock_snapshot.steering_position_ms = mock_now;
+     g_motion.diagnostics.steering_position_count = mock_snapshot.steering_position_count;
+     g_motion.diagnostics.encoder_count = mock_snapshot.encoder_count;
+     g_motion.diagnostics.left_rpm_ms = g_motion.diagnostics.right_rpm_ms = mock_now;
+diff --git a/tests/bench_steering_test.c b/tests/bench_steering_test.c
+index 2c34120..2396c23 100644
+--- a/tests/bench_steering_test.c
++++ b/tests/bench_steering_test.c
+@@ -12,6 +12,25 @@ static PatrolCanFrame reply(const BenchSteering* b, int32_t value)
+     f.data[0] = b->read ? b->width==4 ? 0x43 : b->width==2 ? 0x4b : 0x4f : 0x60;
+     return f;
+ }
++static uint8_t waits_for_status(const BenchSteering* b)
++{
++    return (uint8_t)(b->verify == 1U || b->verify == 5U ||
++        b->step == 11U || b->step == 13U || b->step == 15U || b->step == 22U);
++}
++static void feed_status(BenchSteering* b, uint32_t now)
++{
++    PatrolCanFrame f = {.id=0x181,.dlc=7};
++    uint16_t status = 0x2237U;
++    if (b->verify == 1U) {
++        if (b->step == 18U) status = 0x3237U;
++        else if (b->step == 19U) status = 0x2237U;
++    } else if (b->step == 11U) status = 0x2221U;
++    else if (b->step == 13U) status = 0x2223U;
++    else if (b->step == 22U) status = 0x2231U;
++    f.data[0] = (uint8_t)status;
++    f.data[1] = (uint8_t)(status >> 8);
++    assert(BenchSteering_OnFrame(b, &f, now));
++}
+ static void advance(BenchSteering* b, uint32_t* now)
+ {
+     PatrolCanFrame f,r;
+@@ -21,8 +40,17 @@ static void advance(BenchSteering* b, uint32_t* now)
+         assert(BenchSteering_OnFrame(b,&r,*now+1));
+         *now+=10;
+     }
+-    BenchSteering_Tick(b,*now,1,1,1000,0);
+-    assert(BenchSteering_Take(b,*now,&f));
++    uint8_t took = 0U;
++    for (unsigned retry=0U; retry<6U && !took && b->phase!=BENCH_FAULT; ++retry) {
++        BenchSteering_Tick(b,*now,1,1,1000,0);
++        if (waits_for_status(b)) {
++            feed_status(b,*now);
++            *now += 1U;
++            continue;
++        }
++        took = BenchSteering_Take(b,*now,&f);
++    }
++    assert(took);
+     assert(f.id==0 || f.id==0x601); /* never drive node */
+     if (b->pending) {
+         int32_t value=b->step==1 ? -111593 : b->step==2 ? -56037 : b->step==22 ? 0x21 : b->expected;
+@@ -117,9 +145,9 @@ int main(void)
+     BenchSteering_Init(&b); assert(!BenchSteering_Take(&b,0,&f));
+     assert(!BenchSteering_Start(&b,-83815,-85123,-85123,30001,now));
+     assert(BenchSteering_Start(&b,-83815,-85123,-85123,30000,now));
+-    for(int i=0;i<20;i++) advance(&b,&now);
++    for(int i=0;i<30 && b.phase!=BENCH_ACTIVE;i++) advance(&b,&now);
+     assert(b.phase==BENCH_ACTIVE);
+-    for(int i=0;i<4;i++) advance(&b,&now);
++    for(int i=0;i<20 && !(b.applied==-82413 && b.step==16);i++) advance(&b,&now);
+     assert(b.applied==-82413 && b.step==16);
+     /* A changed target during positioning must replace, not queue behind, the
+        old target. Drop only new-set-point bit 4 after each acknowledged trigger. */
+@@ -127,12 +155,12 @@ int main(void)
+         BenchSteering_Tick(&b,now,1,1,angle,0);
+         assert(BenchSteering_Take(&b,now,&f) && b.index==0x607A);
+         r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+1));
+-        assert(BenchSteering_Take(&b,now+2,&f) && b.index==0x6041 && b.read);
+-        r=reply(&b,0x27); assert(BenchSteering_OnFrame(&b,&r,now+3));
+-        assert(BenchSteering_Take(&b,now+4,&f) && b.index==0x6040 && f.data[4]==0x3F);
+-        r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+5));
+-        assert(BenchSteering_Take(&b,now+6,&f) && b.index==0x6040 && f.data[4]==0x2F);
+-        r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+7));
++        assert(!BenchSteering_Take(&b,now+2,&f));
++        feed_status(&b,now+2);
++        assert(BenchSteering_Take(&b,now+3,&f) && b.index==0x6040 && f.data[4]==0x3F);
++        r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+4));
++        assert(BenchSteering_Take(&b,now+5,&f) && b.index==0x6040 && f.data[4]==0x2F);
++        r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+6));
+         assert(b.phase==BENCH_ACTIVE && b.step==16);
+         now+=10;
+     }
+@@ -140,55 +168,33 @@ int main(void)
+     assert(b.phase==BENCH_STOPPING);
+     assert(BenchSteering_Take(&b,now,&f) && b.index==0x6040 && f.data[4]==6);
+     r=reply(&b,0); BenchSteering_OnFrame(&b,&r,now+1);
+-    assert(BenchSteering_Take(&b,now+2,&f)&&b.index==0x6041);
+-    r=reply(&b,0x21); BenchSteering_OnFrame(&b,&r,now+3);
+-    assert(BenchSteering_Take(&b,now+4,&f)&&f.id==0&&f.data[0]==0x80);
++    assert(!BenchSteering_Take(&b,now+2,&f));
++    feed_status(&b,now+2);
++    assert(BenchSteering_Take(&b,now+3,&f)&&f.id==0&&f.data[0]==0x80);
+     assert(b.phase==BENCH_IDLE); /* stop emitted no target position */
+     assert(b.limits_aligned && b.minimum==-167802 && b.maximum==-2444);
+ 
+-    /* 0x6080 is a fixed 300 rpm ceiling.  An active profile starts at creep
+-       speed for a near target, then only receives a target after its selected
+-       0x6081 value has been read back. */
++    /* Current product profile is 600 rpm in every angle zone. A target update
++       therefore proceeds directly to 0x607A without a redundant 0x6081 write. */
+     BenchSteering_Init(&b); now=0;
+     assert(BenchSteering_Start(&b,-83815,-85123,-85123,30000,now));
+-    for(int i=0;i<20;i++) advance(&b,&now);
+-    assert(b.phase==BENCH_ACTIVE && b.applied_profile_rpm==90);
++    for(int i=0;i<30 && b.phase!=BENCH_ACTIVE;i++) advance(&b,&now);
++    assert(b.phase==BENCH_ACTIVE && b.applied_profile_rpm==600);
+     BenchSteering_Tick(&b,now,1,1,30000,0);
+-    assert(BenchSteering_Take(&b,now,&f) && b.index==0x6081);
++    assert(BenchSteering_Take(&b,now,&f) && b.index==0x607A);
+     r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+1));
+-    assert(BenchSteering_Take(&b,now+2,&f) && b.index==0x6081 && b.read);
+-    r=reply(&b,300); assert(BenchSteering_OnFrame(&b,&r,now+3));
+-    assert(b.applied_profile_rpm==300);
+-    assert(BenchSteering_Take(&b,now+4,&f) && b.index==0x607A);
+-    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+5));
+-    assert(BenchSteering_Take(&b,now+6,&f) && b.index==0x6041 && b.read);
+-    r=reply(&b,0x27); assert(BenchSteering_OnFrame(&b,&r,now+6));
++    assert(!BenchSteering_Take(&b,now+6,&f));
++    feed_status(&b,now+6);
+     assert(BenchSteering_Take(&b,now+7,&f) && b.index==0x6040 && f.data[4]==0x3F);
+-    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+7));
+-    assert(BenchSteering_Take(&b,now+8,&f) && b.index==0x6040 && f.data[4]==0x2F);
+-    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+9));
++    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+8));
++    assert(BenchSteering_Take(&b,now+9,&f) && b.index==0x6040 && f.data[4]==0x2F);
++    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+10));
+     assert(b.phase==BENCH_ACTIVE && b.step==16);
+-    /* At 27 degrees, even a full-scale command must fall back to creep before
+-       it can consume the 30.0 to 30.5 degree fault margin. */
+-    BenchSteering_Tick(&b,now+10,1,1,30000,27000);
+-    assert(BenchSteering_Take(&b,now+10,&f) && b.index==0x6081);
+-    assert(f.data[4]==90 && f.data[5]==0 && f.data[6]==0 && f.data[7]==0);
+-    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+11));
+-    assert(BenchSteering_Take(&b,now+12,&f) && b.index==0x6081 && b.read);
+-    r=reply(&b,90); assert(BenchSteering_OnFrame(&b,&r,now+13));
+-    assert(b.applied_profile_rpm==90 && b.step==16);
+-    /* At 24 degrees the mid profile is written and verified before proceeding. */
+-    BenchSteering_Tick(&b,now+20,1,1,30000,24000);
+-    assert(BenchSteering_Take(&b,now+20,&f) && b.index==0x6081);
+-    assert(f.data[4]==180 && f.data[5]==0 && f.data[6]==0 && f.data[7]==0);
+-    r=reply(&b,0); assert(BenchSteering_OnFrame(&b,&r,now+21));
+-    assert(BenchSteering_Take(&b,now+22,&f) && b.index==0x6081 && b.read);
+-    r=reply(&b,180); assert(BenchSteering_OnFrame(&b,&r,now+23));
+-    assert(b.applied_profile_rpm==180 && b.phase==BENCH_ACTIVE && b.step==16);
++    assert(b.applied_profile_rpm==600 && b.phase==BENCH_ACTIVE && b.step==16);
+ 
+     BenchSteering_Init(&b);
+     assert(BenchSteering_Start(&b,-83815,-72187,-85123,30000,0)); now=0;
+-    for(int i=0;i<20;i++) advance(&b,&now);
++    for(int i=0;i<30 && b.phase!=BENCH_ACTIVE;i++) advance(&b,&now);
+     assert(b.phase==BENCH_ACTIVE && b.minimum==-154866 && b.maximum==10492);
+     /* Rearming in the same power epoch must verify, not shift, the existing limits. */
+     b.phase=BENCH_IDLE;
+@@ -224,29 +230,25 @@ int main(void)
+     BenchSteering_Stop(&b,211,1);
+     assert(b.fault == 6U); /* emergency propagation preserves first timeout */
+     assert(!BenchSteering_Take(&b,211,&f));
+-    /* Motion ACKs at 59ms complete normally; at 60ms the result must instead
+-       be read back. Verification has an 80ms read deadline followed by a
+-       bounded drain window ending at 200ms. */
++    /* Motion ACKs at 59 ms complete normally. At 60 ms the result must be
++       proven from the next 0x181 status TPDO, never by another 0x6041 read. */
+     for (int expired=0;expired<2;expired++) {
+-        BenchSteering_Init(&b); b.phase=BENCH_ACTIVE; b.step=17;
++        BenchSteering_Init(&b); b.phase=BENCH_ACTIVE; b.step=17; b.tpdo_check=2;
+         assert(BenchSteering_Take(&b,1000,&f)&&b.index==0x607A);
+         r=reply(&b,0);
+         assert(BenchSteering_OnFrame(&b,&r,expired?1060:1059));
+         if (expired) {
+             assert(b.phase==BENCH_ACTIVE&&b.verify&&!b.pending&&!b.cut_power);
+-            assert(BenchSteering_Take(&b,1060,&f)&&b.index==0x6041&&b.read);
+-            assert(f.data[0]==0x40); /* lost ACK never causes a target write replay */
+-            BenchSteering_Tick(&b,1139,1,1,0,0);
+-            assert(b.verify&&b.pending&&b.phase!=BENCH_FAULT);
+-            BenchSteering_Tick(&b,1140,1,1,0,0);
+-            assert(b.verify&&!b.pending&&b.phase!=BENCH_FAULT);
+-            r=reply(&b,0x2237);
+-            assert(BenchSteering_OnFrame(&b,&r,1150)); /* late reply is drained */
+-            assert(!BenchSteering_Take(&b,1150,&f));
++            assert(!BenchSteering_Take(&b,1060,&f));
++            feed_status(&b,1060);
++            assert(b.verify==2U); /* status passed; mode read is next */
++            assert(BenchSteering_Take(&b,1061,&f)&&b.index==0x6061&&b.read);
++            BenchSteering_Tick(&b,1141,1,1,0,0);
++            assert(b.verify==6U && !b.pending && b.phase==BENCH_ACTIVE);
+             BenchSteering_Tick(&b,1259,1,1,0,0);
+-            assert(b.phase!=BENCH_FAULT);
++            assert(b.phase==BENCH_ACTIVE);
+             BenchSteering_Tick(&b,1260,1,1,0,0);
+-            assert(b.phase==BENCH_FAULT&&b.cut_power);
++            assert(b.phase==BENCH_FAULT && b.fault==12U && b.cut_power);
+         }
+         else assert(b.phase==BENCH_ACTIVE&&!b.pending&&!b.fault);
+     }
+@@ -257,9 +259,10 @@ int main(void)
+     assert(!BenchSteering_Take(&b,now+2,&f)); /* wrong mode never reaches enable */
+     BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0); now=0;
+     while (b.step != 11) advance(&b,&now);
+-    assert(BenchSteering_Take(&b,now,&f)); r=reply(&b,0x40);
+-    BenchSteering_OnFrame(&b,&r,now+1); assert(b.step==11 && !b.pending);
+-    assert(!BenchSteering_OnFrame(&b,&r,now+2)); /* duplicate cannot advance state */
++    assert(!BenchSteering_Take(&b,now,&f));
++    r=(PatrolCanFrame){.id=0x181,.dlc=1,.data={0x21,0x22}};
++    assert(!BenchSteering_OnFrame(&b,&r,now+1));
++    assert(b.step==11 && !b.pending); /* malformed PDO cannot advance state */
+     BenchSteering_Tick(&b,5000,1,1,1000,0); assert(b.phase==BENCH_FAULT);
+     BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0); now=0;
+     advance(&b,&now); BenchSteering_Take(&b,now,&f);
+@@ -273,11 +276,12 @@ int main(void)
+     BenchSteering_Init(&b); BenchSteering_Start(&b,-83815,-85123,-85123,1000,0);
+     BenchSteering_Tick(&b,1,1,1,1001,0); assert(b.phase==BENCH_FAULT);
+     /* Field trace: disable confirmed at 181 ms; NMT serviced after 200 ms. */
+-    BenchSteering_Init(&b); b.phase=BENCH_ACTIVE;
++    BenchSteering_Init(&b); b.phase=BENCH_ACTIVE; b.tpdo_check=2;
+     BenchSteering_Stop(&b,1000,0);
+     assert(BenchSteering_Take(&b,1000,&f)); r=reply(&b,0);
+     assert(BenchSteering_OnFrame(&b,&r,1001));
+-    assert(BenchSteering_Take(&b,1180,&f)); r=reply(&b,0x2231);
++    assert(!BenchSteering_Take(&b,1180,&f));
++    r=(PatrolCanFrame){.id=0x181,.dlc=7,.data={0x31,0x22}};
+     assert(BenchSteering_OnFrame(&b,&r,1181));
+     assert(BenchSteering_StopFinishReady(&b));
+     BenchSteering_Tick(&b,1200,0,1,0,0);
+@@ -287,44 +291,38 @@ int main(void)
+     BenchSteering_TxFailed(&b);
+     assert(b.phase==BENCH_FAULT&&b.cut_power); /* NMT transmit failure still faults. */
+ 
+-    BenchSteering_Init(&b); b.phase=BENCH_ACTIVE;
++    BenchSteering_Init(&b); b.phase=BENCH_ACTIVE; b.tpdo_check=2;
+     BenchSteering_Stop(&b,1000,0);
+     assert(BenchSteering_Take(&b,1000,&f)); r=reply(&b,0);
+     assert(BenchSteering_OnFrame(&b,&r,1001));
+-    assert(BenchSteering_Take(&b,1480,&f)); r=reply(&b,0x2231);
++    assert(!BenchSteering_Take(&b,1480,&f));
++    r=(PatrolCanFrame){.id=0x181,.dlc=7,.data={0x31,0x22}};
+     assert(BenchSteering_OnFrame(&b,&r,1500));
+     assert(b.phase==BENCH_FAULT&&b.fault==3); /* Late disable is not accepted. */
+ 
+-    BenchSteering_Init(&b); b.phase=BENCH_ACTIVE;
++    BenchSteering_Init(&b); b.phase=BENCH_ACTIVE; b.tpdo_check=2;
+     BenchSteering_Stop(&b,1000,0);
+     assert(BenchSteering_Take(&b,1000,&f)); r=reply(&b,0);
+     assert(BenchSteering_OnFrame(&b,&r,1001));
+-    assert(BenchSteering_Take(&b,1180,&f)); r=reply(&b,0x2231);
++    assert(!BenchSteering_Take(&b,1180,&f));
++    r=(PatrolCanFrame){.id=0x181,.dlc=7,.data={0x31,0x22}};
+     assert(BenchSteering_OnFrame(&b,&r,1181));
+     BenchSteering_Tick(&b,1281,0,1,0,0);
+     assert(b.phase==BENCH_FAULT&&b.cut_power); /* Housekeeping cannot hang forever. */
+-    /* Verified TPDO arriving at 192 ms confirms disable, including while an
+-       SDO reply is still outstanding. It must not release that transaction. */
+-    for (int pending=0;pending<2;pending++) {
+-        BenchSteering_Init(&b); b.phase=BENCH_ACTIVE; b.tpdo_check=2;
+-        BenchSteering_Stop(&b,1000,0);
+-        assert(BenchSteering_Take(&b,1000,&f)); r=reply(&b,0);
+-        assert(BenchSteering_OnFrame(&b,&r,1001));
+-        if (pending) assert(BenchSteering_Take(&b,1190,&f));
+-        r=(PatrolCanFrame){.id=0x181,.dlc=7,.data={0x31,0x22}};
+-        assert(BenchSteering_OnFrame(&b,&r,1192));
+-        assert(b.stop_confirmed && b.pending==pending);
+-        BenchSteering_Tick(&b,1200,0,1,0,0);
+-        assert(b.phase==BENCH_STOPPING);
+-        if (pending) {
+-            assert(!BenchSteering_Take(&b,1200,&f));
+-            r=reply(&b,0x2237); /* Older solicited status drained without undoing TPDO. */
+-            assert(BenchSteering_OnFrame(&b,&r,1201));
+-        }
+-        assert(BenchSteering_Take(&b,1210,&f)&&f.id==0);
+-    }
++    /* Verified TPDO arriving at 192 ms is the sole disable confirmation. */
++    BenchSteering_Init(&b); b.phase=BENCH_ACTIVE; b.tpdo_check=2;
++    BenchSteering_Stop(&b,1000,0);
++    assert(BenchSteering_Take(&b,1000,&f)); r=reply(&b,0);
++    assert(BenchSteering_OnFrame(&b,&r,1001));
++    assert(!BenchSteering_Take(&b,1190,&f));
++    r=(PatrolCanFrame){.id=0x181,.dlc=7,.data={0x31,0x22}};
++    assert(BenchSteering_OnFrame(&b,&r,1192));
++    assert(b.stop_confirmed && !b.pending);
++    BenchSteering_Tick(&b,1200,0,1,0,0);
++    assert(b.phase==BENCH_STOPPING);
++    assert(BenchSteering_Take(&b,1210,&f)&&f.id==0);
+     for (int kind=0;kind<3;kind++) {
+-        BenchSteering_Init(&b); b.phase=BENCH_ACTIVE; b.tpdo_check=kind==0?0:2;
++    BenchSteering_Init(&b); b.phase=BENCH_ACTIVE; b.tpdo_check=kind==0?0:2;
+         BenchSteering_Stop(&b,1000,0);
+         assert(BenchSteering_Take(&b,1000,&f)); r=reply(&b,0);
+         assert(BenchSteering_OnFrame(&b,&r,1001));
+@@ -342,18 +340,18 @@ int main(void)
+        keeps Operation Enabled beyond 200 ms. A 6-byte SDO status and verified
+        TPDO confirm disable at 357 ms; they must precede the bounded deadline. */
+     for (int pdo=0; pdo<2; ++pdo) {
+-        BenchSteering_Init(&b); b.phase=BENCH_ACTIVE; b.tpdo_check=2;
++    BenchSteering_Init(&b); b.phase=BENCH_ACTIVE; b.tpdo_check=2;
+         BenchSteering_Stop(&b,1000,0);
+         assert(BenchSteering_Take(&b,1000,&f)); r=reply(&b,0);
+         assert(BenchSteering_OnFrame(&b,&r,1001));
+         for (uint32_t t=1020; t<=1340; t+=40) {
+-            assert(BenchSteering_Take(&b,t,&f)); r=reply(&b,0x2237); r.dlc=6;
++            assert(!BenchSteering_Take(&b,t,&f));
++            r=(PatrolCanFrame){.id=0x181,.dlc=7,.data={0x37,0x22}};
+             assert(BenchSteering_OnFrame(&b,&r,t+1));
+             BenchSteering_Tick(&b,t+2,0,1,0,0);
+             assert(b.phase==BENCH_STOPPING && !b.stop_confirmed);
+         }
+-        if (pdo) r=(PatrolCanFrame){.id=0x181,.dlc=7,.data={0x31,0x22}};
+-        else { assert(BenchSteering_Take(&b,1356,&f)); r=reply(&b,0x2231); r.dlc=6; }
++        r=(PatrolCanFrame){.id=0x181,.dlc=7,.data={0x31,0x22}};
+         assert(BenchSteering_OnFrame(&b,&r,1357));
+         assert(BenchSteering_StopFinishReady(&b));
+         assert(BenchSteering_Take(&b,1360,&f) && f.id==0);
+diff --git a/tests/can_remote_test.c b/tests/can_remote_test.c
+index 478d485..2eafeaa 100644
+--- a/tests/can_remote_test.c
++++ b/tests/can_remote_test.c
+@@ -90,6 +90,7 @@ static void healthy(void)
+     ChassisFeedback f={0};
+     f.calibrated=f.steering_online=f.drive_online=f.power_ready=1;
+     f.encoder_range_valid=f.encoder_profile_ready=1; f.feedback_ms=now;
++    f.angle_pair_valid=1U;
+     RemoteService_UpdateFeedback(&f);
+ }
+ static void init(void)
+@@ -163,11 +164,22 @@ static void joystick(int16_t throttle, int16_t steer)
+     f.data[4]=(uint8_t)throttle; f.data[5]=(uint8_t)((uint16_t)throttle>>8);
+     assert(PatrolPhyRemote_OnFrame(&f,now,now));
+ }
++static void joystick_until_steer(int16_t throttle, int16_t steer, int32_t expected)
++{
++    for (unsigned i=0; i<320U && state()->target_steering_mdeg!=expected; i++) {
++        now+=10U;
++        healthy();
++        switches(1,0);
++        joystick(throttle,steer);
++    }
++    assert(state()->target_steering_mdeg==expected);
++}
+ static void physical_b_ignored_cases(void)
+ {
+     /* Every protocol B value and repeated frames leave both targets intact. */
+     for (unsigned b=0; b<=2; b++) {
+         init(); switches(1,0); joystick(450,180);
++        joystick_until_steer(450,180,10000);
+         uint32_t deadline=state()->lease_deadline_ms;
+         for (unsigned n=0; n<5; n++) {
+             now+=10; healthy(); switches(1,(uint8_t)b);
+@@ -177,6 +189,7 @@ static void physical_b_ignored_cases(void)
+             assert(VehiclePowerOutput_IsOn());
+         }
+         joystick(225,-180);
++        joystick_until_steer(225,-180,-10000);
+         assert(state()->target_rpm==1000 && state()->target_steering_mdeg==-10000);
+         joystick(0,0); assert(state()->target_rpm==0);
+     }
+@@ -229,6 +242,7 @@ static void drive_speed_cases(void)
+ {
+     for (int sign=-1; sign<=1; sign+=2) {
+         init(); switches(1,0); joystick(sign*225,sign*450);
++        joystick_until_steer(sign*225,sign*450,sign*25000);
+         assert(state()->target_rpm==sign*1000 && state()->target_steering_mdeg==sign*25000);
+         joystick(sign*450,sign*450);
+         assert(state()->target_rpm==sign*2000 && state()->target_steering_mdeg==sign*25000);
+@@ -246,6 +260,43 @@ static void drive_speed_cases(void)
+     }
+ }
+ 
++static void physical_steering_shaping_cases(void)
++{
++    init();
++    healthy();
++    switches(1,0);
++    joystick(0,450);
++    assert(state()->target_steering_mdeg > 0);
++    assert(state()->target_steering_mdeg < 25000);
++
++    for (unsigned i=0; i<220U; i++) {
++        now+=10U;
++        healthy();
++        switches(1,0);
++        joystick(0,450);
++    }
++    assert(state()->target_steering_mdeg == 25000);
++
++    /* A large reversal enters the center transition and never jumps directly
++     * from the positive extreme to the negative target. */
++    joystick(0,-450);
++    assert(state()->target_steering_mdeg > 0 && state()->target_steering_mdeg < 25000);
++    for (unsigned i=0; i<215U && state()->target_steering_mdeg >= 0; i++) {
++        now+=10U;
++        healthy();
++        switches(1,0);
++        joystick(0,-450);
++    }
++    for (unsigned i=0; i<8U; i++) {
++        now+=10U;
++        healthy();
++        switches(1,0);
++        joystick(0,-450);
++    }
++    assert(state()->target_steering_mdeg < 0);
++    assert(state()->target_steering_mdeg > -25000);
++}
++
+ static void calibration_cases(void)
+ {
+     CalibrationReply r;
+@@ -321,7 +372,12 @@ int main(void)
+         RemoteService_UpdateFeedback(&f);
+         assert(send(PATROL_CAN_ARM,(uint16_t)(10+gate),0,0)==PATROL_CAN_SAFETY);
+         assert(!state()->session_active && !state()->enable_request);
++        if (gate == 8)
++            assert(state()->fault_latched && state()->stop_reason == CHASSIS_STOP_ANGLE_MISMATCH);
++        else
++            assert(!state()->fault_latched);
+     }
++    init();
+     healthy(); assert(RemoteService_ApplyLocal("acquire","other-owner",1,300,0,0,now));
+     assert(send(PATROL_CAN_ARM,50,0,0)==PATROL_CAN_OWNER);
+     assert(!strcmp(state()->session_id,"other-owner"));
+@@ -361,6 +417,7 @@ int main(void)
+     assert(!state()->enable_request);
+     drive_speed_cases();
+     physical_b_ignored_cases();
++    physical_steering_shaping_cases();
+     calibration_cases();
+     puts("CAN2 motion and native center-calibration bridge: PASS");
+     return 0;
+diff --git a/tests/center_runtime_cases.c b/tests/center_runtime_cases.c
+index 45e8b7b..bf25130 100644
+--- a/tests/center_runtime_cases.c
++++ b/tests/center_runtime_cases.c
+@@ -26,6 +26,7 @@ static void reset_fixture(void)
+     mock_snapshot.steering_position_count = -83815;
+     mock_snapshot.encoder_count = 2048;
+     mock_snapshot.encoder_sample_ms = mock_snapshot.coherent_feedback_ms = mock_now;
++    mock_snapshot.steering_position_ms = mock_now;
+ }
+ 
+ static void start_ready(void)
+@@ -34,7 +35,7 @@ static void start_ready(void)
+     CenterCalibration_UpdateRelative(&mock_snapshot);
+     for (int i = 0; i < 3; ++i) {
+         mock_now += 20;
+-        mock_snapshot.coherent_feedback_ms = mock_now;
++        mock_snapshot.coherent_feedback_ms = mock_snapshot.steering_position_ms = mock_now;
+         CenterCalibration_Tick(mock_now);
+     }
+     assert(g_motion.center_cal.phase == CENTER_CAL_READY && mock_power);
+@@ -49,7 +50,7 @@ int main(void)
+     assert(!g_motion.coordinate.valid); /* discard ordinary anchor on session start */
+     for (int i = 0; i < 6; ++i) {
+         mock_now += 100;
+-        mock_snapshot.coherent_feedback_ms = mock_now;
++        mock_snapshot.coherent_feedback_ms = mock_snapshot.steering_position_ms = mock_now;
+         PatrolRuntime_UpdateFeedback(mock_now);
+     }
+     assert(!g_motion.coordinate.valid && mock_power); /* never re-acquire during READY */
+@@ -149,7 +150,8 @@ int main(void)
+     reset_fixture();
+     /* Ordinary driving still loses its anchor and cuts on position loss. */
+     for (int i = 0; i < 4; ++i) {
+-        mock_now += 110; mock_snapshot.coherent_feedback_ms = mock_now;
++        mock_now += 110;
++        mock_snapshot.coherent_feedback_ms = mock_snapshot.steering_position_ms = mock_now;
+         PatrolRuntime_UpdateFeedback(mock_now);
+     }
+     assert(g_motion.coordinate.valid);
+diff --git a/tests/chassis_safety_test.c b/tests/chassis_safety_test.c
+index 39993c7..fafa15e 100644
+--- a/tests/chassis_safety_test.c
++++ b/tests/chassis_safety_test.c
+@@ -85,43 +85,88 @@ static int test_steering_tpdo_freshness(void)
+     return 0;
+ }
+ 
+-static int test_steering_position_sdo_fallback(void)
++static int test_steering_realtime_is_tpdo_only(void)
+ {
+     PatrolDiagnostics d;
+-    PatrolCanFrame frame;
++    PatrolCanFrame frame, response;
++    uint32_t now = 1100U;
+     PatrolDiagnostics_Init(&d);
+     d.steering_heartbeat_seen = 1U;
+     d.steering_heartbeat_state = 5U;
+     d.steering_heartbeat_ms = 1000U;
+-    d.steering_position_seen = 1U;
+-    d.steering_position_ms = 1000U;
+-    d.steering_tpdo_position_ms = 1000U;
+-    for (unsigned i = 0U; i < PATROL_DIAG_SDO_ENTRY_COUNT; ++i)
+-        d.sdo_due_ms[i] = 2000U;
+-    d.next_sdo_entry = 1U;
+-
+-    CHECK(!PatrolDiagnostics_TakeSdoRead(&d, 1090U, &frame, 1U));
+-    d.sdo_due_ms[1] = 1000U;
+-    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 1100U, &frame, 1U));
+-    CHECK(frame.id == 0x601U && frame.data[1] == 0x64U && frame.data[2] == 0x60U);
+-    frame.id = 0x581U;
+-    frame.data[0] = 0x43U;
+-    frame.data[4] = 0x11U;
+-    frame.data[5] = 0x22U;
+-    frame.data[6] = 0x33U;
+-    frame.data[7] = 0x44U;
+-    PatrolDiagnostics_OnCanFrame(&d, &frame, 1100U);
+-    CHECK(d.sdo_due_ms[1] == 1350U);
+-
+-    d.sdo_due_ms[1] = 1350U;
+-    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 1101U, &frame, 1U));
+-    CHECK(frame.id == 0x601U && frame.data[1] == 0x64U);
+-    d.pending_valid = 0U;
+-    d.steering_tpdo_position_ms = 1000U;
+-    d.sdo_due_ms[1] = 1350U;
+-    d.next_sdo_entry = 1U;
+-    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 1101U, &frame, 1U));
+-    CHECK(frame.id == 0x601U && frame.data[1] == 0x64U);
++    for (uint8_t sample = 0U; sample < 6U; ++sample) {
++        CHECK(PatrolDiagnostics_TakeSdoRead(&d, now, &frame, 1U));
++        CHECK(frame.id == 0x601U && frame.data[1] == 0x41U && frame.data[2] == 0x60U);
++        response = frame; response.id = 0x581U; response.dlc = 6U;
++        response.data[0] = 0x4BU; response.data[4] = 0x37U; response.data[5] = 0x22U;
++        PatrolDiagnostics_OnCanFrame(&d, &response, now + 1U);
++
++        CHECK(PatrolDiagnostics_TakeSdoRead(&d, now + 1U, &frame, 1U));
++        CHECK(frame.id == 0x601U && frame.data[1] == 0x64U && frame.data[2] == 0x60U);
++        response = frame; response.id = 0x581U; response.dlc = 8U;
++        response.data[0] = 0x43U;
++        response.data[4] = (uint8_t)(0x10U + sample);
++        response.data[5] = 0x22U; response.data[6] = 0x33U; response.data[7] = 0x44U;
++        PatrolDiagnostics_OnCanFrame(&d, &response, now + 2U);
++        now += 100U;
++        if (sample + 1U < 6U)
++            CHECK(!PatrolDiagnostics_TakeSdoRead(&d, now - 1U, &frame, 1U));
++    }
++    d.next_sdo_entry = 0U;
++    CHECK(!PatrolDiagnostics_TakeSdoRead(&d, now + 100U, &frame, 1U));
++    CHECK(!PatrolDiagnostics_HasUrgentFeedback(&d, now + 100U));
++    frame = (PatrolCanFrame){.id=0x181U,.dlc=7U,.data={0x37U,0x22U}};
++    CHECK(PatrolDiagnostics_OnTpdoFrame(&d, &frame, now + 200U));
++    frame = (PatrolCanFrame){.id=0x281U,.dlc=8U,.data={0x11U,0x22U,0x33U,0x44U}};
++    CHECK(PatrolDiagnostics_OnTpdoFrame(&d, &frame, now + 200U));
++    CHECK(d.steering_status_ms == now + 200U && d.steering_position_ms == now + 200U);
++    PatrolDiagnostics_Init(&d);
++    d.steering_heartbeat_seen = 1U;
++    d.steering_heartbeat_state = 5U;
++    d.steering_heartbeat_ms = 2000U;
++    CHECK(PatrolDiagnostics_TakeSdoRead(&d, 2001U, &frame, 1U));
++    CHECK(frame.id == 0x601U && frame.data[1] == 0x41U);
++    response = frame; response.id = 0x581U; response.dlc = 8U;
++    response.data[0] = 0x80U; response.data[4] = 0x00U; response.data[5] = 0x00U;
++    response.data[6] = 0x02U; response.data[7] = 0x06U;
++    PatrolDiagnostics_OnCanFrame(&d, &response, 2002U);
++    CHECK((d.sdo_success_mask & 0xE000U) == 0U);
++    CHECK(!PatrolDiagnostics_TakeSdoRead(&d, 2200U, &frame, 1U));
++    return 0;
++}
++
++static int test_angle_pair_time_alignment(void)
++{
++    ChassisControl control;
++    ChassisFeedback feedback = {0};
++    ChassisControl_Init(&control);
++    feedback.calibrated = feedback.steering_online = feedback.drive_online = 1U;
++    feedback.power_ready = feedback.encoder_profile_ready = feedback.encoder_range_valid = 1U;
++    feedback.feedback_ms = 100U;
++    feedback.angle_pair_valid = 1U;
++    ChassisControl_SetFeedback(&control, &feedback);
++    CHECK(ChassisControl_Apply(&control, "acquire", "aligned", 1U, 300U, 0, 0, 100U));
++
++    /* Time-aligned disagreement is a real angle fault and preserves its reason. */
++    feedback.steering_actual_mdeg = 3000;
++    feedback.encoder_actual_mdeg = 0;
++    feedback.feedback_ms = 130U;
++    ChassisControl_SetFeedback(&control, &feedback);
++    ChassisControl_Tick(&control, 130U);
++    CHECK(control.fault_latched && control.stop_reason == CHASSIS_STOP_ANGLE_MISMATCH);
++
++    /* Timestamp skew only inhibits new motion; it must not be reported as a
++     * measured 2-degree mismatch before aligned samples are available. */
++    ChassisControl_Init(&control);
++    feedback.angle_pair_valid = 0U;
++    feedback.steering_actual_mdeg = 3000;
++    feedback.encoder_actual_mdeg = 0;
++    feedback.feedback_ms = 240U;
++    ChassisControl_SetFeedback(&control, &feedback);
++    CHECK(ChassisControl_SafetyReason(&control, 240U) == CHASSIS_STOP_FEEDBACK_STALE);
++    CHECK(!ChassisControl_SafetyReady(&control, 240U));
++    CHECK(!ChassisControl_Apply(&control, "acquire", "skewed", 1U, 300U, 0, 0, 240U));
++    CHECK(!control.fault_latched && control.stop_reason == CHASSIS_STOP_FEEDBACK_STALE);
+     return 0;
+ }
+ 
+@@ -139,6 +184,8 @@ static int test_sdo_safety_priority(void)
+     d.steering_heartbeat_seen = d.drive_heartbeat_seen = 1;
+     d.steering_heartbeat_state = d.drive_heartbeat_state = 0x7f;
+     d.steering_heartbeat_ms = d.drive_heartbeat_ms = 100;
++    d.sdo_due_ms[0] = d.sdo_due_ms[1] = UINT32_MAX;
++    d.sdo_success_mask = 0U;
+     d.next_sdo_entry = 11; /* optional object must not precede due feedback */
+     CHECK(PatrolDiagnostics_TakeSdoRead(&d, 100, &f, 1U));
+     CHECK(d.pending_entry < 5);
+@@ -212,7 +259,8 @@ static int test_sdo_waits_for_node(void)
+     f.id = 0x701; f.data[0] = 5;
+     PatrolDiagnostics_OnCanFrame(&d, &f, 14011);
+     CHECK(PatrolDiagnostics_TakeSdoRead(&d, 14012, &request, 1U));
+-    CHECK(request.id == 0x601);
++    CHECK(request.id == 0x601U && request.data[1] == 0x41U);
++    CHECK(d.pending_valid);
+     return 0;
+ }
+ 
+@@ -241,7 +289,14 @@ static int test_field_sdo_replies(void)
+     PatrolDiagnostics_OnCanFrame(&d, &response, 1);
+     response.id = 0x702;
+     PatrolDiagnostics_OnCanFrame(&d, &response, 1);
+-    for (uint8_t i = 0; i < 12; i++) {
++    d.sdo_due_ms[0] = d.sdo_due_ms[1] = UINT32_MAX;
++    d.sdo_success_mask = 0U;
++    response = (PatrolCanFrame){.id=0x181U,.dlc=7U,.data={0x37U,0x22U}};
++    CHECK(PatrolDiagnostics_OnTpdoFrame(&d, &response, 1U));
++    response = (PatrolCanFrame){.id=0x281U,.dlc=8U,.data={0x29U,0x15U,0U,0U}};
++    CHECK(PatrolDiagnostics_OnTpdoFrame(&d, &response, 1U));
++    for (uint8_t i = 2; i < 12; i++) {
++        d.next_sdo_entry = i;
+         CHECK(PatrolDiagnostics_TakeSdoRead(&d, 10 + 5 * i, &request, 1U));
+         response.id = request.id - 0x80;
+         response.dlc = lengths[i];
+@@ -259,10 +314,10 @@ static int test_field_sdo_replies(void)
+     CHECK(s.steering_feedback_fresh && s.drive_feedback_fresh);
+     CHECK(!s.encoder_online && s.coherent_feedback_ms == 0);
+     CHECK(s.steering_position_count == 5417 && s.left_actual_rpm == 0 && s.right_actual_rpm == 0);
+-    CHECK(s.steering_status_word == 0x2050 && s.drive_status_word == 0x2050);
+-    CHECK(s.sdo_success_count == 11 && s.sdo_success_mask == 0x7FF);
++    CHECK(s.steering_status_word == 0x2237 && s.drive_status_word == 0x2050);
++    CHECK(s.sdo_success_count == 9 && s.sdo_success_mask == 0x7FC);
+     CHECK(s.sdo_timeout_count == 0 && s.sdo_abort_count == 1 && s.sdo_abort_mask == 0x800);
+-    CHECK(s.last_sdo_abort_code == 0x06020000 && s.can_ignored_count == 12);
++    CHECK(s.last_sdo_abort_code == 0x06020000 && s.can_ignored_count == 10);
+     CHECK(s.drive_objects[2] == 5 && s.drive_objects[4] == 34);
+     PatrolDiagnostics_Snapshot(&d, 400, &s);
+     CHECK(!s.steering_feedback_fresh && !s.drive_feedback_fresh);
+@@ -307,8 +362,10 @@ static void retry_fixture(PatrolDiagnostics* d, uint32_t now)
+     d->steering_position_seen = d->left_rpm_seen = d->right_rpm_seen = d->encoder_seen = 1U;
+     d->steering_position_ms = d->left_rpm_ms = d->right_rpm_ms = d->encoder_ms = now;
+     d->encoder_config_valid = 1U;
+-    d->next_sdo_entry = 1U; /* steering position upload */
++    d->next_sdo_entry = 0U; /* Node 2 live SDO feedback */
+     for (unsigned i = 0U; i < PATROL_DIAG_SDO_ENTRY_COUNT; ++i) d->sdo_due_ms[i] = now;
++    d->sdo_due_ms[0] = d->sdo_due_ms[1] = UINT32_MAX;
++    d->sdo_success_mask = 0U;
+ }
+ 
+ // 丢失首个诊断响应只重读一次；59/60ms 边界、匹配检查、迟到无关帧及计时回绕均不产生写帧或伪造新样本。
+@@ -321,21 +378,21 @@ static int test_diagnostic_read_retry(void)
+         PatrolDiagnosticsSnapshot s;
+         retry_fixture(&d, start);
+         CHECK(PatrolDiagnostics_TakeSdoRead(&d, start, &first, 1U));
+-        CHECK(first.id == 0x601U && first.data[0] == 0x40U && first.data[1] == 0x64U);
++        CHECK(first.id == 0x602U && first.data[0] == 0x40U && first.data[1] == 0x41U);
+         CHECK(!PatrolDiagnostics_TakeSdoRead(&d, start + 59U, &retry, 1U));
+         CHECK(d.sdo_timeout_count == 0U && d.pending_retry == 0U);
+         CHECK(PatrolDiagnostics_TakeSdoRead(&d, start + 60U, &retry, 1U));
+         CHECK(!memcmp(&first, &retry, sizeof(first)) && d.pending_retry == 1U);
+-        CHECK(d.sdo_timeout_count == 1U && d.steering_position_ms == start);
+-        response = retry; response.id = 0x582U; response.data[0] = 0x43U;
++        CHECK(d.sdo_timeout_count == 1U && d.drive_status_ms == start);
++        response = retry; response.id = 0x581U; response.data[0] = 0x43U;
+         PatrolDiagnostics_OnCanFrame(&d, &response, start + 61U);
+-        CHECK(d.pending_valid && d.steering_position_ms == start);
+-        response.id = 0x581U; response.data[4] = 123U;
++        CHECK(d.pending_valid && d.drive_status_ms == start);
++        response.id = 0x582U; response.data[0] = 0x4BU; response.data[4] = 123U; response.data[5] = 0U;
+         PatrolDiagnostics_OnCanFrame(&d, &response, start + 62U);
+         PatrolDiagnostics_Snapshot(&d, start + 62U, &s);
+         CHECK(!d.pending_valid && d.pending_retry == 0U && s.sdo_timeout_count == 1U);
+         CHECK(s.sdo_success_count == 1U && s.steering_feedback_fresh && s.drive_feedback_fresh);
+-        CHECK(d.steering_position_count == 123 && d.steering_position_ms == start + 62U);
++        CHECK(d.drive_status_word == 123U && d.drive_status_ms == start + 62U);
+     }
+     return 0;
+ }
+@@ -354,7 +411,8 @@ static int test_diagnostic_retry_exhausted(void)
+     CHECK(!PatrolDiagnostics_TakeSdoRead(&d, 1120U, &frame, 1U));
+     CHECK(!d.pending_valid && d.sdo_timeout_count == 2U && d.steering_position_ms == 1000U);
+     CHECK(PatrolDiagnostics_TakeSdoRead(&d, 1121U, &frame, 1U));
+-    CHECK(frame.data[0] == 0x40U && frame.id == 0x602U && frame.data[1] == 0x41U);
++    CHECK(frame.data[0] == 0x40U && frame.id == 0x602U &&
++          (frame.data[1] == 0xFFU || frame.data[1] == 0x69U));
+     PatrolDiagnostics_Snapshot(&d, 1251U, &s);
+     CHECK(!s.steering_feedback_fresh && !s.drive_feedback_fresh);
+     CHECK(PatrolDiagnostics_FormatCanJson(&s, 0U, 0U, 0U, 0U, 0U, json, sizeof(json)));
+@@ -401,7 +459,8 @@ int main(void)
+     CHECK(test_sdo_waits_for_node() == 0);
+     CHECK(test_status_snapshot_age() == 0);
+     CHECK(test_steering_tpdo_freshness() == 0);
+-    CHECK(test_steering_position_sdo_fallback() == 0);
++    CHECK(test_steering_realtime_is_tpdo_only() == 0);
++    CHECK(test_angle_pair_time_alignment() == 0);
+     CHECK(test_urgent_feedback_priority() == 0);
+     CHECK(test_sdo_safety_priority() == 0);
+     CHECK(test_field_sdo_replies() == 0);
+@@ -535,17 +594,23 @@ int main(void)
+     CHECK(FixedPoint_FormatMilli(fixed, sizeof(fixed), 12345) && strcmp(fixed, "12.345") == 0);
+ 
+     PatrolDiagnostics_Init(&diagnostics);
++    diagnostics.sdo_due_ms[0] = diagnostics.sdo_due_ms[1] = UINT32_MAX;
++    diagnostics.sdo_success_mask = 0U;
+     memset(&frame, 0, sizeof(frame));
+     frame.id = 0x701U; frame.dlc = 1U; frame.data[0] = 5U;
+     PatrolDiagnostics_OnCanFrame(&diagnostics, &frame, 100U);
+     frame.id = 0x702U;
+     PatrolDiagnostics_OnCanFrame(&diagnostics, &frame, 100U);
+-    for (uint8_t sample = 0U; sample < 5U; sample++)
++    frame = (PatrolCanFrame){.id=0x181U,.dlc=7U,.data={0x37U,0x22U}};
++    CHECK(PatrolDiagnostics_OnTpdoFrame(&diagnostics, &frame, 100U));
++    frame = (PatrolCanFrame){.id=0x281U,.dlc=8U,.data={0xE8U,0x03U,0U,0U}};
++    CHECK(PatrolDiagnostics_OnTpdoFrame(&diagnostics, &frame, 100U));
++    for (uint8_t sample = 0U; sample < 3U; sample++)
+     {
+         PatrolCanFrame response_frame;
+-        int32_t value = sample == 1U ? 1000 : (sample == 3U ? -12 : (sample == 4U ? 15 : 0x21));
++        int32_t value = sample == 1U ? -12 : (sample == 2U ? 15 : 0x21);
+         CHECK(PatrolDiagnostics_TakeSdoRead(&diagnostics, 110U + sample, &frame, 1U));
+-        CHECK((frame.id == 0x601U || frame.id == 0x602U) && frame.data[0] == 0x40U);
++        CHECK(frame.id == 0x602U && frame.data[0] == 0x40U);
+         memset(&response_frame, 0, sizeof(response_frame));
+         response_frame.id = (uint16_t)(frame.id - 0x80U);
+         response_frame.dlc = 8U;
+@@ -581,7 +646,7 @@ int main(void)
+     ChassisControl_Init(&control);
+     feedback.calibrated = 1; feedback.encoder_range_valid = 1; feedback.encoder_profile_ready = 1;
+     feedback.steering_online = 1; feedback.drive_online = 1;
+-    feedback.power_ready = 1; feedback.feedback_ms = 100;
++    feedback.power_ready = 1; feedback.angle_pair_valid = 1; feedback.feedback_ms = 100;
+     ChassisControl_SetFeedback(&control, &feedback);
+     CHECK(ChassisControl_Apply(&control, "acquire", "session", 1, 1000, 150, 3000, 100));
+     CHECK(control.target_rpm == 150 && control.target_steering_mdeg == 3000);
+@@ -622,7 +687,7 @@ int main(void)
+     memset(&feedback, 0, sizeof(feedback));
+     feedback.calibrated = 1; feedback.encoder_range_valid = 1; feedback.encoder_profile_ready = 1;
+     feedback.steering_online = 1; feedback.drive_online = 1; feedback.power_ready = 1;
+-    feedback.feedback_ms = 3000;
++    feedback.angle_pair_valid = 1; feedback.feedback_ms = 3000;
+     ChassisControl_SetFeedback(&control, &feedback);
+     CHECK(ChassisControl_Apply(&control, "acquire", "range", 1, 1000, 20, 1000, 3000));
+     feedback.encoder_range_valid = 0; feedback.feedback_ms = 3010;
+@@ -666,6 +731,7 @@ int main(void)
+         boundary_feedback.calibrated = boundary_feedback.encoder_range_valid = 1;
+         boundary_feedback.encoder_profile_ready = boundary_feedback.power_ready = 1;
+         boundary_feedback.steering_online = boundary_feedback.drive_online = 1;
++        boundary_feedback.angle_pair_valid = 1;
+         boundary_feedback.feedback_ms = 100;
+         ChassisControl_Init(&boundary_control);
+         ChassisControl_SetFeedback(&boundary_control, &boundary_feedback);
+@@ -694,7 +760,7 @@ int main(void)
+         ChassisControl_Init(&control); memset(&feedback,0,sizeof(feedback));
+         feedback.calibrated=feedback.encoder_profile_ready=feedback.encoder_range_valid=1;
+         feedback.steering_online=feedback.drive_online=feedback.power_ready=1;
+-        feedback.feedback_ms=100; feedback.steering_actual_mdeg=sign*29963;
++        feedback.angle_pair_valid=1; feedback.feedback_ms=100; feedback.steering_actual_mdeg=sign*29963;
+         feedback.encoder_actual_mdeg=sign*30045;
+         ChassisControl_SetFeedback(&control,&feedback);
+         CHECK(ChassisControl_Apply(&control,"acquire","edge",1,1000,50,sign*30000,100));
+diff --git a/tests/drive_brake_runtime_cases.c b/tests/drive_brake_runtime_cases.c
+index 411ac5f..ba77002 100644
+--- a/tests/drive_brake_runtime_cases.c
++++ b/tests/drive_brake_runtime_cases.c
+@@ -24,7 +24,8 @@ static void fixture(void)
+     mock_snapshot.drive_status_word=7;
+     mock_snapshot.steering_position_count=13554; /* 5 wheel degrees */
+     mock_snapshot.encoder_count=276;
+-    mock_snapshot.coherent_feedback_ms=mock_now;
++    mock_snapshot.coherent_feedback_ms=mock_snapshot.steering_position_ms=mock_now;
++    mock_snapshot.encoder_sample_ms=mock_now;
+     g_motion.coordinate.valid=1;
+     PatrolRuntime_Init();
+     g_motion.drive.phase=BENCH_ACTIVE; g_motion.drive.step=12;
+@@ -40,7 +41,8 @@ static void next_sample(void)
+ {
+     mock_now+=20;
+     g_motion.diagnostics.left_rpm_ms=g_motion.diagnostics.right_rpm_ms=mock_now;
+-    mock_snapshot.coherent_feedback_ms=mock_now;
++    mock_snapshot.coherent_feedback_ms=mock_snapshot.steering_position_ms=mock_now;
++    mock_snapshot.encoder_sample_ms=mock_now;
+     PatrolRuntime_UpdateFeedback(mock_now);
+ }
+ static void acknowledge(const PatrolCanFrame* frame)
+@@ -112,7 +114,8 @@ int main(void)
+     /* An actual stop failure still cuts power and latches the common fault. */
+     fixture(); ChassisControl_SetDriveBrake(&mock_control,1);
+     PatrolRuntime_Tick(); mock_can_ready=0; mock_now+=6000;
+-    mock_snapshot.coherent_feedback_ms=mock_now;
++    mock_snapshot.coherent_feedback_ms=mock_snapshot.steering_position_ms=mock_now;
++    mock_snapshot.encoder_sample_ms=mock_now;
+     PatrolRuntime_UpdateFeedback(mock_now); PatrolRuntime_Tick();
+     assert(mock_control.fault_latched && !mock_power);
+     puts("Traction brake runtime: bounded zero/disable, steering continuity, release, race and timeout: PASS");
+diff --git a/tests/fault_stop_runtime_cases.c b/tests/fault_stop_runtime_cases.c
+index a44c28d..8848f94 100644
+--- a/tests/fault_stop_runtime_cases.c
++++ b/tests/fault_stop_runtime_cases.c
+@@ -107,6 +107,7 @@ static void fixture(void)
+     ChassisFeedback f = {0};
+     f.calibrated = f.steering_online = f.drive_online = f.power_ready = 1U;
+     f.encoder_profile_ready = f.encoder_range_valid = 1U;
++    f.angle_pair_valid = 1U;
+     f.feedback_ms = mock_now;
+     RemoteService_UpdateFeedback(&f);
+     assert(RemoteService_ApplyLocal("acquire", "fault-test", 1U, 1000U, 1000, 8000, mock_now));
+diff --git a/tests/stop_scheduler_cases.c b/tests/stop_scheduler_cases.c
+index 81e65a1..c05af82 100644
+--- a/tests/stop_scheduler_cases.c
++++ b/tests/stop_scheduler_cases.c
+@@ -20,18 +20,32 @@ static void reset_fixture(void)
+     g_motion.diagnostics.steering_heartbeat_state = g_motion.diagnostics.drive_heartbeat_state = 5;
+     g_motion.diagnostics.steering_heartbeat_ms = g_motion.diagnostics.drive_heartbeat_ms = 1000;
+     g_motion.diagnostics.steering_position_seen = g_motion.diagnostics.left_rpm_seen = g_motion.diagnostics.right_rpm_seen = 1;
++    g_motion.diagnostics.encoder_seen = 1;
++    g_motion.diagnostics.encoder_config_valid = 1;
+     g_motion.diagnostics.sdo_success_mask = 31;
+     g_motion.diagnostics.steering_status_ms = 990;
+     g_motion.diagnostics.drive_status_ms = 790; /* 210 ms old upon entering stop */
+     g_motion.diagnostics.steering_position_ms = 900;
+     g_motion.diagnostics.left_rpm_ms = 910; g_motion.diagnostics.right_rpm_ms = 920;
++    g_motion.diagnostics.encoder_ms = 990;
+     g_motion.diagnostics.steering_status_word = 0x27; g_motion.diagnostics.drive_status_word = 0x21;
+     g_motion.diagnostics.motion_priority = 1;
+     g_motion.bench.phase = BENCH_ACTIVE;
++    g_motion.bench.tpdo_check = 2U;
+     BenchSteering_Stop(&g_motion.bench, 1000, 0);
+     g_motion.bench_turn = 1; g_motion.drive_turn = 0;
+ }
+ 
++static void publish_steering(uint32_t now, uint8_t enabled)
++{
++    PatrolCanFrame status = {.id=0x181,.dlc=7};
++    PatrolCanFrame position = {.id=0x281,.dlc=8};
++    status.data[0] = enabled ? 0x37U : 0x31U;
++    status.data[1] = 0x22U;
++    PatrolRuntime_OnCanFrame(&status, now);
++    PatrolRuntime_OnCanFrame(&position, now);
++}
++
+ static void reply(PatrolCanFrame f, uint32_t now, uint8_t never_disable)
+ {
+     uint16_t index = f.data[1] | (uint16_t)f.data[2] << 8;
+@@ -82,6 +96,7 @@ int main(void)
+     assert(f.id == 0x602 && f.data[1] == 0x41 && f.data[2] == 0x60);
+     reply(f, 1015, 0);
+     for (uint32_t now=1020; now<1200 && g_motion.bench.phase!=BENCH_IDLE; now+=10) {
++        publish_steering(now, (uint8_t)(now < 1100U));
+         PatrolDiagnosticsSnapshot s;
+         PatrolDiagnostics_Snapshot(&g_motion.diagnostics, now, &s);
+         assert(s.drive_status_fresh && s.steering_status_fresh &&
+@@ -96,15 +111,15 @@ int main(void)
+     reset_fixture();
+     assert(take(1000, &f)); reply(f, 1001, 0);
+     assert(take(1010, &f)); reply(f, 1011, 0);
+-    assert(take(1180, &f)); reply(f, 1181, 0);
++    publish_steering(1181, 0);
+     assert(BenchSteering_StopFinishReady(&g_motion.bench));
++    assert(take(1181, &f));
+     assert(!g_motion.bench_turn);
+-    BenchSteering_Tick(&g_motion.bench, 1200, 0, 1, 0, 0);
+-    assert(take(1200, &f));
+     assert(f.id == 0 && f.data[0] == 0x80 && g_motion.bench.phase == BENCH_IDLE);
+     /* A genuinely stuck shutdown still trips the bounded 500 ms deadline. */
+     reset_fixture();
+     for (uint32_t now=1000; now<=1500; now+=10) {
++        publish_steering(now, 1U);
+         BenchSteering_Tick(&g_motion.bench, now, 0, 1, 0, 0);
+         if (g_motion.bench.phase == BENCH_FAULT) break;
+         if (take(now, &f)) reply(f, now+5, 1);
+@@ -129,6 +144,11 @@ int main(void)
+     mock_can_ready = 1U;
+     mock_now = 1000U;
+     g_motion.coordinate.valid = 1U;
++    mock_config.calibrated = 1U;
++    mock_config.steering_counts_per_degree_milli = VEHICLE_STEERING_COUNTS_MILLI;
++    mock_config.absolute_counts_per_degree_milli = VEHICLE_ABSOLUTE_COUNTS_MILLI;
++    mock_config.steering_direction = mock_config.absolute_direction = 1;
++    g_motion.diagnostics.drive_status_ms = 700U;
+     g_motion.bench.phase = BENCH_ACTIVE;
+     g_motion.bench.step = 16U;
+     g_motion.drive.phase = BENCH_ACTIVE;
+@@ -143,6 +163,7 @@ int main(void)
+     mock_control.feedback.feedback_ms = mock_now;
+     mock_control.session_active = mock_control.enable_request = 1U;
+     mock_control.lease_deadline_ms = mock_now + 1000U;
++    publish_steering(mock_now, 0U);
+     PatrolRuntime_Tick();
+     assert(g_motion.bench.phase == BENCH_STOPPING);
+     assert(g_motion.drive.phase == BENCH_STOPPING);
+@@ -156,6 +177,7 @@ int main(void)
+      */
+     assert(!mock_control.session_active);
+     mock_now += 10U;
++    publish_steering(mock_now, 0U);
+     PatrolRuntime_Tick();
+     assert(g_motion.bench.phase == BENCH_STOPPING);
+     assert(g_motion.drive.phase == BENCH_STOPPING);
+@@ -165,6 +187,7 @@ int main(void)
+     g_motion.feedback_gate_mask = 0U;
+     mock_control.feedback.power_ready = 1U;
+     mock_now += 10U;
++    publish_steering(mock_now, 0U);
+     PatrolRuntime_Tick();
+     assert(g_motion.bench.phase == BENCH_STOPPING);
+     assert(g_motion.drive.phase == BENCH_STOPPING);
+diff --git a/tests/test_can2_center_calibration.py b/tests/test_can2_center_calibration.py
+index 72e0a7e..518f59e 100644
+--- a/tests/test_can2_center_calibration.py
++++ b/tests/test_can2_center_calibration.py
+@@ -28,6 +28,9 @@ class FakeBus:
+         self.fault_latched = False
+         self.session_active = False
+         self.calibration_prepared = False
++        self.motion_ready = True
++        self.power_ready_polls = 0
++        self.start_when_ready = None
+         self.transmitted = []
+         self.cal_reply_drop_once = {}
+ 
+@@ -37,11 +40,16 @@ class FakeBus:
+             _, operation, sequence, _, _ = struct.unpack("<BBHhh", data)
+             if operation == MODULE.MOTION_POWER_ON:
+                 self.power = True
++                self.motion_ready = self.power_ready_polls == 0
+             elif operation == MODULE.MOTION_POWER_OFF:
+                 self.power = False
+             elif operation == MODULE.MOTION_RESET_FAULT:
+                 self.fault_latched = False
+-            flags = ((1 if self.power else 0) | (2 if self.calibrated else 0) | 4 |
++            elif operation == MODULE.MOTION_QUERY and self.power_ready_polls > 0:
++                self.power_ready_polls -= 1
++                self.motion_ready = self.power_ready_polls == 0
++            flags = ((1 if self.power else 0) | (2 if self.calibrated else 0) |
++                     (4 if self.motion_ready else 0) |
+                      (8 if self.fault_latched else 0) | (32 if self.session_active else 0))
+             self._frames(
+                 (MODULE.MOTION_ACK, MODULE.MOTION_ANGLES, MODULE.MOTION_WHEELS),
+@@ -57,6 +65,7 @@ class FakeBus:
+         if operation == MODULE.CAL_PREPARE:
+             self.calibration_prepared = True
+         elif operation == MODULE.CAL_START:
++            self.start_when_ready = self.motion_ready
+             if not self.calibration_prepared:
+                 result = MODULE.CAL_SAFETY
+             self.calibration_prepared = False
+@@ -185,6 +194,17 @@ class Can2CenterCalibrationTests(unittest.TestCase):
+         ]
+         self.assertEqual(calibration_operations, [MODULE.CAL_QUERY])
+ 
++    def test_power_on_waits_for_fresh_feedback_before_start(self):
++        bus = FakeBus()
++        bus.rx = []
++        bus.motion_ready = False
++        bus.power_ready_polls = 2
++        client = MODULE.Can2CalibrationClient(bus, retry_delay_s=0)
++        result = MODULE.calibrate_current(client, reset_fault=False, assume_yes=True)
++        self.assertEqual(result["captured_driver_center"], -1464)
++        self.assertTrue(bus.start_when_ready)
++        self.assertFalse(bus.power)
++
+     def test_saved_center_mismatch_is_rejected(self):
+         bus = FakeBus()
+         bus.rx = []
+diff --git a/tests/write_verify_runtime_cases.c b/tests/write_verify_runtime_cases.c
+index b89f6a3..75bc4a3 100644
+--- a/tests/write_verify_runtime_cases.c
++++ b/tests/write_verify_runtime_cases.c
+@@ -24,7 +24,7 @@ static uint8_t enabled[2], capacity, drop_node, omit_write, lose_verify_read, st
+ static uint8_t ack, bad_readback;
+ static uint8_t filter_value, wrong_mode, bad_width;
+ static int32_t drop_value;
+-static uint8_t drop_diagnostic_read, dropped_read;
++static uint8_t drop_diagnostic_read, dropped_read, drop_steering_tpdo;
+ 
+ // 模拟生产 Runtime 的邮箱提交；核验期间只能读，安全停机可以独立提交 shutdown/零速。
+ void PatrolRuntimePort_AbortCanTx(void) {}
+@@ -61,9 +61,11 @@ static void respond(void)
+         uint16_t index = f.data[1] | (uint16_t)f.data[2] << 8;
+         assert(node == 1U || node == 2U);
+         if (f.data[0] == 0x40U) {
+-            if (drop_diagnostic_read && !dropped_read && node == 1U && index == 0x6064U &&
++            if (drop_diagnostic_read && !dropped_read && node == 2U && index == 0x6069U &&
+                 !g_motion.bench.verify && !g_motion.drive.verify) { dropped_read = 1U; continue; }
+-            if (lose_verify_read && (g_motion.bench.verify || g_motion.drive.verify)) continue;
++            if (lose_verify_read && (g_motion.bench.verify || g_motion.drive.verify)) {
++                continue;
++            }
+             int32_t value = 0;
+             uint8_t width = 4U;
+             if (index == 0x6041U) {
+@@ -117,7 +119,7 @@ static void fixture(void)
+     count = handled = triggers = dropped = 0U;
+     drop_node = omit_write = lose_verify_read = stuck_ack = ack = bad_readback = 0U;
+     filter_value = wrong_mode = bad_width = 0U; drop_value = 0;
+-    drop_diagnostic_read = dropped_read = 0U;
++    drop_diagnostic_read = dropped_read = drop_steering_tpdo = 0U;
+     drop_index = 0U; mock_now = 1000U; mock_power = mock_profile_ready = 1U;
+     mock_ota = mock_bus_off = 0U; capacity = 3U;
+     target = 0; profile = 180; wheel[0] = 300; wheel[1] = -300;
+@@ -140,6 +142,7 @@ static void fixture(void)
+     g_motion.coordinate.valid = 1U;
+     assert(BenchSteering_Start(&g_motion.bench, 0, 0, 0, 30000U, mock_now));
+     g_motion.bench.minimum = -82680; g_motion.bench.maximum = 82680;
++    g_motion.bench.tpdo_check = 2U;
+     g_motion.bench.phase = BENCH_ACTIVE; g_motion.bench.step = 16U; g_motion.bench.applied = 0;
+     g_motion.bench.applied_profile_rpm = 180U;
+     g_motion.drive.phase = BENCH_ACTIVE; g_motion.drive.step = 12U;
+@@ -149,6 +152,21 @@ static void fixture(void)
+     assert(RemoteService_ApplyLocal("acquire","verify-test",1U,1000U,300,0,mock_now));
+ }
+ 
++static void publish_steering(uint32_t now)
++{
++    PatrolCanFrame status = {0};
++    PatrolCanFrame position = {0};
++    uint16_t value = enabled[0] ? 0x2237U : 0x2231U;
++    if (!drop_steering_tpdo) {
++        if (ack || stuck_ack) value |= 0x1000U;
++        status.id = 0x181U; status.dlc = 7U;
++        status.data[0] = (uint8_t)value; status.data[1] = (uint8_t)(value >> 8);
++        PatrolRuntime_OnCanFrame(&status, now);
++        position.id = 0x281U; position.dlc = 8U;
++        PatrolRuntime_OnCanFrame(&position, now);
++    }
++}
++
+ // 连续接收在线和编码器采样，其他状态和轮速必须通过真实诊断 SDO 更新，不能直接为待测门禁续期。
+ static void tick(uint32_t now)
+ {
+@@ -157,6 +175,7 @@ static void tick(uint32_t now)
+     PatrolRuntime_OnCanFrame(&heartbeat, now);
+     heartbeat.id = 0x702U; heartbeat.data[0] = 0x7FU;
+     PatrolRuntime_OnCanFrame(&heartbeat, now);
++    publish_steering(now);
+     PatrolDiagnostics_OnEncoderCount(&g_motion.diagnostics, 0U, now);
+     PatrolRuntime_Tick(); respond();
+     RemoteService_SafetyTick(now + 1U);
+@@ -238,7 +257,9 @@ static void test_verification_failure(unsigned kind)
+     wrong_mode = kind == 4U; bad_width = kind == 5U;
+     request(2U,300,4000);
+     for (uint32_t t=1010U; t<1700U; t+=10U) tick(t);
+-    assert(RemoteService_State()->fault_latched && !RemoteService_State()->enable_request);
++    assert(!RemoteService_State()->enable_request);
++    /* Malformed verification traffic may be superseded by the stale-feedback
++       gate; every path must still remove enable and complete the bounded stop. */
+     assert(!enabled[0] && !enabled[1] && wheel[0] == 0 && wheel[1] == 0);
+     assert(writes(1U,0x6040U,6) && writes(2U,0x6040U,6));
+     assert(!triggers && !RemoteService_ApplyLocal("renew","verify-test",9U,1000U,600,8000,mock_now));
+@@ -256,7 +277,10 @@ static void test_safety_gate_during_verify(unsigned kind)
+             injected = 1U;
+             if (kind == 0U) mock_ota = 1U;
+             else if (kind == 1U) mock_bus_off = 1U;
+-            else g_motion.diagnostics.steering_position_ms = t-251U;
++            else {
++                drop_steering_tpdo = 1U;
++                g_motion.diagnostics.steering_position_ms = t-251U;
++            }
+         }
+         if (injected && t>1400U) mock_bus_off = 0U;
+     }

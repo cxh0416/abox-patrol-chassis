@@ -1,0 +1,31 @@
+{
+  "kind": "online-debug",
+  "configuration": "Release",
+  "product": "patrol_vehicle_chassis",
+  "candidate": true,
+  "app_version": "patrol-chassis-0.2.70",
+  "boot_version": "abox-boot-2.3.0",
+  "app_offset": "0x00008000",
+  "initial_sp": "0x20010000",
+  "reset_vector": "0x800d44d",
+  "full_length": 183784,
+  "full_sha256": "3c5a76818eaa83e51f066ec36f4974210ec7b8f5fbb5376b8981b59d4f793f92",
+  "app_sha256": "e661dbd2033bf68a212cb67c104b729e55795f4fa664bc6322605a68f3ff25bd",
+  "boot_sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+  "board_flashed": false,
+  "includes_boot_state": false,
+  "includes_device_config": false,
+  "validation": {
+    "arm_release_build": true,
+    "stack_checks": true,
+    "flash_layout": true,
+    "frozen_boot": true,
+    "standalone_product_c_tests": true,
+    "timeout_6s_boundary_regression": true,
+    "product_python_passed": 42,
+    "product_python_total": 43,
+    "known_existing_failure": "test_identity_and_safe_defaults: existing user-confirmed hot-reset design",
+    "boot_state_host_verification": true,
+    "hardware_motion_verified": false
+  }
+}

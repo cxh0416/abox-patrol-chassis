@@ -1,0 +1,284 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "files": [
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\direct-stop-20261021-175419-164410\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\raw\\direct-stop-20261021-175419-164410\\frames.jsonl",
+      "sha256": "5478b9c98a9881c664b0beac06cbcfc202272a6f77b94ef4a833225a72d29111",
+      "bytes": 220713
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\direct-stop-20261021-175419-164410\\result.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\raw\\direct-stop-20261021-175419-164410\\result.json",
+      "sha256": "1e48e728065165ca20900ef4ccc291aa2f72652e4993a0bb79aa0eedeebab716",
+      "bytes": 906
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\direct-stop-20261021-182522-113916\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\raw\\direct-stop-20261021-182522-113916\\frames.jsonl",
+      "sha256": "e6ab27722ea26beffabbc5c389ff6cb46bd40f5a46baaaaa512ee4f16ca02bdb",
+      "bytes": 221137
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\direct-stop-20261021-182522-113916\\result.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\raw\\direct-stop-20261021-182522-113916\\result.json",
+      "sha256": "1d28a13e26e2102601fed21d6b1ad097dd73ee3620a9599fc2975c9e4368f566",
+      "bytes": 893
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-readonly-20261021-180335-646585\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\raw\\steering-readonly-20261021-180335-646585\\frames.jsonl",
+      "sha256": "34823004284ab24562c921fc912884e34af0f7dcd58cdae3a8cb013b5f7b9c19",
+      "bytes": 63352
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-readonly-20261021-180335-646585\\results.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\raw\\steering-readonly-20261021-180335-646585\\results.json",
+      "sha256": "1b145d3c13bff600b3d8d8a2d921d1fb41d51748bac6a9d2a7e2b64043720b0b",
+      "bytes": 3660
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-readonly-20261021-180439-316822\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\raw\\steering-readonly-20261021-180439-316822\\frames.jsonl",
+      "sha256": "276f1c3007225c8f112a7bb2daba03c7f0626cd3f2d8ce580ab253d9897298b3",
+      "bytes": 49605
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-readonly-20261021-180439-316822\\results.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\raw\\steering-readonly-20261021-180439-316822\\results.json",
+      "sha256": "2f16288ecdcf706460718829411db895b22ba550e45c946cf38c564c3c510825",
+      "bytes": 4136
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261021-182615-501082\\events.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\raw\\can1-20261021-182615-501082\\events.jsonl",
+      "sha256": "04c6f708f560f7023b4fe011df55a0d7e47e4c65c9a7eb7e80a57ce11310d4d2",
+      "bytes": 34920
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261021-182615-501082\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\raw\\can1-20261021-182615-501082\\frames.jsonl",
+      "sha256": "1f904a5ff4dda8b1028a6405a5bd4fae014b7415fcf7de4869bcecdda0798777",
+      "bytes": 6442195
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261021-182615-501082\\metadata.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\raw\\can1-20261021-182615-501082\\metadata.json",
+      "sha256": "6d1b0a2f6c65d2375e81c55c3551616dc1dcc83a3b58c4768e35b97e527e801c",
+      "bytes": 1136
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261021-182615-501082\\sha256.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\raw\\can1-20261021-182615-501082\\sha256.json",
+      "sha256": "1ef4f06a1a2eeb8a6ec4e10feb1ed109c6951182a429d6e2875b8a52d41bfd58",
+      "bytes": 352
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261021-182615-501082\\summary.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\raw\\can1-20261021-182615-501082\\summary.json",
+      "sha256": "69b9166c40a4676df6e8de62d6fb95dec1034f5b97e0b8affa96b3a10bd9b2b3",
+      "bytes": 1729
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-center-20261021-183013-778626\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\raw\\steering-center-20261021-183013-778626\\frames.jsonl",
+      "sha256": "bfa29a98ff2114a34407223338cc559bdbad2cf92c8c06ed0b9c0dae6b310ae6",
+      "bytes": 8740
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-center-20261021-183013-778626\\result.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\raw\\steering-center-20261021-183013-778626\\result.json",
+      "sha256": "074e760ca1555e9bdabef4cdc2360fdbb5a494ab52558180e1263add6623fc97",
+      "bytes": 577
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-center-20261021-183024-871474\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\raw\\steering-center-20261021-183024-871474\\frames.jsonl",
+      "sha256": "b4bca38dc1015118e847b0a8d1489431a8ed8ee98b8e7c50f8bbd9ec03939fcd",
+      "bytes": 388799
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-center-20261021-183024-871474\\result.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\raw\\steering-center-20261021-183024-871474\\result.json",
+      "sha256": "2d8aafcd140f8006dc0276fedfe4f61f341f8f9285785b45456ee1223c506ee8",
+      "bytes": 584
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-center-20261021-183115-314071\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\raw\\steering-center-20261021-183115-314071\\frames.jsonl",
+      "sha256": "de8d40bcc4f806860cc62e119f4380abe499810483c53c0b0ec7a94682b5ad5f",
+      "bytes": 170952
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-center-20261021-183115-314071\\result.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\raw\\steering-center-20261021-183115-314071\\result.json",
+      "sha256": "cc474eaff3efeb21f8008164e6519cee9d62c40f8d652d21e034a7082b026a70",
+      "bytes": 1002
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-center-20261021-183155-936082\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\raw\\steering-center-20261021-183155-936082\\frames.jsonl",
+      "sha256": "b1f7dc45606cb554ce9f87e02b0dad0a3419c6998dd36e9267ae99cb25f66c6e",
+      "bytes": 8885
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-center-20261021-183155-936082\\result.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\raw\\steering-center-20261021-183155-936082\\result.json",
+      "sha256": "eb22d1fd983fabafb2130cde54c11effd52737fa4c194d78aa0bb5e3639425ba",
+      "bytes": 578
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\can1_bus_monitor.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\tools-at-archive\\can1_bus_monitor.py",
+      "sha256": "58f9a8679c469c4d6c82c9cc4dbd393d753cb0cd486928bf3700e1d4180cfccc",
+      "bytes": 23342
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\can1_stop_now.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\tools-at-archive\\can1_stop_now.py",
+      "sha256": "65bdc35a5d4769a46fed36c090771331cf6c3f09e29d4f149c3a0857eff147ae",
+      "bytes": 5758
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\steering_center_once.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\tools-at-archive\\steering_center_once.py",
+      "sha256": "0fd64922c36ed44f6515b9467020d54340652b39e937852c35631653ad38f5aa",
+      "bytes": 9762
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\steering_sdo_readonly_probe.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\tools-at-archive\\steering_sdo_readonly_probe.py",
+      "sha256": "8b25042986d9b3426b7b4a24dd117beb742482295eee4d107aa46880349d7c07",
+      "bytes": 3021
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-timeout-runtime-repro.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\diagnostics\\steering-timeout-runtime-repro.c",
+      "sha256": "1e9514dbdf51fb35c9bdc08ca8cf7a23d5bf95f851621bddadba03f6918ee242",
+      "bytes": 2221
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-timeout-runtime-repro.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\diagnostics\\steering-timeout-runtime-repro.log",
+      "sha256": "9a9d7e773ddefc6be3a6c5518bde32ea1e8e5bf30b62c24ef739a9a982c69dd5",
+      "bytes": 301
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-target-layout.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\diagnostics\\steering-target-layout.c",
+      "sha256": "c1140c84bfc833bc892828c1ffa26aab9933b302d004c7e1144ae29651074bbb",
+      "bytes": 703
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-target-layout.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\diagnostics\\steering-target-layout.bin",
+      "sha256": "343a3b4537fd0d3b1869d8ad023141ff0dbc2210f3c0d0e681b0f4de2721f43b",
+      "bytes": 72
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-live-readonly.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\diagnostics\\steering-live-readonly.py",
+      "sha256": "2fd91f496e45d02e19f5d783237ba41e9fa606cb9b719a1b2c876aa1a7a6dc1c",
+      "bytes": 2092
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-live-readonly-console-retry1.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\diagnostics\\steering-live-readonly-console-retry1.log",
+      "sha256": "a8e2bbae2ebc563e93f65cb12a5b78885a6f630bd287c4368c8951418eb4a0dd",
+      "bytes": 445
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\steering-timeout-register-decode.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\diagnostics\\steering-timeout-register-decode.json",
+      "sha256": "d18fba66433718cb55eeb964fcbbeb5f35337e4f70edf37f42b60a68377476d8",
+      "bytes": 161
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-followup-readonly.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\diagnostics\\fault-followup-readonly.py",
+      "sha256": "2f7f6b8004d69c2e1d6a26be24c07bb079a7283715a363978756ada04878e375",
+      "bytes": 3016
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-steering-timeout-readonly-180130\\CAN1-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\diagnostics\\2026-10-21-steering-timeout-readonly-180130\\CAN1-registers.bin",
+      "sha256": "3ae6446202eba1c94d3a3c7c2d82c41df7546f1a7a17a20af653c4ab074a04c1",
+      "bytes": 32
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-steering-timeout-readonly-180130\\CAN2-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\diagnostics\\2026-10-21-steering-timeout-readonly-180130\\CAN2-registers.bin",
+      "sha256": "3ae6446202eba1c94d3a3c7c2d82c41df7546f1a7a17a20af653c4ab074a04c1",
+      "bytes": 32
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-steering-timeout-readonly-180130\\DHCSR-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\diagnostics\\2026-10-21-steering-timeout-readonly-180130\\DHCSR-registers.bin",
+      "sha256": "52a5c4a10657220cac05c63adfa923c7771c55d868a58ee360eb3d1511985c3e",
+      "bytes": 4
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-steering-timeout-readonly-180130\\GPIOA-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\diagnostics\\2026-10-21-steering-timeout-readonly-180130\\GPIOA-registers.bin",
+      "sha256": "ab634266acc65770dca672c6005ee7159831f2b90d354760002747eddfdb9845",
+      "bytes": 20
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-fault-followup-182804-737601\\CAN1-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\diagnostics\\2026-10-21-fault-followup-182804-737601\\CAN1-registers.bin",
+      "sha256": "3ae6446202eba1c94d3a3c7c2d82c41df7546f1a7a17a20af653c4ab074a04c1",
+      "bytes": 32
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-fault-followup-182804-737601\\CAN2-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\diagnostics\\2026-10-21-fault-followup-182804-737601\\CAN2-registers.bin",
+      "sha256": "3ae6446202eba1c94d3a3c7c2d82c41df7546f1a7a17a20af653c4ab074a04c1",
+      "bytes": 32
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-fault-followup-182804-737601\\GPIOA-registers.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\diagnostics\\2026-10-21-fault-followup-182804-737601\\GPIOA-registers.bin",
+      "sha256": "ab634266acc65770dca672c6005ee7159831f2b90d354760002747eddfdb9845",
+      "bytes": 20
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-fault-followup-182804-737601\\motion-fault.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\diagnostics\\2026-10-21-fault-followup-182804-737601\\motion-fault.bin",
+      "sha256": "e665b20d32c5f12b196800f07d74be43820af2463354024c77e6446a260a316b",
+      "bytes": 128
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-21-fault-followup-182804-737601\\snapshot.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\diagnostics\\2026-10-21-fault-followup-182804-737601\\snapshot.json",
+      "sha256": "a1b5736e4282a1359301de44612ec13e5ff223a60979152e4db009e6e7202994",
+      "bytes": 763
+    },
+    {
+      "original_path": "new derived findings and operator confirmation",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-stop-center-recovery-183400\\findings.json",
+      "sha256": "fdc885dde3440af32949577a7d2c29f9121ac754d94737926cbeebe48eb9a3c6",
+      "bytes": 4431
+    }
+  ],
+  "protected_originals": [
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-21-steering-timeout-readonly-180130\\flash-dll.bin",
+      "sha256": "9ca1c96b910e299dcb19c4a92bb5a2489a115c92bf59189fdfe1c03464c77f55",
+      "bytes": 262144,
+      "reason": "full RAM/Flash may include credentials; excluded from public evidence"
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-21-steering-timeout-readonly-180130\\ram-dll.bin",
+      "sha256": "55bc2ca8113321ada3bc8f44562b25d23fa09cba965fa65c414a6e3f19e748ea",
+      "bytes": 65536,
+      "reason": "full RAM/Flash may include credentials; excluded from public evidence"
+    },
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-21-fault-followup-182804-737601\\ram.bin",
+      "sha256": "70459c71f3666f5dd06c4c4e459369f2195785fcad5e4af344caa8b659ac4e8a",
+      "bytes": 65536,
+      "reason": "full RAM/Flash may include credentials; excluded from public evidence"
+    }
+  ],
+  "originals_retained": true
+}

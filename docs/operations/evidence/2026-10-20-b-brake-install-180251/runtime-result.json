@@ -1,0 +1,37 @@
+{
+  "version": "patrol-chassis-0.2.64",
+  "observed": {
+    "tick_first": 17152,
+    "tick_last": 18017,
+    "vtor": [
+      "08008000"
+    ],
+    "halted_bits": [
+      false,
+      false
+    ],
+    "output_command": 0,
+    "session_active": 0,
+    "enable_request": 0,
+    "target_rpm": 0,
+    "fault_latched": 0,
+    "drive_brake": 0,
+    "bench_phase": 0,
+    "drive_phase": 0,
+    "center_phase": 0,
+    "boot_confirmed": 0
+  },
+  "checks": {
+    "tick_advances": true,
+    "app_vtor": true,
+    "cpu_running": true,
+    "app_readback_matches": true,
+    "config_v5_unchanged_after_startup": true,
+    "output_off": true,
+    "no_session_or_enable": true,
+    "executors_idle": true,
+    "no_latched_motion_fault": true
+  },
+  "B_physical_motion_verified": false,
+  "release_status": "candidate installed by explicit operator instruction; formal dist unchanged; known baseline static assertion retained"
+}

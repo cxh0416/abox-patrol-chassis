@@ -1,0 +1,191 @@
+{
+  "physical_channel": 2,
+  "read_only": true,
+  "results": [
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 2.5083000073209405
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 2.2484000073745847
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 2.5288000178989023
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 2.0527000015135854
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 2.513199986424297
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 2.3284000053536147
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 2.290100004756823
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 2.283999987412244
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 2.4742999812588096
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 2.2668000019621104
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 2.2916000161785632
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 2.2699999972246587
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 1.9560999935492873
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 1.9156000053044409
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 1.7446000128984451
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 1.8927000055555254
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 2.4076999980024993
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 2.1302000095602125
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 2.3164000012911856
+    },
+    {
+      "index": "0x6081",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 180,
+      "host_roundtrip_ms": 2.6384000084362924
+    },
+    {
+      "index": "0x6080",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 300,
+      "host_roundtrip_ms": 2.2465999936684966
+    },
+    {
+      "index": "0x6041",
+      "sent": true,
+      "status": "ok",
+      "width": 2,
+      "value": 1591,
+      "host_roundtrip_ms": 2.277799998410046
+    },
+    {
+      "index": "0x6061",
+      "sent": true,
+      "status": "ok",
+      "width": 1,
+      "value": 1,
+      "host_roundtrip_ms": 2.4064999888651073
+    }
+  ],
+  "limitations": "Host round trips after stop; not the original failing SDO timing or MCU receive timestamps."
+}

@@ -1,0 +1,10 @@
+mqtt_adapter_test passed
+PASS bench handshake, target conversion, limits, stop, malformed replies, faults and timeout
+PASS Config V5 layout, uncalibrated gate, direct control session, reconnect and lease revoke
+bench drive tests passed
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.342s
+
+OK
+Product OTA startup failure injection: PASS (abox-patrol-vehicle-chassis-firmware)

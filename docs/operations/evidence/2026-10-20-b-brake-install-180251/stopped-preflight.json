@@ -1,0 +1,29 @@
+{
+  "observed": {
+    "power_command": 0,
+    "session_active": 0,
+    "enable_request": 0,
+    "target_rpm": 0,
+    "ota_busy": 0,
+    "ota_busy_direct": 0,
+    "bench_phase": 0,
+    "drive_phase": 0,
+    "center_phase": 0,
+    "auto_requested": 0,
+    "left_actual_rpm": 0,
+    "right_actual_rpm": 0
+  },
+  "checks": {
+    "output_off": true,
+    "no_session": true,
+    "no_enable": true,
+    "zero_target": true,
+    "ota_idle": true,
+    "executors_idle": true,
+    "calibration_idle": true,
+    "auto_center_idle": true,
+    "zero_reported_wheels": true
+  },
+  "operator_confirmation": "A off; sticks released; vehicle stopped",
+  "correction": "BenchPhase and CenterCalibrationPhase are byte enums in the matching ARM image. Earlier preflight decoded phase as 32-bit; this snapshot decodes the actual byte field. Output/session/enable checks from the earlier snapshot remain valid."
+}

@@ -9,6 +9,7 @@
 #include "patrol_runtime.h"
 #include "ota_service.h"
 
+// 清除网络变更前的云发送在途关联。通知公共云服务，重置外部消息类型及候选取消标记，避免旧回执完成新连接的动作。
 void CloudTx_NetworkChanged(void)
 {
     ABoxCloudService_NetworkChanged(&g_cloud.cloud);
@@ -17,6 +18,7 @@ void CloudTx_NetworkChanged(void)
     g_cloud.mqtt_cancel_pending = 0U;
 }
 
+// 在被跟踪的 MQTT 发布完成后推进业务状态。响应完成后才缓存结果、允许延后重启、确认回滚或启动候选切换；心跳证明和日志分片也在此推进。
 static void tx_completed(void *context, ABoxCloudJobKind kind)
 {
     char result[128];
@@ -68,12 +70,17 @@ static void tx_completed(void *context, ABoxCloudJobKind kind)
     else if (completed == CLOUD_TX_ALERT) g_cloud.alert_pending = 0U;
 }
 
+// 查询云发送端口是否可提交发布。直接复用 MQTT 核心就绪状态，未就绪时保留调度任务等待后续轮询。
 static int tx_ready(void *context) { (void)context; return MQTT_Core_IsReady(); }
+// 查询 MQTT 是否已有发布事务占用发送路径。用于保证共享载荷和回执关联不被并发覆盖。
 static int tx_active(void *context) { (void)context; return MQTT_Core_IsPublishActive(); }
+// 查询指定发布操作的最终或在途回执状态。使用 operation 关联准确事务，不用其他消息的成功序号代替本次结果。
 static ABoxMqttReceiptStatus tx_receipt(void *context, uint64_t operation)
 { (void)context; return MQTT_Core_PublishResult(operation); }
+// 在云发布失败后安排传输恢复。仅当 MQTT 仍处于就绪状态时请求重连，避免重复打断已有恢复流程。
 static void tx_failed(void *context)
 { (void)context; if (MQTT_Core_IsReady()) MQTT_Core_RequestReconnect(); }
+// 编码并提交公共云调度器选定的消息。按任务类型设置 Topic、QoS 和 retain，生成可跟踪 operation；返回提交结果而非云端业务处理完成。
 static int tx_publish(void *context, const ABoxCloudJob *job, uint64_t *operation)
 {
     const char *topic = 0, *payload = g_cloud.tx_payload;
@@ -103,6 +110,7 @@ static int tx_publish(void *context, const ABoxCloudJob *job, uint64_t *operatio
     if (job->kind == ABOX_CLOUD_JOB_STATE) CloudMessages_RememberStatusSnapshot(CloudPort_Now());
     return 1;
 }
+// 提交日志或告警等外部类型发布并登记归属。成功返回 1，提交失败返回 -1；仅在核心接受发布后设置 external_tx_kind。
 static int send_external(CloudTxKind_t kind, const char *topic, const char *payload,
                          uint8_t qos, uint64_t *operation)
 {
@@ -110,6 +118,7 @@ static int send_external(CloudTxKind_t kind, const char *topic, const char *payl
     g_cloud.external_tx_kind=(uint8_t)kind;
     return 1;
 }
+// 在主业务之外调度时间同步、日志与告警。不覆盖已有在途发布，按现有优先级选择一条外部消息；返回值区分无任务、成功提交和失败。
 static int tx_external(void *context, uint64_t *operation)
 {
     (void)context;
@@ -144,6 +153,7 @@ static const ABoxCloudServicePort tx_port = {
     .ready=tx_ready, .publish_active=tx_active, .receipt=tx_receipt,
     .publish=tx_publish, .external=tx_external, .completed=tx_completed, .failed=tx_failed
 };
+// 执行一次云消息与状态事件发送调度。比较状态变化、轮询公共发送器，空闲时再安排 ICCID 查询；消息完成以跟踪回执为准。
 void CloudTx_Service(void)
 {
     uint32_t now=CloudPort_Now();

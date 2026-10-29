@@ -1,0 +1,43 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "archived_at": "2026-10-20T09:31:03.847870+08:00",
+  "purpose": "Immutable copy of previous formal dist before validated whole-directory replacement. Not new field acceptance.",
+  "artifacts": [
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\dist\\ABox_Boot.bin",
+      "path": "ABox_Boot.bin",
+      "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+      "bytes": 32768
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\dist\\boot_state_a_prod.bin",
+      "path": "boot_state_a_prod.bin",
+      "sha256": "32a85c505d18c6ea7639e43882a6248625c6b1eae3cf195cf54674f6707c366a",
+      "bytes": 2048
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\dist\\boot_state_b_prod.bin",
+      "path": "boot_state_b_prod.bin",
+      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8",
+      "bytes": 2048
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\dist\\Patrol_Vehicle_Chassis_App.bin",
+      "path": "Patrol_Vehicle_Chassis_App.bin",
+      "sha256": "3990b87dc261692e429cd807327b8221cf81a238ea4adc615e124645d63e67b6",
+      "bytes": 148520
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\dist\\Patrol_Vehicle_Chassis_Full.bin",
+      "path": "Patrol_Vehicle_Chassis_Full.bin",
+      "sha256": "542c83d895f933a92eb5cbb34a8b5096bb2d0919f6ddfb61240bf911467e7dde",
+      "bytes": 181288
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\dist\\release.manifest.json",
+      "path": "release.manifest.json",
+      "sha256": "ade86175d7dbc949d25f437344fe5fe731d95d51a5243532b35d519a43b1ac9b",
+      "bytes": 2344
+    }
+  ]
+}

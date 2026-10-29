@@ -1,0 +1,35 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "files": [
+    {
+      "archive_path": "docs\\operations\\evidence\\2026-10-23-steering-fault-readonly-183933-841860\\last-fault-0.bin",
+      "bytes": 128,
+      "sha256": "6f820907b1db64d5b56d8a190e2bdeba19de22590ed3dd56e7b455342aef91d2"
+    },
+    {
+      "archive_path": "docs\\operations\\evidence\\2026-10-23-steering-fault-readonly-183933-841860\\last-fault-1.bin",
+      "bytes": 128,
+      "sha256": "6f820907b1db64d5b56d8a190e2bdeba19de22590ed3dd56e7b455342aef91d2"
+    },
+    {
+      "archive_path": "docs\\operations\\evidence\\2026-10-23-steering-fault-readonly-183933-841860\\last-fault-2.bin",
+      "bytes": 128,
+      "sha256": "6f820907b1db64d5b56d8a190e2bdeba19de22590ed3dd56e7b455342aef91d2"
+    },
+    {
+      "archive_path": "docs\\operations\\evidence\\2026-10-23-steering-fault-readonly-183933-841860\\result.json",
+      "bytes": 11402,
+      "sha256": "0bffdf11d5942dda4d361d6dd2dad43f5faa66912eb34632ea5045d4ee9b0527"
+    },
+    {
+      "archive_path": "docs\\operations\\evidence\\2026-10-23-steering-fault-readonly-183933-841860\\schema.json",
+      "bytes": 17210,
+      "sha256": "50a1c03bc52afa430bd6160848872ea7311df9d1bb93e8427cb702d35c00a9b9"
+    },
+    {
+      "archive_path": "docs\\operations\\evidence\\2026-10-23-steering-fault-readonly-183933-841860\\steering-fault-current-readonly.py",
+      "bytes": 7541,
+      "sha256": "aa426e5273509d31f63394999377a2580ed86798076a3e8eb809ec210a66bcd9"
+    }
+  ]
+}

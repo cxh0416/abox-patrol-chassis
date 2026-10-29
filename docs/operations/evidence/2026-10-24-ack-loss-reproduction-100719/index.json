@@ -1,0 +1,59 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "files": [
+    {
+      "archive_path": "docs/operations/evidence/2026-10-24-ack-loss-reproduction-100719/analysis.json",
+      "original_path": null,
+      "bytes": 1363,
+      "sha256": "a55ba338b30085f792914b019b955159bc84f7e43ce15a95d48cdfd477189f1a"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-24-ack-loss-reproduction-100719/events.jsonl",
+      "original_path": "out/logs/can-reproduce-ack-loss-20261024-100719/events.jsonl",
+      "bytes": 944435,
+      "sha256": "db9c4f320e6be85e075a5af787347cac875d38a98b0208a668e86a851f511fb8"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-24-ack-loss-reproduction-100719/frames.jsonl",
+      "original_path": "out/logs/can-reproduce-ack-loss-20261024-100719/frames.jsonl",
+      "bytes": 34230131,
+      "sha256": "f7ed4f0af2803dcbe09a147937c5cfd68824d8d43d3088973f087294c05eade4"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-24-ack-loss-reproduction-100719/launch.json",
+      "original_path": "out/logs/can-reproduce-ack-loss-20261024-100719/launch.json",
+      "bytes": 361,
+      "sha256": "4a8ecdbafee3bc6082f54a6911f90f805e32c204321863ffe0853477d28e300a"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-24-ack-loss-reproduction-100719/metadata.json",
+      "original_path": "out/logs/can-reproduce-ack-loss-20261024-100719/metadata.json",
+      "bytes": 1169,
+      "sha256": "787f12b7091eafaca8c196c37a98ca3b23527784c1d01e053b3babb48248dac5"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-24-ack-loss-reproduction-100719/README.md",
+      "original_path": null,
+      "bytes": 1831,
+      "sha256": "da7b282a43d7047a8ac7ed22bc71279d33a2f568dd0340e735437efb984b81f2"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-24-ack-loss-reproduction-100719/sha256.json",
+      "original_path": "out/logs/can-reproduce-ack-loss-20261024-100719/sha256.json",
+      "bytes": 610,
+      "sha256": "f47d8b9758059e6a05f8a8c82713bf7608de82337f68d52dbbdfd706073c646e"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-24-ack-loss-reproduction-100719/STOP_FILE_PATH.txt",
+      "original_path": "out/logs/can-reproduce-ack-loss-20261024-100719/STOP_FILE_PATH.txt",
+      "bytes": 112,
+      "sha256": "4f1d1b0e3ec6d0698641edb42be39f13e601b97c1b47950b0ce5b70d38c2a9bd"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-24-ack-loss-reproduction-100719/summary.json",
+      "original_path": "out/logs/can-reproduce-ack-loss-20261024-100719/summary.json",
+      "bytes": 13363,
+      "sha256": "b664428de8a4b753bf3b5ab07b26af6dbd2f2af05bf0d460b09ed4009ec7aad8"
+    }
+  ]
+}

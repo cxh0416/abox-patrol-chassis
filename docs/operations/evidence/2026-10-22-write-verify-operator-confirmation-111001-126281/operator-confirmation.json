@@ -1,0 +1,18 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "recorded_at": "2026-10-22T11:10:01.126281+08:00",
+  "source": "Operator reply in current session",
+  "operator_reply_verbatim": "是烧录的0.2.77，结束时关闭过A-BOX板电源和电机电源",
+  "prior_operator_report_verbatim": "已进行了长时间测试，小车表现合格，没有安全风险",
+  "related_capture_index": "docs\\operations\\evidence\\2026-10-22-write-verify-field-110522-916058\\index.json",
+  "related_capture_index_sha256": "d81e513106a90d838b518280f3f5c232d704f9dadb1ba07aed4d1431f2791e14",
+  "installed_version_operator_confirmed": "0.2.77",
+  "installed_image_independent_hash_verified": false,
+  "power_off_at_test_end_operator_confirmed": [
+    "ABOX",
+    "motors"
+  ],
+  "interpretation": "End-of-run shutdown/fault records must be interpreted with the confirmed power-off sequence; they alone do not establish an operational fault during the driving test. Exact causal attribution and power-off timing are not independently measured.",
+  "validated_scope": "Operator-reported physical test acceptable; passive trace supports diagnostic read retry and continued communications. Missing write-ACK verification branch was not exercised.",
+  "existing_evidence_modified": false
+}

@@ -1,0 +1,9 @@
+{
+  "output_off": true,
+  "no_session": true,
+  "no_enable": true,
+  "ota_idle": true,
+  "bench_idle": true,
+  "center_idle_or_done": true,
+  "halted": true
+}

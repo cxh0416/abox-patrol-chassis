@@ -1,0 +1,4 @@
+PASS calibration stack: known frames 2320 + 1024 byte reserve <= 4096
+PASS MQTT trial save stack: known frames 2800 + 1024 byte reserve <= 4096
+PASS CANopen fault stack: known frames 448 + 512 byte library reserve <= 1024
+PASS center commit stack: known frames 1712 + 1024 byte reserve <= 4096

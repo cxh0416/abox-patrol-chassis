@@ -1,0 +1,3988 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "read_only": true,
+  "physical_channel": 2,
+  "sent": 398,
+  "results": [
+    {
+      "index": 24641,
+      "at": 171024.8069308,
+      "elapsed_s": 3.2654785999911837,
+      "offset_s": -0.005,
+      "host_lateness_ms": 0.3769999893847853,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1869000154547393
+    },
+    {
+      "index": 24676,
+      "at": 171024.9086242,
+      "elapsed_s": 3.3671719999983907,
+      "offset_s": -0.00475,
+      "host_lateness_ms": 0.25820001610554755,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.7580000092275441
+    },
+    {
+      "index": 24705,
+      "at": 171025.0095677,
+      "elapsed_s": 3.46811549999984,
+      "offset_s": -0.0045000000000000005,
+      "host_lateness_ms": 0.27810002211481333,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.8056999940890819
+    },
+    {
+      "index": 24641,
+      "at": 171025.1110027,
+      "elapsed_s": 3.5695504999894183,
+      "offset_s": -0.00425,
+      "host_lateness_ms": 0.40469999657943845,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.225699990754947
+    },
+    {
+      "index": 24676,
+      "at": 171025.2126241,
+      "elapsed_s": 3.6711719000013545,
+      "offset_s": -0.004,
+      "host_lateness_ms": 0.37020002491772175,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.1943999852519482
+    },
+    {
+      "index": 24705,
+      "at": 171025.3132108,
+      "elapsed_s": 3.7717585999926087,
+      "offset_s": -0.00375,
+      "host_lateness_ms": 0.3358999965712428,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.9541999897919595
+    },
+    {
+      "index": 24641,
+      "at": 171025.4150996,
+      "elapsed_s": 3.8736474000033922,
+      "offset_s": -0.0035,
+      "host_lateness_ms": 0.35379998735152185,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1900999816134572
+    },
+    {
+      "index": 24676,
+      "at": 171025.5157584,
+      "elapsed_s": 3.9743061999906786,
+      "offset_s": -0.0032500000000000003,
+      "host_lateness_ms": 0.26369999977760017,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.0550000006332994
+    },
+    {
+      "index": 24705,
+      "at": 171025.6173689,
+      "elapsed_s": 4.075916700006928,
+      "offset_s": -0.003,
+      "host_lateness_ms": 0.258200045209378,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.2615999730769545
+    },
+    {
+      "index": 24641,
+      "at": 171025.7188132,
+      "elapsed_s": 4.17736099998001,
+      "offset_s": -0.00275,
+      "host_lateness_ms": 0.3427999617997557,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.4958000101614743
+    },
+    {
+      "index": 24676,
+      "at": 171025.8206877,
+      "elapsed_s": 4.279235499998322,
+      "offset_s": -0.0025,
+      "host_lateness_ms": 0.464749988168478,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.36749999364838
+    },
+    {
+      "index": 24705,
+      "at": 171025.920888,
+      "elapsed_s": 4.3794357999868225,
+      "offset_s": -0.0022500000000000003,
+      "host_lateness_ms": 0.2121999568771571,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.2200000055599958
+    },
+    {
+      "index": 24641,
+      "at": 171026.0232347,
+      "elapsed_s": 4.481782499991823,
+      "offset_s": -0.002,
+      "host_lateness_ms": 0.4834500141441822,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.0843999916687608
+    },
+    {
+      "index": 24676,
+      "at": 171026.1236087,
+      "elapsed_s": 4.582156499993289,
+      "offset_s": -0.00175,
+      "host_lateness_ms": 0.28099995688535273,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.0016000014729798
+    },
+    {
+      "index": 24705,
+      "at": 171026.2248393,
+      "elapsed_s": 4.683387099998072,
+      "offset_s": -0.0015,
+      "host_lateness_ms": 0.36815000930801034,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.5420999843627214
+    },
+    {
+      "index": 24641,
+      "at": 171026.3266136,
+      "elapsed_s": 4.785161399981007,
+      "offset_s": -0.00125,
+      "host_lateness_ms": 0.3985999501310289,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1276000004727393
+    },
+    {
+      "index": 24676,
+      "at": 171026.4268774,
+      "elapsed_s": 4.885425199987367,
+      "offset_s": -0.001,
+      "host_lateness_ms": 0.4357499710749835,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.3780000153928995
+    },
+    {
+      "index": 24705,
+      "at": 171026.5287582,
+      "elapsed_s": 4.987305999995442,
+      "offset_s": -0.00075,
+      "host_lateness_ms": 0.44949998846277595,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.064100011717528
+    },
+    {
+      "index": 24641,
+      "at": 171026.6295486,
+      "elapsed_s": 5.0880963999952655,
+      "offset_s": -0.0005,
+      "host_lateness_ms": 0.4463499935809523,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.8723000064492226
+    },
+    {
+      "index": 24676,
+      "at": 171026.7305404,
+      "elapsed_s": 5.189088199986145,
+      "offset_s": -0.00025,
+      "host_lateness_ms": 0.39770000148564577,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.5433999942615628
+    },
+    {
+      "index": 24705,
+      "at": 171026.8329331,
+      "elapsed_s": 5.291480899992166,
+      "offset_s": 0.0,
+      "host_lateness_ms": 0.2724499790929258,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.970299995969981
+    },
+    {
+      "index": 24641,
+      "at": 171026.9329918,
+      "elapsed_s": 5.391539599979296,
+      "offset_s": 0.00025,
+      "host_lateness_ms": 0.2461499534547329,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.0381000174675137
+    },
+    {
+      "index": 24676,
+      "at": 171027.0343255,
+      "elapsed_s": 5.49287329998333,
+      "offset_s": 0.0005,
+      "host_lateness_ms": 0.33144999179057777,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.1578999983612448
+    },
+    {
+      "index": 24705,
+      "at": 171027.1354185,
+      "elapsed_s": 5.593966299988097,
+      "offset_s": 0.00075,
+      "host_lateness_ms": 0.3507499932311475,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.2076999992132187
+    },
+    {
+      "index": 24641,
+      "at": 171027.2366256,
+      "elapsed_s": 5.695173399988562,
+      "offset_s": 0.001,
+      "host_lateness_ms": 0.32294998527504504,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.4445999986492097
+    },
+    {
+      "index": 24676,
+      "at": 171027.3379981,
+      "elapsed_s": 5.796545899997,
+      "offset_s": 0.00125,
+      "host_lateness_ms": 0.4606500151567161,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.0312999947927892
+    },
+    {
+      "index": 24705,
+      "at": 171027.4397471,
+      "elapsed_s": 5.898294899991015,
+      "offset_s": 0.0015,
+      "host_lateness_ms": 0.25305000599473715,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.1595000105444342
+    },
+    {
+      "index": 24641,
+      "at": 171027.5404025,
+      "elapsed_s": 5.998950299981516,
+      "offset_s": 0.00175,
+      "host_lateness_ms": 0.2654999843798578,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.8119000121951103
+    },
+    {
+      "index": 24676,
+      "at": 171027.6416454,
+      "elapsed_s": 6.1001931999926455,
+      "offset_s": 0.002,
+      "host_lateness_ms": 0.3797999816015363,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.7786999922245741
+    },
+    {
+      "index": 24705,
+      "at": 171027.7431136,
+      "elapsed_s": 6.201661400002195,
+      "offset_s": 0.0022500000000000003,
+      "host_lateness_ms": 0.46670003212057054,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.5629999979864806
+    },
+    {
+      "index": 24641,
+      "at": 171027.8443224,
+      "elapsed_s": 6.302870199986501,
+      "offset_s": 0.0025,
+      "host_lateness_ms": 0.5044999998062849,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.8299000037368387
+    },
+    {
+      "index": 24676,
+      "at": 171027.9450688,
+      "elapsed_s": 6.403616600000532,
+      "offset_s": 0.00275,
+      "host_lateness_ms": 0.2854999911505729,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.7501999789383262
+    },
+    {
+      "index": 24705,
+      "at": 171028.0466693,
+      "elapsed_s": 6.505217099998845,
+      "offset_s": 0.003,
+      "host_lateness_ms": 0.37560000782832503,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.7794999983161688
+    },
+    {
+      "index": 24641,
+      "at": 171028.1480233,
+      "elapsed_s": 6.60657109998283,
+      "offset_s": 0.0032500000000000003,
+      "host_lateness_ms": 0.4082999948877841,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.874500023201108
+    },
+    {
+      "index": 24676,
+      "at": 171028.2498394,
+      "elapsed_s": 6.7083871999930125,
+      "offset_s": 0.0035,
+      "host_lateness_ms": 0.20209999638609588,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.8749999979045242
+    },
+    {
+      "index": 24705,
+      "at": 171028.3508419,
+      "elapsed_s": 6.809389700007159,
+      "offset_s": 0.00375,
+      "host_lateness_ms": 0.23440000950358808,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.7357999857049435
+    },
+    {
+      "index": 24641,
+      "at": 171028.4523988,
+      "elapsed_s": 6.910946599993622,
+      "offset_s": 0.004,
+      "host_lateness_ms": 0.3855000250041485,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1685999925248325
+    },
+    {
+      "index": 24676,
+      "at": 171028.5537457,
+      "elapsed_s": 7.012293499981752,
+      "offset_s": 0.00425,
+      "host_lateness_ms": 0.33745000837370753,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.7229000222869217
+    },
+    {
+      "index": 24705,
+      "at": 171028.6539723,
+      "elapsed_s": 7.112520099995891,
+      "offset_s": 0.0045000000000000005,
+      "host_lateness_ms": 0.2497999812476337,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.9288999901618809
+    },
+    {
+      "index": 24641,
+      "at": 171028.7562877,
+      "elapsed_s": 7.214835499995388,
+      "offset_s": 0.00475,
+      "host_lateness_ms": 0.41370000690221786,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.189300004625693
+    },
+    {
+      "index": 24676,
+      "at": 171028.8568963,
+      "elapsed_s": 7.3154441000078805,
+      "offset_s": 0.005,
+      "host_lateness_ms": 0.3262000100221485,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.0947999835480005
+    },
+    {
+      "index": 24705,
+      "at": 171028.9484099,
+      "elapsed_s": 7.406957700004568,
+      "offset_s": -0.005,
+      "host_lateness_ms": 0.3473000251688063,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.0756999836303294
+    },
+    {
+      "index": 24641,
+      "at": 171029.049201,
+      "elapsed_s": 7.507748799980618,
+      "offset_s": -0.00475,
+      "host_lateness_ms": 0.3827999753411859,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.2496000272221863
+    },
+    {
+      "index": 24676,
+      "at": 171029.1503705,
+      "elapsed_s": 7.608918299985817,
+      "offset_s": -0.0045000000000000005,
+      "host_lateness_ms": 0.29239998548291624,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.745400000596419
+    },
+    {
+      "index": 24705,
+      "at": 171029.2511879,
+      "elapsed_s": 7.709735699987505,
+      "offset_s": -0.00425,
+      "host_lateness_ms": 0.32479999936185777,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.1567000183276832
+    },
+    {
+      "index": 24641,
+      "at": 171029.3529207,
+      "elapsed_s": 7.811468500003684,
+      "offset_s": -0.004,
+      "host_lateness_ms": 0.28600002406165004,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.188700000056997
+    },
+    {
+      "index": 24676,
+      "at": 171029.4538993,
+      "elapsed_s": 7.912447099981364,
+      "offset_s": -0.00375,
+      "host_lateness_ms": 0.2894999925047159,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.2706000125035644
+    },
+    {
+      "index": 24705,
+      "at": 171029.5555723,
+      "elapsed_s": 8.014120100007858,
+      "offset_s": -0.0035,
+      "host_lateness_ms": 0.2967000182252377,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.2446999899111688
+    },
+    {
+      "index": 24641,
+      "at": 171029.6570841,
+      "elapsed_s": 8.115631900000153,
+      "offset_s": -0.0032500000000000003,
+      "host_lateness_ms": 0.2403000253252685,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1901999823749065
+    },
+    {
+      "index": 24676,
+      "at": 171029.7576971,
+      "elapsed_s": 8.216244899987942,
+      "offset_s": -0.003,
+      "host_lateness_ms": 0.5220999883022159,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.1752000136766583
+    },
+    {
+      "index": 24705,
+      "at": 171029.8590532,
+      "elapsed_s": 8.317600999987917,
+      "offset_s": -0.00275,
+      "host_lateness_ms": 0.3826000029221177,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.8214999979827553
+    },
+    {
+      "index": 24641,
+      "at": 171029.9599321,
+      "elapsed_s": 8.418479899992235,
+      "offset_s": -0.0025,
+      "host_lateness_ms": 0.3882000164594501,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.7504000095650554
+    },
+    {
+      "index": 24676,
+      "at": 171030.0619115,
+      "elapsed_s": 8.5204592999944,
+      "offset_s": -0.0022500000000000003,
+      "host_lateness_ms": 0.40210000588558614,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.1593000090215355
+    },
+    {
+      "index": 24705,
+      "at": 171030.1626188,
+      "elapsed_s": 8.621166600001743,
+      "offset_s": -0.002,
+      "host_lateness_ms": 0.25110002025030553,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.3719999988097697
+    },
+    {
+      "index": 24641,
+      "at": 171030.263482,
+      "elapsed_s": 8.722029800002929,
+      "offset_s": -0.00175,
+      "host_lateness_ms": 0.24220001068897545,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.0551000013947487
+    },
+    {
+      "index": 24676,
+      "at": 171030.3654545,
+      "elapsed_s": 8.824002299981657,
+      "offset_s": -0.0015,
+      "host_lateness_ms": 0.3083500196225941,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 2.6345000078435987
+    },
+    {
+      "index": 24705,
+      "at": 171030.4680095,
+      "elapsed_s": 8.92655730000115,
+      "offset_s": -0.00125,
+      "host_lateness_ms": 0.37655001506209373,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.7593999907840043
+    },
+    {
+      "index": 24641,
+      "at": 171030.5672759,
+      "elapsed_s": 9.02582369997981,
+      "offset_s": -0.001,
+      "host_lateness_ms": 0.30914999661035836,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.104000024497509
+    },
+    {
+      "index": 24676,
+      "at": 171030.6688483,
+      "elapsed_s": 9.127396099996986,
+      "offset_s": -0.00075,
+      "host_lateness_ms": 0.4524000396486372,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.2685999972745776
+    },
+    {
+      "index": 24705,
+      "at": 171030.7707294,
+      "elapsed_s": 9.229277200007346,
+      "offset_s": -0.0005,
+      "host_lateness_ms": 0.2772000152617693,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.690299977781251
+    },
+    {
+      "index": 24641,
+      "at": 171030.871217,
+      "elapsed_s": 9.329764800000703,
+      "offset_s": -0.00025,
+      "host_lateness_ms": 0.34480003523640335,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1721999908331782
+    },
+    {
+      "index": 24676,
+      "at": 171030.9722694,
+      "elapsed_s": 9.43081719998736,
+      "offset_s": 0.0,
+      "host_lateness_ms": 0.2401999954599887,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.663500017253682
+    },
+    {
+      "index": 24705,
+      "at": 171031.0734234,
+      "elapsed_s": 9.531971199990949,
+      "offset_s": 0.00025,
+      "host_lateness_ms": 0.25344997993670404,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.6853000086266547
+    },
+    {
+      "index": 24641,
+      "at": 171031.1746955,
+      "elapsed_s": 9.633243299991591,
+      "offset_s": 0.0005,
+      "host_lateness_ms": 0.20829998538829386,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.3015000149607658
+    },
+    {
+      "index": 24676,
+      "at": 171031.2760963,
+      "elapsed_s": 9.734644099982688,
+      "offset_s": 0.00075,
+      "host_lateness_ms": 0.4401999758556485,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.0430999973323196
+    },
+    {
+      "index": 24705,
+      "at": 171031.3772535,
+      "elapsed_s": 9.83580129998154,
+      "offset_s": 0.001,
+      "host_lateness_ms": 0.43509999522939324,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.7069999992381781
+    },
+    {
+      "index": 24641,
+      "at": 171031.4785095,
+      "elapsed_s": 9.937057300005108,
+      "offset_s": 0.00125,
+      "host_lateness_ms": 0.33080001594498754,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.8818999922368675
+    },
+    {
+      "index": 24676,
+      "at": 171031.5795073,
+      "elapsed_s": 10.038055099983467,
+      "offset_s": 0.0015,
+      "host_lateness_ms": 0.28369997744448483,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.732900011120364
+    },
+    {
+      "index": 24705,
+      "at": 171031.6809089,
+      "elapsed_s": 10.139456699980656,
+      "offset_s": 0.00175,
+      "host_lateness_ms": 0.23180001880973577,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.9827000030782074
+    },
+    {
+      "index": 24641,
+      "at": 171031.7822762,
+      "elapsed_s": 10.240824000007706,
+      "offset_s": 0.002,
+      "host_lateness_ms": 0.34340002457611263,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.2394999794196337
+    },
+    {
+      "index": 24676,
+      "at": 171031.8840265,
+      "elapsed_s": 10.342574299982516,
+      "offset_s": 0.0022500000000000003,
+      "host_lateness_ms": 0.23644999600946903,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.2143000203650445
+    },
+    {
+      "index": 24705,
+      "at": 171031.9850805,
+      "elapsed_s": 10.443628299981356,
+      "offset_s": 0.0025,
+      "host_lateness_ms": 0.2447999722789973,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.8274000138044357
+    },
+    {
+      "index": 24641,
+      "at": 171032.0862732,
+      "elapsed_s": 10.544820999988588,
+      "offset_s": 0.00275,
+      "host_lateness_ms": 0.3498999576549977,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.201900013256818
+    },
+    {
+      "index": 24676,
+      "at": 171032.1884183,
+      "elapsed_s": 10.64696610000101,
+      "offset_s": 0.003,
+      "host_lateness_ms": 0.44895001337863505,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.748799997381866
+    },
+    {
+      "index": 24705,
+      "at": 171032.2887253,
+      "elapsed_s": 10.74727309998707,
+      "offset_s": 0.0032500000000000003,
+      "host_lateness_ms": 0.39805000415071845,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.1660000018309802
+    },
+    {
+      "index": 24641,
+      "at": 171032.3894809,
+      "elapsed_s": 10.848028699983843,
+      "offset_s": 0.0035,
+      "host_lateness_ms": 0.37220001104287803,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1574000236578286
+    },
+    {
+      "index": 24676,
+      "at": 171032.4912559,
+      "elapsed_s": 10.949803700001212,
+      "offset_s": 0.00375,
+      "host_lateness_ms": 0.21975001436658204,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.7371999963652343
+    },
+    {
+      "index": 24705,
+      "at": 171032.5922263,
+      "elapsed_s": 11.050774100003764,
+      "offset_s": 0.004,
+      "host_lateness_ms": 0.46430001384578645,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.7544999825768173
+    },
+    {
+      "index": 24641,
+      "at": 171032.6942965,
+      "elapsed_s": 11.152844299998833,
+      "offset_s": 0.00425,
+      "host_lateness_ms": 0.3066000062972307,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.2980999890714884
+    },
+    {
+      "index": 24676,
+      "at": 171032.795402,
+      "elapsed_s": 11.253949799982365,
+      "offset_s": 0.0045000000000000005,
+      "host_lateness_ms": 0.3356999659445137,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.2159000034444034
+    },
+    {
+      "index": 24705,
+      "at": 171032.8957333,
+      "elapsed_s": 11.354281100007938,
+      "offset_s": 0.00475,
+      "host_lateness_ms": 0.32515000202693045,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.2180999910924584
+    },
+    {
+      "index": 24641,
+      "at": 171032.9982751,
+      "elapsed_s": 11.456822899985127,
+      "offset_s": 0.005,
+      "host_lateness_ms": 0.49739997484721243,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.202800020109862
+    },
+    {
+      "index": 24676,
+      "at": 171033.0879192,
+      "elapsed_s": 11.546467000007397,
+      "offset_s": -0.005,
+      "host_lateness_ms": 0.3281499957665801,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.439499988919124
+    },
+    {
+      "index": 24705,
+      "at": 171033.1894338,
+      "elapsed_s": 11.647981599991908,
+      "offset_s": -0.00475,
+      "host_lateness_ms": 0.3843999875243753,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.7057000077329576
+    },
+    {
+      "index": 24641,
+      "at": 171033.2905051,
+      "elapsed_s": 11.749052900006063,
+      "offset_s": -0.0045000000000000005,
+      "host_lateness_ms": 0.413600035244599,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.9714999760035425
+    },
+    {
+      "index": 24676,
+      "at": 171033.392521,
+      "elapsed_s": 11.851068799995119,
+      "offset_s": -0.00425,
+      "host_lateness_ms": 0.46320000546984375,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.2863999872934073
+    },
+    {
+      "index": 24705,
+      "at": 171033.4931588,
+      "elapsed_s": 11.951706599997124,
+      "offset_s": -0.004,
+      "host_lateness_ms": 0.5729499680455774,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.9526999967638403
+    },
+    {
+      "index": 24641,
+      "at": 171033.5945375,
+      "elapsed_s": 12.053085299994564,
+      "offset_s": -0.00375,
+      "host_lateness_ms": 0.38350000977516174,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.592099986737594
+    },
+    {
+      "index": 24676,
+      "at": 171033.6962418,
+      "elapsed_s": 12.154789599997457,
+      "offset_s": -0.0035,
+      "host_lateness_ms": 0.3591999993659556,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.7590999884996563
+    },
+    {
+      "index": 24705,
+      "at": 171033.7969193,
+      "elapsed_s": 12.255467099981615,
+      "offset_s": -0.0032500000000000003,
+      "host_lateness_ms": 0.21425000159069896,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.0939000057987869
+    },
+    {
+      "index": 24641,
+      "at": 171033.8983996,
+      "elapsed_s": 12.356947399995988,
+      "offset_s": -0.003,
+      "host_lateness_ms": 0.3387999895494431,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.8449000015389174
+    },
+    {
+      "index": 24676,
+      "at": 171033.9997382,
+      "elapsed_s": 12.458285999979125,
+      "offset_s": -0.00275,
+      "host_lateness_ms": 0.23914998746477067,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.0691000206861645
+    },
+    {
+      "index": 24705,
+      "at": 171034.1012081,
+      "elapsed_s": 12.559755900001619,
+      "offset_s": -0.0025,
+      "host_lateness_ms": 0.4191500192973763,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.9160999907180667
+    },
+    {
+      "index": 24641,
+      "at": 171034.2022129,
+      "elapsed_s": 12.660760700004175,
+      "offset_s": -0.0022500000000000003,
+      "host_lateness_ms": 0.36275002639740705,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.7255999953486025
+    },
+    {
+      "index": 24676,
+      "at": 171034.3032884,
+      "elapsed_s": 12.761836199992104,
+      "offset_s": -0.002,
+      "host_lateness_ms": 0.3139000036753714,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.6671999872196466
+    },
+    {
+      "index": 24705,
+      "at": 171034.4052753,
+      "elapsed_s": 12.86382309999317,
+      "offset_s": -0.00175,
+      "host_lateness_ms": 0.2566500043030828,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.065999997081235
+    },
+    {
+      "index": 24641,
+      "at": 171034.50577,
+      "elapsed_s": 12.964317799982382,
+      "offset_s": -0.0015,
+      "host_lateness_ms": 0.31284999568015337,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.5335000061895698
+    },
+    {
+      "index": 24676,
+      "at": 171034.6072201,
+      "elapsed_s": 13.065767899999628,
+      "offset_s": -0.00125,
+      "host_lateness_ms": 0.457649992313236,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.6676999803166837
+    },
+    {
+      "index": 24705,
+      "at": 171034.70922,
+      "elapsed_s": 13.167767799983267,
+      "offset_s": -0.001,
+      "host_lateness_ms": 0.619249971350655,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.7461000059265643
+    },
+    {
+      "index": 24641,
+      "at": 171034.8091411,
+      "elapsed_s": 13.267688899999484,
+      "offset_s": -0.00075,
+      "host_lateness_ms": 0.3889000217895955,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1018000077456236
+    },
+    {
+      "index": 24676,
+      "at": 171034.9106071,
+      "elapsed_s": 13.369154899992282,
+      "offset_s": -0.0005,
+      "host_lateness_ms": 0.2500000118743628,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.0146000131499022
+    },
+    {
+      "index": 24705,
+      "at": 171035.0124988,
+      "elapsed_s": 13.471046599996043,
+      "offset_s": -0.00025,
+      "host_lateness_ms": 0.3433000238146633,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.2040000001434237
+    },
+    {
+      "index": 24641,
+      "at": 171035.1129072,
+      "elapsed_s": 13.571454999997513,
+      "offset_s": 0.0,
+      "host_lateness_ms": 0.3388000186532736,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.5448000049218535
+    },
+    {
+      "index": 24676,
+      "at": 171035.2150524,
+      "elapsed_s": 13.673600199981593,
+      "offset_s": 0.00025,
+      "host_lateness_ms": 0.4868999822065234,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.8316000059712678
+    },
+    {
+      "index": 24705,
+      "at": 171035.3150697,
+      "elapsed_s": 13.773617500002729,
+      "offset_s": 0.0005,
+      "host_lateness_ms": 0.2572000084910542,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.1751999845728278
+    },
+    {
+      "index": 24641,
+      "at": 171035.416549,
+      "elapsed_s": 13.875096799980383,
+      "offset_s": 0.00075,
+      "host_lateness_ms": 0.35734998527914286,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.8237000147346407
+    },
+    {
+      "index": 24676,
+      "at": 171035.5178792,
+      "elapsed_s": 13.97642699998687,
+      "offset_s": 0.001,
+      "host_lateness_ms": 0.4098499775864184,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.8799000061117113
+    },
+    {
+      "index": 24705,
+      "at": 171035.6189428,
+      "elapsed_s": 14.077490600000601,
+      "offset_s": 0.00125,
+      "host_lateness_ms": 0.36925001768395305,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.6217999800574034
+    },
+    {
+      "index": 24641,
+      "at": 171035.7204483,
+      "elapsed_s": 14.178996100003133,
+      "offset_s": 0.0015,
+      "host_lateness_ms": 0.4479499766603112,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.7500999781768769
+    },
+    {
+      "index": 24676,
+      "at": 171035.821315,
+      "elapsed_s": 14.279862800001865,
+      "offset_s": 0.00175,
+      "host_lateness_ms": 0.3058500005863607,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.6571999876759946
+    },
+    {
+      "index": 24705,
+      "at": 171035.9225986,
+      "elapsed_s": 14.381146400002763,
+      "offset_s": 0.002,
+      "host_lateness_ms": 0.27615000726655126,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.2089999800082296
+    },
+    {
+      "index": 24641,
+      "at": 171036.0238607,
+      "elapsed_s": 14.482408499985468,
+      "offset_s": 0.0022500000000000003,
+      "host_lateness_ms": 0.31174998730421066,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.7195000071078539
+    },
+    {
+      "index": 24676,
+      "at": 171036.1250846,
+      "elapsed_s": 14.583632399997441,
+      "offset_s": 0.0025,
+      "host_lateness_ms": 0.2865499700419605,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.1789999844040722
+    },
+    {
+      "index": 24705,
+      "at": 171036.2266505,
+      "elapsed_s": 14.685198299994227,
+      "offset_s": 0.00275,
+      "host_lateness_ms": 0.39894995279610157,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.1129000049550086
+    },
+    {
+      "index": 24641,
+      "at": 171036.3278931,
+      "elapsed_s": 14.786440900003072,
+      "offset_s": 0.003,
+      "host_lateness_ms": 0.29115000506863,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.8242999794892967
+    },
+    {
+      "index": 24676,
+      "at": 171036.4292411,
+      "elapsed_s": 14.887788899999578,
+      "offset_s": 0.0032500000000000003,
+      "host_lateness_ms": 0.3385499876458198,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.6862999871373177
+    },
+    {
+      "index": 24705,
+      "at": 171036.5303855,
+      "elapsed_s": 14.988933299988275,
+      "offset_s": 0.0035,
+      "host_lateness_ms": 0.44605002040043473,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.2172000133432448
+    },
+    {
+      "index": 24641,
+      "at": 171036.6323343,
+      "elapsed_s": 15.090882099990267,
+      "offset_s": 0.00375,
+      "host_lateness_ms": 0.40674995398148894,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.0040999914053828
+    },
+    {
+      "index": 24676,
+      "at": 171036.7334814,
+      "elapsed_s": 15.192029199999524,
+      "offset_s": 0.004,
+      "host_lateness_ms": 0.420550029957667,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.7403999916277826
+    },
+    {
+      "index": 24705,
+      "at": 171036.8338218,
+      "elapsed_s": 15.292369600007078,
+      "offset_s": 0.00425,
+      "host_lateness_ms": 0.30464999144896865,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.1819999781437218
+    },
+    {
+      "index": 24641,
+      "at": 171036.9360272,
+      "elapsed_s": 15.394574999983888,
+      "offset_s": 0.0045000000000000005,
+      "host_lateness_ms": 0.26634999085217714,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.2101000174880028
+    },
+    {
+      "index": 24676,
+      "at": 171037.0372755,
+      "elapsed_s": 15.495823300007032,
+      "offset_s": 0.00475,
+      "host_lateness_ms": 0.37029999657534063,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.0170999739784747
+    },
+    {
+      "index": 24705,
+      "at": 171037.1381926,
+      "elapsed_s": 15.596740399982082,
+      "offset_s": 0.005,
+      "host_lateness_ms": 0.31244996353052557,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.1525000154506415
+    },
+    {
+      "index": 24641,
+      "at": 171037.2294772,
+      "elapsed_s": 15.68802499998128,
+      "offset_s": -0.005,
+      "host_lateness_ms": 0.29024999821558595,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.249500026460737
+    },
+    {
+      "index": 24676,
+      "at": 171037.3309578,
+      "elapsed_s": 15.789505599997938,
+      "offset_s": -0.00475,
+      "host_lateness_ms": 0.297949998639524,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.3212999911047518
+    },
+    {
+      "index": 24705,
+      "at": 171037.4317721,
+      "elapsed_s": 15.890319900005125,
+      "offset_s": -0.0045000000000000005,
+      "host_lateness_ms": 0.3625500248745084,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.7538999780081213
+    },
+    {
+      "index": 24641,
+      "at": 171037.5327059,
+      "elapsed_s": 15.99125369999092,
+      "offset_s": -0.00425,
+      "host_lateness_ms": 0.24434999795630574,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.971500005107373
+    },
+    {
+      "index": 24676,
+      "at": 171037.634485,
+      "elapsed_s": 16.0930327999813,
+      "offset_s": -0.004,
+      "host_lateness_ms": 0.2831499732565135,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.2045000039506704
+    },
+    {
+      "index": 24705,
+      "at": 171037.7347493,
+      "elapsed_s": 16.19329709999147,
+      "offset_s": -0.00375,
+      "host_lateness_ms": 0.23689999943599105,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.7008000102359802
+    },
+    {
+      "index": 24641,
+      "at": 171037.8360778,
+      "elapsed_s": 16.29462559998501,
+      "offset_s": -0.0035,
+      "host_lateness_ms": 0.2609499788377434,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.89490000391379
+    },
+    {
+      "index": 24676,
+      "at": 171037.9383241,
+      "elapsed_s": 16.396871899982216,
+      "offset_s": -0.0032500000000000003,
+      "host_lateness_ms": 0.3278499934822321,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.170800009276718
+    },
+    {
+      "index": 24705,
+      "at": 171038.0388179,
+      "elapsed_s": 16.49736569999368,
+      "offset_s": -0.003,
+      "host_lateness_ms": 0.26744999922811985,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.0220000112894922
+    },
+    {
+      "index": 24641,
+      "at": 171038.1406026,
+      "elapsed_s": 16.599150399997598,
+      "offset_s": -0.00275,
+      "host_lateness_ms": 0.44005000381730497,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.0220999829471111
+    },
+    {
+      "index": 24676,
+      "at": 171038.2416577,
+      "elapsed_s": 16.700205500004813,
+      "offset_s": -0.0025,
+      "host_lateness_ms": 0.4299500142224133,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.7514999888371676
+    },
+    {
+      "index": 24705,
+      "at": 171038.3425809,
+      "elapsed_s": 16.801128699997207,
+      "offset_s": -0.0022500000000000003,
+      "host_lateness_ms": 0.2766499819699675,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.7836000004317611
+    },
+    {
+      "index": 24641,
+      "at": 171038.4438688,
+      "elapsed_s": 16.902416600001743,
+      "offset_s": -0.002,
+      "host_lateness_ms": 0.47415003064088523,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.135200000135228
+    },
+    {
+      "index": 24676,
+      "at": 171038.5453486,
+      "elapsed_s": 17.003896399983205,
+      "offset_s": -0.00175,
+      "host_lateness_ms": 0.28685000143013895,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.7753000245429575
+    },
+    {
+      "index": 24705,
+      "at": 171038.646301,
+      "elapsed_s": 17.104848799994215,
+      "offset_s": -0.0015,
+      "host_lateness_ms": 0.39055003435350955,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.1777000036090612
+    },
+    {
+      "index": 24641,
+      "at": 171038.7472745,
+      "elapsed_s": 17.20582229999127,
+      "offset_s": -0.00125,
+      "host_lateness_ms": 0.42955001117661595,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.6676999910268933
+    },
+    {
+      "index": 24676,
+      "at": 171038.8486026,
+      "elapsed_s": 17.307150399981765,
+      "offset_s": -0.001,
+      "host_lateness_ms": 0.3917499561794102,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.233500021044165
+    },
+    {
+      "index": 24705,
+      "at": 171038.9502775,
+      "elapsed_s": 17.408825299993623,
+      "offset_s": -0.00075,
+      "host_lateness_ms": 0.46525002107955515,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.6931999998632818
+    },
+    {
+      "index": 24641,
+      "at": 171039.0507357,
+      "elapsed_s": 17.509283499995945,
+      "offset_s": -0.0005,
+      "host_lateness_ms": 0.3417999832890928,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.8515000119805336
+    },
+    {
+      "index": 24676,
+      "at": 171039.1532384,
+      "elapsed_s": 17.61178619999555,
+      "offset_s": -0.00025,
+      "host_lateness_ms": 0.21145000937394798,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.6325999856926501
+    },
+    {
+      "index": 24705,
+      "at": 171039.2533497,
+      "elapsed_s": 17.711897500004852,
+      "offset_s": 0.0,
+      "host_lateness_ms": 0.38715003756806254,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.9812999924179167
+    },
+    {
+      "index": 24641,
+      "at": 171039.3545157,
+      "elapsed_s": 17.8130634999834,
+      "offset_s": 0.00025,
+      "host_lateness_ms": 0.311549985781312,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.7311000081244856
+    },
+    {
+      "index": 24676,
+      "at": 171039.4556872,
+      "elapsed_s": 17.914235000003828,
+      "offset_s": 0.0005,
+      "host_lateness_ms": 0.4142500401940197,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.2132999836467206
+    },
+    {
+      "index": 24705,
+      "at": 171039.5570367,
+      "elapsed_s": 18.01558449998265,
+      "offset_s": 0.00075,
+      "host_lateness_ms": 0.39435000508092344,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.572600012877956
+    },
+    {
+      "index": 24641,
+      "at": 171039.6588533,
+      "elapsed_s": 18.11740109999664,
+      "offset_s": 0.001,
+      "host_lateness_ms": 0.40355001692660153,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 2.1938999998383224
+    },
+    {
+      "index": 24676,
+      "at": 171039.7595729,
+      "elapsed_s": 18.218120699981228,
+      "offset_s": 0.00125,
+      "host_lateness_ms": 0.3530000103637576,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.7826000219210982
+    },
+    {
+      "index": 24705,
+      "at": 171039.8606549,
+      "elapsed_s": 18.319202699989546,
+      "offset_s": 0.0015,
+      "host_lateness_ms": 0.3872999513987452,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.7569000008516014
+    },
+    {
+      "index": 24641,
+      "at": 171039.9619632,
+      "elapsed_s": 18.4205110000039,
+      "offset_s": 0.00175,
+      "host_lateness_ms": 0.3858000272884965,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1701999756041914
+    },
+    {
+      "index": 24676,
+      "at": 171040.0630471,
+      "elapsed_s": 18.52159489999758,
+      "offset_s": 0.002,
+      "host_lateness_ms": 0.2431499888189137,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.6843000010121614
+    },
+    {
+      "index": 24705,
+      "at": 171040.1645405,
+      "elapsed_s": 18.62308829999529,
+      "offset_s": 0.0022500000000000003,
+      "host_lateness_ms": 0.2701000194065273,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.20749999769032
+    },
+    {
+      "index": 24641,
+      "at": 171040.2655996,
+      "elapsed_s": 18.724147400003858,
+      "offset_s": 0.0025,
+      "host_lateness_ms": 0.23684996995143592,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.243299979250878
+    },
+    {
+      "index": 24676,
+      "at": 171040.366996,
+      "elapsed_s": 18.825543799990555,
+      "offset_s": 0.00275,
+      "host_lateness_ms": 0.39744997047819197,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.7585000023245811
+    },
+    {
+      "index": 24705,
+      "at": 171040.4682716,
+      "elapsed_s": 18.926819399988744,
+      "offset_s": 0.003,
+      "host_lateness_ms": 0.2379999787081033,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.3432000123430043
+    },
+    {
+      "index": 24641,
+      "at": 171040.5692781,
+      "elapsed_s": 19.027825900004245,
+      "offset_s": 0.0032500000000000003,
+      "host_lateness_ms": 0.2010999887716025,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.8047999872360379
+    },
+    {
+      "index": 24676,
+      "at": 171040.6714875,
+      "elapsed_s": 19.13003529998241,
+      "offset_s": 0.0035,
+      "host_lateness_ms": 0.20799998310394585,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.2138000165577978
+    },
+    {
+      "index": 24705,
+      "at": 171040.7728586,
+      "elapsed_s": 19.231406399980187,
+      "offset_s": 0.00375,
+      "host_lateness_ms": 0.2402999671176076,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.7455000013578683
+    },
+    {
+      "index": 24641,
+      "at": 171040.8731023,
+      "elapsed_s": 19.331650099979015,
+      "offset_s": 0.004,
+      "host_lateness_ms": 0.27829999453388155,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1750000121537596
+    },
+    {
+      "index": 24676,
+      "at": 171040.9753648,
+      "elapsed_s": 19.43391259998316,
+      "offset_s": 0.00425,
+      "host_lateness_ms": 0.48699998296797276,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.5873000083956867
+    },
+    {
+      "index": 24705,
+      "at": 171041.0755042,
+      "elapsed_s": 19.534052000002703,
+      "offset_s": 0.0045000000000000005,
+      "host_lateness_ms": 0.3175000019837171,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.9584999934304506
+    },
+    {
+      "index": 24641,
+      "at": 171041.1774003,
+      "elapsed_s": 19.63594809998176,
+      "offset_s": 0.00475,
+      "host_lateness_ms": 0.32619998091831803,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1658000003080815
+    },
+    {
+      "index": 24676,
+      "at": 171041.2780322,
+      "elapsed_s": 19.736579999997048,
+      "offset_s": 0.005,
+      "host_lateness_ms": 0.29779999749735,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.7355999841820449
+    },
+    {
+      "index": 24705,
+      "at": 171041.3700386,
+      "elapsed_s": 19.828586399991764,
+      "offset_s": -0.005,
+      "host_lateness_ms": 0.27269998099654913,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 2.4332999892067164
+    },
+    {
+      "index": 24641,
+      "at": 171041.4703262,
+      "elapsed_s": 19.928874000004726,
+      "offset_s": -0.00475,
+      "host_lateness_ms": 0.3794000076595694,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.9566999797243625
+    },
+    {
+      "index": 24676,
+      "at": 171041.5719744,
+      "elapsed_s": 20.0305221999879,
+      "offset_s": -0.0045000000000000005,
+      "host_lateness_ms": 0.40740001713857055,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.181900006486103
+    },
+    {
+      "index": 24705,
+      "at": 171041.6728269,
+      "elapsed_s": 20.13137469999492,
+      "offset_s": -0.00425,
+      "host_lateness_ms": 0.3527999797370285,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.7585000130347908
+    },
+    {
+      "index": 24641,
+      "at": 171041.7742736,
+      "elapsed_s": 20.23282139998628,
+      "offset_s": -0.004,
+      "host_lateness_ms": 0.39489998016506433,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1652999965008348
+    },
+    {
+      "index": 24676,
+      "at": 171041.8762589,
+      "elapsed_s": 20.334806700004265,
+      "offset_s": -0.00375,
+      "host_lateness_ms": 0.40980003541335464,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.2411999923642725
+    },
+    {
+      "index": 24705,
+      "at": 171041.977367,
+      "elapsed_s": 20.435914800007595,
+      "offset_s": -0.0035,
+      "host_lateness_ms": 0.3412999794818461,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.154699973994866
+    },
+    {
+      "index": 24641,
+      "at": 171042.0781935,
+      "elapsed_s": 20.536741299991263,
+      "offset_s": -0.0032500000000000003,
+      "host_lateness_ms": 0.45870000030845404,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.8451999931130558
+    },
+    {
+      "index": 24676,
+      "at": 171042.1794792,
+      "elapsed_s": 20.638026999979047,
+      "offset_s": -0.003,
+      "host_lateness_ms": 0.4367999790702015,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.2080000014975667
+    },
+    {
+      "index": 24705,
+      "at": 171042.2805461,
+      "elapsed_s": 20.739093899988802,
+      "offset_s": -0.00275,
+      "host_lateness_ms": 0.5681999900843948,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.802799990400672
+    },
+    {
+      "index": 24641,
+      "at": 171042.3815108,
+      "elapsed_s": 20.84005860000616,
+      "offset_s": -0.0025,
+      "host_lateness_ms": 0.3947000077459961,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.2100999883841723
+    },
+    {
+      "index": 24676,
+      "at": 171042.4832711,
+      "elapsed_s": 20.941818899998907,
+      "offset_s": -0.0022500000000000003,
+      "host_lateness_ms": 0.41859998600557446,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.0019000037573278
+    },
+    {
+      "index": 24705,
+      "at": 171042.583925,
+      "elapsed_s": 21.04247280000709,
+      "offset_s": -0.002,
+      "host_lateness_ms": 0.39700002525933087,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.2095999845769256
+    },
+    {
+      "index": 24641,
+      "at": 171042.6861041,
+      "elapsed_s": 21.144651899987366,
+      "offset_s": -0.00175,
+      "host_lateness_ms": 0.24149997625499964,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.3979999930597842
+    },
+    {
+      "index": 24676,
+      "at": 171042.7870824,
+      "elapsed_s": 21.245630199991865,
+      "offset_s": -0.0015,
+      "host_lateness_ms": 0.3277999931015074,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.3646000006701797
+    },
+    {
+      "index": 24705,
+      "at": 171042.8881942,
+      "elapsed_s": 21.346741999994265,
+      "offset_s": -0.00125,
+      "host_lateness_ms": 0.3161999920848757,
+      "status": "timeout"
+    },
+    {
+      "index": 24705,
+      "at": 171043.1922867,
+      "elapsed_s": 21.65083450000384,
+      "offset_s": -0.0005,
+      "host_lateness_ms": 0.5938000103924423,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.275799993891269
+    },
+    {
+      "index": 24641,
+      "at": 171043.2928245,
+      "elapsed_s": 21.751372300001094,
+      "offset_s": -0.00025,
+      "host_lateness_ms": 0.5082999996375293,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.4608000055886805
+    },
+    {
+      "index": 24676,
+      "at": 171043.3955017,
+      "elapsed_s": 21.85404949999065,
+      "offset_s": 0.0,
+      "host_lateness_ms": 0.4647999885492027,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.1184999893885106
+    },
+    {
+      "index": 24705,
+      "at": 171043.4951147,
+      "elapsed_s": 21.95366249998915,
+      "offset_s": 0.00025,
+      "host_lateness_ms": 0.263199966866523,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.1635000118985772
+    },
+    {
+      "index": 24641,
+      "at": 171043.5964649,
+      "elapsed_s": 22.055012700002408,
+      "offset_s": 0.0005,
+      "host_lateness_ms": 0.2978500269819051,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.225999993039295
+    },
+    {
+      "index": 24676,
+      "at": 171043.6976304,
+      "elapsed_s": 22.156178200006252,
+      "offset_s": 0.00075,
+      "host_lateness_ms": 0.4112999886274338,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.9351999906357378
+    },
+    {
+      "index": 24705,
+      "at": 171043.7990102,
+      "elapsed_s": 22.257557999982964,
+      "offset_s": 0.001,
+      "host_lateness_ms": 0.4044999950565398,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.9923000072594732
+    },
+    {
+      "index": 24641,
+      "at": 171043.899924,
+      "elapsed_s": 22.358471799991094,
+      "offset_s": 0.00125,
+      "host_lateness_ms": 0.24819999816827476,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.3910999987274408
+    },
+    {
+      "index": 24676,
+      "at": 171044.0014698,
+      "elapsed_s": 22.460017599980347,
+      "offset_s": 0.0015,
+      "host_lateness_ms": 0.4206999728921801,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.1323000071570277
+    },
+    {
+      "index": 24705,
+      "at": 171044.1031178,
+      "elapsed_s": 22.5616655999911,
+      "offset_s": 0.00175,
+      "host_lateness_ms": 0.2085499872919172,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.9253999926149845
+    },
+    {
+      "index": 24641,
+      "at": 171044.2036725,
+      "elapsed_s": 22.662220300000627,
+      "offset_s": 0.002,
+      "host_lateness_ms": 0.2773999876808375,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1904999846592546
+    },
+    {
+      "index": 24676,
+      "at": 171044.3050821,
+      "elapsed_s": 22.763629900000524,
+      "offset_s": 0.0022500000000000003,
+      "host_lateness_ms": 0.340550031978637,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.7388999802060425
+    },
+    {
+      "index": 24705,
+      "at": 171044.4064915,
+      "elapsed_s": 22.865039299998898,
+      "offset_s": 0.0025,
+      "host_lateness_ms": 0.47335002454929054,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.2623000075109303
+    },
+    {
+      "index": 24641,
+      "at": 171044.5075669,
+      "elapsed_s": 22.966114699986065,
+      "offset_s": 0.00275,
+      "host_lateness_ms": 0.3006499900948256,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.7131000165827572
+    },
+    {
+      "index": 24676,
+      "at": 171044.609524,
+      "elapsed_s": 23.06807179999305,
+      "offset_s": 0.003,
+      "host_lateness_ms": 0.35134999779984355,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.9606000094208866
+    },
+    {
+      "index": 24705,
+      "at": 171044.7109057,
+      "elapsed_s": 23.16945349998423,
+      "offset_s": 0.0032500000000000003,
+      "host_lateness_ms": 0.3894499968737364,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.1841000232379884
+    },
+    {
+      "index": 24641,
+      "at": 171044.8116262,
+      "elapsed_s": 23.270174000004772,
+      "offset_s": 0.0035,
+      "host_lateness_ms": 0.3907500358764082,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.202599989483133
+    },
+    {
+      "index": 24676,
+      "at": 171044.9129529,
+      "elapsed_s": 23.371500699984608,
+      "offset_s": 0.00375,
+      "host_lateness_ms": 0.37915000575594604,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.2279000075068325
+    },
+    {
+      "index": 24705,
+      "at": 171045.0137904,
+      "elapsed_s": 23.47233819999383,
+      "offset_s": 0.004,
+      "host_lateness_ms": 0.3393499937374145,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.143200002843514
+    },
+    {
+      "index": 24641,
+      "at": 171045.1156107,
+      "elapsed_s": 23.574158500006888,
+      "offset_s": 0.00425,
+      "host_lateness_ms": 0.42385002598166466,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1576999968383461
+    },
+    {
+      "index": 24676,
+      "at": 171045.2176625,
+      "elapsed_s": 23.67621030000737,
+      "offset_s": 0.0045000000000000005,
+      "host_lateness_ms": 0.2322500222362578,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.1782999790739268
+    },
+    {
+      "index": 24705,
+      "at": 171045.3176961,
+      "elapsed_s": 23.776243900007103,
+      "offset_s": 0.00475,
+      "host_lateness_ms": 0.4218500398565084,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.0139999794773757
+    },
+    {
+      "index": 24641,
+      "at": 171045.4186927,
+      "elapsed_s": 23.877240500005428,
+      "offset_s": 0.005,
+      "host_lateness_ms": 0.41274999966844916,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.6098999767564237
+    },
+    {
+      "index": 24676,
+      "at": 171045.5100793,
+      "elapsed_s": 23.9686270999955,
+      "offset_s": -0.005,
+      "host_lateness_ms": 0.23105001309886575,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.2204000086057931
+    },
+    {
+      "index": 24705,
+      "at": 171045.6116782,
+      "elapsed_s": 24.07022599998163,
+      "offset_s": -0.00475,
+      "host_lateness_ms": 0.2579999854788184,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.2029000208713114
+    },
+    {
+      "index": 24641,
+      "at": 171045.7124917,
+      "elapsed_s": 24.171039499982726,
+      "offset_s": -0.0045000000000000005,
+      "host_lateness_ms": 0.28214999474585056,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1781000066548586
+    },
+    {
+      "index": 24676,
+      "at": 171045.8139561,
+      "elapsed_s": 24.272503899992444,
+      "offset_s": -0.00425,
+      "host_lateness_ms": 0.2609000075608492,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.5464999887626618
+    },
+    {
+      "index": 24705,
+      "at": 171045.9153378,
+      "elapsed_s": 24.373885599983623,
+      "offset_s": -0.004,
+      "host_lateness_ms": 0.5060999828856438,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.7740000039339066
+    },
+    {
+      "index": 24641,
+      "at": 171046.0162597,
+      "elapsed_s": 24.474807499995222,
+      "offset_s": -0.00375,
+      "host_lateness_ms": 0.42794999899342656,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.2055000115651637
+    },
+    {
+      "index": 24676,
+      "at": 171046.1177203,
+      "elapsed_s": 24.57626810000511,
+      "offset_s": -0.0035,
+      "host_lateness_ms": 0.2523000002838671,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.7570000016130507
+    },
+    {
+      "index": 24705,
+      "at": 171046.2192253,
+      "elapsed_s": 24.677773100003833,
+      "offset_s": -0.0032500000000000003,
+      "host_lateness_ms": 0.3423000162001699,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.7304000027943403
+    },
+    {
+      "index": 24641,
+      "at": 171046.3205991,
+      "elapsed_s": 24.779146899993066,
+      "offset_s": -0.003,
+      "host_lateness_ms": 0.38445001700893044,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.3937999901827425
+    },
+    {
+      "index": 24676,
+      "at": 171046.4219778,
+      "elapsed_s": 24.880525599990506,
+      "offset_s": -0.00275,
+      "host_lateness_ms": 0.3455500118434429,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.2639999913517386
+    },
+    {
+      "index": 24705,
+      "at": 171046.5224055,
+      "elapsed_s": 24.980953299993416,
+      "offset_s": -0.0025,
+      "host_lateness_ms": 0.3651500155683607,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.1521000124048442
+    },
+    {
+      "index": 24641,
+      "at": 171046.6242724,
+      "elapsed_s": 25.08282019998296,
+      "offset_s": -0.0022500000000000003,
+      "host_lateness_ms": 0.39694999577477574,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.2354000064078718
+    },
+    {
+      "index": 24676,
+      "at": 171046.725466,
+      "elapsed_s": 25.184013799997047,
+      "offset_s": -0.002,
+      "host_lateness_ms": 0.4527500132098794,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.9280999840702862
+    },
+    {
+      "index": 24705,
+      "at": 171046.8265766,
+      "elapsed_s": 25.28512439999031,
+      "offset_s": -0.00175,
+      "host_lateness_ms": 0.29414999880827963,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.8727999995462596
+    },
+    {
+      "index": 24641,
+      "at": 171046.9280368,
+      "elapsed_s": 25.38658459999715,
+      "offset_s": -0.0015,
+      "host_lateness_ms": 0.26545001310296357,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.9483000030741096
+    },
+    {
+      "index": 24676,
+      "at": 171047.0288048,
+      "elapsed_s": 25.48735260000103,
+      "offset_s": -0.00125,
+      "host_lateness_ms": 0.24605001090094447,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.4860999945085496
+    },
+    {
+      "index": 24705,
+      "at": 171047.1303233,
+      "elapsed_s": 25.588871099986136,
+      "offset_s": -0.001,
+      "host_lateness_ms": 0.2763499796856195,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.2614000006578863
+    },
+    {
+      "index": 24641,
+      "at": 171047.2320179,
+      "elapsed_s": 25.69056570000248,
+      "offset_s": -0.00075,
+      "host_lateness_ms": 0.39735002792440355,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.2303999974392354
+    },
+    {
+      "index": 24676,
+      "at": 171047.3319708,
+      "elapsed_s": 25.790518599998904,
+      "offset_s": -0.0005,
+      "host_lateness_ms": 0.29085000278428197,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.2038999993819743
+    },
+    {
+      "index": 24705,
+      "at": 171047.4340922,
+      "elapsed_s": 25.892640000005485,
+      "offset_s": -0.00025,
+      "host_lateness_ms": 0.28645002748817205,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.7063999946694821
+    },
+    {
+      "index": 24641,
+      "at": 171047.534758,
+      "elapsed_s": 25.993305799987866,
+      "offset_s": 0.0,
+      "host_lateness_ms": 0.40324998553842306,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1574999953154474
+    },
+    {
+      "index": 24676,
+      "at": 171047.6360674,
+      "elapsed_s": 26.09461519998149,
+      "offset_s": 0.00025,
+      "host_lateness_ms": 0.48264997894875705,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.1482000118121505
+    },
+    {
+      "index": 24705,
+      "at": 171047.7369895,
+      "elapsed_s": 26.195537299994612,
+      "offset_s": 0.0005,
+      "host_lateness_ms": 0.2513500221539289,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.7916000031400472
+    },
+    {
+      "index": 24641,
+      "at": 171047.8381294,
+      "elapsed_s": 26.296677200007252,
+      "offset_s": 0.00075,
+      "host_lateness_ms": 0.3117500164080411,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.0932000004686415
+    },
+    {
+      "index": 24676,
+      "at": 171047.9394087,
+      "elapsed_s": 26.39795650000451,
+      "offset_s": 0.001,
+      "host_lateness_ms": 0.3234999894630164,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.694599981419742
+    },
+    {
+      "index": 24705,
+      "at": 171048.0409018,
+      "elapsed_s": 26.499449599999934,
+      "offset_s": 0.00125,
+      "host_lateness_ms": 0.3365500015206635,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.5608999819960445
+    },
+    {
+      "index": 24641,
+      "at": 171048.1420478,
+      "elapsed_s": 26.600595600000815,
+      "offset_s": 0.0015,
+      "host_lateness_ms": 0.4476999747566879,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.752199994167313
+    },
+    {
+      "index": 24676,
+      "at": 171048.243445,
+      "elapsed_s": 26.701992799993604,
+      "offset_s": 0.00175,
+      "host_lateness_ms": 0.3966000222135335,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.1627000058069825
+    },
+    {
+      "index": 24705,
+      "at": 171048.3445165,
+      "elapsed_s": 26.80306429998018,
+      "offset_s": 0.002,
+      "host_lateness_ms": 0.45389996375888586,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.7040000238921493
+    },
+    {
+      "index": 24641,
+      "at": 171048.4454354,
+      "elapsed_s": 26.903983199998038,
+      "offset_s": 0.0022500000000000003,
+      "host_lateness_ms": 0.22670000907965004,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.8416000055149198
+    },
+    {
+      "index": 24676,
+      "at": 171048.5468424,
+      "elapsed_s": 27.00539020000724,
+      "offset_s": 0.0025,
+      "host_lateness_ms": 0.25220002862624824,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.1792999866884202
+    },
+    {
+      "index": 24705,
+      "at": 171048.6486203,
+      "elapsed_s": 27.107168099988485,
+      "offset_s": 0.00275,
+      "host_lateness_ms": 0.22719995467923582,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.9735999919939786
+    },
+    {
+      "index": 24641,
+      "at": 171048.7495204,
+      "elapsed_s": 27.208068199979607,
+      "offset_s": 0.003,
+      "host_lateness_ms": 0.40339998668059707,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.7443000213243067
+    },
+    {
+      "index": 24676,
+      "at": 171048.8515694,
+      "elapsed_s": 27.31011719998787,
+      "offset_s": 0.0032500000000000003,
+      "host_lateness_ms": 0.28979999478906393,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.2088000075891614
+    },
+    {
+      "index": 24705,
+      "at": 171048.9525035,
+      "elapsed_s": 27.411051300005056,
+      "offset_s": 0.0035,
+      "host_lateness_ms": 0.30059998971410096,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.2168999819550663
+    },
+    {
+      "index": 24641,
+      "at": 171049.0533936,
+      "elapsed_s": 27.511941400007345,
+      "offset_s": 0.00375,
+      "host_lateness_ms": 0.41390000842511654,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1971999774686992
+    },
+    {
+      "index": 24676,
+      "at": 171049.1552934,
+      "elapsed_s": 27.613841199985472,
+      "offset_s": 0.004,
+      "host_lateness_ms": 0.24920000578276813,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.6671000155620277
+    },
+    {
+      "index": 24705,
+      "at": 171049.2560017,
+      "elapsed_s": 27.71454950000043,
+      "offset_s": 0.00425,
+      "host_lateness_ms": 0.30395001522265375,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.3347000058274716
+    },
+    {
+      "index": 24641,
+      "at": 171049.3568664,
+      "elapsed_s": 27.815414199983934,
+      "offset_s": 0.0045000000000000005,
+      "host_lateness_ms": 0.28979999478906393,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1675000132527202
+    },
+    {
+      "index": 24676,
+      "at": 171049.4584585,
+      "elapsed_s": 27.917006300005596,
+      "offset_s": 0.00475,
+      "host_lateness_ms": 0.39980001747608185,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.9866999753285199
+    },
+    {
+      "index": 24705,
+      "at": 171049.5599744,
+      "elapsed_s": 28.018522200000007,
+      "offset_s": 0.005,
+      "host_lateness_ms": 0.3928499936591834,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.2551999825518578
+    },
+    {
+      "index": 24641,
+      "at": 171049.6516248,
+      "elapsed_s": 28.11017259999062,
+      "offset_s": -0.005,
+      "host_lateness_ms": 0.3562500060070306,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.2043000024277717
+    },
+    {
+      "index": 24676,
+      "at": 171049.7525878,
+      "elapsed_s": 28.211135599995032,
+      "offset_s": -0.00475,
+      "host_lateness_ms": 0.318949983920902,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.039800001308322
+    },
+    {
+      "index": 24705,
+      "at": 171049.8535178,
+      "elapsed_s": 28.312065599980997,
+      "offset_s": -0.0045000000000000005,
+      "host_lateness_ms": 0.39220001781359315,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.191400020616129
+    },
+    {
+      "index": 24641,
+      "at": 171049.9539986,
+      "elapsed_s": 28.412546399980783,
+      "offset_s": -0.00425,
+      "host_lateness_ms": 0.34119997872039676,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.2337000225670636
+    },
+    {
+      "index": 24676,
+      "at": 171050.0552515,
+      "elapsed_s": 28.513799299980747,
+      "offset_s": -0.004,
+      "host_lateness_ms": 0.31689999741502106,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.1060000106226653
+    },
+    {
+      "index": 24705,
+      "at": 171050.1569872,
+      "elapsed_s": 28.615534999989904,
+      "offset_s": -0.00375,
+      "host_lateness_ms": 0.29090000316500664,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.8423000001348555
+    },
+    {
+      "index": 24641,
+      "at": 171050.2577025,
+      "elapsed_s": 28.716250299999956,
+      "offset_s": -0.0035,
+      "host_lateness_ms": 0.4375999851617962,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.075299980584532
+    },
+    {
+      "index": 24676,
+      "at": 171050.3589908,
+      "elapsed_s": 28.817538600007538,
+      "offset_s": -0.0032500000000000003,
+      "host_lateness_ms": 0.4652000206988305,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.3787999923806638
+    },
+    {
+      "index": 24705,
+      "at": 171050.4601937,
+      "elapsed_s": 28.918741500005126,
+      "offset_s": -0.003,
+      "host_lateness_ms": 0.30880002304911613,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.1585000029299408
+    },
+    {
+      "index": 24641,
+      "at": 171050.5613778,
+      "elapsed_s": 29.01992560000508,
+      "offset_s": -0.00275,
+      "host_lateness_ms": 0.33720003557391465,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.2005999742541462
+    },
+    {
+      "index": 24676,
+      "at": 171050.6623969,
+      "elapsed_s": 29.12094470000011,
+      "offset_s": -0.0025,
+      "host_lateness_ms": 0.2875000354833901,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.1838999926112592
+    },
+    {
+      "index": 24705,
+      "at": 171050.7652983,
+      "elapsed_s": 29.22384609997971,
+      "offset_s": -0.0022500000000000003,
+      "host_lateness_ms": 0.3499999875202775,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.4395000180229545
+    },
+    {
+      "index": 24641,
+      "at": 171050.8656856,
+      "elapsed_s": 29.324233399995137,
+      "offset_s": -0.002,
+      "host_lateness_ms": 0.27330004377290606,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1621000012382865
+    },
+    {
+      "index": 24676,
+      "at": 171050.9664723,
+      "elapsed_s": 29.42502009999589,
+      "offset_s": -0.00175,
+      "host_lateness_ms": 0.21399999968707561,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.2459999998100102
+    },
+    {
+      "index": 24705,
+      "at": 171051.0676164,
+      "elapsed_s": 29.526164199982304,
+      "offset_s": -0.0015,
+      "host_lateness_ms": 0.33164999331347644,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.7347000064328313
+    },
+    {
+      "index": 24641,
+      "at": 171051.1697841,
+      "elapsed_s": 29.62833189999219,
+      "offset_s": -0.00125,
+      "host_lateness_ms": 0.2212999970652163,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.484900014474988
+    },
+    {
+      "index": 24676,
+      "at": 171051.2713186,
+      "elapsed_s": 29.72986639998271,
+      "offset_s": -0.001,
+      "host_lateness_ms": 0.4299999854993075,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.1943000135943294
+    },
+    {
+      "index": 24705,
+      "at": 171051.37129,
+      "elapsed_s": 29.829837800003588,
+      "offset_s": -0.00075,
+      "host_lateness_ms": 0.3670000296551734,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.9322999976575375
+    },
+    {
+      "index": 24641,
+      "at": 171051.4728072,
+      "elapsed_s": 29.931355000007898,
+      "offset_s": -0.0005,
+      "host_lateness_ms": 0.4068000125698745,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.5144999779295176
+    },
+    {
+      "index": 24676,
+      "at": 171051.5752106,
+      "elapsed_s": 30.033758400008082,
+      "offset_s": -0.00025,
+      "host_lateness_ms": 0.493000028654933,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.7717999978922307
+    },
+    {
+      "index": 24705,
+      "at": 171051.6752146,
+      "elapsed_s": 30.133762399986153,
+      "offset_s": 0.0,
+      "host_lateness_ms": 0.6029499927535653,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 2.222300012363121
+    },
+    {
+      "index": 24641,
+      "at": 171051.7767728,
+      "elapsed_s": 30.235320599982515,
+      "offset_s": 0.00025,
+      "host_lateness_ms": 0.7148999720811844,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.9068000072147697
+    },
+    {
+      "index": 24676,
+      "at": 171051.8772917,
+      "elapsed_s": 30.335839499981375,
+      "offset_s": 0.0005,
+      "host_lateness_ms": 0.34175001201219857,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.9615000162739307
+    },
+    {
+      "index": 24705,
+      "at": 171051.9786469,
+      "elapsed_s": 30.4371947000036,
+      "offset_s": 0.00075,
+      "host_lateness_ms": 0.2904000284615904,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.6886999763082713
+    },
+    {
+      "index": 24641,
+      "at": 171052.0801894,
+      "elapsed_s": 30.53873719999683,
+      "offset_s": 0.001,
+      "host_lateness_ms": 0.4458000184968114,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1547000030986965
+    },
+    {
+      "index": 24676,
+      "at": 171052.1813623,
+      "elapsed_s": 30.639910099998815,
+      "offset_s": 0.00125,
+      "host_lateness_ms": 0.3189000126440078,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.2060999870300293
+    },
+    {
+      "index": 24705,
+      "at": 171052.2824597,
+      "elapsed_s": 30.74100750000798,
+      "offset_s": 0.0015,
+      "host_lateness_ms": 0.23280002642422915,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.69339997228235
+    },
+    {
+      "index": 24641,
+      "at": 171052.3838347,
+      "elapsed_s": 30.84238250000635,
+      "offset_s": 0.00175,
+      "host_lateness_ms": 0.3488500078674406,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1744999792426825
+    },
+    {
+      "index": 24676,
+      "at": 171052.4852687,
+      "elapsed_s": 30.943816499988316,
+      "offset_s": 0.002,
+      "host_lateness_ms": 0.36264999653212726,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.255400013178587
+    },
+    {
+      "index": 24705,
+      "at": 171052.586272,
+      "elapsed_s": 31.04481979997945,
+      "offset_s": 0.0022500000000000003,
+      "host_lateness_ms": 0.35379998735152185,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.1888000008184463
+    },
+    {
+      "index": 24641,
+      "at": 171052.6874189,
+      "elapsed_s": 31.145966699987184,
+      "offset_s": 0.0025,
+      "host_lateness_ms": 0.2558999985922128,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.295499998377636
+    },
+    {
+      "index": 24676,
+      "at": 171052.788725,
+      "elapsed_s": 31.247272799984785,
+      "offset_s": 0.00275,
+      "host_lateness_ms": 0.21905000903643668,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.6724000161048025
+    },
+    {
+      "index": 24705,
+      "at": 171052.890886,
+      "elapsed_s": 31.34943380000186,
+      "offset_s": 0.003,
+      "host_lateness_ms": 0.347800028976053,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.9991999831981957
+    },
+    {
+      "index": 24641,
+      "at": 171052.9919849,
+      "elapsed_s": 31.450532699993346,
+      "offset_s": 0.0032500000000000003,
+      "host_lateness_ms": 0.4653999931178987,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.8054999925661832
+    },
+    {
+      "index": 24676,
+      "at": 171053.0929428,
+      "elapsed_s": 31.55149059998803,
+      "offset_s": 0.0035,
+      "host_lateness_ms": 0.2523000002838671,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.7647000020369887
+    },
+    {
+      "index": 24705,
+      "at": 171053.1940258,
+      "elapsed_s": 31.65257360000396,
+      "offset_s": 0.00375,
+      "host_lateness_ms": 0.4318500286899507,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.4482999977190048
+    },
+    {
+      "index": 24641,
+      "at": 171053.2960807,
+      "elapsed_s": 31.754628499998944,
+      "offset_s": 0.004,
+      "host_lateness_ms": 0.35790001857094467,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.8910000033210963
+    },
+    {
+      "index": 24676,
+      "at": 171053.3969161,
+      "elapsed_s": 31.855463899992174,
+      "offset_s": 0.00425,
+      "host_lateness_ms": 0.3521000035107136,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.1417999921832234
+    },
+    {
+      "index": 24705,
+      "at": 171053.4972665,
+      "elapsed_s": 31.95581429998856,
+      "offset_s": 0.0045000000000000005,
+      "host_lateness_ms": 0.26795000303536654,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.7795000167097896
+    },
+    {
+      "index": 24641,
+      "at": 171053.5992661,
+      "elapsed_s": 32.05781389999902,
+      "offset_s": 0.00475,
+      "host_lateness_ms": 0.34210001467727125,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1998999980278313
+    },
+    {
+      "index": 24676,
+      "at": 171053.7000796,
+      "elapsed_s": 32.158627400000114,
+      "offset_s": 0.005,
+      "host_lateness_ms": 0.3515999997034669,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.1677999864332378
+    },
+    {
+      "index": 24705,
+      "at": 171053.7918532,
+      "elapsed_s": 32.25040099999751,
+      "offset_s": -0.005,
+      "host_lateness_ms": 0.287600007141009,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.7909999985713512
+    },
+    {
+      "index": 24641,
+      "at": 171053.8925733,
+      "elapsed_s": 32.3511210999859,
+      "offset_s": -0.00475,
+      "host_lateness_ms": 0.3344999859109521,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.7328000210691243
+    },
+    {
+      "index": 24676,
+      "at": 171053.9943047,
+      "elapsed_s": 32.45285249999142,
+      "offset_s": -0.0045000000000000005,
+      "host_lateness_ms": 0.3845000173896551,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.2341999972704798
+    },
+    {
+      "index": 24705,
+      "at": 171054.0955652,
+      "elapsed_s": 32.55411299999105,
+      "offset_s": -0.00425,
+      "host_lateness_ms": 0.2083999861497432,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.210299989907071
+    },
+    {
+      "index": 24641,
+      "at": 171054.1968422,
+      "elapsed_s": 32.6553899999999,
+      "offset_s": -0.004,
+      "host_lateness_ms": 0.2581500157248229,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1101999843958765
+    },
+    {
+      "index": 24676,
+      "at": 171054.2970283,
+      "elapsed_s": 32.75557609999669,
+      "offset_s": -0.00375,
+      "host_lateness_ms": 0.3355500230100006,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.7654000073671341
+    },
+    {
+      "index": 24705,
+      "at": 171054.3983929,
+      "elapsed_s": 32.85694070000318,
+      "offset_s": -0.0035,
+      "host_lateness_ms": 0.3753500059247017,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.1752999853342772
+    },
+    {
+      "index": 24641,
+      "at": 171054.5003959,
+      "elapsed_s": 32.95894369998132,
+      "offset_s": -0.0032500000000000003,
+      "host_lateness_ms": 0.33284997334703803,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.0575000196695328
+    },
+    {
+      "index": 24676,
+      "at": 171054.6009278,
+      "elapsed_s": 33.059475599991856,
+      "offset_s": -0.003,
+      "host_lateness_ms": 0.33114998950622976,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.2107999937143177
+    },
+    {
+      "index": 24705,
+      "at": 171054.7025993,
+      "elapsed_s": 33.16114710000693,
+      "offset_s": -0.00275,
+      "host_lateness_ms": 0.23955004871822894,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.7653999966569245
+    },
+    {
+      "index": 24641,
+      "at": 171054.8034079,
+      "elapsed_s": 33.26195569999982,
+      "offset_s": -0.0025,
+      "host_lateness_ms": 0.25155002367682755,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.7017999887466431
+    },
+    {
+      "index": 24676,
+      "at": 171054.9047848,
+      "elapsed_s": 33.36333259998355,
+      "offset_s": -0.0022500000000000003,
+      "host_lateness_ms": 0.41004997910931706,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.7511000148952007
+    },
+    {
+      "index": 24705,
+      "at": 171055.0064716,
+      "elapsed_s": 33.46501939999871,
+      "offset_s": -0.002,
+      "host_lateness_ms": 0.41675003012642264,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.187499990919605
+    },
+    {
+      "index": 24641,
+      "at": 171055.1073941,
+      "elapsed_s": 33.56594189998577,
+      "offset_s": -0.00175,
+      "host_lateness_ms": 0.2466999867465347,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.756800000090152
+    },
+    {
+      "index": 24676,
+      "at": 171055.2091419,
+      "elapsed_s": 33.667689699999755,
+      "offset_s": -0.0015,
+      "host_lateness_ms": 0.49450004007667303,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.1770999990403652
+    },
+    {
+      "index": 24705,
+      "at": 171055.3101922,
+      "elapsed_s": 33.768739999999525,
+      "offset_s": -0.00125,
+      "host_lateness_ms": 0.4099000070709735,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.134599995566532
+    },
+    {
+      "index": 24641,
+      "at": 171055.4113788,
+      "elapsed_s": 33.86992659998941,
+      "offset_s": -0.001,
+      "host_lateness_ms": 0.4330999800004065,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.0572000173851848
+    },
+    {
+      "index": 24676,
+      "at": 171055.5127021,
+      "elapsed_s": 33.97124990000157,
+      "offset_s": -0.00075,
+      "host_lateness_ms": 0.302400003420189,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.0908999829553068
+    },
+    {
+      "index": 24705,
+      "at": 171055.6132239,
+      "elapsed_s": 34.071771699993405,
+      "offset_s": -0.0005,
+      "host_lateness_ms": 0.42810000013560057,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.0827000078279525
+    },
+    {
+      "index": 24641,
+      "at": 171055.715066,
+      "elapsed_s": 34.17361379999784,
+      "offset_s": -0.00025,
+      "host_lateness_ms": 0.3142500063404441,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1534999939613044
+    },
+    {
+      "index": 24676,
+      "at": 171055.8157424,
+      "elapsed_s": 34.274290200002724,
+      "offset_s": 0.0,
+      "host_lateness_ms": 0.39659999310970306,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.0853999992832541
+    },
+    {
+      "index": 24705,
+      "at": 171055.9167492,
+      "elapsed_s": 34.375296999991406,
+      "offset_s": 0.00025,
+      "host_lateness_ms": 0.2956999815069139,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.1335000162944198
+    },
+    {
+      "index": 24641,
+      "at": 171056.0181885,
+      "elapsed_s": 34.47673629998462,
+      "offset_s": 0.0005,
+      "host_lateness_ms": 0.45209997915662825,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1673000117298216
+    },
+    {
+      "index": 24676,
+      "at": 171056.11927,
+      "elapsed_s": 34.577817799989134,
+      "offset_s": 0.00075,
+      "host_lateness_ms": 0.2851999888662249,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.1538999970071018
+    },
+    {
+      "index": 24705,
+      "at": 171056.2206146,
+      "elapsed_s": 34.679162399988854,
+      "offset_s": 0.001,
+      "host_lateness_ms": 0.34320002305321395,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.1990999919362366
+    },
+    {
+      "index": 24641,
+      "at": 171056.3225031,
+      "elapsed_s": 34.781050899997354,
+      "offset_s": 0.00125,
+      "host_lateness_ms": 0.32740001915954053,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.1195999977644533
+    },
+    {
+      "index": 24676,
+      "at": 171056.4231575,
+      "elapsed_s": 34.88170529998024,
+      "offset_s": 0.0015,
+      "host_lateness_ms": 0.2759999770205468,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.670199999352917
+    },
+    {
+      "index": 24705,
+      "at": 171056.5241902,
+      "elapsed_s": 34.982737999991514,
+      "offset_s": 0.00175,
+      "host_lateness_ms": 0.29280001763254404,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.1909999884665012
+    },
+    {
+      "index": 24641,
+      "at": 171056.625536,
+      "elapsed_s": 35.08408380000037,
+      "offset_s": 0.002,
+      "host_lateness_ms": 0.34070000401698053,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 2.1604000066872686
+    },
+    {
+      "index": 24676,
+      "at": 171056.7268685,
+      "elapsed_s": 35.18541629999527,
+      "offset_s": 0.0022500000000000003,
+      "host_lateness_ms": 0.3462499880697578,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.1081999982707202
+    },
+    {
+      "index": 24705,
+      "at": 171056.8282705,
+      "elapsed_s": 35.2868182999955,
+      "offset_s": 0.0025,
+      "host_lateness_ms": 0.4128500004298985,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.7984999974723905
+    },
+    {
+      "index": 24641,
+      "at": 171056.9292672,
+      "elapsed_s": 35.38781499999459,
+      "offset_s": 0.00275,
+      "host_lateness_ms": 0.2919499820563942,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.187499990919605
+    },
+    {
+      "index": 24676,
+      "at": 171057.0312795,
+      "elapsed_s": 35.489827299985336,
+      "offset_s": 0.003,
+      "host_lateness_ms": 0.33954999526031315,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.9800000009126961
+    },
+    {
+      "index": 24705,
+      "at": 171057.1323193,
+      "elapsed_s": 35.590867099992465,
+      "offset_s": 0.0032500000000000003,
+      "host_lateness_ms": 0.27829999453388155,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.4568000042345375
+    },
+    {
+      "index": 24641,
+      "at": 171057.2332647,
+      "elapsed_s": 35.69181249997928,
+      "offset_s": 0.0035,
+      "host_lateness_ms": 0.2943999716080725,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.164000015705824
+    },
+    {
+      "index": 24676,
+      "at": 171057.3344959,
+      "elapsed_s": 35.79304369998863,
+      "offset_s": 0.00375,
+      "host_lateness_ms": 0.2311999851372093,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.1915999930351973
+    },
+    {
+      "index": 24705,
+      "at": 171057.436201,
+      "elapsed_s": 35.894748799997615,
+      "offset_s": 0.004,
+      "host_lateness_ms": 0.3852000227198005,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.2193000002298504
+    },
+    {
+      "index": 24641,
+      "at": 171057.5370495,
+      "elapsed_s": 35.99559730000328,
+      "offset_s": 0.00425,
+      "host_lateness_ms": 0.44260002323426306,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.7329999934881926
+    },
+    {
+      "index": 24676,
+      "at": 171057.6378935,
+      "elapsed_s": 36.09644130000379,
+      "offset_s": 0.0045000000000000005,
+      "host_lateness_ms": 0.28719997499138117,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.3939999917056412
+    },
+    {
+      "index": 24705,
+      "at": 171057.73985,
+      "elapsed_s": 36.198397800006205,
+      "offset_s": 0.00475,
+      "host_lateness_ms": 0.3007000486832112,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.1851000017486513
+    },
+    {
+      "index": 24641,
+      "at": 171057.8407192,
+      "elapsed_s": 36.29926699999487,
+      "offset_s": 0.005,
+      "host_lateness_ms": 0.3155999875161797,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.6773000059183687
+    },
+    {
+      "index": 24676,
+      "at": 171057.9317774,
+      "elapsed_s": 36.390325199987274,
+      "offset_s": -0.005,
+      "host_lateness_ms": 0.24090000079013407,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.1801999935414642
+    },
+    {
+      "index": 24705,
+      "at": 171058.0334594,
+      "elapsed_s": 36.49200719999499,
+      "offset_s": -0.00475,
+      "host_lateness_ms": 0.23520001559518278,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.4389999851118773
+    },
+    {
+      "index": 24641,
+      "at": 171058.1346019,
+      "elapsed_s": 36.59314969999832,
+      "offset_s": -0.0045000000000000005,
+      "host_lateness_ms": 0.39750002906657755,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.7752999954391271
+    },
+    {
+      "index": 24676,
+      "at": 171058.2350377,
+      "elapsed_s": 36.6935855000047,
+      "offset_s": -0.00425,
+      "host_lateness_ms": 0.21729999571107328,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.194899989059195
+    },
+    {
+      "index": 24705,
+      "at": 171058.3368599,
+      "elapsed_s": 36.795407700003125,
+      "offset_s": -0.004,
+      "host_lateness_ms": 0.2167999919038266,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.1340999917592853
+    },
+    {
+      "index": 24641,
+      "at": 171058.4382648,
+      "elapsed_s": 36.89681259999634,
+      "offset_s": -0.00375,
+      "host_lateness_ms": 0.35189997288398445,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.0111999872606248
+    },
+    {
+      "index": 24676,
+      "at": 171058.5400911,
+      "elapsed_s": 36.99863889999688,
+      "offset_s": -0.0035,
+      "host_lateness_ms": 0.3862000012304634,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.0315999970771372
+    },
+    {
+      "index": 24705,
+      "at": 171058.6402671,
+      "elapsed_s": 37.09881490000407,
+      "offset_s": -0.0032500000000000003,
+      "host_lateness_ms": 0.2817999920807779,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.2340999965090305
+    },
+    {
+      "index": 24641,
+      "at": 171058.7419611,
+      "elapsed_s": 37.200508899986744,
+      "offset_s": -0.003,
+      "host_lateness_ms": 0.31380000291392207,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.8187000057660043
+    },
+    {
+      "index": 24676,
+      "at": 171058.8425953,
+      "elapsed_s": 37.30114309999044,
+      "offset_s": -0.00275,
+      "host_lateness_ms": 0.4374999844003469,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.2412999931257218
+    },
+    {
+      "index": 24705,
+      "at": 171058.9442711,
+      "elapsed_s": 37.40281889998005,
+      "offset_s": -0.0025,
+      "host_lateness_ms": 0.38399998447857797,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.277900009881705
+    },
+    {
+      "index": 24641,
+      "at": 171059.046069,
+      "elapsed_s": 37.504616799997166,
+      "offset_s": -0.0022500000000000003,
+      "host_lateness_ms": 0.25179999647662044,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.4953000063542277
+    },
+    {
+      "index": 24676,
+      "at": 171059.1468811,
+      "elapsed_s": 37.6054288999876,
+      "offset_s": -0.002,
+      "host_lateness_ms": 0.3132999991066754,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.7428999999538064
+    },
+    {
+      "index": 24705,
+      "at": 171059.2483861,
+      "elapsed_s": 37.706933899986325,
+      "offset_s": -0.00175,
+      "host_lateness_ms": 0.2397499920334667,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.4568000042345375
+    },
+    {
+      "index": 24641,
+      "at": 171059.3493978,
+      "elapsed_s": 37.80794559998321,
+      "offset_s": -0.0015,
+      "host_lateness_ms": 0.2938000252470374,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.427700015483424
+    },
+    {
+      "index": 24676,
+      "at": 171059.4507121,
+      "elapsed_s": 37.909259899985045,
+      "offset_s": -0.00125,
+      "host_lateness_ms": 0.3978000022470951,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.5622000209987164
+    },
+    {
+      "index": 24705,
+      "at": 171059.5523264,
+      "elapsed_s": 38.010874200001126,
+      "offset_s": -0.001,
+      "host_lateness_ms": 0.2837499778252095,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.6024999786168337
+    },
+    {
+      "index": 24641,
+      "at": 171059.65289,
+      "elapsed_s": 38.11143779999111,
+      "offset_s": -0.00075,
+      "host_lateness_ms": 0.3231999871786684,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.4018999936524779
+    },
+    {
+      "index": 24676,
+      "at": 171059.7549238,
+      "elapsed_s": 38.21347160000005,
+      "offset_s": -0.0005,
+      "host_lateness_ms": 0.3677999775391072,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.7717999978922307
+    },
+    {
+      "index": 24705,
+      "at": 171059.8550207,
+      "elapsed_s": 38.313568499987014,
+      "offset_s": -0.00025,
+      "host_lateness_ms": 0.40034999256022274,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.4475000207312405
+    },
+    {
+      "index": 24641,
+      "at": 171059.9575943,
+      "elapsed_s": 38.41614210000262,
+      "offset_s": 0.0,
+      "host_lateness_ms": 0.36330000148154795,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.4571999781765044
+    },
+    {
+      "index": 24676,
+      "at": 171060.0574694,
+      "elapsed_s": 38.51601719998871,
+      "offset_s": 0.00025,
+      "host_lateness_ms": 0.3653499879874289,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.247700012754649
+    },
+    {
+      "index": 24705,
+      "at": 171060.1586394,
+      "elapsed_s": 38.617187199997716,
+      "offset_s": 0.0005,
+      "host_lateness_ms": 0.3604500088840723,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.8155999821610749
+    },
+    {
+      "index": 24641,
+      "at": 171060.2596768,
+      "elapsed_s": 38.71822459998657,
+      "offset_s": 0.00075,
+      "host_lateness_ms": 0.25004998315125704,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.7160999996121973
+    },
+    {
+      "index": 24676,
+      "at": 171060.3612346,
+      "elapsed_s": 38.819782399979886,
+      "offset_s": 0.001,
+      "host_lateness_ms": 0.3079499874729663,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.2731000024359673
+    },
+    {
+      "index": 24705,
+      "at": 171060.4623906,
+      "elapsed_s": 38.920938399998704,
+      "offset_s": 0.00125,
+      "host_lateness_ms": 0.45839996892027557,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.7621999830007553
+    },
+    {
+      "index": 24641,
+      "at": 171060.5636027,
+      "elapsed_s": 39.022150499979034,
+      "offset_s": 0.0015,
+      "host_lateness_ms": 0.27854996733367443,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.3980000221636146
+    },
+    {
+      "index": 24676,
+      "at": 171060.6651062,
+      "elapsed_s": 39.12365399999544,
+      "offset_s": 0.00175,
+      "host_lateness_ms": 0.33110001822933555,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.1155999964103103
+    },
+    {
+      "index": 24705,
+      "at": 171060.7668171,
+      "elapsed_s": 39.22536489999038,
+      "offset_s": 0.002,
+      "host_lateness_ms": 0.30319998040795326,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.1335000162944198
+    },
+    {
+      "index": 24641,
+      "at": 171060.8677007,
+      "elapsed_s": 39.326248500001384,
+      "offset_s": 0.0022500000000000003,
+      "host_lateness_ms": 0.2665000210981816,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.250200002687052
+    },
+    {
+      "index": 24676,
+      "at": 171060.9683172,
+      "elapsed_s": 39.42686499998672,
+      "offset_s": 0.0025,
+      "host_lateness_ms": 0.20834998576901853,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.1673000117298216
+    },
+    {
+      "index": 24705,
+      "at": 171061.0697631,
+      "elapsed_s": 39.52831090000109,
+      "offset_s": 0.00275,
+      "host_lateness_ms": 0.3555499715730548,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.0420999897178262
+    },
+    {
+      "index": 24641,
+      "at": 171061.1715161,
+      "elapsed_s": 39.63006389999646,
+      "offset_s": 0.003,
+      "host_lateness_ms": 0.39714996819384396,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.7530000002589077
+    },
+    {
+      "index": 24676,
+      "at": 171061.2724194,
+      "elapsed_s": 39.73096719998284,
+      "offset_s": 0.0032500000000000003,
+      "host_lateness_ms": 0.29324996285140514,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 2.0266000065021217
+    },
+    {
+      "index": 24705,
+      "at": 171061.3748104,
+      "elapsed_s": 39.83335820000502,
+      "offset_s": 0.0035,
+      "host_lateness_ms": 0.5667500081472099,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.8353999874088913
+    },
+    {
+      "index": 24641,
+      "at": 171061.4757119,
+      "elapsed_s": 39.934259700006805,
+      "offset_s": 0.00375,
+      "host_lateness_ms": 0.41500001680105925,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.7225999908987433
+    },
+    {
+      "index": 24676,
+      "at": 171061.5765082,
+      "elapsed_s": 40.03505599999335,
+      "offset_s": 0.004,
+      "host_lateness_ms": 0.6349000032059848,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.4396999904420227
+    },
+    {
+      "index": 24705,
+      "at": 171061.6777943,
+      "elapsed_s": 40.13634209998418,
+      "offset_s": 0.00425,
+      "host_lateness_ms": 0.3487000067252666,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.18680001469329
+    },
+    {
+      "index": 24641,
+      "at": 171061.7796598,
+      "elapsed_s": 40.238207599992165,
+      "offset_s": 0.0045000000000000005,
+      "host_lateness_ms": 0.33829998574219644,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.197900011902675
+    },
+    {
+      "index": 24676,
+      "at": 171061.8810255,
+      "elapsed_s": 40.33957330000703,
+      "offset_s": 0.00475,
+      "host_lateness_ms": 0.32824999652802944,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.1969999759458005
+    },
+    {
+      "index": 24705,
+      "at": 171061.9810968,
+      "elapsed_s": 40.439644600002794,
+      "offset_s": 0.005,
+      "host_lateness_ms": 0.22689998149871826,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.7803000044077635
+    },
+    {
+      "index": 24641,
+      "at": 171062.0720812,
+      "elapsed_s": 40.53062899998622,
+      "offset_s": -0.005,
+      "host_lateness_ms": 0.433700013672933,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.0678000107873231
+    },
+    {
+      "index": 24676,
+      "at": 171062.173694,
+      "elapsed_s": 40.63224179999088,
+      "offset_s": -0.00475,
+      "host_lateness_ms": 0.4028999537695199,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.8455999961588532
+    },
+    {
+      "index": 24705,
+      "at": 171062.2747065,
+      "elapsed_s": 40.73325429999386,
+      "offset_s": -0.0045000000000000005,
+      "host_lateness_ms": 0.41980002424679697,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.7851000118535012
+    },
+    {
+      "index": 24641,
+      "at": 171062.3763337,
+      "elapsed_s": 40.83488149999175,
+      "offset_s": -0.00425,
+      "host_lateness_ms": 0.39149998337961733,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.125300012063235
+    },
+    {
+      "index": 24676,
+      "at": 171062.4772948,
+      "elapsed_s": 40.9358425999817,
+      "offset_s": -0.004,
+      "host_lateness_ms": 0.4146999563090503,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.0031000128947198
+    },
+    {
+      "index": 24705,
+      "at": 171062.5792761,
+      "elapsed_s": 41.03782389999833,
+      "offset_s": -0.00375,
+      "host_lateness_ms": 0.4039999912492931,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.113300008000806
+    },
+    {
+      "index": 24641,
+      "at": 171062.6796179,
+      "elapsed_s": 41.13816569998744,
+      "offset_s": -0.0035,
+      "host_lateness_ms": 0.25419998564757407,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.202500017825514
+    },
+    {
+      "index": 24676,
+      "at": 171062.7813939,
+      "elapsed_s": 41.23994169998332,
+      "offset_s": -0.0032500000000000003,
+      "host_lateness_ms": 0.21729999571107328,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.205300010042265
+    },
+    {
+      "index": 24705,
+      "at": 171062.8823204,
+      "elapsed_s": 41.34086820000084,
+      "offset_s": -0.003,
+      "host_lateness_ms": 0.2865999995265156,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.3140999944880605
+    },
+    {
+      "index": 24641,
+      "at": 171062.9837493,
+      "elapsed_s": 41.44229710000218,
+      "offset_s": -0.00275,
+      "host_lateness_ms": 0.24010002380236983,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.0086999973282218
+    },
+    {
+      "index": 24676,
+      "at": 171063.0844587,
+      "elapsed_s": 41.54300649999641,
+      "offset_s": -0.0025,
+      "host_lateness_ms": 0.43319998076185584,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.0543999960646033
+    },
+    {
+      "index": 24705,
+      "at": 171063.1862966,
+      "elapsed_s": 41.644844399997965,
+      "offset_s": -0.0022500000000000003,
+      "host_lateness_ms": 0.3592499706428498,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 2.0277999865356833
+    },
+    {
+      "index": 24641,
+      "at": 171063.2879077,
+      "elapsed_s": 41.74645549998968,
+      "offset_s": -0.002,
+      "host_lateness_ms": 0.24430002667941153,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.479099999414757
+    },
+    {
+      "index": 24676,
+      "at": 171063.3886952,
+      "elapsed_s": 41.847242999996524,
+      "offset_s": -0.00175,
+      "host_lateness_ms": 0.24704998941160738,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.182200008770451
+    },
+    {
+      "index": 24705,
+      "at": 171063.4903068,
+      "elapsed_s": 41.948854599992046,
+      "offset_s": -0.0015,
+      "host_lateness_ms": 0.48764998791739345,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.3726000033784658
+    },
+    {
+      "index": 24641,
+      "at": 171063.5907261,
+      "elapsed_s": 42.0492738999892,
+      "offset_s": -0.00125,
+      "host_lateness_ms": 0.4137499781791121,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 2.0664000185206532
+    },
+    {
+      "index": 24676,
+      "at": 171063.6929791,
+      "elapsed_s": 42.15152689997922,
+      "offset_s": -0.001,
+      "host_lateness_ms": 0.43544996879063547,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.2615000014193356
+    },
+    {
+      "index": 24705,
+      "at": 171063.792987,
+      "elapsed_s": 42.251534799986985,
+      "offset_s": -0.00075,
+      "host_lateness_ms": 0.28119998751208186,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.6929999983403832
+    },
+    {
+      "index": 24641,
+      "at": 171063.8951872,
+      "elapsed_s": 42.35373499998241,
+      "offset_s": -0.0005,
+      "host_lateness_ms": 0.24584998027421534,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 1.2267999991308898
+    },
+    {
+      "index": 24676,
+      "at": 171063.9955095,
+      "elapsed_s": 42.45405729999766,
+      "offset_s": -0.00025,
+      "host_lateness_ms": 0.23535001673735678,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.5236999897751957
+    },
+    {
+      "index": 24705,
+      "at": 171064.0985146,
+      "elapsed_s": 42.55706239998108,
+      "offset_s": 0.0,
+      "host_lateness_ms": 0.41534999036230147,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.168600021628663
+    },
+    {
+      "index": 24641,
+      "at": 171064.1979445,
+      "elapsed_s": 42.65649229998235,
+      "offset_s": 0.00025,
+      "host_lateness_ms": 0.248849974013865,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.7112000021152198
+    },
+    {
+      "index": 24676,
+      "at": 171064.299281,
+      "elapsed_s": 42.7578288000077,
+      "offset_s": 0.0005,
+      "host_lateness_ms": 0.39475003723055124,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.2052999809384346
+    },
+    {
+      "index": 24705,
+      "at": 171064.4004657,
+      "elapsed_s": 42.85901349998312,
+      "offset_s": 0.00075,
+      "host_lateness_ms": 0.21025000023655593,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.1512000055518001
+    },
+    {
+      "index": 24641,
+      "at": 171064.5015909,
+      "elapsed_s": 42.96013870000024,
+      "offset_s": 0.001,
+      "host_lateness_ms": 0.3420500142965466,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.9400999988429248
+    },
+    {
+      "index": 24676,
+      "at": 171064.6032644,
+      "elapsed_s": 43.06181220000144,
+      "offset_s": 0.00125,
+      "host_lateness_ms": 0.4408499808050692,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 1.1873999901581556
+    },
+    {
+      "index": 24705,
+      "at": 171064.7045503,
+      "elapsed_s": 43.16309809999075,
+      "offset_s": 0.0015,
+      "host_lateness_ms": 0.4631000047083944,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 0.7512000156566501
+    },
+    {
+      "index": 24641,
+      "at": 171064.8053394,
+      "elapsed_s": 43.26388719998067,
+      "offset_s": 0.00175,
+      "host_lateness_ms": 0.35444999230094254,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.7141000241972506
+    },
+    {
+      "index": 24676,
+      "at": 171064.9067048,
+      "elapsed_s": 43.365252599993255,
+      "offset_s": 0.002,
+      "host_lateness_ms": 0.24655001470819116,
+      "status": "ok",
+      "value": 20394,
+      "host_roundtrip_ms": 0.7722000009380281
+    },
+    {
+      "index": 24705,
+      "at": 171065.0081743,
+      "elapsed_s": 43.4667220999836,
+      "offset_s": 0.0022500000000000003,
+      "host_lateness_ms": 0.6629499839618802,
+      "status": "ok",
+      "value": 300,
+      "host_roundtrip_ms": 1.2064000184182078
+    },
+    {
+      "index": 24641,
+      "at": 171065.1093638,
+      "elapsed_s": 43.56791159999557,
+      "offset_s": 0.0025,
+      "host_lateness_ms": 0.33114998950622976,
+      "status": "ok",
+      "value": 1591,
+      "host_roundtrip_ms": 0.7334999972954392
+    }
+  ],
+  "error": null,
+  "purpose": "Sweep upload request host timing around periodic heartbeat; host timing does not prove exact wire phase. No parameter writes, NMT, trigger or enable."
+}

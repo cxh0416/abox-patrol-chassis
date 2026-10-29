@@ -1,0 +1,122 @@
+diff --git a/app/Core/User/motion/src/bench_drive.c b/app/Core/User/motion/src/bench_drive.c
+index 20f9e56..715afe1 100644
+--- a/app/Core/User/motion/src/bench_drive.c
++++ b/app/Core/User/motion/src/bench_drive.c
+@@ -104,7 +104,7 @@ void BenchDrive_Tick(BenchDrive *b, uint32_t now, uint8_t requested, uint8_t saf
+         fail(b, 5);
+         return;
+     }
+-    if (b->phase == BENCH_STOPPING && now - b->started_ms >= 2000U)
++    if (b->phase == BENCH_STOPPING && now - b->started_ms >= 4000U)
+     {
+         fail(b, 6);
+         return;
+@@ -115,7 +115,7 @@ void BenchDrive_Tick(BenchDrive *b, uint32_t now, uint8_t requested, uint8_t saf
+     {
+         if (b->reversing)
+         {
+-            if (now - b->started_ms >= 2000U)
++            if (now - b->started_ms >= 4000U)
+             {
+                 fail(b, 6);
+                 return;
+diff --git a/app/Core/User/motion/src/chassis_control.c b/app/Core/User/motion/src/chassis_control.c
+index 20f4637..20f2473 100644
+--- a/app/Core/User/motion/src/chassis_control.c
++++ b/app/Core/User/motion/src/chassis_control.c
+@@ -201,6 +201,6 @@ void ChassisControl_Tick(ChassisControl* control, uint32_t now_ms)
+             }
+         } else control->zero_confirmations = 0U;
+     }
+-    if (control->reversal_pending && (now_ms - control->reversal_started_ms) >= 2000U)
++    if (control->reversal_pending && (now_ms - control->reversal_started_ms) >= 4000U)
+         force_stop(control, CHASSIS_STOP_DIRECTION_TIMEOUT, 1U);
+ }
+diff --git a/tests/bench_drive_test.c b/tests/bench_drive_test.c
+index 6d2b43a..5bea7a0 100644
+--- a/tests/bench_drive_test.c
++++ b/tests/bench_drive_test.c
+@@ -53,7 +53,23 @@ int main(void)
+     for(int i=0;i<3;i++) { now+=20; BenchDrive_Tick(&b,now,0,1,0,0,0,now,now); }
+     transact(&b,&now); transact(&b,&now); transact(&b,&now); assert(b.phase==BENCH_IDLE);
+     active(&b,&now); BenchDrive_Stop(&b,now,0);
+-    BenchDrive_Tick(&b,now+2000,0,1,0,50,50,now,now); assert(b.phase==BENCH_FAULT && b.cut_power);
++    BenchDrive_Tick(&b,now+2000,0,1,0,50,50,now,now); assert(b.phase==BENCH_STOPPING && !b.cut_power);
++    BenchDrive_Tick(&b,now+3999,0,1,0,50,50,now,now); assert(b.phase==BENCH_STOPPING && !b.cut_power);
++    BenchDrive_Tick(&b,now+4000,0,1,0,50,50,now,now); assert(b.phase==BENCH_FAULT && b.cut_power);
++    /* Reversal waits through the old limit, but faults at the new boundary. */
++    active(&b,&now); BenchDrive_Tick(&b,now,1,1,30,0,0,now,now);
++    transact(&b,&now); transact(&b,&now);
++    BenchDrive_Tick(&b,now,1,1,-30,30,30,now,now);
++    {
++        uint32_t started=b.started_ms;
++        transact(&b,&now); transact(&b,&now);
++        BenchDrive_Tick(&b,started+2000,1,1,-30,30,30,started+2000,started+2000);
++        assert(b.reversing && b.phase==BENCH_ACTIVE && !b.cut_power);
++        BenchDrive_Tick(&b,started+3999,1,1,-30,30,30,started+3999,started+3999);
++        assert(b.reversing && b.phase==BENCH_ACTIVE && !b.cut_power);
++        BenchDrive_Tick(&b,started+4000,1,1,-30,30,30,started+4000,started+4000);
++        assert(b.phase==BENCH_FAULT && b.fault==6 && b.cut_power);
++    }
+     /* Full-scale targets reach both motor SDOs with the correct wheel signs. */
+     for (int sign=-1; sign<=1; sign+=2) {
+         active(&b,&now); BenchDrive_Tick(&b,now,1,1,sign*1000,0,0,now,now);
+diff --git a/tests/can_remote_test.c b/tests/can_remote_test.c
+index c8a1914..1c5b3f7 100644
+--- a/tests/can_remote_test.c
++++ b/tests/can_remote_test.c
+@@ -236,12 +236,15 @@ int main(void)
+ 
+     init(); assert(send(PATROL_CAN_ARM,1,0,0)==PATROL_CAN_OK);
+     assert(send(PATROL_CAN_TARGET,2,50,0)==PATROL_CAN_OK);
+-    for (unsigned n=0;n<=20;n++) {
++    for (unsigned n=0;n<=40;n++) {
+         ChassisFeedback f=state()->feedback; f.left_actual_rpm=f.right_actual_rpm=30;
+         f.feedback_ms=now; RemoteService_UpdateFeedback(&f);
+         assert(send(PATROL_CAN_TARGET,(uint16_t)(3+n),-50,0)==PATROL_CAN_OK);
+         RemoteService_SafetyTick(now);
+-        if(n<20) now+=100;
++        if(n<40) {
++            assert(!state()->fault_latched && state()->reversal_pending);
++            now+=100;
++        }
+     }
+     assert(state()->fault_latched && state()->stop_reason==CHASSIS_STOP_DIRECTION_TIMEOUT);
+     assert(!state()->enable_request);
+diff --git a/tests/chassis_safety_test.c b/tests/chassis_safety_test.c
+index cee251d..2389264 100644
+--- a/tests/chassis_safety_test.c
++++ b/tests/chassis_safety_test.c
+@@ -339,8 +339,18 @@ int main(void)
+     CHECK(ChassisControl_Apply(&control, "renew", "reverse", 4, 1000, -50, 0, 1800));
+     feedback.feedback_ms = 2010; ChassisControl_SetFeedback(&control, &feedback);
+     ChassisControl_Tick(&control, 2010);
++    CHECK(!control.fault_latched && control.reversal_pending && control.target_rpm == 0);
++    for (uint32_t t = 2600, seq = 5; t <= 3500; t += 900, ++seq) {
++        feedback.feedback_ms = t; ChassisControl_SetFeedback(&control, &feedback);
++        CHECK(ChassisControl_Apply(&control, "renew", "reverse", seq, 1000, -50, 0, t));
++    }
++    feedback.feedback_ms = 4009; ChassisControl_SetFeedback(&control, &feedback);
++    ChassisControl_Tick(&control, 4009);
++    CHECK(!control.fault_latched && control.reversal_pending && control.reversal_started_ms == 10);
++    feedback.feedback_ms = 4010; ChassisControl_SetFeedback(&control, &feedback);
++    ChassisControl_Tick(&control, 4010);
+     CHECK(control.fault_latched && control.stop_reason == CHASSIS_STOP_DIRECTION_TIMEOUT);
+-    CHECK(!ChassisControl_Apply(&control, "acquire", "again", 1, 1000, 50, 0, 2010));
++    CHECK(!ChassisControl_Apply(&control, "acquire", "again", 1, 1000, 50, 0, 4010));
+ 
+     ChassisControl_Init(&control);
+     memset(&feedback, 0, sizeof(feedback));
+diff --git a/tests/drive_brake_runtime_cases.c b/tests/drive_brake_runtime_cases.c
+index 1b99d4c..5b6a5e1 100644
+--- a/tests/drive_brake_runtime_cases.c
++++ b/tests/drive_brake_runtime_cases.c
+@@ -108,7 +108,7 @@ int main(void)
+ 
+     /* An actual stop failure still cuts power and latches the common fault. */
+     fixture(); ChassisControl_SetDriveBrake(&mock_control,1);
+-    PatrolRuntime_Tick(); mock_can_ready=0; mock_now+=2000;
++    PatrolRuntime_Tick(); mock_can_ready=0; mock_now+=4000;
+     mock_snapshot.coherent_feedback_ms=mock_now;
+     PatrolRuntime_UpdateFeedback(mock_now); PatrolRuntime_Tick();
+     assert(mock_control.fault_latched && !mock_power);

@@ -1,0 +1,47 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "files": [
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261021-165515-510220\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-missing-correlation-184532\\can1-20261021-165515-510220\\frames-prefix.jsonl",
+      "sha256": "c5315a139723392952fe2db3b8b80d457fc260e949836753f45938894f835773",
+      "bytes": 7115959,
+      "kind": "exact prefix; capture may continue appending"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261021-165633-634520\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-missing-correlation-184532\\can1-20261021-165633-634520\\frames-prefix.jsonl",
+      "sha256": "78f92fd2cd49aaa89002f0a54daa1b092d156a85c7aa8d11165129341880afad",
+      "bytes": 1190340,
+      "kind": "exact prefix; capture may continue appending"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261021-165821-352704\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-missing-correlation-184532\\can1-20261021-165821-352704\\frames-prefix.jsonl",
+      "sha256": "4c9dae050272c2b2769ac8e719a2c883903205ed1fe670e3d9547ef423644292",
+      "bytes": 19539188,
+      "kind": "exact prefix; capture may continue appending"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\can1-20261021-183631-973740\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-missing-correlation-184532\\can1-20261021-183631-973740\\frames-prefix.jsonl",
+      "sha256": "51579c4aa2248f12382fd9cfa0f814a2935904ca0e1d76a97b8f67c97e763050",
+      "bytes": 47536016,
+      "kind": "exact prefix; capture may continue appending"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\sdo-missing-analysis-1845.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-missing-correlation-184532\\sdo-missing-analysis-1845.json",
+      "sha256": "fb3225fa1ca22917054514ec7cd71815a188d115d4e98d6c5526edbe42c23055",
+      "bytes": 104620
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\analyze-sdo-missing.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-21-sdo-missing-correlation-184532\\analyze-sdo-missing.py",
+      "sha256": "42768fbcecf2634775c4fb4b438391d75790e926f9922303c0b5fc03e293a1a6",
+      "bytes": 4003
+    }
+  ],
+  "raw_originals_retained": true,
+  "limitation": "A heartbeat/PDO timing association is not proof of driver internal cause. Current capture is not yet the failing active transaction."
+}

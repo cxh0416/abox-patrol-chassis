@@ -1,0 +1,16 @@
+PASS both shutdowns before latch; fresh DLC6 status; first cause preserved
+PASS missing steering does not block drive; 599/600ms boundary; retry after latch
+PASS missing shutdown ACK recovered by status confirmation
+PASS Bus-Off fallback and powered-off CAN stop path
+PASS original 100ms steering timeout now issues both shutdowns
+PASS rejected submission, one mailbox, monotonic wrap
+PASS write ACK and old status cannot fake disabled; stuck-enable fallback
+PASS reversal-timeout and encoder-range faults disable before latch
+PASS fault between take/send discards old nonzero motion frame
+PASS delayed disable: wait for real status without repeating acknowledged shutdown
+PASS service reinit cannot cancel pending disable
+.
+----------------------------------------------------------------------
+Ran 1 test in 2.951s
+
+OK

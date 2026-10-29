@@ -2,6 +2,7 @@
 
 #include <string.h>
 
+// 构造 SDO 请求公共头并清空载荷。按节点生成请求 COB-ID，填入调用方传入的读写命令字、索引和子索引，固定载荷长度为 8 字节。
 static PatrolCanFrame sdo_base(uint8_t node, uint8_t command, uint16_t index, uint8_t subindex)
 {
     PatrolCanFrame frame;
@@ -15,11 +16,13 @@ static PatrolCanFrame sdo_base(uint8_t node, uint8_t command, uint16_t index, ui
     return frame;
 }
 
+// 构造指定节点对象字典的 SDO 上传请求。设置 COB-ID、索引和子索引，返回值是待发送帧，不含发送或超时处理。
 PatrolCanFrame PatrolCanopen_SdoRead(uint8_t node, uint16_t index, uint8_t subindex)
 {
     return sdo_base(node, 0x40U, index, subindex);
 }
 
+// 构造 8 位对象值的 expedited SDO 下载请求。采用协议指定长度标志；调用者须等待对应索引的驱动器响应。
 PatrolCanFrame PatrolCanopen_SdoWrite8(uint8_t node, uint16_t index, uint8_t subindex, uint8_t value)
 {
     PatrolCanFrame frame = sdo_base(node, 0x2FU, index, subindex);
@@ -27,6 +30,7 @@ PatrolCanFrame PatrolCanopen_SdoWrite8(uint8_t node, uint16_t index, uint8_t sub
     return frame;
 }
 
+// 构造 16 位对象值的 expedited SDO 下载请求。按小端顺序编码载荷，不进行模式或使能状态仲裁。
 PatrolCanFrame PatrolCanopen_SdoWrite16(uint8_t node, uint16_t index, uint8_t subindex, uint16_t value)
 {
     PatrolCanFrame frame = sdo_base(node, 0x2BU, index, subindex);
@@ -35,6 +39,7 @@ PatrolCanFrame PatrolCanopen_SdoWrite16(uint8_t node, uint16_t index, uint8_t su
     return frame;
 }
 
+// 构造 32 位对象值的 expedited SDO 下载请求。保留带符号数值的位模式，右轮方向转换由上层完成。
 PatrolCanFrame PatrolCanopen_SdoWrite32(uint8_t node, uint16_t index, uint8_t subindex, int32_t value)
 {
     PatrolCanFrame frame = sdo_base(node, 0x23U, index, subindex);
@@ -46,6 +51,7 @@ PatrolCanFrame PatrolCanopen_SdoWrite32(uint8_t node, uint16_t index, uint8_t su
     return frame;
 }
 
+// 校验 expedited SDO 响应并提取值及宽度。核对节点、索引、子索引和命令字，输出实际字节数；调用者进一步验证对象预期宽度与值域。
 uint8_t PatrolCanopen_ParseSdoValue(const PatrolCanFrame* frame, uint8_t node, uint16_t index,
                                     uint8_t subindex, int32_t* value, uint8_t* size)
 {

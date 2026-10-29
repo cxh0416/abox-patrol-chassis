@@ -1,0 +1,14 @@
+{
+  "stdout": "E:\\1_work\\ChassisCar_test\\logs\\car2-startup-20261022-132217-293627.stdout.log",
+  "physical_channels": {
+    "CAN1": 2
+  },
+  "stop_file": "E:\\1_work\\ChassisCar_test\\logs\\stop-car2-startup-20261022-132217-293627.flag",
+  "stderr": "E:\\1_work\\ChassisCar_test\\logs\\car2-startup-20261022-132217-293627.stderr.log",
+  "output": "E:\\1_work\\ChassisCar_test\\logs\\car2-startup-20261022-132217-293627",
+  "started_at": "2026-10-22T13:22:17.3941697+08:00",
+  "bitrate_kbps": 500,
+  "duration_s": 180,
+  "hardware_listen_only": true,
+  "pid": 30100
+}

@@ -1,0 +1,98 @@
+{"elapsed_s": 0.012732699979096651, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.013154099986422807, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.024940699979197234, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.025071199983358383, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.028945300000486895, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 7A 60 00 00 00 00 00"}
+{"elapsed_s": 0.030567599984351546, "direction": "RX", "id": 1409, "data": "43 7A 60 00 9D 34 00 00"}
+{"elapsed_s": 0.1116487999970559, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.11175989999901503, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.1122726000030525, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.11251149998861365, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.1125395999988541, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.11255989997880533, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.1125797999848146, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.11259809997864068, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.11261539999395609, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 0.11279640000429936, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.11281920000328682, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.11283609998645261, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 0.11285370000405237, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.11287099999026395, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.11288790000253357, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.11310689998208545, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.11314279999351129, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.11316370000713505, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.12361469998722896, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.12370209998334758, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.13173819999792613, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 64 60 00 00 00 00 00"}
+{"elapsed_s": 0.1332385999849066, "direction": "RX", "id": 1409, "data": "43 64 60 00 AB 4F 00 00"}
+{"elapsed_s": 0.21380880000651814, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.21394230000441894, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.21397449998767115, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.21426169999176636, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.21433299998170696, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.21435679998830892, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.2143756999867037, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.21439449998433702, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.21442919998662546, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 0.2148684999847319, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.21492979998583905, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.21496479999041185, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 0.2150019999826327, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.21502099998178892, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.2151243999833241, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.21546639999723993, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.21551109998836182, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.21553270000731573, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.22200039998278953, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.22204409999540076, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.23418080000556074, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 41 60 00 00 00 00 00"}
+{"elapsed_s": 0.2344810999929905, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.23451129999011755, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.23647599999094382, "direction": "RX", "id": 1409, "data": "4B 41 60 00 37 06"}
+{"elapsed_s": 0.3169843000068795, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.3170621999888681, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.31708379997871816, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.31737839998095296, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.3174016999837477, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.317420499981381, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.3174381999997422, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 0.31745639999280684, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.3174752999912016, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.3177189999842085, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.31774119997862726, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.31775839999318123, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 0.3177758999809157, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.31779370000003837, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.31781099998624995, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.31804250000277534, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.3218588999880012, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.3218847999814898, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.3321298999944702, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.3322013999859337, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.33764690000680275, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 3F 60 00 00 00 00 00"}
+{"elapsed_s": 0.33920600000419654, "direction": "RX", "id": 1409, "data": "4B 3F 60 00 00 00"}
+{"elapsed_s": 0.41978159997961484, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.41986480000196025, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.41988959998707287, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.4202113999926951, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.4202563999861013, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.42027889998280443, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.4202967000019271, "direction": "RX", "id": 1794, "data": "7F"}
+{"elapsed_s": 0.4203141999896616, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.42033189997891895, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.4206490999786183, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.4207401000021491, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.420770700002322, "direction": "RX", "id": 1793, "data": "05"}
+{"elapsed_s": 0.42079149998608045, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.42080999998142943, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.42082769999979064, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.4211252999957651, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.4211676999984775, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.4211899999936577, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.43202199999359436, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.4321166999870911, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.4409004999906756, "direction": "TX_READ_ONLY", "id": 1537, "data": "40 81 60 00 00 00 00 00"}
+{"elapsed_s": 0.4429840999946464, "direction": "RX", "id": 641, "data": "AB 4F 00 00 00 00 00 00"}
+{"elapsed_s": 0.44301859999541193, "direction": "RX", "id": 385, "data": "37 06 00 00 BF 00 01"}
+{"elapsed_s": 0.4430382999998983, "direction": "RX", "id": 1409, "data": "43 81 60 00 2C 01 00 00"}

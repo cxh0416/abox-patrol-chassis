@@ -1,0 +1,74 @@
+{
+  "forward": {
+    "bus": "CAN2",
+    "adapter_channel": 0,
+    "elapsed_s": 176.46899999998277,
+    "id": 267,
+    "dlc": 8,
+    "data": "00 00 00 00 C2 01 00 00",
+    "extended": false,
+    "remote": false,
+    "hardware_timestamp_raw": 39181529,
+    "time_flag": 1,
+    "decoded": {
+      "kind": "t12_joystick",
+      "steer_raw": 0,
+      "throttle_raw": 450,
+      "reference_rpm": 1000
+    }
+  },
+  "reverse": {
+    "bus": "CAN2",
+    "adapter_channel": 0,
+    "elapsed_s": 178.98499999998603,
+    "id": 267,
+    "dlc": 8,
+    "data": "00 00 00 00 3E FE 00 00",
+    "extended": false,
+    "remote": false,
+    "hardware_timestamp_raw": 39206699,
+    "time_flag": 1,
+    "decoded": {
+      "kind": "t12_joystick",
+      "steer_raw": 0,
+      "throttle_raw": -450,
+      "reference_rpm": -1000
+    }
+  },
+  "left": {
+    "bus": "CAN2",
+    "adapter_channel": 0,
+    "elapsed_s": 182.51599999997416,
+    "id": 267,
+    "dlc": 8,
+    "data": "3E FE 00 00 00 00 00 00",
+    "extended": false,
+    "remote": false,
+    "hardware_timestamp_raw": 39241857,
+    "time_flag": 1,
+    "decoded": {
+      "kind": "t12_joystick",
+      "steer_raw": -450,
+      "throttle_raw": 0,
+      "reference_rpm": 0
+    }
+  },
+  "right": {
+    "bus": "CAN2",
+    "adapter_channel": 0,
+    "elapsed_s": 185.51599999997416,
+    "id": 267,
+    "dlc": 8,
+    "data": "C2 01 00 00 00 00 00 00",
+    "extended": false,
+    "remote": false,
+    "hardware_timestamp_raw": 39271822,
+    "time_flag": 1,
+    "decoded": {
+      "kind": "t12_joystick",
+      "steer_raw": 450,
+      "throttle_raw": 0,
+      "reference_rpm": 0
+    }
+  }
+}

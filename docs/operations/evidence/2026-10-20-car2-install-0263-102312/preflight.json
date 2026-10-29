@@ -1,0 +1,35 @@
+{
+  "checks": {
+    "output_off": true,
+    "no_session": true,
+    "no_enable": true,
+    "ota_idle": true,
+    "bench_idle": true,
+    "center_idle_or_done": true,
+    "uid_match": true,
+    "old_app_match": true,
+    "frozen_boot_match": true,
+    "calibration_page_match": true,
+    "boot_idle": true
+  },
+  "boot_states": [
+    {
+      "page": "state-a-before",
+      "valid": true,
+      "sequence": 2,
+      "state": 4,
+      "version": "patrol-chassis-0.2.62"
+    },
+    {
+      "page": "state-b-before",
+      "valid": true,
+      "sequence": 3,
+      "state": 4,
+      "version": "patrol-chassis-0.2.62"
+    }
+  ],
+  "public": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\docs\\operations\\evidence\\2026-10-20-car2-install-0263-102312",
+  "protected": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-20-car2-install-0263-102312",
+  "version": "patrol-chassis-0.2.63",
+  "operator_confirmation": "Operator confirmed vehicle output off again; previous confirmation of MCU powered and SWD connected persists."
+}

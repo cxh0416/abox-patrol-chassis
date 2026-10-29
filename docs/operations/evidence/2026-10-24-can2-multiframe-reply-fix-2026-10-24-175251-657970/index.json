@@ -1,0 +1,43 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "date": "2026-10-24",
+  "version": "patrol-chassis-0.2.88",
+  "candidate": true,
+  "purpose": "Send CAN2 motion and center-calibration replies as a bounded one-frame-at-a-time sequence so temporary TX mailbox pressure cannot discard 0x532/0x533 or 0x522/0x523",
+  "root_cause": "The previous sender requested three CAN2 TX mailboxes in one task turn and dropped the remaining correlated response frames on the first temporary HAL_CAN_AddTxMessage failure",
+  "app_sha256": "505f00b41c870641797eaaafe5dea7b0a93f910c031ec705cfcbd0510baae7a4",
+  "full_sha256": "f4754ca94265142bdd9983a2532b9df9d9024072ff7d847e106fe7fb72a986be",
+  "app_crc32": "C8421FFA",
+  "validation": {
+    "arm_release_build": true,
+    "can_remote_host_test": true,
+    "can2_stack": true,
+    "diff_check": true,
+    "full_boot_prefix": true,
+    "full_app_suffix": true,
+    "boot_state_a_bound": true,
+    "boot_state_b_erased": true
+  },
+  "known_full_suite_failures": [
+    "test_identity_and_safe_defaults: pre-existing static assertion",
+    "test_document_links_and_archived_evidence_references: existing CURRENT.md links to removed evidence directories"
+  ],
+  "board_flashed": false,
+  "field_verified": false,
+  "files": [
+    "ABox_Boot.bin",
+    "BootState_A.bin",
+    "BootState_B.bin",
+    "Patrol_Vehicle_Chassis_App.bin",
+    "Patrol_Vehicle_Chassis_App.elf",
+    "Patrol_Vehicle_Chassis_App.map",
+    "Patrol_Vehicle_Chassis_Full.bin",
+    "FLASH_ADDRESSES.txt",
+    "README.md",
+    "flash.manifest.json",
+    "source-change.patch",
+    "validation/can-remote-test.log",
+    "validation/can2-stack.log",
+    "validation/diff-check.log"
+  ]
+}

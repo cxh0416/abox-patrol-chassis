@@ -1,0 +1,137 @@
+{
+  "host_started_at": "2026-10-22T13:31:28.478116+08:00",
+  "mode": "SWD attach/read only; no halt/reset/go/target writes",
+  "schema": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\car2-0277-schema.json",
+  "expected_app_sha256": "ced4fd110f4c02b1108a99cc3c2c2eb0d8d948e07232aaa04441741a219ec020",
+  "probe_serial": 59406895,
+  "dhcsr_before": "0x1010001",
+  "observed_app_sha256": "ced4fd110f4c02b1108a99cc3c2c2eb0d8d948e07232aaa04441741a219ec020",
+  "regions": {
+    "boot_alias": {
+      "address": "0x0",
+      "bytes": 64,
+      "hex": "00000120f11d0008211d0008231d0008251d0008271d0008291d0008000000000000000000000000000000002b1d00082d1d0008000000002f1d0008311d0008"
+    },
+    "config_header_only": {
+      "address": "0x803f800",
+      "bytes": 12,
+      "hex": "ffffffffffffffffffffffff"
+    },
+    "state_a_header": {
+      "address": "0x803e800",
+      "bytes": 40,
+      "hex": "32565342030070000100000000000000ffff0000d85a0200161c4bb7706174726f6c2d6368617373"
+    },
+    "state_b_header": {
+      "address": "0x803f000",
+      "bytes": 40,
+      "hex": "32565342030070000200000000000000ffff0000d85a0200161c4bb7706174726f6c2d6368617373"
+    },
+    "icsr": {
+      "address": "0xe000ed04",
+      "bytes": 4,
+      "hex": "00000000"
+    },
+    "dwt_pcsr": {
+      "address": "0xe000101c",
+      "bytes": 4,
+      "hex": "86c90008"
+    },
+    "flash_regs": {
+      "address": "0x40022000",
+      "bytes": 36,
+      "hex": "32000000000000000000000000000000800000000000000000000000fcffff03ffffffff"
+    },
+    "afio_mapr": {
+      "address": "0x40010004",
+      "bytes": 4,
+      "hex": "00000002"
+    },
+    "cpuid": {
+      "address": "0xe000ed00",
+      "bytes": 4,
+      "hex": "31c21f41"
+    },
+    "vtor": {
+      "address": "0xe000ed08",
+      "bytes": 4,
+      "hex": "00800008"
+    },
+    "scb_faults": {
+      "address": "0xe000ed24",
+      "bytes": 40,
+      "hex": "00000000000000000000000000000000a0b90008a4b9000800000000300000000002000000001000"
+    },
+    "dbg_id": {
+      "address": "0xe0042000",
+      "bytes": 4,
+      "hex": "18640110"
+    },
+    "flash_size": {
+      "address": "0x1ffff7e0",
+      "bytes": 4,
+      "hex": "0001ffff"
+    },
+    "uid": {
+      "address": "0x1ffff7e8",
+      "bytes": 12,
+      "hex": "36ffd205534d383840251443"
+    },
+    "sram_start": {
+      "address": "0x20000000",
+      "bytes": 64,
+      "hex": "00a24a04010000000f00000000000000cd560208dd5602084958020800e8030800f003080008000000800008ffdf030800000020000001200000000003000000"
+    },
+    "flash_start": {
+      "address": "0x8000000",
+      "bytes": 64,
+      "hex": "00000120f11d0008211d0008231d0008251d0008271d0008291d0008000000000000000000000000000000002b1d00082d1d0008000000002f1d0008311d0008"
+    },
+    "ram_tick": {
+      "address": "0x2000021c",
+      "bytes": 16,
+      "hex": "49ae0000000000000000000000000000"
+    },
+    "flash_tick_offset": {
+      "address": "0x800021c",
+      "bytes": 16,
+      "hex": "11f8013b012a28bf9a42f7d0d01a7047"
+    },
+    "rcc": {
+      "address": "0x40021000",
+      "bytes": 40,
+      "hex": "836403330a041d00000000000000000000000000150000003d480000010010160000000002000000"
+    },
+    "systick": {
+      "address": "0xe000e010",
+      "bytes": 16,
+      "hex": "070000003f19010031e1000028230040"
+    },
+    "config_calibration_only": {
+      "address": "0x803f96c",
+      "bytes": 36,
+      "hex": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+    }
+  },
+  "boot_and_state_hashes": {
+    "ABox_Boot.bin": {
+      "observed_sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+      "expected_sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63",
+      "matches": true
+    },
+    "BootState_A.bin": {
+      "observed_sha256": "9e7023be4232d4a281ee7567b62abd2f3c1e957bcc540a6564a13eaeb417abb8",
+      "expected_sha256": "9e7023be4232d4a281ee7567b62abd2f3c1e957bcc540a6564a13eaeb417abb8",
+      "matches": true
+    },
+    "BootState_B.bin": {
+      "observed_sha256": "35bfac3c79e2bdeb539d1deaae5b097e18ad27aec6b1bc3988f89deeb08b17c0",
+      "expected_sha256": "35bfac3c79e2bdeb539d1deaae5b097e18ad27aec6b1bc3988f89deeb08b17c0",
+      "matches": true
+    }
+  },
+  "dhcsr_after": "0x1010001",
+  "verified_image": "patrol-chassis-0.2.77",
+  "ram_decoding_valid": false,
+  "host_finished_at": "2026-10-22T13:31:31.097380+08:00"
+}

@@ -1,0 +1,98 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "created_at": "2026-10-21T08:45:49.845646+08:00",
+  "type": "read-only reverse lock diagnosis",
+  "device_app_version": "patrol-chassis-0.2.65",
+  "device_app_sha256": "ddfe2361bc187b4658383cd7fe8e529d16d9786b319b9b34a2313d51ed18986f",
+  "cpu_halted_observed": false,
+  "writes_or_resets_requested": false,
+  "decode": "fault-decode.json",
+  "timing": "reverse-timing.json",
+  "conclusion": "conclusion.json",
+  "public_evidence": [
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-lock-readonly-084141\\conclusion.json",
+      "bytes": 1028,
+      "sha256": "b90a62d6e90a8c7881afe45345be1f40e9e61aec5108b702108d51d35edc2a01"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-lock-readonly-084141\\fault-decode.json",
+      "bytes": 1411,
+      "sha256": "3ec977fe865148ba219cfc4b4d6de4118934cb940b3d09f7a61764d7e28e15f4"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-lock-readonly-084141\\host-repro-build-recheck.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-lock-readonly-084141\\host-repro-build.log",
+      "bytes": 332,
+      "sha256": "9083f2da874dace1d0ad78a9a7b30fbd513388229fe674c9208ee05fcd4e0c03"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-lock-readonly-084141\\host-repro.log",
+      "bytes": 233,
+      "sha256": "be1603b50e19bcc66f504f518d3b90b40af7597041100cc98af61e5ec4f3d4b0"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-lock-readonly-084141\\motion-fault-ram.bin",
+      "bytes": 128,
+      "sha256": "3befb29ef18cec876e3655ad8e2157857185212d1df9025745482e696ab32c6a"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-lock-readonly-084141\\read-only.jlink",
+      "bytes": 648,
+      "sha256": "3d84d1822e4a9d9e57879d0452391014c45eaffe37a7efca8a7964ded3defebe"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-lock-readonly-084141\\read-only.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-lock-readonly-084141\\read-only.stdout.log",
+      "bytes": 3313,
+      "sha256": "e816db8d956a89e3769ada36673d85ca67571957244d7f6da54b8879258183ed"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-lock-readonly-084141\\reverse-timing.json",
+      "bytes": 260,
+      "sha256": "a88cd57a44a03bf8f2a54210aab7310edbf093e17b33d67341f7ee44616f1cad"
+    },
+    {
+      "path": "docs\\operations\\evidence\\2026-10-21-reverse-lock-readonly-084141\\uid.bin",
+      "bytes": 12,
+      "sha256": "4d46849cde0edf35dcd65338a472ff614a7193426a4a4b0d712dcc1a29a73f92"
+    }
+  ],
+  "protected_evidence": [
+    {
+      "path": "out\\flash\\2026-10-21-reverse-lock-readonly-084141\\flash-readonly.bin",
+      "bytes": 262144,
+      "sha256": "4747172bc195310a28eba1caf72638b0abed4639aff1bd67e43354ac1ac9ee0c"
+    },
+    {
+      "path": "out\\flash\\2026-10-21-reverse-lock-readonly-084141\\matched-app.elf",
+      "bytes": 258592,
+      "sha256": "b5f0b2a41d10ebfcbf1ac97952e4c4001e656d6d4ad70b0489b877827266bd4a"
+    },
+    {
+      "path": "out\\flash\\2026-10-21-reverse-lock-readonly-084141\\ram-readonly.bin",
+      "bytes": 65536,
+      "sha256": "ce42cf57d5ce93efcf160ecacbf36d7048abb5d7485cd5f425350b64acfd6f26"
+    }
+  ],
+  "host_repro_source": {
+    "path": "out\\logs\\reverse-lock-repro.c",
+    "bytes": 1870,
+    "sha256": "a1dddeefdfcac7d487c9a76708cd01faa0634ec0eab5752003c2e041e6799407"
+  },
+  "source_hashes": {
+    "app/Core/User/motion/src/chassis_control.c": "4e2628ccecd4694f6ebf84e0c224e951e76efef6de72c69e9bd80933e60c08c3",
+    "app/Core/User/motion/src/bench_drive.c": "89e3f7ad8bda30e4899bf8872b51304433f35498ac573909d019943939bc2252",
+    "app/Core/User/motion/src/patrol_runtime.c": "4f06e474e3214611442d04ff9cc174160db30f7b1b4ba73078788765a42911a9",
+    "app/Core/User/motion/src/patrol_phy_remote.c": "4fdbb01cae825f229ed4e5d51dd6064aae837da1e610e705f7199e97696a0bd6",
+    "app/Core/User/cloud/src/remote_service.c": "6b92d40e9970859e681b480c622a44ad1d3060457287404b78977a9d7be7904e"
+  }
+}

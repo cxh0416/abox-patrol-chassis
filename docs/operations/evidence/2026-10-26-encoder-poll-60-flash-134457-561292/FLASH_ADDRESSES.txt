@@ -1,0 +1,23 @@
+patrol_vehicle_chassis / patrol-chassis-0.2.92 / ENCODER POLL 60 ms
+
+推荐完整安装，写完三个文件后再复位：
+1. Patrol_Vehicle_Chassis_Full.bin -> 0x08000000 (189504 bytes)
+2. BootState_A.bin -> 0x0803E800 (2048 bytes)
+3. BootState_B.bin -> 0x0803F000 (2048 bytes)
+
+Full 已包含 32 KiB 冻结 Boot 和 App，不要同时重复烧录独立 App/Boot。
+已有匹配冻结 Boot 时，可使用：
+Patrol_Vehicle_Chassis_App.bin -> 0x08008000 (156736 bytes)
+但仍必须写入本包配套 BootState_A/B。
+
+禁止整片擦除。保留：
+- 0x0803E000..0x0803E7FF 配置恢复页
+- 0x0803F800..0x0803FFFF Config V5 与故障日志页
+
+本次仅将已配置后绝对编码器正常轮询间隔由 100 ms 调整为 60 ms；
+配置寄存器读取阶段仍保持 500 ms。
+本包尚未烧录，尚未完成现场验证。
+
+App CRC32: BE932439
+App SHA256: 5B27100EC08D4DEA02689DA3F05AE3000BF0B32FD997DA51B44F9F2D8CD00D81
+Full SHA256: 094ef31f422b8c616533f83eb77995f74348c2bc7b31dfbb2279ac944b89b6a3

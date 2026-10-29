@@ -1,0 +1,13 @@
+PASS CAN2 target: known 288 + reserve 512 <= 1024
+PASS CAN2 reset: known 360 + reserve 512 <= 1024
+PASS CAN2 reply: known 192 + reserve 512 <= 1024
+PASS CAN2 lease stop: known 128 + reserve 512 <= 1024
+PASS handset A switch: known 264 + reserve 512 <= 1024
+PASS handset joystick: known 264 + reserve 512 <= 1024
+PASS handset lease stop: known 128 + reserve 512 <= 1024
+PASS fault capture from CAN2: known 360 + reserve 512 <= 1024
+PASS fault frame from CAN2: known 392 + reserve 512 <= 1024
+PASS fault transmit from CAN2: known 404 + reserve 512 <= 1024
+PASS fault frame from safety: known 168 + reserve 512 <= 1024
+PASS fault latch log: known 256 + reserve 512 <= 1024
+PASS fault stop retry: known 232 + reserve 512 <= 1024

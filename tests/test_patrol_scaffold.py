@@ -45,7 +45,11 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertNotIn("contactor_feedback", rtos)
         self.assertIn("HAL_CAN_AddTxMessage", rtos)
         self.assertIn("request.data[0] == 0x40U", rtos)
-        self.assertNotIn("PatrolCanopen_SdoWrite", rtos)
+        # Runtime hot-reset recovery may request shutdown; its output and
+        # build/mailbox gates are exercised by test_hot_reset_recovery.
+        for name in ("system/src/patrol_rtos.c", "motion/src/center_calibration.c"):
+            self.assertNotIn("PatrolCanopen_SdoWrite",
+                             (ROOT / "app/Core/User" / name).read_text(encoding="utf-8"))
 
     def test_product_version_has_one_external_default_and_optional_script_override(self):
         version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
@@ -79,7 +83,8 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertIn("A-BOX 设备公共 MQTT 协议 V4", mqtt)
         self.assertNotIn("/zxwl/abox/{deviceId}", mqtt)
         self.assertIn("vehicle_chassis", mqtt)
-        self.assertIn("`±500 rpm`", canopen)
+        self.assertIn("`±2000 rpm`", canopen)
+        self.assertIn("`-2000..2000`", mqtt)
         self.assertIn("`±30°`", canopen)
         self.assertIn("连续三次", canopen)
 

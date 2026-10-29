@@ -1,0 +1,5 @@
+[1/2] Building C object CMakeFiles/Patrol_Vehicle_Chassis_App.dir/Core/User/motion/src/patrol_runtime.c.obj
+[2/2] Linking C executable Patrol_Vehicle_Chassis_App.elf
+Memory region         Used Size  Region Size  %age Used
+             RAM:       61432 B        64 KB     93.74%
+           FLASH:      154328 B       216 KB     69.77%

@@ -1,0 +1,29 @@
+patrol_vehicle_chassis / patrol-chassis-0.2.102 / TARGET COMMIT + 100MS TRIGGER
+
+推荐完整安装，写完三个文件后再复位：
+1. Patrol_Vehicle_Chassis_Full.bin -> 0x08000000 (189596 bytes)
+2. BootState_A.bin -> 0x0803E800 (2048 bytes)
+3. BootState_B.bin -> 0x0803F000 (2048 bytes)
+
+Full 已包含 32 KiB 冻结 Boot 和 App，不要同时重复烧录独立 App/Boot。
+已有匹配冻结 Boot 时，可使用：
+Patrol_Vehicle_Chassis_App.bin -> 0x08008000 (156828 bytes)
+但仍必须写入本包配套 BootState_A/B。
+
+禁止整片擦除。保留：
+- 0x0803E000..0x0803E7FF 配置恢复页
+- 0x0803F800..0x0803FFFF Config V5 与故障日志页
+
+正常动态转向：仅电机位置反馈，不比较两路角度
+独立编码器：中位标定、在线/配置、输出轴绝对范围
+双角度2000 mdeg校验：自动回中开始/完成、中位标定过程
+转向Profile速度：MAX/MID/CREEP = 1000 rpm
+目标提交：0x607A后完成本轮0x3F/0x2F，再处理最新目标
+最小触发起始间隔：100 ms
+完整回归：47/56，未通过 test_production_stop_arbitration
+
+App CRC32: 5D8E248C
+App SHA256: 4E9B3572E43A3DEE3FA3BECD6CFF6EEA674F8B0E0F73CC3474BEC1E9F97F8A15
+Full SHA256: 43210984F9A75787F8E1A5ABAC0B49D878A1247B8606C3D37287FC24AB117F49
+BootState_A SHA256: D75C291C2FFD01BCF6A3887F1902F4E5E9EAB5B79D210D2B4650625FB99875D9
+BootState_B SHA256: D0FF1B294B5288D1AE1421EADF5B2D38A8752B76D472FF30BED9028E25B1C5B8

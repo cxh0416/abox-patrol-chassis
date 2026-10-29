@@ -15,7 +15,7 @@ class AutoCenterRuntimeTests(unittest.TestCase):
             binary = Path(directory) / "auto_center.exe"
             sources = ["center_calibration.c", "patrol_runtime.c", "bench_steering.c",
                        "bench_drive.c", "steering_angle.c", "patrol_canopen.c",
-                       "chassis_control.c", "patrol_auto_center.c"]
+                       "chassis_control.c", "patrol_auto_center.c", "patrol_fault_stop.c"]
             result = subprocess.run([
                 shutil.which("gcc") or "gcc", "-std=c11", "-Wall", "-Wextra", "-Werror",
                 "-Wno-format", "-ffunction-sections", "-fdata-sections", "-Wl,--gc-sections",

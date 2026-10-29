@@ -105,15 +105,19 @@ try {
     $bootUsage = [ordered]@{ image_bytes = (Get-Item -LiteralPath $bootArtifact).Length; source = 'platform/targets/stm32f105_abox_boot' }
 
     foreach ($version in $versions) {
-        $appDefinitions = @("-DPATROL_CHASSIS_APP_VERSION_OVERRIDE=$version")
+        $appDefinitions = @("-DPATROL_CHASSIS_APP_VERSION_OVERRIDE=$version", "-DPATROL_ACTIVE_CAR=0")
         $appDefinitions += "-DPATROL_CHASSIS_ACTUATION_ENABLED=$(if ($actuationCompiled) { 'ON' } else { 'OFF' })"
         $appDefinitions += "-DPATROL_STEERING_EXECUTOR_ENABLED=$(if ($steeringCompiled) { 'ON' } else { 'OFF' })"
         $appDefinitions += "-DPATROL_DRIVE_EXECUTOR_ENABLED=$(if ($driveCompiled) { 'ON' } else { 'OFF' })"
         $app = Invoke-TargetBuild 'app' 'Patrol_Vehicle_Chassis_App' "ABoxUnified$Configuration-$version" $appDefinitions $credentialBuildRoot
+        & python (Join-Path $PSScriptRoot 'verify_can2_stack.py') (Split-Path -Parent $app.elf)
+        if ($LASTEXITCODE -ne 0) { throw 'CAN2 owner stack validation failed; dist was not replaced.' }
         $appUsage = Get-Usage $app.elf
-        if ($BenchSteering) {
+        if ($steeringCompiled) {
             & python (Join-Path $PSScriptRoot 'verify_bench_stack.py') (Split-Path -Parent $app.elf)
             if ($LASTEXITCODE -ne 0) { throw 'Steering stack validation failed' }
+        }
+        if ($BenchSteering) {
             if ((Get-FileHash -LiteralPath $app.bin -Algorithm SHA256).Hash -ne
                 (Get-FileHash -LiteralPath $VerifiedCandidate -Algorithm SHA256).Hash) {
                 throw 'Release differs from verified candidate; dist has not been replaced.'
@@ -127,7 +131,7 @@ try {
         $manifest = [ordered]@{
             manifest_version = 3; product = 'patrol_vehicle_chassis'; version = $version; configuration = $Configuration
             steering_executor_compiled = $steeringCompiled; drive_executor_compiled = $driveCompiled
-            startup_motion_permit = $false; actuation_enabled = $actuationCompiled
+            startup_motion_permit = $false; actuation_enabled = $actuationCompiled; active_car = 0
             boot_version = 'abox-boot-2.3.0'; ota_scheme = 'boot_v2_ufs'; ota_downloader = 'app'
             app_range = '0x08008000..0x0803DFFF'; config_recovery_page = '0x0803E000'; boot_state_pages = @('0x0803E800', '0x0803F000'); config_page = '0x0803F800'
             product_commit = $productCommit; product_dirty = $false; platform_commit = $platformCommit; platform_dirty = $false

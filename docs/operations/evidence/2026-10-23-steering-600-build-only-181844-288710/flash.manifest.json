@@ -1,0 +1,43 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.82",
+  "configuration": "Release",
+  "candidate": true,
+  "formal_release": false,
+  "build_only": true,
+  "tests_run": false,
+  "validators_run": false,
+  "board_flashed": false,
+  "field_motion_tested": false,
+  "active_car": 0,
+  "steering_profile_rpm": [
+    600,
+    600,
+    600
+  ],
+  "drive_max_rpm": 2000,
+  "build_directory": "app\\build\\Steering800",
+  "built_at": "2026-10-23T18:18:44.288710+08:00",
+  "app_bytes": 154264,
+  "full_bytes": 187032,
+  "app_sha256": "f18a32e1f70e14c4dff064ebb36e0ea2a36ab135966b148737b7dd4cfbb1fbf3",
+  "states": [
+    {
+      "file": "BootState_A.bin",
+      "address": "0x0803E800",
+      "bytes": 2048,
+      "sequence": 1,
+      "state": "NORMAL"
+    },
+    {
+      "file": "BootState_B.bin",
+      "address": "0x0803F000",
+      "bytes": 2048,
+      "sequence": 2,
+      "state": "NORMAL"
+    }
+  ],
+  "includes_device_config": false,
+  "boot_state_policy": "Offline NORMAL, stable UFS unseeded",
+  "publication": "New evidence folder only; managed candidates, online debug and dist unchanged"
+}

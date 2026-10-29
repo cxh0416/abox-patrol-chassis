@@ -1,0 +1,45 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "operator_confirmation": "已接编码器",
+  "com7_capture": {
+    "baud": 19200,
+    "format": "8N1",
+    "duration_s": 15,
+    "received_bytes": 0,
+    "transmitted_bytes": 0
+  },
+  "mcu_request_buffer": "01 03 00 03 00 02 34 0B",
+  "mcu_response_buffer_samples": 20,
+  "mcu_response_length_observed": 1,
+  "mcu_response_byte_observed": "FF",
+  "encoder_format_errors_before_stack_sampling": 7853,
+  "calibration_committed": false,
+  "root_cause_confirmed": false,
+  "limitations": [
+    "SWD RAM samples are non-atomic and are not a physical RS485 capture",
+    "Request buffer construction does not prove electrical transmission",
+    "No valid position frame; cannot determine which physical connection, supply, adapter mode or endpoint caused the failure"
+  ],
+  "files": [
+    {
+      "source": "E:\\1_work\\ChassisCar_test\\logs\\encoder-passive-20261022-165408-527952\\bytes.jsonl",
+      "archived": "00-bytes.jsonl",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "E:\\1_work\\ChassisCar_test\\logs\\encoder-passive-20261022-165408-527952\\summary.json",
+      "archived": "01-summary.json",
+      "sha256": "8b1738e0f4630eac71800e00a0439558ec19625e486113b75cb77c38b2e8401e"
+    },
+    {
+      "source": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-fault-stop-readonly-165903-024866\\snapshot.json",
+      "archived": "02-snapshot.json",
+      "sha256": "18875188d5d89c701def5e1d568d107ff68ec9372ba9a539d37f204335006fa0"
+    },
+    {
+      "source": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\listen-encoder-passive.ps1",
+      "archived": "03-listen-encoder-passive.ps1",
+      "sha256": "48200ede3c22f495bf745264d2db353ae1b06c7f38a7d9c599cb713e3a520a56"
+    }
+  ]
+}

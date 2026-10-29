@@ -1,0 +1,12 @@
+device STM32F105RC
+exec InhibitConnectRetries = 1
+exec ForceAttachTarget = 1
+if SWD
+speed 1000
+connect
+h
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-install-0262-094818\power-halted.bin", 0x20008418, 0x1
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-install-0262-094818\control-halted.bin", 0x200080D0, 0x68
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-install-0262-094818\motion-halted.bin", 0x20008520, 0x25C
+savebin "E:\1_work\ChassisCar\abox-patrol-vehicle-chassis-firmware\docs\operations\evidence\2026-10-20-car2-install-0262-094818\dhcsr-halted.bin", 0xE000EDF0, 0x4
+qc

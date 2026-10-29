@@ -4,6 +4,7 @@
 #include "vehicle_power_output.h"
 #include "time_base.h"
 #include "chassis_cloud_protocol.h"
+#include "center_calibration.h"
 #include "abox_mqtt_v4.h"
 #include <assert.h>
 #include <stdio.h>
@@ -19,6 +20,10 @@ static uint32_t tick = 1000;
 static uint64_t utc_now = 1788838333000ULL;
 static uint8_t time_trusted = 1U;
 uint32_t HAL_GetTick(void) { return tick; }
+/* This isolated config/session fixture has no calibration session. */
+uint8_t CenterCalibration_IsActive(void) { return 0U; }
+/* This config-only fixture compiles no motor transport. */
+uint8_t PatrolRuntime_RequestFaultStop(void) { return 0U; }
 ABoxClockSnapshot TimeBase_GetSnapshot(void) {
  ABoxClockSnapshot s={utc_now, tick, 0U, 1U, ABOX_CLOCK_PLATFORM, time_trusted ? ABOX_CLOCK_SYNCHRONIZED : ABOX_CLOCK_UNTRUSTED}; return s;
 }
@@ -211,8 +216,23 @@ int main(void)
     assert(PatrolConfig_SetCalibration(-85123, 0, 2710800, 55250, 1, 1, 2000));
     flash.reserved_remote = 1; /* Existing V5 byte remains readable after OTA. */
     PatrolConfig_Load();
-    assert(PatrolConfig_Get()->calibrated && PatrolConfig_Get()->reserved_remote == 1);
-    assert(PatrolConfig_SingleTurnProfileReady());
+    /* ACTIVE_CAR=1: -85123 does not match the CAR1 profile, so the runtime
+     * calibrated flag is cleared while the reserved byte is preserved. */
+    assert(!PatrolConfig_Get()->calibrated && PatrolConfig_Get()->reserved_remote == 1);
+    /* >>>>> CAR-PROFILE TEST: START >>>>> */
+    flash.steering_center_count = -83815;
+    flash.absolute_center_count = 0U;
+    flash.calibrated = 1U;
+    PatrolConfig_Load();
+    assert(PatrolConfig_Get()->calibrated && PatrolConfig_SingleTurnProfileReady());
+    flash.steering_center_count = -85123;
+    PatrolConfig_Load();
+    assert(!PatrolConfig_Get()->calibrated); /* Non-CAR1 profile cleared. */
+    assert(flash.calibrated == 1U);          /* Persisted record is retained. */
+    flash.steering_center_count = -83815;
+    PatrolConfig_Load();
+    assert(PatrolConfig_Get()->calibrated);  /* CAR1 profile restored. */
+    /* <<<<< CAR-PROFILE TEST: END <<<<< */
     assert(PatrolConfig_SetMqtt("PATROL-001", "broker.example", 19683, "device", "secret"));
     test_vid_validation();
     flash.mqtt_tls_enabled = 1; flash.mqtt_tls_profile_id = 0; PatrolConfig_Load();

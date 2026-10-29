@@ -1,0 +1,15 @@
+{
+  "timestamp": "2026-10-20T10:23:23.695607+08:00",
+  "version": "patrol-chassis-0.2.63",
+  "app_sha256": "7DD0B02296020CF477D9D36C8E1DA782AA5DA430DF3CC022430E66D1E9E606E5",
+  "boot_state_sequence": 4,
+  "verification": {
+    "app_byte_equal": true,
+    "state_a_byte_equal": true,
+    "boot_unchanged": true,
+    "state_b_unchanged": true,
+    "config_unchanged": true,
+    "recovery_unchanged": true
+  },
+  "boundary": "App and State A only; physical motion and runtime not yet verified."
+}

@@ -1,0 +1,127 @@
+[
+  {
+    "tick_ms": 3,
+    "sequence": 1,
+    "text": "I CFG loaded vid=PATROL-05D3FF343733574E43043550\r\n"
+  },
+  {
+    "tick_ms": 4,
+    "sequence": 2,
+    "text": "I PWR vehicle output commanded=0 result=0\r\n"
+  },
+  {
+    "tick_ms": 6,
+    "sequence": 3,
+    "text": "I MQTT_TLS runtime state=3 stage=wait-ca\r\n"
+  },
+  {
+    "tick_ms": 7,
+    "sequence": 4,
+    "text": "I CLOUD configured vid=PATROL-05D3FF343733574E43043550 broker=36.153.16\r\n"
+  },
+  {
+    "tick_ms": 7,
+    "sequence": 5,
+    "text": "I REMOTE initialized calibrated=1; outputs gated\r\n"
+  },
+  {
+    "tick_ms": 7,
+    "sequence": 6,
+    "text": "I BOOT version=patrol-chassis-0.2.67 app=0x08008000\r\n"
+  },
+  {
+    "tick_ms": 10143,
+    "sequence": 7,
+    "text": "I MQTT_TLS runtime state=3 stage=wait-ca\r\n"
+  },
+  {
+    "tick_ms": 11021,
+    "sequence": 8,
+    "text": "I MQTT_TLS runtime state=5 stage=prepare\r\n"
+  },
+  {
+    "tick_ms": 11164,
+    "sequence": 9,
+    "text": "I MQTT_TLS runtime state=6 stage=bind\r\n"
+  },
+  {
+    "tick_ms": 11205,
+    "sequence": 10,
+    "text": "I MQTT_TLS runtime state=7 stage=tls-prepared\r\n"
+  },
+  {
+    "tick_ms": 11206,
+    "sequence": 11,
+    "text": "I MQTT_TRIAL session=0 runtime=7 trial=0 reason=0\r\n"
+  },
+  {
+    "tick_ms": 11215,
+    "sequence": 12,
+    "text": "I MQTT_TLS runtime state=8 stage=connect\r\n"
+  },
+  {
+    "tick_ms": 12289,
+    "sequence": 13,
+    "text": "I PWR vehicle output commanded=1 result=0\r\n"
+  },
+  {
+    "tick_ms": 15798,
+    "sequence": 14,
+    "text": "I OTA Boot V2 App UFS/HTTP/TLS/CA ready\r\n"
+  },
+  {
+    "tick_ms": 19415,
+    "sequence": 15,
+    "text": "I MQTT_TLS runtime state=9 stage=connected\r\n"
+  },
+  {
+    "tick_ms": 19415,
+    "sequence": 16,
+    "text": "I MQTT_TRIAL session=0 runtime=9 trial=0 reason=0\r\n"
+  },
+  {
+    "tick_ms": 20313,
+    "sequence": 17,
+    "text": "I MQTT_TLS runtime state=10 stage=ready\r\n"
+  },
+  {
+    "tick_ms": 20313,
+    "sequence": 18,
+    "text": "I MQTT_TRIAL session=0 runtime=10 trial=0 reason=0\r\n"
+  },
+  {
+    "tick_ms": 20313,
+    "sequence": 19,
+    "text": "I MQTT_TLS runtime ready client=1 context=2 connected and subscribed\r\n"
+  },
+  {
+    "tick_ms": 20313,
+    "sequence": 20,
+    "text": "I CLOUD mqtt ready\r\n"
+  },
+  {
+    "tick_ms": 21983,
+    "sequence": 21,
+    "text": "I OTA Boot V2 App UFS/HTTP/TLS/CA ready\r\n"
+  },
+  {
+    "tick_ms": 26387,
+    "sequence": 22,
+    "text": "I TIME platform rtt=223 err=145\r\n"
+  },
+  {
+    "tick_ms": 58142,
+    "sequence": 23,
+    "text": "I PWR vehicle output commanded=0 result=0\r\n"
+  },
+  {
+    "tick_ms": 114181,
+    "sequence": 24,
+    "text": "I PWR vehicle output commanded=0 result=0\r\n"
+  },
+  {
+    "tick_ms": 115336,
+    "sequence": 25,
+    "text": "I PWR vehicle output commanded=1 result=0\r\n"
+  }
+]

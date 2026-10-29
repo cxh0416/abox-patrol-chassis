@@ -30,6 +30,7 @@ DMA_HandleTypeDef hdma_usart1_rx;
 DMA_HandleTypeDef hdma_usart1_tx;
 
 /* UART5 init function */
+// 按工程串口参数初始化 UART5。作为本工程对应串口服务的底层配置，HAL 失败进入统一错误处理，不自动发送日志或控制数据。
 void MX_UART5_Init(void)
 {
 
@@ -59,6 +60,7 @@ void MX_UART5_Init(void)
 }
 /* USART1 init function */
 
+// 初始化 EC800 通信使用的 USART1。设置波特率与帧格式，底层 DMA 由 MSP 配置，接收启动由云服务统一执行。
 void MX_USART1_UART_Init(void)
 {
 
@@ -87,6 +89,7 @@ void MX_USART1_UART_Init(void)
 
 }
 
+// 配置指定 UART 实例的 GPIO、时钟、DMA 和中断。按工程句柄选择硬件资源，UART 与 DMA 链接由 HAL 使用，不在此解析通信协议。
 void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
 {
 
@@ -187,6 +190,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
   }
 }
 
+// 释放指定 UART 实例的底层硬件资源。关闭对应时钟、引脚、中断和 DMA 绑定，业务层应先停止使用该串口。
 void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 {
 

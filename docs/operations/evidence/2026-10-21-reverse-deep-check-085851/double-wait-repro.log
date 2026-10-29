@@ -1,0 +1,3 @@
+Upper layer accepts reverse after 3 stopped samples at 300 ms; lower layer starts another zero-confirmation.
+Four zero SDO writes total; second 3-pair wait adds 150 ms in this fixture. Negative target then succeeds.
+This reproduces duplicate waits, not real motor deceleration or the field timeout.

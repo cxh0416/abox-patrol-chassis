@@ -6,6 +6,7 @@ static void feedback(int32_t angle_mdeg)
     mock_snapshot.steering_position_count = (int32_t)((int64_t)angle_mdeg * 2710800 / 1000000);
     mock_snapshot.encoder_count = 2048U + (int32_t)((int64_t)angle_mdeg * 55250 / 1000000);
     mock_snapshot.coherent_feedback_ms = mock_snapshot.encoder_sample_ms = mock_now;
+    mock_snapshot.steering_position_ms = mock_now;
     g_motion.diagnostics.steering_position_count = mock_snapshot.steering_position_count;
     g_motion.diagnostics.encoder_count = mock_snapshot.encoder_count;
     g_motion.diagnostics.left_rpm_ms = g_motion.diagnostics.right_rpm_ms = mock_now;
@@ -53,6 +54,49 @@ static void active_steering(void)
 
 int main(void)
 {
+    /* A fresh 3-degree disagreement is accepted by ordinary motion, including
+     * renewals when samples cannot be paired for a centering boundary. */
+    reset_fixture(10000); active_steering();
+    mock_control.feedback.encoder_actual_mdeg += 3000;
+    assert(ChassisControl_Apply(&mock_control, "acquire", "angle", 1U, 1000U, 100, 10000, mock_now));
+    PatrolRuntime_Tick();
+    assert(mock_control.enable_request && mock_control.target_rpm == 100 && !mock_control.fault_pending);
+    mock_control.feedback.angle_pair_valid = 0U;
+    assert(ChassisControl_Apply(&mock_control, "renew", "angle", 2U, 1000U, 150, 10000, mock_now));
+    PatrolRuntime_Tick();
+    assert(mock_control.enable_request && !mock_control.fault_latched && !g_motion.auto_center.requested);
+
+    /* Idle centering waits for time-aligned samples instead of mistaking skew
+     * for an angle fault. The 30ms boundary is inclusive. */
+    reset_fixture(21000);
+    mock_snapshot.steering_position_ms = mock_now - 31U;
+    PatrolRuntime_UpdateFeedback(mock_now); PatrolRuntime_Tick();
+    assert(!mock_control.feedback.angle_pair_valid && !g_motion.auto_center.requested);
+    assert(!mock_control.fault_pending && !mock_control.fault_latched);
+    mock_snapshot.steering_position_ms = mock_now - 30U;
+    PatrolRuntime_UpdateFeedback(mock_now); PatrolRuntime_Tick();
+    assert(mock_control.feedback.angle_pair_valid && g_motion.auto_center.requested);
+
+    /* Pairing also works across monotonic tick wrap. */
+    reset_fixture(21000); mock_now = 10U; feedback(21000);
+    mock_snapshot.steering_position_ms = UINT32_MAX - 15U;
+    PatrolRuntime_UpdateFeedback(mock_now);
+    assert(mock_control.feedback.angle_pair_valid);
+    mock_snapshot.steering_position_ms = UINT32_MAX - 30U;
+    PatrolRuntime_UpdateFeedback(mock_now);
+    assert(!mock_control.feedback.angle_pair_valid);
+
+    /* Once started, centering tolerates transient disagreement/skew. Existing
+     * range/freshness gates and dual-center completion remain authoritative. */
+    reset_fixture(21000); active_steering(); PatrolRuntime_Tick();
+    mock_now += 20U; feedback(12000);
+    mock_control.feedback.encoder_actual_mdeg += 3000;
+    PatrolRuntime_Tick();
+    assert(g_motion.auto_center.requested && g_motion.auto_center.moving && !mock_control.fault_pending);
+    mock_control.feedback.angle_pair_valid = 0U;
+    PatrolRuntime_Tick();
+    assert(g_motion.auto_center.requested && !mock_control.fault_latched);
+
     /* Real safety arbitration and runtime: idle power at 21 degrees owns a
      * steering-only return without inventing a remote session or drive permit. */
     reset_fixture(21000);
@@ -96,6 +140,21 @@ int main(void)
     for (int i = 0; i < 3; ++i) {
         mock_now += 20U; feedback(500); PatrolRuntime_Tick();
         if (i < 2) assert(g_motion.auto_center.requested);
+    }
+    assert(!g_motion.auto_center.requested && g_motion.bench.phase == BENCH_STOPPING);
+
+    /* A single near-center motor sample cannot finish without a paired
+     * independent encoder sample. Pairing failure is a wait, not a fault. */
+    reset_fixture(21000); active_steering(); PatrolRuntime_Tick();
+    for (int i = 0; i < 3; ++i) {
+        mock_now += 20U; feedback(500);
+        mock_control.feedback.angle_pair_valid = 0U;
+        PatrolRuntime_Tick();
+        assert(g_motion.auto_center.requested && !g_motion.auto_center.centered_samples);
+        assert(!mock_control.fault_latched && !mock_control.fault_pending);
+    }
+    for (int i = 0; i < 3; ++i) {
+        mock_now += 20U; feedback(500); PatrolRuntime_Tick();
     }
     assert(!g_motion.auto_center.requested && g_motion.bench.phase == BENCH_STOPPING);
 
@@ -146,6 +205,10 @@ int main(void)
         if (gate == 11) { mock_control.fault_latched = 1U; mock_control.stop_reason = CHASSIS_STOP_EXECUTION_FAULT; }
         PatrolRuntime_Tick();
         assert(!g_motion.auto_center.requested && !mock_sent);
+        if (gate == 9) {
+            assert(mock_control.stop_reason == CHASSIS_STOP_ANGLE_MISMATCH);
+            assert(mock_control.fault_pending || mock_control.fault_latched);
+        }
         assert(g_motion.bench.phase == BENCH_IDLE || g_motion.bench.phase == BENCH_FAULT);
     }
 
@@ -162,6 +225,7 @@ int main(void)
     /* Sample reuse, second-sensor completion and tick wrap use production FSM. */
     PatrolAutoCenter center = {0}; ChassisFeedback f = {0};
     PatrolAutoCenter_Request(&center, UINT32_MAX - 100U, 21000);
+    f.angle_pair_valid = 1U;
     f.feedback_ms = 1U; f.encoder_actual_mdeg = 2000;
     assert(PatrolAutoCenter_Tick(&center, 1U, 1U, 1U, &f));
     assert(!center.centered_samples);

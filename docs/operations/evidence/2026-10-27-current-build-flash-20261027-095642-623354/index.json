@@ -1,0 +1,262 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.101",
+  "candidate": true,
+  "app_size": 156844,
+  "app_crc32": "B74D7367",
+  "app_sha256": "86d04a4317d12595f4988204617d1d0acafba2041dabe7e384db38e95ad2cb9c",
+  "full_size": 189612,
+  "full_crc32": "C05B88FF",
+  "full_sha256": "d5f87ede06f32fa4333b7b4c84c974fb7be79edb4694e315cf9914d84e4e1146",
+  "states": [
+    {
+      "file": "BootState_A.bin",
+      "address": "0x0803E800",
+      "size": 2048,
+      "record_crc32": "D9FBDA9F",
+      "sha256": "d8cdb4957149fce4759ed0360e283937975c92dfaa6b2eda27ba8b88cb25269f"
+    },
+    {
+      "file": "BootState_B.bin",
+      "address": "0x0803F000",
+      "size": 2048,
+      "erased": true,
+      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+    }
+  ],
+  "validation": {
+    "arm_release_build": true,
+    "can2_stack": true,
+    "bench_stack": true,
+    "full_boot_prefix": true,
+    "full_app_suffix": true,
+    "version_marker": true,
+    "vectors_valid": true,
+    "state_a_bound": true,
+    "state_b_erased": true,
+    "product_python_passed": 47,
+    "product_python_total": 56,
+    "known_failures": 9,
+    "known_failure_summary": "1 static identity rule, 7 historical document links, and test_production_stop_arbitration"
+  },
+  "board_flashed": false,
+  "field_verified": false,
+  "dist_updated": false,
+  "files": [
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/ABox_Boot.bin",
+      "size": 32768,
+      "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/BootState_A.bin",
+      "size": 2048,
+      "sha256": "d8cdb4957149fce4759ed0360e283937975c92dfaa6b2eda27ba8b88cb25269f"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/BootState_B.bin",
+      "size": 2048,
+      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/candidate/candidate.manifest.json",
+      "size": 548,
+      "sha256": "fe4d02a9c1e8ced95529cf02f03316451a7d7ddfd247a6d0ac82e1a9f22e1f6e"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/candidate/Patrol_Vehicle_Chassis_App.bin",
+      "size": 156844,
+      "sha256": "86d04a4317d12595f4988204617d1d0acafba2041dabe7e384db38e95ad2cb9c"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/flash.manifest.json",
+      "size": 2088,
+      "sha256": "3bda808874def1eb2125b817f7ae532504022c1ee771ad7c59f88e9b9395663b"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/FLASH_ADDRESSES.txt",
+      "size": 1287,
+      "sha256": "08ba6dce598af8c9876326b2ffdde8147a9ccd62a9a9646f691043b0608a9371"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/Patrol_Vehicle_Chassis_App.bin",
+      "size": 156844,
+      "sha256": "86d04a4317d12595f4988204617d1d0acafba2041dabe7e384db38e95ad2cb9c"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/Patrol_Vehicle_Chassis_App.elf",
+      "size": 269092,
+      "sha256": "0bfae80979ce32c9a53e0c88bc4dc2b07200eeb0d873e6047e9aa6a1a00b971a"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/Patrol_Vehicle_Chassis_App.map",
+      "size": 667533,
+      "sha256": "ac36988959cd31be1f68e2fa49f170388e59a0ec7c697a9560381e4d3d382cd2"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/Patrol_Vehicle_Chassis_Full.bin",
+      "size": 189612,
+      "sha256": "d5f87ede06f32fa4333b7b4c84c974fb7be79edb4694e315cf9914d84e4e1146"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/README.md",
+      "size": 2541,
+      "sha256": "396de94833bbb9b2d7d833512569f436e0649c2cefc59616d5609a30661a7b42"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/sha256.json",
+      "size": 6634,
+      "sha256": "0a051fc999fb8df8318b28f326b5055354e053e0281eb0aa7133b5edd07c2aae"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/source/app/Core/User/cloud/include/remote_service.h",
+      "size": 3918,
+      "sha256": "5ff4eae3a5237378848681c95a32700d1490b5722806d17546ff2ac50ece4cfa"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/source/app/Core/User/cloud/src/remote_service.c",
+      "size": 17276,
+      "sha256": "398250d02166fbb52e76352eb2c0f0edda3cb2c7d976c58cceae5200a2960571"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/source/app/Core/User/motion/include/chassis_control.h",
+      "size": 5363,
+      "sha256": "1da5f82f7299e35b85a2ffdd6dcd65d8b19561f8c702e1be6c0185e00528ca43"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/source/app/Core/User/motion/include/vehicle_steering_profile.h",
+      "size": 1521,
+      "sha256": "7fe7ec3b998c10a8509c35892b820627807718e945978c279b92a65b9207bd70"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/source/app/Core/User/motion/src/chassis_control.c",
+      "size": 12702,
+      "sha256": "ed34500a2da457170130d1c9efe2f22df0635d2be777b7051d8fc973756fde29"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/source/app/Core/User/motion/src/patrol_auto_center.c",
+      "size": 2582,
+      "sha256": "63abb514725962418f147f13560f402dd02912f4eccbce45f959c9ca641fe06e"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/source/app/Core/User/motion/src/patrol_phy_remote.c",
+      "size": 7801,
+      "sha256": "d1058c4b361998059d245ecb47f71063297a575a7d4bd593f5ad349e624235a4"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/source/app/Core/User/motion/src/patrol_runtime.c",
+      "size": 46198,
+      "sha256": "6c863c827548212d2db3395b52b7dec7a0f636b5ae0f3333177bbc8103b20289"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/source/app/Core/User/system/src/patrol_rtos.c",
+      "size": 29329,
+      "sha256": "c7e3ced96d52edf14ecb6741a9936bdb6cb39b3feb66ceb1d160cfe67a5f344d"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/source/tests/auto_center_runtime_cases.c",
+      "size": 12842,
+      "sha256": "b27dde7f7c0b01abc649553550e836e5d643e4ab3c3d983e777247d3ced1be92"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/source/tests/can_remote_test.c",
+      "size": 19037,
+      "sha256": "0e9ac86a08b41e2e9f906b4407ca05772eba0a7931c2c361128a692243fedba6"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/source/tests/center_runtime_stubs.h",
+      "size": 5870,
+      "sha256": "f276f4213bd374694834a070fed5d189cc5eceb9f23a6dc8b701d9f7a9ce5363"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/source/tests/chassis_safety_test.c",
+      "size": 41493,
+      "sha256": "670ffd74ee98682be125877dabcfd7c85b674a9254615144aa5a9d347749c0e5"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/source/tests/drive_brake_runtime_cases.c",
+      "size": 6288,
+      "sha256": "901b439aa58ac5b4dab69cc623809092924dddfe400914fcc087899dd09fc6af"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/source/tests/fault_stop_runtime_cases.c",
+      "size": 18329,
+      "sha256": "41419b5de59f10ef0288bf560f7f9cabcf1f06c6ee150ab7fe7f94602033c861"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/source/tests/test_auto_center_runtime.py",
+      "size": 1665,
+      "sha256": "9a4b35262d1b31adbf5bc93d5195fb5ff055f97e76fb444004fb3a447878ad63"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/source/tests/test_can_remote.py",
+      "size": 1907,
+      "sha256": "68969e56a3b3dde8b9612221b81ab2a91b37eeda83d748bebfe175022cb0c697"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/source-changes.patch",
+      "size": 98212,
+      "sha256": "8f7b653a5985e8470c9f808839982042d643aa974e4681d18c4b1c97aa652226"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/validation/arm-release-build.log",
+      "size": 22,
+      "sha256": "8c35b1682f73592d30612d7b0fabdb384fcfff35cb5a076cb48b85b1368aa794"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/validation/bench-stack.log",
+      "size": 294,
+      "sha256": "78faa7050eeff9523e01b82adf6c956ddb1fc917709732808bc50b999fe2801a"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/validation/bootstate-create.log",
+      "size": 356,
+      "sha256": "1237b776b542380268332118880c768d32f84329346e8f88fbe78c8d4de18755"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/validation/bootstate-verifier-build.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/validation/bootstate-verifier.log",
+      "size": 141,
+      "sha256": "65d4e35871f504b5d31b74f36d6cb08b67287ac484bfcde0b6e786944d8b32c0"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/validation/can2-stack.log",
+      "size": 1312,
+      "sha256": "2c3496e3eefa92818708b96fb298ffcd9222fabbc2ea11a20afe828759aaab19"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/validation/git-diff-check.log",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/validation/package-current-0.2.101.py",
+      "size": 19994,
+      "sha256": "842a407235126e2994bf6c1402c7c141d687f712527b8c852cfaf98e3253b506"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/validation/product-python.log",
+      "size": 139486,
+      "sha256": "78ea12d7cceb9d8b56815cd86e6134a14d52e3afdd40eecf51def3229808cc22"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/validation/verify-state-0.2.101.c",
+      "size": 3969,
+      "sha256": "1c02d748ac1773b326fdf132544e085d7df6d0ca54d1c6d46e193dce1b2b127c"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/verify-state-0.2.101.c",
+      "size": 3969,
+      "sha256": "1c02d748ac1773b326fdf132544e085d7df6d0ca54d1c6d46e193dce1b2b127c"
+    },
+    {
+      "archive_path": "docs/operations/evidence/2026-10-27-current-build-flash-20261027-095642-623354/verify-state-0.2.101.exe",
+      "size": 70222,
+      "sha256": "c2190ffa1b67f09162e1d1fa381ec4f557a0855c7e17f567007b9ebb10d91056"
+    }
+  ]
+}

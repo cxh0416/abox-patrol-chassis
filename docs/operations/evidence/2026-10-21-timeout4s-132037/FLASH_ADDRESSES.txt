@@ -1,0 +1,17 @@
+Product: patrol_vehicle_chassis
+Source: d3614871be8400dd37565ebfe97b044996be85be + user-saved 4-second drive stop/reversal timeouts; regression tests updated
+App: patrol-chassis-0.2.69
+Drive: 1000 rpm; steering unchanged; physical B brake removed.
+Stop/reversal timeout: 4000 ms; three fresh feedback pairs <=20 rpm still required.
+Board UID: 34ffd3054e57333750350443
+
+Flash all three matching files before reset:
+Patrol_Vehicle_Chassis_Full.bin  0x08000000  183776 bytes
+BootState_A.bin  0x0803E800  2048 bytes
+BootState_B.bin  0x0803F000  2048 bytes
+
+Full contains Boot + App only. Do not flash App.bin separately when using Full.
+Use sector/page erase only. Preserve recovery 0x0803E000 and Config V5 0x0803F800.
+No mass erase. Do not reset between the three writes. These states are board-specific.
+Host Python: 42/43; unchanged hot-reset design check fails. Not a formal release.
+Build and host validation do not prove vehicle motion/stop success. Board was not flashed.

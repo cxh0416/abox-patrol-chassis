@@ -1,0 +1,69 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.100",
+  "candidate": true,
+  "configuration": "Release",
+  "active_car": 0,
+  "actuation_enabled": true,
+  "steering_executor_compiled": true,
+  "drive_executor_compiled": true,
+  "startup_motion_permit": false,
+  "app": {
+    "file": "Patrol_Vehicle_Chassis_App.bin",
+    "address": "0x08008000",
+    "size": 157548,
+    "initial_sp": "0x20010000",
+    "reset_vector": "0x800d44d",
+    "crc32": "7B65E612",
+    "sha256": "3c0c2d73e6f589ae377ec0d5442046101300b94b7aeb925f6f6d1b53ee1d858a"
+  },
+  "boot": {
+    "file": "ABox_Boot.bin",
+    "address": "0x08000000",
+    "size": 32768,
+    "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+  },
+  "full": {
+    "file": "Patrol_Vehicle_Chassis_Full.bin",
+    "address": "0x08000000",
+    "size": 190316,
+    "crc32": "FE82322A",
+    "sha256": "6713817166ad8f6d9cb01981c2f0e931b695d0b7c969a7d329148fd272c34e62"
+  },
+  "states": [
+    {
+      "file": "BootState_A.bin",
+      "address": "0x0803E800",
+      "size": 2048,
+      "record_crc32": "8B4F5DCE",
+      "sha256": "04733d3c7a7a7c69cbb05deaed4b2a9678bd7806cb4623aa45d2687eedea2f1d"
+    },
+    {
+      "file": "BootState_B.bin",
+      "address": "0x0803F000",
+      "size": 2048,
+      "erased": true,
+      "sha256": "d0ff1b294b5288d1ae1421eadf5b2d38a8752b76d472ff30bed9028e25b1c5b8"
+    }
+  ],
+  "verification": {
+    "arm_release_build": true,
+    "can2_stack": true,
+    "bench_stack": true,
+    "full_boot_prefix": true,
+    "full_app_suffix": true,
+    "version_marker": true,
+    "vectors_valid": true,
+    "state_a_bound": true,
+    "state_b_erased": true,
+    "product_python_passed": 49,
+    "product_python_total": 57,
+    "known_failures": 8,
+    "known_failure_summary": "1 existing static identity rule and 7 existing historical document links"
+  },
+  "source_commit": "2ba035d730849cb798ef89d4fb18b04848fbcaeb",
+  "platform_commit": "4db1579dfb3cc7505acf2b1d1a8d147c587ea217",
+  "product_dirty": true,
+  "board_flashed": false,
+  "field_verified": false
+}

@@ -1,0 +1,3 @@
+Reproduced: at 2001 ms, left=22 right=17 -> stop_reason=11 fault_latched=1
+A off/on and B on/off preserve the fault; no handset fault-reset entry.
+Host reproduction uses real remote/control code; motor dynamics are not simulated.

@@ -1,0 +1,51 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "created_at": "2026-10-22T14:53:02.253958+08:00",
+  "vehicle": "CAR2",
+  "operator_reports_verbatim": [
+    "已接回",
+    "已操作",
+    "接收器也更换过",
+    "已操作"
+  ],
+  "reports": [
+    {
+      "directory": "E:\\1_work\\ChassisCar_test\\logs\\ch1-receiver-20261022-144935-935137",
+      "duration_s": 205.703,
+      "counts": {},
+      "receiver_frames": 0
+    },
+    {
+      "directory": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-direct-20261022-143234-348238",
+      "duration_s": 60.0,
+      "counts": {
+        "CAN1:0x702": 594,
+        "CAN1:0x701": 594
+      },
+      "receiver_frames": 0
+    }
+  ],
+  "previous_known_good_CH1_test": "docs/operations/evidence/2026-10-22-car2-ch1-known-bus-143136-053871/index.json",
+  "earlier_mcu_samples": {
+    "can2_rx": [
+      106,
+      106
+    ],
+    "t12_switch_seen": [
+      0,
+      0
+    ],
+    "tick_ms": [
+      2116226,
+      2199162
+    ]
+  },
+  "conclusion": "CH1 receives known CAN1 heartbeats but no valid frames were observed at the new receiver output in the documented passive 500K tests. Prior MCU CAN2 cumulative count 106 stayed unchanged between the two snapshots; those historical frames have no captured IDs and are not evidence of current remote commands.",
+  "next_step": "Verify the replacement receiver CAN output/firmware, 500kbps setting, project protocol 0x10A/0x10B, connector wiring and termination. Receiver hardware failure is not established.",
+  "limitations": [
+    "All passively captured IDs were accepted; absence is not merely a T12 decoder mismatch.",
+    "Zero valid frames does not prove no electrical activity, rule out transmitter bus-off or establish a component failure.",
+    "New receiver output and settings are unknown; handset wireless indicator is insufficient.",
+    "No motor enable, reset, driver parameter or configuration writes performed in these captures."
+  ]
+}

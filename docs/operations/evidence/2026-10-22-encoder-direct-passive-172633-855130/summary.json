@@ -1,0 +1,13 @@
+{
+  "started_at": "2026-10-22T17:23:50.6375482+08:00",
+  "port": "COM7",
+  "baud": 19200,
+  "format": "8N1",
+  "passive_only": true,
+  "transmit_calls": 0,
+  "duration_s": 15,
+  "bytes": 0,
+  "chunks": 0,
+  "error": null,
+  "ended_at": "2026-10-22T17:24:05.8134927+08:00"
+}

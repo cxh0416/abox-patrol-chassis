@@ -1,0 +1,117 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.74",
+  "source_commit": "8f6f33dbcbcc5e80bd1a96338ac22af84a57e196",
+  "app_sha256": "b46d49d5c079a1e5285d62ac917c9528bdef1bc97635ae5f42c9d0e4676b2a97",
+  "board_flashed": false,
+  "current_board_capture": false,
+  "boot_state_policy": "manual-install NORMAL, stable UFS metadata explicitly unseeded",
+  "states": [
+    {
+      "file": "BootState_A.bin",
+      "sequence": 1,
+      "state": "NORMAL",
+      "bytes": 2048,
+      "sha256": "1657083ecc26aa44d353e5ee6fe3bf55c5321dbc205de345f2dbed09e9828e12",
+      "address": "0x0803E800",
+      "app_version": "patrol-chassis-0.2.74",
+      "app_size": 151016,
+      "app_crc32": "3922FC11",
+      "stable_metadata": "unseeded"
+    },
+    {
+      "file": "BootState_B.bin",
+      "sequence": 2,
+      "state": "NORMAL",
+      "bytes": 2048,
+      "sha256": "ef8484463f98b0b5056742c5bef2e2adae2d036013fb8428e02403a3942357f5",
+      "address": "0x0803F000",
+      "app_version": "patrol-chassis-0.2.74",
+      "app_size": 151016,
+      "app_crc32": "3922FC11",
+      "stable_metadata": "unseeded"
+    }
+  ],
+  "files": {
+    "ABox_Boot.bin": {
+      "bytes": 32768,
+      "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+    },
+    "boot-state-verification.log": {
+      "bytes": 179,
+      "sha256": "c338891e01df5496bd6c0f8dbba9c94809398c6ae2f1d98390f1a76f7018cf50"
+    },
+    "BootState_A.bin": {
+      "bytes": 2048,
+      "sha256": "1657083ecc26aa44d353e5ee6fe3bf55c5321dbc205de345f2dbed09e9828e12"
+    },
+    "BootState_B.bin": {
+      "bytes": 2048,
+      "sha256": "ef8484463f98b0b5056742c5bef2e2adae2d036013fb8428e02403a3942357f5"
+    },
+    "candidate.manifest.json": {
+      "bytes": 15146,
+      "sha256": "a6f5e1f3ba29d679f0236df50d82f9756bb32a878c1a405ef7103d8de6147003"
+    },
+    "debug.manifest.json": {
+      "bytes": 1260,
+      "sha256": "9d0617e82b2a89d10253ec6d963e6b403b0d66ed16d0c504df5c874a14f23bf4"
+    },
+    "FLASH_ADDRESSES.txt": {
+      "bytes": 1582,
+      "sha256": "61b4863edd34399fb2d234dad315af0b8fae19fb0735727092d357562ba53d8d"
+    },
+    "Patrol_Vehicle_Chassis_App.bin": {
+      "bytes": 151016,
+      "sha256": "b46d49d5c079a1e5285d62ac917c9528bdef1bc97635ae5f42c9d0e4676b2a97"
+    },
+    "Patrol_Vehicle_Chassis_Full.bin": {
+      "bytes": 183784,
+      "sha256": "28c807a50fd63e966b86905d4f5ff077f17e9cd9fce371d5a898eef0cb4bd037"
+    },
+    "source-changes.patch": {
+      "bytes": 13155,
+      "sha256": "2d788fdea483307e4f56342e098afe2138a6be0a5db49df51fa785176d31221e"
+    },
+    "steering-updated-arm.log": {
+      "bytes": 6512,
+      "sha256": "3210d2960a745a68d3040f28004e13039e112c2af56f220de7ac80bcd36a090f"
+    },
+    "steering-updated-boot.log": {
+      "bytes": 208,
+      "sha256": "bbfc3d831c9390d994c173862385a257e5a7f9af896d96c2f1e29684457e28f2"
+    },
+    "steering-updated-c-tests.log": {
+      "bytes": 240,
+      "sha256": "846972a2e7b1bba3f8bcaefadd0f96267c9ed8983c90c3e3347d1863796d3e87"
+    },
+    "steering-updated-chassis-test.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "steering-updated-configure.log": {
+      "bytes": 186,
+      "sha256": "68cd31f4b36cc6780ac53423e786b4b26635f005df19ae169284afb296208f57"
+    },
+    "steering-updated-layout.log": {
+      "bytes": 253,
+      "sha256": "0c7076fd7c4b9a18e0f7173bc168689737dd8035c8f8093927e1a7e29c6ab9b2"
+    },
+    "steering-updated-python.log": {
+      "bytes": 107717,
+      "sha256": "c0d9245ad19209195c201ea6ea60974adddb5693d62307c3fa68c63968901e52"
+    },
+    "steering-updated-stack.log": {
+      "bytes": 674,
+      "sha256": "1081181ca93c71a02358221e023c3d274e064b74a161a2e9c831837fd40c93f3"
+    },
+    "SteeringSpeed_300_180_90_Flash.zip": {
+      "bytes": 123351,
+      "sha256": "ddc8fadbc56348cb568b8fc7472b7cad7dc64bfef1eef27ff2a7d43c7db40f08"
+    },
+    "verify-state-steering-updated.c": {
+      "bytes": 3379,
+      "sha256": "09b93971c4331bfc870368e16a5976ea71e9a2eb2fda1e3bc22ec3c4abaa67f7"
+    }
+  }
+}

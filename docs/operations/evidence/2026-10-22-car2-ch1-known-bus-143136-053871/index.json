@@ -1,0 +1,60 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "created_at": "2026-10-22T14:31:36.108334+08:00",
+  "files": [
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-ch1-can1-check-20261022-142941-412140\\events.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-ch1-known-bus-143136-053871\\raw\\events.jsonl",
+      "bytes": 15655,
+      "sha256": "d28031676364d8dd3a753ef31960302b443f8c2adef62e298e2195fb2f956612"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-ch1-can1-check-20261022-142941-412140\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-ch1-known-bus-143136-053871\\raw\\frames.jsonl",
+      "bytes": 106858,
+      "sha256": "dcb3a8daf78fb2fbe2d33485f32f83ccc6d7ba927bef2087f950dcda89033c33"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-ch1-can1-check-20261022-142941-412140\\metadata.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-ch1-known-bus-143136-053871\\raw\\metadata.json",
+      "bytes": 1136,
+      "sha256": "9e4b0b760c58aa175f7537a7710087e4413897da195d1915bf75f30b4da0025a"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-ch1-can1-check-20261022-142941-412140\\sha256.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-ch1-known-bus-143136-053871\\raw\\sha256.json",
+      "bytes": 352,
+      "sha256": "c81ca8d381a12d97c3ef7a62ebeb60ea783a4f1bbba9870dcac36df7636bf566"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-ch1-can1-check-20261022-142941-412140\\summary.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-ch1-known-bus-143136-053871\\raw\\summary.json",
+      "bytes": 1188,
+      "sha256": "4595b0f3911e30fbf19cd8594f2d9755970aa642104742e2e1992b38d6ed1d72"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-ch1-can1-check-20261022-142941-412140.stdout.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-ch1-known-bus-143136-053871\\raw\\car2-ch1-can1-check-20261022-142941-412140.stdout.log",
+      "bytes": 7933,
+      "sha256": "e99b20235d22cbb2fe7d9be90924f614493f59d940184eb506f01fe60ddd3528"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\car2-ch1-can1-check-20261022-142941-412140.stderr.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-ch1-known-bus-143136-053871\\raw\\car2-ch1-can1-check-20261022-142941-412140.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\car2-ch1-can1-check-current.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-ch1-known-bus-143136-053871\\handle.json",
+      "bytes": 595,
+      "sha256": "0bad32ce0be676ecaf29487afd0e48e1769c14430fd957d93a86e8fabc0e8ddc"
+    },
+    {
+      "original_path": "Current known-good-bus analysis",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-car2-ch1-known-bus-143136-053871\\result.json",
+      "bytes": 2621,
+      "sha256": "cbf3ef5c3ef149a58dfc0d6f916daf8c9c083ae6e97082196b7e00636af5184f"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+patrol_vehicle_chassis / patrol-chassis-0.2.81 / 转向800 rpm，行走上限2000 rpm
+本包为测试候选，未烧录、未进行现场运动验收。active_car=0，使用本板逐车配置，不内置标定。
+保持车辆停稳，三项写入并校验完成后再复位：
+Patrol_Vehicle_Chassis_Full.bin -> 0x08000000 (187032 bytes; 包含Boot+App)
+BootState_A.bin -> 0x0803E800 (2048 bytes)
+BootState_B.bin -> 0x0803F000 (2048 bytes)
+如果Boot已核验一致，可用App.bin -> 0x08008000替代Full；不要重复写Full和App。
+不整片擦除，保留恢复页0x0803E000和配置页0x0803F800。
+已整片擦除的板：以上三项仅恢复固件与启动状态，还需恢复本板本车有效Config V5到0x0803F800或重新配置及标定。
+本包不含逐车配置，不可直接采用其他车辆配置。0x0803E000无需人为构造恢复记录。
+State A/B为离线NORMAL记录；stable UFS未建立，不宣称旧备份槽有效。
+ARM、栈、布局、冻结Boot、当前800 rpm转向执行器主机检查及真实Boot状态解析检查通过。
+完整Python回归43/45：既有热复位静态检查、旧90 rpm断言失败，详见日志；正式dist不变。
+App SHA256: 104d4c21eeffc235c9bcdac4fcdd0b80037d7d04e891e7bf753c67bb156cf7ad

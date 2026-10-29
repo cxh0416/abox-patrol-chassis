@@ -1,0 +1,92 @@
+{
+  "stop_reason": "operator_stop_file",
+  "error": null,
+  "kind": "snapshot",
+  "elapsed_s": 557.407,
+  "latest": {
+    "RECEIVER.t12_joystick": {
+      "age_ms": 230157.0,
+      "at_s": 327.25,
+      "decoded": {
+        "kind": "t12_joystick",
+        "steer_raw": 0,
+        "throttle_raw": 0,
+        "reference_rpm": 0
+      }
+    },
+    "RECEIVER.t12_switch": {
+      "age_ms": 230141.0,
+      "at_s": 327.26600000000326,
+      "decoded": {
+        "kind": "t12_switch",
+        "a": 2,
+        "a_enabled": true,
+        "b": 0,
+        "b_action": "none"
+      }
+    },
+    "RECEIVER.heartbeat.node1": {
+      "age_ms": 53766.0,
+      "at_s": 503.64100000000326,
+      "decoded": {
+        "kind": "heartbeat",
+        "node": 1,
+        "state": 127,
+        "bootup": false
+      }
+    },
+    "RECEIVER.heartbeat.node2": {
+      "age_ms": 53750.0,
+      "at_s": 503.6570000000065,
+      "decoded": {
+        "kind": "heartbeat",
+        "node": 2,
+        "state": 127,
+        "bootup": false
+      }
+    }
+  },
+  "ids": {
+    "RECEIVER.STD.0x10B": {
+      "age_ms": 230157.0,
+      "count": 2,
+      "first_s": 327.2030000000086,
+      "last_s": 327.25,
+      "max_host_gap_ms": 46.999999991385266,
+      "last_data": "00 00 00 00 00 00 00 00",
+      "dlc": 8
+    },
+    "RECEIVER.STD.0x10A": {
+      "age_ms": 230141.0,
+      "count": 2,
+      "first_s": 327.2190000000119,
+      "last_s": 327.26600000000326,
+      "max_host_gap_ms": 46.999999991385266,
+      "last_data": "01 01 02 00 00 00 00 00",
+      "dlc": 8
+    },
+    "RECEIVER.STD.0x701": {
+      "age_ms": 53766.0,
+      "count": 1620,
+      "first_s": 340.14100000000326,
+      "last_s": 503.64100000000326,
+      "max_host_gap_ms": 140.00000001396984,
+      "last_data": "7F",
+      "dlc": 1
+    },
+    "RECEIVER.STD.0x702": {
+      "age_ms": 53750.0,
+      "count": 1620,
+      "first_s": 340.1570000000065,
+      "last_s": 503.6570000000065,
+      "max_host_gap_ms": 110.00000001513399,
+      "last_data": "7F",
+      "dlc": 1
+    }
+  },
+  "unanswered_sdo_events": 0,
+  "sdo_completed": 0,
+  "sdo_aborts": 0,
+  "pending_sdo": 0,
+  "max_observed_reply_ms": 0
+}

@@ -1,0 +1,343 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.77",
+  "app_sha256": "ced4fd110f4c02b1108a99cc3c2c2eb0d8d948e07232aaa04441741a219ec020",
+  "app_size": 154328,
+  "board_flashed": false,
+  "field_motion_tested": false,
+  "formal_release": false,
+  "dist_manifest_sha256_unchanged": "72f4f7d2b3cb156c0ae3c20b6005fefd6abc47aaec70b34760bb163bb8540836",
+  "boot_state_policy": "offline NORMAL A/B; stable UFS explicitly unseeded; not a readback of the current board",
+  "states": [
+    {
+      "file": "BootState_A.bin",
+      "address": "0x0803E800",
+      "sequence": 1,
+      "state": "NORMAL",
+      "stable_ufs_metadata": "explicitly unseeded",
+      "sha256": "9e7023be4232d4a281ee7567b62abd2f3c1e957bcc540a6564a13eaeb417abb8",
+      "bytes": 2048,
+      "app_size": 154328,
+      "app_crc32": "B74B1C16"
+    },
+    {
+      "file": "BootState_B.bin",
+      "address": "0x0803F000",
+      "sequence": 2,
+      "state": "NORMAL",
+      "stable_ufs_metadata": "explicitly unseeded",
+      "sha256": "35bfac3c79e2bdeb539d1deaae5b097e18ad27aec6b1bc3988f89deeb08b17c0",
+      "bytes": 2048,
+      "app_size": 154328,
+      "app_crc32": "B74B1C16"
+    }
+  ],
+  "validation": {
+    "arm_release_build": true,
+    "stack_checks": true,
+    "flash_layout": true,
+    "frozen_boot": true,
+    "standalone_product_c_tests": true,
+    "fault_stop_production_regression": true,
+    "normal_steering_read_199_200_ms_boundary": true,
+    "write_ack_production_scenarios": 20,
+    "diagnostic_retry_condition_regression": true,
+    "product_python_passed": 44,
+    "product_python_total": 45,
+    "known_existing_failure": "test_identity_and_safe_defaults: existing hot-reset recovery design; unchanged assertion",
+    "formal_publication": false,
+    "formal_blocker": "Existing Python failure and clean-worktree publication gate",
+    "hardware_motion_verified": false,
+    "board_flashed": false
+  },
+  "files": [
+    {
+      "original_path": "C:\\Users\\ijk\\AppData\\Local\\Temp\\patrol-fault-stop-stage-b1qy51ze\\package\\ABox_Boot.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\ABox_Boot.bin",
+      "bytes": 32768,
+      "sha256": "981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63"
+    },
+    {
+      "original_path": "C:\\Users\\ijk\\AppData\\Local\\Temp\\patrol-fault-stop-stage-b1qy51ze\\package\\BootState_A.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\BootState_A.bin",
+      "bytes": 2048,
+      "sha256": "9e7023be4232d4a281ee7567b62abd2f3c1e957bcc540a6564a13eaeb417abb8"
+    },
+    {
+      "original_path": "C:\\Users\\ijk\\AppData\\Local\\Temp\\patrol-fault-stop-stage-b1qy51ze\\package\\BootState_B.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\BootState_B.bin",
+      "bytes": 2048,
+      "sha256": "35bfac3c79e2bdeb539d1deaae5b097e18ad27aec6b1bc3988f89deeb08b17c0"
+    },
+    {
+      "original_path": "C:\\Users\\ijk\\AppData\\Local\\Temp\\patrol-fault-stop-stage-b1qy51ze\\package\\candidate.manifest.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\candidate.manifest.json",
+      "bytes": 15575,
+      "sha256": "d2072bde96b991cf92473c699b6c701487f450259264fbeb6f6f85a4ad4927a5"
+    },
+    {
+      "original_path": "C:\\Users\\ijk\\AppData\\Local\\Temp\\patrol-fault-stop-stage-b1qy51ze\\package\\debug.manifest.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\debug.manifest.json",
+      "bytes": 1432,
+      "sha256": "9619dddfb077e504cb1d786c264e9afb5cdf3506018e062b2f4f1e6d9aebc936"
+    },
+    {
+      "original_path": "C:\\Users\\ijk\\AppData\\Local\\Temp\\patrol-fault-stop-stage-b1qy51ze\\package\\FLASH_ADDRESSES.txt",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\FLASH_ADDRESSES.txt",
+      "bytes": 1941,
+      "sha256": "d84488996a0f8897975d9f6dafbb2603b8d9830930ee8d2258fd73f47feabbd0"
+    },
+    {
+      "original_path": "C:\\Users\\ijk\\AppData\\Local\\Temp\\patrol-fault-stop-stage-b1qy51ze\\package\\Patrol_Vehicle_Chassis_App.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\Patrol_Vehicle_Chassis_App.bin",
+      "bytes": 154328,
+      "sha256": "ced4fd110f4c02b1108a99cc3c2c2eb0d8d948e07232aaa04441741a219ec020"
+    },
+    {
+      "original_path": "C:\\Users\\ijk\\AppData\\Local\\Temp\\patrol-fault-stop-stage-b1qy51ze\\package\\Patrol_Vehicle_Chassis_Full.bin",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\Patrol_Vehicle_Chassis_Full.bin",
+      "bytes": 187096,
+      "sha256": "ab7944e467084d3eaf0a6ec3b64d9423eb98117950de20aac09c4d0acc2d9212"
+    },
+    {
+      "original_path": "derived host verifier from immutable 0.2.74 evidence; size/version updated only",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\verify-fault-stop-state.c",
+      "bytes": 3434,
+      "sha256": "3a217b4c0adfa1cab1e9aec405ea6fed201af150bc490e718611ff8ba32b4883"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\build\\FaultStopRelease\\Patrol_Vehicle_Chassis_App.elf",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\Patrol_Vehicle_Chassis_App.elf",
+      "bytes": 263752,
+      "sha256": "bdb20dbae04019851e75c67f4ed4ec147705dd6105c71e4d38598bd02cdd015d"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\build\\FaultStopRelease\\Patrol_Vehicle_Chassis_App.map",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\Patrol_Vehicle_Chassis_App.map",
+      "bytes": 664181,
+      "sha256": "ee5bb7584f0f2109bc57bb674bdd1df36b1befd2c655a54afdcfd0536824c6e7"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\write-verify-arm-configure.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\validation\\write-verify-arm-configure.log",
+      "bytes": 199,
+      "sha256": "fb1cd496ab01ada8a8bf0b2af0b00695338d3d4bdeaf41145f556b908dbd1519"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\write-verify-arm-build.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\validation\\write-verify-arm-build.log",
+      "bytes": 339,
+      "sha256": "fdae7f6bc4c6127ee22b4a0a44815fd68bd66a924af262b72f08097c7c158de6"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\write-verify-bench-stack.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\validation\\write-verify-bench-stack.log",
+      "bytes": 298,
+      "sha256": "242ff0a9cca66a5dda4819bfc2e6c4a43ea84e10da011a6216a4e2d66dedeca7"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\write-verify-can-stack.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\validation\\write-verify-can-stack.log",
+      "bytes": 1122,
+      "sha256": "a6811400a38cdffd696d6fa888dd0fe9f4b3dc9fc47f55498763fd734bbf14fb"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\write-verify-service-stack.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\validation\\write-verify-service-stack.log",
+      "bytes": 1178,
+      "sha256": "5676c5d233915e5aa13af27e7eee51f871222c5af1aa0ce7e3de435814d5853f"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\write-verify-frozen-boot.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\validation\\write-verify-frozen-boot.log",
+      "bytes": 208,
+      "sha256": "bbfc3d831c9390d994c173862385a257e5a7f9af896d96c2f1e29684457e28f2"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\write-verify-layout.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\validation\\write-verify-layout.log",
+      "bytes": 253,
+      "sha256": "0c7076fd7c4b9a18e0f7173bc168689737dd8035c8f8093927e1a7e29c6ab9b2"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\write-verify-product-c.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\validation\\write-verify-product-c.log",
+      "bytes": 427,
+      "sha256": "3aa54a02a7baced8094a1996e0233c910f4debdbfed390f60970b59139b946ab"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\write-verify-python.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\validation\\write-verify-python.log",
+      "bytes": 117410,
+      "sha256": "5f2a8021b3f34aad729a28d6ed36f57c64299c1f4980d2fe8c639321d4fa09a6"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\write-verify-baseline-check.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\validation\\write-verify-baseline-check.json",
+      "bytes": 339,
+      "sha256": "ce4ca2f9f1066a3ac636d535bc95835db4e8e45fb00b1aebf36fce8664915134"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\write-verify-formal-gate.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\validation\\write-verify-formal-gate.log",
+      "bytes": 253,
+      "sha256": "0c7076fd7c4b9a18e0f7173bc168689737dd8035c8f8093927e1a7e29c6ab9b2"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\write-verify-whitespace.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\validation\\write-verify-whitespace.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\write-verify-boot-state.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\validation\\write-verify-boot-state.log",
+      "bytes": 180,
+      "sha256": "f5ecaf894752fadc36a627f73202de237b836910e4052e79e07fffb1aced21aa"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\package-write-verify.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\validation\\package-write-verify.py",
+      "bytes": 16456,
+      "sha256": "926ba71c0bd756e20fe5c876061f7a60d1bfa213dc59c6a9e4f094f54040be78"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\include\\patrol_fault_stop.h",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\source\\app\\Core\\User\\motion\\include\\patrol_fault_stop.h",
+      "bytes": 2188,
+      "sha256": "a72bc565a39211a19cc22392159a5cb0cb1840b7b16e65407d32682b89b9da91"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\src\\patrol_fault_stop.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\source\\app\\Core\\User\\motion\\src\\patrol_fault_stop.c",
+      "bytes": 5826,
+      "sha256": "2c728d6a90eed92504d885c771eb30c163304a1afc3882593f221e084d05897a"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\src\\patrol_runtime.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\source\\app\\Core\\User\\motion\\src\\patrol_runtime.c",
+      "bytes": 42190,
+      "sha256": "02784c3a3590e1f1d76822c409e975b2bf84f0753cc134b5d9ba32be4dd1cedf"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\src\\chassis_control.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\source\\app\\Core\\User\\motion\\src\\chassis_control.c",
+      "bytes": 12849,
+      "sha256": "3d5666c548eb9a4d1ab54e1fd4ca5ab421cf940ce4f83c78ee28e5eff4732ab8"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\include\\chassis_control.h",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\source\\app\\Core\\User\\motion\\include\\chassis_control.h",
+      "bytes": 5212,
+      "sha256": "c966bb575db8e001c4261c01ebcba36184e30b9af47ef901057c5a168153e215"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\cloud\\src\\remote_service.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\source\\app\\Core\\User\\cloud\\src\\remote_service.c",
+      "bytes": 17111,
+      "sha256": "58d0b1ff6810f7f0a1f342137b3613a42ea14ca78660354fee471bbfbc3695ad"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\tests\\fault_stop_runtime_cases.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\source\\tests\\fault_stop_runtime_cases.c",
+      "bytes": 17411,
+      "sha256": "8110d7e9951ded5fcea3a8efc430ced3c75358ff72d6849563c714a0fcf39605"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\tests\\test_fault_stop_runtime.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\source\\tests\\test_fault_stop_runtime.py",
+      "bytes": 3097,
+      "sha256": "c8a1b657585fec620abc915b50044c035340fd9f4e5ef5bc5a87d52befbfecf9"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\tests\\bench_steering_test.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\source\\tests\\bench_steering_test.c",
+      "bytes": 18755,
+      "sha256": "88ed3f8b9b086c3aa5d98ff3b071e4efb0585d13e6e26fc65c0ff8c36e7f20c1"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\src\\bench_steering.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\source\\app\\Core\\User\\motion\\src\\bench_steering.c",
+      "bytes": 25203,
+      "sha256": "95f4438289b0660edeb43d63c7f3a586db877fcd0fbe381a1d294af3906d6432"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\tools\\verify_can2_stack.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\source\\tools\\verify_can2_stack.py",
+      "bytes": 5133,
+      "sha256": "263d10fe6b13b21cc2aecde0654ce357050b3b2bffe829effde94d98e68af006"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\tools\\service_stack_budget.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\source\\tools\\service_stack_budget.json",
+      "bytes": 5655,
+      "sha256": "e167e50b9d57fc39bc420fb698c888fee332fd9d1eff3ec2871f8580b142e131"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\include\\bench_steering.h",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\source\\app\\Core\\User\\motion\\include\\bench_steering.h",
+      "bytes": 3512,
+      "sha256": "e33cb95cad152690348334b00b0a546a5dc49bd65443506dd1cb6e1a66d46ecc"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\include\\bench_drive.h",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\source\\app\\Core\\User\\motion\\include\\bench_drive.h",
+      "bytes": 2410,
+      "sha256": "8006d5c740ba455ea01326211626c301f6c09a6b9e80477a1c9f38f6c15132c4"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\src\\bench_drive.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\source\\app\\Core\\User\\motion\\src\\bench_drive.c",
+      "bytes": 14759,
+      "sha256": "1a3d4e6cf3761e72000be27d36d03d43af6fbaef9c021d335eb5dc6eb6756b47"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\include\\patrol_diagnostics.h",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\source\\app\\Core\\User\\motion\\include\\patrol_diagnostics.h",
+      "bytes": 6149,
+      "sha256": "ac4b037c0e5d34de8eba0fee4d4b507f6ff2abbefed2691ccecfa80b998323bf"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\app\\Core\\User\\motion\\src\\patrol_diagnostics.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\source\\app\\Core\\User\\motion\\src\\patrol_diagnostics.c",
+      "bytes": 20950,
+      "sha256": "707576e712a569d9c2be1ad7244ec791aebe28ee3e1305d204edf7ca2c7d0be4"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\tests\\chassis_safety_test.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\source\\tests\\chassis_safety_test.c",
+      "bytes": 31406,
+      "sha256": "e8b1b84b58b33e72bcc5775ecae2abe388ca7263514330814dcefb597d1ea65e"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\tests\\write_verify_runtime_cases.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\source\\tests\\write_verify_runtime_cases.c",
+      "bytes": 19840,
+      "sha256": "dfec6b577ab328e75e4a6d8bbd9860e18c535f7eb790f7e0f9109f67a5fda36d"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\tests\\center_runtime_stubs.h",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\source\\tests\\center_runtime_stubs.h",
+      "bytes": 5033,
+      "sha256": "c05f779d12a932caed856a0e32c60df118c8bf2b9e3974231fdc5ca50f29853b"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\tests\\drive_brake_runtime_cases.c",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\source\\tests\\drive_brake_runtime_cases.c",
+      "bytes": 6288,
+      "sha256": "f98ed7a19b341dd7ae6aeb6a19c850754e526ea05aeda5c7f756d9d4e15be7cf"
+    },
+    {
+      "original_path": "git diff --binary; untracked new source files also copied under source/",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-write-ack-verify-103353\\source-changes.patch",
+      "bytes": 130121,
+      "sha256": "e0babb66311c3f6e7d0f9932088de5cf407c55a07082696df774d7b874fa7709"
+    },
+    {
+      "original_path": "verified staged package",
+      "archive_path": "docs\\operations\\evidence\\WriteAckVerify_0_2_77_Flash.zip",
+      "bytes": 259229,
+      "sha256": "80423b1e956d6b5df8112697dcfcaf41456f1ee1f2414dc9f191fe791fa471c9"
+    }
+  ]
+}

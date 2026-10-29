@@ -1,0 +1,47 @@
+{
+  "physical_channel": 2,
+  "read_only": true,
+  "results": [
+    {
+      "index": "0x1008",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 66128,
+      "host_roundtrip_ms": 2.2514000011142343
+    },
+    {
+      "index": "0x1009",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 3,
+      "host_roundtrip_ms": 1.6861999756656587
+    },
+    {
+      "index": "0x100a",
+      "sent": true,
+      "status": "ok",
+      "width": 4,
+      "value": 4,
+      "host_roundtrip_ms": 1.8457999976817518
+    },
+    {
+      "index": "0x1017",
+      "sent": true,
+      "status": "ok",
+      "width": 2,
+      "value": 100,
+      "host_roundtrip_ms": 2.304800000274554
+    },
+    {
+      "index": "0x1001",
+      "sent": true,
+      "status": "ok",
+      "width": 1,
+      "value": 0,
+      "host_roundtrip_ms": 2.5252000195905566
+    }
+  ],
+  "limitations": "Host round trips after stop; not the original failing SDO timing or MCU receive timestamps."
+}

@@ -1,0 +1,14 @@
+{
+  "tick": 52843046,
+  "fault_magic": "0x4d463031",
+  "fault_sequence": 14,
+  "fault_reason": 11,
+  "fault_latched": 1,
+  "stop_reason": 11,
+  "power_command": 1,
+  "enable_request": 0,
+  "session_active": 0,
+  "driver_status_hex": "0x1037",
+  "left_rpm": 0,
+  "right_rpm": 0
+}

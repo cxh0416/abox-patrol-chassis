@@ -1,0 +1,41 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "started_at": "2026-10-20T09:13:27.451229+08:00",
+  "operation": "Read Config V5 page via SWD without halt/reset/run/erase/load/write commands. Original backup retained outside Git; journal raw bytes and calibration-only summary archived.",
+  "artifacts": [
+    {
+      "path": "fault-journal.bin",
+      "sha256": "293c9cf528a29a6ea163ff3157c63fc6cad8ed489333ae1b11d69f62d2d49c10",
+      "bytes": 1024
+    },
+    {
+      "path": "jlink.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "jlink.stdout.log",
+      "sha256": "2eaa4915b901f9d540d94755c81c18394808464f8a2d349e0f7d45748505f107",
+      "bytes": 2315
+    },
+    {
+      "path": "read-config.jlink",
+      "sha256": "64eccce795fd56bb0a541f58c4ea920455c13fcc1ee929bccf51b5fc2669b77e",
+      "bytes": 212
+    },
+    {
+      "path": "redacted-summary.json",
+      "sha256": "0603a35116dfed740fadfd3696c9d825275465ada95b8babdd07d83b41a5138d",
+      "bytes": 2227
+    }
+  ],
+  "protected_backups": [
+    {
+      "path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-20-car2-config-fault-readonly-091327\\config-page.bin",
+      "sha256": "ae7609e76d0bd89673bf5309eb6e60b304e870b55841153c2026f323ce5aa723",
+      "bytes": 2048,
+      "purpose": "Protected configuration backup; excluded from Git. Do not publish credentials."
+    }
+  ],
+  "boundary": "No calibration or motion commands. Persistent state alone does not establish current RAM gate state."
+}

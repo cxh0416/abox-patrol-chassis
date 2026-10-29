@@ -1,0 +1,72 @@
+{
+  "product": "patrol_vehicle_chassis",
+  "files": [
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-timing-compare-20261022-092312-807889\\frames.jsonl",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-stationary-sdo-readonly-092939-078498\\raw\\frames.jsonl",
+      "bytes": 3487617,
+      "sha256": "16e8428f39f981bc73d5911412bcf797df2f013f812133c8c4186b4e8306a310"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\logs\\steering-timing-compare-20261022-092312-807889\\results.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-stationary-sdo-readonly-092939-078498\\raw\\results.json",
+      "bytes": 444070,
+      "sha256": "7bd1008381063d2441f7fdd0c4c916efe7e19ec82304a4fa7d63d7b2b08be552"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\steering_sdo_timing_compare.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-stationary-sdo-readonly-092939-078498\\tools\\steering_sdo_timing_compare.py",
+      "bytes": 10622,
+      "sha256": "a601065f0c4021bdbd8ca10e9840c8ab796443f27933704b9226582bf7f10a3f"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\chassis_offline_remote.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-stationary-sdo-readonly-092939-078498\\tools\\chassis_offline_remote.py",
+      "bytes": 45813,
+      "sha256": "47057b7b87f1ee5032d765944e4ba7208be4d3031b230d6000e5457aa49882c9"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\can_adapter_status_readonly.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-stationary-sdo-readonly-092939-078498\\tools\\can_adapter_status_readonly.py",
+      "bytes": 2414,
+      "sha256": "453dd600d8a23c28656fd3e0a5e931c3711e26df59f19c098ee4e0c8991379be"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\can1_bus_monitor.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-stationary-sdo-readonly-092939-078498\\tools\\can1_bus_monitor.py",
+      "bytes": 24222,
+      "sha256": "9153562c502ded759ff311ba94f43674b33c5aa57334a6dd25a2172e6a071e3a"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar_test\\test_can1_bus_monitor.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-stationary-sdo-readonly-092939-078498\\tools\\test_can1_bus_monitor.py",
+      "bytes": 12110,
+      "sha256": "f173d74bf3a3a41d2607430778426814610ab41794c46c224445c1078eea5d06"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\sdo-timing-sweep-A.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-stationary-sdo-readonly-092939-078498\\analysis\\sdo-timing-sweep-A.log",
+      "bytes": 4930,
+      "sha256": "5df6783f80e505c6160dd96aaee91219cb7cfac46a9fbea645307c326efcf200"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-stop-0276-readonly.py",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-stationary-sdo-readonly-092939-078498\\analysis\\fault-stop-0276-readonly.py",
+      "bytes": 4701,
+      "sha256": "32af842000557142763a22ea2e0e9abf382ed48d83a62988660d7d7895159343"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\fault-stop-0276-t12-schema.json",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-stationary-sdo-readonly-092939-078498\\analysis\\fault-stop-0276-t12-schema.json",
+      "bytes": 9885,
+      "sha256": "675a2e3a4827aa2be170f8c18ea818f896a82ae64ad747fa27645afa1afc69d4"
+    },
+    {
+      "original_path": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\logs\\dual-can-listener-tests.log",
+      "archive_path": "docs\\operations\\evidence\\2026-10-22-stationary-sdo-readonly-092939-078498\\analysis\\dual-can-listener-tests.log",
+      "bytes": 1971,
+      "sha256": "82bf4b60c7f396c66594fccd3cc5d3aa7f94102f64668d88342afaf0371a2ca2"
+    }
+  ],
+  "findings_sha256": "6cd3448ec19a1bf200d39885291fa866e169029285ca328b6f94c87de513f210"
+}

@@ -1,0 +1,74 @@
+{
+  "manifest_version": 3,
+  "product": "patrol_vehicle_chassis",
+  "version": "patrol-chassis-0.2.62",
+  "configuration": "Release",
+  "steering_executor_compiled": true,
+  "drive_executor_compiled": true,
+  "startup_motion_permit": false,
+  "actuation_enabled": true,
+  "boot_version": "abox-boot-2.3.0",
+  "ota_scheme": "boot_v2_ufs",
+  "ota_downloader": "app",
+  "app_range": "0x08008000..0x0803DFFF",
+  "config_recovery_page": "0x0803E000",
+  "boot_state_pages": [
+    "0x0803E800",
+    "0x0803F000"
+  ],
+  "config_page": "0x0803F800",
+  "product_commit": "dfe968a03a7e9fb6af415d274a637036bcd75a37",
+  "product_dirty": false,
+  "platform_commit": "bc64f52b290521f53ececa626dc91765861845f8",
+  "platform_dirty": false,
+  "toolchain": "arm-none-eabi-gcc.exe (Arm GNU Toolchain 14.2.Rel1 (Build arm-14.52)) 14.2.1 20241119",
+  "build_options": [
+    "-DPATROL_CHASSIS_APP_VERSION_OVERRIDE=patrol-chassis-0.2.62",
+    "-DPATROL_CHASSIS_ACTUATION_ENABLED=ON",
+    "-DPATROL_STEERING_EXECUTOR_ENABLED=ON",
+    "-DPATROL_DRIVE_EXECUTOR_ENABLED=ON"
+  ],
+  "version_marker": "PATROL_VEHICLE_CHASSIS_FW_VERSION=patrol-chassis-0.2.62",
+  "flash_ram": {
+    "boot": {
+      "image_bytes": 32768,
+      "source": "platform/targets/stm32f105_abox_boot"
+    },
+    "app": {
+      "flash_bytes": 148520,
+      "ram_bytes": 61432
+    },
+    "boot_limit_bytes": 32768,
+    "app_limit_bytes": 221184,
+    "ram_limit_bytes": 65536
+  },
+  "artifacts": [
+    {
+      "name": "Patrol_Vehicle_Chassis_App.bin",
+      "length": 148520,
+      "load_address": "0x08008000",
+      "crc32": "F6A4589C",
+      "sha256": "AB9244C91D98A7F287057B15420C1753A0C9A127C403CBFEA1F438776C0FD362",
+      "includes_device_config": false,
+      "includes_boot_state": false
+    },
+    {
+      "name": "ABox_Boot.bin",
+      "length": 32768,
+      "load_address": "0x08000000",
+      "crc32": "F36320C9",
+      "sha256": "981409EF107D5F5C56A1A80FCE107C0292E2C1165668C0279BA6158F24A61C63",
+      "includes_device_config": false,
+      "includes_boot_state": false
+    },
+    {
+      "name": "Patrol_Vehicle_Chassis_Full.bin",
+      "length": 181288,
+      "load_address": "0x08000000",
+      "crc32": "358622B1",
+      "sha256": "1500245ADEE9F8D9C5EC654922F0B40A5018FD2A49716B88EBC61DB2FAFC2A75",
+      "includes_device_config": false,
+      "includes_boot_state": false
+    }
+  ]
+}

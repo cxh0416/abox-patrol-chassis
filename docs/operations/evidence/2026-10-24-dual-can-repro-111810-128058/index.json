@@ -1,0 +1,109 @@
+{
+  "kind": "dual-channel-listen-only-can-capture",
+  "product": "patrol_vehicle_chassis",
+  "started_at": "2026-10-24T11:18:13+08:00",
+  "duration_s": 1677.0,
+  "wiring": {
+    "analyzer_ch1": "T12 receiver and A-BOX CAN2",
+    "analyzer_ch2": "A-BOX CAN1",
+    "bitrate_kbps": 500,
+    "hardware_listen_only": true,
+    "transmit_api_bound": false
+  },
+  "capture": {
+    "total_frames": 573060,
+    "can1_frames": 507511,
+    "can2_frames": 65549
+  },
+  "sdo": {
+    "completed": 117729,
+    "unanswered_events": 1,
+    "abort_events": 1,
+    "maximum_observed_reply_ms": 16,
+    "unanswered": {
+      "elapsed_s": 256.375,
+      "node": 1,
+      "index": "0x6040",
+      "request": "write 0x003F",
+      "request_at_s": 256.266,
+      "verification_read_at_s": 256.359,
+      "verification_value": "0x003F",
+      "outcome": "write execution proved by readback; traffic and control continued"
+    },
+    "abort": {
+      "elapsed_s": 130.828,
+      "node": 2,
+      "index": "0x2006",
+      "abort_code": "0x06020000",
+      "classification": "object unsupported; not a motion write"
+    }
+  },
+  "interruptions": [
+    {
+      "start_s": 101.891,
+      "end_s": 130.875,
+      "can1_pdo_gap_s": 28.875,
+      "can2_receiver_gap_s": 28.531,
+      "emcy": "both nodes emitted 0x0010 at 101.922 s",
+      "classification": "common power interruption/reset; not an SDO-only lockup"
+    },
+    {
+      "start_s": 783.719,
+      "end_s": 1120.922,
+      "can1_pdo_gap_s": 337.203,
+      "can2_receiver_gap_s": 337.5,
+      "emcy": "none before silence",
+      "preceded_by": "NMT pre-operational commands to both nodes",
+      "classification": "controlled shutdown and extended power-off; not a communication fault"
+    }
+  ],
+  "conclusion": {
+    "frequent_lost_ack_observed": false,
+    "fault_latch_observed_from_can": false,
+    "new_verification_handled_only_missing_ack": true,
+    "platform_fault_latched_queried": false,
+    "physical_braking_verified": false
+  },
+  "files": [
+    {
+      "path": "analysis/analyze_capture.py",
+      "bytes": 4892,
+      "sha256": "60bd02c7f04ee0856f561e4c62623cba644d7b06e0cda8ab4fff18e07d2945c0"
+    },
+    {
+      "path": "analysis/capture-summary.json",
+      "bytes": 7711,
+      "sha256": "e7b0cf0fea815781d7954f14231d4331f1c95db16ae9b4c1ab55f68d85c1cbef"
+    },
+    {
+      "path": "events.jsonl",
+      "bytes": 16611919,
+      "sha256": "6f333e2ebf1d0a79cafd684f465ac93cf02c2d424ea91f52348f6181e1c5a120"
+    },
+    {
+      "path": "frames.jsonl",
+      "bytes": 173503824,
+      "sha256": "3a3ade78c476f021730e179070057326b963615dcbf604bb2c50626c6d665610"
+    },
+    {
+      "path": "metadata.json",
+      "bytes": 1169,
+      "sha256": "38eff42e08411db059a11040ce1c331104d795dd7f4d54bad6fda72c7dfe8d49"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2480,
+      "sha256": "100790e995bde7c909e940046728144e7fb6986837103771a45ee916b7122e08"
+    },
+    {
+      "path": "sha256.json",
+      "bytes": 352,
+      "sha256": "399025914b683bbfb1cf482d433eb7abfe91af2317777d63216a8e6bd5670001"
+    },
+    {
+      "path": "summary.json",
+      "bytes": 31087,
+      "sha256": "daa4b9f30a2d3a07ab88dc4294e7a87ec2393aae93b8391302fd57fd5620312b"
+    }
+  ]
+}

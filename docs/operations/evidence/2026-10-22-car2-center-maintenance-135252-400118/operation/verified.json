@@ -1,0 +1,24 @@
+{
+  "verified_at": "2026-10-22T13:50:42.490333+08:00",
+  "fields": {
+    "config_calibrated": 1,
+    "config_steering_center": -83815,
+    "config_absolute_center": 0,
+    "config_steering_scale": 2710800,
+    "config_absolute_scale": 55250,
+    "feedback_encoder_profile_ready": 1,
+    "encoder_count": 0,
+    "encoder_ms": 7957,
+    "fault_pending": 0,
+    "fault_latched": 0,
+    "power_command": 0,
+    "session_active": 0,
+    "enable_request": 0,
+    "target_rpm": 0,
+    "can2_rx": 0
+  },
+  "config_page_sha256": "0018bc79b02cbeb2df60a4b97149f4ac7966c07cfb94f405bc4c23c428d83615",
+  "boot_app_states_recovery_unchanged": true,
+  "post_reset_loaded": true,
+  "stationary_after_reset": "E:\\1_work\\ChassisCar\\abox-patrol-vehicle-chassis-firmware\\out\\flash\\2026-10-22-car2-center-read-135042-696751"
+}

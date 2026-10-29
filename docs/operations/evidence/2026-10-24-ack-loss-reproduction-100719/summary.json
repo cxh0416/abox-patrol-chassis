@@ -1,0 +1,506 @@
+{
+  "stop_reason": "operator_stop_file",
+  "error": null,
+  "kind": "snapshot",
+  "elapsed_s": 518.704,
+  "latest": {
+    "CAN1.node2.read_request.left_actual_rpm:0": {
+      "age_ms": 399079.0,
+      "at_s": 119.625,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 24681,
+        "index_hex": "0x6069",
+        "subindex": 0,
+        "object": "left_actual_rpm",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node2.read_response.left_actual_rpm:0": {
+      "age_ms": 399079.0,
+      "at_s": 119.625,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 24681,
+        "index_hex": "0x6069",
+        "subindex": 0,
+        "object": "left_actual_rpm",
+        "command": 67,
+        "action": "read_response",
+        "value": -1517,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN2.t12_joystick": {
+      "age_ms": 354516.0,
+      "at_s": 164.18799999999464,
+      "decoded": {
+        "kind": "t12_joystick",
+        "steer_raw": 0,
+        "throttle_raw": 0,
+        "reference_rpm": 0
+      }
+    },
+    "CAN1.node2.read_request.right_actual_rpm:0": {
+      "age_ms": 399047.0,
+      "at_s": 119.65699999999197,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 26729,
+        "index_hex": "0x6869",
+        "subindex": 0,
+        "object": "right_actual_rpm",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node2.read_response.right_actual_rpm:0": {
+      "age_ms": 399047.0,
+      "at_s": 119.65699999999197,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 26729,
+        "index_hex": "0x6869",
+        "subindex": 0,
+        "object": "right_actual_rpm",
+        "command": 67,
+        "action": "read_response",
+        "value": 1963,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN2.t12_switch": {
+      "age_ms": 354532.0,
+      "at_s": 164.17199999999139,
+      "decoded": {
+        "kind": "t12_switch",
+        "a": 2,
+        "a_enabled": true,
+        "b": 0,
+        "b_action": "none"
+      }
+    },
+    "CAN1.node1.read_request.statusword:0": {
+      "age_ms": 398297.0,
+      "at_s": 120.40699999999197,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24641,
+        "index_hex": "0x6041",
+        "subindex": 0,
+        "object": "statusword",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node1.read_response.statusword:0": {
+      "age_ms": 398297.0,
+      "at_s": 120.40699999999197,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24641,
+        "index_hex": "0x6041",
+        "subindex": 0,
+        "object": "statusword",
+        "command": 75,
+        "action": "read_response",
+        "value": 8753,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node1.read_request.steering_actual_count:0": {
+      "age_ms": 399110.0,
+      "at_s": 119.59399999999732,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24676,
+        "index_hex": "0x6064",
+        "subindex": 0,
+        "object": "steering_actual_count",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node1.read_response.steering_actual_count:0": {
+      "age_ms": 399110.0,
+      "at_s": 119.59399999999732,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24676,
+        "index_hex": "0x6064",
+        "subindex": 0,
+        "object": "steering_actual_count",
+        "command": 67,
+        "action": "read_response",
+        "value": -60321,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.heartbeat.node2": {
+      "age_ms": 32.0,
+      "at_s": 518.6719999999914,
+      "decoded": {
+        "kind": "heartbeat",
+        "node": 2,
+        "state": 127,
+        "bootup": false
+      }
+    },
+    "CAN1.heartbeat.node1": {
+      "age_ms": 32.0,
+      "at_s": 518.6719999999914,
+      "decoded": {
+        "kind": "heartbeat",
+        "node": 1,
+        "state": 5,
+        "bootup": false
+      }
+    },
+    "CAN1.node2.read_request.statusword:0": {
+      "age_ms": 398141.0,
+      "at_s": 120.56299999999464,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 24641,
+        "index_hex": "0x6041",
+        "subindex": 0,
+        "object": "statusword",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node2.read_response.statusword:0": {
+      "age_ms": 398141.0,
+      "at_s": 120.56299999999464,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 24641,
+        "index_hex": "0x6041",
+        "subindex": 0,
+        "object": "statusword",
+        "command": 75,
+        "action": "read_response",
+        "value": 17,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node2.read_request.left_vendor_fault:0": {
+      "age_ms": 403250.0,
+      "at_s": 115.4539999999979,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 8192,
+        "index_hex": "0x2000",
+        "subindex": 0,
+        "object": "left_vendor_fault",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node2.read_response.left_vendor_fault:0": {
+      "age_ms": 403250.0,
+      "at_s": 115.4539999999979,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 8192,
+        "index_hex": "0x2000",
+        "subindex": 0,
+        "object": "left_vendor_fault",
+        "command": 75,
+        "action": "read_response",
+        "value": 0,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node2.read_request.right_vendor_fault:0": {
+      "age_ms": 404125.0,
+      "at_s": 114.5789999999979,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 8193,
+        "index_hex": "0x2001",
+        "subindex": 0,
+        "object": "right_vendor_fault",
+        "command": 64,
+        "action": "read_request"
+      }
+    },
+    "CAN1.node2.read_response.right_vendor_fault:0": {
+      "age_ms": 404125.0,
+      "at_s": 114.5789999999979,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 8193,
+        "index_hex": "0x2001",
+        "subindex": 0,
+        "object": "right_vendor_fault",
+        "command": 75,
+        "action": "read_response",
+        "value": 0,
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node2.write_request.left_target_rpm:0": {
+      "age_ms": 398157.0,
+      "at_s": 120.54699999999139,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 24831,
+        "index_hex": "0x60FF",
+        "subindex": 0,
+        "object": "left_target_rpm",
+        "command": 35,
+        "action": "write_request",
+        "value": 0
+      }
+    },
+    "CAN1.node2.write_ack.left_target_rpm:0": {
+      "age_ms": 398157.0,
+      "at_s": 120.54699999999139,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 24831,
+        "index_hex": "0x60FF",
+        "subindex": 0,
+        "object": "left_target_rpm",
+        "command": 96,
+        "action": "write_ack",
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node2.write_request.right_target_rpm:0": {
+      "age_ms": 398141.0,
+      "at_s": 120.56299999999464,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 26879,
+        "index_hex": "0x68FF",
+        "subindex": 0,
+        "object": "right_target_rpm",
+        "command": 35,
+        "action": "write_request",
+        "value": 0
+      }
+    },
+    "CAN1.node2.write_ack.right_target_rpm:0": {
+      "age_ms": 398141.0,
+      "at_s": 120.56299999999464,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 26879,
+        "index_hex": "0x68FF",
+        "subindex": 0,
+        "object": "right_target_rpm",
+        "command": 96,
+        "action": "write_ack",
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node1.write_request.steering_target_count:0": {
+      "age_ms": 399063.0,
+      "at_s": 119.64100000000326,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24698,
+        "index_hex": "0x607A",
+        "subindex": 0,
+        "object": "steering_target_count",
+        "command": 35,
+        "action": "write_request",
+        "value": -48057
+      }
+    },
+    "CAN1.node1.write_ack.steering_target_count:0": {
+      "age_ms": 399063.0,
+      "at_s": 119.64100000000326,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24698,
+        "index_hex": "0x607A",
+        "subindex": 0,
+        "object": "steering_target_count",
+        "command": 96,
+        "action": "write_ack",
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node1.write_request.controlword:0": {
+      "age_ms": 398313.0,
+      "at_s": 120.39100000000326,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24640,
+        "index_hex": "0x6040",
+        "subindex": 0,
+        "object": "controlword",
+        "command": 43,
+        "action": "write_request",
+        "value": 6
+      }
+    },
+    "CAN1.node1.write_ack.controlword:0": {
+      "age_ms": 398313.0,
+      "at_s": 120.39100000000326,
+      "decoded": {
+        "kind": "sdo",
+        "node": 1,
+        "index": 24640,
+        "index_hex": "0x6040",
+        "subindex": 0,
+        "object": "controlword",
+        "command": 96,
+        "action": "write_ack",
+        "observed_reply_ms": 0.0
+      }
+    },
+    "CAN1.node2.write_request.controlword:0": {
+      "age_ms": 398172.0,
+      "at_s": 120.53199999999197,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 24640,
+        "index_hex": "0x6040",
+        "subindex": 0,
+        "object": "controlword",
+        "command": 43,
+        "action": "write_request",
+        "value": 6
+      }
+    },
+    "CAN1.node2.write_ack.controlword:0": {
+      "age_ms": 398172.0,
+      "at_s": 120.53199999999197,
+      "decoded": {
+        "kind": "sdo",
+        "node": 2,
+        "index": 24640,
+        "index_hex": "0x6040",
+        "subindex": 0,
+        "object": "controlword",
+        "command": 96,
+        "action": "write_ack",
+        "observed_reply_ms": 0.0
+      }
+    }
+  },
+  "ids": {
+    "CAN1.STD.0x602": {
+      "age_ms": 398141.0,
+      "count": 5808,
+      "first_s": 0.03199999999196734,
+      "last_s": 120.56299999999464,
+      "max_host_gap_ms": 108.99999999674037,
+      "last_data": "40 41 60 00 00 00 00 00",
+      "dlc": 8
+    },
+    "CAN1.STD.0x582": {
+      "age_ms": 398141.0,
+      "count": 5808,
+      "first_s": 0.03199999999196734,
+      "last_s": 120.56299999999464,
+      "max_host_gap_ms": 108.99999999674037,
+      "last_data": "4B 41 60 00 11 00",
+      "dlc": 6
+    },
+    "CAN2.STD.0x10B": {
+      "age_ms": 354516.0,
+      "count": 4105,
+      "first_s": 0.03199999999196734,
+      "last_s": 164.18799999999464,
+      "max_host_gap_ms": 47.00000000593718,
+      "last_data": "00 00 00 00 00 00 00 00",
+      "dlc": 8
+    },
+    "CAN1.STD.0x181": {
+      "age_ms": 16.0,
+      "count": 47157,
+      "first_s": 0.03199999999196734,
+      "last_s": 518.6879999999946,
+      "max_host_gap_ms": 32.00000000651926,
+      "last_data": "31 22 00 00 2D 00 01",
+      "dlc": 7
+    },
+    "CAN1.STD.0x281": {
+      "age_ms": 16.0,
+      "count": 47157,
+      "first_s": 0.03199999999196734,
+      "last_s": 518.6879999999946,
+      "max_host_gap_ms": 32.00000000651926,
+      "last_data": "EA 01 FF FF 00 00 00 00",
+      "dlc": 8
+    },
+    "CAN2.STD.0x10A": {
+      "age_ms": 354532.0,
+      "count": 4104,
+      "first_s": 0.046999999991385266,
+      "last_s": 164.17199999999139,
+      "max_host_gap_ms": 47.00000000593718,
+      "last_data": "01 01 02 00 00 00 00 00",
+      "dlc": 8
+    },
+    "CAN1.STD.0x601": {
+      "age_ms": 398297.0,
+      "count": 5521,
+      "first_s": 0.0629999999946449,
+      "last_s": 120.40699999999197,
+      "max_host_gap_ms": 108.99999999674037,
+      "last_data": "40 41 60 00 00 00 00 00",
+      "dlc": 8
+    },
+    "CAN1.STD.0x581": {
+      "age_ms": 398297.0,
+      "count": 5519,
+      "first_s": 0.0629999999946449,
+      "last_s": 120.40699999999197,
+      "max_host_gap_ms": 108.99999999674037,
+      "last_data": "4B 41 60 00 31 22",
+      "dlc": 6
+    },
+    "CAN1.STD.0x702": {
+      "age_ms": 32.0,
+      "count": 5136,
+      "first_s": 0.07899999999790452,
+      "last_s": 518.6719999999914,
+      "max_host_gap_ms": 125.0,
+      "last_data": "7F",
+      "dlc": 1
+    },
+    "CAN1.STD.0x701": {
+      "age_ms": 32.0,
+      "count": 5136,
+      "first_s": 0.07899999999790452,
+      "last_s": 518.6719999999914,
+      "max_host_gap_ms": 125.0,
+      "last_data": "05",
+      "dlc": 1
+    }
+  },
+  "unanswered_sdo_events": 0,
+  "sdo_completed": 11327,
+  "sdo_aborts": 0,
+  "pending_sdo": 0,
+  "max_observed_reply_ms": 16.0
+}

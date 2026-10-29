@@ -1,0 +1,17 @@
+{
+  "output": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-watch-20261022-140844-569953",
+  "wiring_confirmed_by_operator": true,
+  "bitrate_kbps": 500,
+  "physical_channels": {
+    "CAN2": 1,
+    "CAN1": 2
+  },
+  "stop_file": "E:\\1_work\\ChassisCar_test\\logs\\stop-car2-receiver-watch-20261022-140844-569953.flag",
+  "pid": 8108,
+  "duration_s": 1800,
+  "stdout": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-watch-20261022-140844-569953.stdout.log",
+  "stderr": "E:\\1_work\\ChassisCar_test\\logs\\car2-receiver-watch-20261022-140844-569953.stderr.log",
+  "started_at": "2026-10-22T14:08:44.6122782+08:00",
+  "vehicle": "CAR2",
+  "hardware_listen_only": true
+}

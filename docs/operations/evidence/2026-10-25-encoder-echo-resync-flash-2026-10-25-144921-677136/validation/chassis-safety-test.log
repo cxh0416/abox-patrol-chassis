@@ -1,0 +1,1 @@
+PASS: chassis_safety_test exit=0; includes real capture 8-byte echo + 9-byte position reply
