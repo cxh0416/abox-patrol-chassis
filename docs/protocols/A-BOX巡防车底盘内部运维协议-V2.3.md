@@ -6,7 +6,7 @@
 | 文档修订号 | V2.3 |
 | 报文版本 | `2.0` |
 | 文档属性 | 内部运维协议 |
-| 依赖协议 | [A-BOX 巡防车底盘业务协议 V4.0](A-BOX巡防车底盘业务协议-V4.0.md) |
+| 依赖协议 | [A-BOX 巡防车底盘业务协议 V4.0](https://github.com/cxh0416/abox-patrol-chassis/blob/protocols/docs/protocols/A-BOX巡防车底盘业务协议-V4.0.md) |
 
 ## 目录
 
@@ -37,7 +37,7 @@
 
 ## 1. 范围与引用
 
-本规范定义产品 `patrol_vehicle_chassis` 的内部运维 MQTT 请求、响应和标定接口。公共 MQTT V4 信封、上下电、`chassis_control`、`chassis_status` 仍由[底盘业务协议 V4.0](A-BOX巡防车底盘业务协议-V4.0.md)定义。本规范不改变公共协议版本。
+本规范定义产品 `patrol_vehicle_chassis` 的内部运维 MQTT 请求、响应和标定接口。公共 MQTT V4 信封、上下电、`chassis_control`、`chassis_status` 仍由[底盘业务协议 V4.0](https://github.com/cxh0416/abox-patrol-chassis/blob/protocols/docs/protocols/A-BOX巡防车底盘业务协议-V4.0.md)定义。本规范不改变公共协议版本。
 
 本车没有独立的继电器或接触器状态反馈输入。`powerOutputOn` 仅表示 MCU 电源或使能 GPIO 命令状态。驱动器 CAN 状态、实测转速、转向位置和独立编码器是运动反馈来源；MQTT 响应不单独证明真实运动或停车。
 

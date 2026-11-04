@@ -10,6 +10,21 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 
 
+
+def product_protocol():
+    """Read the shared protocol ref; fetch origin/protocols when updating it."""
+    import subprocess
+    path = "docs/protocols/A-BOX巡防车底盘业务协议-V4.0.md"
+    branch = subprocess.check_output(["git", "-C", str(ROOT), "branch", "--show-current"], text=True).strip()
+    if branch == "protocols":
+        return (ROOT / path).read_text(encoding="utf-8")
+    try:
+        raw = subprocess.check_output(["git", "-C", str(ROOT), "show", "refs/remotes/origin/protocols:" + path], stderr=subprocess.PIPE)
+    except subprocess.CalledProcessError as exc:
+        raise RuntimeError("Run git fetch origin protocols:refs/remotes/origin/protocols to obtain the shared protocol") from exc
+    return raw.decode("utf-8")
+
+
 def motion_sources():
     return "\n".join((ROOT / "app/Core/User" / name).read_text(encoding="utf-8")
                      for name in ("system/src/patrol_rtos.c", "motion/src/center_calibration.c", "motion/src/patrol_runtime.c"))
@@ -78,7 +93,7 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertIn("VehiclePowerOutput_Init(write_power_output)", port)
 
     def test_public_profile_references_v4_and_documents_business_limits(self):
-        mqtt = (ROOT / "docs/protocols/A-BOX巡防车底盘业务协议-V4.0.md").read_text(encoding="utf-8")
+        mqtt = product_protocol()
         canopen = (ROOT / "docs/operations/CANopen执行约束.md").read_text(encoding="utf-8")
         self.assertIn("A-BOX 设备公共 MQTT 协议 V4", mqtt)
         self.assertNotIn("/zxwl/abox/{deviceId}", mqtt)
@@ -106,7 +121,7 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertIn("AT+QMTSUB=%u,%u", transport)
         self.assertIn("mqtt_core_adapter.c", product_modules)
         # Optional diagnostics keep their schema even when the public encoder omits them.
-        mqtt = (ROOT / "docs/protocols/A-BOX巡防车底盘业务协议-V4.0.md").read_text(encoding="utf-8")
+        mqtt = product_protocol()
         for field, kind in (("transportDiagnostics", "Object"), ("lastFault", "Array&lt;Integer&gt;")):
             self.assertRegex(mqtt, rf"\|\s*`payload\.{field}`\s*\|\s*{kind}\s*\|\s*可选")
         self.assertIn('`payload.transportDiagnostics.ecDmaOverflows`', mqtt)
