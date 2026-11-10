@@ -18,6 +18,7 @@ class MqttRuntimeTests(unittest.TestCase):
                 ROOT / "platform/components/mqtt/src/abox_mqtt_runtime.c",
                 ROOT / "platform/components/mqtt/src/abox_mqtt_runtime_core_port.c",
                 ROOT / "platform/components/ec800/src/abox_ec800_at.c",
+                ROOT / "platform/components/ec800/src/abox_ec800_diagnostics.c",
                 ROOT / "platform/components/ec800/src/abox_ec800_command_port.c",
                 ROOT / "platform/components/ec800/src/abox_ec800_ufs.c",
                 ROOT / "platform/components/ec800/src/abox_ec800_tls.c",
