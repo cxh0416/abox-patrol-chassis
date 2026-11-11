@@ -69,7 +69,7 @@ uint8_t PatrolDiagnostics_TakeSdoReadUrgent(PatrolDiagnostics* d, uint32_t now,
                                             PatrolCanFrame* f, uint8_t allow_retry)
 { (void)d; (void)now; (void)f; (void)allow_retry; return 0; }
 void PatrolDiagnostics_OnSdoTxError(PatrolDiagnostics* d, uint32_t now) { (void)d; (void)now; }
-void PatrolDiagnostics_OnEncoderConfig(PatrolDiagnostics* d, const uint16_t* r, uint32_t now)
+void PatrolDiagnostics_OnEncoderConfig(PatrolDiagnostics* d, const uint16_t r[3], uint32_t now)
 { (void)d; (void)r; (void)now; }
 void PatrolDiagnostics_OnEncoderCount(PatrolDiagnostics* d, uint32_t c, uint32_t now)
 { (void)d; (void)c; (void)now; }
@@ -121,4 +121,5 @@ uint8_t OTA_Info_SaveMotionFault(const MotionFaultRecord* r) { (void)r; return 1
 
 #ifndef FAULT_STOP_REAL_REMOTE
 void RemoteService_Init(void) { memset(&mock_control,0,sizeof(mock_control)); mock_permit=0; }
+void RemoteService_ResetMotion(void) { RemoteService_Init(); }
 #endif

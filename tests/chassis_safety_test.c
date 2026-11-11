@@ -14,6 +14,34 @@
 #define CHECK(x) do { if (!(x)) { fprintf(stderr, "check failed line %d: %s\n", __LINE__, #x); return 1; } } while (0)
 
 static uint8_t g_power_level;
+static int test_sdo_feedback_width(void)
+{
+    const uint8_t entries[] = {0U, 1U, 2U, 3U, 4U};
+    const uint8_t nodes[] = {1U, 1U, 2U, 2U, 2U};
+    const uint16_t indexes[] = {0x6041U, 0x6064U, 0x6041U, 0x6069U, 0x6869U};
+    for (unsigned i = 0; i < sizeof(entries); ++i) {
+        PatrolDiagnostics d;
+        PatrolDiagnostics_Init(&d);
+        d.pending_valid = 1U; d.pending_entry = entries[i];
+        d.left_actual_rpm = 900; d.left_rpm_seen = 1; d.left_rpm_ms = 1;
+        PatrolCanFrame frame = {0};
+        frame.id = 0x580U + nodes[i]; frame.dlc = 8U;
+        frame.data[0] = indexes[i] == 0x6041U ? 0x43U : 0x4FU;
+        frame.data[1] = (uint8_t)indexes[i]; frame.data[2] = (uint8_t)(indexes[i] >> 8);
+        PatrolDiagnostics_OnCanFrame(&d, &frame, 1000U);
+        CHECK(d.pending_valid && d.sdo_success_count == 0U && d.left_rpm_ms == 1U);
+        if (indexes[i] == 0x6069U) {
+            PatrolDiagnosticsSnapshot snapshot;
+            d.right_rpm_seen = 1U; d.right_rpm_ms = 1000U;
+            PatrolDiagnostics_Snapshot(&d, 1000U, &snapshot);
+            CHECK(!snapshot.drive_feedback_fresh && d.left_actual_rpm == 900);
+        }
+        frame.data[0] = indexes[i] == 0x6041U ? 0x4BU : 0x43U;
+        PatrolDiagnostics_OnCanFrame(&d, &frame, 1001U);
+        CHECK(!d.pending_valid && d.sdo_success_count == 1U);
+    }
+    return 0;
+}
 static int test_status_snapshot_age(void)
 {
     PatrolDiagnostics d;
@@ -430,11 +458,52 @@ static int test_normal_motion_without_dual_angle_gate(void)
     return 0;
 }
 
+static int test_millidegree_values(void)
+{
+    char json[512];
+    ChassisCloudCommand command;
+    for (int milli = -30000; milli <= 30000; ++milli) {
+        unsigned magnitude = (unsigned)(milli < 0 ? -milli : milli);
+        snprintf(json, sizeof(json),
+            "{\"version\":\"4.0\",\"timestamp\":1788838333000,\"data\":{"
+            "\"requestId\":\"angle\",\"command\":\"chassis_control\",\"params\":{"
+            "\"action\":\"acquire\",\"sessionId\":\"s\",\"seq\":1,\"leaseMs\":1000,"
+            "\"driveRpm\":0,\"steeringDeg\":%s%u.%03u}}}",
+            milli < 0 ? "-" : "", magnitude/1000U, magnitude%1000U);
+        CHECK(ChassisCloud_Parse(json, (uint16_t)strlen(json), &command) == CHASSIS_CLOUD_OK);
+        CHECK(command.steering_mdeg == milli);
+    }
+    /* Equivalent Number forms have the same physical target and digest. */
+    uint8_t expected_digest[32], actual_digest[32];
+    const char *equivalent[] = {"1.001", "1.0010", "1001e-3"};
+    for (unsigned i=0; i<sizeof(equivalent)/sizeof(equivalent[0]); ++i) {
+        snprintf(json, sizeof(json),
+            "{\"version\":\"4.0\",\"timestamp\":1,\"data\":{\"requestId\":\"angle\","
+            "\"command\":\"chassis_control\",\"params\":{\"action\":\"renew\",\"sessionId\":\"s\","
+            "\"seq\":1,\"leaseMs\":1000,\"driveRpm\":0,\"steeringDeg\":%s}}}", equivalent[i]);
+        CHECK(ChassisCloud_Parse(json, (uint16_t)strlen(json), &command) == CHASSIS_CLOUD_OK);
+        CHECK(command.steering_mdeg == 1001 && ChassisCloud_RequestDigest(&command, actual_digest));
+        if (i == 0U) memcpy(expected_digest, actual_digest, sizeof(actual_digest));
+        else CHECK(!memcmp(expected_digest, actual_digest, sizeof(actual_digest)));
+    }
+    const char *values[] = {"1.0005", "-1.0005", "30.001", "-30.001"};
+    for (unsigned i=0; i<sizeof(values)/sizeof(values[0]); ++i) {
+        snprintf(json, sizeof(json),
+            "{\"version\":\"4.0\",\"timestamp\":1,\"data\":{\"requestId\":\"angle\","
+            "\"command\":\"chassis_control\",\"params\":{\"action\":\"renew\",\"sessionId\":\"s\","
+            "\"seq\":1,\"leaseMs\":1000,\"driveRpm\":0,\"steeringDeg\":%s}}}", values[i]);
+        CHECK(ChassisCloud_Parse(json, (uint16_t)strlen(json), &command) == CHASSIS_CLOUD_INVALID);
+    }
+    return 0;
+}
+
 int main(void)
 {
     CHECK(test_normal_motion_without_dual_angle_gate() == 0);
     CHECK(test_sdo_waits_for_node() == 0);
     CHECK(test_status_snapshot_age() == 0);
+    CHECK(test_sdo_feedback_width() == 0);
+    CHECK(test_millidegree_values() == 0);
     CHECK(test_steering_tpdo_freshness() == 0);
     CHECK(test_steering_position_sdo_fallback() == 0);
     CHECK(test_urgent_feedback_priority() == 0);
@@ -584,7 +653,7 @@ int main(void)
         memset(&response_frame, 0, sizeof(response_frame));
         response_frame.id = (uint16_t)(frame.id - 0x80U);
         response_frame.dlc = 8U;
-        response_frame.data[0] = 0x43U;
+        response_frame.data[0] = (frame.data[1] == 0x41U && frame.data[2] == 0x60U) ? 0x4BU : 0x43U;
         response_frame.data[1] = frame.data[1];
         response_frame.data[2] = frame.data[2];
         response_frame.data[3] = frame.data[3];

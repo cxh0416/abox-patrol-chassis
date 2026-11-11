@@ -17,11 +17,16 @@ static uint8_t capacity, refuse_send, inject_fault, drop_node, drop_shutdown_ack
 static uint8_t enabled[2];
 static uint32_t delayed_shutdown_until;
 static int32_t left_target, right_target;
+static uint64_t test_utc;
 
 // 主机端口只模拟时钟和邮箱；RemoteService、ChassisControl 和停机执行器均链接生产代码。
 uint32_t HAL_GetTick(void) { return mock_now; }
 // 本夹具只验证本地故障流程，不创建受信 UTC 或网络控制许可。
-ABoxClockSnapshot TimeBase_GetSnapshot(void) { ABoxClockSnapshot s = {0}; return s; }
+ABoxClockSnapshot TimeBase_GetSnapshot(void) {
+    ABoxClockSnapshot s = {0};
+    if (test_utc) { s.utc_ms=test_utc; s.mono_ms=mock_now; s.quality=ABOX_CLOCK_SYNCHRONIZED; }
+    return s;
+}
 uint8_t TimeBase_FormatUtcMs(char* output, uint16_t size)
 { return (uint8_t)(snprintf(output, size, "0") > 0); }
 uint8_t VehiclePowerOutput_IsAvailable(void) { return 1U; }
@@ -366,6 +371,23 @@ static void test_service_reinit_during_stop(void)
     puts("PASS service reinit cannot cancel pending disable");
 }
 
+static void test_reset_preserves_power_replay(void)
+{
+    const char *request = "{\"version\":\"4.0\",\"timestamp\":1788838333000,\"data\":{\"requestId\":\"reset-replay\",\"command\":\"power_on\",\"expiresAt\":1788838338000,\"params\":null}}";
+    char response[512];
+    fixture(); mock_now += 8100U; test_utc=1788838333000ULL;
+    assert(RemoteService_HandleControl(request, (uint16_t)strlen(request), response, sizeof(response)));
+    assert(strstr(response, "\"code\":200") && mock_power);
+    RemoteService_Revoke(); VehiclePowerOutput_Set(0);
+    test_utc += 2000; mock_now += 2000;
+    assert(PatrolRuntime_ResetFault());
+    assert(RemoteService_HandleControl(request, (uint16_t)strlen(request), response, sizeof(response)));
+    assert(strstr(response, "\"code\":200") && !mock_power);
+    assert(!RemoteService_State()->session_active && !RemoteService_State()->enable_request);
+    test_utc=0;
+    puts("PASS fault reset preserves power replay without restoring motion");
+}
+
 // 顺序执行独立安全场景，各场景都从全新主控和驱动器模拟状态开始。
 int main(void)
 {
@@ -381,5 +403,6 @@ int main(void)
     test_selected_motion_frame_revoked();
     test_delayed_disable_after_ack();
     test_service_reinit_during_stop();
+    test_reset_preserves_power_replay();
     return 0;
 }

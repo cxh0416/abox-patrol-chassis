@@ -28,6 +28,13 @@ typedef struct __attribute__((packed, aligned(4))) {
 _Static_assert(sizeof(ABoxPowerReplay) == 92U, "Power replay RAM budget changed");
 static ABoxPowerReplay g_power_replay[4];
 
+/* An ON admitted before reset expires within this bounded interval. The
+ * normal modem startup sequence itself takes 11 seconds. */
+#define POWER_ON_MAX_FUTURE_MS 7500U
+#define POWER_ON_BOOT_GUARD_MS (POWER_ON_MAX_FUTURE_MS + ABOX_CLOCK_ERROR_LIMIT_MS + 100U)
+static uint32_t g_power_boot_tick;
+static uint8_t g_power_boot_guard;
+
 static uint8_t g_remote_initialized;
 static ChassisControl g_control;
 static char g_last_request_id[65];
@@ -112,8 +119,8 @@ void RemoteService_CompleteFaultStop(void)
     ChassisControl_CompleteFaultStop(&g_control);
     taskEXIT_CRITICAL();
 }
-// 初始化共享远控仲裁及请求缓存。根据 Config V5 填入标定有效性，保留内部行走禁用位并清空会话和重放记录；不会自动使能。
-void RemoteService_Init(void)
+// 初始化远控仲裁；故障复位保留电源去重记录，但始终清除运动会话和目标。
+static void remote_service_init(uint8_t clear_power_replay)
 {
     const PatrolRemoteConfigV5_t* cfg = PatrolConfig_Get();
     ChassisFeedback feedback = {0};
@@ -127,16 +134,25 @@ void RemoteService_Init(void)
     ChassisControl_SetFeedback(&g_control, &feedback);
     g_last_request_id[0] = '\0';
     g_last_response[0] = '\0';
-    memset(g_power_replay, 0, sizeof(g_power_replay));
+    if (clear_power_replay) {
+        memset(g_power_replay, 0, sizeof(g_power_replay));
+        g_power_boot_tick = HAL_GetTick();
+        g_power_boot_guard = 1U;
+    }
     g_remote_initialized = 1U;
     APP_LOGI("REMOTE", "initialized calibrated=%u; outputs gated",
              (unsigned int)feedback.calibrated);
 }
 
+void RemoteService_Init(void) { remote_service_init(1U); }
+void RemoteService_ResetMotion(void) { remote_service_init(0U); }
+
 // 在远控任务上下文中推进安全检查。未初始化时返回，实验保持状态受编译开关限制；正常路径持临界区调用安全周期处理。
 void RemoteService_Task(void)
 {
     if (!g_remote_initialized) return;
+    if (g_power_boot_guard && (uint32_t)(HAL_GetTick() - g_power_boot_tick) >= POWER_ON_BOOT_GUARD_MS)
+        g_power_boot_guard = 0U;
 #if PATROL_CHASSIS_MQTT_LAB_TEST
     if (g_lab_hold_state) return;
 #endif
@@ -267,6 +283,17 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
             if (command.has_expires_at && (code = ABoxMqttV4_CheckExpiry(&clock, command.expires_at)) != 200U) {
                 message = code == 4003U ? "trusted time unavailable" : "request expired";
                 goto format_response;
+            }
+            if (target_on) {
+                if (g_power_boot_guard && (uint32_t)(HAL_GetTick() - g_power_boot_tick) >= POWER_ON_BOOT_GUARD_MS)
+                    g_power_boot_guard = 0U;
+                if (g_power_boot_guard) {
+                    code = 4003U; message = "power startup guard"; goto format_response;
+                }
+                if (clock.error_ms > ABOX_CLOCK_ERROR_LIMIT_MS ||
+                    command.expires_at - clock.utc_ms > POWER_ON_MAX_FUTURE_MS) {
+                    code = 4003U; message = "power expiry too far ahead"; goto format_response;
+                }
             }
             if (target_on && power_slot < 0) {
                 code = 4003U; message = "idempotency cache full"; goto format_response;

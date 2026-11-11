@@ -287,9 +287,10 @@ void PatrolDiagnostics_OnCanFrame(PatrolDiagnostics* diagnostics, const PatrolCa
         return;
     }
     if (PatrolCanopen_ParseSdoValue(frame, entry->node, entry->index, entry->subindex,
-                                    &value, &size))
+                                    &value, &size) &&
+        (entry->index != 0x6041U || size == 2U) &&
+        ((entry->index != 0x6064U && entry->index != 0x6069U && entry->index != 0x6869U) || size == 4U))
     {
-        (void)size;
         diagnostics->sdo_success_count++;
         diagnostics->sdo_success_mask |= (uint16_t)(1U << diagnostics->pending_entry);
         store_sdo_value(diagnostics, entry, value, now_ms);

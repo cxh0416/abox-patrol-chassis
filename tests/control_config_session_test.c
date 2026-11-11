@@ -19,13 +19,14 @@ static unsigned power_on_writes;
 static uint32_t tick = 1000;
 static uint64_t utc_now = 1788838333000ULL;
 static uint8_t time_trusted = 1U;
+static uint32_t time_error;
 uint32_t HAL_GetTick(void) { return tick; }
 /* This isolated config/session fixture has no calibration session. */
 uint8_t CenterCalibration_IsActive(void) { return 0U; }
 /* This config-only fixture compiles no motor transport. */
 uint8_t PatrolRuntime_RequestFaultStop(void) { return 0U; }
 ABoxClockSnapshot TimeBase_GetSnapshot(void) {
- ABoxClockSnapshot s={utc_now, tick, 0U, 1U, ABOX_CLOCK_PLATFORM, time_trusted ? ABOX_CLOCK_SYNCHRONIZED : ABOX_CLOCK_UNTRUSTED}; return s;
+ ABoxClockSnapshot s={utc_now, tick, 0U, time_error, ABOX_CLOCK_PLATFORM, time_trusted ? ABOX_CLOCK_SYNCHRONIZED : ABOX_CLOCK_UNTRUSTED}; return s;
 }
 uint8_t TimeBase_FormatUtcMs(char* s, uint16_t n) { return (uint8_t)ABoxMqttV4_FormatInteger(s, n, utc_now); }
 uint8_t OTA_Info_LoadRemoteConfig(PatrolRemoteConfigV5_t* c) { if (valid) *c = flash; return valid; }
@@ -52,9 +53,10 @@ static void test_reboot_power_window(void)
     const uint64_t started = 1788838333000ULL;
     const char *packet = "{\"version\":\"4.0\",\"timestamp\":1788838333000,\"data\":{\"requestId\":\"reboot-window\","
         "\"command\":\"power_on\",\"expiresAt\":1788838338000,\"params\":null}}";
-    char first[512], response[512];
+    char first[512], response[512], fresh[512];
     utc_now = started; time_trusted = 1;
     VehiclePowerOutput_Init(write_power); RemoteService_Init();
+    tick += 8100;
     unsigned before = power_on_writes;
     assert(RemoteService_HandleControl(packet, (uint16_t)strlen(packet), first, sizeof(first)));
     assert(strstr(first, "\"code\":200") && power_level && power_on_writes == before + 1);
@@ -64,19 +66,49 @@ static void test_reboot_power_window(void)
     /* Full startup clears cache/outputs; its mandatory modem sequence is 11 s.
      * Host test simulates elapsed UTC, not a measured physical boot. */
     VehiclePowerOutput_Init(write_power); RemoteService_Init();
-    utc_now = started + 11000; time_trusted = 0;
+    utc_now = started + 2000; time_trusted = 0;
     assert(RemoteService_HandleControl(packet, (uint16_t)strlen(packet), response, sizeof(response)));
     assert(strstr(response, "\"code\":4003") && !power_level && power_on_writes == before + 1);
     time_trusted = 1;
     assert(RemoteService_HandleControl(packet, (uint16_t)strlen(packet), response, sizeof(response)));
-    assert(strstr(response, "\"code\":4005") && !power_level && power_on_writes == before + 1);
-    assert(strcmp(response, first)); /* Original result is lost, despite safe rejection. */
-    /* Artificial cache-only fast restart with trust retained CAN re-enable.
-     * It is not the current MCU reboot path; it bounds the residual risk. */
-    VehiclePowerOutput_Init(write_power); RemoteService_Init(); utc_now = started + 2000;
+    assert(strstr(response, "\"code\":4003") && !power_level && power_on_writes == before + 1);
+    const char *off = "{\"version\":\"4.0\",\"timestamp\":1788838335000,\"data\":{\"requestId\":\"off\",\"command\":\"power_off\",\"params\":null}}";
+    assert(RemoteService_HandleControl(off, (uint16_t)strlen(off), response, sizeof(response)));
+    assert(strstr(response, "\"code\":200") && !power_level);
+    tick += 8099; utc_now += 8099;
+    snprintf(fresh,sizeof(fresh),"{\"version\":\"4.0\",\"timestamp\":%llu,\"data\":{\"requestId\":\"fresh-after-reset\",\"command\":\"power_on\",\"expiresAt\":%llu,\"params\":null}}",(unsigned long long)utc_now,(unsigned long long)(utc_now+5000));
+    assert(RemoteService_HandleControl(fresh, (uint16_t)strlen(fresh), response, sizeof(response)));
+    assert(strstr(response, "\"code\":4003") && !power_level);
+    tick++; utc_now++;
     assert(RemoteService_HandleControl(packet, (uint16_t)strlen(packet), response, sizeof(response)));
+    assert(strstr(response, "\"code\":4005") && !power_level && power_on_writes == before + 1);
+    assert(strcmp(response, first)); /* No pre-reboot response is retained. */
+    assert(RemoteService_HandleControl(fresh, (uint16_t)strlen(fresh), response, sizeof(response)));
     assert(strstr(response, "\"code\":200") && power_level && power_on_writes == before + 2);
+    VehiclePowerOutput_Set(0);
+    snprintf(fresh,sizeof(fresh),"{\"version\":\"4.0\",\"timestamp\":%llu,\"data\":{\"requestId\":\"too-far\",\"command\":\"power_on\",\"expiresAt\":%llu,\"params\":null}}",(unsigned long long)(utc_now+2501),(unsigned long long)(utc_now+7501));
+    assert(RemoteService_HandleControl(fresh, (uint16_t)strlen(fresh), response, sizeof(response)));
+    assert(strstr(response, "\"code\":4003") && !power_level);
+    /* Worst trusted clock error can swing in the opposite direction across reboot. */
+    utc_now = 1788839000000ULL; time_error = ABOX_CLOCK_ERROR_LIMIT_MS;
+    snprintf(fresh,sizeof(fresh),"{\"version\":\"4.0\",\"timestamp\":%llu,\"data\":{\"requestId\":\"clock-bound\",\"command\":\"power_on\",\"expiresAt\":%llu,\"params\":null}}",(unsigned long long)(utc_now+2500),(unsigned long long)(utc_now+7500));
+    assert(RemoteService_HandleControl(fresh, (uint16_t)strlen(fresh), response, sizeof(response)));
+    assert(strstr(response, "\"code\":200") && power_level);
+    VehiclePowerOutput_Init(write_power); RemoteService_Init();
+    tick += 8100; utc_now += 7100;
+    assert(RemoteService_HandleControl(fresh, (uint16_t)strlen(fresh), response, sizeof(response)));
+    assert(strstr(response, "\"code\":4003") && !power_level);
+    time_error = 0U;
     assert(!RemoteService_State()->session_active && !RemoteService_State()->enable_request);
+    /* The startup guard also works across the 32-bit tick wrap. */
+    tick = UINT32_MAX - 3000U; VehiclePowerOutput_Init(write_power); RemoteService_Init();
+    snprintf(fresh,sizeof(fresh),"{\"version\":\"4.0\",\"timestamp\":%llu,\"data\":{\"requestId\":\"wrap-start\",\"command\":\"power_on\",\"expiresAt\":%llu,\"params\":null}}",(unsigned long long)utc_now,(unsigned long long)(utc_now+5000));
+    tick += 8099U;
+    assert(RemoteService_HandleControl(fresh, (uint16_t)strlen(fresh), response, sizeof(response)));
+    assert(strstr(response, "\"code\":4003") && !power_level);
+    tick++;
+    assert(RemoteService_HandleControl(fresh, (uint16_t)strlen(fresh), response, sizeof(response)));
+    assert(strstr(response, "\"code\":200") && power_level);
 }
 
 static void test_vid_validation(void)
@@ -239,6 +271,7 @@ int main(void)
     assert(PatrolMqttConfig_FromV5(PatrolConfig_Get(), &mqtt_runtime));
     assert(!strcmp(mqtt_runtime.host, flash.mqtt_host) && mqtt_runtime.port == flash.mqtt_port);
     RemoteService_Init();
+    tick += 8100;
     assert(RemoteService_HandleControl(power_on, (uint16_t)strlen(power_on), response, sizeof(response)));
     assert(power_level && strstr(response, "\"powerOutputOn\":true"));
     /* Expiry/quality do not change an accepted discrete request's replay. */

@@ -177,7 +177,7 @@ uint8_t PatrolRuntime_ResetFault(void)
     PatrolAutoCenter_Cancel(&g_motion.auto_center);
     g_motion.center_cal.phase=CENTER_CAL_IDLE; g_motion.center_cal.session_id[0]=0;
     g_motion.center_cal.encoder_write_state=0; g_motion.center_cal.fault=0;
-    RemoteService_Init(); /* No permit, enable, target or previous session survives. */
+    RemoteService_ResetMotion(); /* Revoke motion without discarding power replay protection. */
     fault_captured=0;
     PatrolFaultStop_Init(&fault_stop);
     PatrolRuntimePort_Exit(); return 1;

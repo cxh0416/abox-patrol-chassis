@@ -65,6 +65,7 @@ ChassisCloudStatus ChassisCloud_Parse(const char* payload, uint16_t length,
     cJSON *root, *version, *data, *request_id, *name, *params, *timestamp, *expires;
     cJSON *action, *session_id, *seq, *lease, *rpm, *angle;
     double steering_mdeg;
+    int32_t rounded_mdeg;
     ChassisCloudStatus status = CHASSIS_CLOUD_INVALID;
     if (command == 0) return status;
     memset(command, 0, sizeof(*command));
@@ -126,7 +127,10 @@ ChassisCloudStatus ChassisCloud_Parse(const char* payload, uint16_t length,
         angle->valuedouble < -((double)CHASSIS_MAX_STEERING_MDEG / 1000.0) ||
         angle->valuedouble > ((double)CHASSIS_MAX_STEERING_MDEG / 1000.0)) goto done;
     steering_mdeg = angle->valuedouble * 1000.0;
-    if (steering_mdeg != (double)(int32_t)steering_mdeg) goto done;
+    rounded_mdeg = (int32_t)(steering_mdeg + (steering_mdeg < 0.0 ? -0.5 : 0.5));
+    /* Compare the input binary64 with the exact millidegree value converted
+     * back to binary64; multiplication alone can introduce rounding error. */
+    if (angle->valuedouble != (double)rounded_mdeg / 1000.0) goto done;
     if (strcmp(command->action, "acquire") != 0 && strcmp(command->action, "renew") != 0 &&
         strcmp(command->action, "stop") != 0) {
         status = CHASSIS_CLOUD_UNSUPPORTED;
@@ -135,7 +139,7 @@ ChassisCloudStatus ChassisCloud_Parse(const char* payload, uint16_t length,
     command->seq = (uint32_t)seq->valuedouble;
     command->lease_ms = (uint32_t)lease->valuedouble;
     command->drive_rpm = (int16_t)rpm->valuedouble;
-    command->steering_mdeg = (int32_t)(angle->valuedouble * 1000.0);
+    command->steering_mdeg = rounded_mdeg;
     command->type = CHASSIS_CLOUD_COMMAND_MOTION;
     status = CHASSIS_CLOUD_OK;
 done:

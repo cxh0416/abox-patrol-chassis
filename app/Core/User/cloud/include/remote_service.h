@@ -25,6 +25,7 @@ void RemoteService_SafetyFault(ChassisStopReason reason);
 void RemoteService_CompleteFaultStop(void);
 // 初始化共享远控仲裁及请求缓存。根据 Config V5 填入标定有效性，保留内部行走禁用位并清空会话和重放记录；不会自动使能。
 void RemoteService_Init(void);
+void RemoteService_ResetMotion(void);
 // 在远控任务上下文中推进安全检查。未初始化时返回，实验保持状态受编译开关限制；正常路径持临界区调用安全周期处理。
 void RemoteService_Task(void);
 // 按指定单调时间推进控制层安全与租约状态。通过可嵌套临界区串行化控制状态，调用统一底盘 Tick 处理门禁、租约和换向确认。
