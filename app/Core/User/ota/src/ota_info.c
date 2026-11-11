@@ -7,6 +7,7 @@
 #include "main.h"
 
 _Static_assert(sizeof(OTA_Info_t) <= OTA_INFO_PAGE_SIZE, "OTA info must fit in one flash page");
+_Static_assert(offsetof(OTA_Info_t, reserved) % 4U == 0U, "ledger marker must be word aligned");
 _Static_assert(sizeof(PatrolRemoteConfigV5_t) == 400U, "Patrol Config V5 layout changed");
 _Static_assert(offsetof(PatrolRemoteConfigV5_t, mqtt_tls_enabled) == 396U,
                "Patrol Config V5 TLS enabled offset changed");
@@ -68,6 +69,7 @@ static uint8_t config_valid(const PatrolRemoteConfigV5_t* cfg)
 _Static_assert(sizeof(OTA_Info_t) <= 1024U, "configuration overlaps fault journal");
 #define CONFIG_RECOVERY_MAGIC 0x43524631U /* CRF1 */
 #define CONFIG_RECOVERY_COMMIT 0x434F4D31U /* COM1 */
+#define POWER_LEDGER_MARKER 0x504C4D31U /* PLM1 */
 
 typedef struct
 {
@@ -242,9 +244,11 @@ static uint8_t ota_info_write_raw_unlocked(const OTA_Info_t* info)
     uint32_t address = OTA_INFO_ADDR;
     uint32_t count;
     uint32_t i;
+    uint32_t marker[2];
 
     if (info == 0) return 0U;
     if (!recovery_restore_if_needed()) return 0U;
+    memcpy(marker, ((const OTA_Info_t*)OTA_INFO_ADDR)->reserved, sizeof(marker));
     have_fault = fault_load_direct(&saved_fault);
 
     memset(&recovery, 0xFF, sizeof(recovery));
@@ -282,7 +286,13 @@ static uint8_t ota_info_write_raw_unlocked(const OTA_Info_t* info)
     }
     for (i = 0U; i < count; i++)
     {
-        status = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, address, words[i]);
+        uint32_t value = words[i];
+        const uint32_t marker_word = (uint32_t)(offsetof(OTA_Info_t, reserved) / 4U);
+        /* Only the dedicated marker operation may change these words.
+         * A stale or caller-created configuration snapshot must not create,
+         * clear or replace a marker, including when the page is virgin. */
+        if (i >= marker_word && i < marker_word + 2U) value = marker[i - marker_word];
+        status = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, address, value);
         if (status != HAL_OK)
         {
             HAL_FLASH_Lock();
@@ -319,12 +329,61 @@ void OTA_Info_Load(OTA_Info_t* info) { ota_info_read_raw(info); }
 // 将 OTA 信息结构保存到共享配置页。复用受保护的页更新流程，不可在不满足存储安全前提的上下文调用。
 uint8_t OTA_Info_Save(const OTA_Info_t* info) { return ota_info_write_raw(info); }
 
-// 将 OTA_Info_t 全部置为擦除值并写回配置页。会同时清除该结构内的 Config V5、TLS 凭据和 OTA 字段，不能当作仅清 OTA 请求；不擦 Boot State 或整片 Flash。
+// 清除 Config V5、TLS 凭据和 OTA 字段；账本标记保持原值，不擦 Boot State 或整片 Flash。
 uint8_t OTA_Info_Clear(void)
 {
     OTA_Info_t info;
     memset(&info, 0xFF, sizeof(info));
     return ota_info_write_raw(&info);
+}
+
+static int power_ledger_marker_value(const uint32_t marker[2])
+{
+    if (marker[0] == UINT32_MAX && marker[1] == UINT32_MAX) return 0;
+    if (marker[0] == POWER_LEDGER_MARKER && marker[1] == ~POWER_LEDGER_MARKER) return 1;
+    return -1;
+}
+
+int OTA_Info_PowerLedgerMarker(void)
+{
+    uint32_t marker[2]; int result = -1;
+    if (__atomic_test_and_set(&info_write_busy, __ATOMIC_ACQUIRE)) return -1;
+    if (recovery_restore_if_needed()) {
+        memcpy(marker, ((const OTA_Info_t*)OTA_INFO_ADDR)->reserved, sizeof(marker));
+        result = power_ledger_marker_value(marker);
+    }
+    __atomic_clear(&info_write_busy, __ATOMIC_RELEASE);
+    return result;
+}
+
+int OTA_Info_MarkPowerLedgerInitialized(void)
+{
+    uint32_t marker[2]; int result = 0;
+    const uint16_t expected[4] = {
+        (uint16_t)POWER_LEDGER_MARKER, (uint16_t)(POWER_LEDGER_MARKER >> 16U),
+        (uint16_t)~POWER_LEDGER_MARKER, (uint16_t)(~POWER_LEDGER_MARKER >> 16U)
+    };
+    const uint32_t address = OTA_INFO_ADDR + (uint32_t)offsetof(OTA_Info_t, reserved);
+    if (__atomic_test_and_set(&info_write_busy, __ATOMIC_ACQUIRE)) return 0;
+    if (!recovery_restore_if_needed()) goto done;
+    for (uint32_t i=0U; i<4U; ++i) {
+        uint16_t value = *(const volatile uint16_t*)(address + i * 2U);
+        if (value != UINT16_MAX && value != expected[i]) goto done;
+    }
+    HAL_FLASH_Unlock();
+    for (uint32_t i=0U; i<4U; ++i) {
+        if (*(const volatile uint16_t*)(address + i * 2U) == expected[i]) continue;
+        if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, address + i * 2U, expected[i]) != HAL_OK ||
+            *(const volatile uint16_t*)(address + i * 2U) != expected[i]) {
+            HAL_FLASH_Lock(); goto done;
+        }
+    }
+    HAL_FLASH_Lock();
+    memcpy(marker, ((const OTA_Info_t*)OTA_INFO_ADDR)->reserved, sizeof(marker));
+    result = power_ledger_marker_value(marker) == 1;
+done:
+    __atomic_clear(&info_write_busy, __ATOMIC_RELEASE);
+    return result;
 }
 
 // 从配置页载入校验通过的 Config V5。仅在格式与校验均合法时复制到 cfg，失败由上层决定使用未标定默认值。

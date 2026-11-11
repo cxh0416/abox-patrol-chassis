@@ -63,8 +63,13 @@ uint8_t OTA_Info_SaveMqttSnapshot(const PatrolRemoteConfigV5_t* cfg, const ABoxT
 void OTA_Info_Load(OTA_Info_t* info);
 // 将 OTA 信息结构保存到共享配置页。复用受保护的页更新流程，不可在不满足存储安全前提的上下文调用。
 uint8_t OTA_Info_Save(const OTA_Info_t* info);
-// 将 OTA_Info_t 全部置为擦除值并写回配置页。会同时清除该结构内的 Config V5、TLS 凭据和 OTA 字段，不能当作仅清 OTA 请求；不擦 Boot State 或整片 Flash。
+// 清除 Config V5、TLS 凭据和 OTA 字段；已使用或异常的幂等标记保持原值，不能当作仅清 OTA 请求。
 uint8_t OTA_Info_Clear(void);
+
+/* 0 erased/virgin, 1 initialized, -1 damaged or storage unavailable.
+ * Mark only after both ledger copies are valid and verified. */
+int OTA_Info_PowerLedgerMarker(void);
+int OTA_Info_MarkPowerLedgerInitialized(void);
 
 // 从配置页载入校验通过的 Config V5。仅在格式与校验均合法时复制到 cfg，失败由上层决定使用未标定默认值。
 uint8_t OTA_Info_LoadRemoteConfig(PatrolRemoteConfigV5_t* cfg);

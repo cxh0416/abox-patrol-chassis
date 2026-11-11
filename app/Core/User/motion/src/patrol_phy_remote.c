@@ -43,6 +43,8 @@ static void stop_remote(uint32_t now_ms)
 // 将 T12 有符号摇杆量换算为转向目标。按满量程 450 映射到正负 25000 mdeg，并钳位异常超幅输入。
 static int32_t map_steering(int16_t raw)
 {
+    // 与防撞恢复使用同一中位死区，避免确认回中后把微小漂移重新解释为转向动作。
+    if (raw >= -CHASSIS_COLLISION_NEUTRAL_RAW && raw <= CHASSIS_COLLISION_NEUTRAL_RAW) return 0;
     int32_t value = ((int32_t)raw * PATROL_PHY_REMOTE_MAX_ANGLE_MDEG) /
                     PATROL_PHY_REMOTE_FULL_SCALE;
     if (value > PATROL_PHY_REMOTE_MAX_ANGLE_MDEG) value = PATROL_PHY_REMOTE_MAX_ANGLE_MDEG;
@@ -53,6 +55,7 @@ static int32_t map_steering(int16_t raw)
 // 将 T12 油门摇杆量换算为车体目标转速。按满量程 450 映射到 CHASSIS_MAX_RPM，输出钳位于当前正负 2000 rpm 上限。
 static int16_t map_rpm(int16_t raw)
 {
+    if (raw >= -CHASSIS_COLLISION_NEUTRAL_RAW && raw <= CHASSIS_COLLISION_NEUTRAL_RAW) return 0;
     int32_t value = ((int32_t)raw * PATROL_PHY_REMOTE_MAX_RPM) /
                     PATROL_PHY_REMOTE_FULL_SCALE;
     if (value > PATROL_PHY_REMOTE_MAX_RPM) value = PATROL_PHY_REMOTE_MAX_RPM;
@@ -82,6 +85,22 @@ uint8_t PatrolPhyRemote_OnFrame(const PatrolCanFrame* frame, uint32_t received_m
     /* Reject queued old switch frames before updating enable state. */
     if (frame->dlc != 8U || (uint32_t)(now_ms - received_ms) > 100U)
         return 1U;
+
+    if (RemoteService_State()->feedback.motion_inhibited) {
+        /* Maintenance owns power. Require a new OFF/ON edge after it exits. */
+        armed = powered_by_remote = 0U;
+        power_off_deadline_ms = 0U;
+        switch_seen |= 2U; /* bit 1: require a new release after maintenance */
+        if (frame->id == PATROL_PHY_REMOTE_SWITCH_ID) {
+            switch_seen = 3U; last_switch_ms = received_ms; last_enable = frame->data[2];
+        }
+        return 1U;
+    }
+    if ((switch_seen & 2U) != 0U) {
+        if (frame->id != PATROL_PHY_REMOTE_SWITCH_ID || frame->data[2] != 0U) return 1U;
+        switch_seen = 1U;
+        last_enable = 0U;
+    }
 
     if (frame->id == PATROL_PHY_REMOTE_SWITCH_ID) {
         if (frame->dlc == 8U) {
@@ -124,15 +143,17 @@ uint8_t PatrolPhyRemote_OnFrame(const PatrolCanFrame* frame, uint32_t received_m
     }
 
     if (frame->id == PATROL_PHY_REMOTE_JOYSTICK_ID) {
+        int16_t raw_steer = (int16_t)((uint16_t)frame->data[0] | ((uint16_t)frame->data[1] << 8));
+        int16_t raw_throttle = (int16_t)((uint16_t)frame->data[4] | ((uint16_t)frame->data[5] << 8));
+        // 未接管时也可完成防撞回中确认，但必须是 A 开启且开关流新鲜的实体手柄。
+        if (last_enable && switch_seen == 1U &&
+            (uint32_t)(now_ms - last_switch_ms) < PATROL_PHY_REMOTE_LEASE_MS)
+            RemoteService_CollisionJoystick(raw_steer, raw_throttle, received_ms, now_ms);
         if (frame->dlc == 8U && armed) {
             if (!switch_seen || (uint32_t)(now_ms - last_switch_ms) >= PATROL_PHY_REMOTE_LEASE_MS) {
                 stop_remote(now_ms);
                 return 1U;
             }
-            int16_t raw_steer = (int16_t)((uint16_t)frame->data[0] |
-                                         ((uint16_t)frame->data[1] << 8));
-            int16_t raw_throttle = (int16_t)((uint16_t)frame->data[4] |
-                                            ((uint16_t)frame->data[5] << 8));
             if (!RemoteService_ApplyLocal("renew", PATROL_PHY_REMOTE_SESSION,
                                           ++control_seq, PATROL_PHY_REMOTE_LEASE_MS,
                                           map_rpm(raw_throttle), map_steering(raw_steer),
@@ -150,6 +171,12 @@ uint8_t PatrolPhyRemote_OnFrame(const PatrolCanFrame* frame, uint32_t received_m
 void PatrolPhyRemote_Tick(uint32_t now_ms, uint8_t transport_healthy)
 {
     const ChassisControl* c;
+    if (RemoteService_State()->feedback.motion_inhibited) {
+        armed = powered_by_remote = 0U;
+        power_off_deadline_ms = 0U;
+        switch_seen |= 2U;
+        return;
+    }
     if (power_off_deadline_ms != 0U &&
         (int32_t)(now_ms - power_off_deadline_ms) >= 0) {
         (void)VehiclePowerOutput_Set(0U);

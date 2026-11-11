@@ -14,26 +14,10 @@
 #include "vehicle_power_output.h"
 #include "center_calibration.h"
 #include "patrol_runtime.h"
+#include "ota_service.h"
 #include <stdlib.h>
 #include "FreeRTOS.h"
 #include "task.h"
-
-/* 私有 RAM 缓存按 4 字节对齐，去除每槽尾部 4 字节填充；64 位时间、4 槽及 64 字符 requestId 均保留。 */
-typedef struct __attribute__((packed, aligned(4))) {
-    uint64_t expires_at, protect_until, protect_mono;
-    uint16_t code;
-    uint8_t power_on;
-    char request_id[65];
-} ABoxPowerReplay;
-_Static_assert(sizeof(ABoxPowerReplay) == 92U, "Power replay RAM budget changed");
-static ABoxPowerReplay g_power_replay[4];
-
-/* An ON admitted before reset expires within this bounded interval. The
- * normal modem startup sequence itself takes 11 seconds. */
-#define POWER_ON_MAX_FUTURE_MS 7500U
-#define POWER_ON_BOOT_GUARD_MS (POWER_ON_MAX_FUTURE_MS + ABOX_CLOCK_ERROR_LIMIT_MS + 100U)
-static uint32_t g_power_boot_tick;
-static uint8_t g_power_boot_guard;
 
 static uint8_t g_remote_initialized;
 static ChassisControl g_control;
@@ -49,6 +33,7 @@ static uint8_t g_lab_hold_state;
 // 在临界区撤销共享控制会话和运动目标。清除使能、会话标识、行走和转向目标；只操作控制状态，驱动器停车由运动任务推进。
 void RemoteService_Revoke(void)
 {
+    VehiclePowerOutput_CancelPendingOn();
     taskENTER_CRITICAL();
     g_control.enable_request = 0; g_control.session_active = 0;
     g_control.target_rpm = 0; g_control.requested_rpm = 0;
@@ -102,12 +87,14 @@ void RemoteService_LabSeedNetworkState(void)
 // 将执行失败交给先撤使能后锁存的统一流程；pending 阶段已拒绝新运动，既有首因不会被派生错误覆盖。
 void RemoteService_ExecutionFault(void)
 {
+    VehiclePowerOutput_CancelPendingOn();
     taskENTER_CRITICAL();
     ChassisControl_RequestFault(&g_control, CHASSIS_STOP_EXECUTION_FAULT);
     taskEXIT_CRITICAL();
 }
 void RemoteService_SafetyFault(ChassisStopReason reason)
 {
+    VehiclePowerOutput_CancelPendingOn();
     taskENTER_CRITICAL();
     ChassisControl_RequestFault(&g_control, reason);
     taskEXIT_CRITICAL();
@@ -125,20 +112,30 @@ static void remote_service_init(uint8_t clear_power_replay)
     const PatrolRemoteConfigV5_t* cfg = PatrolConfig_Get();
     ChassisFeedback feedback = {0};
     uint8_t drive_brake = g_control.drive_brake;
+    VehiclePowerOutput_CancelPendingOn();
+    uint8_t maintenance = g_control.feedback.motion_inhibited;
+    uint8_t collision = g_control.collision;
+    uint32_t collision_at = g_control.reversal_started_ms, joystick_at = g_control.last_zero_feedback_ms;
+    int32_t collision_angle = g_control.target_steering_mdeg;
     ChassisControl_Init(&g_control);
+    /* Software fault reset must not bypass an unfinished physical collision recovery. */
+    g_control.collision = collision;
+    if (ChassisControl_CollisionBlocked(&g_control)) {
+        g_control.reversal_started_ms = collision_at;
+        g_control.last_zero_feedback_ms = joystick_at;
+        g_control.target_steering_mdeg = collision_angle;
+        g_control.auto_center_inhibited = 1U;
+    }
     ChassisControl_SetFaultStopHandler(&g_control, PatrolRuntime_RequestFaultStop);
     /* Fault reset/reinitialization cannot release a physical brake switch. */
     ChassisControl_SetDriveBrake(&g_control, drive_brake);
     feedback.calibrated = cfg != 0 && cfg->calibrated && PatrolConfig_CalibrationCompatible();
+    feedback.motion_inhibited = maintenance;
     feedback.feedback_ms = HAL_GetTick();
     ChassisControl_SetFeedback(&g_control, &feedback);
     g_last_request_id[0] = '\0';
     g_last_response[0] = '\0';
-    if (clear_power_replay) {
-        memset(g_power_replay, 0, sizeof(g_power_replay));
-        g_power_boot_tick = HAL_GetTick();
-        g_power_boot_guard = 1U;
-    }
+    (void)clear_power_replay;
     g_remote_initialized = 1U;
     APP_LOGI("REMOTE", "initialized calibrated=%u; outputs gated",
              (unsigned int)feedback.calibrated);
@@ -151,8 +148,6 @@ void RemoteService_ResetMotion(void) { remote_service_init(0U); }
 void RemoteService_Task(void)
 {
     if (!g_remote_initialized) return;
-    if (g_power_boot_guard && (uint32_t)(HAL_GetTick() - g_power_boot_tick) >= POWER_ON_BOOT_GUARD_MS)
-        g_power_boot_guard = 0U;
 #if PATROL_CHASSIS_MQTT_LAB_TEST
     if (g_lab_hold_state) return;
 #endif
@@ -173,7 +168,23 @@ void RemoteService_SafetyTick(uint32_t now_ms)
 // 向已初始化的控制层发布最新反馈快照。空指针被忽略；上层须按运行层并发约定组织一致快照与访问保护。
 void RemoteService_UpdateFeedback(const ChassisFeedback* feedback)
 {
-    if (g_remote_initialized && feedback != 0) ChassisControl_SetFeedback(&g_control, feedback);
+    if (g_remote_initialized && feedback != 0) {
+        ChassisFeedback next = *feedback;
+        /* A snapshot taken before PREPARE must not release its atomic gate. */
+        next.motion_inhibited |= g_control.feedback.motion_inhibited;
+        ChassisControl_SetFeedback(&g_control, &next);
+    }
+}
+
+void RemoteService_SetMaintenance(uint8_t active)
+{
+    taskENTER_CRITICAL();
+    g_control.feedback.motion_inhibited = active ? 1U : 0U;
+    if (active) {
+        RemoteService_Revoke();
+        g_control.auto_center_inhibited = 1U;
+    }
+    taskEXIT_CRITICAL();
 }
 
 // 设置受临界区保护的内部行走禁用位。只限制行走并取消待换向目标，不撤销转向会话；当前 T12 B 键不调用此接口。
@@ -181,6 +192,27 @@ void RemoteService_SetDriveBrake(uint8_t active)
 {
     taskENTER_CRITICAL();
     ChassisControl_SetDriveBrake(&g_control, active);
+    taskEXIT_CRITICAL();
+}
+
+void RemoteService_CollisionInputs(uint8_t contacts, uint8_t valid, uint32_t now_ms)
+{
+    taskENTER_CRITICAL();
+    ChassisControl_CollisionInputs(&g_control, contacts, valid, now_ms);
+    taskEXIT_CRITICAL();
+}
+
+void RemoteService_CollisionJoystick(int16_t steer, int16_t throttle, uint32_t received_ms, uint32_t now_ms)
+{
+    taskENTER_CRITICAL();
+    ChassisControl_CollisionJoystick(&g_control, steer, throttle, received_ms, now_ms);
+    taskEXIT_CRITICAL();
+}
+
+void RemoteService_CollisionBrakeProcessed(uint8_t stopped)
+{
+    taskENTER_CRITICAL();
+    ChassisControl_CollisionBrakeProcessed(&g_control, stopped);
     taskEXIT_CRITICAL();
 }
 
@@ -192,6 +224,7 @@ uint8_t RemoteService_ApplyLocal(const char* action, const char* session_id,
     if (!g_remote_initialized || action == NULL || session_id == NULL || !session_id[0]) return 0U;
     taskENTER_CRITICAL();
     if (!strcmp(action, "stop")) {
+        VehiclePowerOutput_CancelPendingOn();
         accepted = ChassisControl_Apply(&g_control, action, session_id, seq, lease_ms,
                                         rpm, steering_mdeg, now_ms);
     } else if (!CenterCalibration_IsActive() &&
@@ -216,9 +249,8 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
     char steering_value[24];
     int written;
     uint8_t request_conflict = 0U;
-    uint8_t stop_applied = 0U, power_cached = 0U;
+    uint8_t stop_applied = 0U;
     uint8_t digest[32];
-    int power_slot = -1;
     ABoxClockSnapshot clock = TimeBase_GetSnapshot();
     if (!g_remote_initialized || payload == 0 || response == 0 || size == 0U) return 0U;
     parse_status = ChassisCloud_Parse(payload, length, &command);
@@ -228,6 +260,7 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
     /* A valid safety stop takes effect even on replay or requestId conflict. */
     if (parse_status == CHASSIS_CLOUD_OK && command.type == CHASSIS_CLOUD_COMMAND_MOTION &&
         strcmp(command.action, "stop") == 0) {
+        VehiclePowerOutput_CancelPendingOn();
         taskENTER_CRITICAL();
         stop_applied = ChassisControl_Apply(&g_control, command.action, command.session_id,
             command.seq, command.lease_ms, command.drive_rpm,
@@ -238,24 +271,6 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
     if (parse_status == CHASSIS_CLOUD_OK && command.type == CHASSIS_CLOUD_COMMAND_POWER_OFF) {
         RemoteService_Revoke();
         (void)VehiclePowerOutput_Set(0U);
-    }
-    if (parse_status == CHASSIS_CLOUD_OK) {
-        for (unsigned i=0; i<4; ++i) {
-            ABoxPowerReplay *e = &g_power_replay[i];
-            if (e->request_id[0] && !strcmp(e->request_id,command.request_id)) {
-                uint8_t original_digest[32];
-                if (command.type != CHASSIS_CLOUD_COMMAND_POWER_ON ||
-                    !ABoxMqttDigest_NullRequest("power_on", 1, e->expires_at, original_digest) ||
-                    memcmp(digest, original_digest, sizeof(digest))) {
-                    code = 4006U; message = "requestId conflict"; request_conflict = 1U;
-                } else { code = e->code; message = code == 200U ? "operation accepted" : "power output unavailable";
-                         power_cached = 1U; power_slot = (int)i; }
-                goto format_response;
-            }
-            if (!e->request_id[0] || (clock.quality == ABOX_CLOCK_SYNCHRONIZED &&
-                clock.mono_ms >= e->protect_mono && clock.utc_ms >= clock.error_ms &&
-                clock.utc_ms - clock.error_ms >= e->protect_until)) power_slot = (int)i;
-        }
     }
     if (strcmp(command.request_id, g_last_request_id) == 0 && g_last_response[0] != '\0')
     {
@@ -280,23 +295,17 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
             command.type == CHASSIS_CLOUD_COMMAND_POWER_OFF)
         {
             uint8_t target_on = command.type == CHASSIS_CLOUD_COMMAND_POWER_ON ? 1U : 0U;
+            if (target_on && g_control.feedback.motion_inhibited) {
+                code = 4003U; message = "maintenance session busy"; goto format_response;
+            }
             if (command.has_expires_at && (code = ABoxMqttV4_CheckExpiry(&clock, command.expires_at)) != 200U) {
                 message = code == 4003U ? "trusted time unavailable" : "request expired";
                 goto format_response;
             }
+            /* Valid ON requests are owned by the asynchronous durable ledger.
+             * Never allow a direct caller to bypass its reservation. */
             if (target_on) {
-                if (g_power_boot_guard && (uint32_t)(HAL_GetTick() - g_power_boot_tick) >= POWER_ON_BOOT_GUARD_MS)
-                    g_power_boot_guard = 0U;
-                if (g_power_boot_guard) {
-                    code = 4003U; message = "power startup guard"; goto format_response;
-                }
-                if (clock.error_ms > ABOX_CLOCK_ERROR_LIMIT_MS ||
-                    command.expires_at - clock.utc_ms > POWER_ON_MAX_FUTURE_MS) {
-                    code = 4003U; message = "power expiry too far ahead"; goto format_response;
-                }
-            }
-            if (target_on && power_slot < 0) {
-                code = 4003U; message = "idempotency cache full"; goto format_response;
+                code = 4003U; message = "power ledger required"; goto format_response;
             }
             if (!target_on) RemoteService_Revoke();
             if (!VehiclePowerOutput_IsAvailable()) {
@@ -312,15 +321,6 @@ uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* 
                 accepted = 1U;
                 code = 200U;
                 message = "operation accepted";
-            }
-            if (target_on) {
-                ABoxPowerReplay *e = &g_power_replay[power_slot];
-                strcpy(e->request_id,command.request_id); e->expires_at=command.expires_at;
-                e->protect_until=ABoxMqttV4_IdempotencyProtectUntil(command.expires_at);
-                uint64_t lower=clock.utc_ms > clock.error_ms ? clock.utc_ms-clock.error_ms : 0U;
-                uint64_t remaining=e->protect_until > lower ? e->protect_until-lower : 0U;
-                e->protect_mono=UINT64_MAX-clock.mono_ms < remaining ? UINT64_MAX : clock.mono_ms+remaining;
-                e->code=code; e->power_on=VehiclePowerOutput_IsOn();
             }
             goto format_response;
         }
@@ -368,7 +368,7 @@ format_response:
             "{\"version\":\"4.0\",\"timestamp\":%s,\"data\":{"
             "\"requestId\":\"%s\",\"code\":%u,\"msg\":\"%s\",\"result\":{\"powerOutputOn\":%s}}}",
             timestamp, command.request_id, (unsigned int)code, message,
-            (power_cached ? g_power_replay[power_slot].power_on : VehiclePowerOutput_IsOn()) ? "true" : "false");
+            VehiclePowerOutput_IsOn() ? "true" : "false");
     else
         written = snprintf(response, size,
             "{\"version\":\"4.0\",\"timestamp\":%s,\"data\":{"
@@ -384,6 +384,28 @@ format_response:
         if ((size_t)written < sizeof(g_last_response)) strcpy(g_last_response, response);
     }
     return 1U;
+}
+
+uint8_t RemoteService_HasCachedRequest(const char *request_id)
+{
+    return request_id && g_last_response[0] && !strcmp(g_last_request_id, request_id);
+}
+
+/* Called only after durable reservation. No task may interleave a local OFF
+ * between the generation check and the output command. */
+int RemoteService_PowerOnPrepared(uint32_t generation, uint8_t *power_on)
+{
+    int result;
+    if (!power_on) return -1;
+    taskENTER_CRITICAL();
+    if (!g_remote_initialized || g_control.feedback.motion_inhibited ||
+        VehiclePowerOutput_StopGeneration() != generation || OtaService_IsBusy()) result = -2;
+    else if (!VehiclePowerOutput_IsAvailable()) result = 0;
+    else if (!VehiclePowerOutput_Set(1U)) result = -1;
+    else { g_control.auto_center_inhibited = 0U; result = 1; }
+    *power_on = VehiclePowerOutput_IsOn();
+    taskEXIT_CRITICAL();
+    return result;
 }
 
 // 返回共享底盘控制上下文的只读视图。指针指向模块静态存储，会被其他任务更新；跨字段一致性读取需遵守临界区约定，不得保存为独立历史快照。

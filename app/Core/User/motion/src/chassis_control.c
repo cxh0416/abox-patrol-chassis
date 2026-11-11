@@ -6,6 +6,78 @@
 
 // 提取车体目标转速的方向符号。只区分前进、后退和零速，不涉及左右轮镜像安装方向；返回 1、-1 或 0。
 static int8_t direction_of(int16_t rpm) { return (rpm > 0) ? 1 : ((rpm < 0) ? -1 : 0); }
+
+uint8_t ChassisControl_CollisionBlocked(const ChassisControl* c)
+{
+    return (c->collision & CHASSIS_COLLISION_MONITORED) &&
+        (!(c->collision & CHASSIS_COLLISION_VALID) ||
+         (c->collision & (CHASSIS_COLLISION_PHASE_MASK | CHASSIS_COLLISION_BRAKING)));
+}
+
+// 碰撞等待期间复用换向计时字段；两者互斥，最后非零方向仍保留，恢复后不能绕过换向确认。
+static void collision_zero(ChassisControl* c)
+{
+    c->target_rpm = c->requested_rpm = 0;
+    c->reversal_pending = c->zero_confirmations = 0U;
+    c->auto_center_inhibited = 1U;
+}
+
+void ChassisControl_CollisionInputs(ChassisControl* c, uint8_t contacts, uint8_t valid, uint32_t now)
+{
+    uint8_t previous = c->collision;
+    contacts &= CHASSIS_COLLISION_FRONT | CHASSIS_COLLISION_REAR;
+    c->collision = (uint8_t)((previous & (uint8_t)~7U) | CHASSIS_COLLISION_MONITORED |
+        (valid ? CHASSIS_COLLISION_VALID | contacts : previous & 3U));
+    if ((valid && (contacts & (uint8_t)~previous & 3U)) ||
+        (!valid && (previous & CHASSIS_COLLISION_VALID))) {
+        c->collision = (uint8_t)((c->collision & (uint8_t)~CHASSIS_COLLISION_PHASE_MASK) |
+            CHASSIS_COLLISION_DELAY | CHASSIS_COLLISION_BRAKING | CHASSIS_COLLISION_PENDING);
+        c->reversal_started_ms = now;
+        c->last_zero_feedback_ms = now;
+        /* Hold the measured steering position, never turn a collision into an automatic return to zero. */
+        c->target_steering_mdeg = c->feedback.steering_actual_mdeg;
+    }
+    if (ChassisControl_CollisionBlocked(c)) collision_zero(c);
+}
+
+void ChassisControl_CollisionJoystick(ChassisControl* c, int16_t steer, int16_t throttle,
+                                    uint32_t received, uint32_t now)
+{
+    uint8_t phase = c->collision & CHASSIS_COLLISION_PHASE_MASK;
+    if (!phase || (uint32_t)(now - received) > CHASSIS_COLLISION_SAMPLE_MS) return;
+    if ((int32_t)(received - c->last_zero_feedback_ms) < 0) return;
+    if (phase == CHASSIS_COLLISION_DELAY) {
+        if ((int32_t)(received - c->reversal_started_ms) < (int32_t)CHASSIS_COLLISION_IGNORE_MS) return;
+        phase = CHASSIS_COLLISION_WAIT_NEUTRAL;
+    }
+    if (abs(steer) > CHASSIS_COLLISION_NEUTRAL_RAW || abs(throttle) > CHASSIS_COLLISION_NEUTRAL_RAW) {
+        c->collision = (uint8_t)((c->collision & (uint8_t)~CHASSIS_COLLISION_PHASE_MASK) |
+            CHASSIS_COLLISION_WAIT_NEUTRAL);
+        return;
+    }
+    if (phase != CHASSIS_COLLISION_NEUTRAL_TIMING ||
+        (uint32_t)(received - c->last_zero_feedback_ms) > CHASSIS_COLLISION_SAMPLE_MS) {
+        c->reversal_started_ms = received;
+        c->collision = (uint8_t)((c->collision & (uint8_t)~CHASSIS_COLLISION_PHASE_MASK) |
+            CHASSIS_COLLISION_NEUTRAL_TIMING);
+    }
+    c->last_zero_feedback_ms = received;
+    if ((uint32_t)(received - c->reversal_started_ms) > CHASSIS_COLLISION_NEUTRAL_MS)
+        c->collision &= (uint8_t)~CHASSIS_COLLISION_PHASE_MASK;
+}
+
+void ChassisControl_CollisionBrakeProcessed(ChassisControl* c, uint8_t stopped_now)
+{
+    c->collision &= (uint8_t)~CHASSIS_COLLISION_PENDING;
+    if (stopped_now) c->collision &= (uint8_t)~CHASSIS_COLLISION_BRAKING;
+}
+
+static int16_t collision_rpm(const ChassisControl* c, int16_t rpm)
+{
+    if ((rpm > 0 && (c->collision & CHASSIS_COLLISION_FRONT)) ||
+        (rpm < 0 && (c->collision & CHASSIS_COLLISION_REAR))) return 0;
+    return rpm;
+}
 // 判断左右驱动轮是否都已进入停车确认范围。两轮实测转速绝对值均不超过 20 rpm 才成立；本函数不计数，连续三次确认由调用方负责。
 static uint8_t stopped(const ChassisFeedback* feedback)
 {
@@ -90,13 +162,15 @@ void ChassisControl_SetFeedback(ChassisControl* control, const ChassisFeedback* 
 // 检查驱动器与绝对编码器角度是否均处于硬保护范围。采用 64 位绝对值运算处理符号边界；硬范围由转向配置常量决定，不等同于普通目标软限位。
 static uint8_t steering_hard_range(const ChassisFeedback* f)
 {
-    return llabs((int64_t)f->steering_actual_mdeg)<=VEHICLE_STEERING_TRIP_MDEG &&
+    return (f->steering_angle_unavailable ||
+            llabs((int64_t)f->steering_actual_mdeg)<=VEHICLE_STEERING_TRIP_MDEG) &&
            llabs((int64_t)f->encoder_actual_mdeg)<=VEHICLE_STEERING_TRIP_MDEG;
 }
 // 更新转向边界保持状态并限制越界方向目标。触边时禁止行走、取消换向并将转向目标限制到恢复角度；仅在允许清除且请求与双反馈均回到恢复范围时解除。
 static void steering_boundary(ChassisControl* c, int32_t requested, uint8_t allow_clear)
 {
     const ChassisFeedback* f=&c->feedback;
+    if (f->steering_angle_unavailable || f->motion_inhibited) return;
     if (f->steering_actual_mdeg>CHASSIS_MAX_STEERING_MDEG || f->encoder_actual_mdeg>CHASSIS_MAX_STEERING_MDEG)
         c->steering_boundary=1;
     else if (f->steering_actual_mdeg<-CHASSIS_MAX_STEERING_MDEG || f->encoder_actual_mdeg<-CHASSIS_MAX_STEERING_MDEG)
@@ -141,6 +215,7 @@ ChassisStopReason ChassisControl_SafetyReason(const ChassisControl* control, uin
     if (!f->calibrated) return CHASSIS_STOP_UNCALIBRATED;
     if (!f->encoder_profile_ready) return CHASSIS_STOP_ENCODER_PROFILE;
     if (!f->encoder_range_valid || !steering_hard_range(f)) return CHASSIS_STOP_ENCODER_RANGE;
+    if (f->steering_angle_unavailable || f->motion_inhibited) return CHASSIS_STOP_POWER_NOT_READY;
     if (!f->power_ready) return CHASSIS_STOP_POWER_NOT_READY;
     return CHASSIS_STOP_NONE;
 }
@@ -163,6 +238,13 @@ uint8_t ChassisControl_Apply(ChassisControl* control, const char* action, const 
     if (control->fault_latched || control->fault_pending) return 0U;
     if (lease_ms == 0U || lease_ms > CHASSIS_MAX_LEASE_MS || abs(drive_rpm) > CHASSIS_MAX_RPM ||
         labs(steering_mdeg) > CHASSIS_MAX_STEERING_MDEG) return 0U;
+    /* Rejected startup/maintenance requests must not create a session owner. */
+    ChassisStopReason safety = ChassisControl_SafetyReason(control, now_ms);
+    if (safety != CHASSIS_STOP_NONE) {
+        force_stop(control, safety, 0U);
+        return 0U;
+    }
+    if (ChassisControl_CollisionBlocked(control) && !control->session_active) return 0U;
     if (strcmp(action, "acquire") == 0) {
         if (control->session_active && strcmp(control->session_id, session_id) != 0) return 0U;
         strncpy(control->session_id, session_id, sizeof(control->session_id) - 1U);
@@ -176,7 +258,13 @@ uint8_t ChassisControl_Apply(ChassisControl* control, const char* action, const 
     }
     control->last_seq = seq;
     control->lease_deadline_ms = now_ms + lease_ms;
+    if (ChassisControl_CollisionBlocked(control)) {
+        /* Accept only a zero renewal, preserving the existing authorization and steering hold. */
+        collision_zero(control);
+        return 1U;
+    }
     control->target_steering_mdeg = steering_mdeg;
+    drive_rpm = collision_rpm(control, drive_rpm);
     if (control->drive_brake) drive_rpm = 0;
     requested_direction = direction_of(drive_rpm);
     if (requested_direction != 0 && control->active_direction != 0 && requested_direction != control->active_direction) {
@@ -204,7 +292,7 @@ uint8_t ChassisControl_Apply(ChassisControl* control, const char* action, const 
     return 1U;
 }
 
-// 周期检查租约、安全门禁和换向停车确认。等待换向时保持零速，每个不同反馈时间戳最多计一次，两轮均不超过 20 rpm 连续三次才放行；超过当前代码的 6 秒期限撤使能并锁存故障。
+// 周期检查租约、防撞恢复和换向停车确认；换向须连续三次确认双轮不超过 20 rpm，6 秒超时撤使能并锁存故障。
 void ChassisControl_Tick(ChassisControl* control, uint32_t now_ms)
 {
     ChassisStopReason reason = ChassisControl_SafetyReason(control, now_ms);
@@ -213,6 +301,12 @@ void ChassisControl_Tick(ChassisControl* control, uint32_t now_ms)
         force_stop(control, CHASSIS_STOP_LEASE_EXPIRED, 1U);
         return;
     }
+    if ((control->collision & CHASSIS_COLLISION_PHASE_MASK) == CHASSIS_COLLISION_NEUTRAL_TIMING &&
+        (uint32_t)(now_ms - control->last_zero_feedback_ms) > CHASSIS_COLLISION_SAMPLE_MS)
+        control->collision = (uint8_t)((control->collision & (uint8_t)~CHASSIS_COLLISION_PHASE_MASK) |
+            CHASSIS_COLLISION_WAIT_NEUTRAL);
+    if (ChassisControl_CollisionBlocked(control)) { collision_zero(control); return; }
+    control->target_rpm = collision_rpm(control, control->target_rpm);
     steering_boundary(control, control->target_steering_mdeg, 0U);
     if (control->drive_brake) {
         ChassisControl_SetDriveBrake(control, 1U);

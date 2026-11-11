@@ -1,0 +1,3 @@
+{"monotonic": 116981.8674391, "payload": {"event": "stats", "tick": 18293, "actions": 0, "stops": 0, "probes": 0, "busyProbes": 0, "received": 0, "marker": 1, "ready": 1, "drops": 0}}
+{"monotonic": 116982.8834896, "payload": {"version": "4.0", "timestamp": 1800000719179, "data": {"requestId": "board-uncertain", "code": 4003, "msg": "power ledger unavailable or busy"}}}
+{"monotonic": 116983.3114426, "payload": {"event": "stats", "tick": 19293, "actions": 0, "stops": 0, "probes": 0, "busyProbes": 0, "received": 1, "marker": 1, "ready": 1, "drops": 0}}

@@ -1,0 +1,22 @@
+[fsm] mode=31 marker initial=1
+[UFS] modem power off 6s, rail 2s, PWRKEY 3s
+[AT<] ^boot.rom'v
+[AT<] RDY
+[AT<] AT
+[AT<] OK
+[AT<] ATE0
+[AT<] OK
+[adapter] storage ready marker=1 mode=31
+[mqtt] state=0
+[mqtt] state=1
+[mqtt] state=7
+[mqtt] state=1
+[mqtt] state=2
+[mqtt] state=3
+[mqtt] state=4
+[mqtt] state=5
+[AT<] "
+[mqtt] state=6
+[mqtt] state=7
+[mqtt] state=0
+[fsm] test MQTT stopped; RAM firmware left running

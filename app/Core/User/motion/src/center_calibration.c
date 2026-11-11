@@ -295,6 +295,7 @@ uint8_t CenterCalibration_Start(void)
     g_motion.bench.limits_aligned = 0U;
     g_motion.center_cal.serial = ++g_motion.center_cal_serial;
     g_motion.center_cal.phase = CENTER_CAL_START_STABLE;
+    RemoteService_SetMaintenance(1U);
     g_motion.center_cal.start_driver_count = s.steering_position_count;
     g_motion.center_cal.last_encoder_count = s.encoder_count;
     g_motion.center_cal.last_encoder_sample_ms = s.encoder_sample_ms;

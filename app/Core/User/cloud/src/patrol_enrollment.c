@@ -117,6 +117,13 @@ void PatrolEnrollment_Task(void)
     ABoxEnrollmentService_Poll(&g_service);
 }
 
+uint8_t PatrolEnrollment_TransportBusy(void)
+{
+    return g_service.initialized &&
+        (g_service.http.blocked || g_service.http.state != ABOX_ENROLL_HTTP_IDLE ||
+         ABoxEc800At_HasPending(g_service.http.at, ENROLL_OWNER));
+}
+
 // 通知注册服务模块已复位。使旧模块会话和在途假设失效，后续由公共服务重建所需状态。
 void PatrolEnrollment_AfterModemReset(void)
 {

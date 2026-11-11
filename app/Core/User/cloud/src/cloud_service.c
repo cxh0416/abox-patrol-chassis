@@ -16,6 +16,7 @@
 #include "patrol_config.h"
 #include "patrol_enrollment.h"
 #include "remote_service.h"
+#include "patrol_power_ledger.h"
 #ifdef ABOX_PSK_STATION
 #include "abox_psk_station.h"
 #include "mqtt_trial_persistent.h"
@@ -27,6 +28,7 @@ static ABoxEc800Recovery g_modem_recovery;
 // 响应网络身份或配置切换事件。同时清理云发送关联状态并撤销底盘远控授权，避免旧连接下的目标继续有效。
 static void mqtt_network_changed(void)
 {
+    PatrolPowerLedger_NetworkChanged();
     CloudTx_NetworkChanged();
     RemoteService_RevokeForNetworkChange();
 }
@@ -67,6 +69,7 @@ uint8_t CloudService_ApplyMqttIdentity(const char* vid)
 {
     const char* subscriptions[4];
     if (!PatrolConfig_IsVidValid(vid)) return 0U;
+    PatrolPowerLedger_NetworkChanged();
     if (!MQTT_Core_SetClientId(vid)) return 0U;
     if (!build_public_topics(vid)) return 0U;
     (void)snprintf(g_cloud.topic_config_cmd, sizeof(g_cloud.topic_config_cmd), "/zxwl/abox/%s/internal/config", vid);
@@ -151,8 +154,15 @@ static void app_before_enrollment(void *context, uint32_t now);
 static void app_enrollment(void *context, uint32_t now);
 // 安全重启 EC800 DMA 接收路径。先停止 DMA、重置接收器状态再重启，任一步失败返回零，由上层安排恢复。
 static int app_restart_rx(void *context);
+static void app_after_at(void *context, uint32_t now)
+{ (void)context; (void)now; if (EC_Power_IsOnDone()) PatrolPowerLedger_Poll(); }
+static void app_ota(void *context, uint32_t now)
+{ (void)context; (void)now; if (!PatrolPowerLedger_StorageBusy()) OtaService_Task(); }
+static void modem_reset(void)
+{ PatrolEnrollment_AfterModemReset(); PatrolPowerLedger_AfterModemReset(); }
 static const ABoxAppServicePort app_port = {
     .restart_rx = app_restart_rx,
+    .after_at = app_after_at, .ota = app_ota,
     .before_enrollment = app_before_enrollment,
     .enrollment = app_enrollment,
     .cloud = app_cloud, .before_cloud = app_before_cloud, .can_connect = app_can_connect,
@@ -234,7 +244,7 @@ void CloudService_Init(void)
     }
     MQTT_Core_Init(&mqtt, CloudCommands_OnMessage);
     MQTT_Core_SetNetworkChangedCallback(mqtt_network_changed);
-    MQTT_Core_SetModemResetCallback(PatrolEnrollment_AfterModemReset);
+    MQTT_Core_SetModemResetCallback(modem_reset);
     MQTT_Core_SetAtCore(&g_cloud.at_core);
     if (!MQTT_Core_Bridge()->initialized) {
         APP_LOGE("CLOUD", "MQTT bridge initialization failed; communication disabled");
@@ -249,6 +259,8 @@ void CloudService_Init(void)
     MqttTrialManager_Init();
     if (!PatrolEnrollment_Init(&g_cloud.at_core))
         APP_LOGE("ENROLL", "initialization failed; enrollment unavailable");
+    if (!PatrolPowerLedger_Init(&g_cloud.at_core))
+        APP_LOGE("POWER", "ledger initialization failed; power-on unavailable");
 
     EC_Power_Init();
     EC_Power_StartOnSequence();
@@ -326,7 +338,7 @@ static void app_before_enrollment(void *context, uint32_t now)
 {
     (void)context; (void)now;
     if (CloudService_NeedsEnrollment() && EC_Power_IsOnDone() &&
-        !OtaService_IsProvisioned() && !OtaService_IsBusy() &&
+        !OtaService_IsProvisioned() && !OtaService_IsBusy() && !PatrolPowerLedger_StorageBusy() &&
         (int32_t)(HAL_GetTick() - g_enroll_provision_due) >= 0) {
         if (OtaService_BeginProvisioning())
             g_enroll_provision_due = HAL_GetTick() + 60000U;
@@ -336,7 +348,7 @@ static void app_before_enrollment(void *context, uint32_t now)
 static void app_enrollment(void *context, uint32_t now)
 {
     (void)context; (void)now;
-    PatrolEnrollment_Task();
+    if (!PatrolPowerLedger_StorageBusy()) PatrolEnrollment_Task();
 }
 // 在云连接前处理试连与 OTA 的阶段结果。安排安装就绪或失败响应并检查配置、模块电源与 TLS 预置条件；返回能否继续云服务阶段。
 static int app_before_cloud(void *context, uint32_t now)
@@ -364,7 +376,7 @@ static int app_before_cloud(void *context, uint32_t now)
     if (!g_cloud.config_ready || !EC_Power_IsOnDone()) return 0;
     if (PatrolConfig_Get() != 0 && PatrolConfig_Get()->mqtt_tls_enabled &&
         PatrolConfig_MqttCredentials()->mode == ABOX_TLS_AUTH_CA && !OtaService_IsProvisioned() &&
-        !g_cloud.tls_provision_started)
+        !g_cloud.tls_provision_started && !PatrolPowerLedger_StorageBusy())
     {
         if (OtaService_BeginProvisioning()) g_cloud.tls_provision_started = 1U;
     }
@@ -386,7 +398,7 @@ static int app_transport_error(void *context) { (void)context; return MQTT_Core_
 static int app_maintenance_busy(void *context)
 {
     ABoxMqttTrialState state = MqttTrialManager_State(); (void)context;
-    return !MqttTrialManager_RuntimeRecoveryAllowed() || (state != ABOX_MQTT_TRIAL_IDLE && state != ABOX_MQTT_TRIAL_COMMITTED && state != ABOX_MQTT_TRIAL_FAILED) ||
+    return PatrolPowerLedger_StorageBusy() || !MqttTrialManager_RuntimeRecoveryAllowed() || (state != ABOX_MQTT_TRIAL_IDLE && state != ABOX_MQTT_TRIAL_COMMITTED && state != ABOX_MQTT_TRIAL_FAILED) ||
         (MqttRuntime_State() == ABOX_MQTT_RUNTIME_BLOCKED && !MqttRuntime_NeedsModemRecovery());
 }
 // 处理公共 App 服务向产品发出的事件。网络变更事件触发发送状态清理及运动会话撤销，其他事件保持现有处理方式。
@@ -450,7 +462,7 @@ static void app_cloud(void *context, uint32_t now)
     }
 #endif
     if (ready && g_cloud.ota_begin_pending && (int32_t)(HAL_GetTick() - g_cloud.ota_begin_due) >= 0 &&
-        !EC800_AT_IsBusy(&g_cloud.at_core))
+        !EC800_AT_IsBusy(&g_cloud.at_core) && !PatrolPowerLedger_StorageBusy())
     {
         if (OtaService_BeginProvisioning()) g_cloud.ota_begin_pending = 0U;
     }

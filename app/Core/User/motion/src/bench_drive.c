@@ -160,12 +160,29 @@ void BenchDrive_TxFailed(BenchDrive *b)
 {
     fail(b, 2);
 }
+// reversing=2 表示等待旧事务收尾，3 表示防撞双轮零速确认；复用原状态空间，不增加静态 RAM。
+void BenchDrive_CollisionHold(BenchDrive* b, uint32_t now)
+{
+    if (b->phase != BENCH_ACTIVE && b->phase != BENCH_PREPARING) return;
+    b->desired = 0;
+    b->reversing = 2U;
+    b->confirmations = 0U;
+    b->started_ms = now;
+}
+
+uint8_t BenchDrive_CollisionStopped(const BenchDrive* b)
+{
+    return b->phase == BENCH_IDLE || (b->phase == BENCH_ACTIVE && !b->pending && !b->verify &&
+        !b->reversing && b->step == DRIVE_STEP_ACTIVE && b->applied_left == 0 && b->applied_right == 0);
+}
+
 // 推进行走目标、事务超时和换向停车状态。反向前明确写双轮零速，只有零速 ACK 之后且比上一对更新的左右反馈才参与三次低速确认；事务、准备、停车超时分别受限。
 void BenchDrive_Tick(BenchDrive *b, uint32_t now, uint8_t requested, uint8_t safe, int16_t rpm, int32_t left,
                      int32_t right, uint32_t left_ms, uint32_t right_ms)
 {
     if (b->phase == BENCH_IDLE || b->phase == BENCH_FAULT)
         return;
+    if (b->reversing >= 2U) rpm = 0; /* Recovery cannot overwrite an unfinished collision zero pair. */
     if (!safe || abs(rpm) > BENCH_DRIVE_MAX_RPM)
     {
         fail(b, 3);
@@ -173,6 +190,7 @@ void BenchDrive_Tick(BenchDrive *b, uint32_t now, uint8_t requested, uint8_t saf
     }
     if (!requested)
         BenchDrive_Stop(b, now, 0);
+    if (b->reversing >= 2U && now - b->started_ms >= 6000U) { fail(b, 6U); return; }
     if (b->verify)
     {
         if (now - b->zero_ms >= BENCH_WRITE_VERIFY_MS) {
@@ -203,6 +221,12 @@ void BenchDrive_Tick(BenchDrive *b, uint32_t now, uint8_t requested, uint8_t saf
     }
     if (b->phase != BENCH_STOPPING)
         b->desired = rpm;
+    if (b->phase == BENCH_ACTIVE && b->reversing == 2U && !b->pending && !b->verify) {
+        b->desired = b->writing = 0;
+        b->writing_percent = 0;
+        b->step = DRIVE_STEP_TARGET_LEFT;
+        b->reversing = 3U;
+    }
     if (b->phase == BENCH_ACTIVE && b->step == DRIVE_STEP_ACTIVE)
     {
         if (b->reversing)
@@ -246,6 +270,12 @@ void BenchDrive_Tick(BenchDrive *b, uint32_t now, uint8_t requested, uint8_t saf
             {
                 if (b->phase == BENCH_STOPPING)
                     b->step = DRIVE_STEP_DISABLE;
+                else if (b->reversing == 3U) {
+                    /* Collision ends in enabled zero hold, without shutdown/NMT or automatic restart. */
+                    b->reversing = 0U;
+                    b->direction = 0;
+                    b->step = DRIVE_STEP_ACTIVE;
+                }
                 else
                 {
                     b->reversing = 0;

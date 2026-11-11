@@ -23,7 +23,7 @@ void SteeringCoordinate_Observe(SteeringCoordinate* c, uint8_t ready,
     int32_t driver, uint32_t absolute, uint32_t absolute_center, uint32_t sample_ms, uint32_t now)
 {
     int64_t offset, center;
-    if (c->valid) return; /* Never hide a disagreement by re-zeroing while running. */
+    if (c->valid || c->blocked) return; /* Never hide a disagreement by re-zeroing while running. */
     if (!ready || absolute >= VEHICLE_ABSOLUTE_SINGLE_TURN_COUNTS ||
         absolute_center >= VEHICLE_ABSOLUTE_SINGLE_TURN_COUNTS) { c->tracking = 0; return; }
     if (!c->tracking || llabs((int64_t)driver - c->anchor_driver) > 27 ||

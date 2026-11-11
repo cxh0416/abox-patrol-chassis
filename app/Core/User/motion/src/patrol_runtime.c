@@ -27,6 +27,7 @@ static MotionFaultRecord last_fault;
 static uint8_t fault_captured, fault_dirty, fault_storage;
 static PatrolFaultStop fault_stop;
 static uint8_t recovery_next_node;
+#define PATROL_COORDINATE_PREPARE_MS 7000U
 // 复制最近一次运动故障记录。在临界区读取固定快照，记录是否存在由返回值表示；故障记录与实时反馈是不同证据。
 uint8_t PatrolRuntime_GetFault(MotionFaultRecord* record)
 {
@@ -146,6 +147,7 @@ static uint8_t service_fault_stop(void)
 void PatrolRuntime_Init(void)
 {
     recovery_next_node = 0U;
+    g_motion.coordinate_preparing = 0U;
     PatrolFaultStop_Init(&fault_stop);
     PatrolDiagnostics_Init(&g_motion.diagnostics);
     PatrolAutoCenter_Cancel(&g_motion.auto_center);
@@ -250,8 +252,10 @@ void PatrolRuntime_ApplyReset(uint32_t now)
             CenterCalibration_Fail(2U, CENTER_CAL_REASON_POSITION_EPOCH_RESET,
                 &reset_snapshot, CenterCalibration_GateMask(&reset_snapshot, 0U));
         }
+        uint8_t lost_live_epoch = (uint8_t)(g_motion.coordinate.valid || g_motion.coordinate.blocked);
         if (g_motion.coordinate.valid) BenchSteering_Stop(&g_motion.bench, now, 1);
         SteeringCoordinate_Reset(&g_motion.coordinate);
+        if (lost_live_epoch && VehiclePowerOutput_IsOn()) g_motion.coordinate.blocked = 1U;
         g_motion.coordinate_reset_requested = 0;
     }
 }
@@ -409,6 +413,16 @@ uint8_t PatrolRuntime_AutoCenterActive(void)
     return active;
 }
 
+uint8_t PatrolRuntime_MaintenanceReady(void)
+{
+    uint8_t ready;
+    PatrolRuntimePort_Enter();
+    ready = (uint8_t)(g_motion.bench.phase == BENCH_IDLE && g_motion.drive.phase == BENCH_IDLE &&
+        !g_motion.auto_center.requested && !fault_stop.active && !g_motion.coordinate_reset_requested);
+    PatrolRuntimePort_Exit();
+    return ready;
+}
+
 // 计算两个新鲜样本的最短时间差，兼容毫秒计数自然回绕。
 static uint32_t angle_sample_skew(uint32_t first, uint32_t second)
 {
@@ -440,6 +454,15 @@ void PatrolRuntime_UpdateFeedback(uint32_t now)
     now = PatrolRuntimePort_Now();
     PatrolDiagnostics_Snapshot(&g_motion.diagnostics, now, &snapshot);
     PatrolRuntimePort_Exit();
+    uint8_t maintenance = (uint8_t)(PatrolCanRemote_CalibrationPrepareActive() || CenterCalibration_IsActive());
+    uint8_t powered = VehiclePowerOutput_IsOn();
+    if (!powered || maintenance) {
+        g_motion.coordinate_preparing = 0U;
+    } else if (!g_motion.coordinate.valid && !g_motion.coordinate.blocked && !g_motion.coordinate_preparing) {
+        g_motion.coordinate_preparing = 1U;
+        g_motion.coordinate_prepare_ms = now;
+        APP_LOGI("COORD", "startup waiting; motor angle unavailable, motion blocked");
+    }
     /* Clear only the recovered CAN gate. Sessions remain revoked. */
     PatrolRtos_ObserveCanRecovery(snapshot.coherent_feedback_ms,
         VehiclePowerOutput_IsOn() && snapshot.steering_online && snapshot.drive_online &&
@@ -471,7 +494,7 @@ void PatrolRuntime_UpdateFeedback(uint32_t now)
         VEHICLE_STEERING_TRIP_MDEG, &feedback.encoder_actual_mdeg);
     if (PATROL_STEERING_EXECUTOR_ENABLED) {
         uint8_t was_valid = g_motion.coordinate.valid;
-        if (!VehiclePowerOutput_IsOn() || CenterCalibration_IsActive()) SteeringCoordinate_Reset(&g_motion.coordinate);
+        if (!powered || maintenance) SteeringCoordinate_Reset(&g_motion.coordinate);
         else if (g_motion.coordinate.valid && SteeringCoordinate_EpochLost(
             g_motion.feedback_gate_mask, snapshot.steering_online,
             cfg->steering_center_count == g_motion.coordinate_calibration_center &&
@@ -480,9 +503,20 @@ void PatrolRuntime_UpdateFeedback(uint32_t now)
             PatrolRuntimePort_Enter();
             BenchSteering_Stop(&g_motion.bench, now, 1);
             SteeringCoordinate_Reset(&g_motion.coordinate);
+            g_motion.coordinate.blocked = 1U;
+            RemoteService_Revoke();
             PatrolRuntimePort_Exit();
         } else {
+            if (!g_motion.coordinate.valid && !g_motion.coordinate.blocked &&
+                g_motion.coordinate_preparing && (uint32_t)(now-g_motion.coordinate_prepare_ms) >= PATROL_COORDINATE_PREPARE_MS) {
+                APP_LOGW("COORD", "startup timeout gate=%u; power off", (unsigned)g_motion.feedback_gate_mask);
+                RemoteService_Revoke();
+                (void)VehiclePowerOutput_Set(0U);
+                powered = 0U;
+                g_motion.coordinate.blocked = 1U;
+            }
             SteeringCoordinate_Observe(&g_motion.coordinate,
+                powered && !g_motion.coordinate.blocked &&
                 g_motion.feedback_gate_mask == 0 && feedback.calibrated && feedback.encoder_range_valid &&
                 snapshot.steering_online && snapshot.drive_online &&
                 !snapshot.drive_fault && !feedback.can_bus_off && !feedback.ota_busy &&
@@ -491,13 +525,17 @@ void PatrolRuntime_UpdateFeedback(uint32_t now)
                 snapshot.coherent_feedback_ms, now);
         }
         if (!was_valid && g_motion.coordinate.valid) {
+            g_motion.coordinate_preparing = 0U;
             g_motion.coordinate_calibration_center = cfg->steering_center_count;
             g_motion.coordinate_absolute_center = cfg->absolute_center_count;
+            APP_LOGI("COORD", "startup ready center=%ld", (long)g_motion.coordinate.runtime_center);
         }
         if (!g_motion.coordinate.valid) g_motion.feedback_gate_mask |= 512U;
     }
+    feedback.steering_angle_unavailable = (uint8_t)(PATROL_STEERING_EXECUTOR_ENABLED && !g_motion.coordinate.valid);
+    feedback.motion_inhibited = maintenance;
     feedback.power_ready = PATROL_CHASSIS_ACTUATION_ENABLED &&
-        PATROL_STEERING_EXECUTOR_ENABLED && g_motion.feedback_gate_mask == 0;
+        PATROL_STEERING_EXECUTOR_ENABLED && powered && !maintenance && g_motion.feedback_gate_mask == 0;
     feedback.left_actual_rpm = snapshot.left_actual_rpm > 32767 ? 32767 :
         (snapshot.left_actual_rpm < -32768 ? -32768 : (int16_t)snapshot.left_actual_rpm);
     /* Normalize mirror-mounted right-wheel feedback to vehicle coordinates.
@@ -556,6 +594,14 @@ void PatrolRuntime_Tick(void)
         const PatrolRemoteConfigV5_t* cfg = PatrolConfig_Get();
         uint8_t controlled_feedback_stop;
         PatrolRuntime_ApplyReset(now);
+        if (c->collision & CHASSIS_COLLISION_PENDING) {
+            // 一次新挤压对应一次双轮零速确认；不调用普通 Stop（它会撤使能）。
+            BenchDrive_CollisionHold(&g_motion.drive, now);
+            BenchSteering_CollisionHold(&g_motion.bench);
+            RemoteService_CollisionBrakeProcessed(0U);
+        }
+        if ((c->collision & CHASSIS_COLLISION_BRAKING) && BenchDrive_CollisionStopped(&g_motion.drive))
+            RemoteService_CollisionBrakeProcessed(1U);
         uint8_t normal_safe = g_motion.coordinate.valid && VehiclePowerOutput_IsOn() &&
             !PatrolRuntimePort_CanBusOffActive() && ChassisControl_SafetyReady(c, now);
         uint8_t remote_requested = c->session_active && c->enable_request &&
@@ -619,7 +665,8 @@ void PatrolRuntime_Tick(void)
         uint8_t safe = center_executor_active ? center_safe : normal_safe;
         uint8_t local_safe = auto_center_safe(c, now);
         uint8_t local_moving = 0U;
-        if (remote_requested || CenterCalibration_IsActive() || PatrolCanRemote_CalibrationPrepareActive())
+        if (remote_requested || ChassisControl_CollisionBlocked(c) ||
+            CenterCalibration_IsActive() || PatrolCanRemote_CalibrationPrepareActive())
             PatrolAutoCenter_Cancel(&g_motion.auto_center);
         else {
             /* A lost lease revokes remote targets. Local centering owns only
@@ -742,6 +789,12 @@ void PatrolRuntime_Tick(void)
         PatrolRuntimePort_Enter();
         /* 高优先级安全任务可能在普通帧选出后启动故障停机；任何旧 owner 的帧都必须丢弃。 */
         if (fault_stop.active || RemoteService_State()->fault_pending) have_request = 0U;
+        if (have_request && bench_frame && (RemoteService_State()->collision & CHASSIS_COLLISION_PENDING)) {
+            /* 新碰撞可能在选帧与发送之间到达；丢弃尚未提交的旧运动帧，下周期优先执行零速保持。 */
+            if (bench_frame == 2U) { g_motion.drive.pending = 0U; g_motion.drive.verify = 0U; }
+            else BenchSteering_CollisionDiscard(&g_motion.bench);
+            have_request = 0U;
+        }
         /* A traction inhibit can arrive after frame selection. Discard an old drive
          * command and start its bounded zero/disable sequence, without touching
          * the steering executor or the shared session. */

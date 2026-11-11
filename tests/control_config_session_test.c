@@ -20,6 +20,7 @@ static uint32_t tick = 1000;
 static uint64_t utc_now = 1788838333000ULL;
 static uint8_t time_trusted = 1U;
 static uint32_t time_error;
+uint8_t OtaService_IsBusy(void) { return 0U; }
 uint32_t HAL_GetTick(void) { return tick; }
 /* This isolated config/session fixture has no calibration session. */
 uint8_t CenterCalibration_IsActive(void) { return 0U; }
@@ -48,67 +49,23 @@ static void check_digest(const uint8_t digest[32], const char *expected)
     assert(!strcmp(hex, expected));
 }
 
-static void test_reboot_power_window(void)
+static void test_prepared_power_guard(void)
 {
-    const uint64_t started = 1788838333000ULL;
-    const char *packet = "{\"version\":\"4.0\",\"timestamp\":1788838333000,\"data\":{\"requestId\":\"reboot-window\","
-        "\"command\":\"power_on\",\"expiresAt\":1788838338000,\"params\":null}}";
-    char first[512], response[512], fresh[512];
-    utc_now = started; time_trusted = 1;
+    char response[512]; uint8_t state=0;
+    const char *request="{\"version\":\"4.0\",\"timestamp\":1788838333000,\"data\":{\"requestId\":\"direct\",\"command\":\"power_on\",\"expiresAt\":1788838338000,\"params\":null}}";
+    utc_now=1788838333000ULL; time_trusted=1;
     VehiclePowerOutput_Init(write_power); RemoteService_Init();
-    tick += 8100;
-    unsigned before = power_on_writes;
-    assert(RemoteService_HandleControl(packet, (uint16_t)strlen(packet), first, sizeof(first)));
-    assert(strstr(first, "\"code\":200") && power_level && power_on_writes == before + 1);
+    unsigned before=power_on_writes;
+    assert(RemoteService_HandleControl(request,(uint16_t)strlen(request),response,sizeof(response)));
+    assert(strstr(response,"\"code\":4003") && power_on_writes==before);
+    uint32_t generation=VehiclePowerOutput_StopGeneration();
+    assert(RemoteService_PowerOnPrepared(generation,&state)==1 && state && power_on_writes==before+1);
     VehiclePowerOutput_Set(0);
-    assert(RemoteService_HandleControl(packet, (uint16_t)strlen(packet), response, sizeof(response)));
-    assert(strstr(response, "\"code\":200") && !power_level && power_on_writes == before + 1);
-    /* Full startup clears cache/outputs; its mandatory modem sequence is 11 s.
-     * Host test simulates elapsed UTC, not a measured physical boot. */
-    VehiclePowerOutput_Init(write_power); RemoteService_Init();
-    utc_now = started + 2000; time_trusted = 0;
-    assert(RemoteService_HandleControl(packet, (uint16_t)strlen(packet), response, sizeof(response)));
-    assert(strstr(response, "\"code\":4003") && !power_level && power_on_writes == before + 1);
-    time_trusted = 1;
-    assert(RemoteService_HandleControl(packet, (uint16_t)strlen(packet), response, sizeof(response)));
-    assert(strstr(response, "\"code\":4003") && !power_level && power_on_writes == before + 1);
-    const char *off = "{\"version\":\"4.0\",\"timestamp\":1788838335000,\"data\":{\"requestId\":\"off\",\"command\":\"power_off\",\"params\":null}}";
-    assert(RemoteService_HandleControl(off, (uint16_t)strlen(off), response, sizeof(response)));
-    assert(strstr(response, "\"code\":200") && !power_level);
-    tick += 8099; utc_now += 8099;
-    snprintf(fresh,sizeof(fresh),"{\"version\":\"4.0\",\"timestamp\":%llu,\"data\":{\"requestId\":\"fresh-after-reset\",\"command\":\"power_on\",\"expiresAt\":%llu,\"params\":null}}",(unsigned long long)utc_now,(unsigned long long)(utc_now+5000));
-    assert(RemoteService_HandleControl(fresh, (uint16_t)strlen(fresh), response, sizeof(response)));
-    assert(strstr(response, "\"code\":4003") && !power_level);
-    tick++; utc_now++;
-    assert(RemoteService_HandleControl(packet, (uint16_t)strlen(packet), response, sizeof(response)));
-    assert(strstr(response, "\"code\":4005") && !power_level && power_on_writes == before + 1);
-    assert(strcmp(response, first)); /* No pre-reboot response is retained. */
-    assert(RemoteService_HandleControl(fresh, (uint16_t)strlen(fresh), response, sizeof(response)));
-    assert(strstr(response, "\"code\":200") && power_level && power_on_writes == before + 2);
-    VehiclePowerOutput_Set(0);
-    snprintf(fresh,sizeof(fresh),"{\"version\":\"4.0\",\"timestamp\":%llu,\"data\":{\"requestId\":\"too-far\",\"command\":\"power_on\",\"expiresAt\":%llu,\"params\":null}}",(unsigned long long)(utc_now+2501),(unsigned long long)(utc_now+7501));
-    assert(RemoteService_HandleControl(fresh, (uint16_t)strlen(fresh), response, sizeof(response)));
-    assert(strstr(response, "\"code\":4003") && !power_level);
-    /* Worst trusted clock error can swing in the opposite direction across reboot. */
-    utc_now = 1788839000000ULL; time_error = ABOX_CLOCK_ERROR_LIMIT_MS;
-    snprintf(fresh,sizeof(fresh),"{\"version\":\"4.0\",\"timestamp\":%llu,\"data\":{\"requestId\":\"clock-bound\",\"command\":\"power_on\",\"expiresAt\":%llu,\"params\":null}}",(unsigned long long)(utc_now+2500),(unsigned long long)(utc_now+7500));
-    assert(RemoteService_HandleControl(fresh, (uint16_t)strlen(fresh), response, sizeof(response)));
-    assert(strstr(response, "\"code\":200") && power_level);
-    VehiclePowerOutput_Init(write_power); RemoteService_Init();
-    tick += 8100; utc_now += 7100;
-    assert(RemoteService_HandleControl(fresh, (uint16_t)strlen(fresh), response, sizeof(response)));
-    assert(strstr(response, "\"code\":4003") && !power_level);
-    time_error = 0U;
-    assert(!RemoteService_State()->session_active && !RemoteService_State()->enable_request);
-    /* The startup guard also works across the 32-bit tick wrap. */
-    tick = UINT32_MAX - 3000U; VehiclePowerOutput_Init(write_power); RemoteService_Init();
-    snprintf(fresh,sizeof(fresh),"{\"version\":\"4.0\",\"timestamp\":%llu,\"data\":{\"requestId\":\"wrap-start\",\"command\":\"power_on\",\"expiresAt\":%llu,\"params\":null}}",(unsigned long long)utc_now,(unsigned long long)(utc_now+5000));
-    tick += 8099U;
-    assert(RemoteService_HandleControl(fresh, (uint16_t)strlen(fresh), response, sizeof(response)));
-    assert(strstr(response, "\"code\":4003") && !power_level);
-    tick++;
-    assert(RemoteService_HandleControl(fresh, (uint16_t)strlen(fresh), response, sizeof(response)));
-    assert(strstr(response, "\"code\":200") && power_level);
+    assert(RemoteService_PowerOnPrepared(generation,&state)==-2 && !state && power_on_writes==before+1);
+    RemoteService_SetMaintenance(1U);
+    generation=VehiclePowerOutput_StopGeneration();
+    assert(RemoteService_PowerOnPrepared(generation,&state)==-2 && !state && power_on_writes==before+1);
+    RemoteService_SetMaintenance(0U);
 }
 
 static void test_vid_validation(void)
@@ -273,21 +230,8 @@ int main(void)
     RemoteService_Init();
     tick += 8100;
     assert(RemoteService_HandleControl(power_on, (uint16_t)strlen(power_on), response, sizeof(response)));
-    assert(power_level && strstr(response, "\"powerOutputOn\":true"));
-    /* Expiry/quality do not change an accepted discrete request's replay. */
-    utc_now += 6000; time_trusted = 0U;
-    assert(VehiclePowerOutput_Set(0U));
-    assert(RemoteService_HandleControl(power_on, (uint16_t)strlen(power_on), response, sizeof(response)));
-    assert(!power_level && strstr(response, "\"code\":200") && strstr(response, "\"powerOutputOn\":true"));
-    const char *fresh = "{\"version\":\"4.0\",\"timestamp\":1788838339000,\"data\":{"
-        "\"requestId\":\"power-fresh\",\"command\":\"power_on\",\"params\":null,\"expiresAt\":1788838344000}}";
-    assert(RemoteService_HandleControl(fresh, (uint16_t)strlen(fresh), response, sizeof(response)));
     assert(!power_level && strstr(response, "\"code\":4003"));
-    time_trusted = 1U;
-    const char *future = "{\"version\":\"4.0\",\"timestamp\":1788838339800,\"data\":{"
-        "\"requestId\":\"power-future\",\"command\":\"power_on\",\"params\":null,\"expiresAt\":1788838344800}}";
-    assert(RemoteService_HandleControl(future, (uint16_t)strlen(future), response, sizeof(response)));
-    assert(power_level && strstr(response, "\"code\":200"));
+    assert(VehiclePowerOutput_Set(1U));
     command("new-session", 0, 0, "acquire", 1, 400);
     feedback.calibrated = feedback.encoder_profile_ready = feedback.encoder_range_valid = 1;
     feedback.steering_online = feedback.drive_online = feedback.power_ready = 1;
@@ -322,11 +266,11 @@ int main(void)
     const char *conflicting_off = "{\"version\":\"4.0\",\"timestamp\":1788838333000,\"data\":{\"requestId\":\"power-1\","
         "\"command\":\"power_off\",\"params\":null}}";
     assert(RemoteService_HandleControl(conflicting_off, (uint16_t)strlen(conflicting_off), response, sizeof(response)));
-    assert(strstr(response, "\"code\":4006") && !power_level);
+    assert(strstr(response, "\"code\":200") && !power_level);
     RemoteService_ExecutionFault();
     command("fault-session", 0, 0, "acquire", 9, 400);
     assert(RemoteService_State()->fault_latched);
-    test_reboot_power_window();
+    test_prepared_power_guard();
     puts("PASS Config V5 layout, uncalibrated gate, direct control session, reconnect and lease revoke");
     return 0;
 }

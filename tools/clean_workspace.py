@@ -112,14 +112,17 @@ def prune_archive(root: Path, prefixes: list[str], members: set[str]) -> dict:
     return {"removed": sorted(remove), "remaining": len(index["entries"])}
 
 
-def make_plan(root: Path, legacy: bool, build: bool) -> dict:
+def make_plan(root: Path, legacy: bool, build: bool, temp_version_only: bool = False,
+              root_build_only: bool = False) -> dict:
     root = root.absolute()
     paths = []
-    for name in ("tmp", "out/logs", "tools/__pycache__", "tests/__pycache__"):
+    names = (("temp-version",) if temp_version_only else ("build",) if root_build_only else
+             ("tmp", "out/logs", "tools/__pycache__", "tests/__pycache__"))
+    for name in names:
         path = checked_path(root, root / name)
         if path.exists():
             paths.append(path)
-    if build and (root / "app/build").exists():
+    if build and not root_build_only and (root / "app/build").exists():
         paths.append(checked_path(root, root / "app/build"))
     legacy_paths = []
     out = checked_path(root, root / "out")
@@ -135,9 +138,14 @@ def make_plan(root: Path, legacy: bool, build: bool) -> dict:
     evidence_refs = set()
     for doc in (root / "docs").rglob("*"):
         if doc.suffix in {".md", ".json"} and "archive" not in doc.parts and "raw" not in doc.parts:
-            refs.update(references(doc.read_text(encoding="utf-8-sig")))
+            try:
+                text = doc.read_text(encoding="utf-8-sig")
+            except UnicodeDecodeError:
+                # Historical Windows evidence may be GB18030; never rewrite it.
+                text = doc.read_text(encoding="gb18030")
+            refs.update(references(text))
             if doc.parent.name == "evidence" and doc.suffix == ".json":
-                evidence_refs.update(references(doc.read_text(encoding="utf-8-sig")))
+                evidence_refs.update(references(text))
     for file in all_files:
         rel = file.relative_to(root).as_posix()
         if file not in legacy_files and any(rel == r or rel.startswith(r.rstrip("/") + "/") for r in evidence_refs):
@@ -180,7 +188,7 @@ def execute(root: Path, plan: dict) -> None:
     # Validate the entire snapshot before creating archives or deleting anything.
     for rel in plan["delete"]:
         parts = Path(rel).parts
-        allowed = rel in {"tmp", "out/logs", "tools/__pycache__", "tests/__pycache__", "app/build"}
+        allowed = rel in {"tmp", "out/logs", "tools/__pycache__", "tests/__pycache__", "app/build", "build", "temp-version"}
         legacy = len(parts) == 2 and parts[0] == "out" and parts[1] not in KEEP_OUT
         if not (allowed or legacy):
             raise ValueError(f"Protected cleanup path: {rel}")
@@ -236,10 +244,16 @@ def main() -> None:
     parser.add_argument("--apply", action="store_true", help="Execute; default is preview only")
     parser.add_argument("--build", action="store_true", help="Also remove app/build (never platform/build)")
     parser.add_argument("--migrate-legacy", action="store_true", help="One-time 2026-09-09 out evidence migration")
+    parser.add_argument("--temp-version-only", action="store_true", help="Remove only the obsolete root temp-version package")
+    parser.add_argument("--root-build-only", action="store_true", help="Remove only the root build cache (requires --build)")
     parser.add_argument("--verify-archive", action="store_true")
     parser.add_argument("--remove-archive-prefix", action="append", default=[])
     parser.add_argument("--remove-archive-member", action="append", default=[])
     args = parser.parse_args()
+    if args.temp_version_only and (args.build or args.migrate_legacy):
+        parser.error("--temp-version-only cannot be combined with --build or --migrate-legacy")
+    if args.root_build_only and (not args.build or args.migrate_legacy or args.temp_version_only):
+        parser.error("--root-build-only requires --build and cannot be combined with other cleanup targets")
     if args.remove_archive_prefix or args.remove_archive_member:
         result = prune_archive(ROOT, args.remove_archive_prefix, set(args.remove_archive_member))
         print(json.dumps(result, ensure_ascii=False, indent=2))
@@ -248,7 +262,7 @@ def main() -> None:
         index = verify_archive(ROOT)
         print(f"Verified {len(index['entries'])} archived records")
         return
-    plan = make_plan(ROOT, args.migrate_legacy, args.build)
+    plan = make_plan(ROOT, args.migrate_legacy, args.build, args.temp_version_only, args.root_build_only)
     print(json.dumps({k: v for k, v in plan.items() if k != "files"}, ensure_ascii=False, indent=2))
     print(f"Files: {len(plan['files'])}; mode: {'APPLY' if args.apply else 'PREVIEW'}")
     if args.apply:

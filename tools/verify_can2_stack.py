@@ -74,6 +74,21 @@ chains = {
     'drive verification reply': (rx_capacity, ['Patrol_CanRxTask', 'PatrolRuntime_OnCanFrame',
         'BenchDrive_OnFrame', 'PatrolCanopen_ParseSdoValue']),
 }
+# GCC may inline the static calibration dispatcher into OnFrame; its stack is
+# then already included in OnFrame's .su frame. Count it separately if emitted.
+calibration_chain = ['calibration_command'] if 'calibration_command' in frames else []
+chains['CAN2 maintenance idle check'] = (rx_capacity, ['Patrol_CanRxTask', 'PatrolCanRemote_OnFrame',
+    *calibration_chain, 'PatrolRuntime_MaintenanceReady'])
+chains['CAN2 maintenance ownership'] = (rx_capacity, ['Patrol_CanRxTask', 'PatrolCanRemote_OnFrame',
+    *calibration_chain, 'RemoteService_SetMaintenance', 'RemoteService_Revoke'])
+chains['collision input sampling'] = (safety_capacity, ['Patrol_SafetyControlTask',
+    'RemoteService_CollisionInputs', 'ChassisControl_CollisionInputs'])
+chains['collision neutral observation'] = (rx_capacity, ['Patrol_CanRxTask', 'PatrolPhyRemote_OnFrame',
+    'RemoteService_CollisionJoystick', 'ChassisControl_CollisionJoystick'])
+chains['collision enabled drive hold'] = (canopen_capacity, ['Patrol_CanopenTask', 'PatrolRuntime_Tick',
+    'BenchDrive_CollisionHold'])
+chains['collision steering supersession'] = (canopen_capacity, ['Patrol_CanopenTask', 'PatrolRuntime_Tick',
+    'BenchSteering_CollisionHold'])
 for label, (capacity, chain) in chains.items():
     missing = [name for name in chain if name not in frames]
     if missing:

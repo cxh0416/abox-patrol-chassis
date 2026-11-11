@@ -121,6 +121,8 @@ int main(void)
   VehiclePowerPort_Init();
   CloudService_Init();
   RemoteService_Init();
+  /* Before the first valid board sample, collision inputs cannot grant motion. */
+  RemoteService_CollisionInputs(0U, 0U, HAL_GetTick());
   APP_LOGI("BOOT", "version=%s app=0x%08lX", Patrol_AppFwVersion(),
            (unsigned long)APP_START_ADDR);
 

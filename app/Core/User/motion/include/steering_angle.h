@@ -5,6 +5,7 @@
 
 typedef struct {
     uint8_t valid, tracking, samples;
+    uint8_t blocked; /* Retired live epoch; only power-off/explicit maintenance may reset it. */
     uint32_t quiet_since, last_sample_ms, anchor_absolute;
     int32_t anchor_driver, runtime_center;
 } SteeringCoordinate;

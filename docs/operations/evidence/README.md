@@ -4,6 +4,8 @@
 
 本目录保存原始、不可改写的验证材料。本索引只提供导航；当前状态先看 [CURRENT](../../CURRENT.md)，当前操作步骤看 `docs/operations/`。
 
+历史证据中的 `can2_center_calibration/` 路径保留原样；工具现位于 [tools/can2_center_calibration](../../../tools/can2_center_calibration/README.md)。
+
 ## MQTT
 
 | 日期 / 阶段 | 状态 | 版本或 candidate | 入口 | 是否代表当前候选 |

@@ -1,0 +1,174 @@
+{
+  "description": "ABox V1 RAM test of product power ledger adapter and FSM with real EC800 UFS and MQTT, simulated power action",
+  "date": "2026-11-11",
+  "hardware": "J-Link 799713843, Cortex-M3 ABox V1",
+  "limits": [
+    "Power action, UTC, configuration marker and Cloud TX adapter are simulated.",
+    "The lease-adapter source matches final product source except isolated UFS file paths. OTA and enrollment states in this RAM test are simulated idle; their busy and pending arbitration is host-tested.",
+    "No MCU Flash write or vehicle motion was performed.",
+    "MCU RAM test remains running with MQTT stopped; preexisting test marker 0x0803D800 remains.",
+    "ABox V1 UFS retains isolated patrol_adapter_lab_a.bin and patrol_adapter_lab_b.bin."
+  ],
+  "files": [
+    {
+      "path": "rtt.log",
+      "sha256": "8a885eb3db493abe317d7abccc1d9086babc84eb26254b6d1b2c7636392b50f4"
+    },
+    {
+      "path": "restart-rtt.log",
+      "sha256": "58ffcc97e19cbee95cdfdbf01fc61a4cf861c7a71fe53af7ffe714563e8b6fec"
+    },
+    {
+      "path": "uncertain-rtt.log",
+      "sha256": "7cc3f8e4f9e2aff324fbc21c7e1eba8fe362a3f92ab1f5c9ce3371d7a0be75c6"
+    },
+    {
+      "path": "observer.jsonl",
+      "sha256": "e11c194a726a0fef4e710af99b01aee1f3119c9067ab42de4d8decd001d251e6"
+    },
+    {
+      "path": "restart-observer.jsonl",
+      "sha256": "a8194fe7a025195271e8680951bbed7790b9449fc651a1fc9139d464bc04bab5"
+    },
+    {
+      "path": "uncertain-observer.jsonl",
+      "sha256": "6385de101faa12fc5f9be5c54e061391076ed8708a3648cb8fbc6b0c791aa886"
+    },
+    {
+      "path": "final-read.log",
+      "sha256": "eb4eeb1dccd7c6ce1061414440bab0a8ca8c788ff4b00aa493488e14c060ebe4"
+    },
+    {
+      "path": "bench.c",
+      "sha256": "bc887e12868369486b170859972f6abb14219a238ac55a75a0fce110d1262be2"
+    },
+    {
+      "path": "patrol_power_ledger.c",
+      "sha256": "da393011d9adcfe94c1ed135dd1a64db6273f78b706585ba56acd50d00610fc1"
+    },
+    {
+      "path": "build.py",
+      "sha256": "1e40ce5a579d74b82da4fb3c4db9c5daa91cacc64ef95227b79aa2606c19977b"
+    },
+    {
+      "path": "observer.py",
+      "sha256": "c9e11b11a0da2c8183d52da3ed0d3ddec3c24893cc51793eab45d674d52bd6d3"
+    },
+    {
+      "path": "restart-observer.py",
+      "sha256": "b1b98801f830c2f59463d2fc82964d8449590fe5324be4de01cc00f36a44f276"
+    },
+    {
+      "path": "uncertain-observer.py",
+      "sha256": "a109369840ffe6347c621d32393b25672efd8ee1fa1082fca934fb9a4b51c327"
+    },
+    {
+      "path": "first-request.json",
+      "sha256": "2c759cab43f874bffdf01ea766c749f1c25be50567da6cb9b58518e5550a60b7"
+    },
+    {
+      "path": "uncertain-request.json",
+      "sha256": "1b2df5d94f2d744accbad15404316527a72e89edfb8694b4c5f4a74b6e437918"
+    },
+    {
+      "path": "topic.txt",
+      "sha256": "ebcee06c58da31d592197990e57129fc29cb13bb4e86c9d43a51739cf208b2bf"
+    },
+    {
+      "path": "cloud_internal.h",
+      "sha256": "ed7a76aca7b27604ab76c7f4154fa527014aece5c1db152f2e3f7e9e6ab3949b"
+    },
+    {
+      "path": "mqtt_core.h",
+      "sha256": "e65feffa0ab76e4ed8fac9262f5a0381e1575ad72aac3c3126dce6915dfa2597"
+    },
+    {
+      "path": "ota_service.h",
+      "sha256": "ddfeb0be677dc934ccff3287e304b5230d6b953c53e4ce87560832d72ad31061"
+    },
+    {
+      "path": "ota_info.h",
+      "sha256": "aec0dd4312eedad1ec4181cb5f607584bf133ce6c390b5cbab4fa3b402b20d2e"
+    },
+    {
+      "path": "vehicle_power_output.h",
+      "sha256": "adc3c2bfd7d00b4f805f00d02bf63b896002d9ebad5b9db2abcc0eb8c3147941"
+    },
+    {
+      "path": "remote_service.h",
+      "sha256": "f8da498d68331b30b067c55b152dce18fa97079222a54424445be96d61444e08"
+    },
+    {
+      "path": "final-adapter-rtt.log",
+      "sha256": "cf0cafd4ffdde9f36dc7464a68ff15c943c897557c77cc5ba3ef62754778be26"
+    },
+    {
+      "path": "final-adapter-observer.jsonl",
+      "sha256": "92e4b2f5d5de72bcea9c9ea7ff0a7942d241c0c9d4bb58291ee15df2a673f9ba"
+    },
+    {
+      "path": "final-adapter-final-read.log",
+      "sha256": "f25bc3cfe4cf6f9a197f95f07d7676f10bcc4796a2bf4fbc31739139493dd45e"
+    },
+    {
+      "path": "final-adapter-bench.c",
+      "sha256": "c03be1e96be0ce11b748c97aaf6c567603579ecbaf5b12cca4b21a4fe16f9f6e"
+    },
+    {
+      "path": "final-adapter-patrol_power_ledger.c",
+      "sha256": "aa4d3a312b682a41ea4b68ee2fc11ec564e38e42c193746e4ab214de9d45bf97"
+    },
+    {
+      "path": "final-adapter-observer.py",
+      "sha256": "bf4e47a7b1739ebce46c90f43d5fefc7ed12bff1f7828b71edae5d69db2fb8d2"
+    },
+    {
+      "path": "final-adapter-topic.txt",
+      "sha256": "27b46159344757af7768e0a5529c93d8041235742b5c647626b89948ed93390b"
+    },
+    {
+      "path": "final-adapter-build.py",
+      "sha256": "fb039fee8470e4a655040fe600f6cf46626a992bd76be58694a8e7fef1a3e2fe"
+    },
+    {
+      "path": "lease-adapter-rtt.log",
+      "sha256": "099dc886d9ba07620eae1410fa3da6ae2b63894d2eb6bc1aed00b1adab910b21"
+    },
+    {
+      "path": "lease-adapter-observer.jsonl",
+      "sha256": "0375994987c3c16f334bca4694d192d62cb6ff7e03dd2b093ab50f02474dbe2c"
+    },
+    {
+      "path": "lease-adapter-final-read.log",
+      "sha256": "56a0ed4c251541a886e448cc2c99f560843707abe1d3d3d4ef554ee8e79b7806"
+    },
+    {
+      "path": "lease-adapter-bench.c",
+      "sha256": "416e122bcc997557695f3f7b4ac2f8c69e8982329ee671e55d36dc3f7b29339b"
+    },
+    {
+      "path": "lease-adapter-patrol_power_ledger.c",
+      "sha256": "a7b23353bf54ffed414ec7e16bc5fd7ab4c1536ca830a0696d595573045acf74"
+    },
+    {
+      "path": "lease-adapter-observer.py",
+      "sha256": "015e8f4dac8f158e1e9a7ae650a7a33303bbab68f807dd1b996ca02dff384715"
+    },
+    {
+      "path": "lease-adapter-topic.txt",
+      "sha256": "5da2c5b0c74cf863b884e6d49386ddef2d97e5f9f368301790c18c1649ec189a"
+    },
+    {
+      "path": "lease-adapter-build.py",
+      "sha256": "f9034f6a1bf876e92127f81b66a041dd44c9be2cb01a5c0f4756d0b438610496"
+    },
+    {
+      "path": "lease-adapter-ota_service.h",
+      "sha256": "949c72790ce9b20d2bf51348c8d090844d216474aaa9b6483fbb4bca02a56cee"
+    },
+    {
+      "path": "lease-adapter-patrol_enrollment.h",
+      "sha256": "5e42cf513aea48d1aa1342913c246202a23e2a81b0cbe143f7401bf051dcf4c3"
+    }
+  ]
+}

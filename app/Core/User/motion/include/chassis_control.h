@@ -8,6 +8,22 @@
 #define CHASSIS_MAX_LEASE_MS 1000U
 #define CHASSIS_FEEDBACK_TIMEOUT_MS 250U
 #define CHASSIS_STEERING_PAIR_SKEW_MS 30U
+/* Logical contact bits. The board layer maps B8 to front and B9 to rear
+ * according to the compiled board version. Optocoupler high means pressed. */
+#define CHASSIS_COLLISION_FRONT 1U
+#define CHASSIS_COLLISION_REAR 2U
+#define CHASSIS_COLLISION_VALID 4U
+#define CHASSIS_COLLISION_DELAY 8U
+#define CHASSIS_COLLISION_WAIT_NEUTRAL 16U
+#define CHASSIS_COLLISION_NEUTRAL_TIMING 24U
+#define CHASSIS_COLLISION_PHASE_MASK 24U
+#define CHASSIS_COLLISION_BRAKING 32U
+#define CHASSIS_COLLISION_PENDING 64U
+#define CHASSIS_COLLISION_MONITORED 128U
+#define CHASSIS_COLLISION_IGNORE_MS 1000U
+#define CHASSIS_COLLISION_NEUTRAL_MS 1000U
+#define CHASSIS_COLLISION_SAMPLE_MS 100U
+#define CHASSIS_COLLISION_NEUTRAL_RAW 10 /* T12 raw full scale is +/-450. */
 
 typedef enum {
     CHASSIS_STOP_NONE = 0,
@@ -41,6 +57,8 @@ typedef struct {
     uint8_t angle_pair_valid; /* Time-aligned samples for centering boundaries, not a normal-motion gate. */
     int16_t left_actual_rpm;
     int16_t right_actual_rpm;
+    uint8_t steering_angle_unavailable; /* Uses former padding; unavailable is a motion gate, not a range fault. */
+    uint8_t motion_inhibited; /* Exclusive maintenance preparation/session. Stop remains accepted. */
     int32_t steering_actual_mdeg;
     int32_t encoder_actual_mdeg;
     uint32_t feedback_ms;
@@ -66,9 +84,19 @@ typedef struct {
     uint8_t drive_brake; /* Traction-only inhibit; steering/session stay authorized. */
     uint8_t fault_pending; /* 已禁止运动，正在优先撤使能，尚未完成故障锁存。 */
     ChassisStopReason stop_reason;
+    uint8_t collision; /* Uses ARM padding: contacts, validity and recovery phase. */
     ChassisFeedback feedback;
     uint8_t (*request_fault_stop)(void);
 } ChassisControl;
+
+// 发布已消抖的两路输入；新受压启动一次保持使能停车，不把碰撞当作故障。valid=0 时禁止恢复。
+void ChassisControl_CollisionInputs(ChassisControl* c, uint8_t contacts, uint8_t valid, uint32_t now);
+// 仅由新鲜 T12 原始摇杆帧调用：先屏蔽 1 秒，再连续双摇杆回中超过 1 秒；丢帧或偏离均重新计时。
+void ChassisControl_CollisionJoystick(ChassisControl* c, int16_t steer, int16_t throttle,
+                                    uint32_t received, uint32_t now);
+uint8_t ChassisControl_CollisionBlocked(const ChassisControl* c);
+// 消费停车事件及报告执行器真实双轮停车确认；不改变使能、会话或故障锁存。
+void ChassisControl_CollisionBrakeProcessed(ChassisControl* c, uint8_t stopped);
 
 // 初始化底盘控制上下文到未标定的安全默认状态。清空会话、目标、反馈和换向计数；初始化本身不会使能电机，后续仍须通过反馈安全门禁。
 void ChassisControl_Init(ChassisControl* control);
@@ -80,7 +108,7 @@ void ChassisControl_RequestFault(ChassisControl* control, ChassisStopReason reas
 void ChassisControl_CompleteFaultStop(ChassisControl* control);
 // 设置内部行走禁用状态，不撤销转向授权。激活时立即清零行走与待换向目标，保留最近非零方向以防解除后绕过换向检查；当前不绑定 T12 B 键。
 void ChassisControl_SetDriveBrake(ChassisControl* control, uint8_t active);
-// 返回阻止正常运动的首个安全原因。在运行期门禁基础上检查标定、编码器规格、量程、电源就绪和双角度偏差；偏差超过 2000 mdeg 即拒绝运动。
+// 返回正常运动的首个阻断原因。独立编码器量程始终检查；电机硬范围只使用有效运行坐标，坐标未就绪与维护占用仅禁止运动。
 ChassisStopReason ChassisControl_SafetyReason(const ChassisControl* control, uint32_t now_ms);
 // 查询运行期故障、通信与反馈时效门禁。依次检查锁存、节点在线、Bus-Off、驱动故障、OTA 与反馈超时；标定和角度门禁由完整检查函数补充。
 ChassisStopReason ChassisControl_RuntimeSafetyReason(const ChassisControl* control, uint32_t now_ms);

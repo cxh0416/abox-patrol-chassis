@@ -9,6 +9,10 @@ typedef uint8_t (*VehiclePowerOutputWriteFn)(uint8_t on);
 void VehiclePowerOutput_Init(VehiclePowerOutputWriteFn write);
 // 按编译许可提交动力输出开关命令。开启受 actuation 开关限制，只有写回调成功才更新命令缓存；返回成功仍不是继电器或接触器反馈。
 uint8_t VehiclePowerOutput_Set(uint8_t on);
+/* Snapshot/cancel an asynchronously prepared ON. The owner must compare the
+ * snapshot and dispatch ON in one task critical section. */
+uint32_t VehiclePowerOutput_StopGeneration(void);
+void VehiclePowerOutput_CancelPendingOn(void);
 // 查询动力输出是否绑定了可用写回调。只表示软件端口存在，不能据此确认硬件供电或反馈线路正常。
 uint8_t VehiclePowerOutput_IsAvailable(void);
 // 读取最近一次成功提交的动力输出命令状态。这是命令缓存，不是实际电压、接触器吸合或电机停止状态测量。

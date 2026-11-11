@@ -157,6 +157,8 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
     stm32cubemx
     abox::mqtt_digest
     abox::cloud_v4
+    abox::ufs_journal
+    abox::ec800_ufs_at
     # Add user defined libraries
 )
 

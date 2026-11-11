@@ -1,0 +1,7 @@
+{"monotonic": 116948.5270063, "payload": {"event": "stats", "tick": 18160, "actions": 0, "stops": 0, "probes": 0, "busyProbes": 0, "received": 0, "marker": 1, "ready": 1, "drops": 0}}
+{"monotonic": 116948.9766696, "payload": {"event": "stats", "tick": 19160, "actions": 0, "stops": 0, "probes": 0, "busyProbes": 0, "received": 0, "marker": 1, "ready": 1, "drops": 0}}
+{"monotonic": 116949.6438139, "payload": {"version": "4.0", "timestamp": 1800000720217, "data": {"requestId": "board-first", "code": 200, "msg": "operation accepted", "result": {"powerOutputOn": true}}}}
+{"monotonic": 116950.1560326, "payload": {"event": "stats", "tick": 20160, "actions": 0, "stops": 0, "probes": 0, "busyProbes": 0, "received": 1, "marker": 1, "ready": 1, "drops": 0}}
+{"monotonic": 116950.7884618, "payload": {"event": "armed-after"}}
+{"monotonic": 116951.4989964, "payload": {"event": "stats", "tick": 21160, "actions": 0, "stops": 0, "probes": 0, "busyProbes": 0, "received": 2, "marker": 1, "ready": 1, "drops": 0}}
+{"monotonic": 116951.9217262, "payload": {"event": "begin", "id": "board-uncertain"}}

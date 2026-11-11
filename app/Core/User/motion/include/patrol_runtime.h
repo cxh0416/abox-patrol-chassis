@@ -22,6 +22,8 @@ void PatrolRuntime_GetDiagnostics(PatrolDiagnosticsSnapshot* snapshot);
 void PatrolRuntime_Init(void);
 // 查询本地自动回中是否持有转向请求。供业务状态和任务协调使用；不把请求存在等同于回中已经完成。
 uint8_t PatrolRuntime_AutoCenterActive(void);
+// 查询两个执行器及自动回中是否空闲。维护准备不依赖普通运行坐标，但不得接管正在停车或运行的执行器。
+uint8_t PatrolRuntime_MaintenanceReady(void);
 // 执行一次运动运行层的非阻塞调度。仲裁遥控、标定和回中，推进双执行器并处理切电、故障存储与 CAN 请求；发送前再次检查会话和租约，防止选帧后授权被撤销。
 void PatrolRuntime_Tick(void);
 // 将驱动器 CAN 反馈分发给诊断与执行器。同一帧可用于状态维护和在途响应匹配；调用方须按运行层并发约定保护共享状态。

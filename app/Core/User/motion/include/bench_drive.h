@@ -30,6 +30,9 @@ uint8_t BenchDrive_Start(BenchDrive* b, uint32_t now);
 void BenchDrive_SetSteeringAngle(BenchDrive* b, int32_t actual_mdeg);
 // 请求行走执行器有序停车或紧急故障退出。普通停止先取消旧事务，再写左右零速、确认停车并撤使能；emergency 非零则直接锁存故障并置切电请求。
 void BenchDrive_Stop(BenchDrive* b, uint32_t now, uint8_t emergency);
+// 防撞停车：完成在途事务后优先写左右零速，三对新鲜低速反馈确认；保持 Operation Enabled，不进入 STOPPING。
+void BenchDrive_CollisionHold(BenchDrive* b, uint32_t now);
+uint8_t BenchDrive_CollisionStopped(const BenchDrive* b);
 // 推进行走目标、事务超时和换向停车状态。反向前明确写双轮零速，只有零速 ACK 之后且比上一对更新的左右反馈才参与三次低速确认；事务、准备、停车超时分别受限。
 void BenchDrive_Tick(BenchDrive* b, uint32_t now, uint8_t requested, uint8_t safe,
     int16_t rpm, int32_t left, int32_t right, uint32_t left_ms, uint32_t right_ms);

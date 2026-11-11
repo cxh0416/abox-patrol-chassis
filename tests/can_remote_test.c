@@ -33,6 +33,9 @@ uint64_t ABoxMqttV4_IdempotencyProtectUntil(uint64_t e UNUSED)
 
 static uint32_t now;
 static uint8_t center_active, ota, reset_allowed;
+uint8_t OtaService_IsBusy(void) { return ota; }
+static uint8_t maintenance_busy;
+uint8_t PatrolRuntime_MaintenanceReady(void) { return !maintenance_busy; }
 static uint8_t cal_phase, cal_reason;
 static int32_t cal_driver_raw=-1464, cal_saved_center=-1464, cal_jog_offset;
 static char cal_session[40];
@@ -283,6 +286,69 @@ static void calibration_cases(void)
     PatrolCanRemote_Tick(now,0U);
     assert(!center_active);
 }
+
+static void maintenance_exclusion_cases(void)
+{
+    init();
+    maintenance_busy=1U;
+    assert(calibration_command(PATROL_CAN_CAL_PREPARE,1,0,0,now).result==PATROL_CAN_CAL_SAFETY);
+    assert(!state()->feedback.motion_inhibited);
+    maintenance_busy=0U;
+    assert(calibration_command(PATROL_CAN_CAL_PREPARE,1,0,0,now).result==PATROL_CAN_CAL_OK);
+    assert(state()->feedback.motion_inhibited && !state()->session_active);
+    ChassisFeedback stale=state()->feedback; stale.motion_inhibited=0U;
+    RemoteService_UpdateFeedback(&stale);
+    assert(state()->feedback.motion_inhibited); /* pre-PREPARE snapshot cannot release ownership */
+    RemoteService_Init();
+    assert(state()->feedback.motion_inhibited); /* ordinary service reinit cannot steal maintenance */
+    RemoteService_UpdateFeedback(&stale);
+    assert(send(PATROL_CAN_ARM,2,0,0)==PATROL_CAN_SAFETY);
+    assert(!RemoteService_ApplyLocal("acquire","web",1,300,0,0,now));
+    switches(1,0); joystick(200,200);
+    assert(!state()->session_active && !state()->enable_request);
+    PatrolPhyRemote_Tick(now,1U);
+    assert(send(PATROL_CAN_STOP,3,0,0)==PATROL_CAN_OK);
+    assert(!state()->feedback.motion_inhibited);
+    switches(1,0); joystick(200,200);
+    assert(!state()->session_active); /* a held A cannot resume after maintenance */
+    switches(0,0); switches(1,0);
+    assert(state()->session_active);
+
+    init();
+    assert(calibration_command(PATROL_CAN_CAL_PREPARE,1,0,0,now).result==PATROL_CAN_CAL_OK);
+    now+=PATROL_CAN_CAL_LEASE_MS;
+    PatrolCanRemote_Tick(now,1U);
+    assert(!PatrolCanRemote_CalibrationPrepareActive() && !state()->feedback.motion_inhibited);
+    assert(!VehiclePowerOutput_IsOn() && !state()->enable_request);
+    puts("PASS maintenance excludes all ordinary owners, keeps STOP, requires handset release and expires safely");
+}
+
+static void collision_handset_cases(void)
+{
+    init(); switches(1,0); joystick(225,180);
+    now += 10; healthy();
+    RemoteService_CollisionInputs(CHASSIS_COLLISION_FRONT,1,now);
+    RemoteService_CollisionBrakeProcessed(1); /* This protocol fixture has no real motor executor. */
+    uint32_t impact = now;
+    for (unsigned dt = 0; dt < 1000; dt += 40) {
+        now = impact + dt; healthy(); switches(1,0); joystick(0,0); RemoteService_SafetyTick(now);
+        assert(ChassisControl_CollisionBlocked(state()));
+        assert(state()->enable_request && state()->session_active && state()->target_rpm == 0);
+        assert(!state()->fault_pending && !state()->fault_latched);
+    }
+    for (unsigned dt = 0; dt <= 1000; dt += 40) {
+        now = impact + 1000 + dt; healthy(); switches(1,0); joystick(0,0); RemoteService_SafetyTick(now);
+        assert(ChassisControl_CollisionBlocked(state()));
+    }
+    now += 40; healthy(); switches(1,0); joystick(0,0); RemoteService_SafetyTick(now);
+    assert(!ChassisControl_CollisionBlocked(state()) && state()->enable_request);
+    joystick(225,0); assert(state()->target_rpm == 0); /* Front remains pressed. */
+    joystick(-225,0); assert(state()->target_rpm == 0 && state()->reversal_pending);
+    for (unsigned i=0;i<3;i++) { now+=40; healthy(); switches(1,0); joystick(-225,0); RemoteService_SafetyTick(now); }
+    assert(state()->target_rpm == -1000 && !state()->fault_latched && VehiclePowerOutput_IsOn());
+    RemoteService_CollisionInputs(0,1,now);
+    puts("PASS real T12 sequential 1s/strictly-over-1s recovery, enabled zero, front reverse-only and fresh reversal");
+}
 int main(void)
 {
     init(); assert(send(PATROL_CAN_QUERY,1,0,0)==PATROL_CAN_OK); assert(!state()->enable_request);
@@ -383,6 +449,8 @@ int main(void)
     drive_speed_cases();
     physical_b_ignored_cases();
     calibration_cases();
+    maintenance_exclusion_cases();
+    collision_handset_cases();
     puts("CAN2 motion and native center-calibration bridge: PASS");
     return 0;
 }

@@ -13,15 +13,17 @@ import argparse
 import ctypes
 import json
 import os
+import queue
 from pathlib import Path
 import struct
 import sys
+import threading
 import time
 from dataclasses import asdict, dataclass
 from typing import Callable, Iterable
 
 
-SCRIPT_VERSION = "1.1.0"
+SCRIPT_VERSION = "1.2.0"
 VCI_USBCAN2 = 4
 MOTION_COMMAND = 0x520
 MOTION_ACK = 0x521
@@ -515,18 +517,31 @@ def _start_calibration(client: Can2CalibrationClient, deadline: float):
             if observed.token:
                 print(f"Recovered START session token: {observed.token}")
                 return observed
-            started = None
+            raise Can2CalibrationError(
+                "START reply incomplete and no session token was recovered; "
+                "do not replay START automatically. Query status and check the vehicle."
+            ) from exc
         if started is not None and started.result == CAL_OK:
             return started
         motion = client.motion_status()
         if motion.fault_latched:
-            raise Can2CalibrationError("A motion fault became latched before calibration START")
+            observed = client.query()
+            raise Can2CalibrationError(
+                "A motion fault became latched before calibration START: "
+                f"stop_reason={motion.stop_reason}, feedback_age_ms={motion.feedback_age_ms}, "
+                f"phase={observed.phase_name}, reason={observed.reason_name}, "
+                f"driver_raw={observed.driver_raw}, encoder_raw={observed.encoder_raw}, "
+                f"saved_center={observed.saved_center}. Stop retrying and preserve this output."
+            )
         if motion.session_active:
             raise Can2CalibrationError("Another control session became active before calibration START")
         if time.monotonic() >= deadline:
             if started is None:
                 raise Can2CalibrationError("START result could not be recovered")
             _require_ok(started, "START")
+        # START explicitly rejected the attempt: keep the idempotent preparation
+        # lease alive while feedback powers up, without replaying an unknown START.
+        _prepare_calibration(client)
         time.sleep(0.1)
 
 
@@ -562,7 +577,7 @@ def calibrate_current(client: Can2CalibrationClient, reset_fault: bool, assume_y
     if motion.session_active:
         raise Can2CalibrationError(
             "Another control session is active. Release the T12 A switch or stop the other "
-            "remote-control script, wait at least 1 second, and rerun."
+            "remote-control script, wait at least 3 seconds, and rerun."
         )
     if motion.fault_latched:
         if not reset_fault:
@@ -595,7 +610,7 @@ def calibrate_current(client: Can2CalibrationClient, reset_fault: bool, assume_y
             if powered.result != 0 or not powered.power_on:
                 raise Can2CalibrationError(f"POWER_ON rejected: result={powered.result}")
 
-        started = _start_calibration(client, time.monotonic() + 3.0)
+        started = _start_calibration(client, time.monotonic() + 7.0)
         if started.token == 0:
             raise Can2CalibrationError("START succeeded without a session token")
         token = started.token
@@ -638,13 +653,45 @@ def calibrate_current(client: Can2CalibrationClient, reset_fault: bool, assume_y
 
 def interactive(client: Can2CalibrationClient):
     token = 0
-    print("Commands: status, power-on, power-off, reset-fault, start, jog <mdeg>, commit, watch, cancel, quit")
+    prepared = False
+    lines = queue.Queue()
+    print("Commands: status, prepare, power-on, power-off, reset-fault, start, jog <mdeg>, commit, watch, cancel, quit")
+    print("The main loop keeps the maintenance lease alive while waiting for input. "
+          "watch keeps displaying state; enter the next command without Ctrl+C.")
+
+    def read_input():
+        while True:
+            try:
+                line = input("can2-cal> ")
+            except EOFError:
+                lines.put(None)
+                return
+            lines.put(line)
+            if line.strip().lower() in ("quit", "exit"):
+                return
+
+    threading.Thread(target=read_input, daemon=True).start()
+    watching = False
     try:
         while True:
             try:
-                line = input("can2-cal> ").strip().lower()
-            except EOFError:
+                line = lines.get(timeout=0.2)
+            except queue.Empty:
+                # All CAN requests remain in this thread, with one sequence owner.
+                if token:
+                    result = client.query(token)
+                    if watching:
+                        print(json.dumps(result.to_dict(), ensure_ascii=False))
+                    if not result.active:
+                        token = 0
+                        prepared = False
+                        print(json.dumps(result.to_dict(), ensure_ascii=False))
+                elif prepared:
+                    _prepare_calibration(client)
+                continue
+            if line is None:
                 break
+            line = line.strip().lower()
             if not line:
                 continue
             parts = line.split()
@@ -654,37 +701,59 @@ def interactive(client: Can2CalibrationClient):
                     break
                 if command == "status":
                     result = client.query(token)
+                elif command == "prepare":
+                    result = _prepare_calibration(client)
+                    prepared = True
                 elif command == "power-on":
+                    _prepare_calibration(client)
+                    prepared = True
                     result = client.power_on()
                 elif command == "power-off":
                     result = client.power_off()
+                    prepared = False
                 elif command == "reset-fault":
-                    result = client.reset_fault()
+                    result = reset_motion_fault(client)
+                    prepared = False
                 elif command == "start":
-                    result = client.calibration(CAL_START)
+                    _prepare_calibration(client)
+                    prepared = True
+                    if not client.motion_status().power_on:
+                        client.power_on()
+                    result = _start_calibration(client, time.monotonic() + 7.0)
                     if result.result == CAL_OK:
                         token = result.token
+                        prepared = False
+                        result = _wait_phase(client, token, 1, 10.0)
                 elif command == "jog":
                     if len(parts) != 2:
                         raise Can2CalibrationError("usage: jog <mdeg>, allowed ±200/±1000/±5000")
                     result = client.calibration(CAL_JOG, token, int(parts[1]))
                 elif command == "commit":
-                    result = client.calibration(CAL_COMMIT, token)
+                    if not token:
+                        raise Can2CalibrationError("No active calibration session; run start first")
+                    before = client.query(token)
+                    if before.phase != 1:
+                        raise Can2CalibrationError("Wait for READY before COMMIT")
+                    captured = before.driver_raw
+                    _commit_calibration(client, token)
+                    result = _wait_phase(client, token, 7, 20.0)
+                    final = client.query()
+                    if not final.calibrated or abs(final.saved_center - captured) > 5:
+                        raise Can2CalibrationError("COMMIT ended without a matching persistent center")
+                    token = 0
+                    prepared = False
+                    client.power_off()
                 elif command == "cancel":
-                    result = client.calibration(CAL_CANCEL, token)
+                    result = client.calibration(CAL_CANCEL, token) if token else client.power_off()
                     if result.result == CAL_OK:
                         token = 0
+                        prepared = False
                 elif command == "watch":
-                    while True:
-                        result = client.query(token)
-                        print(json.dumps(result.to_dict(), ensure_ascii=False))
-                        if result.result != CAL_OK or not result.active:
-                            break
-                        time.sleep(0.2)
-                    continue
+                    watching = True
+                    result = client.query(token)
                 else:
                     raise Can2CalibrationError(f"unknown command: {command}")
-                print(json.dumps(asdict(result), ensure_ascii=False, indent=2))
+                print(json.dumps(result.to_dict() if isinstance(result, CalibrationStatus) else asdict(result), ensure_ascii=False, indent=2))
             except (Can2CalibrationError, ValueError) as exc:
                 print(f"ERROR: {exc}", file=sys.stderr)
     finally:

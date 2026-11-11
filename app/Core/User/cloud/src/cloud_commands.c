@@ -14,6 +14,7 @@
 #include "mqtt_trial_persistent.h"
 #include "ota_service.h"
 #include "remote_service.h"
+#include "patrol_power_ledger.h"
 #include "patrol_config.h"
 #include "patrol_runtime.h"
 #include "center_calibration.h"
@@ -138,7 +139,7 @@ static __attribute__((noinline)) void handle_config_request(const CloudProtocolR
     }
     else if (action == CLOUD_PROTOCOL_ACTION_GET_LOG)
     {
-        if (g_cloud.log_active)
+        if (g_cloud.log_active || PatrolPowerLedger_StorageBusy())
         {
             CloudMessages_ScheduleSimpleError(g_cloud.topic_config_resp, request_id, 409U, "DEVICE_BUSY");
             return;
@@ -308,7 +309,7 @@ static void handle_ota_request(const CloudProtocolRequest_t* request)
                                 "{\"otaPhase\":\"CONFIRMED\"}", 0U);
         return;
     }
-    if (OtaService_IsBusy()) { CloudMessages_ScheduleSimpleError(g_cloud.topic_ota_resp, request->request_id, 409U, "DEVICE_BUSY"); return; }
+    if (OtaService_IsBusy() || PatrolPowerLedger_StorageBusy()) { CloudMessages_ScheduleSimpleError(g_cloud.topic_ota_resp, request->request_id, 409U, "DEVICE_BUSY"); return; }
     if (BootState_Load(&state) && (state.state != BOOT_STATE_NORMAL && state.state != BOOT_STATE_CONFIRMED)) {
         CloudMessages_ScheduleSimpleError(g_cloud.topic_ota_resp, request->request_id, 409U, "DEVICE_BUSY"); return;
     }
@@ -327,7 +328,7 @@ static void handle_ota_request(const CloudProtocolRequest_t* request)
 }
 
 // 将公共控制请求交给底盘远控服务并调度响应。公共协议与内部维护协议保持分离，响应缓冲区受限；实际会话和安全仲裁由 RemoteService 完成。
-static __attribute__((noinline)) void handle_public_control(const char* payload)
+static __attribute__((noinline)) void handle_public_control(const char* topic, const char* payload)
 {
     /* Remote owns this workspace. ScheduleRawResponse copies it before a later
      * report reuses it; the transport also owns its own publish copy. */
@@ -352,6 +353,19 @@ static __attribute__((noinline)) void handle_public_control(const char* payload)
                                                4001U, "sync_state does not use expiresAt");
             cJSON_Delete(root); return;
         }
+        {
+            uint16_t code = PatrolPowerLedger_CheckOther(topic, request_id->valuestring);
+            if (code != 200U) {
+                char stamp[21];
+                if (!TimeBase_FormatUtcMs(stamp, sizeof(stamp))) strcpy(stamp, "0");
+                (void)snprintf(response, sizeof(g_cloud.tx_payload),
+                    "{\"version\":\"4.0\",\"timestamp\":%s,\"data\":{\"requestId\":\"%s\",\"code\":%u,\"msg\":\"%s\"}}",
+                    stamp, request_id->valuestring, (unsigned)code,
+                    code == 4006U ? "requestId conflict" : "power ledger unavailable");
+                if (code != 4001U) (void)CloudMessages_ScheduleRawResponse(g_cloud.topic_control_resp, response);
+                cJSON_Delete(root); return;
+            }
+        }
         /* get_info may already have reached the broker while its modem publish
          * acknowledgement is still pending. Keep the correlated refresh until
          * both the response slot and the previous status publish are free. */
@@ -360,6 +374,13 @@ static __attribute__((noinline)) void handle_public_control(const char* payload)
         return;
     }
     if (root) cJSON_Delete(root);
+    {
+        int handled = PatrolPowerLedger_Intercept(topic, payload, response, sizeof(g_cloud.tx_payload));
+        if (handled) {
+            if (handled == 1) (void)CloudMessages_ScheduleRawResponse(g_cloud.topic_control_resp, response);
+            return;
+        }
+    }
     if (RemoteService_HandleControl(payload, (uint16_t)strlen(payload), response, sizeof(g_cloud.tx_payload)))
         (void)CloudMessages_ScheduleRawResponse(g_cloud.topic_control_resp, response);
     else APP_LOGW("REMOTE", "invalid or busy chassis control request");
@@ -383,7 +404,7 @@ void CloudCommands_OnMessage(const char* topic, const char* payload)
     if (!ABoxCloudDispatch_Open(routes, sizeof(routes) / sizeof(routes[0]), topic, payload, &context)) return;
     if (context.route == 1U)
     {
-        handle_public_control(payload);
+        handle_public_control(topic, payload);
         return;
     }
     if (context.route != 2U && context.route != 3U) return;

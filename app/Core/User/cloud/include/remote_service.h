@@ -32,9 +32,15 @@ void RemoteService_Task(void);
 void RemoteService_SafetyTick(uint32_t now_ms);
 // 向已初始化的控制层发布最新反馈快照。空指针被忽略；上层须按运行层并发约定组织一致快照与访问保护。
 void RemoteService_UpdateFeedback(const ChassisFeedback* feedback);
+// 原子设置维护独占门禁。进入时撤销普通目标与会话，退出时不恢复旧授权。
+void RemoteService_SetMaintenance(uint8_t active);
 /* Internal traction inhibit; independent of handset buttons and steering. */
 // 设置受临界区保护的内部行走禁用位。只限制行走并取消待换向目标，不撤销转向会话；当前 T12 B 键不调用此接口。
 void RemoteService_SetDriveBrake(uint8_t active);
+// 防撞只改变运动目标与恢复门禁；不撤销现有使能，不用碰撞事件调用故障锁存入口。
+void RemoteService_CollisionInputs(uint8_t contacts, uint8_t valid, uint32_t now_ms);
+void RemoteService_CollisionJoystick(int16_t steer, int16_t throttle, uint32_t received_ms, uint32_t now_ms);
+void RemoteService_CollisionBrakeProcessed(uint8_t stopped);
 /* Local transports share the same owner, safety checks and lease watchdog.
  * No network clock or JSON envelope is required on the physical CAN port. */
 // 处理实体遥控和 CAN2 等本地控制请求。与云端共用会话归属、租约和安全门禁；stop 保持可执行，其他动作不能在标定占用或安全条件不满足时进入。
@@ -42,6 +48,8 @@ uint8_t RemoteService_ApplyLocal(const char* action, const char* session_id,
     uint32_t seq, uint32_t lease_ms, int16_t rpm, int32_t steering_mdeg, uint32_t now_ms);
 // 解析并执行公共 MQTT 底盘控制请求。核验身份、规范化摘要、重放、可信时钟和有效期后仲裁；有效 stop 和下电优先撤目标，响应只表明处理结果而非物理执行完成。
 uint8_t RemoteService_HandleControl(const char* payload, uint16_t length, char* response, uint16_t size);
+uint8_t RemoteService_HasCachedRequest(const char *request_id);
+int RemoteService_PowerOnPrepared(uint32_t stop_generation, uint8_t *power_on);
 // 返回共享底盘控制上下文的只读视图。指针指向模块静态存储，会被其他任务更新；跨字段一致性读取需遵守临界区约定，不得保存为独立历史快照。
 const ChassisControl* RemoteService_State(void);
 

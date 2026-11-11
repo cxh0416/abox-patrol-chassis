@@ -1,0 +1,15 @@
+{"monotonic": 116907.0673714, "payload": {"event": "stats", "tick": 18428, "actions": 0, "stops": 0, "probes": 0, "busyProbes": 0, "received": 0, "marker": 1, "ready": 1, "drops": 0}}
+{"monotonic": 116908.0077391, "payload": {"event": "begin", "id": "board-first"}}
+{"monotonic": 116908.4905422, "payload": {"event": "stats", "tick": 19458, "actions": 0, "stops": 0, "probes": 3, "busyProbes": 2, "received": 4, "marker": 1, "ready": 1, "drops": 0}}
+{"monotonic": 116908.8469163, "payload": {"event": "begin", "id": "board-first"}}
+{"monotonic": 116909.4081969, "payload": {"version": "4.0", "timestamp": 1800000719935, "data": {"requestId": "board-first", "code": 4006, "msg": "requestId conflict"}}}
+{"monotonic": 116909.8211088, "payload": {"event": "stats", "tick": 20458, "actions": 1, "stops": 0, "probes": 21, "busyProbes": 20, "received": 24, "marker": 1, "ready": 1, "drops": 0}}
+{"monotonic": 116910.2677404, "payload": {"version": "4.0", "timestamp": 1800000720217, "data": {"requestId": "board-first", "code": 200, "msg": "operation accepted", "result": {"powerOutputOn": true}}}}
+{"monotonic": 116910.629725, "payload": {"event": "stats", "tick": 21458, "actions": 1, "stops": 0, "probes": 39, "busyProbes": 28, "received": 42, "marker": 1, "ready": 1, "drops": 0}}
+{"monotonic": 116911.2313312, "payload": {"version": "4.0", "timestamp": 1800000720217, "data": {"requestId": "board-first", "code": 200, "msg": "operation accepted", "result": {"powerOutputOn": true}}}}
+{"monotonic": 116911.6348214, "payload": {"event": "stats", "tick": 22465, "actions": 1, "stops": 0, "probes": 53, "busyProbes": 28, "received": 57, "marker": 1, "ready": 1, "drops": 0}}
+{"monotonic": 116912.6658546, "payload": {"event": "begin", "id": "board-stop"}}
+{"monotonic": 116912.8520106, "payload": {"event": "stats", "tick": 23471, "actions": 1, "stops": 0, "probes": 53, "busyProbes": 28, "received": 58, "marker": 1, "ready": 1, "drops": 0}}
+{"monotonic": 116913.3325255, "payload": {"event": "safe_stop"}}
+{"monotonic": 116913.7332426, "payload": {"event": "stats", "tick": 24471, "actions": 1, "stops": 1, "probes": 53, "busyProbes": 28, "received": 59, "marker": 1, "ready": 1, "drops": 0}}
+{"monotonic": 116914.6152656, "payload": {"version": "4.0", "timestamp": 1800000724166, "data": {"requestId": "board-stop", "code": 4003, "msg": "superseded by safety stop", "result": {"powerOutputOn": false}}}}

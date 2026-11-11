@@ -47,13 +47,14 @@ void PatrolCanRemote_Init(void)
     control_seq=0; last_seq=reply_seq=0; armed=have_sequence=reply_pending=reply_code=0;
     cal_token=next_cal_token=cal_last_seq=0; cal_last_seen=0;
     cal_have_sequence=cal_prepare_active=reply_family=0; cal_prepare_ms=0;
+    RemoteService_SetMaintenance(0U);
 }
 // 监督 CAN2 远控租约与底层通信状态。在失联或通信故障时撤销会话，故障按现有安全仲裁记录；不得借续租延续陈旧目标。
 void PatrolCanRemote_Tick(uint32_t now, uint8_t healthy)
 {
     const ChassisControl* c=RemoteService_State();
     if (cal_prepare_active &&
-        (!healthy || (uint32_t)(now-cal_prepare_ms)>=PATROL_CAN_CAL_LEASE_MS))
+        (!healthy || PatrolRuntimePort_OtaBusy() || (uint32_t)(now-cal_prepare_ms)>=PATROL_CAN_CAL_LEASE_MS))
     {
         cal_prepare_active=0U;
         (void)VehiclePowerOutput_Set(0U);
@@ -64,6 +65,7 @@ void PatrolCanRemote_Tick(uint32_t now, uint8_t healthy)
         (void)CenterCalibration_Cancel(CenterCalibration_SessionId());
     }
     if (cal_token != 0U && !CenterCalibration_IsActive()) calibration_clear_local();
+    RemoteService_SetMaintenance((uint8_t)(cal_prepare_active || CenterCalibration_IsActive()));
     if (!armed) return;
     if (!healthy) {
         stop(now);
@@ -109,11 +111,16 @@ static void calibration_command(const PatrolCanFrame* f, uint32_t received, uint
     if (op>PATROL_CAN_CAL_PREPARE) return;
     if ((uint32_t)(now-received)>100U) { reply_code=PATROL_CAN_CAL_STALE; return; }
     if (op==PATROL_CAN_CAL_PREPARE) {
+        const ChassisControl* control = RemoteService_State();
         if (token!=0U || argument!=0 || armed || owns() ||
+            control->session_active || control->enable_request ||
+            control->fault_latched || control->fault_pending ||
+            !PatrolRuntime_MaintenanceReady() ||
             CenterCalibration_IsActive() || PatrolRuntimePort_OtaBusy()) {
             reply_code=PATROL_CAN_CAL_SAFETY; return;
         }
         cal_prepare_active=1U; cal_prepare_ms=now;
+        RemoteService_SetMaintenance(1U);
         reply_code=PATROL_CAN_CAL_OK; return;
     }
     if (op==PATROL_CAN_CAL_START) {
@@ -174,6 +181,7 @@ void PatrolCanRemote_OnFrame(const PatrolCanFrame* f, uint32_t received, uint32_
     /* Safety stop/off always take effect, even with an old sequence. */
     if (op==PATROL_CAN_STOP || op==PATROL_CAN_POWER_OFF) {
         cal_prepare_active=0U;
+        RemoteService_SetMaintenance(CenterCalibration_IsActive());
         stop(now);
         reply_code=PATROL_CAN_OK;
         if (op==PATROL_CAN_POWER_OFF) {
@@ -194,10 +202,12 @@ void PatrolCanRemote_OnFrame(const PatrolCanFrame* f, uint32_t received, uint32_
         return;
     }
     if (op==PATROL_CAN_RESET_FAULT) {
+        if (cal_prepare_active) { reply_code=PATROL_CAN_SAFETY; return; }
         reply_code=PatrolRuntime_ResetFault() ? PATROL_CAN_OK : PATROL_CAN_SAFETY;
         return;
     }
     if (op==PATROL_CAN_ARM) {
+        if (cal_prepare_active) { reply_code=PATROL_CAN_SAFETY; return; }
         if (armed || owns()) { reply_code=PATROL_CAN_OWNER; return; }
         if (RemoteService_ApplyLocal("acquire",session,++control_seq,PATROL_CAN_REMOTE_LEASE_MS,0,0,now)) {
             armed=have_sequence=1; last_seq=seq; reply_code=PATROL_CAN_OK;

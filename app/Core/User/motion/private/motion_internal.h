@@ -136,7 +136,11 @@ typedef struct {
     uint16_t feedback_gate_mask, bench_fault_gate_mask;
     SteeringCoordinate coordinate;
     uint8_t coordinate_reset_requested;
-    int32_t coordinate_calibration_center;
+    uint8_t coordinate_preparing; /* Reuses alignment padding. */
+    union {
+        int32_t coordinate_calibration_center; /* Valid epoch only. */
+        uint32_t coordinate_prepare_ms; /* Bootstrap only; no valid epoch yet. */
+    };
     uint32_t coordinate_absolute_center;
     PatrolAutoCenter auto_center;
 

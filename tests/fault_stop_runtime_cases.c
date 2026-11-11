@@ -371,21 +371,16 @@ static void test_service_reinit_during_stop(void)
     puts("PASS service reinit cannot cancel pending disable");
 }
 
-static void test_reset_preserves_power_replay(void)
+static void test_reset_cancels_prepared_power(void)
 {
-    const char *request = "{\"version\":\"4.0\",\"timestamp\":1788838333000,\"data\":{\"requestId\":\"reset-replay\",\"command\":\"power_on\",\"expiresAt\":1788838338000,\"params\":null}}";
-    char response[512];
-    fixture(); mock_now += 8100U; test_utc=1788838333000ULL;
-    assert(RemoteService_HandleControl(request, (uint16_t)strlen(request), response, sizeof(response)));
-    assert(strstr(response, "\"code\":200") && mock_power);
+    fixture();
+    uint8_t state=0;
+    uint32_t generation=VehiclePowerOutput_StopGeneration();
     RemoteService_Revoke(); VehiclePowerOutput_Set(0);
-    test_utc += 2000; mock_now += 2000;
     assert(PatrolRuntime_ResetFault());
-    assert(RemoteService_HandleControl(request, (uint16_t)strlen(request), response, sizeof(response)));
-    assert(strstr(response, "\"code\":200") && !mock_power);
+    assert(RemoteService_PowerOnPrepared(generation,&state)==-2 && !state && !mock_power);
     assert(!RemoteService_State()->session_active && !RemoteService_State()->enable_request);
-    test_utc=0;
-    puts("PASS fault reset preserves power replay without restoring motion");
+    puts("PASS fault reset cancels a prepared power-on without restoring motion");
 }
 
 // 顺序执行独立安全场景，各场景都从全新主控和驱动器模拟状态开始。
@@ -403,6 +398,6 @@ int main(void)
     test_selected_motion_frame_revoked();
     test_delayed_disable_after_ack();
     test_service_reinit_during_stop();
-    test_reset_preserves_power_replay();
+    test_reset_cancels_prepared_power();
     return 0;
 }

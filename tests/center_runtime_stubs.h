@@ -27,6 +27,12 @@ uint32_t PatrolRuntimePort_Now(void) { return mock_now; }
 #ifndef FAULT_STOP_REAL_REMOTE
 const ChassisControl* RemoteService_State(void) { return &mock_control; }
 void RemoteService_Revoke(void) { mock_control.session_active = 0; mock_control.enable_request = 0; }
+void RemoteService_SetMaintenance(uint8_t active) { mock_control.feedback.motion_inhibited = active; }
+void RemoteService_CollisionBrakeProcessed(uint8_t stopped)
+{
+    mock_control.collision &= (uint8_t)~CHASSIS_COLLISION_PENDING;
+    if (stopped) mock_control.collision &= (uint8_t)~CHASSIS_COLLISION_BRAKING;
+}
 void RemoteService_ExecutionFault(void) { mock_control.fault_latched = 1; }
 void RemoteService_SafetyFault(ChassisStopReason reason)
 {
@@ -40,13 +46,25 @@ void RemoteService_SafetyFault(ChassisStopReason reason)
 void RemoteService_CompleteFaultStop(void) { mock_control.fault_pending = 0; mock_control.fault_latched = 1; }
 #endif
 #ifndef CENTER_HOST_REAL_CONTROL
+uint8_t ChassisControl_CollisionBlocked(const ChassisControl* c)
+{
+    return (c->collision & CHASSIS_COLLISION_MONITORED) &&
+        (!(c->collision & CHASSIS_COLLISION_VALID) ||
+         (c->collision & (CHASSIS_COLLISION_PHASE_MASK | CHASSIS_COLLISION_BRAKING)));
+}
 uint8_t ChassisControl_SafetyReady(const ChassisControl* c, uint32_t now)
 { (void)now; return !c->fault_latched && c->feedback.calibrated && c->feedback.power_ready; }
 ChassisStopReason ChassisControl_RuntimeSafetyReason(const ChassisControl* c, uint32_t now)
 { (void)now; return c->fault_latched ? CHASSIS_STOP_EXECUTION_FAULT : CHASSIS_STOP_NONE; }
 #endif
 uint8_t VehiclePowerOutput_IsOn(void) { return mock_power; }
-uint8_t VehiclePowerOutput_Set(uint8_t on) { mock_power = on; return 1; }
+static uint32_t mock_stop_generation;
+uint32_t VehiclePowerOutput_StopGeneration(void) { return mock_stop_generation; }
+void VehiclePowerOutput_CancelPendingOn(void) { ++mock_stop_generation; }
+uint8_t VehiclePowerOutput_Set(uint8_t on) { if (!on) VehiclePowerOutput_CancelPendingOn(); mock_power = on; return 1; }
+#ifdef FAULT_STOP_REAL_REMOTE
+uint8_t OtaService_IsBusy(void) { return mock_ota; }
+#endif
 uint8_t PatrolRuntimePort_CanBusOff(void) { return mock_bus_off; }
 uint8_t PatrolRuntimePort_CanBusOffActive(void) { return mock_bus_off; }
 void PatrolRtos_ObserveCanRecovery(uint32_t sample_ms, uint8_t healthy)

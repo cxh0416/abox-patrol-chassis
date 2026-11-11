@@ -1,0 +1,57 @@
+SEGGER J-Link Commander V7.94j (Compiled Feb 14 2024 15:37:25)
+DLL version V7.94j, compiled Feb 14 2024 15:36:06
+
+
+J-Link Command File read successfully.
+Processing script file...
+J-Link>mem32 0xE0042004, 1
+J-Link connection not established yet but required for command.
+Connecting to J-Link via USB...O.K.
+Firmware: J-Link ARM V8 compiled Nov 28 2014 13:44:46
+Hardware version: V8.00
+J-Link uptime (since boot): N/A (Not supported by this model)
+S/N: 799713843
+License(s): RDI,FlashDL,FlashBP,JFlash,GDBFULL
+VTref=3.293V
+Target connection not established yet but required for command.
+Device "CORTEX-M3" selected.
+
+
+Connecting to target via SWD
+Found SW-DP with ID 0x1BA01477
+DPv0 detected
+CoreSight SoC-400 or earlier
+Scanning AP map to find all available APs
+AP[1]: Stopped AP scan as end of AP map has been reached
+AP[0]: AHB-AP (IDR: 0x24770011)
+Iterating through AP map to find AHB-AP to use
+AP[0]: Core found
+AP[0]: AHB-AP ROM base: 0xE00FF000
+CPUID register: 0x412FC231. Implementer code: 0x41 (ARM)
+Found Cortex-M3 r2p1, Little endian.
+FPUnit: 6 code (BP) slots and 2 literal slots
+CoreSight components:
+ROMTbl[0] @ E00FF000
+[0][0]: E000E000 CID B105E00D PID 000BB000 SCS
+[0][1]: E0001000 CID B105E00D PID 003BB002 DWT
+[0][2]: E0002000 CID B105E00D PID 002BB003 FPB
+[0][3]: E0000000 CID B105E00D PID 003BB001 ITM
+[0][4]: E0040000 CID B105900D PID 003BB923 TPIU-Lite
+[0][5]: E0041000 CID B105900D PID 003BB924 ETM-M3
+Memory zones:
+  Zone: "Default" Description: Default access mode
+Cortex-M3 identified.
+E0042004 = 00000000 
+J-Link>mem32 0x0803D800, 1
+0803D800 = 4D415031 
+J-Link>mem32 0x2000F000, 16
+2000F000 = 0000001F 00000000 00000000 00000000 
+2000F010 = 00000009 00000001 00000000 00000000 
+2000F020 = 00000000 00000000 00000000 000018B3 
+2000F030 = 00000000 00000000 00000000 600D001F 
+2000F040 = C4345181 194BF0D9 04076AFD EBEE2187 
+2000F050 = 140CB2F7 A5372214 
+J-Link>exit
+
+Script processing completed.
+

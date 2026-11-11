@@ -64,6 +64,7 @@ static uint8_t motion_write(const BenchSteering* b)
 // 结束当前已确认步骤。核验与正常 ACK 共用相同推进规则，保留单个最新目标，不建立补发运动指令队列。
 static void complete_step(BenchSteering* b, uint32_t now)
 {
+    uint8_t old_step = b->step;
     b->pending = b->verify = 0U;
     b->step++;
     if (b->step == STEER_STEP_TRIGGER) b->pp_ack_low = 0U;
@@ -84,6 +85,14 @@ static void complete_step(BenchSteering* b, uint32_t now)
     if (b->step == STEER_STEP_ACTIVE || b->step == STEER_STEP_TARGET_COMPLETE) {
         b->phase = BENCH_ACTIVE;
         b->step = STEER_STEP_ACTIVE;
+    }
+    if (b->phase == BENCH_ACTIVE && b->stop_confirmed == 2U) {
+        /* A trigger already sent must be cleared; an old target write must never launch its old trigger. */
+        if (old_step == STEER_STEP_TRIGGER) b->step = STEER_STEP_CLEAR_TRIGGER;
+        else if (b->step == STEER_STEP_TRIGGER || b->step == STEER_STEP_TARGET || b->step == STEER_STEP_ACTIVE) {
+            b->step = STEER_STEP_ACTIVE;
+            b->target_pending = b->stop_confirmed = 0U;
+        }
     }
 }
 
@@ -210,6 +219,28 @@ void BenchSteering_Stop(BenchSteering *b, uint32_t now, uint8_t cut_power)
 void BenchSteering_TxFailed(BenchSteering *b)
 {
     fail(b, 2U);
+}
+
+void BenchSteering_CollisionDiscard(BenchSteering* b)
+{
+    b->pending = b->verify = 0U;
+    if (b->phase == BENCH_ACTIVE) {
+        if (b->step != STEER_STEP_CLEAR_TRIGGER) b->step = STEER_STEP_ACTIVE;
+        b->stop_confirmed = b->step == STEER_STEP_CLEAR_TRIGGER ? 2U : 0U;
+        b->target_pending = 0U;
+    }
+}
+
+void BenchSteering_CollisionHold(BenchSteering* b)
+{
+    if (b->phase != BENCH_ACTIVE) return;
+    /* stop_confirmed is only a stop flag in STOPPING; value 2 here owns collision supersession. */
+    b->stop_confirmed = 2U;
+    if (!b->pending && !b->verify && (b->step == STEER_STEP_ACTIVE ||
+        b->step == STEER_STEP_TARGET || b->step == STEER_STEP_TRIGGER)) {
+        b->step = STEER_STEP_ACTIVE;
+        b->target_pending = b->stop_confirmed = 0U;
+    }
 }
 // 根据请求、安全条件和时间推进转向执行器。检查目标范围、计数转换、准备与事务期限；活动阶段按误差切换轮廓速度，停止阶段保留专用确认期限。
 void BenchSteering_Tick(BenchSteering *b, uint32_t now, uint8_t requested, uint8_t safe,

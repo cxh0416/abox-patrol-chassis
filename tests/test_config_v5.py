@@ -17,6 +17,7 @@ typedef struct {uint32_t TypeErase,PageAddress,NbPages;} FLASH_EraseInitTypeDef;
 #define HAL_OK 0
 #define FLASH_TYPEERASE_PAGES 1
 #define FLASH_TYPEPROGRAM_WORD 1
+#define FLASH_TYPEPROGRAM_HALFWORD 2
 void HAL_FLASH_Unlock(void); void HAL_FLASH_Lock(void);
 int HAL_FLASHEx_Erase(FLASH_EraseInitTypeDef*,uint32_t*);
 int HAL_FLASH_Program(uint32_t,uint32_t,uint64_t);
@@ -40,7 +41,8 @@ int HAL_FLASHEx_Erase(FLASH_EraseInitTypeDef* e,uint32_t* error) {
  (void)error; erase_count++; memset((void*)(uintptr_t)e->PageAddress,255,2048); return 0;
 }
 int HAL_FLASH_Program(uint32_t type,uint32_t address,uint64_t value) {
- (void)type; uint32_t* p=(uint32_t*)(uintptr_t)address;
+ if(type==FLASH_TYPEPROGRAM_HALFWORD) { uint16_t *p=(uint16_t*)(uintptr_t)address; assert(*p==0xffffU); *p=(uint16_t)value; return 0; }
+ uint32_t* p=(uint32_t*)(uintptr_t)address;
  assert((*p & (uint32_t)value)==(uint32_t)value); *p=(uint32_t)value; return 0;
 }
 static uint32_t checksum(const void* value,size_t size) {
@@ -82,6 +84,24 @@ int main(void) {
  assert(OTA_Info_LoadMqttCredentials(&read) && !memcmp(&read,&key,sizeof(key)));
  assert(OTA_Info_SaveRemoteConfig(&v5));
  assert(OTA_Info_LoadMqttCredentials(&read) && read.generation==1);
+ OTA_Info_t stale; OTA_Info_Load(&stale);
+ assert(OTA_Info_PowerLedgerMarker()==0);
+ OTA_Info_t invented=stale; invented.reserved[0]=0; invented.reserved[1]=0;
+ assert(OTA_Info_Save(&invented)); /* generic save cannot invent a marker */
+ assert(OTA_Info_PowerLedgerMarker()==0);
+ assert(OTA_Info_MarkPowerLedgerInitialized());
+ assert(OTA_Info_PowerLedgerMarker()==1);
+ assert(OTA_Info_Save(&stale)); /* stale writer cannot clear the marker */
+ assert(OTA_Info_PowerLedgerMarker()==1);
+ assert(OTA_Info_SaveRemoteConfig(&v5));
+ assert(OTA_Info_PowerLedgerMarker()==1);
+ assert(OTA_Info_Clear()); assert(OTA_Info_PowerLedgerMarker()==1);
+ ((OTA_Info_t*)OTA_INFO_ADDR)->reserved[0]^=1;
+ assert(OTA_Info_PowerLedgerMarker()==-1);
+ assert(!OTA_Info_MarkPowerLedgerInitialized());
+ assert(OTA_Info_Clear()); assert(OTA_Info_PowerLedgerMarker()==-1);
+ install(&v5,sizeof(v5));
+ assert(OTA_Info_SaveMqttSnapshot(&v5,&key));
  ((OTA_Info_t*)OTA_INFO_ADDR)->mqtt_tls_secret.checksum^=1;
  assert(!OTA_Info_LoadMqttCredentials(&read) && read.mode==0xff);
 

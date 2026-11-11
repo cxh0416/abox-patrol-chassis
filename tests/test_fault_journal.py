@@ -11,6 +11,7 @@ typedef struct {uint32_t TypeErase,PageAddress,NbPages;} FLASH_EraseInitTypeDef;
 #define HAL_OK 0
 #define FLASH_TYPEERASE_PAGES 1
 #define FLASH_TYPEPROGRAM_WORD 1
+#define FLASH_TYPEPROGRAM_HALFWORD 2
 void HAL_FLASH_Unlock(void); void HAL_FLASH_Lock(void);
 int HAL_FLASHEx_Erase(FLASH_EraseInitTypeDef*,uint32_t*);
 int HAL_FLASH_Program(uint32_t,uint32_t,uint64_t);
@@ -38,10 +39,11 @@ int HAL_FLASHEx_Erase(FLASH_EraseInitTypeDef* e,uint32_t* error) {
  (void)error; memset((void*)(uintptr_t)e->PageAddress,255,2048); return 0;
 }
 int HAL_FLASH_Program(uint32_t type,uint32_t address,uint64_t value) {
- (void)type; if(fail_after==0)return 1; if(fail_after>0)fail_after--;
+ if(fail_after==0)return 1; if(fail_after>0)fail_after--;
  if(address>=OTA_INFO_ADDR && address<OTA_INFO_ADDR+2048) {
   if(fail_primary_after==0)return 1; if(fail_primary_after>0)fail_primary_after--;
  }
+ if(type==FLASH_TYPEPROGRAM_HALFWORD) { uint16_t *p=(uint16_t*)(uintptr_t)address;assert(*p==0xffffU);*p=(uint16_t)value;return 0; }
  uint32_t* p=(uint32_t*)(uintptr_t)address; assert((*p & (uint32_t)value)==(uint32_t)value); *p=(uint32_t)value; return 0;
 }
 int main(void) {
@@ -59,7 +61,8 @@ int main(void) {
  for(unsigned i=2;i<=7;i++){r.sequence=i;assert(OTA_Info_SaveMotionFault(&r));}
  r.sequence=8;assert(!OTA_Info_SaveMotionFault(&r));
  assert(OTA_Info_LoadMotionFault(&out)&&out.sequence==7);
- OTA_Info_t cfg; memset(&cfg,0x5A,sizeof(cfg)); assert(OTA_Info_Save(&cfg));
+ OTA_Info_t cfg; memset(&cfg,0x5A,sizeof(cfg));
+ cfg.reserved[0]=cfg.reserved[1]=0xffffffffU; assert(OTA_Info_Save(&cfg));
  assert(memcmp((void*)OTA_INFO_ADDR,&cfg,sizeof(cfg))==0);
  assert(OTA_Info_LoadMotionFault(&out)&&out.sequence==7);
  assert(OTA_Info_SaveMotionFault(&r)); assert(OTA_Info_LoadMotionFault(&out)&&out.sequence==8);
@@ -86,6 +89,28 @@ int main(void) {
  OTA_Info_Load(&loaded);assert(!memcmp(&loaded,&old,sizeof(legacy.info)));
  ABoxTlsCredentials credentials={0};assert(OTA_Info_LoadMqttCredentials(&credentials));
  assert(credentials.mode==ABOX_TLS_AUTH_CA);
+ /* Interrupted one-time marker programming fails closed until a verified
+    journal can safely finish the remaining erased halfwords. */
+ for(int cut=0;cut<=4;cut++) {
+  memset((void*)CONFIG_RECOVERY_ADDR,255,2048);memset((void*)OTA_INFO_ADDR,255,2048);
+  fail_after=cut;int saved=OTA_Info_MarkPowerLedgerInitialized();fail_after=-1;
+  int marker=OTA_Info_PowerLedgerMarker();
+  if(!saved)assert(marker==0 || marker==-1);else assert(marker==1);
+  assert(OTA_Info_MarkPowerLedgerInitialized());assert(OTA_Info_PowerLedgerMarker()==1);
+ }
+ /* Every interrupted primary-page word must recover the prior initialized
+    marker and configuration from the committed recovery record. */
+ for(unsigned cut=0;cut<(sizeof(OTA_Info_t)+3U)/4U;cut++) {
+  memset((void*)CONFIG_RECOVERY_ADDR,255,2048);memset((void*)OTA_INFO_ADDR,255,2048);
+  assert(OTA_Info_MarkPowerLedgerInitialized());
+  OTA_Info_t before,after; OTA_Info_Load(&before);
+  before.fw_size=0x11223344U; assert(OTA_Info_Save(&before));
+  OTA_Info_t replacement=before;replacement.fw_size=0x55667788U;
+  replacement.reserved[0]=replacement.reserved[1]=0xffffffffU;
+  fail_primary_after=(int)cut;assert(!OTA_Info_Save(&replacement));fail_primary_after=-1;
+  OTA_Info_Load(&after);
+  assert(after.fw_size==before.fw_size);assert(OTA_Info_PowerLedgerMarker()==1);
+ }
  return 0;
 }
 """)

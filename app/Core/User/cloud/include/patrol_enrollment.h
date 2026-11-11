@@ -7,6 +7,8 @@
 uint8_t PatrolEnrollment_Init(ABoxEc800At *at);
 // 轮询当前身份注册状态机。由云任务统一调用，避免与其他 AT 使用者并行推进同一服务。
 void PatrolEnrollment_Task(void);
+/* HTTP/CA transactions own the shared modem until their cleanup completes. */
+uint8_t PatrolEnrollment_TransportBusy(void);
 // 通知注册服务模块已复位。使旧模块会话和在途假设失效，后续由公共服务重建所需状态。
 void PatrolEnrollment_AfterModemReset(void);
 

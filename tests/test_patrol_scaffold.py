@@ -66,6 +66,36 @@ class PatrolScaffoldTests(unittest.TestCase):
             self.assertNotIn("PatrolCanopen_SdoWrite",
                              (ROOT / "app/Core/User" / name).read_text(encoding="utf-8"))
 
+    def test_collision_inputs_use_common_b8_b9_terminals(self):
+        board_io = (ROOT / "platform/targets/stm32f105_ec800_v1/board_io_stm32f105.c").read_text(
+            encoding="utf-8")
+        rtos = (ROOT / "app/Core/User/system/src/patrol_rtos.c").read_text(encoding="utf-8")
+        tables = re.findall(r"static const BoardPin inputs\[[^\]]*\] = \{(.*?)\};", board_io, re.S)
+        self.assertEqual(len(tables), 2)
+        v1, v2 = [re.findall(r"\{(GPIO[A-Z]), GPIO_PIN_(\d+)\}", table) for table in tables]
+        self.assertEqual(v1, [("GPIOA", "4"), ("GPIOA", "5"), ("GPIOA", "6"), ("GPIOA", "7")])
+        self.assertEqual(v2, [
+            ("GPIOC", "3"), ("GPIOC", "2"), ("GPIOC", "1"), ("GPIOC", "0"),
+            ("GPIOA", "7"), ("GPIOA", "6"), ("GPIOA", "5"), ("GPIOA", "4"),
+        ])
+        # The input enums are zero-based indices into each compiled table.
+        self.assertIn("#define FIRST_INPUT_TERMINAL ABOX_BOARD_TERMINAL_B8", board_io)
+        self.assertIn("#define FIRST_INPUT_TERMINAL ABOX_BOARD_TERMINAL_B4", board_io)
+        selection = re.search(
+            r"#if ABOX_BOARD_VERSION == ABOX_BOARD_VERSION_V1\s*"
+            r"#define PATROL_COLLISION_FRONT_INPUT ABOX_BOARD_IO_IN(\d)[^\n]*\n"
+            r"#define PATROL_COLLISION_REAR_INPUT\s+ABOX_BOARD_IO_IN(\d)[^\n]*\n"
+            r"#else\s*"
+            r"#define PATROL_COLLISION_FRONT_INPUT ABOX_BOARD_IO_IN(\d)[^\n]*\n"
+            r"#define PATROL_COLLISION_REAR_INPUT\s+ABOX_BOARD_IO_IN(\d)[^\n]*\n",
+            rtos)
+        self.assertIsNotNone(selection)
+        v1_front, v1_rear, v2_front, v2_rear = (int(n) - 1 for n in selection.groups())
+        self.assertEqual((8 + v1_front, 8 + v1_rear), (8, 9))
+        self.assertEqual((4 + v2_front, 4 + v2_rear), (8, 9))
+        self.assertEqual((v1[v1_front], v1[v1_rear]), (("GPIOA", "4"), ("GPIOA", "5")))
+        self.assertEqual((v2[v2_front], v2[v2_rear]), (("GPIOA", "7"), ("GPIOA", "6")))
+
     def test_product_version_has_one_external_default_and_optional_script_override(self):
         version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
         self.assertRegex(version, r"^patrol-chassis-\d+\.\d+\.\d+$")

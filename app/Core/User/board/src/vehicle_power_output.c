@@ -6,10 +6,17 @@
 
 static VehiclePowerOutputWriteFn g_write;
 static uint8_t g_commanded_on;
+static uint32_t g_stop_generation;
+
+uint32_t VehiclePowerOutput_StopGeneration(void)
+{ return __atomic_load_n(&g_stop_generation, __ATOMIC_ACQUIRE); }
+void VehiclePowerOutput_CancelPendingOn(void)
+{ (void)__atomic_add_fetch(&g_stop_generation, 1U, __ATOMIC_RELEASE); }
 
 // 绑定动力输出写回调并设置关闭的命令初值。有回调时尝试写关，当前初始化忽略其结果；不得把 RAM 初值当成接触器已断开的物理反馈。
 void VehiclePowerOutput_Init(VehiclePowerOutputWriteFn write)
 {
+    VehiclePowerOutput_CancelPendingOn();
     g_write = write;
     g_commanded_on = 0U;
     if (g_write != 0) (void)g_write(0U);
@@ -19,6 +26,7 @@ void VehiclePowerOutput_Init(VehiclePowerOutputWriteFn write)
 uint8_t VehiclePowerOutput_Set(uint8_t on)
 {
     uint8_t target = on ? 1U : 0U;
+    if (!target) VehiclePowerOutput_CancelPendingOn();
     if (target && !PATROL_CHASSIS_ACTUATION_ENABLED) return 0U;
     if (g_write == 0 || !g_write(target)) return 0U;
     g_commanded_on = target;

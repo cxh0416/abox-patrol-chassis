@@ -3,10 +3,12 @@ from pathlib import Path
 import struct
 import sys
 import unittest
+from unittest.mock import patch
+import time
 
 
 ROOT = Path(__file__).resolve().parents[1]
-MODULE_PATH = ROOT / "can2_center_calibration" / "can2_center_calibration.py"
+MODULE_PATH = ROOT / "tools" / "can2_center_calibration" / "can2_center_calibration.py"
 SPEC = importlib.util.spec_from_file_location("can2_center_calibration", MODULE_PATH)
 MODULE = importlib.util.module_from_spec(SPEC)
 assert SPEC.loader is not None
@@ -112,6 +114,35 @@ class FakeBus:
 
 
 class Can2CenterCalibrationTests(unittest.TestCase):
+    def test_interactive_prepares_and_keeps_lease_during_input(self):
+        bus = FakeBus()
+        client = MODULE.Can2CalibrationClient(bus, response_timeout=0.01, retry_delay_s=0)
+        commands = iter(["power-on", "start", "status", "commit", "quit"])
+        queries_during_input = []
+
+        def answer(_prompt):
+            command = next(commands)
+            if command == "status":
+                # Leave the operator prompt idle: queries must still flow.
+                before = sum(ident == MODULE.CAL_COMMAND and data[1] == MODULE.CAL_QUERY
+                             for ident, data in bus.transmitted)
+                time.sleep(0.65)
+                after = sum(ident == MODULE.CAL_COMMAND and data[1] == MODULE.CAL_QUERY
+                            for ident, data in bus.transmitted)
+                queries_during_input.append(after - before)
+            return command
+
+        with patch("builtins.input", side_effect=answer):
+            MODULE.interactive(client)
+        operations = [data[1] for ident,data in bus.transmitted if ident==MODULE.CAL_COMMAND]
+        self.assertGreaterEqual(operations.count(MODULE.CAL_PREPARE), 2)
+        self.assertGreaterEqual(operations.count(MODULE.CAL_QUERY), 3)
+        self.assertEqual(operations.count(MODULE.CAL_START), 1)
+        self.assertEqual(operations.count(MODULE.CAL_COMMIT), 1)
+        self.assertEqual(bus.phase, 7)
+        self.assertFalse(bus.power)
+        self.assertGreaterEqual(queries_during_input[0], 2)
+
     def test_current_center_sequence_uses_same_state_machine(self):
         bus = FakeBus()
         client = MODULE.Can2CalibrationClient(bus)

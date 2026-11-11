@@ -26,6 +26,7 @@
 #include "vehicle_steering_profile.h"
 #include "vehicle_power_output.h"
 #include "vehicle_power_port.h"
+#include "abox_board_io_stm32f105.h"
 
 #ifndef PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED
 #define PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED 0
@@ -41,6 +42,22 @@
 #define PATROL_HEALTH_CANOPEN  (1U << 2)
 #define PATROL_EVENT_CAN_ERROR (1U << 3)
 #define PATROL_HEALTH_REQUIRED (PATROL_HEALTH_SAFETY | PATROL_HEALTH_CAN_RX | PATROL_HEALTH_CANOPEN)
+
+/*
+ * Use the same connector terminals on both compiled board versions:
+ * front B8, rear B9. Platform V1 maps these to PA4/PA5 and V2 to PA7/PA6.
+ * Select the board-IO indices for the actual compiled table.
+ */
+/* Platform V1 numbers its four inputs from B8; V2 numbers eight from B4. */
+#if ABOX_BOARD_VERSION == ABOX_BOARD_VERSION_V1
+#define PATROL_COLLISION_FRONT_INPUT ABOX_BOARD_IO_IN1 /* B8 / PA4 */
+#define PATROL_COLLISION_REAR_INPUT  ABOX_BOARD_IO_IN2 /* B9 / PA5 */
+#else
+#define PATROL_COLLISION_FRONT_INPUT ABOX_BOARD_IO_IN5 /* B8 / PA7 */
+#define PATROL_COLLISION_REAR_INPUT  ABOX_BOARD_IO_IN6 /* B9 / PA6 */
+#endif
+#define PATROL_COLLISION_INPUT_MASK \
+    ((uint8_t)((1U << PATROL_COLLISION_FRONT_INPUT) | (1U << PATROL_COLLISION_REAR_INPUT)))
 
 #define PATROL_SAFETY_STACK_WORDS 256U
 #define PATROL_CAN_REPLY_RETRY_MS 2U
@@ -296,6 +313,21 @@ static void Patrol_SafetyControlTask(void *argument)
     for (;;)
     {
         VehiclePowerPort_Poll(HAL_GetTick());
+        /* Build logical contacts from the selected B8/B9 inputs. Only stable,
+         * valid optocoupler samples may establish or release collision state. */
+        ABoxBoardIoInputs collision_inputs = {0};
+        uint8_t collision_contacts = 0U;
+        uint8_t collision_valid =
+            VehiclePowerPort_InputSnapshot(&collision_inputs) == ABOX_BOARD_IO_OK &&
+            (collision_inputs.valid_mask & PATROL_COLLISION_INPUT_MASK) ==
+                PATROL_COLLISION_INPUT_MASK;
+        if (collision_valid &&
+            (collision_inputs.stable_mask & (uint8_t)(1U << PATROL_COLLISION_FRONT_INPUT)))
+            collision_contacts |= CHASSIS_COLLISION_FRONT;
+        if (collision_valid &&
+            (collision_inputs.stable_mask & (uint8_t)(1U << PATROL_COLLISION_REAR_INPUT)))
+            collision_contacts |= CHASSIS_COLLISION_REAR;
+        RemoteService_CollisionInputs(collision_contacts, collision_valid, HAL_GetTick());
         taskENTER_CRITICAL();
         RemoteService_SafetyTick(HAL_GetTick());
         PatrolCanRemote_Tick(HAL_GetTick(),

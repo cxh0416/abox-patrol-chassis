@@ -45,6 +45,10 @@ uint8_t BenchSteering_Take(BenchSteering* b, uint32_t now, PatrolCanFrame* frame
 uint8_t BenchSteering_OnFrame(BenchSteering* b, const PatrolCanFrame* frame, uint32_t now);
 // 记录转向 CAN 请求发送失败。交由统一故障入口锁存，不能以一次报文提交失败推断驱动器处于安全状态。
 void BenchSteering_TxFailed(BenchSteering* b);
+// 仅丢弃尚未发送的碰撞前选帧；活动转向重新从最新保持位置构造目标，不撤使能。
+void BenchSteering_CollisionDiscard(BenchSteering* b);
+// 等待在途事务收尾后抛弃旧定位序列；已经发出的触发先清位，再转入最新保持位置。
+void BenchSteering_CollisionHold(BenchSteering* b);
 // 查询转向停止过程是否已取得撤使能确认。用于运行层区分等待驱动器确认与最后完成步骤，避免提前释放执行器归属。
 uint8_t BenchSteering_StopFinishReady(const BenchSteering* b);
 #endif

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import os
 from pathlib import Path
 import re
@@ -214,6 +215,36 @@ class WorkspaceMaintenanceTests(unittest.TestCase):
             clean.make_plan(self.root, False, False)
         self.assertTrue(log.exists())
 
+    def test_temp_version_only_preserves_logs_and_legacy_evidence_bytes(self):
+        old = self.root / "temp-version" / "candidate.json"
+        old.parent.mkdir()
+        old.write_text('{"candidate":true}', encoding="utf-8")
+        log = self.root / "out/logs/measured.jsonl"
+        log.parent.mkdir(parents=True)
+        log.write_text('{"rpm":12}', encoding="utf-8")
+        evidence = self.root / "docs/operations/evidence/legacy.json"
+        original = '{"note":"现场","source":"out/logs/measured.jsonl"}'.encode("gb18030")
+        evidence.write_bytes(original)
+        plan = clean.make_plan(self.root, False, False, temp_version_only=True)
+        self.assertEqual(plan["delete"], ["temp-version"])
+        self.assertTrue(old.exists())
+        clean.execute(self.root, plan)
+        self.assertFalse(old.exists())
+        self.assertTrue(log.exists())
+        self.assertEqual(evidence.read_bytes(), original)
+
+    def test_root_build_only_preserves_app_and_platform_builds(self):
+        for path in ("build/cache", "app/build/cache", "platform/build/cache"):
+            file = self.root / path
+            file.parent.mkdir(parents=True, exist_ok=True)
+            file.write_text("rebuildable", encoding="utf-8")
+        plan = clean.make_plan(self.root, False, True, root_build_only=True)
+        self.assertEqual(plan["delete"], ["build"])
+        clean.execute(self.root, plan)
+        self.assertFalse((self.root / "build").exists())
+        self.assertTrue((self.root / "app/build/cache").exists())
+        self.assertTrue((self.root / "platform/build/cache").exists())
+
     def test_snapshot_change_and_protected_path_abort(self):
         (self.root / "tmp").mkdir()
         p = self.root / "tmp/file.txt"
@@ -234,11 +265,26 @@ class WorkspaceMaintenanceTests(unittest.TestCase):
         for doc in [root / "README.md", *(root / "docs").rglob("*.md")]:
             if "archive" in doc.parts:
                 continue  # Original vendor input stays byte-for-byte unchanged.
+            relative = doc.relative_to(root).parts
+            if relative[:3] == ("docs", "operations", "evidence") and len(relative) > 5 and relative[4] == "source":
+                # Frozen source links refer to their ORIGINAL checkout location, not the evidence directory.
+                # Verify immutable bytes against the package index instead of treating snapshots as live runbooks.
+                package = root.joinpath(*relative[:4])
+                snapshot_index = json.loads((package / "index.json").read_text(encoding="utf-8-sig"))
+                name = doc.relative_to(package).as_posix()
+                entry = next(item for item in snapshot_index["artifacts"] if item["path"] == name)
+                self.assertEqual(hashlib.sha256(doc.read_bytes()).hexdigest(), entry["sha256"])
+                continue
             for target in re.findall(r"\]\(([^)]+)\)", doc.read_text(encoding="utf-8-sig")):
                 if "://" in target or target.startswith("#"):
                     continue
                 with self.subTest(document=str(doc), target=target):
-                    self.assertTrue((doc.parent / target.split("#")[0]).exists())
+                    destination = (doc.parent / target.split("#")[0]).resolve()
+                    old_tool = root / "can2_center_calibration/README.md"
+                    if relative[:3] == ("docs", "operations", "evidence") and destination == old_tool:
+                        # Frozen evidence retains its original link; the evidence index navigates to the moved tool.
+                        destination = root / "tools/can2_center_calibration/README.md"
+                    self.assertTrue(destination.exists())
         for summary in (root / "docs/operations/evidence").glob("*.json"):
             for reference in clean.references(summary.read_text(encoding="utf-8-sig")):
                 with self.subTest(summary=summary.name, reference=reference):

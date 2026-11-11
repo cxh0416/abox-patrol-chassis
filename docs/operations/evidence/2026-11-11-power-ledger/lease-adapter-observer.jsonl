@@ -1,0 +1,5 @@
+{"monotonic": 117642.9033498, "payload": {"event": "stats", "tick": 21814, "actions": 0, "stops": 0, "probes": 0, "busyProbes": 0, "received": 0, "marker": 1, "ready": 1, "drops": 0}}
+{"monotonic": 117643.9253635, "payload": {"version": "4.0", "timestamp": 1800000720217, "data": {"requestId": "board-first", "code": 200, "msg": "operation accepted", "result": {"powerOutputOn": true}}}}
+{"monotonic": 117644.3467004, "payload": {"event": "stats", "tick": 22814, "actions": 0, "stops": 0, "probes": 0, "busyProbes": 0, "received": 1, "marker": 1, "ready": 1, "drops": 0}}
+{"monotonic": 117644.9686834, "payload": {"version": "4.0", "timestamp": 1800000723693, "data": {"requestId": "board-first", "code": 4006, "msg": "requestId conflict"}}}
+{"monotonic": 117645.4056579, "payload": {"event": "stats", "tick": 23814, "actions": 0, "stops": 1, "probes": 0, "busyProbes": 0, "received": 2, "marker": 1, "ready": 1, "drops": 0}}

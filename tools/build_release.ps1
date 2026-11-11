@@ -107,6 +107,9 @@ try {
     foreach ($version in $versions) {
         $appDefinitions = @("-DPATROL_CHASSIS_APP_VERSION_OVERRIDE=$version", "-DPATROL_ACTIVE_CAR=0")
         $appDefinitions += "-DPATROL_CHASSIS_ACTUATION_ENABLED=$(if ($actuationCompiled) { 'ON' } else { 'OFF' })"
+        # Preserve the confirmed PA0/OUT1 control for motion-enabled releases.
+        # The commanded output is not independent contactor feedback.
+        $appDefinitions += "-DPATROL_CHASSIS_POWER_OUTPUT_ENABLED=$(if ($actuationCompiled) { 'ON' } else { 'OFF' })"
         $appDefinitions += "-DPATROL_STEERING_EXECUTOR_ENABLED=$(if ($steeringCompiled) { 'ON' } else { 'OFF' })"
         $appDefinitions += "-DPATROL_DRIVE_EXECUTOR_ENABLED=$(if ($driveCompiled) { 'ON' } else { 'OFF' })"
         $app = Invoke-TargetBuild 'app' 'Patrol_Vehicle_Chassis_App' "ABoxUnified$Configuration-$version" $appDefinitions $credentialBuildRoot
@@ -131,7 +134,7 @@ try {
         $manifest = [ordered]@{
             manifest_version = 3; product = 'patrol_vehicle_chassis'; version = $version; configuration = $Configuration
             steering_executor_compiled = $steeringCompiled; drive_executor_compiled = $driveCompiled
-            startup_motion_permit = $false; actuation_enabled = $actuationCompiled; active_car = 0
+            startup_motion_permit = $false; actuation_enabled = $actuationCompiled; power_output_enabled = $actuationCompiled; active_car = 0
             boot_version = 'abox-boot-2.3.0'; ota_scheme = 'boot_v2_ufs'; ota_downloader = 'app'
             app_range = '0x08008000..0x0803DFFF'; config_recovery_page = '0x0803E000'; boot_state_pages = @('0x0803E800', '0x0803F000'); config_page = '0x0803F800'
             product_commit = $productCommit; product_dirty = $false; platform_commit = $platformCommit; platform_dirty = $false

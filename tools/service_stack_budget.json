@@ -109,6 +109,24 @@
     "uart_rx_failure_log": ["Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "app_restart_rx", "AppLog_Printf"],
     "uart_tx_termination": ["Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "ABoxEc800At_Task", "terminate_all", "command_done", "download_fail", "log_failure", "log_message", "adapter_log", "AppLog_Printf"],
     "enrollment_payload_termination": ["Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "ABoxEc800Rx_Drain", "ABoxEc800At_Feed", "emit_line", "on_event", "ABoxEc800At_SendPayload", "terminate_all", "command_done", "stop_http", "finish", "http_done", "ABoxEnrollment_OnHttp"],
-    "ota_payload_termination": ["Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "ABoxBootV2App_Task", "send_payload", "ABoxEc800At_SendPayload", "terminate_all", "command_done", "download_fail", "log_failure", "log_message", "adapter_log", "AppLog_Printf"]
+    "ota_payload_termination": ["Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "ABoxBootV2App_Task", "send_payload", "ABoxEc800At_SendPayload", "terminate_all", "command_done", "download_fail", "log_failure", "log_message", "adapter_log", "AppLog_Printf"],
+    "power_ledger_parse": [
+      "Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "app_transport", "MQTT_Core_Task", "ABoxMqttEc800Bridge_Poll", "ABoxMqttEc800_Poll", "ABoxMqttEc800Rx_Poll", "message", "on_message", "CloudCommands_OnMessage", "handle_public_control", "PatrolPowerLedger_Intercept", "ChassisCloud_Parse", "cJSON_ParseWithLength", "cJSON_ParseWithLengthOpts", "parse_value"
+    ],
+    "power_ledger_stop_conflict": [
+      "Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "app_transport", "MQTT_Core_Task", "ABoxMqttEc800Bridge_Poll", "ABoxMqttEc800_Poll", "ABoxMqttEc800Rx_Poll", "message", "on_message", "CloudCommands_OnMessage", "handle_public_control", "PatrolPowerLedger_Intercept", "RemoteService_HandleControl", "ChassisCloud_RequestDigest", "ABoxMqttDigest_RequestStream", "ABoxMqttDigest_WriteRequest", "motion_params", "ABoxMqttDigest_WriteMilli", "ABoxMqttDigest_WriteInteger", "hash", "ABoxSha256_Update", "transform"
+    ],
+    "power_ledger_marker_recovery": [
+      "Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "app_after_at", "PatrolPowerLedger_Poll", "PatrolPowerLedgerFsm_Poll", "ABoxUfsJournal_Poll", "mark", "marker_write", "OTA_Info_MarkPowerLedgerInitialized", "recovery_restore_if_needed", "flash_program_words"
+    ],
+    "power_ledger_file_transfer": [
+      "Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "app_after_at", "PatrolPowerLedger_Poll", "PatrolPowerLedgerFsm_Poll", "ABoxUfsJournal_Poll", "ABoxEc800Ufs_Poll", "poll", "ABoxEc800UfsAt_Poll"
+    ],
+    "power_ledger_dispatch": [
+      "Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "app_after_at", "PatrolPowerLedger_Poll", "PatrolPowerLedgerFsm_Poll", "act_on", "RemoteService_PowerOnPrepared", "VehiclePowerOutput_Set"
+    ],
+    "power_ledger_admission": [
+      "Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "app_transport", "MQTT_Core_Task", "ABoxMqttEc800Bridge_Poll", "ABoxMqttEc800_Poll", "ABoxMqttEc800Rx_Poll", "message", "on_message", "CloudCommands_OnMessage", "handle_public_control", "PatrolPowerLedger_Intercept", "PatrolPowerLedgerFsm_Request", "admit", "ota_file_idle", "PatrolEnrollment_TransportBusy", "ABoxEc800At_HasPending"
+    ]
   }
 }
