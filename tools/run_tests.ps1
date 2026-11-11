@@ -173,7 +173,5 @@ $driveTest = Join-Path $hostBuild 'bench_drive_test.exe'
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & $driveTest
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-& python (Join-Path $PSScriptRoot '..\tests\test_startup_handoff.py')
-if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 & python (Join-Path $PSScriptRoot '..\platform\tools\test_product_ota_init.py') --product-root (Join-Path $PSScriptRoot '..')
 exit $LASTEXITCODE

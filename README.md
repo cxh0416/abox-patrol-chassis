@@ -27,6 +27,8 @@ python tools/clean_workspace.py --build
 
 候选分别写入 `out/candidates/bench-steering/`、`out/candidates/bench-drive/`，在线调试包写入 `out/debug/online/`，日志写入 `out/logs/`。正式打包通过 `tools/build_release.ps1` 在暂存目录校验后整体替换 `dist/`；发布脚本不发起 OTA。清理命令默认只预览，显式加 `--apply` 才执行。
 
+只改产品代码且当前固定平台提交已通过公共测试时，可用 `./tools/run_tests.ps1 -SkipPlatformTests` 执行产品回归；平台代码或子模块版本变化时须运行上面的完整入口。
+
 ## 文档入口
 
 1. [CURRENT](docs/CURRENT.md)：唯一当前状态、冻结测试基线、当前 blocker、下一步和权威文档入口。
