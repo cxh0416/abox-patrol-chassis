@@ -497,6 +497,32 @@ static int test_millidegree_values(void)
     return 0;
 }
 
+static int test_public_control_envelope(void)
+{
+    ChassisCloudCommand parsed;
+    ABoxMqttRequest request;
+    const ABoxMqttOperation *operation;
+    const char *valid = "{\"version\":\"4.0\",\"timestamp\":1,\"data\":{\"requestId\":\"a-1.:\",\"command\":\"sync_state\",\"params\":null}}";
+    const char *invalid[] = {
+        "{\"version\":\"4.0\",\"timestamp\":1,\"data\":{\"requestId\":\"bad\\\"id\",\"command\":\"power_off\",\"params\":null}}",
+        "{\"version\":\"4.0\",\"timestamp\":1e0,\"data\":{\"requestId\":\"a\",\"command\":\"power_off\",\"params\":null}}",
+        "{\"version\":\"4.0\",\"timestamp\":1,\"data\":{\"requestId\":\"a\",\"command\":\"sync_state\",\"command\":\"power_off\",\"params\":null}}",
+        "{\"version\":\"4.0\",\"timestamp\":1,\"data\":{\"requestId\":\"a\",\"command\":\"sync_state\",\"params\":null}}garbage",
+        "{\"version\":\"4.0\",\"timestamp\":1,\"data\":{\"requestId\":\"a\",\"command\":\"chassis_control\",\"params\":{\"action\":\"stop\",\"sessionId\":\"s\",\"seq\":1.0,\"leaseMs\":1000,\"driveRpm\":0,\"steeringDeg\":0}}}"
+    };
+    CHECK(ChassisCloud_DecodeRequest(&request, valid, (uint16_t)strlen(valid)) == 200U);
+    CHECK(ABoxMqttRequest_Resolve(&request, 0, 0, &operation) == 200U);
+    CHECK(!strcmp(request.request_id, "a-1.:"));
+    ABoxMqttRequest_Close(&request);
+    for (unsigned i = 0; i < sizeof(invalid) / sizeof(invalid[0]); ++i) {
+        CHECK(ChassisCloud_DecodeRequest(&request, invalid[i], (uint16_t)strlen(invalid[i])) == 4001U);
+        ABoxMqttRequest_Close(&request);
+        CHECK(ChassisCloud_Parse(invalid[i], (uint16_t)strlen(invalid[i]), &parsed) != CHASSIS_CLOUD_OK);
+    }
+    CHECK(!parsed.request_id[0]);
+    return 0;
+}
+
 int main(void)
 {
     CHECK(test_normal_motion_without_dual_angle_gate() == 0);
@@ -504,6 +530,7 @@ int main(void)
     CHECK(test_status_snapshot_age() == 0);
     CHECK(test_sdo_feedback_width() == 0);
     CHECK(test_millidegree_values() == 0);
+    CHECK(test_public_control_envelope() == 0);
     CHECK(test_steering_tpdo_freshness() == 0);
     CHECK(test_steering_position_sdo_fallback() == 0);
     CHECK(test_urgent_feedback_priority() == 0);

@@ -327,65 +327,6 @@ static void handle_ota_request(const CloudProtocolRequest_t* request)
     g_cloud.ota_response_waiting = 1U;
 }
 
-// 将公共控制请求交给底盘远控服务并调度响应。公共协议与内部维护协议保持分离，响应缓冲区受限；实际会话和安全仲裁由 RemoteService 完成。
-static __attribute__((noinline)) void handle_public_control(const char* topic, const char* payload)
-{
-    /* Remote owns this workspace. ScheduleRawResponse copies it before a later
-     * report reuses it; the transport also owns its own publish copy. */
-    char *response = g_cloud.tx_payload;
-    cJSON* root = cJSON_Parse(payload);
-    cJSON* data = root ? cJSON_GetObjectItemCaseSensitive(root, "data") : 0;
-    cJSON* command = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "command") : 0;
-    cJSON* request_id = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "requestId") : 0;
-    cJSON* params = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "params") : 0;
-    cJSON* version = root ? cJSON_GetObjectItemCaseSensitive(root, "version") : 0;
-    cJSON* timestamp = root ? cJSON_GetObjectItemCaseSensitive(root, "timestamp") : 0;
-    cJSON* expires = data ? cJSON_GetObjectItemCaseSensitive(data, "expiresAt") : 0;
-    if (cJSON_IsString(version) && strcmp(version->valuestring, "4.0") == 0 &&
-        cJSON_IsString(command) && strcmp(command->valuestring, "sync_state") == 0 &&
-        cJSON_IsString(request_id) && request_id->valuestring[0] != '\0' && cJSON_IsNull(params) &&
-        cJSON_IsNumber(timestamp) && timestamp->valuedouble >= 0 &&
-        timestamp->valuedouble <= 9007199254740991.0 &&
-        timestamp->valuedouble == (double)(uint64_t)timestamp->valuedouble)
-    {
-        if (expires) {
-            CloudMessages_ScheduleSimpleError(g_cloud.topic_control_resp, request_id->valuestring,
-                                               4001U, "sync_state does not use expiresAt");
-            cJSON_Delete(root); return;
-        }
-        {
-            uint16_t code = PatrolPowerLedger_CheckOther(topic, request_id->valuestring);
-            if (code != 200U) {
-                char stamp[21];
-                if (!TimeBase_FormatUtcMs(stamp, sizeof(stamp))) strcpy(stamp, "0");
-                (void)snprintf(response, sizeof(g_cloud.tx_payload),
-                    "{\"version\":\"4.0\",\"timestamp\":%s,\"data\":{\"requestId\":\"%s\",\"code\":%u,\"msg\":\"%s\"}}",
-                    stamp, request_id->valuestring, (unsigned)code,
-                    code == 4006U ? "requestId conflict" : "power ledger unavailable");
-                if (code != 4001U) (void)CloudMessages_ScheduleRawResponse(g_cloud.topic_control_resp, response);
-                cJSON_Delete(root); return;
-            }
-        }
-        /* get_info may already have reached the broker while its modem publish
-         * acknowledgement is still pending. Keep the correlated refresh until
-         * both the response slot and the previous status publish are free. */
-        (void)ABoxCloudService_QueueSyncRequest(&g_cloud.cloud, request_id->valuestring);
-        cJSON_Delete(root);
-        return;
-    }
-    if (root) cJSON_Delete(root);
-    {
-        int handled = PatrolPowerLedger_Intercept(topic, payload, response, sizeof(g_cloud.tx_payload));
-        if (handled) {
-            if (handled == 1) (void)CloudMessages_ScheduleRawResponse(g_cloud.topic_control_resp, response);
-            return;
-        }
-    }
-    if (RemoteService_HandleControl(payload, (uint16_t)strlen(payload), response, sizeof(g_cloud.tx_payload)))
-        (void)CloudMessages_ScheduleRawResponse(g_cloud.topic_control_resp, response);
-    else APP_LOGW("REMOTE", "invalid or busy chassis control request");
-}
-
 // 按 Topic 分发收到的 MQTT 消息。优先识别时间同步、公共控制和内部维护入口，未知 Topic 不执行动作；解析结果仍须通过各业务门禁。
 void CloudCommands_OnMessage(const char* topic, const char* payload)
 {
@@ -404,7 +345,7 @@ void CloudCommands_OnMessage(const char* topic, const char* payload)
     if (!ABoxCloudDispatch_Open(routes, sizeof(routes) / sizeof(routes[0]), topic, payload, &context)) return;
     if (context.route == 1U)
     {
-        handle_public_control(topic, payload);
+        CloudCommands_HandlePublicControl(topic, payload);
         return;
     }
     if (context.route != 2U && context.route != 3U) return;

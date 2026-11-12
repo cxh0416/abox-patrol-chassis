@@ -258,6 +258,10 @@ int main(void)
     assert(!RemoteService_State()->session_active);
     test_request_identity_and_boundaries();
     assert(VehiclePowerOutput_Set(1U));
+    const char *bad_id_off = "{\"version\":\"4.0\",\"timestamp\":1788838333000,\"data\":{\"requestId\":\"bad\\\"id\","
+        "\"command\":\"power_off\",\"params\":null}}";
+    assert(!RemoteService_HandleControl(bad_id_off, (uint16_t)strlen(bad_id_off), response, sizeof(response)));
+    assert(power_level);
     const char *invalid_stop = "{\"version\":\"4.0\",\"timestamp\":1788838333000,\"data\":{\"requestId\":\"invalid-stop\","
         "\"command\":\"chassis_control\",\"params\":{\"action\":\"stop\",\"sessionId\":\"s\","
         "\"seq\":1,\"leaseMs\":\"bad\",\"driveRpm\":0,\"steeringDeg\":0}}}";

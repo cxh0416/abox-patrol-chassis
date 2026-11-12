@@ -7,17 +7,18 @@
 #include "chassis_control.h"
 #include "abox_mqtt_digest.h"
 
-// 检查 JSON 对象及其子结构是否存在重复字段。拒绝会造成请求摘要与实际解释不一致的重复键，避免同一请求出现多种含义。
-static uint8_t duplicate_free(const cJSON *node)
+/* steeringDeg is the only product Number field; other numeric fields are Integer. */
+static int number_field(void *context, const cJSON *root, const cJSON *number)
 {
-    const cJSON *a, *b;
-    for (a=node ? node->child : 0; a; a=a->next) {
-        if (cJSON_IsObject(node))
-            for (b=a->next; b; b=b->next)
-                if (a->string && b->string && !strcmp(a->string,b->string)) return 0U;
-        if (!duplicate_free(a)) return 0U;
-    }
-    return 1U;
+    const cJSON *data = cJSON_GetObjectItemCaseSensitive(root, "data");
+    const cJSON *params = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "params") : 0;
+    (void)context;
+    return cJSON_IsObject(params) && number == cJSON_GetObjectItemCaseSensitive(params, "steeringDeg");
+}
+
+uint16_t ChassisCloud_DecodeRequest(ABoxMqttRequest *request, const char *payload, uint16_t length)
+{
+    return ABoxMqttRequest_Decode(request, payload, length, number_field, 0);
 }
 // 向规范化摘要写入器提供运动参数。按规定类型和顺序输出参数，使重放检查与业务解析使用相同语义，而非原始 JSON 排版。
 static int motion_params(void *value, ABoxCanonicalWriter write, void *context)
@@ -42,11 +43,6 @@ uint8_t ChassisCloud_RequestDigest(const ChassisCloudCommand *command, uint8_t d
     return (uint8_t)ABoxMqttDigest_NullRequest(command->type == CHASSIS_CLOUD_COMMAND_POWER_ON ? "power_on" : "power_off",
         command->has_expires_at, command->expires_at, digest);
 }
-// 判断 cJSON 数值是否是可接受的整数。拒绝非数字、非有限值或小数，具体上下界由各业务字段继续检查。
-static uint8_t integer(const cJSON *n)
-{ return cJSON_IsNumber(n) && n->valuedouble >= 0 && n->valuedouble <= 9007199254740991.0 &&
-         n->valuedouble == (double)(uint64_t)n->valuedouble; }
-
 // 校验并复制协议标识字符串。限制字符和长度，保留终止符空间；失败不把被截断标识当成有效身份。
 static uint8_t copy_identifier(char* output, uint16_t capacity, const cJSON* item)
 {
@@ -62,51 +58,44 @@ static uint8_t copy_identifier(char* output, uint16_t capacity, const cJSON* ite
 ChassisCloudStatus ChassisCloud_Parse(const char* payload, uint16_t length,
                                       ChassisCloudCommand* command)
 {
-    cJSON *root, *version, *data, *request_id, *name, *params, *timestamp, *expires;
-    cJSON *action, *session_id, *seq, *lease, *rpm, *angle;
+    ABoxMqttRequest request;
+    const cJSON *params, *action, *session_id, *seq, *lease, *rpm, *angle;
     double steering_mdeg;
     int32_t rounded_mdeg;
     ChassisCloudStatus status = CHASSIS_CLOUD_INVALID;
     if (command == 0) return status;
     memset(command, 0, sizeof(*command));
-    if (payload == 0 || length == 0U || length > 1024U) return status;
-    root = cJSON_ParseWithLength(payload, length);
-    if (root == 0) return status;
-    version = cJSON_GetObjectItemCaseSensitive(root, "version");
-    timestamp = cJSON_GetObjectItemCaseSensitive(root, "timestamp");
-    data = cJSON_GetObjectItemCaseSensitive(root, "data");
-    request_id = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "requestId") : 0;
-    name = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "command") : 0;
-    params = cJSON_IsObject(data) ? cJSON_GetObjectItemCaseSensitive(data, "params") : 0;
-    (void)copy_identifier(command->request_id, sizeof(command->request_id), request_id);
-    if (!cJSON_IsString(version) || strcmp(version->valuestring, "4.0") != 0 ||
-        command->request_id[0] == '\0' || !duplicate_free(root) || !integer(timestamp)) goto done;
-    command->timestamp_ms = (uint64_t)timestamp->valuedouble;
-    expires = cJSON_GetObjectItemCaseSensitive(data, "expiresAt");
-    if (!cJSON_IsString(name)) {
-        status = CHASSIS_CLOUD_UNSUPPORTED;
-        goto done;
+    if (ChassisCloud_DecodeRequest(&request, payload, length) != 200U) {
+        if (request.request_id) {
+            size_t id_length = strlen(request.request_id);
+            if (id_length < sizeof(command->request_id)) memcpy(command->request_id, request.request_id, id_length + 1U);
+        }
+        ABoxMqttRequest_Close(&request);
+        return status;
     }
-    if (strcmp(name->valuestring, "power_on") == 0 || strcmp(name->valuestring, "power_off") == 0) {
+    memcpy(command->request_id, request.request_id, strlen(request.request_id) + 1U);
+    command->timestamp_ms = request.timestamp;
+    params = request.params;
+    if (strcmp(request.command, "power_on") == 0 || strcmp(request.command, "power_off") == 0) {
         if (!cJSON_IsNull(params)) goto done;
-        command->type = strcmp(name->valuestring, "power_on") == 0 ?
+        command->type = strcmp(request.command, "power_on") == 0 ?
             CHASSIS_CLOUD_COMMAND_POWER_ON : CHASSIS_CLOUD_COMMAND_POWER_OFF;
-        if (command->type == CHASSIS_CLOUD_COMMAND_POWER_ON && !expires) goto done;
-        if (expires) {
-            if (!integer(expires) || !ABoxMqttV4_RequestLifetimeValid(command->timestamp_ms,
-                  (uint64_t)expires->valuedouble,
+        if (command->type == CHASSIS_CLOUD_COMMAND_POWER_ON && !request.has_expires_at) goto done;
+        if (request.has_expires_at) {
+            if (!ABoxMqttV4_RequestLifetimeValid(command->timestamp_ms,
+                  request.expires_at,
                   command->type == CHASSIS_CLOUD_COMMAND_POWER_ON ? 5000U : 0U)) goto done;
-            command->expires_at = (uint64_t)expires->valuedouble;
+            command->expires_at = request.expires_at;
             command->has_expires_at = 1U;
         }
         status = CHASSIS_CLOUD_OK;
         goto done;
     }
-    if (strcmp(name->valuestring, "chassis_control") != 0) {
+    if (strcmp(request.command, "chassis_control") != 0) {
         status = CHASSIS_CLOUD_UNSUPPORTED;
         goto done;
     }
-    if (!cJSON_IsObject(params) || expires) goto done;
+    if (!cJSON_IsObject(params) || request.has_expires_at) goto done;
     action = cJSON_GetObjectItemCaseSensitive(params, "action");
     session_id = cJSON_GetObjectItemCaseSensitive(params, "sessionId");
     seq = cJSON_GetObjectItemCaseSensitive(params, "seq");
@@ -143,6 +132,6 @@ ChassisCloudStatus ChassisCloud_Parse(const char* payload, uint16_t length,
     command->type = CHASSIS_CLOUD_COMMAND_MOTION;
     status = CHASSIS_CLOUD_OK;
 done:
-    cJSON_Delete(root);
+    ABoxMqttRequest_Close(&request);
     return status;
 }

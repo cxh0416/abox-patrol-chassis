@@ -163,6 +163,7 @@ uint8_t CloudMessages_BuildAlert(char* output, uint16_t size, const char* line, 
 void CloudMessages_BuildCalibrationResult(char* output, uint16_t size);
 // 按 Topic 分发收到的 MQTT 消息。优先识别时间同步、公共控制和内部维护入口，未知 Topic 不执行动作；解析结果仍须通过各业务门禁。
 void CloudCommands_OnMessage(const char* topic, const char* payload);
+void CloudCommands_HandlePublicControl(const char* topic, const char* payload);
 // 执行一次云消息与状态事件发送调度。比较状态变化、轮询公共发送器，空闲时再安排 ICCID 查询；消息完成以跟踪回执为准。
 void CloudTx_Service(void);
 // 清除网络变更前的云发送在途关联。通知公共云服务，重置外部消息类型及候选取消标记，避免旧回执完成新连接的动作。

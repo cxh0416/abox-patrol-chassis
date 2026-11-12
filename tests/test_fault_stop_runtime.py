@@ -32,6 +32,7 @@ class FaultStopRuntimeTests(unittest.TestCase):
                        str(ROOT/'app/Core/User/cloud/src/chassis_cloud_protocol.c'),
                        str(ROOT/'app/Core/User/common/src/fixed_point.c'),
                        str(ROOT/'platform/components/cloud/src/abox_cloud_internal_v2.c'),
+                       str(ROOT/'platform/components/mqtt/src/abox_mqtt_request.c'),
                        str(ROOT/'platform/components/mqtt/src/abox_mqtt_digest.c'),
                        str(ROOT/'platform/components/mqtt/src/abox_mqtt_number.c'),
                        str(ROOT/'platform/components/mqtt/src/abox_sha256.c'),

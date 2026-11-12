@@ -2,6 +2,7 @@
 #define CHASSIS_CLOUD_PROTOCOL_H
 
 #include <stdint.h>
+#include "abox_mqtt_request.h"
 
 #define CHASSIS_PUBLIC_PROFILE "vehicle_chassis"
 
@@ -35,6 +36,8 @@ typedef struct {
 } ChassisCloudCommand;
 
 // 将公共请求 JSON 转为底盘类型化命令。检查长度、结构、重复键、身份和各动作参数，输出解析状态；本函数不授予控制权、不写硬件。
+/* Validate the shared V4 envelope; caller closes request on every path. */
+uint16_t ChassisCloud_DecodeRequest(ABoxMqttRequest *request, const char *payload, uint16_t length);
 ChassisCloudStatus ChassisCloud_Parse(const char* payload, uint16_t length,
                                       ChassisCloudCommand* command);
 /* Uses existing validated milli-degree fields; never changes wire units. */

@@ -8,6 +8,7 @@ set(PATROL_PRODUCT_SOURCES
     Core/User/cloud/src/cloud_service.c
     Core/User/cloud/src/patrol_enrollment.c
     Core/User/cloud/src/cloud_commands.c
+    Core/User/cloud/src/cloud_public_control.c
     Core/User/cloud/src/cloud_messages.c
     Core/User/cloud/src/patrol_mqtt_profile.c
     Core/User/cloud/src/patrol_power_ledger.c
