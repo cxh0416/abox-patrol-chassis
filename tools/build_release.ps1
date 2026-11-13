@@ -105,7 +105,9 @@ try {
     $bootUsage = [ordered]@{ image_bytes = (Get-Item -LiteralPath $bootArtifact).Length; source = 'platform/targets/stm32f105_abox_boot' }
 
     foreach ($version in $versions) {
-        $appDefinitions = @("-DPATROL_CHASSIS_APP_VERSION_OVERRIDE=$version", "-DPATROL_ACTIVE_CAR=0")
+        # The frozen Boot in this release contract is the STM32 V2 image.
+        $appDefinitions = @("-DPATROL_CHASSIS_APP_VERSION_OVERRIDE=$version", "-DPATROL_ACTIVE_CAR=0",
+                            '-DABOX_HARDWARE=stm32f105_ec800_v1', '-DABOX_BOARD_VERSION=v2')
         $appDefinitions += "-DPATROL_CHASSIS_ACTUATION_ENABLED=$(if ($actuationCompiled) { 'ON' } else { 'OFF' })"
         # Preserve the confirmed PA0/OUT1 control for motion-enabled releases.
         # The commanded output is not independent contactor feedback.
@@ -113,8 +115,14 @@ try {
         $appDefinitions += "-DPATROL_STEERING_EXECUTOR_ENABLED=$(if ($steeringCompiled) { 'ON' } else { 'OFF' })"
         $appDefinitions += "-DPATROL_DRIVE_EXECUTOR_ENABLED=$(if ($driveCompiled) { 'ON' } else { 'OFF' })"
         $app = Invoke-TargetBuild 'app' 'Patrol_Vehicle_Chassis_App' "ABoxUnified$Configuration-$version" $appDefinitions $credentialBuildRoot
+        $appText = [Text.Encoding]::ASCII.GetString([IO.File]::ReadAllBytes($app.bin))
+        if (-not $appText.Contains('ABOX_MCU=STM32F105RCT6') -or $appText.Contains('ABOX_MCU=GD32F105RCT6')) {
+            throw 'Formal App MCU marker mismatch; dist was not replaced.'
+        }
         & python (Join-Path $PSScriptRoot 'verify_can2_stack.py') (Split-Path -Parent $app.elf)
         if ($LASTEXITCODE -ne 0) { throw 'CAN2 owner stack validation failed; dist was not replaced.' }
+        & python (Join-Path $PSScriptRoot 'verify_encoder_stack.py') (Split-Path -Parent $app.elf)
+        if ($LASTEXITCODE -ne 0) { throw 'Encoder stack validation failed; dist was not replaced.' }
         $appUsage = Get-Usage $app.elf
         if ($steeringCompiled) {
             & python (Join-Path $PSScriptRoot 'verify_bench_stack.py') (Split-Path -Parent $app.elf)
@@ -133,6 +141,7 @@ try {
         $appOut = $images.app; $bootOut = $images.boot; $fullOut = $images.full
         $manifest = [ordered]@{
             manifest_version = 3; product = 'patrol_vehicle_chassis'; version = $version; configuration = $Configuration
+            board = 'v2'; hardware = 'stm32f105_ec800_v1'
             steering_executor_compiled = $steeringCompiled; drive_executor_compiled = $driveCompiled
             startup_motion_permit = $false; actuation_enabled = $actuationCompiled; power_output_enabled = $actuationCompiled; active_car = 0
             boot_version = 'abox-boot-2.3.0'; ota_scheme = 'boot_v2_ufs'; ota_downloader = 'app'

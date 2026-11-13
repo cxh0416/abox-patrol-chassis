@@ -572,11 +572,13 @@ OTA 请求使用同一内部信封，`data.command="ota_upgrade"`，发往 `/int
 | 字段路径 | 类型 | 必填或出现条件 | 约束与说明 |
 |---|---|---|---|
 | `params.url` | String | 是 | HTTPS 制品 URL，最长 320 字符，须通过设备来源、路径和文件名校验。 |
-| `params.version` | String | 是 | `patrol-chassis-` 前缀及点分数字，长度小于 32。 |
+| `params.version` | String | 是 | `patrol-chassis-` 前缀及点分数字，允许 `-gd` 后缀，长度小于 32。GD32 V1 镜像版本以 `-gd` 结尾；STM32 V2 不接受该后缀。 |
 | `params.size` | Integer | 是 | `1..221184` 字节，限 App 分区。 |
 | `params.crc32` | String | 是 | 八位十六进制 CRC32。 |
 
 OTA 可能返回 `200 ALREADY_CONFIRMED`（结果 `otaPhase="CONFIRMED"`）、`200 INSTALL_PENDING`（结果 `fwVersion`、`otaPhase="INSTALL_PENDING"`）、`400/503 OTA_REQUEST_REJECTED` 或 `500 OTA_FAILED`（结果 `errorCode: Integer`），以及 `409 DEVICE_BUSY`。`INSTALL_PENDING` 仅表示候选安装已提交；成功须在设备重新上线后核对目标版本、`otaState=CONFIRMED`、Config V5 标定回读。Boot、OTA、Config V5 的存储兼容保留；旧固件的远控业务流程不属于本合同。
+
+设备在启动 OTA 前拒绝不匹配本板型的版本后缀；平台仍须核对镜像中 MCU 标识、目标设备及 Boot 类型。版本后缀本身不证明镜像内容正确或 OTA 已完成。旧固件不具备此板型后缀检查。
 
 **请求示例（占位制品地址）**
 

@@ -4,7 +4,7 @@
 #include <stddef.h>
 #include <string.h>
 
-#include "main.h"
+#include "abox_platform_port.h"
 
 _Static_assert(sizeof(OTA_Info_t) <= OTA_INFO_PAGE_SIZE, "OTA info must fit in one flash page");
 _Static_assert(offsetof(OTA_Info_t, reserved) % 4U == 0U, "ledger marker must be word aligned");
@@ -135,20 +135,20 @@ static uint8_t fault_load_direct(MotionFaultRecord* out)
 // 擦除给定地址所属的一页内部 Flash。调用方负责地址边界、写互斥和 Flash 解锁；只返回 HAL 擦除结果，不负责恢复原数据。
 static uint8_t flash_erase_page(uint32_t address)
 {
-    FLASH_EraseInitTypeDef erase = {0};
-    uint32_t page_error = 0U;
-    erase.TypeErase = FLASH_TYPEERASE_PAGES;
-    erase.PageAddress = address;
-    erase.NbPages = 1U;
-    return HAL_FLASHEx_Erase(&erase, &page_error) == HAL_OK ? 1U : 0U;
+    return ABox_PortFlashErasePage(address) ? 1U : 0U;
 }
+
+static int flash_write_word(uint32_t address, uint32_t value)
+{ return ABox_PortFlashWrite(address, (const uint8_t *)&value, sizeof(value)); }
+static int flash_write_halfword(uint32_t address, uint16_t value)
+{ return ABox_PortFlashWrite(address, (const uint8_t *)&value, sizeof(value)); }
 
 // 逐字编程 Flash 并复读比较目标内容。调用方保证地址、源数据对齐及向上取整后的可读范围，且已完成擦除、解锁与写入互斥。
 static uint8_t flash_program_words(uint32_t address, const void* data, uint32_t size)
 {
     const uint32_t* words = (const uint32_t*)data;
     for (uint32_t i = 0U; i < (size + 3U) / 4U; i++) {
-        if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, address + i * 4U, words[i]) != HAL_OK) return 0U;
+        if (!flash_write_word(address + i * 4U, words[i])) return 0U;
     }
     return memcmp((const void*)address, data, size) == 0 ? 1U : 0U;
 }
@@ -193,15 +193,15 @@ static uint8_t recovery_restore_if_needed(void)
         copy.fault_valid = legacy->fault_valid;
         copy.fault = legacy->fault;
     } else return 1U;
-    HAL_FLASH_Unlock();
+    if (!ABox_PortFlashBegin()) return 0U;
     if (!flash_erase_page(OTA_INFO_ADDR) ||
         !flash_program_words(OTA_INFO_ADDR, &copy.info, sizeof(copy.info)) ||
         (copy.fault_valid && !flash_program_words(MOTION_JOURNAL_ADDR, &copy.fault, sizeof(copy.fault)))) {
-        HAL_FLASH_Lock();
+        ABox_PortFlashEnd();
         return 0U;
     }
-    if (!recovery_clear_unlocked()) { HAL_FLASH_Lock(); return 0U; }
-    HAL_FLASH_Lock();
+    if (!recovery_clear_unlocked()) { ABox_PortFlashEnd(); return 0U; }
+    ABox_PortFlashEnd();
     return 1U;
 }
 
@@ -221,13 +221,13 @@ static uint8_t fault_save_unlocked(const MotionFaultRecord* record)
         const uint32_t* old=(const uint32_t*)address; uint8_t empty=1;
         for (uint32_t j=0;j<sizeof(copy)/4;j++) if (old[j]!=0xFFFFFFFFU) empty=0;
         if (!empty) continue;
-        HAL_FLASH_Unlock();
+        if (!ABox_PortFlashBegin()) return 0U;
         for (uint32_t j=0;j<sizeof(copy)/4;j++) {
-            if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD,address+4*j,((uint32_t*)&copy)[j])!=HAL_OK) {
-                HAL_FLASH_Lock(); return 0;
+            if (!flash_write_word(address+4*j,((uint32_t*)&copy)[j])) {
+                ABox_PortFlashEnd(); return 0;
             }
         }
-        HAL_FLASH_Lock();
+        ABox_PortFlashEnd();
         return memcmp((const void*)address,&copy,sizeof(copy))==0;
     }
     return 0;
@@ -239,7 +239,6 @@ static uint8_t ota_info_write_raw_unlocked(const OTA_Info_t* info)
     MotionFaultRecord saved_fault;
     ConfigRecoveryRecord recovery;
     uint8_t have_fault;
-    HAL_StatusTypeDef status;
     const uint32_t* words;
     uint32_t address = OTA_INFO_ADDR;
     uint32_t count;
@@ -261,18 +260,17 @@ static uint8_t ota_info_write_raw_unlocked(const OTA_Info_t* info)
     recovery.checksum = recovery_checksum(&recovery);
     recovery.commit = 0xFFFFFFFFU;
 
-    HAL_FLASH_Unlock();
+    if (!ABox_PortFlashBegin()) return 0U;
     if (!recovery_clear_unlocked() ||
         !flash_program_words(CONFIG_RECOVERY_ADDR, &recovery, offsetof(ConfigRecoveryRecord, commit)) ||
-        HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD,
-                          CONFIG_RECOVERY_ADDR + offsetof(ConfigRecoveryRecord, commit),
-                          CONFIG_RECOVERY_COMMIT) != HAL_OK) {
-        HAL_FLASH_Lock();
+        !flash_write_word(CONFIG_RECOVERY_ADDR + offsetof(ConfigRecoveryRecord, commit),
+                          CONFIG_RECOVERY_COMMIT)) {
+        ABox_PortFlashEnd();
         return 0U;
     }
     recovery.commit = CONFIG_RECOVERY_COMMIT;
     if (!recovery_valid((const ConfigRecoveryRecord*)CONFIG_RECOVERY_ADDR)) {
-        HAL_FLASH_Lock();
+        ABox_PortFlashEnd();
         return 0U;
     }
 
@@ -281,7 +279,7 @@ static uint8_t ota_info_write_raw_unlocked(const OTA_Info_t* info)
 
     if (!flash_erase_page(OTA_INFO_ADDR))
     {
-        HAL_FLASH_Lock();
+        ABox_PortFlashEnd();
         return 0U;
     }
     for (i = 0U; i < count; i++)
@@ -292,20 +290,19 @@ static uint8_t ota_info_write_raw_unlocked(const OTA_Info_t* info)
          * A stale or caller-created configuration snapshot must not create,
          * clear or replace a marker, including when the page is virgin. */
         if (i >= marker_word && i < marker_word + 2U) value = marker[i - marker_word];
-        status = HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD, address, value);
-        if (status != HAL_OK)
+        if (!flash_write_word(address, value))
         {
-            HAL_FLASH_Lock();
+            ABox_PortFlashEnd();
             return 0U;
         }
         address += 4U;
     }
     if (have_fault && !flash_program_words(MOTION_JOURNAL_ADDR, &saved_fault, sizeof(saved_fault))) {
-        HAL_FLASH_Lock();
+        ABox_PortFlashEnd();
         return 0U;
     }
-    if (!recovery_clear_unlocked()) { HAL_FLASH_Lock(); return 0U; }
-    HAL_FLASH_Lock();
+    if (!recovery_clear_unlocked()) { ABox_PortFlashEnd(); return 0U; }
+    ABox_PortFlashEnd();
     return 1U;
 }
 
@@ -370,15 +367,15 @@ int OTA_Info_MarkPowerLedgerInitialized(void)
         uint16_t value = *(const volatile uint16_t*)(address + i * 2U);
         if (value != UINT16_MAX && value != expected[i]) goto done;
     }
-    HAL_FLASH_Unlock();
+    if (!ABox_PortFlashBegin()) goto done;
     for (uint32_t i=0U; i<4U; ++i) {
         if (*(const volatile uint16_t*)(address + i * 2U) == expected[i]) continue;
-        if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, address + i * 2U, expected[i]) != HAL_OK ||
+        if (!flash_write_halfword(address + i * 2U, expected[i]) ||
             *(const volatile uint16_t*)(address + i * 2U) != expected[i]) {
-            HAL_FLASH_Lock(); goto done;
+            ABox_PortFlashEnd(); goto done;
         }
     }
-    HAL_FLASH_Lock();
+    ABox_PortFlashEnd();
     memcpy(marker, ((const OTA_Info_t*)OTA_INFO_ADDR)->reserved, sizeof(marker));
     result = power_ledger_marker_value(marker) == 1;
 done:

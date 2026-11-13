@@ -1,7 +1,7 @@
 #include "vehicle_power_port.h"
 
 #include "app_log.h"
-#include "abox_board_io_stm32f105.h"
+#include "abox_board_io.h"
 #include "vehicle_power_output.h"
 
 static ABoxBoardIo g_board_io;
@@ -24,7 +24,7 @@ void VehiclePowerPort_Init(void)
 #if PATROL_CHASSIS_POWER_OUTPUT_ENABLED
     allowed_outputs = (uint8_t)(1U << ABOX_BOARD_IO_OUT1);
 #endif
-    if (ABoxBoardIo_Init(&g_board_io, ABoxBoardIoStm32_Port(), allowed_outputs) != ABOX_BOARD_IO_OK) {
+    if (ABoxBoardIo_Init(&g_board_io, ABoxBoardIo_HardwarePort(), allowed_outputs) != ABOX_BOARD_IO_OK) {
         VehiclePowerOutput_Init(0);
         return;
     }

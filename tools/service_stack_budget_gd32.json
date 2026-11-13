@@ -1,0 +1,14 @@
+{
+  "extends": "service_stack_budget.json",
+  "chains": {
+    "uart_rx_retry": ["Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "app_restart_rx", "ABoxModemPort_StartRx", "dma_init"],
+    "public_control_fault_stop": [
+      "Patrol_RemoteTask", "CloudService_Task", "ABoxAppService_Poll", "app_cloud",
+      "ABoxMqttEc800Bridge_Poll", "ABoxMqttEc800_Poll", "ABoxMqttEc800Rx_Poll",
+      "message", "on_message", "CloudCommands_OnMessage", "CloudCommands_HandlePublicControl",
+      "RemoteService_HandleControl", "ChassisControl_Apply", "force_stop",
+      "ChassisControl_RequestFault", "PatrolRuntime_RequestFaultStop", "dispatch_fault_stop",
+      "PatrolRuntimePort_SendCan", "HAL_CAN_AddTxMessage", "ABoxCanEvents_Send", "consume"
+    ]
+  }
+}

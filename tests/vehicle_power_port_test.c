@@ -2,7 +2,7 @@
 #include <stdarg.h>
 #include <stdint.h>
 
-#include "abox_board_io_stm32f105.h"
+#include "abox_board_io.h"
 #include "app_log.h"
 #include "vehicle_power_output.h"
 #include "vehicle_power_port.h"
@@ -29,10 +29,10 @@ static int write_led(void *context, ABoxBoardIoLed channel, uint8_t on)
 { (void)context; led[channel] = on; return 1; }
 static uint32_t enter(void *context) { (void)context; return 0; }
 static void leave(void *context, uint32_t key) { (void)context; (void)key; }
-const ABoxBoardIoPort *ABoxBoardIoStm32_Port(void)
+const ABoxBoardIoPort *ABoxBoardIo_HardwarePort(void)
 {
     static const ABoxBoardIoPort port = {0, prepare, write_output, read_output,
-                                         read_input, write_led, enter, leave, 0};
+                                         read_input, write_led, enter, leave, 0, 0};
     return &port;
 }
 int main(void)

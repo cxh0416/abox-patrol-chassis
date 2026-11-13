@@ -8,7 +8,7 @@
 #include "main.h"
 #include "time_base.h"
 #if PATROL_EC800_AT_DIAG_UART5 || defined(PATROL_OTA_FIELD_PROGRESS_UART5)
-#include "usart.h"
+#include "abox_serial_port.h"
 #endif
 
 static ABoxLogRing g_log;
@@ -51,7 +51,7 @@ void AppLog_FieldStartup(const char *version)
     int n = snprintf(line, sizeof(line),
                      "[APP2] evt=APP_START version=%s fieldBuild=1 role=OTA_OBSERVE\r\n",
                      version == 0 ? "unknown" : version);
-    if (n > 0) (void)HAL_UART_Transmit(&huart5, (uint8_t *)line, (uint16_t)n, 100U);
+    if (n > 0) (void)ABoxSerialPort_SendBlocking((const uint8_t *)line, (uint16_t)n, 100U);
 #else
     (void)version;
 #endif
@@ -67,7 +67,7 @@ void AppLog_FieldOtaProgress(uint32_t threshold_percent, uint32_t actual_percent
                      "[APP2] evt=OTA_DOWNLOAD_PROGRESS threshold=%lu actualPercent=%lu downloaded=%lu size=%lu slot=%u\r\n",
                      (unsigned long)threshold_percent, (unsigned long)actual_percent,
                      (unsigned long)downloaded, (unsigned long)size, (unsigned)slot);
-    if (n > 0) (void)HAL_UART_Transmit(&huart5, (uint8_t *)line, (uint16_t)n, 100U);
+    if (n > 0) (void)ABoxSerialPort_SendBlocking((const uint8_t *)line, (uint16_t)n, 100U);
 #else
     (void)threshold_percent;
     (void)actual_percent;
@@ -139,7 +139,7 @@ void AppLog_DebugTask(void)
     __disable_irq();
     length = ABoxLogRing_ReadDebugLine(&g_log, line, sizeof(line), format_time);
     if (!primask) __enable_irq();
-    if (length) (void)HAL_UART_Transmit(&huart5, (uint8_t *)line, length, 1000U);
+    if (length) (void)ABoxSerialPort_SendBlocking((const uint8_t *)line, length, 1000U);
 }
 #else
 // 按编译开关向 UART5 输出下一条调试日志。启用分支先在短临界区取一行再阻塞发送，禁用分支为空实现，不占用运动调度的关键临界区。

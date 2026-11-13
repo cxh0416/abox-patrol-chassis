@@ -45,6 +45,16 @@ int HAL_FLASH_Program(uint32_t type,uint32_t address,uint64_t value) {
  uint32_t* p=(uint32_t*)(uintptr_t)address;
  assert((*p & (uint32_t)value)==(uint32_t)value); *p=(uint32_t)value; return 0;
 }
+int ABox_PortFlashBegin(void) { HAL_FLASH_Unlock(); return 1; }
+void ABox_PortFlashEnd(void) { HAL_FLASH_Lock(); }
+int ABox_PortFlashErasePage(uint32_t address) {
+ FLASH_EraseInitTypeDef e={0,address,1}; uint32_t error=0;
+ return HAL_FLASHEx_Erase(&e,&error)==0;
+}
+int ABox_PortFlashWrite(uint32_t address,const uint8_t *data,uint32_t size) {
+ uint32_t value=0; memcpy(&value,data,size);
+ return HAL_FLASH_Program(size==2 ? FLASH_TYPEPROGRAM_HALFWORD : FLASH_TYPEPROGRAM_WORD,address,value)==0;
+}
 static uint32_t checksum(const void* value,size_t size) {
  const uint8_t* p=value; uint32_t sum=0x13572468U;
  for(size_t i=0;i<size;i++){if(i>=8&&i<12)continue;sum=(sum<<5)^(sum>>27)^p[i];}
@@ -113,7 +123,7 @@ int main(void) {
 }
 """, encoding="utf-8")
             cmd = [shutil.which("gcc"), "-std=c11", "-D_DEFAULT_SOURCE", "-Wno-int-to-pointer-cast",
-                   "-I" + str(d), "-I" + str(ROOT / "shared/include"), str(d / "test.c"),
+                   "-I" + str(d), "-I" + str(ROOT / "shared/include"), "-I" + str(ROOT / "platform/components/core/include"), str(d / "test.c"),
                    str(ROOT / "app/Core/User/ota/src/ota_info.c"), "-I" + str(ROOT / "platform/components/ec800/include"), str(ROOT / "platform/components/ec800/src/abox_tls_secret_record.c"), "-o", str(d / "test.exe")]
             result = subprocess.run(cmd, capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)

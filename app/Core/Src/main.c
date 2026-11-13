@@ -28,6 +28,10 @@
 #include "time_base.h"
 #include "patrol_config.h"
 #include "vehicle_power_port.h"
+#include "abox_serial_port.h"
+#include "abox_modem_port.h"
+#include "abox_watchdog_port.h"
+uint8_t *ABoxStm32Serial_RxBuffer(void);
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -111,7 +115,7 @@ int main(void)
   MX_CAN2_Init();
   MX_USART1_UART_Init();
   MX_UART5_Init();
-  MX_IWDG_Init();
+  if (!ABoxWatchdog_Init(64U, 1250U)) Error_Handler();
   /* USER CODE BEGIN 2 */
   ABoxStm32F105Ec800Port_Init();
   AppLog_Init();
@@ -199,13 +203,16 @@ void SystemClock_Config(void)
 // 把串口空闲线 DMA 接收事件转交云接收器。Size 表示 HAL 提供的 DMA 接收位置，具体串口过滤和环形处理由 CloudService 完成。
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef* huart, uint16_t Size)
 {
-  CloudService_OnUartRxEvent(huart, Size);
+  if (huart && huart->Instance == UART5)
+    ABoxSerialPort_NotifyRx(ABoxStm32Serial_RxBuffer(), Size);
+  else if (huart && huart->Instance == USART1) ABoxModemPort_NotifyRx(Size);
 }
 
 // 将 HAL 串口错误通知转交云服务。回调只登记后续恢复需求，不在中断中直接执行 MQTT 重连或 JSON 业务。
 void HAL_UART_ErrorCallback(UART_HandleTypeDef* huart)
 {
-  CloudService_OnUartError(huart);
+  if (huart && huart->Instance == UART5) ABoxSerialPort_NotifyError();
+  else if (huart && huart->Instance == USART1) ABoxModemPort_NotifyError();
 }
 
 /* USER CODE END 4 */

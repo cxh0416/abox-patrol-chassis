@@ -1,6 +1,6 @@
 # 巡防车底盘控制器
 
-`patrol_vehicle_chassis` 是 STM32F105 + FreeRTOS 的巡防车底盘控制器。源码版本由根目录 `VERSION` 维护；最新正式固件、产物和哈希只以 `dist/release.manifest.json` 为准。构建成功、MQTT ACK 或 CAN 报文不等同于台架、实车或 OTA 现场验收。
+`patrol_vehicle_chassis` 是使用 ABox V1/GD32F105 或 V2/STM32F105 与 FreeRTOS 的巡防车底盘控制器。源码版本由根目录 `VERSION` 维护；最新正式固件、产物和哈希只以 `dist/release.manifest.json` 为准。构建成功、MQTT ACK 或 CAN 报文不等同于台架、实车或 OTA 现场验收。
 
 ## 固定边界
 

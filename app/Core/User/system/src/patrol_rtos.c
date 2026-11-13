@@ -16,17 +16,23 @@
 #include "absolute_encoder.h"
 #include "cloud_service.h"
 #include "fault_mailbox.h"
-#include "iwdg.h"
+#include "abox_watchdog_port.h"
 #include "ota_service.h"
 #include "patrol_canopen.h"
 #include "patrol_diagnostics.h"
 #include "remote_service.h"
 #include "task.h"
-#include "usart.h"
+#include "abox_serial_transaction.h"
+#include "abox_platform_port.h"
 #include "vehicle_steering_profile.h"
 #include "vehicle_power_output.h"
 #include "vehicle_power_port.h"
+#ifdef ABOX_MCU_GD32F105
+#define ABOX_BOARD_VERSION_V1 1
+#define ABOX_BOARD_VERSION 1
+#else
 #include "abox_board_io_stm32f105.h"
+#endif
 
 #ifndef PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED
 #define PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED 0
@@ -94,13 +100,7 @@ static StackType_t g_encoder_stack[PATROL_ENCODER_STACK_WORDS];
 static StackType_t g_remote_stack[PATROL_REMOTE_STACK_WORDS];
 static StackType_t g_diag_stack[PATROL_DIAG_STACK_WORDS];
 static StackType_t g_watchdog_stack[PATROL_WATCHDOG_STACK_WORDS];
-static TaskHandle_t g_safety_task;
 static TaskHandle_t g_can_rx_task;
-static TaskHandle_t g_canopen_task;
-static TaskHandle_t g_encoder_task;
-static TaskHandle_t g_remote_task;
-static TaskHandle_t g_diag_task;
-static TaskHandle_t g_watchdog_task;
 static volatile uint32_t g_can_rx_overflow_count;
 static volatile uint32_t g_can_raw_rx_count[2];
 static volatile uint8_t g_can_started;
@@ -135,7 +135,11 @@ static void patrol_start_can(void)
 {
     const uint32_t notifications = CAN_IT_RX_FIFO0_MSG_PENDING |
                                    CAN_IT_ERROR | CAN_IT_BUSOFF |
-                                   CAN_IT_LAST_ERROR_CODE;
+                                   CAN_IT_LAST_ERROR_CODE
+#ifdef ABOX_MCU_GD32F105
+                                   | CAN_IT_TX_MAILBOX_EMPTY | CAN_IT_ERROR_WARNING | CAN_IT_ERROR_PASSIVE
+#endif
+                                   ;
 
     if (g_can_started != 0U) return;
     if (HAL_CAN_Start(&hcan1) != HAL_OK) Error_Handler();
@@ -148,6 +152,7 @@ static void patrol_start_can(void)
 // 创建底盘任务及静态 CAN 接收队列。设置任务栈、优先级和运行入口，创建结果必须检查；调度启动后各任务按职责更新状态。
 void PatrolRtos_Init(void)
 {
+    TaskHandle_t created;
     PatrolRuntime_Init();
     PatrolCanRemote_Init();
     PatrolPhyRemote_Init();
@@ -157,36 +162,40 @@ void PatrolRtos_Init(void)
                                          &g_can_rx_queue_control);
     g_health_events = xEventGroupCreateStatic(&g_health_control);
 
-    g_safety_task = xTaskCreateStatic(Patrol_SafetyControlTask, "SafetyControl",
+    created = xTaskCreateStatic(Patrol_SafetyControlTask, "SafetyControl",
                                       PATROL_SAFETY_STACK_WORDS, NULL, 6U,
                                       g_safety_stack, &g_safety_tcb);
+    configASSERT(created != NULL);
     g_can_rx_task = xTaskCreateStatic(Patrol_CanRxTask, "CanRx",
                                       PATROL_CAN_RX_STACK_WORDS, NULL, 5U,
                                       g_can_rx_stack, &g_can_rx_tcb);
-    g_canopen_task = xTaskCreateStatic(Patrol_CanopenTask, "Canopen",
+    created = xTaskCreateStatic(Patrol_CanopenTask, "Canopen",
                                       PATROL_CANOPEN_STACK_WORDS, NULL, 4U,
                                       g_canopen_stack, &g_canopen_tcb);
-    g_encoder_task = xTaskCreateStatic(Patrol_EncoderTask, "EncoderUart5",
+    configASSERT(created != NULL);
+    created = xTaskCreateStatic(Patrol_EncoderTask, "EncoderUart5",
                                        PATROL_ENCODER_STACK_WORDS, NULL, 4U,
                                        g_encoder_stack, &g_encoder_tcb);
-    g_watchdog_task = xTaskCreateStatic(Patrol_WatchdogTask, "Watchdog",
+    configASSERT(created != NULL);
+    created = xTaskCreateStatic(Patrol_WatchdogTask, "Watchdog",
                                         PATROL_WATCHDOG_STACK_WORDS, NULL, 3U,
                                         g_watchdog_stack, &g_watchdog_tcb);
-    g_remote_task = xTaskCreateStatic(Patrol_RemoteTask, "Remote",
+    configASSERT(created != NULL);
+    created = xTaskCreateStatic(Patrol_RemoteTask, "Remote",
                                       PATROL_REMOTE_STACK_WORDS, NULL, 2U,
                                       g_remote_stack, &g_remote_tcb);
-    g_diag_task = xTaskCreateStatic(Patrol_DiagTask, "Diag",
+    configASSERT(created != NULL);
+    created = xTaskCreateStatic(Patrol_DiagTask, "Diag",
                                     PATROL_DIAG_STACK_WORDS, NULL, 1U,
                                     g_diag_stack, &g_diag_tcb);
+    configASSERT(created != NULL);
 
     configASSERT(g_can_rx_queue != NULL);
     configASSERT(g_health_events != NULL);
-    configASSERT(g_safety_task != NULL && g_can_rx_task != NULL && g_canopen_task != NULL);
-    configASSERT(g_encoder_task != NULL);
-    configASSERT(g_watchdog_task != NULL && g_remote_task != NULL && g_diag_task != NULL);
+    configASSERT(g_can_rx_task != NULL);
 
 #if defined(DEBUG)
-    __HAL_DBGMCU_FREEZE_IWDG();
+    ABoxWatchdog_FreezeWhileDebugging();
 #endif
 }
 
@@ -202,7 +211,7 @@ BaseType_t PatrolRtos_CanRxFromISR(CAN_HandleTypeDef *hcan, BaseType_t *higher_p
     frame.bus = patrol_can_bus_index(hcan);
     g_can_raw_rx_count[frame.bus]++;
     frame.header = header;
-    frame.timestamp_ms = HAL_GetTick();
+    frame.timestamp_ms = ABox_PortGetTickMs();
 
     if (xQueueSendFromISR(g_can_rx_queue, &frame, higher_priority_task_woken) != pdPASS)
     {
@@ -262,7 +271,7 @@ uint8_t PatrolRtos_CanRecoverySamples(void) { return g_can_recovery.samples; }
 // 用健康的一致反馈推进 Bus-Off 恢复观察。恢复要求故障之后的新样本、三次独立采样及至少一秒稳定区间；不会自动恢复旧运动会话。
 void PatrolRtos_ObserveCanRecovery(uint32_t sample_ms, uint8_t healthy)
 {
-    uint32_t now = HAL_GetTick();
+    uint32_t now = ABox_PortGetTickMs();
     taskENTER_CRITICAL();
     if ((g_can_bus_off_mask & 0x01U) != 0U)
     {
@@ -297,7 +306,7 @@ void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan)
         g_can_bus_off_seen_mask |= bit;
         if (hcan->Instance == CAN1)
         {
-            g_can_bus_off_at_ms = HAL_GetTick();
+            g_can_bus_off_at_ms = ABox_PortGetTickMs();
             PatrolCanRecovery_Reset(&g_can_recovery);
             xEventGroupSetBitsFromISR(g_health_events, PATROL_EVENT_CAN_ERROR, &higher_priority_task_woken);
         }
@@ -312,7 +321,7 @@ static void Patrol_SafetyControlTask(void *argument)
     (void)argument;
     for (;;)
     {
-        VehiclePowerPort_Poll(HAL_GetTick());
+        VehiclePowerPort_Poll(ABox_PortGetTickMs());
         /* Build logical contacts from the selected B8/B9 inputs. Only stable,
          * valid optocoupler samples may establish or release collision state. */
         ABoxBoardIoInputs collision_inputs = {0};
@@ -327,13 +336,13 @@ static void Patrol_SafetyControlTask(void *argument)
         if (collision_valid &&
             (collision_inputs.stable_mask & (uint8_t)(1U << PATROL_COLLISION_REAR_INPUT)))
             collision_contacts |= CHASSIS_COLLISION_REAR;
-        RemoteService_CollisionInputs(collision_contacts, collision_valid, HAL_GetTick());
+        RemoteService_CollisionInputs(collision_contacts, collision_valid, ABox_PortGetTickMs());
         taskENTER_CRITICAL();
-        RemoteService_SafetyTick(HAL_GetTick());
-        PatrolCanRemote_Tick(HAL_GetTick(),
+        RemoteService_SafetyTick(ABox_PortGetTickMs());
+        PatrolCanRemote_Tick(ABox_PortGetTickMs(),
             (uint8_t)((hcan2.Instance->ESR & CAN_ESR_BOFF) == 0U));
         /* >>>>> PHY-REMOTE: START >>>>> */
-        PatrolPhyRemote_Tick(HAL_GetTick(),
+        PatrolPhyRemote_Tick(ABox_PortGetTickMs(),
             (uint8_t)((hcan2.Instance->ESR & CAN_ESR_BOFF) == 0U));
         /* <<<<< PHY-REMOTE: END <<<<< */
         taskEXIT_CRITICAL();
@@ -402,8 +411,8 @@ static void Patrol_CanRxTask(void *argument)
                 /* >>>>> PHY-REMOTE: START >>>>> */
                 /* Handset receiver (0x10A/0x10B) is wired to CAN2; check it
                  * before the CAN2 keyboard command service (0x520). */
-                if (!PatrolPhyRemote_OnFrame(&decoded, frame.timestamp_ms, HAL_GetTick())) {
-                    PatrolCanRemote_OnFrame(&decoded, frame.timestamp_ms, HAL_GetTick());
+                if (!PatrolPhyRemote_OnFrame(&decoded, frame.timestamp_ms, ABox_PortGetTickMs())) {
+                    PatrolCanRemote_OnFrame(&decoded, frame.timestamp_ms, ABox_PortGetTickMs());
                 }
                 /* <<<<< PHY-REMOTE: END <<<<< */
             } else {
@@ -413,7 +422,7 @@ static void Patrol_CanRxTask(void *argument)
         }
         if (!replies_ready) {
             taskENTER_CRITICAL();
-            replies_ready = PatrolCanRemote_TakeReply(replies, HAL_GetTick());
+            replies_ready = PatrolCanRemote_TakeReply(replies, ABox_PortGetTickMs());
             taskEXIT_CRITICAL();
             reply_index = 0U;
             reply_started = xTaskGetTickCount();
@@ -421,12 +430,19 @@ static void Patrol_CanRxTask(void *argument)
         if (replies_ready) {
             CAN_TxHeaderTypeDef header = {0};
             uint32_t mailbox;
+            uint32_t send_result;
             header.StdId = replies[reply_index].id;
             header.IDE = CAN_ID_STD;
             header.RTR = CAN_RTR_DATA;
             header.DLC = replies[reply_index].dlc;
-            if (HAL_CAN_AddTxMessage(&hcan2, &header, replies[reply_index].data,
-                                     &mailbox) == HAL_OK) {
+#ifdef ABOX_MCU_GD32F105
+            taskENTER_CRITICAL();
+#endif
+            send_result = HAL_CAN_AddTxMessage(&hcan2, &header, replies[reply_index].data, &mailbox);
+#ifdef ABOX_MCU_GD32F105
+            taskEXIT_CRITICAL();
+#endif
+            if (send_result == HAL_OK) {
                 reply_index++;
                 if (reply_index >= 3U) replies_ready = 0U;
             } else if ((TickType_t)(xTaskGetTickCount() - reply_started) >=
@@ -436,7 +452,7 @@ static void Patrol_CanRxTask(void *argument)
                  * invalidates the CAN2 remote session. */
                 replies_ready = 0U;
                 taskENTER_CRITICAL();
-                PatrolCanRemote_Tick(HAL_GetTick(), 0U);
+                PatrolCanRemote_Tick(ABox_PortGetTickMs(), 0U);
                 taskEXIT_CRITICAL();
             }
         }
@@ -458,10 +474,28 @@ static void Patrol_CanopenTask(void *argument)
     }
 }
 
+#if PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED
+// 接收一段空闲线分隔的数据。底层中断队列先记录数据，本任务只负责有限等待。
+static int encoder_receive(ABoxSerialTransaction *serial, uint8_t *response, uint16_t capacity, uint16_t *length, uint32_t timeout_ms)
+{
+    uint32_t start = ABox_PortGetTickMs();
+    for (;;) {
+        int result = ABoxSerialTransaction_Take(serial, response, capacity, length);
+        if (result != 0) return result;
+        if ((uint32_t)(ABox_PortGetTickMs() - start) >= timeout_ms) return 0;
+        vTaskDelay(pdMS_TO_TICKS(1U));
+    }
+}
+#endif
+
 // 执行绝对编码器串口读取、标定写入及复读验证。单一任务拥有 UART 事务，只有有效响应更新反馈时间，结果通过运行层受保护接口发布。
 static void Patrol_EncoderTask(void *argument)
 {
     (void)argument;
+#if PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED
+    ABoxSerialTransaction serial;
+    ABoxSerialTransaction_Init(&serial);
+#endif
     for (;;)
     {
 #if PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED
@@ -472,24 +506,21 @@ static void Patrol_EncoderTask(void *argument)
         uint16_t register_count;
         uint8_t read_config;
         uint8_t response_ok = 0U;
-        HAL_StatusTypeDef status;
+        int status;
         PatrolDiagnosticsSnapshot snapshot;
         uint32_t now;
         uint8_t write_center = 0U;
         taskENTER_CRITICAL();
-        now = HAL_GetTick();
+        now = ABox_PortGetTickMs();
         write_center = PatrolRuntime_BeginEncoderCycle(&snapshot);
         taskEXIT_CRITICAL();
         if (write_center) {
             AbsoluteEncoder_BuildWriteSingleRequest(3U, VEHICLE_ABSOLUTE_ZERO_COMMAND, request);
-            (void)HAL_UART_AbortReceive(&huart5);
-            __HAL_UART_FLUSH_DRREGISTER(&huart5);
-            status = HAL_UART_Transmit(&huart5, request, sizeof(request), 30U);
-            if (status == HAL_OK) {
-                HAL_StatusTypeDef receive_status = HAL_UARTEx_ReceiveToIdle(
-                    &huart5, response, sizeof(response), &response_length, 40U);
+            status = ABoxSerialTransaction_Begin(&serial, request, sizeof(request), 30U);
+            if (status) {
+                int receive_status = encoder_receive(&serial, response, sizeof(response), &response_length, 40U);
                 taskENTER_CRITICAL();
-                PatrolRuntime_EncoderWriteCompleted((receive_status == HAL_OK &&
+                PatrolRuntime_EncoderWriteCompleted((receive_status == 1 &&
                     AbsoluteEncoder_ParseWriteSingleResponse(response, response_length, 3U,
                         VEHICLE_ABSOLUTE_ZERO_COMMAND)) ? 2U : 5U);
                 taskEXIT_CRITICAL();
@@ -498,27 +529,25 @@ static void Patrol_EncoderTask(void *argument)
                 PatrolRuntime_EncoderWriteCompleted(3U);
                 taskEXIT_CRITICAL();
             }
+            (void)ABoxSerialTransaction_End(&serial);
             vTaskDelay(pdMS_TO_TICKS(20U));
             continue;
         }
         read_config = (uint8_t)(!snapshot.encoder_config_valid);
         register_count = read_config ? 3U : 2U;
         AbsoluteEncoder_BuildReadHoldingRequest(read_config ? 0U : 3U, register_count, request);
-        (void)HAL_UART_AbortReceive(&huart5);
-        __HAL_UART_FLUSH_DRREGISTER(&huart5);
-        status = HAL_UART_Transmit(&huart5, request, sizeof(request), 30U);
-        if (status == HAL_OK) {
+        status = ABoxSerialTransaction_Begin(&serial, request, sizeof(request), 30U) ? 1 : -1;
+        if (status == 1) {
             /* A half-duplex adapter may deliver the request echo and the
              * encoder reply as separate idle-delimited chunks. Collect at
              * most two chunks, then search the combined buffer for a valid
              * Modbus response. */
             for (uint8_t chunk = 0U; chunk < 2U && response_length < sizeof(response); chunk++) {
                 uint16_t received = 0U;
-                status = HAL_UARTEx_ReceiveToIdle(
-                    &huart5, response + response_length,
+                status = encoder_receive(&serial, response + response_length,
                     (uint16_t)(sizeof(response) - response_length), &received, 40U);
                 response_length += received;
-                if (status == HAL_OK && AbsoluteEncoder_ParseHoldingResponseAnywhere(
+                if (status == 1 && AbsoluteEncoder_ParseHoldingResponseAnywhere(
                         response, response_length, registers, register_count)) {
                     response_ok = 1U;
                     break;
@@ -526,6 +555,7 @@ static void Patrol_EncoderTask(void *argument)
                 if (received == 0U) break;
             }
         }
+        (void)ABoxSerialTransaction_End(&serial);
         taskENTER_CRITICAL();
         if (response_ok)
         {
@@ -538,13 +568,13 @@ static void Patrol_EncoderTask(void *argument)
         else if (response_length >= 2U && response[0] == ABS_ENCODER_ADDRESS &&
                  response[1] == (uint8_t)(0x03U | 0x80U))
             PatrolRuntime_OnEncoderError(PATROL_ENCODER_ERROR_EXCEPTION);
-        else if (status == HAL_TIMEOUT || response_length == 0U)
+        else if (status == 0 || (status == 1 && response_length == 0U))
             PatrolRuntime_OnEncoderError(PATROL_ENCODER_ERROR_TIMEOUT);
         else if (response_length >= 5U && AbsoluteEncoder_Crc16(response,
                  (uint16_t)(response_length - 2U)) != ((uint16_t)response[response_length - 2U] |
                  (uint16_t)response[response_length - 1U] << 8))
             PatrolRuntime_OnEncoderError(PATROL_ENCODER_ERROR_CRC);
-        else if (status != HAL_OK)
+        else if (status != 1)
             PatrolRuntime_OnEncoderError(PATROL_ENCODER_ERROR_TRANSPORT);
         else
             PatrolRuntime_OnEncoderError(PATROL_ENCODER_ERROR_FORMAT);
@@ -564,7 +594,7 @@ static void Patrol_RemoteTask(void *argument)
     {
         CloudService_Task();
         RemoteService_Task();
-        CenterCalibration_Tick(HAL_GetTick());
+        CenterCalibration_Tick(ABox_PortGetTickMs());
         vTaskDelay(pdMS_TO_TICKS(10U));
     }
 }
@@ -597,7 +627,7 @@ static void Patrol_WatchdogTask(void *argument)
                                                   pdMS_TO_TICKS(500U));
         if ((healthy & required) == required)
         {
-            (void)HAL_IWDG_Refresh(&hiwdg);
+            (void)ABoxWatchdog_Refresh();
             /* Do not require MQTT, 4G, or a vehicle CAN peer for trial success. */
             if (g_boot_confirmed == 0U && (xTaskGetTickCount() - trial_started) >= pdMS_TO_TICKS(30000U) &&
                 (xEventGroupGetBits(g_health_events) & PATROL_EVENT_CAN_ERROR) == 0U)
@@ -630,7 +660,7 @@ void vApplicationMallocFailedHook(void)
 
 /* Hardware/RTOS boundary for the independently compiled motion modules. */
 // 向运动运行层提供 HAL 单调毫秒时钟。供超时和反馈年龄计算使用，不是 UTC 时间。
-uint32_t PatrolRuntimePort_Now(void) { return HAL_GetTick(); }
+uint32_t PatrolRuntimePort_Now(void) { return ABox_PortGetTickMs(); }
 // 进入可嵌套的运动共享状态临界区。应与 Exit 成对使用，禁止在保护区内执行 Flash 擦写或阻塞式外部等待。
 void PatrolRuntimePort_Enter(void) { taskENTER_CRITICAL(); }
 // 退出一层运动共享状态临界区。必须与当前任务先前 Enter 对应，不能跨任务或从不匹配的 ISR 上下文退出。
@@ -646,13 +676,20 @@ uint8_t PatrolRuntimePort_CanTxReady(void) { return HAL_CAN_GetTxMailboxesFreeLe
 // 中止尚在 CAN 邮箱排队的旧发送。用于撤权或停止时减少旧目标滞留，已发送到总线的命令仍须通过后续停车流程处理。
 void PatrolRuntimePort_AbortCanTx(void)
 {
+#ifdef ABOX_MCU_GD32F105
+    taskENTER_CRITICAL();
+#endif
     (void)HAL_CAN_AbortTxRequest(&hcan1, CAN_TX_MAILBOX0 | CAN_TX_MAILBOX1 | CAN_TX_MAILBOX2);
+#ifdef ABOX_MCU_GD32F105
+    taskEXIT_CRITICAL();
+#endif
 }
 // 将一条已仲裁的产品帧提交到 CAN 发送端口。返回 HAL 提交结果；调用方仍须处理发送失败和 SDO 超时，不得据返回成功宣称驱动器已执行。
 uint8_t PatrolRuntimePort_SendCan(const PatrolCanFrame* frame)
 {
     CAN_TxHeaderTypeDef header = {0};
     uint32_t mailbox;
+    uint32_t result;
     /* The final CAN port rejects every motion frame in a non-actuating image. */
     if (!PATROL_CHASSIS_ACTUATION_ENABLED &&
         !(frame->id >= 0x601U && frame->id <= 0x602U && frame->data[0] == 0x40U))
@@ -662,5 +699,12 @@ uint8_t PatrolRuntimePort_SendCan(const PatrolCanFrame* frame)
     header.RTR = CAN_RTR_DATA;
     header.DLC = frame->dlc;
     header.TransmitGlobalTime = DISABLE;
-    return HAL_CAN_AddTxMessage(&hcan1, &header, (uint8_t*)frame->data, &mailbox) == HAL_OK;
+#ifdef ABOX_MCU_GD32F105
+    taskENTER_CRITICAL();
+#endif
+    result = HAL_CAN_AddTxMessage(&hcan1, &header, (uint8_t*)frame->data, &mailbox);
+#ifdef ABOX_MCU_GD32F105
+    taskEXIT_CRITICAL();
+#endif
+    return result == HAL_OK;
 }

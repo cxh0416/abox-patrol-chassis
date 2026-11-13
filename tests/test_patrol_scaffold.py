@@ -72,7 +72,11 @@ class PatrolScaffoldTests(unittest.TestCase):
         rtos = (ROOT / "app/Core/User/system/src/patrol_rtos.c").read_text(encoding="utf-8")
         tables = re.findall(r"static const BoardPin inputs\[[^\]]*\] = \{(.*?)\};", board_io, re.S)
         self.assertEqual(len(tables), 2)
-        v1, v2 = [re.findall(r"\{(GPIO[A-Z]), GPIO_PIN_(\d+)\}", table) for table in tables]
+        v1 = re.findall(r"\{(GPIO[A-Z]), GPIO_PIN_(\d+)\}", tables[0])
+        self.assertIn("ABOX_V2_INPUT_PINS", tables[1])
+        v2_pins = (ROOT / "platform/hardware/boards/abox_v2/include/abox_v2_pins.h").read_text(
+            encoding="utf-8")
+        v2 = re.findall(r"\{(GPIO[A-Z]), GPIO_PIN_(\d+)\}", v2_pins)
         self.assertEqual(v1, [("GPIOA", "4"), ("GPIOA", "5"), ("GPIOA", "6"), ("GPIOA", "7")])
         self.assertEqual(v2, [
             ("GPIOC", "3"), ("GPIOC", "2"), ("GPIOC", "1"), ("GPIOC", "0"),

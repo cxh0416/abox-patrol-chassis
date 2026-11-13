@@ -10,6 +10,12 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 $gcc = (Get-Command gcc -ErrorAction Stop).Source
 $hostBuild = "$PSScriptRoot\..\platform\build\host"
 New-Item -ItemType Directory -Force -Path $hostBuild | Out-Null
+$targetTest = Join-Path $hostBuild 'patrol_ota_target_test.exe'
+& $gcc -std=c11 -Wall -Wextra -Werror "-I$PSScriptRoot\..\app\Core\User\ota\include" `
+    "$PSScriptRoot\..\tests\test_ota_target.c" -o $targetTest
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+& $targetTest
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 if (-not $SkipPlatformTests) {
 & cmake -S "$PSScriptRoot\..\platform" -B $hostBuild -G Ninja -DBUILD_TESTING=ON "-DCMAKE_C_COMPILER=$gcc" "-DABOX_STAGE2_PRODUCT_ROOT=$PSScriptRoot/.."
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

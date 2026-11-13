@@ -30,6 +30,7 @@ int HAL_FLASH_Program(uint32_t,uint32_t,uint64_t);
 #include "ota_info.h"
 #include "motion_fault.h"
 static int fail_after=-1;
+static int fail_begin;
 static int fail_primary_after=-1;
 static int fail_recovery_erase_after=-1;
 void HAL_FLASH_Unlock(void) {} void HAL_FLASH_Lock(void) {}
@@ -46,6 +47,16 @@ int HAL_FLASH_Program(uint32_t type,uint32_t address,uint64_t value) {
  if(type==FLASH_TYPEPROGRAM_HALFWORD) { uint16_t *p=(uint16_t*)(uintptr_t)address;assert(*p==0xffffU);*p=(uint16_t)value;return 0; }
  uint32_t* p=(uint32_t*)(uintptr_t)address; assert((*p & (uint32_t)value)==(uint32_t)value); *p=(uint32_t)value; return 0;
 }
+int ABox_PortFlashBegin(void) { if (fail_begin) return 0; HAL_FLASH_Unlock(); return 1; }
+void ABox_PortFlashEnd(void) { HAL_FLASH_Lock(); }
+int ABox_PortFlashErasePage(uint32_t address) {
+ FLASH_EraseInitTypeDef e={0,address,1}; uint32_t error=0;
+ return HAL_FLASHEx_Erase(&e,&error)==0;
+}
+int ABox_PortFlashWrite(uint32_t address,const uint8_t *data,uint32_t size) {
+ uint32_t value=0; memcpy(&value,data,size);
+ return HAL_FLASH_Program(size==2 ? FLASH_TYPEPROGRAM_HALFWORD : FLASH_TYPEPROGRAM_WORD,address,value)==0;
+}
 int main(void) {
 #ifdef _WIN32
  assert(VirtualAlloc((void*)0x08030000,65536,MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE));
@@ -55,6 +66,8 @@ int main(void) {
  memset((void*)OTA_INFO_ADDR,255,2048);
  MotionFaultRecord r={0},out={0}; r.magic=0x4D463031; r.sequence=1; r.drive_sw=0xBF;
  assert(!OTA_Info_LoadMotionFault(&out));
+ fail_begin=1; assert(!OTA_Info_SaveMotionFault(&r)); assert(!OTA_Info_MarkPowerLedgerInitialized());
+ fail_begin=0; assert(OTA_Info_PowerLedgerMarker()==0);
  assert(OTA_Info_SaveMotionFault(&r)); assert(OTA_Info_LoadMotionFault(&out)&&out.sequence==1);
  r.sequence=2; fail_after=6; assert(!OTA_Info_SaveMotionFault(&r)); fail_after=-1;
  assert(OTA_Info_LoadMotionFault(&out)&&out.sequence==1);
@@ -114,6 +127,6 @@ int main(void) {
  return 0;
 }
 """)
-   cmd=[shutil.which('gcc'),' -std=c11'.strip(),'-D_DEFAULT_SOURCE','-Wno-int-to-pointer-cast','-ffunction-sections','-fdata-sections','-Wl,--gc-sections','-I'+str(d),'-I'+str(ROOT/'shared/include'),str(d/'test.c'),str(ROOT/'app/Core/User/ota/src/ota_info.c'),'-I'+str(ROOT/'platform/components/ec800/include'),str(ROOT/'platform/components/ec800/src/abox_tls_secret_record.c'),'-o',str(d/'test.exe')]
+   cmd=[shutil.which('gcc'),' -std=c11'.strip(),'-D_DEFAULT_SOURCE','-Wno-int-to-pointer-cast','-ffunction-sections','-fdata-sections','-Wl,--gc-sections','-I'+str(d),'-I'+str(ROOT/'shared/include'),'-I'+str(ROOT/'platform/components/core/include'),str(d/'test.c'),str(ROOT/'app/Core/User/ota/src/ota_info.c'),'-I'+str(ROOT/'platform/components/ec800/include'),str(ROOT/'platform/components/ec800/src/abox_tls_secret_record.c'),'-o',str(d/'test.exe')]
    r=subprocess.run(cmd,capture_output=True,text=True);self.assertEqual(r.returncode,0,r.stdout+r.stderr)
    subprocess.run([str(d/'test.exe')],check=True)

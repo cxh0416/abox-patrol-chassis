@@ -14,6 +14,7 @@
 #include "mqtt_runtime.h"
 #include "main.h"
 #include "patrol_config.h"
+#include "patrol_ota_target.h"
 
 static ABoxBootV2Ec800Adapter g_adapter;
 
@@ -97,6 +98,11 @@ uint8_t OtaService_Start(const CloudProtocolRequest_t *request)
     size_t url_length;
     size_t version_length;
     if (!OtaService_IsInitialized() || !request) return 0U;
+#ifdef ABOX_MCU_GD32F105
+    if (!PatrolOtaTarget_VersionMatches(request->ota_version, 1)) return 0U;
+#else
+    if (!PatrolOtaTarget_VersionMatches(request->ota_version, 0)) return 0U;
+#endif
     url_length = strlen(request->ota_url);
     version_length = strlen(request->ota_version);
     if (url_length >= sizeof(common.url) || version_length >= sizeof(common.version)) return 0U;

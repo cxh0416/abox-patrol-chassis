@@ -16,6 +16,8 @@ static uint8_t version_valid(const char* value)
     for (i = (uint16_t)(sizeof(prefix) - 1U); i < CLOUD_PROTOCOL_OTA_VERSION_SIZE; i++) {
         uint8_t ch = (uint8_t)value[i];
         if (ch == '\0') return i > sizeof(prefix) + 1U;
+        if (ch == '-') return i > sizeof(prefix) + 1U &&
+            i + 3U < CLOUD_PROTOCOL_OTA_VERSION_SIZE && strcmp(value + i, "-gd") == 0;
         if (!((ch >= '0' && ch <= '9') || ch == '.')) return 0U;
     }
     return 0U;

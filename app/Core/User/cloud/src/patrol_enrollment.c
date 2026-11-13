@@ -5,7 +5,11 @@
 
 #include "abox_enrollment.h"
 #include "abox_enrollment_service.h"
+#ifdef ABOX_MCU_GD32F105
+#include "abox_target_identity.h"
+#else
 #include "abox_stm32f105_ec800_identity.h"
+#endif
 #include "app_version.h"
 #include "cloud_internal.h"
 #include "cloud_service.h"
@@ -54,12 +58,21 @@ static int identity(void *user, ABoxEnrollmentIdentity *out)
     const PatrolRemoteConfigV5_t *cfg = PatrolConfig_Get();
     (void)user;
     if (!cfg || !out) return 0;
+#ifdef ABOX_MCU_GD32F105
+    return ABoxTargetIdentity_Build(out, &g_identity_storage,
+        "", cfg->vid,
+        (uint8_t)(strcmp(cfg->vid, PATROL_CONFIG_DEFAULT_VID) != 0 ||
+                  cfg->reserved0 == 1U), "PATROL-",
+        "patrol_vehicle_chassis_gd32f105_ec800_v1",
+        Patrol_AppFwVersion());
+#else
     return ABoxStm32F105Ec800Identity_Build(out, &g_identity_storage,
         "", cfg->vid,
         (uint8_t)(strcmp(cfg->vid, PATROL_CONFIG_DEFAULT_VID) != 0 ||
                   cfg->reserved0 == 1U), "PATROL-",
         "patrol_vehicle_chassis_stm32f105_ec800_v1",
         Patrol_AppFwVersion());
+#endif
 }
 
 // 把注册返回的凭据转换为受监督的 MQTT 试连。先构造运行配置，试连启动成功才标记配置可用，不能在接收凭据时直接宣称持久化成功。
