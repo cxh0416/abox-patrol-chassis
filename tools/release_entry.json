@@ -2,6 +2,10 @@
   "product": "patrol_vehicle_chassis",
   "script": "tools/build_release.ps1",
   "version_parameter": "AppVersion",
+  "variants": [
+    {"directory": "v1", "contract": "tools/release_contract_v1.json", "boot": "platform/targets/gd32f105_abox_boot/dist/ABox_Boot.bin"},
+    {"directory": "v2", "contract": "tools/release_contract.json", "boot": "platform/targets/stm32f105_abox_boot/dist/ABox_Boot.bin"}
+  ],
   "formal_options": {
     "steering_executor": true,
     "drive_executor": true,

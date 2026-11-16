@@ -26,7 +26,7 @@ chains = {
         'PatrolRuntime_RequestFaultStop', 'PatrolRuntime_CaptureFault']),
     'centering boundary fault transmit': (canopen_capacity, ['Patrol_CanopenTask', 'PatrolRuntime_Tick',
         'RemoteService_SafetyFault', 'ChassisControl_RequestFault', 'PatrolRuntime_RequestFaultStop',
-        'dispatch_fault_stop', 'PatrolFaultStop_Take', 'PatrolRuntimePort_SendCan']),
+        'dispatch_fault_stop', 'PatrolRuntimePort_SendCan', 'ABoxCanEvents_Send', 'consume', 'patrol_can_complete']),
     'centering boundary stop log': (canopen_capacity, ['Patrol_CanopenTask', 'PatrolRuntime_Tick',
         'RemoteService_SafetyFault', 'ChassisControl_RequestFault', 'PatrolRuntime_RequestFaultStop',
         'BenchSteering_Stop', 'AppLog_Printf']),
@@ -54,10 +54,13 @@ chains = {
     'fault transmit from CAN2': (rx_capacity, ['Patrol_CanRxTask', 'PatrolPhyRemote_OnFrame',
         'RemoteService_ApplyLocal', 'ChassisControl_Apply', 'force_stop',
         'ChassisControl_RequestFault', 'PatrolRuntime_RequestFaultStop', 'dispatch_fault_stop',
-        'PatrolRuntimePort_SendCan', 'HAL_CAN_AddTxMessage']),
+        'PatrolRuntimePort_SendCan', 'ABoxCanEvents_Send', 'consume', 'patrol_can_complete']),
     'fault frame from safety': (safety_capacity, ['Patrol_SafetyControlTask', 'RemoteService_SafetyTick',
         'ChassisControl_Tick', 'force_stop', 'ChassisControl_RequestFault',
         'PatrolRuntime_RequestFaultStop', 'dispatch_fault_stop', 'PatrolFaultStop_Take']),
+    'fault transmit from safety': (safety_capacity, ['Patrol_SafetyControlTask', 'RemoteService_SafetyTick',
+        'ChassisControl_Tick', 'force_stop', 'ChassisControl_RequestFault', 'PatrolRuntime_RequestFaultStop',
+        'dispatch_fault_stop', 'PatrolRuntimePort_SendCan', 'ABoxCanEvents_Send', 'consume', 'patrol_can_complete']),
     'fault latch log': (canopen_capacity, ['Patrol_CanopenTask', 'PatrolRuntime_Tick',
         'service_fault_stop', 'AppLog_Printf']),
     'fault stop retry': (canopen_capacity, ['Patrol_CanopenTask', 'PatrolRuntime_Tick',
@@ -89,6 +92,22 @@ chains['collision enabled drive hold'] = (canopen_capacity, ['Patrol_CanopenTask
     'BenchDrive_CollisionHold'])
 chains['collision steering supersession'] = (canopen_capacity, ['Patrol_CanopenTask', 'PatrolRuntime_Tick',
     'BenchSteering_CollisionHold'])
+linker = (Path(__file__).resolve().parents[1] / 'app/STM32F105XX_FLASH.ld').read_text(encoding='utf-8')
+irq_capacity = int(re.search(r'_Min_Stack_Size\s*=\s*(0x[0-9a-fA-F]+)', linker)[1], 16)
+if 'patrol_can_irq' in frames:
+    irq_prefix = ['CAN1_RX0_IRQHandler', 'patrol_can_irq']
+    receive_tail = ['receive', 'ABoxCanPort_Receive', 'HAL_CAN_GetRxMessage']
+    init_tail = ['ABoxCanPort_Init', 'HAL_CAN_Init', 'HAL_CAN_MspInit']
+else:
+    irq_prefix = ['CAN0_RX0_IRQHandler', 'can_irq']
+    receive_tail = ['receive', 'ABoxCanPort_Receive', 'can_message_receive']
+    init_tail = ['ABoxCanPort_Init', 'can_init']
+chains['CAN start'] = (rx_capacity, ['Patrol_CanRxTask'] + init_tail)
+chains['CAN bind'] = (rx_capacity, ['Patrol_CanRxTask', 'ABoxCanPort_BindEvents', 'ABoxCanEvents_Init'])
+irq_common = irq_prefix + ['ABoxCanPort_DispatchEventIrq', 'ABoxCanEvents_Irq']
+chains['CAN IRQ queue'] = (irq_capacity, irq_common + ['patrol_can_rx', 'xQueueGenericSendFromISR', 'prvCopyDataToQueue'])
+chains['CAN IRQ receive'] = (irq_capacity, irq_common + receive_tail)
+chains['CAN IRQ error'] = (irq_capacity, irq_common + ['patrol_can_error'])
 for label, (capacity, chain) in chains.items():
     missing = [name for name in chain if name not in frames]
     if missing:

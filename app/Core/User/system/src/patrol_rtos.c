@@ -1,8 +1,10 @@
 #include "patrol_rtos.h"
+#include "main.h"
 #include "patrol_runtime.h"
 #include "center_calibration.h"
 #include "patrol_runtime_port.h"
 #include "patrol_can_recovery.h"
+#include "patrol_can_config.h"
 #include "patrol_can_remote.h"
 #include "patrol_phy_remote.h"
 
@@ -23,6 +25,8 @@
 #include "remote_service.h"
 #include "task.h"
 #include "abox_serial_transaction.h"
+#include "abox_board.h"
+#include "abox_can_events.h"
 #include "abox_platform_port.h"
 #include "vehicle_steering_profile.h"
 #include "vehicle_power_output.h"
@@ -68,9 +72,9 @@
 #define PATROL_SAFETY_STACK_WORDS 256U
 #define PATROL_CAN_REPLY_RETRY_MS 2U
 #define PATROL_CAN_REPLY_TIMEOUT_MS 500U
-#define PATROL_CAN_RX_STACK_WORDS 256U
+#define PATROL_CAN_RX_STACK_WORDS 288U
 #define PATROL_CANOPEN_STACK_WORDS 256U
-#define PATROL_ENCODER_STACK_WORDS 192U
+#define PATROL_ENCODER_STACK_WORDS 224U
 #define PATROL_REMOTE_STACK_WORDS 1024U
 #define PATROL_DIAG_STACK_WORDS 256U
 /*
@@ -107,6 +111,7 @@ static volatile uint8_t g_can_started;
 static volatile uint8_t g_can_bus_off_mask;
 static volatile uint8_t g_can_bus_off_seen_mask;
 static volatile uint32_t g_can_bus_off_at_ms;
+static ABoxCanEvents g_can_events[2];
 static PatrolCanRecovery g_can_recovery;
 static uint8_t g_boot_confirmed;
 // 周期执行底盘安全和本地遥控租约监督。独立于网络任务推进撤权，任何目标继续执行仍须通过当前反馈门禁。
@@ -124,28 +129,26 @@ static void Patrol_DiagTask(void *argument);
 // 周期刷新独立看门狗并执行可选故障注入。故障测试路径按编译开关决定是否故意停止喂狗，正常路径维持主控存活监督。
 static void Patrol_WatchdogTask(void *argument);
 
-// 把 HAL CAN 句柄转换为产品总线编号。用于接收统计与来源标记，未知句柄按函数分支返回无效编号。
-static uint8_t patrol_can_bus_index(const CAN_HandleTypeDef *hcan)
-{
-    return (hcan != NULL && hcan->Instance == CAN2) ? 1U : 0U;
-}
+static void patrol_can_rx(void *context, const ABoxCanFrame *raw);
+static void patrol_can_error(void *context, const ABoxCanSnapshot *snapshot, uint32_t errors);
+static void patrol_can_complete(void *context, uint8_t mailbox, ABoxCanTxResult result)
+{ (void)context; (void)mailbox; (void)result; }
 
 // 启动 CAN1、CAN2 并开启接收和错误通知。已启动时直接返回，任一步 HAL 操作失败进入 Error_Handler；本函数不配置过滤器或发送运动目标。
 static void patrol_start_can(void)
 {
-    const uint32_t notifications = CAN_IT_RX_FIFO0_MSG_PENDING |
-                                   CAN_IT_ERROR | CAN_IT_BUSOFF |
-                                   CAN_IT_LAST_ERROR_CODE
-#ifdef ABOX_MCU_GD32F105
-                                   | CAN_IT_TX_MAILBOX_EMPTY | CAN_IT_ERROR_WARNING | CAN_IT_ERROR_PASSIVE
-#endif
-                                   ;
+    static const ABoxCanConfig config = PATROL_CAN_CONFIG;
+    static const ABoxCanEventCallbacks callbacks[2] = {
+        {0, 0, patrol_can_complete, patrol_can_rx, patrol_can_error, 0, 0},
+        {(void *)1, 0, patrol_can_complete, patrol_can_rx, patrol_can_error, 0, 0}
+    };
 
     if (g_can_started != 0U) return;
-    if (HAL_CAN_Start(&hcan1) != HAL_OK) Error_Handler();
-    if (HAL_CAN_Start(&hcan2) != HAL_OK) Error_Handler();
-    if (HAL_CAN_ActivateNotification(&hcan1, notifications) != HAL_OK) Error_Handler();
-    if (HAL_CAN_ActivateNotification(&hcan2, notifications) != HAL_OK) Error_Handler();
+    for (unsigned bus = 0U; bus < 2U; ++bus) {
+        if (!ABoxCanPort_Init(bus, &config) ||
+            !ABoxCanPort_BindEvents(bus, &g_can_events[bus], &callbacks[bus]) ||
+            !ABoxCanPort_EnableEventIrq(bus, &g_can_events[bus])) Error_Handler();
+    }
     g_can_started = 1U;
 }
 
@@ -200,28 +203,26 @@ void PatrolRtos_Init(void)
 }
 
 // 从 CAN 中断读取帧并投递到静态队列。使用 ISR 安全 API 与唤醒标志，队列满累计溢出；不在中断中执行运动或 JSON 业务。
-BaseType_t PatrolRtos_CanRxFromISR(CAN_HandleTypeDef *hcan, BaseType_t *higher_priority_task_woken)
+static void patrol_can_rx(void *context, const ABoxCanFrame *raw)
 {
-    CAN_RxHeaderTypeDef header;
     PatrolCanFrame_t frame;
-
-    if (hcan == NULL || g_can_rx_queue == NULL) return pdFAIL;
+    BaseType_t higher_priority_task_woken = pdFALSE;
+    if (!raw || !g_can_rx_queue) return;
     memset(&frame, 0, sizeof(frame));
-    if (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &header, frame.data) != HAL_OK) return pdFAIL;
-    frame.bus = patrol_can_bus_index(hcan);
+    frame.bus = (uint8_t)(uintptr_t)context;
     g_can_raw_rx_count[frame.bus]++;
-    frame.header = header;
+    frame.frame = *raw;
     frame.timestamp_ms = ABox_PortGetTickMs();
 
-    if (xQueueSendFromISR(g_can_rx_queue, &frame, higher_priority_task_woken) != pdPASS)
+    if (xQueueSendFromISR(g_can_rx_queue, &frame, &higher_priority_task_woken) != pdPASS)
     {
         g_can_rx_overflow_count++;
     }
     if (g_can_rx_task != NULL)
     {
-        vTaskNotifyGiveFromISR(g_can_rx_task, higher_priority_task_woken);
+        vTaskNotifyGiveFromISR(g_can_rx_task, &higher_priority_task_woken);
     }
-    return pdPASS;
+    portYIELD_FROM_ISR(higher_priority_task_woken);
 }
 
 // 从产品 CAN 接收队列取出一帧。wait_ticks 是 RTOS tick 而非毫秒，返回队列操作结果，由接收任务继续路由处理。
@@ -254,7 +255,9 @@ uint32_t PatrolRtos_CanRawRxCount(uint8_t bus)
 // 查询 CAN 控制器当前是否仍处于活动 Bus-Off。与历史见过 Bus-Off 及恢复门禁分开，用于判断底层是否能继续发送停车报文。
 uint8_t PatrolRtos_CanBusOffActive(void)
 {
-    return (hcan1.Instance->ESR & CAN_ESR_BOFF) != 0U ? 1U : 0U;
+    ABoxCanSnapshot snapshot;
+    return !g_can_started || !ABoxCanEvents_Read(&g_can_events[0], &snapshot) ||
+           (snapshot.error_status & 4U) != 0U;
 }
 
 // 查询本轮是否记录过 Bus-Off 事件。历史标志用于诊断，不因控制器暂时恢复就丢弃故障证据。
@@ -286,25 +289,19 @@ void PatrolRtos_ObserveCanRecovery(uint32_t sample_ms, uint8_t healthy)
 
 
 // 在 CAN FIFO0 回调中投递接收数据并按需唤醒任务。回调处于中断上下文，使用 ISR 接口，业务解析交给接收任务。
-void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
+static void patrol_can_error(void *context, const ABoxCanSnapshot *snapshot, uint32_t errors)
 {
     BaseType_t higher_priority_task_woken = pdFALSE;
-    (void)PatrolRtos_CanRxFromISR(hcan, &higher_priority_task_woken);
-    portYIELD_FROM_ISR(higher_priority_task_woken);
-}
-
-// 记录 CAN 错误和 Bus-Off 事件供安全任务处理。更新故障门禁及恢复基准，不在中断中尝试恢复运动授权。
-void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan)
-{
-    BaseType_t higher_priority_task_woken = pdFALSE;
+    unsigned bus = (unsigned)(uintptr_t)context;
     /* HAL ErrorCode accumulates earlier errors. Read the hardware flag so a
      * later unrelated error cannot re-latch an already recovered Bus-Off. */
-    if (g_health_events != NULL && hcan != NULL && (hcan->Instance->ESR & CAN_ESR_BOFF) != 0U)
+    (void)errors;
+    if (g_health_events != NULL && snapshot && (snapshot->error_status & 4U) != 0U)
     {
-        uint8_t bit = hcan->Instance == CAN1 ? 0x01U : 0x02U;
+        uint8_t bit = (uint8_t)(1U << bus);
         g_can_bus_off_mask |= bit;
         g_can_bus_off_seen_mask |= bit;
-        if (hcan->Instance == CAN1)
+        if (bus == 0U)
         {
             g_can_bus_off_at_ms = ABox_PortGetTickMs();
             PatrolCanRecovery_Reset(&g_can_recovery);
@@ -312,6 +309,13 @@ void HAL_CAN_ErrorCallback(CAN_HandleTypeDef *hcan)
         }
     }
     portYIELD_FROM_ISR(higher_priority_task_woken);
+}
+
+static uint8_t patrol_can_healthy(unsigned bus)
+{
+    ABoxCanSnapshot snapshot;
+    return bus < 2U && g_can_started && ABoxCanEvents_Read(&g_can_events[bus], &snapshot) &&
+           (snapshot.error_status & 4U) == 0U;
 }
 
 // 周期执行底盘安全和本地遥控租约监督。独立于网络任务推进撤权，任何目标继续执行仍须通过当前反馈门禁。
@@ -340,10 +344,10 @@ static void Patrol_SafetyControlTask(void *argument)
         taskENTER_CRITICAL();
         RemoteService_SafetyTick(ABox_PortGetTickMs());
         PatrolCanRemote_Tick(ABox_PortGetTickMs(),
-            (uint8_t)((hcan2.Instance->ESR & CAN_ESR_BOFF) == 0U));
+            patrol_can_healthy(1U));
         /* >>>>> PHY-REMOTE: START >>>>> */
         PatrolPhyRemote_Tick(ABox_PortGetTickMs(),
-            (uint8_t)((hcan2.Instance->ESR & CAN_ESR_BOFF) == 0U));
+            patrol_can_healthy(1U));
         /* <<<<< PHY-REMOTE: END <<<<< */
         taskEXIT_CRITICAL();
         xEventGroupSetBits(g_health_events, PATROL_HEALTH_SAFETY);
@@ -360,18 +364,12 @@ static void patrol_can_gateway_forward(const PatrolCanFrame_t *frame)
      * (chassis CANopen). Standard data frames are relayed verbatim so a PC
      * CANopen master on CAN2 can command the Node 1 steering and Node 2 dual
      * drive on CAN1. Extended/remote frames are not forwarded. */
-    CAN_TxHeaderTypeDef header = {0};
-    CAN_HandleTypeDef *target;
-    uint32_t mailbox;
-    if (frame == 0 || frame->header.IDE != CAN_ID_STD || frame->header.RTR != CAN_RTR_DATA)
+    uint8_t mailbox;
+    if (frame == 0 || frame->frame.extended || frame->frame.remote)
         return;
-    target = (frame->bus == 1U) ? &hcan1 : &hcan2;
-    header.StdId = frame->header.StdId;
-    header.IDE = CAN_ID_STD;
-    header.RTR = CAN_RTR_DATA;
-    header.DLC = frame->header.DLC;
-    header.TransmitGlobalTime = DISABLE;
-    (void)HAL_CAN_AddTxMessage(target, &header, (uint8_t *)frame->data, &mailbox);
+    taskENTER_CRITICAL();
+    (void)ABoxCanEvents_Send(&g_can_events[frame->bus == 1U ? 0U : 1U], &frame->frame, &mailbox);
+    taskEXIT_CRITICAL();
 }
 #endif
 /* <<<<< CAN2-GATEWAY: END <<<<< */
@@ -399,13 +397,12 @@ static void Patrol_CanRxTask(void *argument)
             patrol_can_gateway_forward(&frame);
 #endif
 /* <<<<< CAN2-GATEWAY: END <<<<< */
-            if (frame.header.IDE != CAN_ID_STD || frame.header.RTR != CAN_RTR_DATA ||
-                frame.header.DLC > 8U)
+            if (frame.frame.extended || frame.frame.remote || frame.frame.length > 8U)
                 continue;
             memset(&decoded, 0, sizeof(decoded));
-            decoded.id = (uint16_t)frame.header.StdId;
-            decoded.dlc = (uint8_t)frame.header.DLC;
-            memcpy(decoded.data, frame.data, sizeof(decoded.data));
+            decoded.id = (uint16_t)frame.frame.id;
+            decoded.dlc = frame.frame.length;
+            memcpy(decoded.data, frame.frame.data, sizeof(decoded.data));
             taskENTER_CRITICAL();
             if (frame.bus == 1U) {
                 /* >>>>> PHY-REMOTE: START >>>>> */
@@ -428,21 +425,16 @@ static void Patrol_CanRxTask(void *argument)
             reply_started = xTaskGetTickCount();
         }
         if (replies_ready) {
-            CAN_TxHeaderTypeDef header = {0};
-            uint32_t mailbox;
-            uint32_t send_result;
-            header.StdId = replies[reply_index].id;
-            header.IDE = CAN_ID_STD;
-            header.RTR = CAN_RTR_DATA;
-            header.DLC = replies[reply_index].dlc;
-#ifdef ABOX_MCU_GD32F105
+            ABoxCanFrame outgoing = {0};
+            uint8_t mailbox;
+            int send_result;
+            outgoing.id = replies[reply_index].id;
+            outgoing.length = replies[reply_index].dlc;
+            memcpy(outgoing.data, replies[reply_index].data, sizeof(outgoing.data));
             taskENTER_CRITICAL();
-#endif
-            send_result = HAL_CAN_AddTxMessage(&hcan2, &header, replies[reply_index].data, &mailbox);
-#ifdef ABOX_MCU_GD32F105
+            send_result = ABoxCanEvents_Send(&g_can_events[1], &outgoing, &mailbox);
             taskEXIT_CRITICAL();
-#endif
-            if (send_result == HAL_OK) {
+            if (send_result == 1) {
                 reply_index++;
                 if (reply_index >= 3U) replies_ready = 0U;
             } else if ((TickType_t)(xTaskGetTickCount() - reply_started) >=
@@ -494,7 +486,7 @@ static void Patrol_EncoderTask(void *argument)
     (void)argument;
 #if PATROL_CHASSIS_READONLY_DIAGNOSTICS_ENABLED
     ABoxSerialTransaction serial;
-    ABoxSerialTransaction_Init(&serial);
+    if (!ABoxSerialTransaction_Init(&serial, ABOX_BOARD_UART_BUS)) Error_Handler();
 #endif
     for (;;)
     {
@@ -672,39 +664,34 @@ uint8_t PatrolRuntimePort_CanBusOffActive(void) { return PatrolRtos_CanBusOffAct
 // 向运动层报告 OTA 是否占用受保护流程。忙状态参与运动禁止和 Flash 写入互斥，不允许在升级期间推进普通运动。
 uint8_t PatrolRuntimePort_OtaBusy(void) { return OtaService_IsBusy(); }
 // 检查当前 CAN 发送路径能否接受请求。只描述控制器与邮箱可用性，不代表目的节点在线或会响应。
-uint8_t PatrolRuntimePort_CanTxReady(void) { return HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) > 0U; }
+uint8_t PatrolRuntimePort_CanTxReady(void)
+{
+    ABoxCanSnapshot snapshot;
+    return g_can_started && ABoxCanEvents_Read(&g_can_events[0], &snapshot) &&
+           (snapshot.tx_status & (7U << 26U)) != 0U;
+}
 // 中止尚在 CAN 邮箱排队的旧发送。用于撤权或停止时减少旧目标滞留，已发送到总线的命令仍须通过后续停车流程处理。
 void PatrolRuntimePort_AbortCanTx(void)
 {
-#ifdef ABOX_MCU_GD32F105
     taskENTER_CRITICAL();
-#endif
-    (void)HAL_CAN_AbortTxRequest(&hcan1, CAN_TX_MAILBOX0 | CAN_TX_MAILBOX1 | CAN_TX_MAILBOX2);
-#ifdef ABOX_MCU_GD32F105
+    if (g_can_started) (void)ABoxCanEvents_Abort(&g_can_events[0], 7U);
     taskEXIT_CRITICAL();
-#endif
 }
 // 将一条已仲裁的产品帧提交到 CAN 发送端口。返回 HAL 提交结果；调用方仍须处理发送失败和 SDO 超时，不得据返回成功宣称驱动器已执行。
 uint8_t PatrolRuntimePort_SendCan(const PatrolCanFrame* frame)
 {
-    CAN_TxHeaderTypeDef header = {0};
-    uint32_t mailbox;
-    uint32_t result;
+    ABoxCanFrame outgoing = {0};
+    uint8_t mailbox;
+    int result;
     /* The final CAN port rejects every motion frame in a non-actuating image. */
     if (!PATROL_CHASSIS_ACTUATION_ENABLED &&
         !(frame->id >= 0x601U && frame->id <= 0x602U && frame->data[0] == 0x40U))
         return 0U;
-    header.StdId = frame->id;
-    header.IDE = CAN_ID_STD;
-    header.RTR = CAN_RTR_DATA;
-    header.DLC = frame->dlc;
-    header.TransmitGlobalTime = DISABLE;
-#ifdef ABOX_MCU_GD32F105
+    outgoing.id = frame->id;
+    outgoing.length = frame->dlc;
+    memcpy(outgoing.data, frame->data, sizeof(outgoing.data));
     taskENTER_CRITICAL();
-#endif
-    result = HAL_CAN_AddTxMessage(&hcan1, &header, (uint8_t*)frame->data, &mailbox);
-#ifdef ABOX_MCU_GD32F105
+    result = g_can_started ? ABoxCanEvents_Send(&g_can_events[0], &outgoing, &mailbox) : -1;
     taskEXIT_CRITICAL();
-#endif
-    return result == HAL_OK;
+    return result == 1;
 }

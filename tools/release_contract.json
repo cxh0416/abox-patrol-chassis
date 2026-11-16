@@ -10,6 +10,9 @@
   "manifest_constraints": {
     "manifest_version": 3,
     "configuration": "Release",
+    "board": "v2",
+    "hardware": "stm32f105_ec800_v1",
+    "boot_version": "abox-boot-2.3.0",
     "product_dirty": false,
     "platform_dirty": false,
     "startup_motion_permit": false,

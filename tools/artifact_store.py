@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 from pathlib import Path
@@ -13,10 +14,11 @@ import uuid
 import zlib
 
 DESTINATIONS = {
-    "dist": "release",
+    "dist": "release_pair",
     "out/candidates/bench-steering": "candidate",
     "out/candidates/bench-drive": "candidate",
     "out/debug/online": "debug",
+    "platform/targets/gd32f105_abox_boot/dist": "gd_frozen_boot",
 }
 APP = "Patrol_Vehicle_Chassis_App.bin"
 BOOT = "ABox_Boot.bin"
@@ -63,6 +65,32 @@ def remove_tree(root: Path, path: Path) -> None:
 
 
 def validate(directory: Path, kind: str) -> None:
+    if kind == "release_pair":
+        validate_release_pair(directory)
+        return
+    if kind == "gd_frozen_boot":
+        if {p.name for p in directory.iterdir()} != {BOOT, "manifest.json"}:
+            raise ValueError("Unexpected GD frozen Boot artifact set")
+        manifest = json.loads((directory / "manifest.json").read_text(encoding="utf-8-sig"))
+        verifier = (Path(__file__).resolve().parents[1] /
+                    "platform/targets/gd32f105_abox_boot/tools/verify_boot_artifact.py")
+        spec = importlib.util.spec_from_file_location("gd_boot_verifier", verifier)
+        if spec is None or spec.loader is None:
+            raise ValueError("Cannot load GD Boot verifier")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        actual = module.verify(directory / BOOT)
+        required = {"manifest_version": 1, "target": "gd32f105_abox_boot",
+                    "mcu": "GD32F105RCT6", "hardware_contract": "abox_gd32f105_ec800_v1",
+                    "boot_version": "abox-boot-2.3.0-gd", "load_address": "0x08000000",
+                    "app_address": "0x08008000", "boot_state_pages": ["0x0803E800", "0x0803F000"],
+                    "config_page": "0x0803F800"}
+        if any(manifest.get(key) != value for key, value in required.items()):
+            raise ValueError("GD frozen Boot manifest identity or layout mismatch")
+        if any(str(manifest.get(key, "")).lower() != str(actual[key]).lower()
+               for key in ("size", "sha256", "crc32", "boot_version")):
+            raise ValueError("GD frozen Boot manifest does not match image")
+        return
     manifest_name = {"release": "release.manifest.json", "candidate": "candidate.manifest.json",
                      "debug": "debug.manifest.json"}[kind]
     expected = {APP, manifest_name} if kind == "candidate" else {APP, BOOT, FULL, manifest_name}
@@ -118,6 +146,42 @@ def validate(directory: Path, kind: str) -> None:
             raise ValueError(f"Release manifest mismatch: {p.name}")
 
 
+def validate_release_pair(directory: Path) -> None:
+    """Bind each board's App to the matching frozen Boot and the same source."""
+    checked_tree(directory.parent, directory)
+    if {p.name for p in directory.iterdir()} != {"v1", "v2"} or any(
+            not p.is_dir() or p.is_symlink() for p in directory.iterdir()):
+        raise ValueError("Release root must contain exactly the v1 and v2 directories")
+    root = Path(__file__).resolve().parents[1]
+    verifier = root / "platform/tools/publish_release.py"
+    spec = importlib.util.spec_from_file_location("abox_release_verifier", verifier)
+    if spec is None or spec.loader is None:
+        raise ValueError("Cannot load shared release verifier")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    manifests = {}
+    for board, contract_file in (("v1", "release_contract_v1.json"), ("v2", "release_contract.json")):
+        variant = directory / board
+        validate(variant, "release")
+        contract = json.loads((root / "tools" / contract_file).read_text(encoding="utf-8"))
+        module.validate(variant, contract)
+        manifests[board] = json.loads((variant / "release.manifest.json").read_text(encoding="utf-8-sig"))
+    v1, v2 = manifests["v1"], manifests["v2"]
+    if v1.get("version") != v2.get("version", "") + "-gd":
+        raise ValueError("Release board versions do not match")
+    for field in ("product", "configuration", "product_commit", "product_dirty", "platform_commit",
+                  "platform_dirty", "startup_motion_permit", "steering_executor_compiled",
+                  "drive_executor_compiled", "actuation_enabled", "power_output_enabled", "active_car",
+                  "app_range", "config_recovery_page", "boot_state_pages", "config_page"):
+        if field not in v2 or v1.get(field) != v2[field]:
+            raise ValueError(f"Release variants disagree on {field}")
+    v1_app = (directory / "v1" / APP).read_bytes()
+    v2_app = (directory / "v2" / APP).read_bytes()
+    if (b"ABOX_MCU=GD32F105RCT6\0" not in v1_app or b"ABOX_MCU=STM32F105RCT6\0" in v1_app or
+            b"ABOX_MCU=STM32F105RCT6\0" not in v2_app or b"ABOX_MCU=GD32F105RCT6\0" in v2_app):
+        raise ValueError("Release MCU marker mismatch")
+
+
 def publish(root: Path, stage: Path, destination: str) -> None:
     if destination not in DESTINATIONS:
         raise ValueError("Unsupported output directory")
@@ -137,6 +201,12 @@ def publish(root: Path, stage: Path, destination: str) -> None:
     lock = target.with_name(f".{target.name}-publish.lock")
     handle = lock.open("x")
     try:
+        if DESTINATIONS[destination] == "gd_frozen_boot" and target.exists():
+            validate(target, "gd_frozen_boot")
+            if any((target / name).read_bytes() != (stage / name).read_bytes()
+                   for name in (BOOT, "manifest.json")):
+                raise ValueError("Refusing to replace an existing frozen GD Boot")
+            return
         try:
             shutil.copytree(stage, incoming)
             validate(incoming, DESTINATIONS[destination])

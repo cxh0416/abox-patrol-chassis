@@ -12,7 +12,9 @@
 #include "mqtt_config_adapter.h"
 #include "abox_mqtt_v4.h"
 #include "ota_service.h"
-#include "abox_modem_port.h"
+#include "abox_uart.h"
+#include "abox_board.h"
+#include "abox_mcu.h"
 #include "main.h"
 #include "patrol_config.h"
 #include "patrol_enrollment.h"
@@ -91,20 +93,21 @@ uint8_t CloudService_ApplyMqttIdentity(const char* vid)
 static uint8_t read_reset_reason(void)
 {
     uint8_t reason = 0U;
-    if (__HAL_RCC_GET_FLAG(RCC_FLAG_IWDGRST)) reason = 3U;
-    else if (__HAL_RCC_GET_FLAG(RCC_FLAG_WWDGRST)) reason = 4U;
-    else if (__HAL_RCC_GET_FLAG(RCC_FLAG_SFTRST)) reason = 5U;
-    else if (__HAL_RCC_GET_FLAG(RCC_FLAG_LPWRRST)) reason = 6U;
-    else if (__HAL_RCC_GET_FLAG(RCC_FLAG_PORRST)) reason = 2U;
-    else if (__HAL_RCC_GET_FLAG(RCC_FLAG_PINRST)) reason = 1U;
-    __HAL_RCC_CLEAR_RESET_FLAGS();
+    uint32_t causes = ABoxMcu_ResetCauses();
+    if (causes & ABOX_RESET_WATCHDOG) reason = 3U;
+    else if (causes & ABOX_RESET_WINDOW_WATCHDOG) reason = 4U;
+    else if (causes & ABOX_RESET_SOFTWARE) reason = 5U;
+    else if (causes & ABOX_RESET_LOW_POWER) reason = 6U;
+    else if (causes & ABOX_RESET_POWER_ON) reason = 2U;
+    else if (causes & ABOX_RESET_PIN) reason = 1U;
+    ABoxMcu_ClearResetCauses();
     return reason;
 }
 
 // 启动 EC800 所用 USART1 的空闲线 DMA 接收。使用固定云接收缓冲区，返回 HAL 是否接受启动请求，不在此解析 AT 或 MQTT 消息。
 static int uart_start_rx(void)
 {
-    return ABoxModemPort_StartRx(g_cloud.uart_dma, sizeof(g_cloud.uart_dma));
+    return ABoxUart_StartRx(ABOX_BOARD_UART_MODEM, ABOX_UART_RX_CIRCULAR_DMA, g_cloud.uart_dma, sizeof(g_cloud.uart_dma));
 }
 
 // 为 EC800 AT 核心提供毫秒时钟回调。上下文在本适配器中未使用，返回 HAL tick 作为超时计算基准。
@@ -119,13 +122,14 @@ static int ec800_write(void *context, const uint8_t *data, uint16_t length,
                        uint32_t timeout_ms)
 {
     (void)context;
-    return ABoxModemPort_Write(data, length, timeout_ms);
+    return ABoxUart_SendBlocking(ABOX_BOARD_UART_MODEM, data, length, timeout_ms);
 }
 
 
 static ABoxAppService g_app_service;
-static void modem_rx(uint16_t position) { (void)ABoxEc800Rx_OnDmaEvent(&g_cloud.ec800_rx, position); }
-static void modem_error(void) { ABoxEc800Rx_RequestRestart(&g_cloud.ec800_rx); }
+static void modem_rx(void *context, const uint8_t *data, uint16_t position)
+{ (void)context; (void)data; (void)ABoxEc800Rx_OnDmaEvent(&g_cloud.ec800_rx, position); }
+static void modem_error(void *context) { (void)context; ABoxEc800Rx_RequestRestart(&g_cloud.ec800_rx); }
 // 处理云业务发送、维护结果及延后重启。维护响应按试连结果安排，发送调度在此轮询；只有既有重启条件和期限成立时才执行系统复位。
 static void app_cloud(void *context, uint32_t now);
 // 在云连接前处理试连与 OTA 的阶段结果。安排安装就绪或失败响应并检查配置、模块电源与 TLS 预置条件；返回能否继续云服务阶段。
@@ -178,7 +182,7 @@ static const ABoxAppServicePort app_port = {
 // 初始化 EC800、MQTT、注册、OTA 与云调度适配器。绑定固定接收存储和平台服务，加载本车配置并建立安全默认状态；关键初始化失败时保持通信服务未就绪。
 void CloudService_Init(void)
 {
-    static const ABoxModemPortEvents modem_events = {modem_rx, modem_error};
+    static const ABoxUartEvents modem_events = {0, modem_rx, 0, modem_error, 0};
     g_cloud.initialized = 0U;
     memset(&g_cloud.telemetry, 0, sizeof(g_cloud.telemetry));
     MQTT_CoreConfig_t mqtt;
@@ -190,7 +194,7 @@ void CloudService_Init(void)
         APP_LOGE("CLOUD", "RX initialization failed; communication disabled");
         return;
     }
-    ABoxModemPort_SetEvents(&modem_events);
+    if (!ABoxUart_SetEvents(ABOX_BOARD_UART_MODEM, &modem_events)) return;
     const ABoxCloudServiceOptions cloud_options = { CLOUD_IDLE_HEARTBEAT_MS, CLOUD_IDLE_STATUS_MS, 0U };
     if (!ABoxCloudService_Init(&g_cloud.cloud, &cloud_options, HAL_GetTick())) {
         APP_LOGE("CLOUD", "cloud initialization failed; communication disabled");
@@ -327,7 +331,7 @@ void CloudService_Task(void)
 static int app_restart_rx(void *context)
 {
     (void)context;
-    if (!ABoxModemPort_AbortRx()) {
+    if (!ABoxUart_AbortRx(ABOX_BOARD_UART_MODEM)) {
         APP_LOGE("UART", "RX stop failed");
         return 0;
     }

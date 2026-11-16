@@ -1,3 +1,4 @@
+#include "abox_product_config.h"
 /* USER CODE BEGIN Header */
 /**
  ******************************************************************************
@@ -28,10 +29,9 @@
 #include "time_base.h"
 #include "patrol_config.h"
 #include "vehicle_power_port.h"
-#include "abox_serial_port.h"
-#include "abox_modem_port.h"
+#include "abox_uart.h"
+#include "abox_board.h"
 #include "abox_watchdog_port.h"
-uint8_t *ABoxStm32Serial_RxBuffer(void);
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -111,10 +111,13 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
-  MX_CAN1_Init();
-  MX_CAN2_Init();
-  MX_USART1_UART_Init();
-  MX_UART5_Init();
+  if (!ABoxBoardUart_Prepare(ABOX_BOARD_UART_MODEM) ||
+      !ABoxBoardUart_Prepare(ABOX_BOARD_UART_BUS)) Error_Handler();
+  {
+    static const ABoxUartConfig bus = {ABOX_PRODUCT_BUS_UART_BAUD, 8U, 1U, ABOX_UART_PARITY_NONE, ABOX_UART_FLOW_NONE, .mode=ABOX_UART_ASYNC};
+    static const ABoxUartConfig modem = {ABOX_PRODUCT_MODEM_UART_BAUD, 8U, 1U, ABOX_UART_PARITY_NONE, ABOX_UART_FLOW_NONE, .mode=ABOX_UART_ASYNC};
+    if (!ABoxUart_Open(ABOX_BOARD_UART_BUS, &bus) || !ABoxUart_Open(ABOX_BOARD_UART_MODEM, &modem)) Error_Handler();
+  }
   if (!ABoxWatchdog_Init(64U, 1250U)) Error_Handler();
   /* USER CODE BEGIN 2 */
   ABoxStm32F105Ec800Port_Init();
@@ -159,61 +162,11 @@ int main(void)
 // 配置本工程系统时钟、总线分频及 Flash 等待周期。按当前板级 HSE/PLL 配置执行，任何 HAL 配置失败均进入 Error_Handler，不能随意沿用其他硬件时钟参数。
 void SystemClock_Config(void)
 {
-  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-
-  /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.Prediv1Source = RCC_PREDIV1_SOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
-  RCC_OscInitStruct.PLL2.PLL2State = RCC_PLL_NONE;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  /** Initializes the CPU, AHB and APB buses clocks
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
-
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  /** Configure the Systick interrupt time
-  */
-  __HAL_RCC_PLLI2S_ENABLE();
+  static const ABoxMcuClockConfig clock = ABOX_PRODUCT_CLOCK_CONFIG;
+  if (ABoxMcuClock_Apply(&clock) != ABOX_HAL_OK) Error_Handler();
 }
 
 /* USER CODE BEGIN 4 */
-
-// 把串口空闲线 DMA 接收事件转交云接收器。Size 表示 HAL 提供的 DMA 接收位置，具体串口过滤和环形处理由 CloudService 完成。
-void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef* huart, uint16_t Size)
-{
-  if (huart && huart->Instance == UART5)
-    ABoxSerialPort_NotifyRx(ABoxStm32Serial_RxBuffer(), Size);
-  else if (huart && huart->Instance == USART1) ABoxModemPort_NotifyRx(Size);
-}
-
-// 将 HAL 串口错误通知转交云服务。回调只登记后续恢复需求，不在中断中直接执行 MQTT 重连或 JSON 业务。
-void HAL_UART_ErrorCallback(UART_HandleTypeDef* huart)
-{
-  if (huart && huart->Instance == UART5) ABoxSerialPort_NotifyError();
-  else if (huart && huart->Instance == USART1) ABoxModemPort_NotifyError();
-}
 
 /* USER CODE END 4 */
 

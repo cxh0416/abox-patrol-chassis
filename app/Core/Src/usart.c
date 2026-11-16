@@ -30,8 +30,8 @@ DMA_HandleTypeDef hdma_usart1_rx;
 DMA_HandleTypeDef hdma_usart1_tx;
 
 /* UART5 init function */
-// 按工程串口参数初始化 UART5。作为本工程对应串口服务的底层配置，HAL 失败进入统一错误处理，不自动发送日志或控制数据。
-void MX_UART5_Init(void)
+// 准备 UART5 句柄；串口参数和硬件初始化由公共 UART 接口完成。
+void MX_UART5_Prepare(void)
 {
 
   /* USER CODE BEGIN UART5_Init 0 */
@@ -42,17 +42,9 @@ void MX_UART5_Init(void)
 
   /* USER CODE END UART5_Init 1 */
   huart5.Instance = UART5;
-  huart5.Init.BaudRate = 19200;
-  huart5.Init.WordLength = UART_WORDLENGTH_8B;
-  huart5.Init.StopBits = UART_STOPBITS_1;
-  huart5.Init.Parity = UART_PARITY_NONE;
   huart5.Init.Mode = UART_MODE_TX_RX;
   huart5.Init.HwFlowCtl = UART_HWCONTROL_NONE;
   huart5.Init.OverSampling = UART_OVERSAMPLING_16;
-  if (HAL_UART_Init(&huart5) != HAL_OK)
-  {
-    Error_Handler();
-  }
   /* USER CODE BEGIN UART5_Init 2 */
 
   /* USER CODE END UART5_Init 2 */
@@ -60,8 +52,8 @@ void MX_UART5_Init(void)
 }
 /* USART1 init function */
 
-// 初始化 EC800 通信使用的 USART1。设置波特率与帧格式，底层 DMA 由 MSP 配置，接收启动由云服务统一执行。
-void MX_USART1_UART_Init(void)
+// 准备 USART1 句柄；公共 UART 接口初始化硬件，MSP 配置 DMA。
+void MX_USART1_UART_Prepare(void)
 {
 
   /* USER CODE BEGIN USART1_Init 0 */
@@ -72,17 +64,9 @@ void MX_USART1_UART_Init(void)
 
   /* USER CODE END USART1_Init 1 */
   huart1.Instance = USART1;
-  huart1.Init.BaudRate = 115200;
-  huart1.Init.WordLength = UART_WORDLENGTH_8B;
-  huart1.Init.StopBits = UART_STOPBITS_1;
-  huart1.Init.Parity = UART_PARITY_NONE;
   huart1.Init.Mode = UART_MODE_TX_RX;
   huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
   huart1.Init.OverSampling = UART_OVERSAMPLING_16;
-  if (HAL_UART_Init(&huart1) != HAL_OK)
-  {
-    Error_Handler();
-  }
   /* USER CODE BEGIN USART1_Init 2 */
 
   /* USER CODE END USART1_Init 2 */

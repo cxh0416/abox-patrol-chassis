@@ -1,8 +1,7 @@
+#include "abox_product_config.h"
 /* GD board entry: product policy and safety services use the shared ports. */
 #include "patrol_gd32_compat.h"
 #include "abox_board.h"
-#include "abox_can_port.h"
-#include "abox_serial_port.h"
 #include "abox_watchdog_port.h"
 #include "app_log.h"
 #include "app_version.h"
@@ -19,18 +18,18 @@ void Error_Handler(void) { __disable_irq(); for (;;) {} }
 
 int main(void)
 {
-    static const ABoxCanOptions can_options = {1U, 1U, 1U};
-    if (!ABoxBoard_Init(APP_START_ADDR)) Error_Handler();
-    if (!ABoxSerialPort_Deinit()) Error_Handler();
-    ABoxSerialPort_SetConfig(19200U);
-    if (!ABoxSerialPort_Init() || !ABoxWatchdog_Init(64U, 1250U)) Error_Handler();
+    static const ABoxBoardUartConfig uarts[] = {
+        {ABOX_BOARD_UART_MODEM, {ABOX_PRODUCT_MODEM_UART_BAUD, 8U, 1U, ABOX_UART_PARITY_NONE, ABOX_UART_FLOW_NONE, .mode=ABOX_UART_ASYNC}},
+        {ABOX_BOARD_UART_BUS, {ABOX_PRODUCT_BUS_UART_BAUD, 8U, 1U, ABOX_UART_PARITY_NONE, ABOX_UART_FLOW_NONE, .mode=ABOX_UART_ASYNC}}
+    };
+    static const ABoxMcuClockConfig clock = ABOX_PRODUCT_CLOCK_CONFIG;
+    static const ABoxBoardConfig board = {APP_START_ADDR, uarts, sizeof(uarts) / sizeof(uarts[0]), &clock};
+    if (!ABoxBoard_Init(&board) || !ABoxWatchdog_Init(64U, 1250U)) Error_Handler();
     AppLog_Init();
     AppLog_FieldStartup(Patrol_AppFwVersion());
     TimeBase_Init();
     PatrolConfig_Load();
     VehiclePowerPort_Init();
-    if (!ABoxCanPort_InitWithOptions(0U, 500000U, ABOX_CAN_NORMAL, &can_options) ||
-        !ABoxCanPort_InitWithOptions(1U, 500000U, ABOX_CAN_NORMAL, &can_options)) Error_Handler();
     CloudService_Init();
     RemoteService_Init();
     RemoteService_CollisionInputs(0U, 0U, HAL_GetTick());

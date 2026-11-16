@@ -55,6 +55,55 @@ def release(path: Path, debug: bool = False) -> None:
     (path / name).write_text(json.dumps(manifest))
 
 
+def gd_frozen_boot(path: Path) -> None:
+    path.mkdir(parents=True)
+    image = bytearray(0x8000)
+    struct.pack_into("<II", image, 0, 0x20010000, 0x08000009)
+    struct.pack_into("<IHHIHHH", image, 0x7F00, 0x32564241, 1, 256, 15, 2, 3, 0)
+    image[0x7F14:0x7F14 + len(b"abox_gd32f105")] = b"abox_gd32f105"
+    image[0x7F34:0x7F34 + len(b"abox-boot-2.3.0-gd")] = b"abox-boot-2.3.0-gd"
+    struct.pack_into("<I", image, 0x7FFC, zlib.crc32(image[0x7F00:0x7FFC]))
+    (path / store.BOOT).write_bytes(image)
+    manifest = {"manifest_version": 1, "target": "gd32f105_abox_boot",
+                "mcu": "GD32F105RCT6", "hardware_contract": "abox_gd32f105_ec800_v1",
+                "boot_version": "abox-boot-2.3.0-gd", "load_address": "0x08000000",
+                "app_address": "0x08008000", "boot_state_pages": ["0x0803E800", "0x0803F000"],
+                "config_page": "0x0803F800", "size": len(image),
+                "crc32": f"{zlib.crc32(image):08X}", "sha256": hashlib.sha256(image).hexdigest()}
+    (path / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+
+
+def release_pair(path: Path) -> None:
+    platform = Path(__file__).resolve().parents[1] / "platform/targets"
+    for board, target, mcu, version, boot_version, hardware in (
+        ("v1", "gd32f105_abox_boot", "GD32F105RCT6", "patrol-chassis-0.2.16-gd", "abox-boot-2.3.0-gd", "gd32f105_ec800_v1"),
+        ("v2", "stm32f105_abox_boot", "STM32F105RCT6", "patrol-chassis-0.2.16", "abox-boot-2.3.0", "stm32f105_ec800_v1"),
+    ):
+        variant = path / board
+        variant.mkdir(parents=True)
+        app = (struct.pack("<II", 0x20010000, 0x08008009) +
+               ("PATROL_VEHICLE_CHASSIS_FW_VERSION=" + version).encode() + b"\0" +
+               ("ABOX_MCU=" + mcu).encode() + b"\0")
+        boot = (platform / target / "dist/ABox_Boot.bin").read_bytes()
+        for name, data in ((store.APP, app), (store.BOOT, boot), (store.FULL, boot + app)):
+            (variant / name).write_bytes(data)
+        manifest = {"manifest_version": 3, "product": "patrol_vehicle_chassis", "version": version,
+                    "configuration": "Release", "board": board, "hardware": hardware, "boot_version": boot_version,
+                    "product_commit": "test-product", "platform_commit": "test-platform",
+                    "product_dirty": False, "platform_dirty": False, "startup_motion_permit": False,
+                    "steering_executor_compiled": True, "drive_executor_compiled": True,
+                    "actuation_enabled": True, "power_output_enabled": True, "active_car": 0,
+                    "app_range": "0x08008000..0x0803DFFF", "config_recovery_page": "0x0803E000",
+                    "boot_state_pages": ["0x0803E800", "0x0803F000"], "config_page": "0x0803F800",
+                    "artifacts": [{"name": name, "length": (variant / name).stat().st_size,
+                                   "sha256": store.digest(variant / name),
+                                   "crc32": f"{zlib.crc32((variant / name).read_bytes()):08x}",
+                                   "load_address": "0x08008000" if name == store.APP else "0x08000000",
+                                   "includes_device_config": False, "includes_boot_state": False}
+                                  for name in (store.APP, store.BOOT, store.FULL)]}
+        (variant / "release.manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+
+
 class WorkspaceMaintenanceTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
@@ -98,11 +147,12 @@ class WorkspaceMaintenanceTests(unittest.TestCase):
 
     def test_formal_package_layout_hash_and_dirty_gates(self):
         stage = self.root / "stage"
-        release(stage)
+        release_pair(stage)
         store.publish(self.root, stage, "dist")
         target = self.root / "dist"
-        baseline = {p.name: store.digest(p) for p in target.iterdir()}
-        mp = stage / "release.manifest.json"
+        self.assertEqual({p.name for p in target.iterdir()}, {"v1", "v2"})
+        baseline = {p.relative_to(target).as_posix(): store.digest(p) for p in target.rglob("*") if p.is_file()}
+        mp = stage / "v2/release.manifest.json"
         original = json.loads(mp.read_text())
         for field, value in [("config_page", "0x0803F000"), ("product_dirty", True),
                              ("configuration", "Debug")]:
@@ -110,15 +160,53 @@ class WorkspaceMaintenanceTests(unittest.TestCase):
                 mp.write_text(json.dumps(dict(original, **{field: value})))
                 with self.assertRaises(ValueError):
                     store.publish(self.root, stage, "dist")
-                self.assertEqual(baseline, {p.name: store.digest(p) for p in target.iterdir()})
+                self.assertEqual(baseline, {p.relative_to(target).as_posix(): store.digest(p) for p in target.rglob("*") if p.is_file()})
         mp.write_text(json.dumps(original))
-        full = stage / store.FULL
+        full = stage / "v1" / store.FULL
         broken = bytearray(full.read_bytes())
         broken[0x8000] ^= 1
         full.write_bytes(broken)
         with self.assertRaises(ValueError):
             store.publish(self.root, stage, "dist")
-        self.assertEqual(baseline, {p.name: store.digest(p) for p in target.iterdir()})
+        self.assertEqual(baseline, {p.relative_to(target).as_posix(): store.digest(p) for p in target.rglob("*") if p.is_file()})
+
+    def test_release_pair_rejects_wrong_board_boot_and_keeps_previous_release(self):
+        stage = self.root / "stage"
+        release_pair(stage)
+        store.publish(self.root, stage, "dist")
+        target = self.root / "dist"
+        original = store.digest(target / "v1" / store.BOOT)
+        v1 = stage / "v1"
+        boot = (stage / "v2" / store.BOOT).read_bytes()
+        app = (v1 / store.APP).read_bytes()
+        (v1 / store.BOOT).write_bytes(boot)
+        (v1 / store.FULL).write_bytes(boot + app)
+        mp = v1 / "release.manifest.json"
+        manifest = json.loads(mp.read_text(encoding="utf-8"))
+        for entry in manifest["artifacts"]:
+            data = (v1 / entry["name"]).read_bytes()
+            entry.update(length=len(data), sha256=hashlib.sha256(data).hexdigest(), crc32=f"{zlib.crc32(data):08x}")
+        mp.write_text(json.dumps(manifest), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "frozen Boot mismatch"):
+            store.publish(self.root, stage, "dist")
+        self.assertEqual(store.digest(target / "v1" / store.BOOT), original)
+
+    def test_release_pair_rejects_extra_root_files_and_mismatched_policy(self):
+        stage = self.root / "stage"
+        release_pair(stage)
+        store.publish(self.root, stage, "dist")
+        extra = stage / "release.manifest.json"
+        extra.write_text("{}", encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "exactly the v1 and v2 directories"):
+            store.publish(self.root, stage, "dist")
+        extra.unlink()
+        mp = stage / "v1/release.manifest.json"
+        manifest = json.loads(mp.read_text(encoding="utf-8"))
+        manifest["actuation_enabled"] = False
+        mp.write_text(json.dumps(manifest), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "variants disagree on actuation_enabled"):
+            store.publish(self.root, stage, "dist")
+        self.assertEqual({p.name for p in (self.root / "dist").iterdir()}, {"v1", "v2"})
 
     def test_debug_output_stays_outside_formal_directory(self):
         stage = self.root / "stage"
@@ -129,6 +217,32 @@ class WorkspaceMaintenanceTests(unittest.TestCase):
         store.publish(self.root, stage, "out/debug/online")
         self.assertEqual((formal / "untouched").read_text(), "formal")
         self.assertEqual(len(list((self.root / "out/debug/online").iterdir())), 4)
+
+    def test_gd_frozen_boot_is_verified_and_cannot_be_silently_replaced(self):
+        stage = self.root / "stage"
+        gd_frozen_boot(stage)
+        destination = "platform/targets/gd32f105_abox_boot/dist"
+        store.publish(self.root, stage, destination)
+        target = self.root / destination
+        original = store.digest(target / store.BOOT)
+        store.publish(self.root, stage, destination)  # identical replay is safe
+        image = bytearray((stage / store.BOOT).read_bytes())
+        image[0x100] = 1
+        (stage / store.BOOT).write_bytes(image)
+        manifest_path = stage / "manifest.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        manifest.update(sha256=hashlib.sha256(image).hexdigest(), crc32=f"{zlib.crc32(image):08X}")
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "Refusing to replace"):
+            store.publish(self.root, stage, destination)
+        self.assertEqual(original, store.digest(target / store.BOOT))
+        self.assertEqual({p.name for p in target.parent.iterdir()}, {"dist"})
+
+        manifest["mcu"] = "STM32F105RCT6"
+        manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "identity or layout"):
+            store.publish(self.root, stage, destination)
+        self.assertEqual(original, store.digest(target / store.BOOT))
 
     def test_copy_corruption_leaves_previous_output(self):
         stage = self.root / "stage"

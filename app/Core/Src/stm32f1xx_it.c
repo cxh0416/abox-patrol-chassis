@@ -22,7 +22,17 @@
 #include "stm32f1xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "abox_uart.h"
 #include "fault_mailbox.h"
+#include "abox_can_events.h"
+#include "FreeRTOS.h"
+#include "task.h"
+static void patrol_can_irq(unsigned bus)
+{
+  UBaseType_t saved = taskENTER_CRITICAL_FROM_ISR();
+  ABoxCanPort_DispatchEventIrq(bus);
+  taskEXIT_CRITICAL_FROM_ISR(saved);
+}
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -183,13 +193,13 @@ void DebugMon_Handler(void)
 /**
   * @brief This function handles DMA1 channel4 global interrupt.
   */
-// 处理 USART1 TX 所用 DMA1 通道 4 中断。转交对应 HAL DMA 句柄，发送完成与错误回调由 HAL 继续分发。
+// 分发 USART1 的 DMA 发送中断。
 void DMA1_Channel4_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel4_IRQn 0 */
 
   /* USER CODE END DMA1_Channel4_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_usart1_tx);
+  ABoxUart_DmaIrq(1U, 4U);
   /* USER CODE BEGIN DMA1_Channel4_IRQn 1 */
 
   /* USER CODE END DMA1_Channel4_IRQn 1 */
@@ -198,13 +208,13 @@ void DMA1_Channel4_IRQHandler(void)
 /**
   * @brief This function handles DMA1 channel5 global interrupt.
   */
-// 处理 USART1 RX 所用 DMA1 通道 5 中断。转交对应 HAL DMA 句柄，接收数据归并在串口回调和云服务中处理。
+// 分发 USART1 的 DMA 接收中断。
 void DMA1_Channel5_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Channel5_IRQn 0 */
 
   /* USER CODE END DMA1_Channel5_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_usart1_rx);
+  ABoxUart_DmaIrq(1U, 5U);
   /* USER CODE BEGIN DMA1_Channel5_IRQn 1 */
 
   /* USER CODE END DMA1_Channel5_IRQn 1 */
@@ -213,13 +223,13 @@ void DMA1_Channel5_IRQHandler(void)
 /**
   * @brief This function handles CAN1 TX interrupt.
   */
-// 分发 CAN1 发送邮箱中断。交由 HAL_CAN_IRQHandler 处理状态与回调，中断入口不直接推进运动控制状态机。
+// 分发 CAN1 发送邮箱中断至公共 CAN 事件处理，中断入口不直接推进运动控制状态机。
 void CAN1_TX_IRQHandler(void)
 {
   /* USER CODE BEGIN CAN1_TX_IRQn 0 */
 
   /* USER CODE END CAN1_TX_IRQn 0 */
-  HAL_CAN_IRQHandler(&hcan1);
+  patrol_can_irq(0U);
   /* USER CODE BEGIN CAN1_TX_IRQn 1 */
 
   /* USER CODE END CAN1_TX_IRQn 1 */
@@ -228,13 +238,13 @@ void CAN1_TX_IRQHandler(void)
 /**
   * @brief This function handles CAN1 RX0 interrupt.
   */
-// 分发 CAN1 FIFO0 接收中断。由 HAL 触发接收回调后投递 RTOS 队列，业务解析在任务中完成。
+// 分发 CAN1 FIFO0 接收中断；接收回调将帧投递 RTOS 队列，业务解析在任务中完成。
 void CAN1_RX0_IRQHandler(void)
 {
   /* USER CODE BEGIN CAN1_RX0_IRQn 0 */
 
   /* USER CODE END CAN1_RX0_IRQn 0 */
-  HAL_CAN_IRQHandler(&hcan1);
+  patrol_can_irq(0U);
   /* USER CODE BEGIN CAN1_RX0_IRQn 1 */
 
   /* USER CODE END CAN1_RX0_IRQn 1 */
@@ -243,13 +253,13 @@ void CAN1_RX0_IRQHandler(void)
 /**
   * @brief This function handles CAN1 RX1 interrupt.
   */
-// 分发 CAN1 FIFO1 接收中断。交由 HAL 处理对应实例，中断入口不自行解释驱动器协议。
+// 分发 CAN1 FIFO1 接收中断至公共 CAN 事件处理，中断入口不自行解释驱动器协议。
 void CAN1_RX1_IRQHandler(void)
 {
   /* USER CODE BEGIN CAN1_RX1_IRQn 0 */
 
   /* USER CODE END CAN1_RX1_IRQn 0 */
-  HAL_CAN_IRQHandler(&hcan1);
+  patrol_can_irq(0U);
   /* USER CODE BEGIN CAN1_RX1_IRQn 1 */
 
   /* USER CODE END CAN1_RX1_IRQn 1 */
@@ -258,13 +268,13 @@ void CAN1_RX1_IRQHandler(void)
 /**
   * @brief This function handles CAN1 SCE interrupt.
   */
-// 分发 CAN1 状态变化和错误中断。由 HAL 更新错误并触发产品错误回调，Bus-Off 门禁在安全任务中持续监督。
+// 分发 CAN1 状态变化和错误中断；Bus-Off 门禁在安全任务中持续监督。
 void CAN1_SCE_IRQHandler(void)
 {
   /* USER CODE BEGIN CAN1_SCE_IRQn 0 */
 
   /* USER CODE END CAN1_SCE_IRQn 0 */
-  HAL_CAN_IRQHandler(&hcan1);
+  patrol_can_irq(0U);
   /* USER CODE BEGIN CAN1_SCE_IRQn 1 */
 
   /* USER CODE END CAN1_SCE_IRQn 1 */
@@ -288,13 +298,13 @@ void TIM1_UP_IRQHandler(void)
 /**
   * @brief This function handles USART1 global interrupt.
   */
-// 分发 EC800 所用 USART1 中断。交由 HAL UART 处理空闲线和错误事件，实际环形接收与解析由后续服务完成。
+// 分发 EC800 所用 USART1 中断至公共 UART，环形接收与解析由后续服务完成。
 void USART1_IRQHandler(void)
 {
   /* USER CODE BEGIN USART1_IRQn 0 */
 
   /* USER CODE END USART1_IRQn 0 */
-  HAL_UART_IRQHandler(&huart1);
+  ABoxUart_Irq(1U);
   /* USER CODE BEGIN USART1_IRQn 1 */
 
   /* USER CODE END USART1_IRQn 1 */
@@ -303,13 +313,13 @@ void USART1_IRQHandler(void)
 /**
   * @brief This function handles UART5 global interrupt.
   */
-// 分发 UART5 外设中断。使用工程 UART5 句柄调用 HAL，中断入口不执行日志格式化或运动命令。
+// 分发 UART5 外设中断至公共 UART，中断入口不执行日志格式化或运动命令。
 void UART5_IRQHandler(void)
 {
   /* USER CODE BEGIN UART5_IRQn 0 */
 
   /* USER CODE END UART5_IRQn 0 */
-  HAL_UART_IRQHandler(&huart5);
+  ABoxUart_Irq(5U);
   /* USER CODE BEGIN UART5_IRQn 1 */
 
   /* USER CODE END UART5_IRQn 1 */
@@ -318,13 +328,13 @@ void UART5_IRQHandler(void)
 /**
   * @brief This function handles CAN2 TX interrupt.
   */
-// 分发 CAN2 发送邮箱中断。状态与回调由 HAL 处理，不在此确认远控命令业务成功。
+// 分发 CAN2 发送邮箱中断至公共 CAN 事件处理，不在此确认远控命令业务成功。
 void CAN2_TX_IRQHandler(void)
 {
   /* USER CODE BEGIN CAN2_TX_IRQn 0 */
 
   /* USER CODE END CAN2_TX_IRQn 0 */
-  HAL_CAN_IRQHandler(&hcan2);
+  patrol_can_irq(1U);
   /* USER CODE BEGIN CAN2_TX_IRQn 1 */
 
   /* USER CODE END CAN2_TX_IRQn 1 */
@@ -339,7 +349,7 @@ void CAN2_RX0_IRQHandler(void)
   /* USER CODE BEGIN CAN2_RX0_IRQn 0 */
 
   /* USER CODE END CAN2_RX0_IRQn 0 */
-  HAL_CAN_IRQHandler(&hcan2);
+  patrol_can_irq(1U);
   /* USER CODE BEGIN CAN2_RX0_IRQn 1 */
 
   /* USER CODE END CAN2_RX0_IRQn 1 */
@@ -348,13 +358,13 @@ void CAN2_RX0_IRQHandler(void)
 /**
   * @brief This function handles CAN2 RX1 interrupt.
   */
-// 分发 CAN2 FIFO1 接收中断。由 HAL 按实例维护接收状态，具体过滤与业务归属由上层配置决定。
+// 分发 CAN2 FIFO1 接收中断；具体过滤与业务归属由上层配置决定。
 void CAN2_RX1_IRQHandler(void)
 {
   /* USER CODE BEGIN CAN2_RX1_IRQn 0 */
 
   /* USER CODE END CAN2_RX1_IRQn 0 */
-  HAL_CAN_IRQHandler(&hcan2);
+  patrol_can_irq(1U);
   /* USER CODE BEGIN CAN2_RX1_IRQn 1 */
 
   /* USER CODE END CAN2_RX1_IRQn 1 */
@@ -363,13 +373,13 @@ void CAN2_RX1_IRQHandler(void)
 /**
   * @brief This function handles CAN2 SCE interrupt.
   */
-// 分发 CAN2 状态变化和错误中断。通知 HAL 与产品错误回调，不能在此自动恢复旧运动授权。
+// 分发 CAN2 状态变化和错误中断至公共 CAN 事件处理，不能在此自动恢复旧运动授权。
 void CAN2_SCE_IRQHandler(void)
 {
   /* USER CODE BEGIN CAN2_SCE_IRQn 0 */
 
   /* USER CODE END CAN2_SCE_IRQn 0 */
-  HAL_CAN_IRQHandler(&hcan2);
+  patrol_can_irq(1U);
   /* USER CODE BEGIN CAN2_SCE_IRQn 1 */
 
   /* USER CODE END CAN2_SCE_IRQn 1 */

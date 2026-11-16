@@ -129,6 +129,7 @@ endif()
 
 # Add project symbols (macros)
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
+    ABOX_UART_ENABLED_MASK=0x11U
     ABOX_SERIAL_TRANSACTION_CHUNK_SIZE=32U
     ABOX_SERIAL_TRANSACTION_SLOTS=3U
     $<$<CONFIG:Debug>:PATROL_EC800_AT_DIAG_UART5=1>
@@ -191,14 +192,15 @@ if(ABOX_HARDWARE STREQUAL "stm32f105_ec800_v1")
     target_link_libraries(${CMAKE_PROJECT_NAME} stm32cubemx)
     abox_platform_attach_standard_app(${CMAKE_PROJECT_NAME}
         PRODUCT_CONFIG_DIR "${ABOX_PRODUCT_CONFIG_DIR}" SCHEDULER FREERTOS)
-    abox_platform_attach_serial_port(${CMAKE_PROJECT_NAME} HARDWARE ${ABOX_HARDWARE})
-    abox_platform_attach_modem_port(${CMAKE_PROJECT_NAME} HARDWARE ${ABOX_HARDWARE})
+    abox_platform_attach_uart(${CMAKE_PROJECT_NAME} HARDWARE ${ABOX_HARDWARE})
+    abox_platform_attach_target_identity(${CMAKE_PROJECT_NAME} HARDWARE ${ABOX_HARDWARE})
+    abox_platform_attach_can_port(${CMAKE_PROJECT_NAME} HARDWARE ${ABOX_HARDWARE})
+    abox_platform_attach_can_events(${CMAKE_PROJECT_NAME} HARDWARE ${ABOX_HARDWARE})
 else()
     abox_platform_attach_f105_app(${CMAKE_PROJECT_NAME}
         HARDWARE ${ABOX_HARDWARE} PRODUCT_CONFIG_DIR "${ABOX_PRODUCT_CONFIG_DIR}"
         SCHEDULER FREERTOS FREERTOS_SOURCE_DIR "${CMAKE_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS/Source"
         FREERTOS_CONFIG_DIR "${CMAKE_SOURCE_DIR}/Core/Inc" CAN CAN_EVENTS)
-    abox_platform_attach_gd32_legacy_can(${CMAKE_PROJECT_NAME})
     target_include_directories(${CMAKE_PROJECT_NAME} BEFORE PRIVATE "${CMAKE_SOURCE_DIR}/Core/User/board/gd32")
 endif()
 abox_platform_attach_watchdog_port(${CMAKE_PROJECT_NAME} HARDWARE ${ABOX_HARDWARE})

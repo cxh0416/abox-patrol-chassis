@@ -35,14 +35,15 @@ def cloud_sources():
 
 
 class PatrolScaffoldTests(unittest.TestCase):
-    def test_uart5_contract_matches_hal_without_changing_hardware(self):
+    def test_uart_configuration_is_shared_by_both_boards(self):
         config = (ROOT / "platform_config/abox_product_config.h").read_text(encoding="utf-8")
-        usart = (ROOT / "app/Core/Src/usart.c").read_text(encoding="utf-8")
-        declared = re.search(r"0x08008000U,\s*0x0803F800U,\s*0x800U,\s*\d+U,\s*\d+U,\s*(\d+)U", config)
-        actual = re.search(r"void MX_UART5_Init\(void\).*?huart5\.Init\.BaudRate\s*=\s*(\d+);", usart, re.S)
-        self.assertIsNotNone(declared)
-        self.assertIsNotNone(actual)
-        self.assertEqual(int(declared.group(1)), int(actual.group(1)))
+        stm = (ROOT / "app/Core/Src/main.c").read_text(encoding="utf-8")
+        gd = (ROOT / "app/Core/User/board/src/patrol_gd32_port.c").read_text(encoding="utf-8")
+        self.assertIn("#define ABOX_PRODUCT_BUS_UART_BAUD 19200U", config)
+        self.assertIn("#define ABOX_PRODUCT_MODEM_UART_BAUD 115200U", config)
+        for source in (stm, gd):
+            self.assertIn("ABOX_PRODUCT_BUS_UART_BAUD", source)
+            self.assertIn("ABOX_PRODUCT_MODEM_UART_BAUD", source)
 
     def test_identity_and_safe_defaults(self):
         cmake = (ROOT / "app/CMakeLists.txt").read_text(encoding="utf-8")
@@ -58,7 +59,7 @@ class PatrolScaffoldTests(unittest.TestCase):
         self.assertIn('#define PATROL_CONFIG_DEFAULT_MQTT_PASS ""', device_config)
         self.assertIn('#define PATROL_CONFIG_DEFAULT_MQTT_HOST ""', device_config)
         self.assertNotIn("contactor_feedback", rtos)
-        self.assertIn("HAL_CAN_AddTxMessage", rtos)
+        self.assertIn("ABoxCanEvents_Send", rtos)
         self.assertIn("request.data[0] == 0x40U", rtos)
         # Runtime hot-reset recovery may request shutdown; its output and
         # build/mailbox gates are exercised by test_hot_reset_recovery.

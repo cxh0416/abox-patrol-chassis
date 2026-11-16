@@ -1,14 +1,26 @@
 # 当前项目状态
 
-本文件是 `patrol_vehicle_chassis` 的唯一当前状态入口。正式状态由 [dist 清单](../dist/release.manifest.json) 与实际固件哈希确定；源码版本不代表已发布。
+本文件是 `patrol_vehicle_chassis` 的唯一当前状态入口。正式状态由 `dist/v1/release.manifest.json`、`dist/v2/release.manifest.json` 与实际固件哈希确定；源码版本不代表已发布。
 
 同事接手所需仓库、环境、构建测试、运动许可排查和现场待办见[项目交接与接手指南](operations/项目交接与接手指南.md)。
 
-## 2026-11-13 公共平台与 V1/V2 适配
+## 2026-11-16 公共平台与 App 时钟
 
-源码版本 `patrol-chassis-0.2.112` 固定公共平台 `30a2e2f` 并接入其硬件端口：V1 选择 GD32F105，V2 选择 STM32F105。编码器使用公共 19200 8N1 串口事务，EC800 使用公共 Modem 端口，配置和故障持久化使用公共 Flash 端口，看门狗和板载输出使用公共端口。两路 CAN 仍按本车 500 kbit/s、自动重发和 Bus-Off 恢复配置，V1 使用公共 CAN 事件兼容层。V1 App 版本加 `-gd` 并嵌入 GD MCU 标识；V2 嵌入 STM MCU 标识。OTA 请求按板型检查版本后缀；配套服务端源码 `11f47c5` 校验镜像标识与 Boot 类型，已做主机测试，本轮未部署。
+当前源码构建标识为 `patrol-chassis-0.2.113`，公共平台以 `11042dcfc9c55602d9627c73a4c4858cce069902` 为更新基线，并在 `fb848d09e5e7e71b99b823f2b2072d962aba07ae` 补充 GD 冻结 Boot 与双板型发布入口。切换前平台工作区的已跟踪及未跟踪改动保存在平台 Git stash `9055df776fb29fe7d24e8676fb2b688b97584fef`，可通过 `git -C platform stash list` 查找。
 
-此前 `ABOX_BOARD_VERSION=v1` 只切换 STM32 输入映射，不能证明 GD32 App 支持；现在不允许该错误组合。产品 66 项 Python 测试、产品 C 夹具及公共 104 项 CTest 通过；两板型启用动力输出的 ARM Release 链接以及 CAN2、执行器、编码器和服务栈静态预算检查通过。静态预算不等于实测栈高水位。GD Boot 仍为公共平台候选，不能与冻结 STM32 Boot 组合成 V1 正式包；完整 OTA 和回滚尚未实测。V1/V2 的实际电源、运动、编码器、总线与 OTA 均未在本轮现场验收。正式版仍以 `dist` 清单与哈希为准。
+App 在 V1/GD32F105 使用 8 MHz 晶振、PLL 27 倍频及输入二分频，HCLK/APB1/APB2 分别为 108/54/108 MHz；V2/STM32F105 使用 8 MHz 晶振、9 倍频，分别为 72/36/72 MHz。两路 CAN 仍配置 500 kbit/s、18 个时间量子，V1 和 V2 分频分别为 6 和 4；EC800 和编码器 UART 仍为 115200 和 19200 baud。两种芯片的 Boot 启动阶段均为 36 MHz，App 入口重配为上述时钟。
+
+按用户决定冻结两套 Boot：V1 使用 [GD32 Boot 清单](../platform/targets/gd32f105_abox_boot/dist/manifest.json)，版本 `abox-boot-2.3.0-gd`，SHA-256 `3eb4df8bda5c8a99c338dfe93a289acd43a4b94bf432b5785ec10ea90340f237`；V2 使用 [STM32 Boot 清单](../platform/targets/stm32f105_abox_boot/dist/manifest.json)，版本 `abox-boot-2.3.0`，SHA-256 `981409ef107d5f5c56a1a80fce107c0292e2c1165668c0279ba6158f24a61c63`。冻结表示固定制品，不改变原有实机证据；不得将两种 Boot/App 混合。正式打包同时校验并整体发布 V1/V2 两套产物。
+
+产品主机回归 76 项、产品 C 夹具、双 MCU OTA 初始化失败注入及公共平台 169 项 CTest 通过；产品时钟、GD 双 CAN、双 MCU UART 和双板型发布保护的专门主机模型也通过。V1/V2 启用动力输出的 ARM Release 链接、CAN2/执行器/编码器/服务栈静态预算、Flash 布局及冻结 Boot 哈希检查通过。静态预算不等于实测栈高水位；本次没有刷写或验收实板时钟、总线、电源、运动、OTA 和回滚。正式发布脚本要求干净的产品及平台工作区；各板型的实际正式版本以对应清单和哈希为准。
+
+## 2026-11-14 公共平台与 V1/V2 适配
+
+当时未提交源码标识为 `patrol-chassis-0.2.113`，公共平台子模块指针仍为 `30a2e2f`，实际编译使用子模块工作区中的硬件接口修改。V1 选择 GD32F105，V2 选择 STM32F105；模组使用物理 UART1，编码器使用物理 UART5 和 19200 8N1 的公共 UART 事务。两路 CAN 明确提供本车的 500 kbit/s、自动重发和 Bus-Off 恢复配置。产品直接使用公共 CAN 事件接口；启动显式提供 MCU 时钟配置，Flash 回调使用公共 Flash 接口。统一硬件接口的支持范围与未实现模式见[硬件接口](../platform/hardware/README.md)。
+
+当时产品 69 项 Python 测试、产品 C 夹具、UART/注册与双 MCU 编译条件下的 OTA 初始化失败注入及公共平台 153 项 CTest 通过；两种 MCU 的 ARM Release 构建、CAN2、执行器、编码器任务和 UART 中断及服务栈静态预算和 Flash 布局检查通过。公共平台补充 CRC 计算器、备份寄存器、电压检测、引脚复用及 GPIO 配置锁定，并将 GD CAN 的 ABox 引脚及收发器动作移到板级；这些新增外设接口按需使用，USB 尚未在本产品启用。新外设模式经主机模型和真实厂商库交叉链接检查，不等于实板验收；静态预算也不等于实测栈高水位。当时 GD Boot 仍为候选；该轮没有现场刷写或验收电源、运动、编码器、总线、OTA 和回滚。
+
+此前 `0.2.112` 基于 `30a2e2f`，GD32 CAN 使用兼容桥；更早的 `ABOX_BOARD_VERSION=v1` 只切换 STM32 输入映射，不能证明 GD32 App 支持。V1 App 版本加 `-gd` 并嵌入 GD MCU 标识；V2 嵌入 STM MCU 标识。OTA 请求按板型检查版本后缀；配套服务端源码 `11f47c5` 校验镜像标识与 Boot 类型，已做主机测试，未部署。
 
 ## 2026-11-12 公共控制入口校验
 
