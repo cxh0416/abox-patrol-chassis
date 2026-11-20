@@ -77,7 +77,7 @@ def release_pair(path: Path) -> None:
     platform = Path(__file__).resolve().parents[1] / "platform/targets"
     for board, target, mcu, version, boot_version, hardware in (
         ("v1", "gd32f105_abox_boot", "GD32F105RCT6", "patrol-chassis-0.2.16-gd", "abox-boot-2.3.0-gd", "gd32f105_ec800_v1"),
-        ("v2", "stm32f105_abox_boot", "STM32F105RCT6", "patrol-chassis-0.2.16", "abox-boot-2.3.0", "stm32f105_ec800_v1"),
+        ("v2", "stm32f105_abox_boot", "STM32F105RCT6", "patrol-chassis-0.2.16-st", "abox-boot-2.3.0", "stm32f105_ec800_v1"),
     ):
         variant = path / board
         variant.mkdir(parents=True)

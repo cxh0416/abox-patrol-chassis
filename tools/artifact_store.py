@@ -167,7 +167,7 @@ def validate_release_pair(directory: Path) -> None:
         module.validate(variant, contract)
         manifests[board] = json.loads((variant / "release.manifest.json").read_text(encoding="utf-8-sig"))
     v1, v2 = manifests["v1"], manifests["v2"]
-    if v1.get("version") != v2.get("version", "") + "-gd":
+    if not v2["version"].endswith("-st") or v1["version"] != v2["version"][:-3] + "-gd":
         raise ValueError("Release board versions do not match")
     for field in ("product", "configuration", "product_commit", "product_dirty", "platform_commit",
                   "platform_dirty", "startup_motion_permit", "steering_executor_compiled",

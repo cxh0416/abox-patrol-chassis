@@ -24,7 +24,9 @@ if ($BenchSteering -and ($Configuration -ne 'Release' -or $ReleasePair -or
 $product = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 . (Join-Path $PSScriptRoot 'product_version.ps1')
 $AppVersion = Resolve-PatrolChassisAppVersion -ProductRoot $product -Override $AppVersion
-if ($AppVersion.EndsWith('-gd')) { throw 'Use the unsuffixed V2 version; the V1 version receives -gd automatically.' }
+if ($AppVersion -notmatch '^patrol-chassis-[0-9]+\.[0-9]+\.[0-9]+$') {
+    throw 'Use the base patrol-chassis version. V1 receives -gd and V2 receives -st.'
+}
 $entry = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'release_entry.json') -Raw | ConvertFrom-Json
 $steeringCompiled = [bool]$BenchSteering
 $driveCompiled = [bool]$BenchDrive
@@ -47,7 +49,7 @@ $targets = @(
     @{ board = 'v2'; hardware = 'stm32f105_ec800_v1'; bootTarget = 'targets/stm32f105_abox_boot'
        bootLinker = 'STM32F105xx_FLASH.ld'; bootVersion = 'abox-boot-2.3.0'; contract = 'tools/release_contract.json'
        marker = 'ABOX_MCU=STM32F105RCT6'; otherMarker = 'ABOX_MCU=GD32F105RCT6'
-       budget = 'tools/service_stack_budget.json'; version = $version; candidate = $VerifiedCandidate }
+       budget = 'tools/service_stack_budget.json'; version = "$version-st"; candidate = $VerifiedCandidate }
 )
 $credentialBuildRoot = Join-Path ([IO.Path]::GetTempPath()) ('patrol-chassis-release-' + [Guid]::NewGuid().ToString('N'))
 

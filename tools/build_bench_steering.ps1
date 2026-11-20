@@ -7,7 +7,11 @@ if ($EnableActuation -and -not $Drive) { throw 'Motion-enabled candidate require
 $product = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 . (Join-Path $PSScriptRoot 'product_version.ps1')
 $AppVersion = Resolve-PatrolChassisAppVersion -ProductRoot $product -Override $AppVersion
-if ($Board -eq 'v1' -and -not $AppVersion.EndsWith('-gd')) { $AppVersion += '-gd' }
+$suffix = if ($Board -eq 'v1') { '-gd' } else { '-st' }
+if ($AppVersion -match '-(gd|st)$' -and -not $AppVersion.EndsWith($suffix)) {
+    throw "App version suffix does not match $Board."
+}
+if (-not $AppVersion.EndsWith($suffix)) { $AppVersion += $suffix }
 $build = Join-Path $product "app/build/BenchSteering-$Board"
 $hardware = if ($Board -eq 'v1') { 'gd32f105_ec800_v1' } else { 'stm32f105_ec800_v1' }
 $destination = if ($Drive) { 'out/candidates/bench-drive' } else { 'out/candidates/bench-steering' }

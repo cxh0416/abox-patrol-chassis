@@ -57,6 +57,9 @@ int main(void)
     static const char ota_gd[] =
         "{\"version\":\"2.0\",\"data\":{\"requestId\":\"gd\",\"command\":\"ota_upgrade\","
         "\"params\":{\"url\":\"https://ota.test/app.bin\",\"version\":\"patrol-chassis-1.1.1-gd\",\"size\":12345,\"crc32\":\"89ABCDEF\"}}}";
+    static const char ota_st[] =
+        "{\"version\":\"2.0\",\"data\":{\"requestId\":\"st\",\"command\":\"ota_upgrade\","
+        "\"params\":{\"url\":\"https://ota.test/app.bin\",\"version\":\"patrol-chassis-1.1.1-st\",\"size\":12345,\"crc32\":\"89ABCDEF\"}}}";
     static const char ota_invalid_suffix[] =
         "{\"version\":\"2.0\",\"data\":{\"requestId\":\"bad-gd\",\"command\":\"ota_upgrade\","
         "\"params\":{\"url\":\"https://ota.test/app.bin\",\"version\":\"patrol-chassis-1.1.1-gdx\",\"size\":12345,\"crc32\":\"89ABCDEF\"}}}";
@@ -129,6 +132,7 @@ int main(void)
                        CLOUD_PROTOCOL_ACTION_NONE, "req-wrong")) return 1;
     if (!expect_status("ota", ota, 1U, CLOUD_PROTOCOL_OK, CLOUD_PROTOCOL_ACTION_OTA, "req-3")) return 1;
     if (!expect_status("ota gd", ota_gd, 1U, CLOUD_PROTOCOL_OK, CLOUD_PROTOCOL_ACTION_OTA, "gd")) return 1;
+    if (!expect_status("ota st", ota_st, 1U, CLOUD_PROTOCOL_OK, CLOUD_PROTOCOL_ACTION_OTA, "st")) return 1;
     if (!expect_status("ota bad suffix", ota_invalid_suffix, 1U, CLOUD_PROTOCOL_INVALID, CLOUD_PROTOCOL_ACTION_NONE, "bad-gd")) return 1;
     if (!expect_status("set_mqtt", set_mqtt, 0U, CLOUD_PROTOCOL_OK, CLOUD_PROTOCOL_ACTION_SET_MQTT, "req-4")) return 1;
     if (!expect_status("bad_set_mqtt", bad_set_mqtt, 0U, CLOUD_PROTOCOL_INVALID, CLOUD_PROTOCOL_ACTION_NONE, "req-5")) return 1;
